@@ -6,6 +6,9 @@ CREATE TABLE IF NOT EXISTS auth.users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email VARCHAR(255) UNIQUE
 );
+CREATE OR REPLACE FUNCTION auth.uid() RETURNS uuid AS $$
+    SELECT gen_random_uuid();
+$$ LANGUAGE sql STABLE;
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "vector"; -- Suporte para IA pgvector no banco de questões
