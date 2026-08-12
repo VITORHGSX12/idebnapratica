@@ -763,6 +763,9 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
             badgeCount.textContent = dbAlunos.length.toLocaleString('pt-BR');
         }
 
+        const schools = Array.from(new Set(dbAlunos.map(a => a.escola))).sort();
+        populateLoginTenants(schools);
+
         renderCreatedEvents();
         renderOngoingAssessments();
         renderActiveDescriptors();
@@ -6032,6 +6035,123 @@ DIRETRIZES DO DIAGNÓSTICO:
             }
         });
     });
+
+    // ==========================================
+    // LÓGICA DE CONTROLE DA TELA DE LOGIN
+    // ==========================================
+    const loginHeadlines = [
+        "Cada décimo do IDEB planejado e conquistado.",
+        "Do diagnóstico ao plano de ação, em uma só plataforma.",
+        "Inteligência pedagógica guiando a gestão municipal."
+    ];
+    let headlineIndex = 0;
+
+    function rotateLoginHeadlines() {
+        const headlineEl = document.getElementById('rotating-headline');
+        if (!headlineEl) return;
+        setInterval(() => {
+            headlineEl.classList.add('fade');
+            setTimeout(() => {
+                headlineIndex = (headlineIndex + 1) % loginHeadlines.length;
+                headlineEl.textContent = loginHeadlines[headlineIndex];
+                headlineEl.classList.remove('fade');
+            }, 500);
+        }, 5000);
+    }
+
+    function populateLoginTenants(schools) {
+        const loginTenant = document.getElementById('login-tenant');
+        if (!loginTenant) return;
+        
+        // Keep the placeholder and multitenant option
+        loginTenant.innerHTML = `
+            <option value="" disabled selected>Selecione seu município...</option>
+            <option value="all">Todas as Redes (Multitenant - Demo)</option>
+        `;
+        schools.forEach(sch => {
+            const opt = document.createElement('option');
+            opt.value = sch;
+            opt.textContent = sch.replace(/\s+/g, ' ');
+            loginTenant.appendChild(opt);
+        });
+    }
+
+    // Toggle Password Visibility
+    const btnTogglePassword = document.getElementById('btn-toggle-login-password');
+    const loginPassword = document.getElementById('login-password');
+    if (btnTogglePassword && loginPassword) {
+        btnTogglePassword.addEventListener('click', () => {
+            const isPass = loginPassword.type === 'password';
+            loginPassword.type = isPass ? 'text' : 'password';
+            const icon = btnTogglePassword.querySelector('i') || btnTogglePassword.querySelector('svg');
+            if (icon && window.lucide) {
+                icon.setAttribute('data-lucide', isPass ? 'eye-off' : 'eye');
+                lucide.createIcons({ attrs: { class: 'lucide' } });
+            }
+        });
+    }
+
+    // Login Form Submit Handlers
+    const loginForm = document.getElementById('login-form');
+    const loginScreen = document.getElementById('login-screen');
+    const btnLoginSubmit = document.getElementById('btn-login-submit');
+
+    if (loginForm && loginScreen && btnLoginSubmit) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const selectedTenant = document.getElementById('login-tenant').value;
+            const emailInput = document.getElementById('login-email').value;
+
+            // Simple loading simulation
+            btnLoginSubmit.disabled = true;
+            const btnSpan = btnLoginSubmit.querySelector('span');
+            const originalText = btnSpan.textContent;
+            btnSpan.textContent = 'Autenticando acesso...';
+
+            setTimeout(() => {
+                // Set global network filter in dashboard
+                const tenantSelector = document.getElementById('tenant-selector');
+                if (tenantSelector) {
+                    tenantSelector.value = selectedTenant;
+                    tenantSelector.dispatchEvent(new Event('change'));
+                }
+
+                // Smooth Fade-out animation
+                loginScreen.classList.add('fade-out');
+                showToast(`Bem-vindo! Acesso autorizado para a rede de ${selectedTenant === 'all' ? 'Multitenant' : selectedTenant}.`, 'check');
+                
+                // Store session to avoid forcing login on refresh
+                sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('activeTenant', selectedTenant);
+
+                setTimeout(() => {
+                    loginScreen.style.display = 'none';
+                    if (window.lucide) {
+                        lucide.createIcons({ attrs: { class: 'lucide' } });
+                    }
+                }, 600);
+            }, 1000);
+        });
+    }
+
+    // Check Login Session
+    if (sessionStorage.getItem('isLoggedIn') === 'true') {
+        if (loginScreen) {
+            loginScreen.style.display = 'none';
+        }
+        // Restore active tenant if saved
+        const savedTenant = sessionStorage.getItem('activeTenant');
+        const tenantSelector = document.getElementById('tenant-selector');
+        if (savedTenant && tenantSelector) {
+            setTimeout(() => {
+                tenantSelector.value = savedTenant;
+                tenantSelector.dispatchEvent(new Event('change'));
+            }, 500);
+        }
+    } else {
+        rotateLoginHeadlines();
+    }
 
     // Initial render calls - Start completely clean/empty
     loadDatabaseState();

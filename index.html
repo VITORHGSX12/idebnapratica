@@ -19,6 +19,135 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
+    <!-- Login Screen Split-Screen -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-split-container">
+            <!-- Left Panel (Institutional Storytelling) -->
+            <div class="login-left-panel">
+                <div class="login-left-content">
+                    <div class="login-logo-row">
+                        <div class="login-logo-icon">
+                            <i data-lucide="graduation-cap"></i>
+                        </div>
+                        <div class="login-logo-text">
+                            <h2>IDEB na Prática</h2>
+                            <span>Gestão & Avaliação SaaS</span>
+                        </div>
+                    </div>
+                    
+                    <div class="login-headline-container">
+                        <h1 id="rotating-headline" class="login-headline">Cada décimo do IDEB planejado e conquistado.</h1>
+                    </div>
+
+                    <!-- Mini IDEB chart -->
+                    <div class="login-chart-card">
+                        <div class="login-chart-header">
+                            <div>
+                                <h3 class="login-chart-title">Desempenho da Rede vs Meta</h3>
+                                <span class="login-chart-subtitle">Histórico consolidado do município (SAEB)</span>
+                            </div>
+                            <span class="badge badge-success">Meta 2025</span>
+                        </div>
+                        <div class="login-chart-body">
+                            <!-- Premium SVG line chart -->
+                            <svg viewBox="0 0 400 130" class="login-svg-chart">
+                                <defs>
+                                    <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="var(--purple-light)" stop-opacity="0.3"></stop>
+                                        <stop offset="100%" stop-color="var(--purple-light)" stop-opacity="0.00"></stop>
+                                    </linearGradient>
+                                </defs>
+                                <!-- Grid Lines -->
+                                <line x1="10" y1="110" x2="390" y2="110" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3"></line>
+                                <line x1="10" y1="75" x2="390" y2="75" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3"></line>
+                                <line x1="10" y1="40" x2="390" y2="40" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3"></line>
+                                
+                                <!-- Area under path -->
+                                <path d="M 40 110 L 40 75 L 140 68 L 240 50 L 340 28 L 340 110 Z" fill="url(#chartGrad)"></path>
+                                
+                                <!-- Meta line (dashed red/pink) -->
+                                <path d="M 40 85 L 140 75 L 240 65 L 340 45" fill="none" stroke="var(--red-light)" stroke-width="2" stroke-dasharray="4" opacity="0.8"></path>
+                                <!-- Real performance line (glowing purple) -->
+                                <path d="M 40 75 L 140 68 L 240 50 L 340 28" fill="none" stroke="var(--purple-light)" stroke-width="3" class="chart-line-draw"></path>
+                                
+                                <!-- Points & labels -->
+                                <circle cx="40" cy="75" r="4" fill="#ffffff" stroke="var(--purple-light)" stroke-width="2"></circle>
+                                <text x="40" y="125" fill="rgba(255,255,255,0.4)" font-size="9" text-anchor="middle">2019</text>
+                                
+                                <circle cx="140" cy="68" r="4" fill="#ffffff" stroke="var(--purple-light)" stroke-width="2"></circle>
+                                <text x="140" y="125" fill="rgba(255,255,255,0.4)" font-size="9" text-anchor="middle">2021</text>
+                                
+                                <circle cx="240" cy="50" r="4" fill="#ffffff" stroke="var(--purple-light)" stroke-width="2"></circle>
+                                <text x="240" y="125" fill="rgba(255,255,255,0.4)" font-size="9" text-anchor="middle">2023</text>
+                                
+                                <circle cx="340" cy="28" r="4" fill="#ffffff" stroke="var(--purple-light)" stroke-width="2"></circle>
+                                <text x="340" y="125" fill="rgba(255,255,255,0.4)" font-size="9" text-anchor="middle">2025 (Proj)</text>
+                                
+                                <text x="40" y="60" fill="#ffffff" font-size="9" font-weight="600" text-anchor="middle">4.8</text>
+                                <text x="140" y="53" fill="#ffffff" font-size="9" font-weight="600" text-anchor="middle">5.1</text>
+                                <text x="240" y="35" fill="#ffffff" font-size="9" font-weight="600" text-anchor="middle">5.8</text>
+                                <text x="340" y="13" fill="var(--purple-light)" font-size="9" font-weight="700" text-anchor="middle">6.5</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Seal of official data -->
+                    <div class="login-official-badge">
+                        <i data-lucide="shield-check" style="width: 14px; height: 14px; color: var(--purple-light);"></i>
+                        <span>Dados oficiais INEP/SAEB integrados em conformidade com a LGPD</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel (Login Form) -->
+            <div class="login-right-panel">
+                <div class="login-form-container">
+                    <div class="login-form-header">
+                        <h2>Acessar Plataforma</h2>
+                        <p class="text-muted">Selecione sua rede e insira suas credenciais corporativas</p>
+                    </div>
+
+                    <form id="login-form" class="login-form-body" onsubmit="return false;">
+                        <div class="form-group">
+                            <label for="login-tenant" class="form-label-bold">Sua Rede / Município</label>
+                            <div class="select-wrapper">
+                                <select id="login-tenant" class="form-input-text" required style="cursor: pointer; height: 42px;">
+                                    <option value="" disabled selected>Selecione seu município...</option>
+                                    <option value="all">Todas as Redes (Multitenant - Demo)</option>
+                                    <!-- Options injected via JavaScript -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="login-email" class="form-label-bold">E-mail institucional</label>
+                            <input type="email" id="login-email" class="form-input-text" placeholder="nome@municipio.gov.br" required style="height: 42px;">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="login-password" class="form-label-bold">Senha de acesso</label>
+                            <div style="position: relative;">
+                                <input type="password" id="login-password" class="form-input-text" placeholder="••••••••" required style="height: 42px; padding-right: 40px;">
+                                <button type="button" id="btn-toggle-login-password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer;">
+                                    <i data-lucide="eye" style="width: 18px; height: 18px;"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="btn-login-submit" class="btn btn-primary btn-block" style="height: 44px; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 0.9rem; margin-top: 10px;">
+                            <span>Acessar Plataforma</span>
+                            <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="login-footer">
+                    <span>© 2026 IDEB na Prática. Sistema de Gestão Educacional.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="app-container">
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
