@@ -1,6 +1,12 @@
 -- Migration: 0001_init_schema.sql
 -- Description: Inicialização do schema do banco de dados real com RLS no Supabase.
 
+CREATE SCHEMA IF NOT EXISTS auth;
+CREATE TABLE IF NOT EXISTS auth.users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email VARCHAR(255) UNIQUE
+);
+
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "vector"; -- Suporte para IA pgvector no banco de questões
 
