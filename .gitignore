@@ -1,0 +1,6 @@
+node_modules/
+.env
+local_db_state.json
+scratch/
+local_db_state_backup.json
+*.log
