@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Global Error Listener for debugging client prototype
+    window.addEventListener('error', function(e) {
+        console.error('Captured exception:', e);
+        showToast('Erro interno detectado: ' + e.message, 'x');
+    });
+
     // Debounce helper for optimization
     function debounce(func, delay = 300) {
         let timer;

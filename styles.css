@@ -443,8 +443,9 @@ a:hover {
 /* Content Body */
 .content-body {
     padding: 40px;
-    flex-grow: 1;
+    flex: 1 1 auto;
     overflow-y: auto;
+    min-height: 0;
 }
 
 /* ==========================================
@@ -456,7 +457,9 @@ a:hover {
 }
 
 .tab-content.active {
-    display: block;
+    display: block !important;
+    opacity: 1 !important;
+    transform: none !important;
 }
 
 @keyframes fadeIn {
