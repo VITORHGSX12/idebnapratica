@@ -1,0 +1,6 @@
+- [x] 1. Configurar o backend `server.js` na raiz do projeto com endpoints de sincronização.
+- [x] 2. Criar módulo de banco de dados `db.js` com auto-migrations e seeding inicial de alunos e municípios.
+- [x] 3. Atualizar `package.json` instalando `express`, `pg`, `cors` e `dotenv`.
+- [x] 4. Criar arquivo de configuração `vercel.json` para o deploy estático do frontend na Vercel.
+- [x] 5. Adaptar o frontend (`app.js` e `index.html`) para sincronizar com o backend quando online.
+- [x] 6. Validar a sintaxe dos novos arquivos e realizar verificação de compilação.

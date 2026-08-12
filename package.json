@@ -1,0 +1,21 @@
+{
+  "name": "gestao-educacional-saas-prototype",
+  "version": "1.0.0",
+  "description": "Interactive spec and prototype for EduSaaS",
+  "main": "index.html",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "npx -y http-server -p 8080"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "acorn": "^8.18.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "pg": "^8.11.5",
+    "xlsx": "^0.18.5"
+  }
+}
