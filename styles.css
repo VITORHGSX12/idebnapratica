@@ -2033,3 +2033,123 @@ h4 svg, h4 i,
     stroke-dashoffset: 1000;
     animation: dash 3s ease forwards;
 }
+
+/* ==========================================
+   SIDEBAR COLLAPSE TOGGLE & COLLAPSED STATE
+   ========================================== */
+.sidebar-collapse-toggle {
+    position: absolute;
+    right: -13px;
+    top: 25px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    z-index: 105;
+    transition: var(--transition);
+}
+
+.sidebar-collapse-toggle:hover {
+    color: var(--purple-light);
+    border-color: var(--purple-light);
+    box-shadow: 0 0 8px rgba(168, 85, 247, 0.2);
+}
+
+/* Rotate icon when collapsed */
+body.collapsed-sidebar .sidebar-collapse-toggle i,
+body.collapsed-sidebar .sidebar-collapse-toggle svg {
+    transform: rotate(180deg);
+}
+
+/* Custom scrollbar for sidebar menu */
+.sidebar-menu::-webkit-scrollbar {
+    width: 4px;
+}
+.sidebar-menu::-webkit-scrollbar-track {
+    background: transparent;
+}
+.sidebar-menu::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+}
+.sidebar-menu::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Transitions for fluid collapsing animation */
+.sidebar {
+    transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease, border-color 0.3s ease;
+}
+.main-content {
+    transition: margin-left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Collapsed Overrides */
+body.collapsed-sidebar .sidebar {
+    width: 76px;
+}
+
+body.collapsed-sidebar .main-content {
+    margin-left: 76px;
+}
+
+body.collapsed-sidebar .sidebar-header {
+    padding: 24px 10px;
+    justify-content: center;
+}
+
+body.collapsed-sidebar .sidebar-header .logo-text,
+body.collapsed-sidebar .sidebar-header .active-network-badge {
+    display: none !important;
+}
+
+body.collapsed-sidebar .menu-group {
+    margin-bottom: 8px;
+}
+
+body.collapsed-sidebar .menu-group-header {
+    display: none !important;
+}
+
+body.collapsed-sidebar .menu-item {
+    justify-content: center;
+    padding: 12px;
+    gap: 0;
+}
+
+body.collapsed-sidebar .menu-item span,
+body.collapsed-sidebar .menu-item .badge {
+    display: none !important;
+}
+
+body.collapsed-sidebar .sidebar-footer {
+    padding: 12px 10px;
+    justify-content: center;
+}
+
+body.collapsed-sidebar .sidebar-footer .user-profile {
+    justify-content: center;
+    padding: 6px;
+}
+
+body.collapsed-sidebar .sidebar-footer .user-info,
+body.collapsed-sidebar .sidebar-footer i[data-lucide="chevron-up"],
+body.collapsed-sidebar .sidebar-footer svg[class*="chevron-up"],
+body.collapsed-sidebar .sidebar-footer svg.lucide-chevron-up {
+    display: none !important;
+}
+
+/* Adjust User Dropdown when collapsed */
+body.collapsed-sidebar .sidebar-footer .user-dropdown-menu {
+    left: 76px;
+    bottom: 12px;
+    width: 180px;
+}
+

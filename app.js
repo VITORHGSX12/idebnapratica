@@ -6153,6 +6153,31 @@ DIRETRIZES DO DIAGNÓSTICO:
         rotateLoginHeadlines();
     }
 
+    // ==========================================
+    // CONTROLE DE RECOLHIMENTO DA SIDEBAR
+    // ==========================================
+    const sidebarCollapseToggle = document.getElementById('sidebar-collapse-toggle');
+    if (sidebarCollapseToggle) {
+        if (localStorage.getItem('sidebarCollapsed') === 'true') {
+            document.body.classList.add('collapsed-sidebar');
+            const icon = sidebarCollapseToggle.querySelector('i') || sidebarCollapseToggle.querySelector('svg');
+            if (icon && window.lucide) {
+                icon.setAttribute('data-lucide', 'chevron-right');
+            }
+        }
+
+        sidebarCollapseToggle.addEventListener('click', () => {
+            const isCollapsed = document.body.classList.toggle('collapsed-sidebar');
+            localStorage.setItem('sidebarCollapsed', isCollapsed ? 'true' : 'false');
+            
+            const icon = sidebarCollapseToggle.querySelector('i') || sidebarCollapseToggle.querySelector('svg');
+            if (icon && window.lucide) {
+                icon.setAttribute('data-lucide', isCollapsed ? 'chevron-right' : 'chevron-left');
+                lucide.createIcons({ attrs: { class: 'lucide' } });
+            }
+        });
+    }
+
     // Initial render calls - Start completely clean/empty
     loadDatabaseState();
     renderCreatedEvents();
