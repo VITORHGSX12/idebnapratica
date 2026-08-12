@@ -6120,6 +6120,7 @@ DIRETRIZES DO DIAGNÓSTICO:
                 // Smooth Fade-out animation
                 loginScreen.classList.add('fade-out');
                 showToast(`Bem-vindo! Acesso autorizado para a rede de ${selectedTenant === 'all' ? 'Multitenant' : selectedTenant}.`, 'check');
+                window.scrollTo(0, 0);
                 
                 // Store session to avoid forcing login on refresh
                 sessionStorage.setItem('isLoggedIn', 'true');
@@ -6140,6 +6141,7 @@ DIRETRIZES DO DIAGNÓSTICO:
         if (loginScreen) {
             loginScreen.style.display = 'none';
         }
+        window.scrollTo(0, 0);
         // Restore active tenant if saved
         const savedTenant = sessionStorage.getItem('activeTenant');
         const tenantSelector = document.getElementById('tenant-selector');
