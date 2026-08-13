@@ -6212,7 +6212,16 @@ DIRETRIZES DO DIAGNÓSTICO:
             const originalText = btnSpan.textContent;
             btnSpan.textContent = 'Autenticando acesso...';
 
-            setTimeout(() => {
+            setTimeout(async () => {
+                // Store session to avoid forcing login on refresh
+                sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('activeTenant', selectedTenant);
+                sessionStorage.setItem('userEmail', emailInput);
+                sessionStorage.setItem('userRole', detectedRole);
+
+                // Start loading the database state IMMEDIATELY in the background
+                await loadDatabaseState();
+
                 // Set global network filter in dashboard
                 const tenantSelector = document.getElementById('tenant-selector');
                 if (tenantSelector) {
@@ -6224,21 +6233,13 @@ DIRETRIZES DO DIAGNÓSTICO:
                 loginScreen.classList.add('fade-out');
                 showToast(`Bem-vindo! Acesso autorizado como ${detectedRole} para a rede de ${selectedTenant === 'all' ? 'Multitenant' : selectedTenant}.`, 'check');
                 window.scrollTo(0, 0);
-                
-                // Store session to avoid forcing login on refresh
-                sessionStorage.setItem('isLoggedIn', 'true');
-                sessionStorage.setItem('activeTenant', selectedTenant);
-                sessionStorage.setItem('userEmail', emailInput);
-                sessionStorage.setItem('userRole', detectedRole);
 
                 setTimeout(() => {
                     loginScreen.style.display = 'none';
-                    // Force state reload with new role config
-                    loadDatabaseState();
                     if (window.lucide) {
                         lucide.createIcons({ attrs: { class: 'lucide' } });
                     }
-                }, 600);
+                }, 800);
             }, 1000);
         });
     }
