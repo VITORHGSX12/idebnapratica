@@ -245,6 +245,10 @@
                             <i data-lucide="settings"></i>
                             <span>Documentação Técnica</span>
                         </a>
+                        <a href="#" class="menu-item" data-target="admin-panel" data-tooltip="Área Administrativa">
+                            <i data-lucide="shield-alert"></i>
+                            <span>Área Administrativa</span>
+                        </a>
                     </div>
                 </div>
             </nav>
@@ -315,9 +319,6 @@
                         </div>
                     </div>
 
-                    <button class="btn btn-outline btn-sm" id="btn-reset-db" title="Zerar Banco de Dados" style="border-color: var(--red-light); color: var(--red-light); padding: 6px 10px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-                        <i data-lucide="trash-2" style="width:14px; height:14px;"></i> Zerar Banco
-                    </button>
                     <button class="btn btn-icon" id="theme-toggle" title="Alternar Tema">
                         <i data-lucide="moon"></i>
                     </button>
@@ -1987,6 +1988,29 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- ==================== ÁREA ADMINISTRATIVA TAB ==================== -->
+                <section id="admin-panel" class="tab-content">
+                    <div class="card" style="max-width: 600px; margin: 40px auto; padding: 28px; border-top: 4px solid var(--red-light);">
+                        <h4 style="color:var(--text-primary); margin-bottom:12px; display:flex; align-items:center; gap:8px; font-size:1.15rem; font-weight:700;">
+                            <i data-lucide="shield-alert" style="color:var(--red-light); width:22px; height:22px;"></i>
+                            Área Administrativa do Sistema
+                        </h4>
+                        <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:24px; line-height:1.5;">
+                            As ações abaixo são extremamente críticas e restritas a gestores e administradores de TI. O uso indevido dessas opções pode corromper ou apagar a base de dados permanentemente.
+                        </p>
+                        
+                        <div style="background-color: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: var(--radius-md); padding: 20px;">
+                            <h5 style="color:var(--red-light); margin-bottom:8px; font-weight:600; font-size:0.95rem;">Zona de Perigo</h5>
+                            <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:16px; line-height:1.45;">
+                                Apaga permanentemente todas as escolas, turmas, alunos e resultados de simulados cadastrados nesta rede. A base de dados será resetada e re-inicializada no próximo carregamento.
+                            </p>
+                            <button class="btn" id="btn-reset-db" title="Zerar Banco de Dados" style="background-color: var(--red-light); color: white; border: none; padding: 8px 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                                <i data-lucide="trash-2" style="width:14px; height:14px;"></i> Zerar Banco de Dados
+                            </button>
+                        </div>
+                    </div>
+                </section>
             </div>
         </main>
     </div>
@@ -2287,17 +2311,32 @@
 
     <!-- Reset Confirmation Modal -->
     <div id="reset-confirm-modal" class="modal-overlay hidden">
-        <div class="modal-content" style="max-width: 450px; text-align: center; padding: 30px;">
-            <div style="margin-bottom: 20px;">
-                <div style="width: 60px; height: 60px; border-radius: 50%; background-color: rgba(239, 68, 68, 0.1); border: 2px solid var(--red-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
-                    <i data-lucide="alert-triangle" style="width:32px; height:32px; color:var(--red-light);"></i>
+        <div class="modal-content" style="max-width: 460px; text-align: left; padding: 28px;">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 54px; height: 54px; border-radius: 50%; background-color: rgba(239, 68, 68, 0.1); border: 2px solid var(--red-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto;">
+                    <i data-lucide="alert-triangle" style="width:28px; height:28px; color:var(--red-light);"></i>
                 </div>
-                <h3 style="color: var(--text-primary); margin-bottom: 8px;">Tem certeza?</h3>
-                <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">Esta ação é irreversível e irá apagar permanentemente todas as escolas, turmas, alunos e resultados de simulados cadastrados na rede.</p>
+                <h3 style="color: var(--text-primary); margin-bottom: 6px; font-weight:700;">Ação Altamente Crítica!</h3>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.45;">Esta ação é irreversível. Todas as escolas, turmas, alunos e resultados de simulados cadastrados nesta rede serão apagados do banco.</p>
             </div>
-            <div style="display: flex; gap: 12px; justify-content: center;">
+            
+            <div style="margin-bottom: 20px; display:flex; flex-direction:column; gap:12px;">
+                <p style="font-size:0.8rem; color:var(--text-primary); font-weight:600; margin-bottom:-4px;">
+                    Para prosseguir, digite sua senha e o nome da rede ativa (<strong style="color:var(--purple-light);" id="reset-modal-network-name">Codó</strong>):
+                </p>
+                <div class="form-group">
+                    <label style="font-size:0.75rem; font-weight:600; color:var(--text-secondary);">Sua Senha de Acesso *</label>
+                    <input type="password" id="reset-password-confirm" class="form-input-text" placeholder="Digite sua senha de acesso" style="width:100%;" required>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:0.75rem; font-weight:600; color:var(--text-secondary);">Nome da Rede / Município *</label>
+                    <input type="text" id="reset-network-confirm" class="form-input-text" placeholder="Digite o nome da rede exatamente como mostrado acima" style="width:100%;" required>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; justify-content: center; margin-top:24px;">
                 <button class="btn btn-outline" id="btn-cancel-reset" style="cursor:pointer; flex:1;">Cancelar</button>
-                <button class="btn" id="btn-confirm-reset" style="background-color: var(--red-light); color: white; border: none; cursor:pointer; flex:1;">Zerar Banco</button>
+                <button class="btn" id="btn-confirm-reset" style="background-color: var(--red-light); color: white; border: none; cursor:pointer; flex:1; font-weight:600;">Zerar Banco de Dados</button>
             </div>
         </div>
     </div>

@@ -102,6 +102,10 @@ const initApp = () => {
         'doc-tecnica': {
             title: 'Documentação Técnica',
             subtitle: 'Especificação técnica dos módulos, modelo relacional ERD, script DDL SQL e APIs do sistema.'
+        },
+        'admin-panel': {
+            title: 'Área Administrativa',
+            subtitle: 'Configurações avançadas do sistema, logs de auditoria e ferramentas de administração do banco.'
         }
     };
 
@@ -4811,6 +4815,17 @@ DIRETRIZES DO DIAGNÓSTICO:
 
     if (btnResetDb && resetConfirmModal) {
         btnResetDb.addEventListener('click', () => {
+            const tenantSelector = document.getElementById('tenant-selector');
+            const activeNetworkName = tenantSelector ? tenantSelector.options[tenantSelector.selectedIndex].text : 'Codó';
+            const nameSpan = document.getElementById('reset-modal-network-name');
+            if (nameSpan) nameSpan.textContent = activeNetworkName;
+            
+            // Reset inputs
+            const passInput = document.getElementById('reset-password-confirm');
+            const netInput = document.getElementById('reset-network-confirm');
+            if (passInput) passInput.value = '';
+            if (netInput) netInput.value = '';
+
             resetConfirmModal.classList.remove('hidden');
         });
     }
@@ -4829,6 +4844,27 @@ DIRETRIZES DO DIAGNÓSTICO:
 
     if (btnConfirmReset && resetConfirmModal) {
         btnConfirmReset.addEventListener('click', () => {
+            const passInput = document.getElementById('reset-password-confirm');
+            const netInput = document.getElementById('reset-network-confirm');
+            const pass = passInput ? passInput.value.trim() : '';
+            const net = netInput ? netInput.value.trim().toLowerCase() : '';
+
+            const tenantSelector = document.getElementById('tenant-selector');
+            const activeNetworkName = tenantSelector ? tenantSelector.options[tenantSelector.selectedIndex].text : 'Codó';
+
+            if (!pass) {
+                showToast('Por favor, insira sua senha de acesso.', 'x');
+                return;
+            }
+            if (pass !== '123456') {
+                showToast('Senha incorreta. Não foi possível redefinir o banco.', 'x');
+                return;
+            }
+            if (net !== activeNetworkName.toLowerCase()) {
+                showToast(`Confirmação inválida. Digite exatamente "${activeNetworkName}".`, 'x');
+                return;
+            }
+
             resetConfirmModal.classList.add('hidden');
             
             // Execute reset
@@ -4851,7 +4887,11 @@ DIRETRIZES DO DIAGNÓSTICO:
             renderActiveDescriptors();
             renderQuestions();
             renderReferenceMatrix();
-            showToast('Banco de dados completamente zerado!', 'trash-2');
+            
+            // Simulated email alert
+            const userEmail = sessionStorage.getItem('userEmail') || 'gestor@municipio.gov.br';
+            console.log(`[ALERT EMAIL SIMULADO] Destinatário: dpo@municipio.gov.br. Mensagem: A base de dados do tenant "${activeNetworkName}" foi resetada por completo pelo usuário "${userEmail}".`);
+            showToast('Banco zerado. Alerta enviado por e-mail!', 'trash-2');
         });
     }
 
@@ -6227,6 +6267,7 @@ DIRETRIZES DO DIAGNÓSTICO:
 
                 // Start loading the database state IMMEDIATELY in the background
                 await loadDatabaseState();
+                updateMenuVisibilityByRole();
 
                 // Set global network filter in dashboard
                 const tenantSelector = document.getElementById('tenant-selector');
@@ -6250,12 +6291,25 @@ DIRETRIZES DO DIAGNÓSTICO:
         });
     }
 
+    function updateMenuVisibilityByRole() {
+        const userRole = sessionStorage.getItem('userRole') || 'Master Admin';
+        const adminMenuItem = document.querySelector('.menu-item[data-target="admin-panel"]');
+        if (adminMenuItem) {
+            if (userRole === 'Professor' || userRole === 'Diretor Escola') {
+                adminMenuItem.style.display = 'none';
+            } else {
+                adminMenuItem.style.display = 'flex';
+            }
+        }
+    }
+
     // Check Login Session
     if (sessionStorage.getItem('isLoggedIn') === 'true') {
         if (loginScreen) {
             loginScreen.style.display = 'none';
         }
         window.scrollTo(0, 0);
+        updateMenuVisibilityByRole();
         // Restore active tenant if saved
         const savedTenant = sessionStorage.getItem('activeTenant');
         const tenantSelector = document.getElementById('tenant-selector');
