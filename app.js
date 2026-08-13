@@ -689,7 +689,8 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
         const online = await checkCloudStatus();
         if (online) {
             try {
-                const res = await fetch(`${API_BASE_URL}/api/sync`);
+                const userRole = sessionStorage.getItem('userRole') || 'Master Admin';
+                const res = await fetch(`${API_BASE_URL}/api/sync?role=${encodeURIComponent(userRole)}`);
                 if (res.ok) {
                     const data = await res.json();
                     if (data && data.dbEscolas && data.dbEscolas.length > 0) {
@@ -4382,6 +4383,81 @@ DIRETRIZES DO DIAGNÓSTICO:
         safeCreateIcons();
     }
 
+    function setupRevealButton(fieldId, value, matricula, fieldName) {
+        const btn = document.querySelector(`.btn-reveal-field[data-field="${fieldName}"]`);
+        if (!btn) return;
+        
+        const isMaskedVal = value && (value.includes('*') || value.includes('...'));
+        if (isMaskedVal) {
+            btn.style.display = 'inline-block';
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+            
+            newBtn.addEventListener('click', async () => {
+                const userRole = sessionStorage.getItem('userRole') || 'Master Admin';
+                const userEmail = sessionStorage.getItem('userEmail') || 'dpo@municipio.gov.br';
+                const tenantId = sessionStorage.getItem('activeTenant') || 'default';
+                
+                if (userRole === 'Professor') {
+                    showToast('Acesso negado: Professores não têm permissão para revelar dados.', 'x');
+                    return;
+                }
+                
+                let justification = '';
+                if (userRole === 'Gestor da Rede') {
+                    justification = prompt('Este dado é sensível (LGPD). Insira uma justificativa legal ou pedagógica para visualizá-lo:');
+                    if (!justification) return;
+                    if (justification.trim().length < 5) {
+                        showToast('Justificativa inválida ou muito curta.', 'x');
+                        return;
+                    }
+                }
+                
+                try {
+                    const revealRes = await fetch(`${API_BASE_URL}/api/alunos/reveal`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            matricula,
+                            field: fieldName,
+                            justificativa: justification,
+                            userEmail,
+                            userRole,
+                            tenantId
+                        })
+                    });
+                    
+                    if (revealRes.ok) {
+                        const data = await revealRes.json();
+                        if (data.success) {
+                            const valSpan = document.getElementById(fieldId);
+                            if (fieldName === 'nee') {
+                                valSpan.className = 'badge badge-warning';
+                            }
+                            valSpan.textContent = data.value || 'Não Informado';
+                            newBtn.style.display = 'none';
+                            showToast('Dado revelado e registrado em auditoria.', 'check');
+                            const inMemoryStudent = loadedStudents.find(st => st.matricula === matricula);
+                            if (inMemoryStudent) {
+                                inMemoryStudent[fieldName] = data.value;
+                            }
+                        } else {
+                            showToast('Erro ao revelar dado.', 'x');
+                        }
+                    } else {
+                        const errData = await revealRes.json();
+                        showToast(errData.error || 'Erro na requisição.', 'x');
+                    }
+                } catch (err) {
+                    console.error('Reveal failed:', err);
+                    showToast('Erro de conexão.', 'x');
+                }
+            });
+        } else {
+            btn.style.display = 'none';
+        }
+    }
+
     function openStudentModal(student) {
         document.getElementById('modal-student-name').textContent = student.nome;
         document.getElementById('modal-student-matricula').textContent = `Matrícula: ${student.matricula}`;
@@ -4399,12 +4475,22 @@ DIRETRIZES DO DIAGNÓSTICO:
         
         const neeField = document.getElementById('modal-student-nee');
         if (student.nee) {
-            neeField.className = 'badge badge-warning';
+            if (student.nee.includes('***')) {
+                neeField.className = 'text-warning';
+            } else {
+                neeField.className = 'badge badge-warning';
+            }
             neeField.textContent = student.nee;
         } else {
             neeField.className = 'text-muted';
             neeField.textContent = 'Nenhuma deficiência declarada / Ensino Regular';
         }
+
+        setupRevealButton('modal-student-cpf', student.cpf, student.matricula, 'cpf');
+        setupRevealButton('modal-student-mae', student.mae, student.matricula, 'mae');
+        setupRevealButton('modal-student-pai', student.pai, student.matricula, 'pai');
+        setupRevealButton('modal-student-endereco', student.endereco, student.matricula, 'endereco');
+        setupRevealButton('modal-student-nee', student.nee, student.matricula, 'nee');
 
         studentModal.classList.remove('hidden');
     }
@@ -6107,7 +6193,18 @@ DIRETRIZES DO DIAGNÓSTICO:
             e.preventDefault();
             
             const selectedTenant = document.getElementById('login-tenant').value;
-            const emailInput = document.getElementById('login-email').value;
+            const emailInput = document.getElementById('login-email').value.trim().toLowerCase();
+
+            let detectedRole = 'Gestor da Rede';
+            if (emailInput.startsWith('professor')) {
+                detectedRole = 'Professor';
+            } else if (emailInput.startsWith('diretor')) {
+                detectedRole = 'Diretor Escola';
+            } else if (emailInput.startsWith('dpo') || emailInput.startsWith('admin')) {
+                detectedRole = 'Master Admin';
+            } else if (emailInput.startsWith('gestor')) {
+                detectedRole = 'Gestor da Rede';
+            }
 
             // Simple loading simulation
             btnLoginSubmit.disabled = true;
@@ -6125,15 +6222,19 @@ DIRETRIZES DO DIAGNÓSTICO:
 
                 // Smooth Fade-out animation
                 loginScreen.classList.add('fade-out');
-                showToast(`Bem-vindo! Acesso autorizado para a rede de ${selectedTenant === 'all' ? 'Multitenant' : selectedTenant}.`, 'check');
+                showToast(`Bem-vindo! Acesso autorizado como ${detectedRole} para a rede de ${selectedTenant === 'all' ? 'Multitenant' : selectedTenant}.`, 'check');
                 window.scrollTo(0, 0);
                 
                 // Store session to avoid forcing login on refresh
                 sessionStorage.setItem('isLoggedIn', 'true');
                 sessionStorage.setItem('activeTenant', selectedTenant);
+                sessionStorage.setItem('userEmail', emailInput);
+                sessionStorage.setItem('userRole', detectedRole);
 
                 setTimeout(() => {
                     loginScreen.style.display = 'none';
+                    // Force state reload with new role config
+                    loadDatabaseState();
                     if (window.lucide) {
                         lucide.createIcons({ attrs: { class: 'lucide' } });
                     }
