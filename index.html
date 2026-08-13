@@ -327,9 +327,49 @@
 
             <div class="content-body">
                 <!-- ==================== DASHBOARD TAB ==================== -->
+                <!-- ==================== DASHBOARD TAB ==================== -->
                 <section id="dashboard" class="tab-content active">
-                    <!-- Metric Cards Grid -->
-                    <div class="metrics-grid">
+                    <!-- Dashboard Onboarding State -->
+                    <div id="dashboard-onboarding" class="hidden" style="max-width: 750px; margin: 40px auto; padding: 40px; text-align: center; border-radius: var(--radius-lg); background-color: var(--bg-tertiary); border: 1px solid var(--border-color); border-top: 4px solid var(--purple-light); box-shadow: var(--shadow-lg);">
+                        <div style="width: 72px; height: 72px; border-radius: 50%; background-color: rgba(147, 51, 234, 0.1); border: 2px solid var(--purple-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;">
+                            <i data-lucide="graduation-cap" style="width:36px; height:36px; color:var(--purple-light);"></i>
+                        </div>
+                        <h3 style="color: var(--text-primary); margin-bottom: 10px; font-size: 1.5rem; font-weight: 700;">Bem-vindo ao IDEB na Prática!</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.55; margin-bottom: 32px; max-width: 580px; margin-left: auto; margin-right: auto;">
+                            Sua base de dados está vazia. Para começar a monitorar o desempenho, gerenciar turmas e aplicar simulados baseados na BNCC, configure seus primeiros cadastros.
+                        </p>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; text-align: left; margin-bottom: 32px;">
+                            <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border-color);">
+                                <div style="display: flex; align-items: center; gap: 8px; color: var(--purple-light); font-weight: 600;">
+                                    <i data-lucide="school" style="width:18px; height:18px;"></i>
+                                    <span>Cadastro Manual</span>
+                                </div>
+                                <p style="font-size:0.75rem; color:var(--text-secondary); line-height:1.4;">Registre as escolas da rede de ensino preenchendo os dados individualmente.</p>
+                                <button class="btn btn-sm btn-outline" id="onboarding-btn-create-school" style="margin-top:auto; font-weight:600; cursor:pointer;">Cadastrar Escola</button>
+                            </div>
+                            <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border-color);">
+                                <div style="display: flex; align-items: center; gap: 8px; color: var(--blue-light); font-weight: 600;">
+                                    <i data-lucide="upload-cloud" style="width:18px; height:18px;"></i>
+                                    <span>Importar Planilha</span>
+                                </div>
+                                <p style="font-size:0.75rem; color:var(--text-secondary); line-height:1.4;">Carregue uma planilha Excel/CSV do Censo Escolar para importar turmas e alunos.</p>
+                                <button class="btn btn-sm btn-outline" id="onboarding-btn-import" style="margin-top:auto; font-weight:600; cursor:pointer;">Importar Dados</button>
+                            </div>
+                            <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border-color); background: linear-gradient(135deg, rgba(147, 51, 234, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%);">
+                                <div style="display: flex; align-items: center; gap: 8px; color: var(--purple-light); font-weight: 700;">
+                                    <i data-lucide="sparkles" style="width:18px; height:18px;"></i>
+                                    <span>Rede de Testes</span>
+                                </div>
+                                <p style="font-size:0.75rem; color:var(--text-secondary); line-height:1.4;">Carregue uma rede municipal simulada com escolas, turmas, alunos e notas para avaliação comercial.</p>
+                                <button class="btn btn-sm" id="onboarding-btn-seed" style="margin-top:auto; background:var(--purple-light); color:white; border:none; font-weight:600; cursor:pointer;">Carregar Dados Demo</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="dashboard-main-content">
+                        <!-- Metric Cards Grid -->
+                        <div class="metrics-grid">
                         <div class="metric-card">
                             <div class="metric-header">
                                 <span class="metric-title">IDEB Projetado (Rede)</span>
@@ -416,6 +456,7 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
                     </div>
                 </section>
 

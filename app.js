@@ -660,6 +660,20 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
         return false;
     }
 
+    function checkOnboardingState() {
+        const onboardingDiv = document.getElementById('dashboard-onboarding');
+        const mainContentDiv = document.getElementById('dashboard-main-content');
+        if (onboardingDiv && mainContentDiv) {
+            if (dbEscolas.length === 0) {
+                onboardingDiv.classList.remove('hidden');
+                mainContentDiv.classList.add('hidden');
+            } else {
+                onboardingDiv.classList.add('hidden');
+                mainContentDiv.classList.remove('hidden');
+            }
+        }
+    }
+
     function saveDatabaseState() {
         localStorage.setItem('dbEscolas', JSON.stringify(dbEscolas));
         localStorage.setItem('dbTurmas', JSON.stringify(dbTurmas));
@@ -669,6 +683,8 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
         localStorage.setItem('dbResultadosAluno', JSON.stringify(dbResultadosAluno));
         localStorage.setItem('rawQuestions', JSON.stringify(rawQuestions));
         localStorage.setItem('activeEvaluations', JSON.stringify(activeEvaluations));
+
+        checkOnboardingState();
 
         if (isCloudSyncActive) {
             const state = {
@@ -793,6 +809,7 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
         renderManualScheduleTable();
         populateQuestionCreatorDropdowns();
         initIdebComparativo();
+        checkOnboardingState();
     }
 
     function syncNormalizedTablesFromLoadedData() {
@@ -4892,6 +4909,51 @@ DIRETRIZES DO DIAGNÓSTICO:
             const userEmail = sessionStorage.getItem('userEmail') || 'gestor@municipio.gov.br';
             console.log(`[ALERT EMAIL SIMULADO] Destinatário: dpo@municipio.gov.br. Mensagem: A base de dados do tenant "${activeNetworkName}" foi resetada por completo pelo usuário "${userEmail}".`);
             showToast('Banco zerado. Alerta enviado por e-mail!', 'trash-2');
+        });
+    }
+
+    // ONBOARDING / ESTADO VAZIO EVENT HANDLERS
+    const btnOnboardingCreateSchool = document.getElementById('onboarding-btn-create-school');
+    const btnOnboardingImport = document.getElementById('onboarding-btn-import');
+    const btnOnboardingSeed = document.getElementById('onboarding-btn-seed');
+
+    if (btnOnboardingCreateSchool) {
+        btnOnboardingCreateSchool.addEventListener('click', () => {
+            const escolasMenuBtn = document.querySelector('.menu-item[data-target="escolas-panel"]');
+            if (escolasMenuBtn) {
+                escolasMenuBtn.click();
+                setTimeout(() => {
+                    const addSchoolBtn = document.getElementById('btn-open-create-school-modal');
+                    if (addSchoolBtn) addSchoolBtn.click();
+                }, 100);
+            }
+        });
+    }
+
+    if (btnOnboardingImport) {
+        btnOnboardingImport.addEventListener('click', () => {
+            const alunosMenuBtn = document.querySelector('.menu-item[data-target="alunos-panel"]');
+            if (alunosMenuBtn) {
+                alunosMenuBtn.click();
+                showToast('Planilha Censo Escolar: carregue seus arquivos Excel no painel correspondente.', 'info');
+            }
+        });
+    }
+
+    if (btnOnboardingSeed) {
+        btnOnboardingSeed.addEventListener('click', () => {
+            showToast('Carregando rede simulada completa...', 'sparkles');
+            fetch('alunos.json')
+                .then(res => res.json())
+                .then(data => {
+                    initDatabase(data);
+                    saveDatabaseState();
+                    showToast('Dados demonstrativos da rede carregados com sucesso!', 'check');
+                })
+                .catch(err => {
+                    console.error('Failed to load demo data:', err);
+                    showToast('Erro ao carregar dados demonstrativos.', 'alert-triangle');
+                });
         });
     }
 
