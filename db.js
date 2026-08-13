@@ -214,8 +214,28 @@ async function seedDatabase() {
     }
 }
 
+async function queryWithTenant(tenantId, text, params) {
+    if (useLocalFallback) {
+        throw new Error('Database is in local fallback mode.');
+    }
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN');
+        await client.query(`SET LOCAL app.current_tenant_id = $1`, [tenantId]);
+        const res = await client.query(text, params);
+        await client.query('COMMIT');
+        return res;
+    } catch (err) {
+        await client.query('ROLLBACK');
+        throw err;
+    } finally {
+        client.release();
+    }
+}
+
 module.exports = {
     query,
+    queryWithTenant,
     runMigrations,
     seedDatabase,
     useLocalFallback,

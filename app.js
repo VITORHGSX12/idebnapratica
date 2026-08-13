@@ -677,7 +677,11 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
                 rawQuestions,
                 activeEvaluations
             };
-            fetch(`${API_BASE_URL}/api/sync`, {
+            const userRole = sessionStorage.getItem('userRole') || 'Master Admin';
+            const userEmail = sessionStorage.getItem('userEmail') || '';
+            const tenantId = sessionStorage.getItem('activeTenant') || 'default';
+            const url = `${API_BASE_URL}/api/sync?role=${encodeURIComponent(userRole)}&email=${encodeURIComponent(userEmail)}&tenantId=${encodeURIComponent(tenantId)}`;
+            fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(state)
@@ -691,7 +695,8 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
             try {
                 const userRole = sessionStorage.getItem('userRole') || 'Master Admin';
                 const userEmail = sessionStorage.getItem('userEmail') || '';
-                const res = await fetch(`${API_BASE_URL}/api/sync?role=${encodeURIComponent(userRole)}&email=${encodeURIComponent(userEmail)}`);
+                const tenantId = sessionStorage.getItem('activeTenant') || 'default';
+                const res = await fetch(`${API_BASE_URL}/api/sync?role=${encodeURIComponent(userRole)}&email=${encodeURIComponent(userEmail)}&tenantId=${encodeURIComponent(tenantId)}`);
                 if (res.ok) {
                     const data = await res.json();
                     if (data && data.dbEscolas && data.dbEscolas.length > 0) {
