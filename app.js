@@ -690,7 +690,8 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
         if (online) {
             try {
                 const userRole = sessionStorage.getItem('userRole') || 'Master Admin';
-                const res = await fetch(`${API_BASE_URL}/api/sync?role=${encodeURIComponent(userRole)}`);
+                const userEmail = sessionStorage.getItem('userEmail') || '';
+                const res = await fetch(`${API_BASE_URL}/api/sync?role=${encodeURIComponent(userRole)}&email=${encodeURIComponent(userEmail)}`);
                 if (res.ok) {
                     const data = await res.json();
                     if (data && data.dbEscolas && data.dbEscolas.length > 0) {

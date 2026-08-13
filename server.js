@@ -67,6 +67,62 @@ function applyMaskingToState(state, role) {
     return cloned;
 }
 
+const MOCK_USER_MAPPINGS = {
+    'professor@municipio.gov.br': {
+        role: 'Professor',
+        escola: 'UNIDADE ESCOLAR ANTONIO SIMAO OLIVEIRA',
+        turma: '2º Ano'
+    },
+    'diretor@municipio.gov.br': {
+        role: 'Diretor Escola',
+        escola: 'UNIDADE ESCOLAR ANTONIO SIMAO OLIVEIRA'
+    }
+};
+
+function applyRBACFilterToState(state, role, email) {
+    if (role === 'Master Admin' || !email) {
+        return state;
+    }
+    const mapping = MOCK_USER_MAPPINGS[email.trim().toLowerCase()];
+    if (!mapping) {
+        return state;
+    }
+    const cloned = JSON.parse(JSON.stringify(state));
+    
+    if (role === 'Professor') {
+        if (cloned.dbEscolas && Array.isArray(cloned.dbEscolas)) {
+            cloned.dbEscolas = cloned.dbEscolas.filter(e => e.nome === mapping.escola);
+        }
+        const schoolIds = new Set(cloned.dbEscolas ? cloned.dbEscolas.map(e => e.id) : []);
+        if (cloned.dbTurmas && Array.isArray(cloned.dbTurmas)) {
+            cloned.dbTurmas = cloned.dbTurmas.filter(t => schoolIds.has(t.escola_id) && t.nome.includes(mapping.turma));
+        }
+        if (cloned.dbAlunos && Array.isArray(cloned.dbAlunos)) {
+            cloned.dbAlunos = cloned.dbAlunos.filter(a => a.escola === mapping.escola && a.etapa.includes(mapping.turma));
+        }
+        if (cloned.dbResultadosAluno && Array.isArray(cloned.dbResultadosAluno)) {
+            const studentIds = new Set(cloned.dbAlunos.map(a => a.matricula));
+            cloned.dbResultadosAluno = cloned.dbResultadosAluno.filter(r => studentIds.has(r.aluno_id));
+        }
+    } else if (role === 'Diretor Escola') {
+        if (cloned.dbEscolas && Array.isArray(cloned.dbEscolas)) {
+            cloned.dbEscolas = cloned.dbEscolas.filter(e => e.nome === mapping.escola);
+        }
+        const schoolIds = new Set(cloned.dbEscolas ? cloned.dbEscolas.map(e => e.id) : []);
+        if (cloned.dbTurmas && Array.isArray(cloned.dbTurmas)) {
+            cloned.dbTurmas = cloned.dbTurmas.filter(t => schoolIds.has(t.escola_id));
+        }
+        if (cloned.dbAlunos && Array.isArray(cloned.dbAlunos)) {
+            cloned.dbAlunos = cloned.dbAlunos.filter(a => a.escola === mapping.escola);
+        }
+        if (cloned.dbResultadosAluno && Array.isArray(cloned.dbResultadosAluno)) {
+            const studentIds = new Set(cloned.dbAlunos.map(a => a.matricula));
+            cloned.dbResultadosAluno = cloned.dbResultadosAluno.filter(r => studentIds.has(r.aluno_id));
+        }
+    }
+    return cloned;
+}
+
 function mergeStates(incomingState, currentState) {
     if (!currentState) return incomingState;
     const mergedState = { ...incomingState };
@@ -97,10 +153,10 @@ function mergeStates(incomingState, currentState) {
     return mergedState;
 }
 
-// GET /api/sync - Retrieve state with masking
+// GET /api/sync - Retrieve state with masking & RBAC
 app.get('/api/sync', async (req, res) => {
     try {
-        const { role } = req.query;
+        const { role, email } = req.query;
         let state = {};
         if (db.useLocalFallback) {
             if (fs.existsSync(db.LOCAL_DB_FILE)) {
@@ -113,7 +169,8 @@ app.get('/api/sync', async (req, res) => {
                 state = queryResult.rows[0].data;
             }
         }
-        const maskedState = applyMaskingToState(state, role);
+        const filteredState = applyRBACFilterToState(state, role, email);
+        const maskedState = applyMaskingToState(filteredState, role);
         return res.json(maskedState);
     } catch (err) {
         console.error('Error in GET /api/sync:', err);
