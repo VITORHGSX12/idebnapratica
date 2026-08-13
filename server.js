@@ -2,7 +2,12 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const db = require('./db');
+
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6';
+const IV_LENGTH = 16;
+
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -63,6 +68,72 @@ function applyMaskingToState(state, role) {
             endereco: maskAddress(student.endereco),
             nee: maskNee(student.nee)
         }));
+    }
+    return cloned;
+}
+
+function encryptText(text) {
+    if (!text) return '';
+    try {
+        const iv = crypto.randomBytes(IV_LENGTH);
+        const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
+        let encrypted = cipher.update(text);
+        encrypted = Buffer.concat([encrypted, cipher.final()]);
+        return iv.toString('hex') + ':' + encrypted.toString('hex');
+    } catch (err) {
+        console.error('Encryption failed:', err);
+        return text;
+    }
+}
+
+function decryptText(text) {
+    if (!text) return '';
+    if (!text.includes(':')) return text;
+    try {
+        const textParts = text.split(':');
+        const iv = Buffer.from(textParts.shift(), 'hex');
+        const encryptedText = Buffer.from(textParts.join(':'), 'hex');
+        const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
+        let decrypted = decipher.update(encryptedText);
+        decrypted = Buffer.concat([decrypted, decipher.final()]);
+        return decrypted.toString();
+    } catch (err) {
+        return '*** (Erro de Descriptografia)';
+    }
+}
+
+function encryptSensitiveDataInState(state) {
+    const cloned = JSON.parse(JSON.stringify(state));
+    if (cloned.dbAlunos && Array.isArray(cloned.dbAlunos)) {
+        cloned.dbAlunos = cloned.dbAlunos.map(student => {
+            const cpfEnc = (student.cpf && !student.cpf.includes(':')) ? encryptText(student.cpf) : student.cpf;
+            const addrEnc = (student.endereco && !student.endereco.includes(':')) ? encryptText(student.endereco) : student.endereco;
+            const neeEnc = (student.nee && !student.nee.includes(':')) ? encryptText(student.nee) : student.nee;
+            return {
+                ...student,
+                cpf: cpfEnc,
+                endereco: addrEnc,
+                nee: neeEnc
+            };
+        });
+    }
+    return cloned;
+}
+
+function decryptSensitiveDataInState(state) {
+    const cloned = JSON.parse(JSON.stringify(state));
+    if (cloned.dbAlunos && Array.isArray(cloned.dbAlunos)) {
+        cloned.dbAlunos = cloned.dbAlunos.map(student => {
+            const cpfDec = (student.cpf && student.cpf.includes(':')) ? decryptText(student.cpf) : student.cpf;
+            const addrDec = (student.endereco && student.endereco.includes(':')) ? decryptText(student.endereco) : student.endereco;
+            const neeDec = (student.nee && student.nee.includes(':')) ? decryptText(student.nee) : student.nee;
+            return {
+                ...student,
+                cpf: cpfDec,
+                endereco: addrDec,
+                nee: neeDec
+            };
+        });
     }
     return cloned;
 }
@@ -195,7 +266,8 @@ app.get('/api/sync', async (req, res) => {
                 state = queryResult.rows[0].data;
             }
         }
-        const filteredState = applyRBACFilterToState(state, role, email);
+        const decryptedState = decryptSensitiveDataInState(state);
+        const filteredState = applyRBACFilterToState(decryptedState, role, email);
         const maskedState = applyMaskingToState(filteredState, role);
         return res.json(maskedState);
     } catch (err) {
@@ -230,13 +302,15 @@ app.post('/api/sync', async (req, res) => {
             }
         }
         
-        const mergedState = mergeStates(incomingState, currentState);
+        const decryptedCurrentState = decryptSensitiveDataInState(currentState);
+        const mergedState = mergeStates(incomingState, decryptedCurrentState);
+        const encryptedState = encryptSensitiveDataInState(mergedState);
         
         if (db.useLocalFallback) {
             if (currentState.auditLogs) {
-                mergedState.auditLogs = currentState.auditLogs;
+                encryptedState.auditLogs = currentState.auditLogs;
             }
-            fileState[activeTenant] = mergedState;
+            fileState[activeTenant] = encryptedState;
             fs.writeFileSync(db.LOCAL_DB_FILE, JSON.stringify(fileState, null, 2));
             return res.json({ success: true });
         } else {
@@ -245,7 +319,7 @@ app.post('/api/sync', async (req, res) => {
                 VALUES ($1, $2, CURRENT_TIMESTAMP)
                 ON CONFLICT (tenant_id)
                 DO UPDATE SET data = EXCLUDED.data, updated_at = CURRENT_TIMESTAMP
-            `, [activeTenant, JSON.stringify(mergedState)]);
+            `, [activeTenant, JSON.stringify(encryptedState)]);
             return res.json({ success: true });
         }
     } catch (err) {
@@ -291,7 +365,8 @@ app.post('/api/alunos/reveal', async (req, res) => {
             }
         }
         
-        const student = state.dbAlunos ? state.dbAlunos.find(a => a.matricula === matricula) : null;
+        const decryptedState = decryptSensitiveDataInState(state);
+        const student = decryptedState.dbAlunos ? decryptedState.dbAlunos.find(a => a.matricula === matricula) : null;
         if (!student) {
             return res.status(404).json({ error: 'Aluno não encontrado.' });
         }
