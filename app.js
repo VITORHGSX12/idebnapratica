@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+const initApp = () => {
     // Global Error Listener for debugging client prototype
     window.addEventListener('error', function(e) {
         console.error('Captured exception:', e);
@@ -6198,5 +6198,11 @@ DIRETRIZES DO DIAGNÓSTICO:
     renderManualScheduleTable();
     populateQuestionCreatorDropdowns();
     initIdebComparativo();
-});
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    initApp();
+}
 
