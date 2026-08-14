@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>IDEB na Prática - Plataforma de Gestão e Avaliação Educacional</title>
-    <link rel="stylesheet" href="styles.css?v=e03e0e72">
+    <link rel="stylesheet" href="styles.css?v=17d49f17">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -569,103 +569,172 @@
                         </div>
                     </div>
 
-                    <!-- VIEW 2: DETAILED SCHOOL WORKSPACE ("ABRIR A ESCOLA") -->
-                    <div id="school-detail-workspace" class="hidden">
-                        <div style="margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
-                            <button class="btn btn-outline btn-sm" id="btn-back-to-schools-list" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">
-                                <i data-lucide="arrow-left" style="width:16px; height:16px;"></i> Voltar para Lista de Escolas
-                            </button>
-                            <span class="badge badge-info" id="school-workspace-badge">Ambiente de Gestão da Unidade</span>
-                        </div>
-
-                        <!-- School Header Card -->
-                        <div class="school-workspace-card">
-                            <div class="school-workspace-header">
-                                <div style="display: flex; align-items: center; gap: 16px;">
-                                    <div class="school-kpi-icon-wrap blue" style="width: 56px; height: 56px;">
-                                        <i data-lucide="school" style="width:30px; height:30px;"></i>
-                                    </div>
-                                    <div>
-                                        <h3 style="font-size: 1.4rem; font-weight: 700; margin: 0 0 4px 0;" id="workspace-school-name">U.E. BENTA VILANOVA</h3>
-                                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;" id="workspace-school-meta">INEP: 21128715 • Zona Urbana • Gonçalves Dias - MA</p>
-                                    </div>
-                                </div>
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <span class="school-status-pill">
-                                        <i data-lucide="check-circle" style="width:12px; height:12px;"></i> ATIVA
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- Director Assignment Row -->
-                            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <div style="width: 38px; height: 38px; border-radius: 50%; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center;">
-                                        <i data-lucide="user-check" style="width:20px; height:20px;"></i>
-                                    </div>
-                                    <div>
-                                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">DIRETOR(A) RESPONSÁVEL</div>
-                                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary);" id="workspace-director-name">Maria Helena da Silva</div>
-                                    </div>
-                                </div>
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <select id="workspace-director-select" class="form-select" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 6px 12px; font-size: 0.82rem;">
-                                        <option value="">Selecione / Alterar Diretor...</option>
-                                    </select>
-                                    <button class="btn btn-primary btn-sm" id="btn-save-school-director">
-                                        Salvar Vínculo
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Classes Section (2º, 5º, 9º Anos) -->
-                        <div class="school-workspace-card">
-                            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+                    <!-- VIEW 2: LISTA DE TURMAS DA ESCOLA (MATCH SCREENSHOT 1) -->
+                    <div id="school-classes-table-view" class="hidden">
+                        <!-- Header matching Screenshot 1 -->
+                        <div class="schools-header-row" style="margin-bottom: 20px;">
+                            <div style="display: flex; align-items: center; gap: 14px;">
+                                <button class="btn btn-icon" id="btn-back-from-classes-to-schools" style="width: 40px; height: 40px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Voltar para Lista de Escolas">
+                                    <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+                                </button>
                                 <div>
-                                    <h4 style="font-size: 1.15rem; font-weight: 700; margin: 0 0 2px 0;">Turmas Avaliadas (SAEB / SEAMA / IDEB)</h4>
-                                    <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0;">Gerencie as turmas de 2º, 5º e 9º anos, vincule professores e organize as listas nominais de alunos.</p>
+                                    <h2 style="font-size: 1.6rem; font-weight: 700; color: var(--text-primary); margin: 0 0 2px 0;">Turmas</h2>
+                                    <p style="font-size: 0.86rem; color: var(--text-secondary); margin: 0;" id="classes-school-subtitle">Turmas e Agrupamentos Escolares — U.E. BENTA VILANOVA</p>
                                 </div>
-                                <button class="btn btn-primary btn-sm" id="btn-open-new-class-workspace-modal" style="display: flex; align-items: center; gap: 6px;">
-                                    <i data-lucide="plus-circle" style="width:16px; height:16px;"></i> + Nova Turma
+                            </div>
+                            <div class="schools-header-actions">
+                                <button class="btn-export-outline" id="btn-classes-export-reports">
+                                    <i data-lucide="file-text" style="width:16px; height:16px;"></i>
+                                    <span>Relatórios</span>
+                                </button>
+                                <button class="btn btn-primary" id="btn-open-new-class-table-modal" style="display: inline-flex; align-items: center; gap: 6px;">
+                                    <i data-lucide="plus" style="width:16px; height:16px;"></i>
+                                    <span>Nova Turma</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 3 KPI Cards matching Screenshot 1 -->
+                        <div class="school-kpi-grid" style="margin-bottom: 20px;">
+                            <div class="school-kpi-card">
+                                <div class="school-kpi-icon-wrap blue" style="border-radius: 10px;">
+                                    <i data-lucide="layout-grid" style="width:22px; height:22px;"></i>
+                                </div>
+                                <div>
+                                    <div class="school-kpi-value" id="kpi-school-total-classes" style="font-size: 1.4rem;">32</div>
+                                    <div class="school-kpi-label" style="font-size: 0.76rem; font-weight: 600; color: var(--text-secondary);">Total de Turmas</div>
+                                </div>
+                            </div>
+
+                            <div class="school-kpi-card">
+                                <div class="school-kpi-icon-wrap blue" style="border-radius: 10px;">
+                                    <i data-lucide="calendar-check" style="width:22px; height:22px;"></i>
+                                </div>
+                                <div>
+                                    <div class="school-kpi-value" id="kpi-school-classes-year" style="font-size: 1.4rem;">32</div>
+                                    <div class="school-kpi-label" style="font-size: 0.76rem; font-weight: 600; color: var(--text-secondary);">Turmas 2026</div>
+                                </div>
+                            </div>
+
+                            <div class="school-kpi-card">
+                                <div class="school-kpi-icon-wrap green" style="border-radius: 10px;">
+                                    <i data-lucide="check-square" style="width:22px; height:22px;"></i>
+                                </div>
+                                <div>
+                                    <div class="school-kpi-value" id="kpi-school-active-classes" style="font-size: 1.4rem;">32</div>
+                                    <div class="school-kpi-label" style="font-size: 0.76rem; font-weight: 600; color: var(--text-secondary);">Turmas Ativas</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Search Bar matching Screenshot 1 -->
+                        <div class="schools-search-bar" style="margin-bottom: 20px;">
+                            <i data-lucide="search" class="schools-search-icon" style="left: 16px;"></i>
+                            <input type="text" id="classes-table-search-input" class="schools-search-input" style="padding-left: 44px;" placeholder="Buscar por nome ou escola...">
+                        </div>
+
+                        <!-- Turmas Table matching Screenshot 1 -->
+                        <div class="card card-full">
+                            <div class="card-body no-padding" style="overflow-x: auto;">
+                                <table class="table-compact" style="width: 100%; border-collapse: collapse; text-align: left;">
+                                    <thead>
+                                        <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-secondary); height: 42px; background-color: var(--bg-tertiary); font-size: 0.76rem;">
+                                            <th style="padding: 12px 20px;">TURMA <i data-lucide="chevron-down" style="width:12px; height:12px; display:inline-block; vertical-align:middle;"></i></th>
+                                            <th style="padding: 12px 16px;">
+                                                <span style="background: #0f172a; color: #ffffff; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem;">ESCOLA ✕</span>
+                                            </th>
+                                            <th style="padding: 12px 16px;">TURNO <i data-lucide="chevron-down" style="width:12px; height:12px; display:inline-block; vertical-align:middle;"></i></th>
+                                            <th style="padding: 12px 16px; text-align: center;">STATUS <i data-lucide="chevron-down" style="width:12px; height:12px; display:inline-block; vertical-align:middle;"></i></th>
+                                            <th style="padding: 12px 20px; text-align: center;">AÇÕES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="school-classes-table-body">
+                                        <!-- Preenchido dinamicamente via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- VIEW 3: DIÁRIO DA TURMA (MATCH SCREENSHOT 2) -->
+                    <div id="class-diary-view" class="hidden">
+                        <!-- Top Header matching Screenshot 2 -->
+                        <div class="class-diary-header-card">
+                            <button class="btn btn-icon" id="btn-back-from-diary-to-classes" style="width: 40px; height: 40px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Voltar para Lista de Turmas">
+                                <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+                            </button>
+                            <div class="class-circle-grade" id="diary-grade-circle">5</div>
+                            <div style="flex-grow: 1;">
+                                <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em;">DIÁRIO DA TURMA</div>
+                                <h2 style="font-size: 1.55rem; font-weight: 800; color: var(--text-primary); margin: 2px 0 4px 0;" id="diary-class-title">5º ANO "A" – MATUTINO</h2>
+                                <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0;" id="diary-class-meta">Matutino • 26 alunos • Matriz: FUNDAMENTAL MENOR (1º AO 5º ANO)</p>
+                            </div>
+                        </div>
+
+                        <!-- 2-Column Layout matching Screenshot 2 -->
+                        <div class="class-diary-layout">
+                            <!-- Left Sidebar with ONLY the 2 requested options -->
+                            <div class="class-diary-sidebar-card">
+                                <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; padding: 6px 12px 10px 12px;">
+                                    DIÁRIO INTERATIVO
+                                </div>
+                                <button class="class-diary-nav-item active" id="btn-diary-tab-alunos" data-diary-tab="alunos">
+                                    <i data-lucide="users" style="width: 17px; height: 17px;"></i>
+                                    <span>Alunos da Turma</span>
+                                </button>
+                                <button class="class-diary-nav-item" id="btn-diary-tab-professores" data-diary-tab="professores">
+                                    <i data-lucide="graduation-cap" style="width: 17px; height: 17px;"></i>
+                                    <span>Professores</span>
                                 </button>
                             </div>
 
-                            <!-- Classes Grid -->
-                            <div class="school-classes-grid" id="workspace-classes-grid">
-                                <!-- Preenchido dinamicamente via JS -->
-                            </div>
-                        </div>
+                            <!-- Right Content Panel -->
+                            <div class="class-diary-content-card">
+                                <!-- SUBPANEL 1: ALUNOS DA TURMA -->
+                                <div id="diary-subpanel-alunos">
+                                    <div class="flex-between flex-wrap gap-md" style="margin-bottom: 16px;">
+                                        <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin: 0;">Alunos Matriculados</h3>
+                                        <div style="display: flex; gap: 10px;">
+                                            <button class="btn btn-outline" id="btn-open-bind-existing-student-modal" style="display: flex; align-items: center; gap: 6px; font-weight: 600;">
+                                                <i data-lucide="link-2" style="width: 16px; height: 16px;"></i> Vincular Existente
+                                            </button>
+                                            <button class="btn btn-primary" id="btn-open-new-student-diary-modal" style="display: flex; align-items: center; gap: 6px;">
+                                                <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Novo Aluno
+                                            </button>
+                                        </div>
+                                    </div>
 
-                        <!-- Class Student Roster Panel (When a class is clicked) -->
-                        <div class="school-workspace-card hidden" id="workspace-class-students-card">
-                            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">
-                                <div>
-                                    <h4 style="font-size: 1.1rem; font-weight: 700; margin: 0 0 2px 0;" id="workspace-selected-class-title">Alunos Matriculados — 2º Ano A</h4>
-                                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;" id="workspace-selected-class-teacher">Professor(a) Responsável: Prof. Carlos Eduardo</p>
-                                </div>
-                                <div style="display: flex; gap: 8px;">
-                                    <button class="btn btn-primary btn-sm" id="btn-open-bind-student-modal" style="display: flex; align-items: center; gap: 4px;">
-                                        <i data-lucide="user-plus" style="width:14px; height:14px;"></i> + Vincular Aluno
-                                    </button>
-                                </div>
-                            </div>
+                                    <!-- Search Input for Students in Class -->
+                                    <div class="schools-search-bar" style="margin-bottom: 16px;">
+                                        <i data-lucide="search" class="schools-search-icon" style="left: 16px;"></i>
+                                        <input type="text" id="diary-students-search-input" class="schools-search-input" style="padding-left: 44px;" placeholder="Pesquisar aluno por nome, CPF ou mãe...">
+                                    </div>
 
-                            <div style="overflow-x: auto;">
-                                <table class="table-compact" style="width: 100%; border-collapse: collapse; text-align: left;">
-                                    <thead>
-                                        <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-secondary); height: 38px; background: var(--bg-tertiary);">
-                                            <th style="padding: 10px 16px;">MATRÍCULA</th>
-                                            <th style="padding: 10px 16px;">NOME DO ALUNO</th>
-                                            <th style="padding: 10px 16px; text-align: center;">DIAGNÓSTICO INICIAL</th>
-                                            <th style="padding: 10px 16px; text-align: center;">NÍVEL SAEB/SEAMA</th>
-                                            <th style="padding: 10px 16px; text-align: center;">AÇÕES</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="workspace-class-students-table-body">
-                                        <!-- Preenchido via JS -->
-                                    </tbody>
-                                </table>
+                                    <!-- Students List (Cards matching Screenshot 2 with performance alert badges) -->
+                                    <div id="diary-students-list-container" style="display: flex; flex-direction: column; gap: 10px;">
+                                        <!-- Preenchido dinamicamente via JS -->
+                                    </div>
+                                </div>
+
+                                <!-- SUBPANEL 2: PROFESSORES DA TURMA -->
+                                <div id="diary-subpanel-professores" class="hidden">
+                                    <div class="flex-between flex-wrap gap-md" style="margin-bottom: 16px;">
+                                        <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin: 0;">Professores Vinculados</h3>
+                                        <div style="display: flex; gap: 10px;">
+                                            <button class="btn btn-outline" id="btn-open-bind-existing-teacher-modal" style="display: flex; align-items: center; gap: 6px; font-weight: 600;">
+                                                <i data-lucide="link-2" style="width: 16px; height: 16px;"></i> Vincular Professor
+                                            </button>
+                                            <button class="btn btn-primary" id="btn-open-new-teacher-diary-modal" style="display: flex; align-items: center; gap: 6px;">
+                                                <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Novo Docente
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Teachers List in Class -->
+                                    <div id="diary-teachers-list-container" style="display: flex; flex-direction: column; gap: 10px;">
+                                        <!-- Preenchido dinamicamente via JS -->
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2794,6 +2863,75 @@
         </div>
     </div>
 
+    <!-- Modal Vincular Aluno Existente da Base -->
+    <div id="modal-bind-existing-student" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 650px; width: 90%;">
+            <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h3>Vincular Aluno Existente à Turma</h3>
+                    <p class="text-sm text-muted" id="bind-existing-student-sub">Selecione alunos já cadastrados no município para matricular nesta turma.</p>
+                </div>
+                <button class="btn btn-icon" id="btn-close-bind-existing-student" style="cursor:pointer;"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body" style="padding-top: 16px;">
+                <div class="schools-search-bar" style="margin-bottom: 14px;">
+                    <i data-lucide="search" class="schools-search-icon" style="left: 14px;"></i>
+                    <input type="text" id="bind-existing-student-search" class="schools-search-input" style="padding-left: 40px;" placeholder="Buscar aluno por nome ou matrícula...">
+                </div>
+                <div id="bind-existing-students-list" style="max-height: 340px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+                    <!-- Preenchido via JS com lista pesquisável dos 1.758 alunos -->
+                </div>
+            </div>
+            <div class="modal-footer flex-end" style="margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 14px;">
+                <button class="btn btn-outline" id="btn-cancel-bind-existing-student">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Vincular Professor Existente -->
+    <div id="modal-bind-existing-teacher" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 580px; width: 90%;">
+            <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h3>Vincular Professor à Turma</h3>
+                    <p class="text-sm text-muted" id="bind-existing-teacher-sub">Selecione o(a) docente responsável por esta turma.</p>
+                </div>
+                <button class="btn btn-icon" id="btn-close-bind-existing-teacher" style="cursor:pointer;"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body" style="padding-top: 16px;">
+                <div id="bind-existing-teachers-list" style="max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+                    <!-- Preenchido via JS com lista de professores -->
+                </div>
+            </div>
+            <div class="modal-footer flex-end" style="margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 14px;">
+                <button class="btn btn-outline" id="btn-cancel-bind-existing-teacher">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ficha Diagnóstica Individual do Aluno (O que melhorar de forma individual) -->
+    <div id="modal-student-individual-diagnostic" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 720px; width: 90%; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px; display:flex; justify-content:space-between; align-items:center;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="student-avatar-circle" id="modal-diag-avatar" style="width: 44px; height: 44px; font-size: 1.1rem;">A</div>
+                    <div>
+                        <h3 id="modal-diag-student-name" style="margin: 0 0 2px 0;">AGATHA DOS SANTOS SILVA</h3>
+                        <p class="text-sm text-muted" id="modal-diag-student-meta">Matrícula: 5042 • 5º ANO "A" - MATUTINO • U.E. BENTA VILANOVA</p>
+                    </div>
+                </div>
+                <button class="btn btn-icon" id="btn-close-student-diag-modal" style="cursor:pointer;"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body" style="padding-top: 18px;" id="modal-diag-content-body">
+                <!-- Preenchido dinamicamente via JS -->
+            </div>
+            <div class="modal-footer flex-between" style="margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 14px;">
+                <span class="text-sm text-muted">Diagnóstico individualizado SAEB / SEAMA</span>
+                <button class="btn btn-primary" id="btn-close-student-diag-action">Entendido</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Create Schedule Week Modal (SEMED / Admin) -->
     <div id="create-schedule-modal" class="modal-overlay hidden">
         <div class="modal-content" style="max-width: 580px; width: 90%;">
@@ -3444,6 +3582,6 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=ca2c98ab"></script>
+    <script src="app.js?v=5136d2f7"></script>
 </body>
 </html>

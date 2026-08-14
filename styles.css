@@ -3448,6 +3448,264 @@ body.collapsed-sidebar .sidebar-footer .user-dropdown-menu {
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
+/* ==========================================================================
+   TURMAS LIST VIEW & DIÁRIO DA TURMA (SCREENSHOT MATCHING)
+   ========================================================================== */
+
+/* Class Grade Icon (Square with rounded corners) */
+.class-grade-box {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background-color: #eff6ff;
+    color: #3b82f6;
+    font-size: 1.15rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.class-title-bold {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 2px 0;
+}
+
+.class-stage-subtitle {
+    font-size: 0.76rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.class-school-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background-color: #f1f5f9;
+    color: #475569;
+    font-size: 0.75rem;
+    font-weight: 600;
+    max-width: 220px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.class-shift-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.74rem;
+    font-weight: 600;
+}
+
+.class-shift-badge.matutino {
+    background-color: #fffbeb;
+    color: #d97706;
+}
+
+.class-shift-badge.vespertino {
+    background-color: #f0fdf4;
+    color: #0284c7;
+}
+
+.class-status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background-color: #ecfdf5;
+    color: #059669;
+    font-size: 0.74rem;
+    font-weight: 700;
+}
+
+/* Action buttons in class row */
+.class-action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-secondary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.class-action-btn:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.class-action-btn.view:hover {
+    background-color: #eff6ff;
+    color: #2563eb;
+    border-color: #bfdbfe;
+}
+
+/* DIÁRIO DA TURMA STYLING */
+.class-diary-header-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.class-circle-grade {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid #93c5fd;
+    background-color: #eff6ff;
+    color: #2563eb;
+    font-size: 1.3rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.class-diary-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 860px) {
+    .class-diary-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.class-diary-sidebar-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: 16px;
+    height: fit-content;
+}
+
+.class-diary-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 4px;
+}
+
+.class-diary-nav-item:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.class-diary-nav-item.active {
+    background-color: #eff6ff;
+    color: #2563eb;
+    font-weight: 700;
+}
+
+.class-diary-content-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: 24px;
+}
+
+/* Student Row Card inside Diary */
+.student-diary-item-card {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    transition: all 0.2s ease;
+}
+
+.student-diary-item-card:hover {
+    border-color: var(--purple);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.student-avatar-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: #eff6ff;
+    color: #2563eb;
+    font-weight: 700;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Performance Notification Icons / Badges */
+.performance-alert-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.performance-alert-pill:hover {
+    transform: scale(1.03);
+}
+
+.perf-ruim {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fca5a5;
+}
+
+.perf-basico {
+    background-color: #ffedd5;
+    color: #ea580c;
+    border: 1px solid #fed7aa;
+}
+
+.perf-adequado {
+    background-color: #dcfce7;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.perf-avancado {
+    background-color: #059669;
+    color: #ffffff;
+    border: 1px solid #047857;
+}
+
 .school-class-stage-badge {
     display: inline-block;
     padding: 3px 8px;
