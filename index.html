@@ -798,7 +798,7 @@
                             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                                 <button class="btn btn-primary" id="btn-generate-all-pde-plans" style="display: flex; align-items: center; gap: 8px;">
                                     <i data-lucide="sparkles"></i>
-                                    <span>Gerar Planos PDE via IA (Escolas com Gap)</span>
+                                    <span>Gerar conforme dados atuais (Escolas com Gap)</span>
                                 </button>
                                 <button class="btn btn-outline" id="btn-export-pde-report" style="display: flex; align-items: center; gap: 8px;">
                                     <i data-lucide="download"></i>
@@ -1084,7 +1084,7 @@
                             </div>
                             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                                 <button class="btn btn-primary" id="btn-generate-schedule-ia" style="display: flex; align-items: center; gap: 6px;">
-                                    <i data-lucide="sparkles" style="width:16px; height:16px;"></i> Gerar por IA (40 Semanas)
+                                    <i data-lucide="sparkles" style="width:16px; height:16px;"></i> Gerar conforme dados atuais (40 Semanas)
                                 </button>
                                 <button class="btn btn-outline" id="btn-open-create-schedule-modal" style="display: flex; align-items: center; gap: 6px;">
                                     <i data-lucide="plus-circle" style="width:16px; height:16px;"></i> + Nova Semana Manual
@@ -1875,10 +1875,10 @@
                         <div class="card card-full" style="background-color: var(--bg-secondary); margin-bottom: 20px;">
                             <div class="card-header flex-between flex-wrap gap-md">
                                 <div>
-                                    <h3>Planos de Intervenção Sugeridos pela IA</h3>
+                                    <h3>Planos de Intervenção Sugeridos Conforme Dados Atuais</h3>
                                     <p class="card-subtitle">Planos gerados automaticamente com base nas lacunas mais críticas encontradas nos simulados da rede.</p>
                                 </div>
-                                <button class="btn btn-primary" id="btn-generate-ai-plan"><i data-lucide="sparkles"></i> Gerar Novo Plano via IA</button>
+                                <button class="btn btn-primary" id="btn-generate-ai-plan"><i data-lucide="sparkles"></i> Gerar conforme dados atuais</button>
                             </div>
                             <div class="card-body">
                                 <div class="grid-2" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:20px; max-width:600px;">
@@ -2250,7 +2250,7 @@
                         <div class="card" style="background-color: var(--bg-secondary); position: sticky; top: 104px;">
                             <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
                                 <h3>Filtros de Análise da Rede</h3>
-                                <p class="card-subtitle">Selecione a unidade e turma para gerar o laudo pedagógico IA.</p>
+                                <p class="card-subtitle">Selecione a unidade e turma para gerar o laudo pedagógico conforme dados atuais.</p>
                             </div>
                             <div class="card-body" style="padding-top: 14px;">
                                 <div class="form-group">
@@ -2285,7 +2285,7 @@
                                 </div>
 
                                 <button class="btn btn-primary" id="btn-generate-school-report" style="width:100%; margin-top:18px; height:40px; display:flex; align-items:center; justify-content:center; gap:4px; font-size:0.8rem; cursor:pointer;">
-                                    <i data-lucide="sparkles" style="width:16px; height:16px;"></i> Gerar Relatório da Escola
+                                    <i data-lucide="sparkles" style="width:16px; height:16px;"></i> Gerar conforme dados atuais
                                 </button>
                             </div>
                         </div>
@@ -2294,16 +2294,16 @@
                         <div class="card" style="background-color: var(--bg-secondary); min-height: 500px;">
                             <div class="card-header flex-between" style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
                                 <div>
-                                    <h3>Laudo Técnico e Diagnóstico Pedagógico (IA)</h3>
+                                    <h3>Laudo Técnico e Diagnóstico Pedagógico</h3>
                                     <p class="card-subtitle">Análise detalhada de proficiências, descritores críticos e plano de intervenção escolar.</p>
                                 </div>
-                                <span class="badge badge-success hidden" id="ai-report-generation-status">Streaming...</span>
+                                <span class="badge badge-success hidden" id="ai-report-generation-status">Atualizando...</span>
                             </div>
                             <div class="card-body" style="padding-top: 16px;">
                                 <div id="ai-school-report-container" style="font-size: 0.9rem; line-height: 1.6; color: var(--text-primary); max-height:600px; overflow-y:auto; padding-right:8px;">
                                     <div style="text-align:center; padding: 40px; color:var(--text-secondary);">
                                         <i data-lucide="brain" style="width:48px; height:48px; margin-bottom:12px; opacity:0.3; color:var(--purple-light); display:inline-block;"></i>
-                                        <p style="font-size:0.95rem; font-weight:500;">Selecione a Escola/Turma e clique em **Gerar Relatório da Escola** para rodar a análise de IA.</p>
+                                        <p style="font-size:0.95rem; font-weight:500;">Selecione a Escola/Turma e clique em <strong>Gerar conforme dados atuais</strong> para rodar a análise pedagógica.</p>
                                     </div>
                                 </div>
                             </div>
@@ -2372,12 +2372,12 @@
                             <div class="card-body" style="padding-top: 12px;">
                                 <!-- Add Method Selector buttons -->
                                 <div style="display:flex; gap:6px; margin-bottom:12px; border-bottom:1px solid var(--border-color); padding-bottom:10px;">
-                                    <span id="btn-add-q-ia" style="font-size:0.75rem; font-weight:600; cursor:pointer; color:var(--purple-light); border-bottom:2px solid var(--purple); padding-bottom:4px; flex:1; text-align:center;">Gerador IA</span>
+                                    <span id="btn-add-q-ia" style="font-size:0.75rem; font-weight:600; cursor:pointer; color:var(--purple-light); border-bottom:2px solid var(--purple); padding-bottom:4px; flex:1; text-align:center;">Conforme Dados</span>
                                     <span id="btn-add-q-pdf" style="font-size:0.75rem; font-weight:500; cursor:pointer; color:var(--text-secondary); padding-bottom:4px; flex:1; text-align:center;">Via PDF</span>
                                     <span id="btn-add-q-manual" style="font-size:0.75rem; font-weight:500; cursor:pointer; color:var(--text-secondary); padding-bottom:4px; flex:1; text-align:center;">Manual</span>
                                 </div>
 
-                                <!-- IA Generator Panel -->
+                                <!-- Generator Panel -->
                                 <div id="panel-add-q-ia">
                                     <div class="form-group">
                                         <label for="add-q-ia-desc" style="font-size:0.75rem; color:var(--text-secondary); display:block; margin-bottom:4px;">Descritor / Habilidade</label>
@@ -2393,7 +2393,7 @@
                                             <option value="Difícil">Difícil</option>
                                         </select>
                                     </div>
-                                    <button class="btn btn-primary" id="btn-generate-q-ia" style="width:100%; margin-top:14px; height:38px; display:flex; align-items:center; justify-content:center; gap:4px; font-size:0.8rem; cursor:pointer;"><i data-lucide="sparkles" style="width:14px; height:14px;"></i> Gerar por IA</button>
+                                    <button class="btn btn-primary" id="btn-generate-q-ia" style="width:100%; margin-top:14px; height:38px; display:flex; align-items:center; justify-content:center; gap:4px; font-size:0.8rem; cursor:pointer;"><i data-lucide="sparkles" style="width:14px; height:14px;"></i> Gerar conforme dados atuais</button>
                                 </div>
 
                                 <!-- PDF Import Panel -->
@@ -2910,7 +2910,7 @@
                 <div style="display:flex; gap:8px;">
                     <button class="btn btn-outline" id="btn-regenerate-pde-modal" style="color:var(--purple-light); border-color:var(--purple-light); display:flex; align-items:center; gap:6px;">
                         <i data-lucide="sparkles"></i>
-                        <span>Regenerar via IA</span>
+                        <span>Gerar conforme dados atuais</span>
                     </button>
                     <button class="btn btn-primary" id="btn-save-pde-modal" style="display:flex; align-items:center; gap:6px;">
                         <i data-lucide="check"></i>
@@ -3571,6 +3571,6 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=bb8be4f3"></script>
+    <script src="app.js?v=8f43d7a7"></script>
 </body>
 </html>

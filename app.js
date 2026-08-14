@@ -1343,7 +1343,7 @@ DIRETRIZES DO DIAGNÓSTICO:
     }
     if (btnRegeneratePdeModal) {
         btnRegeneratePdeModal.addEventListener('click', () => {
-            showToast('IA recalculou o plano pedagógico com base nas últimas respostas!', 'sparkles');
+            showToast('Plano de Desenvolvimento Escolar (PDE) gerado conforme dados atuais!', 'sparkles');
         });
     }
 
@@ -1357,10 +1357,10 @@ DIRETRIZES DO DIAGNÓSTICO:
     const btnGenerateAllPdePlans = document.getElementById('btn-generate-all-pde-plans');
     if (btnGenerateAllPdePlans) {
         btnGenerateAllPdePlans.addEventListener('click', () => {
-            showToast('Gerando Planos de Desenvolvimento Escolar (PDE) via IA para todas as escolas com gap...', 'sparkles');
+            showToast('Gerando Planos de Desenvolvimento Escolar (PDE) conforme dados atuais para todas as escolas com gap...', 'sparkles');
             setTimeout(() => {
                 populateIdebGoalsTable();
-                showToast('Planos PDE gerados com sucesso para as 12 unidades escolares da rede!', 'check');
+                showToast('Planos PDE gerados conforme dados atuais para as 12 unidades escolares da rede!', 'check');
             }, 500);
         });
     }
@@ -6145,14 +6145,14 @@ DIRETRIZES DO DIAGNÓSTICO:
         });
     }
 
-    // IA Generator Button in Cronograma Header
+    // Generator Button in Cronograma Header
     const btnGenerateScheduleIa = document.getElementById('btn-generate-schedule-ia');
     if (btnGenerateScheduleIa) {
         btnGenerateScheduleIa.addEventListener('click', () => {
             const currentTargetVal = document.getElementById('target-ideb-input')?.value || 6.5;
             generateFull40WeeksSchedule(currentTargetVal);
             renderSkillsSchedule();
-            showToast(`Cronograma de 40 semanas gerado por IA com foco na Meta IDEB ${currentTargetVal}!`, 'sparkles');
+            showToast(`Cronograma de 40 semanas gerado conforme dados atuais com foco na Meta IDEB ${currentTargetVal}!`, 'sparkles');
         });
     }
 
@@ -7253,7 +7253,7 @@ DIRETRIZES DO DIAGNÓSTICO:
                 enunciado: qData.enunciado + (qData.pergunta ? " " + qData.pergunta : ""),
                 alternativas: qData.ops,
                 correta: qData.correta,
-                justificativa: `Item pedagógico de nível ${difficulty} gerado automaticamente pelo motor de IA para o descritor ${descCode}.`
+                justificativa: `Item pedagógico de nível ${difficulty} gerado conforme dados atuais para o descritor ${descCode}.`
             };
             rawQuestions.unshift(newQ);
 
@@ -7265,7 +7265,7 @@ DIRETRIZES DO DIAGNÓSTICO:
             });
 
             renderQuestions();
-            showToast(`Questão do descritor ${descCode} gerada pela IA com sucesso!`, 'sparkles');
+            showToast(`Questão do descritor ${descCode} gerada conforme dados atuais com sucesso!`, 'sparkles');
         };
     }
 
