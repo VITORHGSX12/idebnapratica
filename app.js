@@ -6298,7 +6298,7 @@ DIRETRIZES DO DIAGNÓSTICO:
     });
 
     // ==========================================
-    // LÓGICA DE CONTROLE DA TELA DE LOGIN
+    // LÓGICA DE CONTROLE DA TELA DE LOGIN & MOTION
     // ==========================================
     const loginHeadlines = [
         "Cada décimo do IDEB planejado e conquistado.",
@@ -6320,21 +6320,358 @@ DIRETRIZES DO DIAGNÓSTICO:
         }, 5000);
     }
 
-    function populateLoginTenants(schools) {
-        const loginTenant = document.getElementById('login-tenant');
-        if (!loginTenant) return;
-        
-        // Keep the placeholder and multitenant option
-        loginTenant.innerHTML = `
-            <option value="" disabled selected>Selecione seu município...</option>
-            <option value="all">Todas as Redes (Multitenant - Demo)</option>
-        `;
-        schools.forEach(sch => {
-            const opt = document.createElement('option');
-            opt.value = sch;
-            opt.textContent = sch.replace(/\s+/g, ' ');
-            loginTenant.appendChild(opt);
-        });
+    // ==========================================
+    // CINEMATIC MOTION CANVAS ENGINE (8-10s Loop)
+    // ==========================================
+    function initLoginMotionCanvas() {
+        const canvas = document.getElementById('login-motion-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        let width = canvas.clientWidth || 480;
+        let height = canvas.clientHeight || 200;
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.scale(dpr, dpr);
+
+        const LOOP_DURATION = 9000; // 9 seconds total loop
+        let startTime = null;
+
+        // Ambient floating particles
+        const particles = Array.from({ length: 24 }, () => ({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            radius: Math.random() * 1.5 + 0.8,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+            alpha: Math.random() * 0.5 + 0.2
+        }));
+
+        // 7 Educational Nodes with minimal icons & positions
+        const eduNodes = [
+            { label: "Escola", icon: "school", x: 60, y: 45, color: "#38bdf8" },
+            { label: "Alunos", icon: "users", x: 170, y: 35, color: "#a855f7" },
+            { label: "Professor", icon: "user-check", x: 425, y: 65, color: "#34d399" },
+            { label: "Livro", icon: "book", x: 80, y: 165, color: "#fbbf24" },
+            { label: "Gráfico", icon: "bar-chart", x: 210, y: 165, color: "#60a5fa" },
+            { label: "Meta", icon: "target", x: 330, y: 165, color: "#f43f5e" },
+            { label: "Avaliação", icon: "check-circle", x: 425, y: 145, color: "#818cf8" }
+        ];
+
+        // Chart line coordinates (Progressive Growth)
+        const chartPoints = [
+            { year: "2019", val: "4.8", x: 50, y: 135 },
+            { year: "2021", val: "5.1", x: 160, y: 115 },
+            { year: "2023", val: "5.8", x: 270, y: 80 },
+            { year: "2025", val: "6.5", x: 380, y: 45 }
+        ];
+
+        function drawIcon(type, x, y, size, color) {
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.lineWidth = 1.5;
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+
+            if (type === "school") {
+                // School roof + building
+                ctx.beginPath();
+                ctx.moveTo(x - size, y);
+                ctx.lineTo(x, y - size);
+                ctx.lineTo(x + size, y);
+                ctx.closePath();
+                ctx.stroke();
+                ctx.strokeRect(x - size * 0.7, y, size * 1.4, size * 1.1);
+            } else if (type === "users" || type === "user-check") {
+                // Graduation/User head + body
+                ctx.beginPath();
+                ctx.arc(x, y - size * 0.4, size * 0.45, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(x, y + size * 0.8, size * 0.7, Math.PI * 1.2, Math.PI * 1.8, false);
+                ctx.stroke();
+            } else if (type === "book") {
+                // Open book
+                ctx.beginPath();
+                ctx.moveTo(x, y - size * 0.5);
+                ctx.lineTo(x, y + size * 0.6);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x - size * 0.8, y - size * 0.3);
+                ctx.quadraticCurveTo(x - size * 0.4, y - size * 0.6, x, y - size * 0.5);
+                ctx.quadraticCurveTo(x + size * 0.4, y - size * 0.6, x + size * 0.8, y - size * 0.3);
+                ctx.stroke();
+            } else if (type === "bar-chart") {
+                // Mini bar chart
+                ctx.strokeRect(x - size * 0.7, y + size * 0.1, size * 0.35, size * 0.6);
+                ctx.strokeRect(x - size * 0.15, y - size * 0.4, size * 0.35, size * 1.1);
+                ctx.strokeRect(x + size * 0.4, y - size * 0.7, size * 0.35, size * 1.4);
+            } else if (type === "target") {
+                // Bullseye target
+                ctx.beginPath();
+                ctx.arc(x, y, size * 0.8, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(x, y, size * 0.3, 0, Math.PI * 2);
+                ctx.fill();
+            } else {
+                // Checkmark / assessment
+                ctx.beginPath();
+                ctx.arc(x, y, size * 0.75, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x - size * 0.35, y);
+                ctx.lineTo(x - size * 0.1, y + size * 0.3);
+                ctx.lineTo(x + size * 0.4, y - size * 0.3);
+                ctx.stroke();
+            }
+            ctx.restore();
+        }
+
+        function render(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const elapsed = (timestamp - startTime) % LOOP_DURATION;
+            const progress = elapsed / LOOP_DURATION;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // 1. Subtle Background Grid Lines
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.04)";
+            ctx.lineWidth = 1;
+            for (let y = 30; y < height; y += 35) {
+                ctx.beginPath();
+                ctx.moveTo(10, y);
+                ctx.lineTo(width - 10, y);
+                ctx.stroke();
+            }
+
+            // 2. Ambient Particles
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0) p.x = width;
+                if (p.x > width) p.x = 0;
+                if (p.y < 0) p.y = height;
+                if (p.y > height) p.y = 0;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(139, 92, 246, ${p.alpha * 0.8})`;
+                ctx.fill();
+            });
+
+            // 3. Projected Target Dashed Line (Meta 6.5)
+            const metaLineAlpha = Math.min(1, Math.max(0, (elapsed - 1500) / 1000));
+            if (metaLineAlpha > 0) {
+                ctx.save();
+                ctx.setLineDash([4, 4]);
+                ctx.strokeStyle = `rgba(244, 63, 94, ${metaLineAlpha * 0.65})`;
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(40, 95);
+                ctx.lineTo(150, 80);
+                ctx.lineTo(260, 65);
+                ctx.lineTo(390, 40);
+                ctx.stroke();
+
+                ctx.fillStyle = `rgba(244, 63, 94, ${metaLineAlpha * 0.9})`;
+                ctx.font = "bold 9px 'Plus Jakarta Sans', sans-serif";
+                ctx.fillText("Meta 2025: 6.5", 395, 38);
+                ctx.restore();
+            }
+
+            // 4. Progressive Line Graph Evolution (CENA 2: 2.0s -> 5.5s)
+            const graphProgress = Math.min(1, Math.max(0, (elapsed - 1800) / 3500));
+            const totalPoints = chartPoints.length;
+            const currentPointIndex = graphProgress * (totalPoints - 1);
+            const baseIndex = Math.floor(currentPointIndex);
+            const segmentProgress = currentPointIndex - baseIndex;
+
+            if (graphProgress > 0) {
+                // Gradient under curve
+                ctx.save();
+                const grad = ctx.createLinearGradient(0, 0, 0, height);
+                grad.addColorStop(0, "rgba(59, 130, 246, 0.3)");
+                grad.addColorStop(1, "rgba(59, 130, 246, 0.0)");
+
+                ctx.beginPath();
+                ctx.moveTo(chartPoints[0].x, height - 20);
+                ctx.lineTo(chartPoints[0].x, chartPoints[0].y);
+
+                for (let i = 1; i <= baseIndex; i++) {
+                    ctx.lineTo(chartPoints[i].x, chartPoints[i].y);
+                }
+                if (baseIndex < totalPoints - 1) {
+                    const nextX = chartPoints[baseIndex].x + (chartPoints[baseIndex + 1].x - chartPoints[baseIndex].x) * segmentProgress;
+                    const nextY = chartPoints[baseIndex].y + (chartPoints[baseIndex + 1].y - chartPoints[baseIndex].y) * segmentProgress;
+                    ctx.lineTo(nextX, nextY);
+                    ctx.lineTo(nextX, height - 20);
+                } else {
+                    ctx.lineTo(chartPoints[totalPoints - 1].x, height - 20);
+                }
+                ctx.closePath();
+                ctx.fillStyle = grad;
+                ctx.fill();
+                ctx.restore();
+
+                // Draw glowing progress path
+                ctx.save();
+                ctx.strokeStyle = "#38bdf8";
+                ctx.lineWidth = 3;
+                ctx.shadowColor = "#38bdf8";
+                ctx.shadowBlur = 12;
+
+                ctx.beginPath();
+                ctx.moveTo(chartPoints[0].x, chartPoints[0].y);
+                for (let i = 1; i <= baseIndex; i++) {
+                    ctx.lineTo(chartPoints[i].x, chartPoints[i].y);
+                }
+                if (baseIndex < totalPoints - 1) {
+                    const curX = chartPoints[baseIndex].x + (chartPoints[baseIndex + 1].x - chartPoints[baseIndex].x) * segmentProgress;
+                    const curY = chartPoints[baseIndex].y + (chartPoints[baseIndex + 1].y - chartPoints[baseIndex].y) * segmentProgress;
+                    ctx.lineTo(curX, curY);
+                }
+                ctx.stroke();
+                ctx.restore();
+
+                // Draw points and values
+                for (let i = 0; i <= baseIndex; i++) {
+                    const pt = chartPoints[i];
+                    const pointAlpha = Math.min(1, (graphProgress - (i / (totalPoints - 1))) * 4);
+
+                    if (pointAlpha > 0) {
+                        // Point glow circle
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.arc(pt.x, pt.y, 4.5, 0, Math.PI * 2);
+                        ctx.fillStyle = "#ffffff";
+                        ctx.strokeStyle = i === 3 ? "#10b981" : "#38bdf8";
+                        ctx.lineWidth = 2;
+                        ctx.shadowColor = i === 3 ? "#10b981" : "#38bdf8";
+                        ctx.shadowBlur = 8;
+                        ctx.fill();
+                        ctx.stroke();
+
+                        // Ripple pulse on 6.5
+                        if (i === 3) {
+                            const pulseR = 5 + (elapsed % 1500) / 100;
+                            const pulseOp = 1 - (elapsed % 1500) / 1500;
+                            ctx.beginPath();
+                            ctx.arc(pt.x, pt.y, pulseR, 0, Math.PI * 2);
+                            ctx.strokeStyle = `rgba(16, 185, 129, ${pulseOp})`;
+                            ctx.lineWidth = 1.5;
+                            ctx.stroke();
+                        }
+
+                        // Year label below
+                        ctx.fillStyle = "rgba(255, 255, 255, 0.45)";
+                        ctx.font = "500 8.5px 'Plus Jakarta Sans', sans-serif";
+                        ctx.textAlign = "center";
+                        ctx.fillText(pt.year, pt.x, height - 8);
+
+                        // Value badge above
+                        ctx.fillStyle = i === 3 ? "#34d399" : "#ffffff";
+                        ctx.font = `bold ${i === 3 ? '11px' : '9.5px'} 'Plus Jakarta Sans', sans-serif`;
+                        ctx.fillText(pt.val, pt.x, pt.y - 10);
+                        ctx.restore();
+                    }
+                }
+            }
+
+            // 5. Connecting Mesh Beams (CENA 3: 5.5s -> 8.2s)
+            const meshProgress = Math.min(1, Math.max(0, (elapsed - 5500) / 2500));
+            if (meshProgress > 0) {
+                ctx.save();
+                ctx.lineWidth = 1;
+
+                eduNodes.forEach((node, idx) => {
+                    const originPt = chartPoints[idx % chartPoints.length];
+                    const laserProgress = Math.min(1, meshProgress * 1.3);
+
+                    const targetX = originPt.x + (node.x - originPt.x) * laserProgress;
+                    const targetY = originPt.y + (node.y - originPt.y) * laserProgress;
+
+                    // Beam line
+                    const beamGrad = ctx.createLinearGradient(originPt.x, originPt.y, node.x, node.y);
+                    beamGrad.addColorStop(0, "rgba(56, 189, 248, 0.5)");
+                    beamGrad.addColorStop(1, "rgba(168, 85, 247, 0.2)");
+
+                    ctx.strokeStyle = beamGrad;
+                    ctx.beginPath();
+                    ctx.moveTo(originPt.x, originPt.y);
+                    ctx.lineTo(targetX, targetY);
+                    ctx.stroke();
+
+                    // Energy spark traveling
+                    const sparkT = (elapsed * 0.002 + idx * 0.2) % 1;
+                    const sparkX = originPt.x + (node.x - originPt.x) * sparkT;
+                    const sparkY = originPt.y + (node.y - originPt.y) * sparkT;
+
+                    ctx.beginPath();
+                    ctx.arc(sparkX, sparkY, 2, 0, Math.PI * 2);
+                    ctx.fillStyle = "#ffffff";
+                    ctx.shadowColor = "#38bdf8";
+                    ctx.shadowBlur = 6;
+                    ctx.fill();
+                });
+                ctx.restore();
+            }
+
+            // 6. Educational Minimalist Nodes (Fade In & Gentle Float)
+            const nodeAlpha = Math.min(1, Math.max(0, (elapsed - 500) / 1500));
+            if (nodeAlpha > 0) {
+                eduNodes.forEach((node, idx) => {
+                    const floatOffset = Math.sin((elapsed * 0.002) + idx) * 3;
+                    const curY = node.y + floatOffset;
+
+                    ctx.save();
+                    ctx.globalAlpha = nodeAlpha * (progress > 0.92 ? (1 - (progress - 0.92) / 0.08) : 1);
+
+                    // Node background pill
+                    ctx.fillStyle = "rgba(15, 23, 42, 0.75)";
+                    ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.arc(node.x, curY, 12, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+
+                    // Icon
+                    drawIcon(node.icon, node.x, curY, 6, node.color);
+
+                    // Label
+                    ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
+                    ctx.font = "600 7.5px 'Plus Jakarta Sans', sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText(node.label, node.x, curY + 18);
+
+                    ctx.restore();
+                });
+            }
+
+            // 7. Luminous Brand Sweep Transition (CENA 4: 8.0s -> 9.0s Seamless Loop)
+            if (elapsed > 7800) {
+                const sweepProgress = (elapsed - 7800) / 1200;
+                const sweepX = width * sweepProgress;
+
+                ctx.save();
+                const sweepGrad = ctx.createLinearGradient(sweepX - 60, 0, sweepX + 60, 0);
+                sweepGrad.addColorStop(0, "rgba(255, 255, 255, 0)");
+                sweepGrad.addColorStop(0.5, "rgba(56, 189, 248, 0.18)");
+                sweepGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
+
+                ctx.fillStyle = sweepGrad;
+                ctx.fillRect(0, 0, width, height);
+                ctx.restore();
+            }
+
+            requestAnimationFrame(render);
+        }
+
+        requestAnimationFrame(render);
     }
 
     // Toggle Password Visibility
@@ -6352,6 +6689,36 @@ DIRETRIZES DO DIAGNÓSTICO:
         });
     }
 
+    // Quick Test Accounts Cards Handlers
+    const testCards = document.querySelectorAll('.test-account-card');
+    const loginEmailInput = document.getElementById('login-email');
+    if (testCards && loginEmailInput) {
+        testCards.forEach(card => {
+            card.addEventListener('click', () => {
+                testCards.forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+
+                const email = card.getAttribute('data-email');
+                const pass = card.getAttribute('data-pass') || '123';
+                const role = card.getAttribute('data-role') || 'Gestor da Rede';
+
+                loginEmailInput.value = email;
+                if (loginPassword) loginPassword.value = pass;
+
+                showToast(`Perfil ${card.querySelector('.test-role-title')?.textContent} selecionado (${email})`, 'check');
+            });
+        });
+    }
+
+    // Forgot password placeholder
+    const linkForgotPassword = document.getElementById('link-forgot-password');
+    if (linkForgotPassword) {
+        linkForgotPassword.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('Para redefinir sua senha institucional, entre em contato com a equipe de TI da SEMED Gonçalves Dias - MA (admin@goncalvesdias.ma.gov.br).');
+        });
+    }
+
     // Login Form Submit Handlers
     const loginForm = document.getElementById('login-form');
     const loginScreen = document.getElementById('login-screen');
@@ -6361,16 +6728,15 @@ DIRETRIZES DO DIAGNÓSTICO:
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const selectedTenant = document.getElementById('login-tenant').value || 'all';
             const emailInput = document.getElementById('login-email').value.trim().toLowerCase();
             const passInput = document.getElementById('login-password')?.value || '123';
 
             let detectedRole = 'Gestor da Rede';
-            if (emailInput.startsWith('professor')) {
+            if (emailInput.startsWith('professor') || emailInput.includes('aee') || emailInput.includes('caee')) {
                 detectedRole = 'Professor';
-            } else if (emailInput.startsWith('diretor')) {
+            } else if (emailInput.startsWith('diretor') || emailInput.includes('cora') || emailInput.includes('escola')) {
                 detectedRole = 'Diretor Escola';
-            } else if (emailInput.startsWith('dpo') || emailInput.startsWith('admin')) {
+            } else if (emailInput.startsWith('dpo') || emailInput.startsWith('admin') || emailInput.includes('semed')) {
                 detectedRole = 'Master Admin';
             } else if (emailInput.startsWith('gestor')) {
                 detectedRole = 'Gestor da Rede';
@@ -6380,7 +6746,7 @@ DIRETRIZES DO DIAGNÓSTICO:
             btnLoginSubmit.disabled = true;
             const btnSpan = btnLoginSubmit.querySelector('span');
             const originalText = btnSpan.textContent;
-            btnSpan.textContent = 'Autenticando credenciais...';
+            btnSpan.textContent = 'Autenticando...';
 
             try {
                 const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
@@ -6392,7 +6758,7 @@ DIRETRIZES DO DIAGNÓSTICO:
                 
                 if (res.ok && authData.success) {
                     sessionStorage.setItem('isLoggedIn', 'true');
-                    sessionStorage.setItem('activeTenant', selectedTenant);
+                    sessionStorage.setItem('activeTenant', 'default');
                     sessionStorage.setItem('userEmail', authData.user.email);
                     sessionStorage.setItem('userRole', authData.user.role);
                     sessionStorage.setItem('userName', authData.user.nome);
@@ -6400,13 +6766,13 @@ DIRETRIZES DO DIAGNÓSTICO:
                     sessionStorage.setItem('userTurma', authData.user.turma || '');
                 } else {
                     sessionStorage.setItem('isLoggedIn', 'true');
-                    sessionStorage.setItem('activeTenant', selectedTenant);
+                    sessionStorage.setItem('activeTenant', 'default');
                     sessionStorage.setItem('userEmail', emailInput);
                     sessionStorage.setItem('userRole', detectedRole);
                 }
             } catch (err) {
                 sessionStorage.setItem('isLoggedIn', 'true');
-                sessionStorage.setItem('activeTenant', selectedTenant);
+                sessionStorage.setItem('activeTenant', 'default');
                 sessionStorage.setItem('userEmail', emailInput);
                 sessionStorage.setItem('userRole', detectedRole);
             }
@@ -6417,7 +6783,7 @@ DIRETRIZES DO DIAGNÓSTICO:
 
                 // Smooth Fade-out animation
                 loginScreen.classList.add('fade-out');
-                showToast(`Bem-vindo à SEMED Gonçalves Dias - MA! Acesso concedido.`, 'check');
+                showToast(`Bem-vindo ao IDEB na Prática! Acesso concedido.`, 'check');
                 window.scrollTo(0, 0);
 
                 setTimeout(() => {
@@ -6986,6 +7352,8 @@ DIRETRIZES DO DIAGNÓSTICO:
     }
 
     // Initial render calls - Start clean and responsive
+    initLoginMotionCanvas();
+    rotateLoginHeadlines();
     loadDatabaseState();
     renderCreatedEvents();
     renderOngoingAssessments();
