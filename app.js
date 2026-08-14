@@ -892,9 +892,7 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
             if (typeof renderActiveDescriptors === 'function') renderActiveDescriptors();
             if (typeof renderQuestions === 'function') renderQuestions();
             if (typeof renderReferenceMatrix === 'function') renderReferenceMatrix();
-            if (typeof generateIACSugestedCalendar === 'function') generateIACSugestedCalendar(6.0);
-            if (typeof populateManualWeeksAndDescriptors === 'function') populateManualWeeksAndDescriptors();
-            if (typeof renderManualScheduleTable === 'function') renderManualScheduleTable();
+            if (typeof renderSkillsSchedule === 'function') renderSkillsSchedule();
             if (typeof populateQuestionCreatorDropdowns === 'function') populateQuestionCreatorDropdowns();
             if (typeof initIdebComparativo === 'function') initIdebComparativo();
             if (typeof renderPedagogicLibrary === 'function') renderPedagogicLibrary();
@@ -5588,81 +5586,92 @@ DIRETRIZES DO DIAGNÓSTICO:
     }
 
     // ==========================================
-    // CRONOGRAMA DE HABILIDADES (SEMED ↔ PROFESSOR)
+    // CRONOGRAMA DE HABILIDADES DA REDE (40 SEMANAS - FONTE ÚNICA DA VERDADE)
     // ==========================================
 
-    const skillsScheduleList = [
-        {
-            id: 'SCH_01',
-            semana: 'Semana 1',
-            etapa: '2º Ano',
-            componente: 'Língua Portuguesa (Leitura)',
-            descritor: 'SEAMA D01',
-            titulo: 'Reconhecer letras do alfabeto e correspondência fonema-grafema',
-            metodologia: 'Alfabeto móvel, cantigas populares e identificação do nome próprio e dos colegas.',
-            status: 'cumprido',
-            professor_obs: 'Turma participou com entusiasmo. 92% dos alunos reconheceram todas as consoantes.'
-        },
-        {
-            id: 'SCH_02',
-            semana: 'Semana 2',
-            etapa: '5º Ano',
-            componente: 'Matemática (Números e Operações)',
-            descritor: 'SAEB D13',
-            titulo: 'Resolver problemas envolvendo as quatro operações fundamentais com números naturais',
-            metodologia: 'Uso de material dourado, situações-problema do comércio local e cálculo mental em dupla.',
-            status: 'cumprido',
-            professor_obs: 'Reforçada a divisão por 2 algarismos. Maioria atingiu autonomia.'
-        },
-        {
-            id: 'SCH_03',
-            semana: 'Semana 3',
-            etapa: '5º Ano',
-            componente: 'Língua Portuguesa (Leitura)',
-            descritor: 'SAEB D03',
-            titulo: 'Inferir o sentido de uma palavra ou expressão a partir do contexto textual',
-            metodologia: 'Leitura compartilhada de fábulas e crônicas com busca de pistas contextuais.',
-            status: 'cumprido',
-            professor_obs: 'Alunos conseguiram deduzir vocábulos novos a partir das pistas contextuais.'
-        },
-        {
-            id: 'SCH_04',
-            semana: 'Semana 4',
-            etapa: '9º Ano',
-            componente: 'Matemática (Espaço e Forma)',
-            descritor: 'SAEB D01',
-            titulo: 'Identificar a localização/movimentação de objeto em mapas, croquis e outras representações gráficas',
-            metodologia: 'Plano cartesiano aplicado à planta baixa da escola e leitura de mapas urbanos.',
-            status: 'andamento',
-            professor_obs: 'Trabalhando coordenadas cartesianas no 1º e 2º quadrantes esta semana.'
-        },
-        {
-            id: 'SCH_05',
-            semana: 'Semana 5',
-            etapa: '5º Ano',
-            componente: 'Língua Portuguesa (Leitura)',
-            descritor: 'SAEB D04',
-            titulo: 'Inferir uma informação implícita em texto narrativo ou informativo',
-            metodologia: 'Análise de charges e notícias com foco em intenção do autor e subentendidos.',
-            status: 'andamento',
-            professor_obs: 'Em andamento com oficinas de leitura e interpretação de tirinhas.'
-        },
-        {
-            id: 'SCH_06',
-            semana: 'Semana 6',
-            etapa: '9º Ano',
-            componente: 'Língua Portuguesa (Leitura)',
-            descritor: 'SAEB D14',
-            titulo: 'Distinguir um fato da opinião relativa a esse fato em artigos de opinião',
-            metodologia: 'Debate regrado em sala sobre temas atuais com análise de argumentos e fatos comprováveis.',
-            status: 'pendente',
-            professor_obs: 'Programado para iniciar na próxima semana letiva.'
+    let skillsScheduleList = [];
+
+    function generateFull40WeeksSchedule(targetIdeb = 6.5) {
+        const val = parseFloat(targetIdeb) || 6.5;
+        const generated = [];
+
+        const descriptorPool = [
+            { etapa: '2º Ano', comp: 'Língua Portuguesa (Alfabetização)', desc: 'SEAMA D01', tit: 'Reconhecer letras do alfabeto e correspondência fonema-grafema', met: 'Alfabeto móvel, cantigas populares e identificação do nome próprio e dos colegas.' },
+            { etapa: '2º Ano', comp: 'Língua Portuguesa (Fluência)', desc: 'SEAMA D02', tit: 'Ler palavras com sílabas canônicas e não canônicas com fluência', met: 'Cartões de leitura rápida, leitura compartilhada e contação de histórias.' },
+            { etapa: '2º Ano', comp: 'Matemática (Contagem)', desc: 'SEAMA D03', tit: 'Contar e comparar quantidades de objetos em coleções até 100', met: 'Contagem de tampinhas, ábacos e resolução de desafios em duplas.' },
+            { etapa: '5º Ano', comp: 'Língua Portuguesa (Leitura)', desc: 'SAEB D01', tit: 'Localizar informações explícitas em textos narrativos e informativos', met: 'Sublinhado seletivo, caça ao tesouro textual e reescrita de trechos.' },
+            { etapa: '5º Ano', comp: 'Matemática (Operações)', desc: 'SAEB D13', tit: 'Resolver problemas envolvendo adição e subtração com números naturais', met: 'Material dourado, situações-problema do cotidiano comercial e cálculo mental.' },
+            { etapa: '5º Ano', comp: 'Língua Portuguesa (Leitura)', desc: 'SAEB D03', tit: 'Inferir o sentido de uma palavra ou expressão a partir do contexto', met: 'Leitura de fábulas e crônicas com busca de pistas contextuais e sinônimos.' },
+            { etapa: '5º Ano', comp: 'Matemática (Multiplicação/Divisão)', desc: 'SAEB D14', tit: 'Resolver problemas envolvendo multiplicação e divisão de números naturais', met: 'Jogos de tabuleiros, algoritmo usual e partilha de quantias.' },
+            { etapa: '5º Ano', comp: 'Língua Portuguesa (Leitura)', desc: 'SAEB D04', tit: 'Inferir uma informação implícita em texto narrativo ou informativo', met: 'Análise de charges, tirinhas e identificação de subentendidos e duplos sentidos.' },
+            { etapa: '5º Ano', comp: 'Matemática (Espaço e Forma)', desc: 'SAEB D06', tit: 'Estimar e medir áreas de figuras desenhadas em malhas quadriculadas', met: 'Uso de geoplano, papel quadriculado e medição real do piso da sala.' },
+            { etapa: '5º Ano', comp: 'Língua Portuguesa (Leitura)', desc: 'SAEB D06', tit: 'Identificar o tema ou assunto central de um texto', met: 'Elaboração de títulos alternativos, mapas mentais e síntese de parágrafos.' },
+            { etapa: '5º Ano', comp: 'Matemática (Grandezas e Medidas)', desc: 'SAEB D08', tit: 'Calcular o perímetro de figuras planas desenhadas em malhas', met: 'Contorno de figuras com barbante, medição com fita métrica e registro em tabela.' },
+            { etapa: '5º Ano', comp: 'Língua Portuguesa (Leitura)', desc: 'SAEB D11', tit: 'Distinguir um fato da opinião relativa a esse fato', met: 'Debates regrados em sala com análise de notícias e cartas de leitores.' },
+            { etapa: '5º Ano', comp: 'Matemática (Números Racionais)', desc: 'SAEB D20', tit: 'Resolver problemas com números decimais e sistema monetário brasileiro', met: 'Simulação de lojinha com cédulas didáticas e cálculo de troco.' },
+            { etapa: '9º Ano', comp: 'Matemática (Espaço e Forma)', desc: 'SAEB D01', tit: 'Identificar a localização/movimentação de objeto no plano cartesiano', met: 'Batalha naval matemática, coordenadas geográficas e leitura de mapas.' },
+            { etapa: '9º Ano', comp: 'Língua Portuguesa (Leitura)', desc: 'SAEB D05', tit: 'Interpretar texto com auxílio de material gráfico diverso (propagandas/tabelas)', met: 'Leitura crítica de infográficos, anúncios publicitários e gráficos estatísticos.' },
+            { etapa: '9º Ano', comp: 'Matemática (Álgebra)', desc: 'SAEB D16', tit: 'Identificar a localização de números inteiros na reta numérica', met: 'Reta numérica no chão da sala de aula com deslocamento dos alunos.' },
+            { etapa: '9º Ano', comp: 'Língua Portuguesa (Leitura)', desc: 'SAEB D07', tit: 'Identificar o conflito gerador do enredo e os elementos da narrativa', met: 'Estruturação do arco narrativo em contos de mistério e crônicas urbanas.' },
+            { etapa: '9º Ano', comp: 'Matemática (Proporcionalidade)', desc: 'SAEB D19', tit: 'Resolver problemas envolvendo cálculo de porcentagem simples e comercial', met: 'Cálculo de descontos, juros simples e interpretação de índices socioeconômicos.' },
+            { etapa: '9º Ano', comp: 'Língua Portuguesa (Coesão)', desc: 'SAEB D12', tit: 'Identificar o efeito de sentido decorrente da escolha de uma pontuação', met: 'Análise de poemas e contos dramáticos com substituição de pontuações.' },
+            { etapa: '9º Ano', comp: 'Matemática (Estatística)', desc: 'SAEB D27', tit: 'Ler e interpretar dados apresentados em tabelas de dupla entrada e gráficos', met: 'Construção de gráficos de colunas e setores a partir de pesquisas escolares.' }
+        ];
+
+        for (let i = 1; i <= 40; i++) {
+            // Milestone assessment weeks: 10, 20, 30, 40
+            if (i % 10 === 0) {
+                const simNum = i / 10;
+                generated.push({
+                    id: `SCH_${i}`,
+                    semana: `Semana ${i}`,
+                    etapa: 'Todas as Etapas',
+                    componente: 'Avaliação Diagnóstica Integrada',
+                    descritor: `SIMULADO REDE ${simNum}`,
+                    titulo: `${simNum}º Simulado Diagnóstico Geral de Rede (IDEB Meta ${val.toFixed(1)})`,
+                    metodologia: 'Aplicação padrão SAEB/SEAMA, correção em tempo real por matriz de descritores e tabulação de dados.',
+                    status: (i <= 10) ? 'cumprido' : (i === 20 ? 'andamento' : 'pendente'),
+                    professor_obs: (i <= 10) ? 'Simulado aplicado em 100% das turmas com taxa de presença de 96%.' : 'Agendado conforme calendário letivo municipal.'
+                });
+            } else {
+                const template = descriptorPool[(i - 1) % descriptorPool.length];
+                let status = 'pendente';
+                let obs = 'Programado para o ciclo letivo.';
+                if (i <= 4) {
+                    status = 'cumprido';
+                    obs = 'Habilidade trabalhada com excelente engajamento e fixação pelos estudantes.';
+                } else if (i <= 7) {
+                    status = 'andamento';
+                    obs = 'Em execução nas salas de aula com acompanhamento do coordenador pedagógico.';
+                }
+
+                generated.push({
+                    id: `SCH_${i}`,
+                    semana: `Semana ${i}`,
+                    etapa: template.etapa,
+                    componente: template.comp,
+                    descritor: template.desc,
+                    titulo: template.tit,
+                    metodologia: template.met,
+                    status: status,
+                    professor_obs: obs
+                });
+            }
         }
-    ];
+
+        skillsScheduleList = generated;
+        return skillsScheduleList;
+    }
 
     function renderSkillsSchedule() {
         const container = document.getElementById('skills-schedule-container');
         if (!container) return;
+
+        // Ensure schedule is generated if empty
+        if (skillsScheduleList.length === 0) {
+            const currentTargetIdeb = document.getElementById('target-ideb-input')?.value || 6.5;
+            generateFull40WeeksSchedule(currentTargetIdeb);
+        }
 
         const stageFilter = document.getElementById('schedule-filter-stage')?.value || 'all';
         const statusFilter = document.getElementById('schedule-filter-status')?.value || 'all';
@@ -5678,19 +5687,29 @@ DIRETRIZES DO DIAGNÓSTICO:
         const completedWeeks = skillsScheduleList.filter(s => s.status === 'cumprido').length;
         const complianceRate = totalWeeks > 0 ? ((completedWeeks / totalWeeks) * 100).toFixed(1) : '0';
 
+        const kpiWeeks = document.getElementById('schedule-kpi-weeks');
         const kpiCompliance = document.getElementById('schedule-kpi-compliance');
         const kpiCompletedSub = document.getElementById('schedule-kpi-completed-sub');
+        const kpiSkills = document.getElementById('schedule-kpi-skills');
+        const kpiTargetIdeb = document.getElementById('schedule-kpi-target-ideb');
+
+        const currentTargetVal = document.getElementById('target-ideb-input')?.value || '6.5';
+        if (kpiWeeks) kpiWeeks.textContent = `${totalWeeks} Semanas`;
         if (kpiCompliance) kpiCompliance.textContent = `${complianceRate}%`;
         if (kpiCompletedSub) kpiCompletedSub.textContent = `${completedWeeks} de ${totalWeeks} metas cumpridas`;
+        if (kpiSkills) kpiSkills.textContent = '48 Descritores';
+        if (kpiTargetIdeb) kpiTargetIdeb.textContent = `Meta ${currentTargetVal}`;
 
         container.innerHTML = '';
 
         if (filtered.length === 0) {
             container.innerHTML = `
-                <div style="padding: 30px; text-align: center; color: var(--text-muted); background: var(--bg-secondary); border-radius: var(--radius-lg);">
-                    Nenhuma semana cadastrada com esses filtros.
+                <div style="padding: 40px; text-align: center; color: var(--text-muted); background: var(--bg-secondary); border-radius: var(--radius-lg);">
+                    <i data-lucide="calendar-x" style="width:36px; height:36px; opacity:0.4; margin-bottom:10px; display:inline-block;"></i>
+                    <p style="margin:0; font-size:0.9rem;">Nenhuma semana cadastrada com esses filtros.</p>
                 </div>
             `;
+            safeCreateIcons();
             return;
         }
 
@@ -5705,15 +5724,22 @@ DIRETRIZES DO DIAGNÓSTICO:
                 statusLabel = 'Em Andamento 🟡';
             }
 
+            const isMilestone = item.descritor.includes('SIMULADO');
+
             const card = document.createElement('div');
             card.className = 'schedule-week-card';
+            if (isMilestone) {
+                card.style.borderLeft = '4px solid var(--purple-light)';
+                card.style.background = 'linear-gradient(135deg, rgba(147, 51, 234, 0.05) 0%, rgba(59, 130, 246, 0.03) 100%)';
+            }
 
             card.innerHTML = `
                 <div class="flex-between flex-wrap gap-md" style="margin-bottom: 10px;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="font-size: 1.1rem; font-weight: 700; color: var(--purple-light);">${item.semana}</span>
-                        <span class="badge badge-purple" style="font-size: 0.72rem;">${item.etapa}</span>
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap:wrap;">
+                        <span style="font-size: 1.1rem; font-weight: 800; color: var(--purple-light);">${item.semana}</span>
+                        <span class="badge ${isMilestone ? 'badge-warning' : 'badge-purple'}" style="font-size: 0.72rem;">${item.etapa}</span>
                         <span class="badge badge-outline" style="font-size: 0.72rem;">${item.descritor}</span>
+                        <span style="font-size:0.75rem; color:var(--text-muted);">${item.componente}</span>
                     </div>
                     <div>
                         <span class="schedule-status-pill ${statusPillClass}">${statusLabel}</span>
@@ -5728,7 +5754,7 @@ DIRETRIZES DO DIAGNÓSTICO:
                 ${item.professor_obs ? `
                     <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 8px 12px; font-size: 0.78rem; color: var(--text-primary); margin-bottom: 12px;">
                         <i data-lucide="message-square" style="width:13px; height:13px; color: var(--purple-light); display:inline-block; vertical-align:middle; margin-right:4px;"></i>
-                        <strong>Registro Docente:</strong> "${item.professor_obs}"
+                        <strong>Registro Pedagógico:</strong> "${item.professor_obs}"
                     </div>
                 ` : ''}
 
@@ -5736,9 +5762,9 @@ DIRETRIZES DO DIAGNÓSTICO:
                 <div class="flex-between flex-wrap gap-sm border-top" style="padding-top: 10px; margin-top: 8px;">
                     <span style="font-size: 0.75rem; color: var(--text-muted);">
                         <i data-lucide="user-check" style="width:13px; height:13px; display:inline-block; vertical-align:middle;"></i>
-                        Ação do Professor: Atualizar status do cronograma
+                        Acompanhamento Docente:
                     </span>
-                    <div style="display: flex; gap: 8px;">
+                    <div style="display: flex; gap: 8px; flex-wrap:wrap;">
                         <button class="btn btn-outline btn-sm set-schedule-status-btn" data-id="${item.id}" data-status="cumprido" style="color: #15803d; border-color: #bbf7d0;">
                             <i data-lucide="check" style="width:13px; height:13px;"></i> Cumprido
                         </button>
@@ -5817,7 +5843,7 @@ DIRETRIZES DO DIAGNÓSTICO:
                 titulo: title,
                 metodologia: meth || 'Atividades de fixação e diagnóstico.',
                 status: 'andamento',
-                professor_obs: 'Semana cadastrada pela SEMED.'
+                professor_obs: 'Semana cadastrada manualmente.'
             };
 
             skillsScheduleList.push(newItem);
@@ -5826,6 +5852,30 @@ DIRETRIZES DO DIAGNÓSTICO:
 
             renderSkillsSchedule();
             showToast(`${week} cadastrada no cronograma com sucesso!`, 'check');
+        });
+    }
+
+    // IA Generator Button in Cronograma Header
+    const btnGenerateScheduleIa = document.getElementById('btn-generate-schedule-ia');
+    if (btnGenerateScheduleIa) {
+        btnGenerateScheduleIa.addEventListener('click', () => {
+            const currentTargetVal = document.getElementById('target-ideb-input')?.value || 6.5;
+            generateFull40WeeksSchedule(currentTargetVal);
+            renderSkillsSchedule();
+            showToast(`Cronograma de 40 semanas gerado por IA com foco na Meta IDEB ${currentTargetVal}!`, 'sparkles');
+        });
+    }
+
+    // Button from Metas & Plan linking directly to Cronograma de Habilidades
+    const btnGotoSkillsSchedule = document.getElementById('btn-goto-skills-schedule');
+    if (btnGotoSkillsSchedule) {
+        btnGotoSkillsSchedule.addEventListener('click', () => {
+            const currentTargetVal = document.getElementById('target-ideb-input')?.value || 6.5;
+            if (skillsScheduleList.length === 0) {
+                generateFull40WeeksSchedule(currentTargetVal);
+            }
+            window.navigateToTab('cronograma-habilidades');
+            showToast(`Exibindo cronograma de 40 semanas alinhado à Meta IDEB ${currentTargetVal}!`, 'calendar-check-2');
         });
     }
 
@@ -5840,6 +5890,33 @@ DIRETRIZES DO DIAGNÓSTICO:
     if (btnExportSchedule) {
         btnExportSchedule.addEventListener('click', () => {
             showToast('Exportando Cronograma de Habilidades da Rede em PDF...', 'download');
+        });
+    }
+
+    // Synchronize Meta IDEB Input with Strategic Model Info
+    const targetIdebInput = document.getElementById('target-ideb-input');
+    if (targetIdebInput) {
+        targetIdebInput.addEventListener('input', () => {
+            const val = parseFloat(targetIdebInput.value) || 6.5;
+            const modelTitle = document.getElementById('strategic-model-title');
+            const modelDesc = document.getElementById('strategic-model-desc');
+            const kpiTarget = document.getElementById('schedule-kpi-target-ideb');
+
+            if (kpiTarget) kpiTarget.textContent = `Meta ${val.toFixed(1)}`;
+
+            let modelName = 'Aceleração Intermediária';
+            if (val >= 6.5) {
+                modelName = 'Aceleração Avançada (Sobral/Ceará)';
+            } else if (val < 5.5) {
+                modelName = 'Consolidação e Nivelamento Básico';
+            }
+
+            if (modelTitle) {
+                modelTitle.innerHTML = `Modelo Estratégico Sugerido: <span style="color:var(--purple-light);">${modelName}</span>`;
+            }
+            if (modelDesc) {
+                modelDesc.innerHTML = `Para atingir a meta de <strong>${val.toFixed(1)}</strong>, a rede distribui os 48 descritores críticos de Língua Portuguesa e Matemática ao longo de <strong>40 semanas letivas</strong>, com simulados diagnósticos e intervenções pedagógicas contínuas.`;
+            }
         });
     }
 
@@ -6796,245 +6873,6 @@ DIRETRIZES DO DIAGNÓSTICO:
                     console.error('Failed to load demo data:', err);
                     showToast('Erro ao carregar dados demonstrativos.', 'alert-triangle');
                 });
-        });
-    }
-
-    // ==========================================
-    // CRONOGRAMA LETIVO & PLANEJADOR ESTRATÉGICO
-    // ==========================================
-    let manualSchedule = [];
-
-    function generateIACSugestedCalendar(targetIdeb) {
-        const cronResult = document.getElementById('cron-ia-result');
-        if (!cronResult) return;
-        cronResult.innerHTML = '';
-
-        const val = parseFloat(targetIdeb) || 6.0;
-        let intensity = "Básico";
-        let tip = "Foco em alfabetização matemática e fluência leitora básica.";
-        if (val >= 6.5) {
-            intensity = "Avançado (Sobral Premium)";
-            tip = "Intensificação de simulados quinzenais e correção imediata baseada em descritores.";
-        } else if (val >= 5.8) {
-            intensity = "Intermediário de Aceleração";
-            tip = "Simulados mensais e plano de metas por escola com foco em descritores críticos.";
-        }
-
-        const headerDiv = document.createElement('div');
-        headerDiv.style.padding = '12px';
-        headerDiv.style.borderRadius = 'var(--radius-sm)';
-        headerDiv.style.border = '1px solid var(--border-color)';
-        headerDiv.style.background = 'var(--bg-tertiary)';
-        headerDiv.style.marginBottom = '10px';
-        headerDiv.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                <span style="font-size:0.8rem; font-weight:700; color:var(--text-primary);">Modelo Estratégico Sugerido:</span>
-                <span class="badge badge-info" style="font-weight:700; color:var(--purple-light);">${intensity}</span>
-            </div>
-            <p style="font-size:0.75rem; color:var(--text-secondary); margin:0;">${tip}</p>
-        `;
-        cronResult.appendChild(headerDiv);
-
-        const planWeeks = [
-            { w: "Semana 1", lp: "D1 - Info Explícita", mt: "D1 - Localização e Mapas", action: val >= 6.5 ? "Oficina de leitura com cronômetro e trilhas de coordenadas no pátio." : "Leitura coletiva de contos e desenho de mapas da escola." },
-            { w: "Semana 2", lp: "D3 - Sentido de Expressões", mt: "D13 - Operações Aritméticas", action: val >= 6.5 ? "Desafio relâmpago de cálculo mental e vocabulário contextualizado." : "Jogos matemáticos e dicionário ilustrado." },
-            { w: "Semana 3", lp: "D4 - Info Implícita", mt: "D8 - Perímetro de Figuras", action: "Leitura de charges, tirinhas e medição real do perímetro das salas de aula." },
-            { w: "Semana 4", type: "assessment", title: "1º Simulado Preparatório de Rede", action: "Aplicação e digitação imediata de gabarito para diagnóstico de gaps." },
-            { w: "Semana 5", lp: "D6 - Tema do Texto", mt: "D9 - Área de Figuras Planas", action: "Identificação de ideias centrais e uso de malhas quadriculadas para áreas." },
-            { w: "Semana 6", lp: "D11 - Fato vs Opinião", mt: "D12 - Porcentagem Comercial", action: val >= 6.5 ? "Debate regrado com notícias reais e simulação de lojinha com descontos." : "Identificação de opiniões em cartas e cálculo de descontos simples." },
-            { w: "Semana 7", lp: "D14 - Efeitos de Pontuação", mt: "D14 - Representação Decimal", action: "Leitura dramática enfatizando pontuações e jogos com moedas decimais." },
-            { w: "Semana 8", type: "assessment", title: "Avaliação Formativa de Recuperação", action: "Foco metodológico nos alunos que não atingiram 50% de acertos." },
-            { w: "Semana 9", lp: "D19 - Tese do Autor", mt: "D26 - Noções de Probabilidade", action: "Identificação da opinião do autor em editoriais e experimentos com dados/moedas." },
-            { w: "Semana 10", lp: "D22 - Coerência e Repetição", mt: "D27 - Gráficos e Tabelas", action: "Exercícios de substituição pronominal e construção de gráficos baseados no censo." }
-        ];
-
-        planWeeks.forEach(week => {
-            const row = document.createElement('div');
-            row.style.padding = '12px 16px';
-            row.style.borderRadius = 'var(--radius-sm)';
-            row.style.border = '1px solid var(--border-color)';
-            row.style.background = week.type === 'assessment' ? 'rgba(144,126,252,0.08)' : 'var(--bg-secondary)';
-            row.style.display = 'flex';
-            row.style.flexDirection = 'column';
-            row.style.gap = '6px';
-            row.style.marginBottom = '8px';
-
-            if (week.type === 'assessment') {
-                row.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-weight:700; font-size:0.8rem; color:var(--purple-light);">${week.w}</span>
-                        <span class="badge badge-warning" style="font-size:0.7rem;">AVALIAÇÃO E CONTROLE</span>
-                    </div>
-                    <strong style="font-size:0.85rem; color:var(--text-primary);">${week.title}</strong>
-                    <p style="font-size:0.75rem; color:var(--text-secondary); margin:0;">${week.action}</p>
-                `;
-            } else {
-                row.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-weight:700; font-size:0.8rem; color:var(--text-primary);">${week.w}</span>
-                        <span style="font-size:0.7rem; color:var(--text-muted);">Reforço Semanal</span>
-                    </div>
-                    <div style="display:flex; gap:12px; font-size:0.75rem; flex-wrap:wrap;">
-                        <span style="color:var(--purple-light); font-weight:600;"><i data-lucide="book-open" style="width:12px; height:12px; display:inline-block; vertical-align:middle; margin-right:4px;"></i>${week.lp}</span>
-                        <span style="color:var(--blue-light); font-weight:600;"><i data-lucide="plus-circle" style="width:12px; height:12px; display:inline-block; vertical-align:middle; margin-right:4px;"></i>${week.mt}</span>
-                    </div>
-                    <p style="font-size:0.75rem; color:var(--text-secondary); margin:0;"><strong>Diretriz Pedagógica:</strong> ${week.action}</p>
-                `;
-            }
-            cronResult.appendChild(row);
-        });
-
-        safeCreateIcons();
-    }
-
-    function populateManualWeeksAndDescriptors() {
-        const weekSelect = document.getElementById('manual-cron-week');
-        const descSelect = document.getElementById('manual-cron-descriptor');
-        const subjectSelect = document.getElementById('manual-cron-subject');
-
-        if (weekSelect) {
-            weekSelect.innerHTML = '';
-            for (let i = 1; i <= 40; i++) {
-                const opt = document.createElement('option');
-                opt.value = `Semana ${i}`;
-                opt.textContent = `Semana Letiva ${i}`;
-                weekSelect.appendChild(opt);
-            }
-        }
-
-        function updateDescriptorsDropdown() {
-            if (!descSelect || !subjectSelect) return;
-            descSelect.innerHTML = '';
-            
-            const subj = subjectSelect.value;
-            if (subj === 'Língua Portuguesa') {
-                FULL_INEP_MATRICES.portuguese.forEach(d => {
-                    const opt = document.createElement('option');
-                    opt.value = `${d.codigo} - ${d.desc}`;
-                    opt.textContent = `${d.codigo} - ${d.desc.slice(0, 50)}...`;
-                    descSelect.appendChild(opt);
-                });
-            } else if (subj === 'Matemática') {
-                FULL_INEP_MATRICES.math.forEach(d => {
-                    const opt = document.createElement('option');
-                    opt.value = `${d.codigo} - ${d.desc}`;
-                    opt.textContent = `${d.codigo} - ${d.desc.slice(0, 50)}...`;
-                    descSelect.appendChild(opt);
-                });
-            } else {
-                FULL_INEP_MATRICES.science.forEach(d => {
-                    const opt = document.createElement('option');
-                    opt.value = `${d.codigo} - ${d.desc}`;
-                    opt.textContent = `${d.codigo} - ${d.desc.slice(0, 50)}...`;
-                    descSelect.appendChild(opt);
-                });
-            }
-        }
-
-        if (subjectSelect) {
-            subjectSelect.addEventListener('change', updateDescriptorsDropdown);
-            updateDescriptorsDropdown();
-        }
-    }
-
-    function renderManualScheduleTable() {
-        const tableBody = document.getElementById('cron-manual-table-body');
-        if (!tableBody) return;
-        tableBody.innerHTML = '';
-
-        if (manualSchedule.length === 0) {
-            tableBody.innerHTML = `
-                <tr>
-                    <td colspan="4" style="padding: 18px; text-align:center; color:var(--text-muted); font-size:0.8rem;">
-                        Nenhum planejamento inserido no cronograma manual ainda.
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-
-        manualSchedule.sort((a, b) => {
-            const numA = parseInt(a.week.replace(/\D/g, '')) || 0;
-            const numB = parseInt(b.week.replace(/\D/g, '')) || 0;
-            return numA - numB;
-        });
-
-        manualSchedule.forEach((item, idx) => {
-            const tr = document.createElement('tr');
-            tr.style.borderBottom = '1px solid var(--border-color)';
-            tr.style.height = '38px';
-            tr.innerHTML = `
-                <td style="padding: 8px 12px; font-weight:600; font-size:0.8rem; color:var(--text-primary);">${item.week}</td>
-                <td style="padding: 8px 12px; font-size:0.75rem; color:var(--text-secondary);">${item.subject}</td>
-                <td style="padding: 8px 12px; font-size:0.75rem; color:var(--text-secondary);">${item.descriptor}</td>
-                <td style="padding: 8px 12px; text-align:center;">
-                    <span class="btn-delete-manual-cron" data-idx="${idx}" style="color:var(--red-light); cursor:pointer; font-size:0.75rem; display:inline-flex; align-items:center; gap:2px;">
-                        <i data-lucide="trash-2" style="width:12px; height:12px;"></i> Excluir
-                    </span>
-                </td>
-            `;
-            tableBody.appendChild(tr);
-        });
-
-        tableBody.querySelectorAll('.btn-delete-manual-cron').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const idx = parseInt(btn.getAttribute('data-idx'));
-                manualSchedule.splice(idx, 1);
-                renderManualScheduleTable();
-                showToast('Habilidade removida do cronograma.', 'trash-2');
-            });
-        });
-
-        safeCreateIcons();
-    }
-
-    const btnCronIaMode = document.getElementById('btn-cron-ia-mode');
-    const btnCronManualMode = document.getElementById('btn-cron-manual-mode');
-    const cronIaPanel = document.getElementById('cron-ia-panel');
-    const cronManualPanel = document.getElementById('cron-manual-panel');
-    const targetIdebInput = document.getElementById('target-ideb-input');
-    const btnAddCronManual = document.getElementById('btn-add-cron-manual');
-
-    if (btnCronIaMode && btnCronManualMode && cronIaPanel && cronManualPanel) {
-        btnCronIaMode.addEventListener('click', () => {
-            btnCronIaMode.className = 'btn btn-primary';
-            btnCronManualMode.className = 'btn btn-outline';
-            cronIaPanel.classList.remove('hidden');
-            cronManualPanel.classList.add('hidden');
-        });
-
-        btnCronManualMode.addEventListener('click', () => {
-            btnCronManualMode.className = 'btn btn-primary';
-            btnCronIaMode.className = 'btn btn-outline';
-            cronManualPanel.classList.remove('hidden');
-            cronIaPanel.classList.add('hidden');
-            renderManualScheduleTable();
-        });
-    }
-
-    if (targetIdebInput) {
-        targetIdebInput.addEventListener('change', () => {
-            const val = parseFloat(targetIdebInput.value) || 6.0;
-            generateIACSugestedCalendar(val.toFixed(1));
-            showToast(`Cronograma recalculado para a nova meta IDEB de ${val.toFixed(1)}!`, 'sparkles');
-        });
-    }
-
-    if (btnAddCronManual) {
-        btnAddCronManual.addEventListener('click', () => {
-            const week = document.getElementById('manual-cron-week').value;
-            const subject = document.getElementById('manual-cron-subject').value;
-            const descriptor = document.getElementById('manual-cron-descriptor').value;
-
-            const exists = manualSchedule.some(item => item.week === week && item.subject === subject);
-            if (exists) {
-                showToast('Já existe um planejamento para esta disciplina nesta semana.', 'alert-triangle');
-                return;
-            }
-
-            manualSchedule.push({ week, subject, descriptor });
-            renderManualScheduleTable();
-            showToast('Habilidade inserida no cronograma letivo!', 'check-circle');
         });
     }
 
@@ -9290,9 +9128,7 @@ DIRETRIZES DO DIAGNÓSTICO:
     renderActiveDescriptors();
     renderQuestions();
     renderReferenceMatrix();
-    generateIACSugestedCalendar(6.0);
-    populateManualWeeksAndDescriptors();
-    renderManualScheduleTable();
+    renderSkillsSchedule();
     populateQuestionCreatorDropdowns();
     initIdebComparativo();
     renderPedagogicLibrary();
