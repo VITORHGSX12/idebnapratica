@@ -2,9 +2,9 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>IDEB na Prática - Plataforma de Gestão e Avaliação Educacional</title>
-    <link rel="stylesheet" href="styles.css?v=1.9">
+    <link rel="stylesheet" href="styles.css?v=159ad0a0">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2468,8 +2468,92 @@
         </div>
     </div>
 
+    <!-- Mobile Bottom Navigation Bar -->
+    <nav class="mobile-bottom-nav">
+        <a href="#" class="menu-item active" data-target="dashboard">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Painel</span>
+        </a>
+        <a href="#" class="menu-item" data-target="escolas-panel">
+            <i data-lucide="school"></i>
+            <span>Escolas</span>
+        </a>
+        <a href="#" class="menu-item" data-target="alunos-panel">
+            <i data-lucide="users"></i>
+            <span>Alunos</span>
+        </a>
+        <a href="#" class="menu-item" data-target="aplicacao-provas">
+            <i data-lucide="clipboard-list"></i>
+            <span>Provas</span>
+        </a>
+        <a href="#" id="btn-mobile-more" class="mobile-nav-more">
+            <i data-lucide="menu"></i>
+            <span>Mais</span>
+        </a>
+    </nav>
+
+    <!-- Mobile More Menu Bottom Sheet -->
+    <div id="mobile-more-sheet" class="mobile-sheet-overlay hidden">
+        <div class="mobile-sheet-content">
+            <div class="mobile-sheet-header">
+                <h3>Mais Funcionalidades</h3>
+                <button id="btn-close-mobile-sheet" class="btn-icon" style="background: none; border: none; color: var(--text-primary); cursor: pointer; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                    <i data-lucide="x" style="width:20px; height:20px;"></i>
+                </button>
+            </div>
+            <div class="mobile-sheet-body">
+                <div class="mobile-sheet-group">
+                    <span class="mobile-sheet-group-title">Avaliação</span>
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <a href="#" class="menu-item" data-target="metas-ideb">
+                            <i data-lucide="line-chart"></i>
+                            <span>Metas & Planejamento (IDEB)</span>
+                        </a>
+                        <a href="#" class="menu-item" data-target="ideb-comparativo">
+                            <i data-lucide="globe"></i>
+                            <span>Comparativo Regional (INEP)</span>
+                        </a>
+                        <a href="#" class="menu-item" data-target="matriz-descritores">
+                            <i data-lucide="list-checks"></i>
+                            <span>Matriz & Descritores</span>
+                        </a>
+                        <a href="#" class="menu-item" data-target="criar-avaliacoes">
+                            <i data-lucide="calendar-plus"></i>
+                            <span>Criar Avaliações</span>
+                        </a>
+                        <a href="#" class="menu-item" data-target="banco-questoes">
+                            <i data-lucide="database"></i>
+                            <span>Banco de Questões</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="mobile-sheet-group" style="margin-top: 16px;">
+                    <span class="mobile-sheet-group-title">Pedagógico & Sistema</span>
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <a href="#" class="menu-item" data-target="ai-playground">
+                            <i data-lucide="line-chart"></i>
+                            <span>Relatórios & Monitoramento</span>
+                        </a>
+                        <a href="#" class="menu-item" data-target="gestao-pedagogica">
+                            <i data-lucide="check-square"></i>
+                            <span>Gestão Pedagógica</span>
+                        </a>
+                        <a href="#" class="menu-item" data-target="doc-tecnica">
+                            <i data-lucide="file-text"></i>
+                            <span>Documentação Técnica</span>
+                        </a>
+                        <a href="#" class="menu-item" data-target="admin-panel">
+                            <i data-lucide="settings"></i>
+                            <span>Área Administrativa</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js"></script>
+    <script src="app.js?v=0e7ac80e"></script>
 </body>
 </html>

@@ -114,9 +114,29 @@ const initApp = () => {
             e.preventDefault();
             const targetTab = item.getAttribute('data-target');
 
-            // Switch active menu class
-            menuItems.forEach(i => i.classList.remove('active'));
-            item.classList.add('active');
+            // Switch active menu class for all items with same target
+            menuItems.forEach(i => {
+                if (i.getAttribute('data-target') === targetTab) {
+                    i.classList.add('active');
+                } else {
+                    i.classList.remove('active');
+                }
+            });
+
+            // Handle mobileMoreBtn active class coordination
+            const bottomNav = document.querySelector('.mobile-bottom-nav');
+            if (bottomNav) {
+                const matchingBottomTab = bottomNav.querySelector(`.menu-item[data-target="${targetTab}"]`);
+                const mobileMoreBtn = document.getElementById('btn-mobile-more');
+                if (mobileMoreBtn) {
+                    if (matchingBottomTab) {
+                        mobileMoreBtn.classList.remove('active');
+                    } else {
+                        // The selected item is inside the bottom sheet, so highlight More button
+                        mobileMoreBtn.classList.add('active');
+                    }
+                }
+            }
 
             // Switch active tab content
             tabContents.forEach(tab => tab.classList.remove('active'));
@@ -6392,14 +6412,14 @@ DIRETRIZES DO DIAGNÓSTICO:
 
     function updateMenuVisibilityByRole() {
         const userRole = sessionStorage.getItem('userRole') || 'Master Admin';
-        const adminMenuItem = document.querySelector('.menu-item[data-target="admin-panel"]');
-        if (adminMenuItem) {
+        const adminMenuItems = document.querySelectorAll('.menu-item[data-target="admin-panel"]');
+        adminMenuItems.forEach(item => {
             if (userRole === 'Professor' || userRole === 'Diretor Escola') {
-                adminMenuItem.style.display = 'none';
+                item.style.display = 'none';
             } else {
-                adminMenuItem.style.display = 'flex';
+                item.style.display = 'flex';
             }
-        }
+        });
     }
 
     // Check Login Session
@@ -6444,6 +6464,55 @@ DIRETRIZES DO DIAGNÓSTICO:
                 icon.setAttribute('data-lucide', isCollapsed ? 'chevron-right' : 'chevron-left');
                 lucide.createIcons({ attrs: { class: 'lucide' } });
             }
+        });
+    }
+
+    // ==========================================
+    // CONTROLE DO BOTÃO "MAIS" E GAVETA MOBILE
+    // ==========================================
+    const mobileMoreBtn = document.getElementById('btn-mobile-more');
+    const mobileMoreSheet = document.getElementById('mobile-more-sheet');
+    const closeMobileSheetBtn = document.getElementById('btn-close-mobile-sheet');
+
+    if (mobileMoreBtn && mobileMoreSheet && closeMobileSheetBtn) {
+        mobileMoreBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            mobileMoreSheet.classList.remove('hidden');
+            // Recriar ícones lucide se necessário
+            if (window.lucide) {
+                lucide.createIcons({ attrs: { class: 'lucide' } });
+            }
+        });
+
+        closeMobileSheetBtn.addEventListener('click', () => {
+            mobileMoreSheet.classList.add('hidden');
+        });
+
+        mobileMoreSheet.addEventListener('click', (e) => {
+            if (e.target === mobileMoreSheet) {
+                mobileMoreSheet.classList.add('hidden');
+            }
+        });
+
+        // Fechar gaveta ao clicar em qualquer item de menu interno
+        const sheetMenuItems = mobileMoreSheet.querySelectorAll('.menu-item');
+        sheetMenuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                mobileMoreSheet.classList.add('hidden');
+                
+                // Mapear se a aba clicada é parte das bottom-tabs, senão destacar "Mais"
+                const targetTab = item.getAttribute('data-target');
+                const bottomNav = document.querySelector('.mobile-bottom-nav');
+                const matchingBottomTab = bottomNav.querySelector(`.menu-item[data-target="${targetTab}"]`);
+                
+                bottomNav.querySelectorAll('.menu-item').forEach(btn => btn.classList.remove('active'));
+                if (matchingBottomTab) {
+                    matchingBottomTab.classList.add('active');
+                    mobileMoreBtn.classList.remove('active');
+                } else {
+                    mobileMoreBtn.classList.add('active');
+                }
+            });
         });
     }
 

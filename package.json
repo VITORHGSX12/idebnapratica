@@ -4,8 +4,8 @@
   "description": "Interactive spec and prototype for EduSaaS",
   "main": "index.html",
   "scripts": {
-    "start": "node server.js",
-    "dev": "npx -y http-server -p 8080"
+    "start": "node cache-buster.js && node server.js",
+    "dev": "node cache-buster.js && npx -y http-server -p 8080"
   },
   "keywords": [],
   "author": "",
