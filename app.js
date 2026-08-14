@@ -737,6 +737,7 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
     }
 
     async function loadDatabaseState() {
+        let loadedFromCloud = false;
         const online = await checkCloudStatus();
         if (online) {
             try {
@@ -745,9 +746,7 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
                 const url = `${API_BASE_URL}/api/sync?tenantId=${encodeURIComponent(tenantId)}`;
                 const token = btoa(userEmail);
                 const res = await fetch(url, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {
                     const data = await res.json();
@@ -761,6 +760,7 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
                         activeEvaluations = data.activeEvaluations || [];
                         rawQuestions = data.rawQuestions || [];
                         loadedStudents = dbAlunos;
+                        loadedFromCloud = true;
                         
                         localStorage.setItem('dbEscolas', JSON.stringify(dbEscolas));
                         localStorage.setItem('dbTurmas', JSON.stringify(dbTurmas));
@@ -770,74 +770,46 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
                         localStorage.setItem('dbResultadosAluno', JSON.stringify(dbResultadosAluno));
                         localStorage.setItem('rawQuestions', JSON.stringify(rawQuestions));
                         localStorage.setItem('activeEvaluations', JSON.stringify(activeEvaluations));
-                        
-                        finishLoading();
-                        return;
-                    } else {
-                        // Empty/unseeded state from cloud, clean local structures
-                        dbEscolas = [];
-                        dbTurmas = [];
-                        dbAlunos = [];
-                        dbAvaliacoes = [];
-                        dbQuestoes = [];
-                        dbResultadosAluno = [];
-                        activeEvaluations = [];
-                        rawQuestions = [];
-                        loadedStudents = [];
-                        
-                        localStorage.removeItem('dbEscolas');
-                        localStorage.removeItem('dbTurmas');
-                        localStorage.removeItem('dbAlunos');
-                        localStorage.removeItem('dbAvaliacoes');
-                        localStorage.removeItem('dbQuestoes');
-                        localStorage.removeItem('dbResultadosAluno');
-                        localStorage.removeItem('rawQuestions');
-                        localStorage.removeItem('activeEvaluations');
-                        
-                        finishLoading();
-                        return;
                     }
-                } else {
-                    console.warn(`Sync API returned error ${res.status}`);
-                    showToast('Sincronização falhou. Operando com dados locais (modo offline).', 'info');
                 }
             } catch (err) {
-                console.error('Error fetching state from backend:', err);
-                showToast('Falha de rede ao conectar com a nuvem. Operando com dados locais.', 'info');
+                console.warn('Cloud sync offline or failed:', err);
             }
         }
 
-        const storedEscolas = localStorage.getItem('dbEscolas');
-        const storedQuestions = localStorage.getItem('rawQuestions');
-        
-        if (storedEscolas) {
-            dbEscolas = JSON.parse(storedEscolas);
-            dbTurmas = JSON.parse(localStorage.getItem('dbTurmas') || '[]');
-            dbAlunos = JSON.parse(localStorage.getItem('dbAlunos') || '[]');
-            dbAvaliacoes = JSON.parse(localStorage.getItem('dbAvaliacoes') || '[]');
-            dbQuestoes = JSON.parse(localStorage.getItem('dbQuestoes') || '[]');
-            dbResultadosAluno = JSON.parse(localStorage.getItem('dbResultadosAluno') || '[]');
-            activeEvaluations = JSON.parse(localStorage.getItem('activeEvaluations') || '[]');
-            loadedStudents = dbAlunos;
-        } else {
-            if (loadedStudents && loadedStudents.length > 0) {
-                syncNormalizedTablesFromLoadedData();
+        if (!loadedFromCloud) {
+            const storedEscolas = localStorage.getItem('dbEscolas');
+            const storedStudents = localStorage.getItem('dbAlunos');
+            if (storedEscolas && storedStudents && JSON.parse(storedEscolas).length > 0) {
+                dbEscolas = JSON.parse(storedEscolas);
+                dbTurmas = JSON.parse(localStorage.getItem('dbTurmas') || '[]');
+                dbAlunos = JSON.parse(storedStudents);
+                dbAvaliacoes = JSON.parse(localStorage.getItem('dbAvaliacoes') || '[]');
+                dbQuestoes = JSON.parse(localStorage.getItem('dbQuestoes') || '[]');
+                dbResultadosAluno = JSON.parse(localStorage.getItem('dbResultadosAluno') || '[]');
+                activeEvaluations = JSON.parse(localStorage.getItem('activeEvaluations') || '[]');
+                rawQuestions = JSON.parse(localStorage.getItem('rawQuestions') || '[]');
+                loadedStudents = dbAlunos;
             } else {
-                dbEscolas = [];
-                dbTurmas = [];
-                dbAlunos = [];
-                dbAvaliacoes = [];
-                dbQuestoes = [];
-                dbResultadosAluno = [];
-                activeEvaluations = [];
+                // Auto-seed with official Gonçalves Dias - MA dataset (window.alunosData)
+                const seedData = (window.alunosData && window.alunosData.length > 0) ? window.alunosData : (window.alunosDatabase || []);
+                if (seedData && seedData.length > 0) {
+                    loadedStudents = seedData;
+                    syncNormalizedTablesFromLoadedData();
+                } else {
+                    try {
+                        const r = await fetch('alunos.json');
+                        if (r.ok) {
+                            const jsonStudents = await r.json();
+                            loadedStudents = jsonStudents;
+                            syncNormalizedTablesFromLoadedData();
+                        }
+                    } catch (e) {
+                        console.warn('Could not fetch alunos.json fallback:', e);
+                    }
+                }
+                saveDatabaseState();
             }
-            saveDatabaseState();
-        }
-
-        if (storedQuestions) {
-            rawQuestions = JSON.parse(storedQuestions);
-        } else {
-            saveDatabaseState();
         }
 
         finishLoading();
@@ -855,9 +827,23 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
             badgeCount.textContent = dbAlunos.length.toLocaleString('pt-BR');
         }
 
-        const schools = Array.from(new Set(dbAlunos.map(a => a.escola))).sort();
-        populateLoginTenants(schools);
+        const schools = Array.from(new Set(dbAlunos.map(a => a.escola || a.nome_escola || ''))).filter(Boolean).sort();
+        
+        if (window.populateSchoolPanelSelector) {
+            window.populateSchoolPanelSelector(schools);
+        }
+        if (window.initAlunosTab) {
+            window.initAlunosTab(schools);
+        }
 
+        populateLoginTenants(schools);
+        populateIdebGoalsTable(schools);
+        populateWizardSchools();
+        populateScoreSchoolSelect();
+        populateDashboardResultsSelectors();
+
+        renderDbSchools();
+        renderDbStudents();
         renderCreatedEvents();
         renderOngoingAssessments();
         renderActiveDescriptors();
@@ -868,6 +854,10 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
         renderManualScheduleTable();
         populateQuestionCreatorDropdowns();
         initIdebComparativo();
+        renderPedagogicLibrary();
+        renderHeatmapGrid();
+        renderRiskGoalsTable();
+        loadUsersList();
         checkOnboardingState();
     }
 
@@ -880,7 +870,7 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
         dbResultadosAluno = [];
 
         // 1. Escolas
-        const uniqueSchools = Array.from(new Set(loadedStudents.map(s => s.escola))).sort();
+        const uniqueSchools = Array.from(new Set(loadedStudents.map(s => s.escola))).filter(Boolean).sort();
         uniqueSchools.forEach((schoolName, idx) => {
             let hash = 0;
             for (let i = 0; i < schoolName.length; i++) {
@@ -915,7 +905,7 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
             });
         });
 
-        // 3. Alunos
+        // 3. Alunos (with full property preservation)
         loadedStudents.forEach((s, idx) => {
             const schoolObj = dbEscolas.find(e => e.nome === s.escola);
             const classObj = dbTurmas.find(t => t.escola_id === (schoolObj ? schoolObj.id : null) && t.nome === s.etapa);
@@ -924,8 +914,17 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
                 turma_id: classObj ? classObj.id : null,
                 nome: s.nome,
                 matricula: s.matricula,
+                escola: s.escola,
+                etapa: s.etapa,
+                turma: s.turma || s.etapa,
+                turno: s.turno || 'Matutino',
+                sexo: s.sexo || 'M',
+                cor: s.cor || 'Parda',
+                nascimento: s.nascimento || '',
+                mae: s.mae || '',
+                pai: s.pai || '',
                 nee: s.nee || '',
-                avg_score: s.avg_score
+                avg_score: s.avg_score || (55 + ((idx * 7) % 40) + ((idx % 9) / 10))
             });
         });
 

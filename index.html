@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>IDEB na Prática - Plataforma de Gestão e Avaliação Educacional</title>
-    <link rel="stylesheet" href="styles.css?v=39bcc7a6">
+    <link rel="stylesheet" href="styles.css?v=30efabe8">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -293,18 +293,21 @@
                         <p id="page-subtitle" class="text-muted">Visão geral do desempenho pedagógico e estatísticas operacionais da rede.</p>
                     </div>
                 </div>
-                <div class="navbar-right" style="display: flex; align-items: center; gap: 16px;">
-                    <!-- Cloud Connection Status Indicator -->
-                    <div id="cloud-sync-indicator" style="background: rgba(239, 68, 68, 0.15); color: var(--red-light); font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: var(--radius-sm); border: 1px solid rgba(239, 68, 68, 0.3); display: flex; align-items: center; gap: 6px; cursor: default; transition: var(--transition);">
-                        <span id="cloud-sync-dot" style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--red-light);"></span>
-                        <span id="cloud-sync-text">Modo Local (Offline)</span>
+                <div class="navbar-right" style="display: flex; align-items: center; gap: 8px;">
+                    <!-- Cloud Connection Status Indicator (Hidden as requested) -->
+                    <div id="cloud-sync-indicator" style="display: none !important;">
+                        <span id="cloud-sync-dot"></span>
+                        <span id="cloud-sync-text"></span>
                     </div>
-                        <button class="btn btn-icon" id="notification-btn" title="Notificações e Alertas" style="position: relative;">
+
+                    <!-- Notification Button & Dropdown -->
+                    <div style="position: relative;">
+                        <button class="btn btn-icon" id="notification-btn" title="Notificações e Alertas" style="position: relative; width: 38px; height: 38px;">
                             <i data-lucide="bell"></i>
-                            <span class="badge badge-danger" id="notification-badge" style="position: absolute; top: -5px; right: -5px; font-size: 0.55rem; padding: 2px 4px; border-radius: 50%;">3</span>
+                            <span class="badge badge-danger" id="notification-badge" style="position: absolute; top: -3px; right: -3px; font-size: 0.55rem; padding: 2px 5px; border-radius: 50%;">3</span>
                         </button>
                         <!-- Dropdown de Notificações -->
-                        <div class="user-dropdown-menu hidden" id="notifications-dropdown" style="position: absolute; top: 40px; right: 0; width: 320px; background-color: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: var(--shadow); z-index: 120; display: flex; flex-direction: column; padding: 12px; gap: 8px;">
+                        <div class="user-dropdown-menu hidden" id="notifications-dropdown" style="position: absolute; top: 46px; right: 0; width: 320px; background-color: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: var(--shadow); z-index: 120; display: flex; flex-direction: column; padding: 12px; gap: 8px;">
                             <div class="flex-between" style="border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
                                 <strong style="font-size: 0.8rem; color: var(--text-primary);">Notificações e Alertas</strong>
                                 <span style="font-size: 0.65rem; color: var(--purple-light); cursor: pointer;" id="btn-clear-notifications">Limpar todos</span>
@@ -315,7 +318,8 @@
                         </div>
                     </div>
 
-                    <button class="btn btn-icon" id="theme-toggle" title="Alternar Tema">
+                    <!-- Theme Toggle -->
+                    <button class="btn btn-icon" id="theme-toggle" title="Alternar Tema" style="width: 38px; height: 38px;">
                         <i data-lucide="moon"></i>
                     </button>
                 </div>
@@ -2801,6 +2805,6 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=ec325706"></script>
+    <script src="app.js?v=a6636f3c"></script>
 </body>
 </html>

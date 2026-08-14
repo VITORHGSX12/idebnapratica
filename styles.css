@@ -76,20 +76,23 @@ body.dark-mode {
     padding: 0;
 }
 
-html, body {
+html {
     height: 100%;
     width: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
 }
 
 body {
+    min-height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
     font-family: var(--font-sans);
     background-color: var(--bg-primary);
     color: var(--text-primary);
     line-height: 1.6;
     transition: background-color 0.3s, color 0.3s;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -113,9 +116,9 @@ a:hover {
    ========================================== */
 .app-container {
     display: flex;
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
 }
 
 /* Sidebar Styling */
@@ -266,8 +269,9 @@ a:hover {
     min-width: 0;
     display: flex;
     flex-direction: column;
-    height: 100%;
-    overflow: hidden;
+    height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Top Navbar */
