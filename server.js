@@ -55,19 +55,31 @@ function maskNee(nee) {
 }
 
 function applyMaskingToState(state, role) {
-    if (role === 'Master Admin') {
-        return state;
-    }
     const cloned = JSON.parse(JSON.stringify(state));
     if (cloned.dbAlunos && Array.isArray(cloned.dbAlunos)) {
-        cloned.dbAlunos = cloned.dbAlunos.map(student => ({
-            ...student,
-            cpf: maskCPF(student.cpf),
-            mae: maskName(student.mae),
-            pai: maskName(student.pai),
-            endereco: maskAddress(student.endereco),
-            nee: maskNee(student.nee)
-        }));
+        cloned.dbAlunos = cloned.dbAlunos.map(student => {
+            const decCpf = decryptText(student.cpf);
+            const decAddr = decryptText(student.endereco);
+            const decNee = decryptText(student.nee);
+
+            if (role === 'Master Admin') {
+                return {
+                    ...student,
+                    cpf: decCpf,
+                    endereco: decAddr,
+                    nee: decNee
+                };
+            } else {
+                return {
+                    ...student,
+                    cpf: maskCPF(decCpf),
+                    mae: maskName(student.mae),
+                    pai: maskName(student.pai),
+                    endereco: maskAddress(decAddr),
+                    nee: maskNee(decNee)
+                };
+            }
+        });
     }
     return cloned;
 }
@@ -75,11 +87,12 @@ function applyMaskingToState(state, role) {
 function encryptText(text) {
     if (!text) return '';
     try {
-        const iv = crypto.randomBytes(IV_LENGTH);
-        const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
-        let encrypted = cipher.update(text);
-        encrypted = Buffer.concat([encrypted, cipher.final()]);
-        return iv.toString('hex') + ':' + encrypted.toString('hex');
+        const iv = crypto.randomBytes(12);
+        const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(ENCRYPTION_KEY), iv);
+        let encrypted = cipher.update(text, 'utf8', 'hex');
+        encrypted += cipher.final('hex');
+        const authTag = cipher.getAuthTag().toString('hex');
+        return iv.toString('hex') + ':' + authTag + ':' + encrypted;
     } catch (err) {
         console.error('Encryption failed:', err);
         return text;
@@ -88,16 +101,19 @@ function encryptText(text) {
 
 function decryptText(text) {
     if (!text) return '';
-    if (!text.includes(':')) return text;
+    const textParts = text.split(':');
+    if (textParts.length < 3) return text;
     try {
-        const textParts = text.split(':');
-        const iv = Buffer.from(textParts.shift(), 'hex');
-        const encryptedText = Buffer.from(textParts.join(':'), 'hex');
-        const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
-        let decrypted = decipher.update(encryptedText);
-        decrypted = Buffer.concat([decrypted, decipher.final()]);
-        return decrypted.toString();
+        const iv = Buffer.from(textParts[0], 'hex');
+        const authTag = Buffer.from(textParts[1], 'hex');
+        const encryptedText = Buffer.from(textParts[2], 'hex');
+        const decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(ENCRYPTION_KEY), iv);
+        decipher.setAuthTag(authTag);
+        let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
+        decrypted += decipher.final('utf8');
+        return decrypted;
     } catch (err) {
+        console.error('Decryption failed:', err);
         return '*** (Erro de Descriptografia)';
     }
 }
@@ -106,9 +122,9 @@ function encryptSensitiveDataInState(state) {
     const cloned = JSON.parse(JSON.stringify(state));
     if (cloned.dbAlunos && Array.isArray(cloned.dbAlunos)) {
         cloned.dbAlunos = cloned.dbAlunos.map(student => {
-            const cpfEnc = (student.cpf && !student.cpf.includes(':')) ? encryptText(student.cpf) : student.cpf;
-            const addrEnc = (student.endereco && !student.endereco.includes(':')) ? encryptText(student.endereco) : student.endereco;
-            const neeEnc = (student.nee && !student.nee.includes(':')) ? encryptText(student.nee) : student.nee;
+            const cpfEnc = (student.cpf && student.cpf.split(':').length < 3) ? encryptText(student.cpf) : student.cpf;
+            const addrEnc = (student.endereco && student.endereco.split(':').length < 3) ? encryptText(student.endereco) : student.endereco;
+            const neeEnc = (student.nee && student.nee.split(':').length < 3) ? encryptText(student.nee) : student.nee;
             return {
                 ...student,
                 cpf: cpfEnc,
@@ -120,22 +136,41 @@ function encryptSensitiveDataInState(state) {
     return cloned;
 }
 
-function decryptSensitiveDataInState(state) {
-    const cloned = JSON.parse(JSON.stringify(state));
-    if (cloned.dbAlunos && Array.isArray(cloned.dbAlunos)) {
-        cloned.dbAlunos = cloned.dbAlunos.map(student => {
-            const cpfDec = (student.cpf && student.cpf.includes(':')) ? decryptText(student.cpf) : student.cpf;
-            const addrDec = (student.endereco && student.endereco.includes(':')) ? decryptText(student.endereco) : student.endereco;
-            const neeDec = (student.nee && student.nee.includes(':')) ? decryptText(student.nee) : student.nee;
-            return {
-                ...student,
-                cpf: cpfDec,
-                endereco: addrDec,
-                nee: neeDec
-            };
-        });
+function authenticateRequest(req) {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return null;
     }
-    return cloned;
+    const token = authHeader.substring(7);
+    try {
+        const email = Buffer.from(token, 'base64').toString('utf8').trim().toLowerCase();
+        if (!email) return null;
+
+        // Resolve role dynamically based on email prefix
+        let role = 'Gestor da Rede';
+        if (email.startsWith('professor')) {
+            role = 'Professor';
+        } else if (email.startsWith('diretor')) {
+            role = 'Diretor Escola';
+        } else if (email.startsWith('dpo') || email.startsWith('admin')) {
+            role = 'Master Admin';
+        } else if (email.startsWith('gestor')) {
+            role = 'Gestor da Rede';
+        }
+
+        // Additional mapping info if configured
+        const mapping = MOCK_USER_MAPPINGS[email] || {};
+
+        return {
+            email,
+            role,
+            escola: mapping.escola || null,
+            turma: mapping.turma || null
+        };
+    } catch (e) {
+        console.error('Failed to parse auth token:', e);
+        return null;
+    }
 }
 
 const MOCK_USER_MAPPINGS = {
@@ -246,10 +281,14 @@ function mergeStates(incomingState, currentState) {
 // GET /api/sync - Retrieve state with masking & RBAC & Multitenancy
 app.get('/api/sync', async (req, res) => {
     try {
-        const { role, email, tenantId } = req.query;
+        const user = authenticateRequest(req);
+        if (!user) {
+            return res.status(401).json({ error: 'Acesso negado: Usuário não autenticado.' });
+        }
+        const { tenantId } = req.query;
         const activeTenant = tenantId || 'default';
 
-        if (!validateTenantAccess(email || '', role || '', activeTenant)) {
+        if (!validateTenantAccess(user.email, user.role, activeTenant)) {
             return res.status(403).json({ error: 'Acesso negado: Você não possui permissão para acessar este tenant/município.' });
         }
 
@@ -266,9 +305,8 @@ app.get('/api/sync', async (req, res) => {
                 state = queryResult.rows[0].data;
             }
         }
-        const decryptedState = decryptSensitiveDataInState(state);
-        const filteredState = applyRBACFilterToState(decryptedState, role, email);
-        const maskedState = applyMaskingToState(filteredState, role);
+        const filteredState = applyRBACFilterToState(state, user.role, user.email);
+        const maskedState = applyMaskingToState(filteredState, user.role);
         return res.json(maskedState);
     } catch (err) {
         console.error('Error in GET /api/sync:', err);
@@ -279,11 +317,15 @@ app.get('/api/sync', async (req, res) => {
 // POST /api/sync - Persist state with merging & Multitenancy
 app.post('/api/sync', async (req, res) => {
     try {
-        const { role, email, tenantId } = req.query;
+        const user = authenticateRequest(req);
+        if (!user) {
+            return res.status(401).json({ error: 'Acesso negado: Usuário não autenticado.' });
+        }
+        const { tenantId } = req.query;
         const activeTenant = tenantId || 'default';
         const incomingState = req.body;
 
-        if (!validateTenantAccess(email || '', role || '', activeTenant)) {
+        if (!validateTenantAccess(user.email, user.role, activeTenant)) {
             return res.status(403).json({ error: 'Acesso negado: Você não possui permissão para alterar este tenant/município.' });
         }
 
@@ -302,8 +344,7 @@ app.post('/api/sync', async (req, res) => {
             }
         }
         
-        const decryptedCurrentState = decryptSensitiveDataInState(currentState);
-        const mergedState = mergeStates(incomingState, decryptedCurrentState);
+        const mergedState = mergeStates(incomingState, currentState);
         const encryptedState = encryptSensitiveDataInState(mergedState);
         
         if (db.useLocalFallback) {
@@ -331,22 +372,26 @@ app.post('/api/sync', async (req, res) => {
 // POST /api/alunos/reveal - Reveal sensitive field and record audit log
 app.post('/api/alunos/reveal', async (req, res) => {
     try {
-        const { matricula, field, justificativa, userEmail, userRole, tenantId } = req.body;
+        const user = authenticateRequest(req);
+        if (!user) {
+            return res.status(401).json({ error: 'Acesso negado: Usuário não autenticado.' });
+        }
+        const { matricula, field, justificativa, tenantId } = req.body;
         const activeTenant = tenantId || 'default';
         
-        if (!matricula || !field || !userEmail || !userRole) {
+        if (!matricula || !field) {
             return res.status(400).json({ error: 'Missing required parameters.' });
         }
 
-        if (!validateTenantAccess(userEmail, userRole, activeTenant)) {
+        if (!validateTenantAccess(user.email, user.role, activeTenant)) {
             return res.status(403).json({ error: 'Acesso negado: Você não possui permissão para acessar este tenant/município.' });
         }
         
-        if (userRole === 'Professor') {
+        if (user.role === 'Professor') {
             return res.status(403).json({ error: 'Acesso negado: Professores não possuem permissão para revelar dados sensíveis.' });
         }
         
-        if (userRole === 'Gestor da Rede' && (!justificativa || justificativa.trim().length < 5)) {
+        if (user.role === 'Gestor da Rede' && (!justificativa || justificativa.trim().length < 5)) {
             return res.status(400).json({ error: 'Justificativa obrigatória para gestores da rede (mínimo de 5 caracteres).' });
         }
         
@@ -365,12 +410,12 @@ app.post('/api/alunos/reveal', async (req, res) => {
             }
         }
         
-        const decryptedState = decryptSensitiveDataInState(state);
-        const student = decryptedState.dbAlunos ? decryptedState.dbAlunos.find(a => a.matricula === matricula) : null;
+        const student = state.dbAlunos ? state.dbAlunos.find(a => a.matricula === matricula) : null;
         if (!student) {
             return res.status(404).json({ error: 'Aluno não encontrado.' });
         }
         
+        const decryptedValue = decryptText(student[field]);
         const alunoNome = student.nome || 'N/A';
         const actionDetails = justificativa || 'Acesso direto (DPO / Admin)';
         
@@ -380,7 +425,7 @@ app.post('/api/alunos/reveal', async (req, res) => {
             }
             state.auditLogs.push({
                 id: new Date().getTime().toString(),
-                usuario_email: userEmail,
+                usuario_email: user.email,
                 aluno_id: matricula,
                 aluno_nome: alunoNome,
                 campo_acessado: field,
@@ -394,11 +439,10 @@ app.post('/api/alunos/reveal', async (req, res) => {
             await db.queryWithTenant(activeTenant, `
                 INSERT INTO public.logs_auditoria (usuario_email, aluno_id, aluno_nome, campo_acessado, justificativa, tenant_id)
                 VALUES ($1, $2, $3, $4, $5, $6)
-            `, [userEmail, matricula, alunoNome, field, actionDetails, activeTenant]);
+            `, [user.email, matricula, alunoNome, field, actionDetails, activeTenant]);
         }
         
-        const rawValue = student[field] || '';
-        res.json({ success: true, value: rawValue });
+        res.json({ success: true, value: decryptedValue });
     } catch (err) {
         console.error('Error in /api/alunos/reveal:', err);
         res.status(500).json({ error: 'Failed to reveal student sensitive field.' });

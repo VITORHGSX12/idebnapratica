@@ -221,7 +221,7 @@ async function queryWithTenant(tenantId, text, params) {
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
-        await client.query(`SET LOCAL app.current_tenant_id = $1`, [tenantId]);
+        await client.query("SELECT set_config('app.current_tenant_id', $1, true)", [tenantId]);
         const res = await client.query(text, params);
         await client.query('COMMIT');
         return res;

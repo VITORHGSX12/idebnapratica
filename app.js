@@ -697,13 +697,16 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
                 rawQuestions,
                 activeEvaluations
             };
-            const userRole = sessionStorage.getItem('userRole') || 'Master Admin';
-            const userEmail = sessionStorage.getItem('userEmail') || '';
+            const userEmail = sessionStorage.getItem('userEmail') || 'gestor@municipio.gov.br';
             const tenantId = sessionStorage.getItem('activeTenant') || 'default';
-            const url = `${API_BASE_URL}/api/sync?role=${encodeURIComponent(userRole)}&email=${encodeURIComponent(userEmail)}&tenantId=${encodeURIComponent(tenantId)}`;
+            const url = `${API_BASE_URL}/api/sync?tenantId=${encodeURIComponent(tenantId)}`;
+            const token = btoa(userEmail);
             fetch(url, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify(state)
             }).catch(err => console.error('Cloud save failed:', err));
         }
@@ -713,10 +716,15 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
         const online = await checkCloudStatus();
         if (online) {
             try {
-                const userRole = sessionStorage.getItem('userRole') || 'Master Admin';
-                const userEmail = sessionStorage.getItem('userEmail') || '';
+                const userEmail = sessionStorage.getItem('userEmail') || 'gestor@municipio.gov.br';
                 const tenantId = sessionStorage.getItem('activeTenant') || 'default';
-                const res = await fetch(`${API_BASE_URL}/api/sync?role=${encodeURIComponent(userRole)}&email=${encodeURIComponent(userEmail)}&tenantId=${encodeURIComponent(tenantId)}`);
+                const url = `${API_BASE_URL}/api/sync?tenantId=${encodeURIComponent(tenantId)}`;
+                const token = btoa(userEmail);
+                const res = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 if (res.ok) {
                     const data = await res.json();
                     if (data && data.dbEscolas && data.dbEscolas.length > 0) {
@@ -742,9 +750,13 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
                         finishLoading();
                         return;
                     }
+                } else {
+                    console.warn(`Sync API returned error ${res.status}`);
+                    showToast('Sincronização falhou. Operando com dados locais (modo offline).', 'info');
                 }
             } catch (err) {
                 console.error('Error fetching state from backend:', err);
+                showToast('Falha de rede ao conectar com a nuvem. Operando com dados locais.', 'info');
             }
         }
 
@@ -4441,15 +4453,17 @@ DIRETRIZES DO DIAGNÓSTICO:
                 }
                 
                 try {
+                    const token = btoa(userEmail);
                     const revealRes = await fetch(`${API_BASE_URL}/api/alunos/reveal`, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
                         body: JSON.stringify({
                             matricula,
                             field: fieldName,
                             justificativa: justification,
-                            userEmail,
-                            userRole,
                             tenantId
                         })
                     });
