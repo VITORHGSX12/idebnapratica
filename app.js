@@ -749,6 +749,29 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
                         
                         finishLoading();
                         return;
+                    } else {
+                        // Empty/unseeded state from cloud, clean local structures
+                        dbEscolas = [];
+                        dbTurmas = [];
+                        dbAlunos = [];
+                        dbAvaliacoes = [];
+                        dbQuestoes = [];
+                        dbResultadosAluno = [];
+                        activeEvaluations = [];
+                        rawQuestions = [];
+                        loadedStudents = [];
+                        
+                        localStorage.removeItem('dbEscolas');
+                        localStorage.removeItem('dbTurmas');
+                        localStorage.removeItem('dbAlunos');
+                        localStorage.removeItem('dbAvaliacoes');
+                        localStorage.removeItem('dbQuestoes');
+                        localStorage.removeItem('dbResultadosAluno');
+                        localStorage.removeItem('rawQuestions');
+                        localStorage.removeItem('activeEvaluations');
+                        
+                        finishLoading();
+                        return;
                     }
                 } else {
                     console.warn(`Sync API returned error ${res.status}`);
