@@ -7075,7 +7075,7 @@ DIRETRIZES DO DIAGNÓSTICO:
                 if (bannerTag) bannerTag.textContent = 'SECRETARIA MUNICIPAL DE EDUCAÇÃO';
             }
             if (bannerTitle) bannerTitle.textContent = 'Painel Executivo Municipal — SEMED Gonçalves Dias - MA';
-            if (bannerSubtitle) bannerSubtitle.textContent = '14 Escolas Municipais • 2.975 Alunos Cadastrados • Meta IDEB 2025: 6.5 • Meta 2027: 7.0';
+            if (bannerSubtitle) bannerSubtitle.textContent = '12 Escolas Avaliadas (SAEB/SEAMA/IDEB) • 1.758 Alunos do Ensino Fundamental • Meta IDEB 2025: 6.5 • Meta 2027: 7.0';
 
             if (bannerActions) {
                 bannerActions.innerHTML = `
@@ -7086,7 +7086,7 @@ DIRETRIZES DO DIAGNÓSTICO:
                         <i data-lucide="globe"></i> Comparativo INEP
                     </button>
                     <button class="btn-role-action" onclick="window.navigateToTab('escolas-panel')">
-                        <i data-lucide="school"></i> 14 Escolas da Rede
+                        <i data-lucide="school"></i> 12 Escolas da Rede
                     </button>
                     <button class="btn-role-action" onclick="window.navigateToTab('biblioteca-recursos')">
                         <i data-lucide="book-open"></i> Biblioteca da Rede
