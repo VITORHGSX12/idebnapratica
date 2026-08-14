@@ -6757,23 +6757,21 @@ DIRETRIZES DO DIAGNÓSTICO:
             let assignedSchool = '';
             let assignedTurma = '';
 
-            if (emailInput.startsWith('admin') || emailInput.startsWith('carlos') || emailInput.startsWith('gestor') || emailInput.includes('semed')) {
-                detectedRole = 'Master Admin';
-                targetTab = 'dashboard';
-            } else if (emailInput.startsWith('diretor') || emailInput.startsWith('helena') || emailInput.includes('escola') || emailInput.includes('cora')) {
-                detectedRole = 'Diretor Escola';
-                targetTab = 'escolas-panel';
-                assignedSchool = 'U.E. BENTA VILANOVA';
-            } else if (emailInput.startsWith('regina') || emailInput.includes('caee') || emailInput.startsWith('professor.benta2')) {
+            if (emailInput.startsWith('prof') || emailInput.includes('professor')) {
                 detectedRole = 'Professor';
                 targetTab = 'alunos-panel';
                 assignedSchool = 'U.E. BENTA VILANOVA';
-                assignedTurma = '2º Ano A';
-            } else if (emailInput.startsWith('anapaula') || emailInput.includes('aee') || emailInput.startsWith('professor.veloso9')) {
-                detectedRole = 'Professor AEE';
-                targetTab = 'alunos-panel';
-                assignedSchool = 'U.E. RAIMUNDO VELOSO';
-                assignedTurma = 'AEE Inclusão';
+                assignedTurma = '2º Ano';
+            } else if (emailInput.startsWith('diret') || emailInput.includes('diretor') || emailInput.includes('escola') || emailInput.includes('cora')) {
+                detectedRole = 'Diretor Escola';
+                targetTab = 'escolas-panel';
+                assignedSchool = 'U.E. BENTA VILANOVA';
+            } else if (emailInput.startsWith('admin') || emailInput.startsWith('dpo')) {
+                detectedRole = 'Master Admin';
+                targetTab = 'dashboard';
+            } else if (emailInput.startsWith('semed') || emailInput.startsWith('gestor') || emailInput.includes('semed')) {
+                detectedRole = 'Gestor da Rede';
+                targetTab = 'dashboard';
             }
 
             // Loading status feedback

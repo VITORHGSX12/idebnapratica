@@ -1,5 +1,45 @@
 [
   {
+    "id": "usr_semed",
+    "nome": "Secretaria Municipal de Educação (SEMED)",
+    "email": "semed@goncalvesdias.ma.gov.br",
+    "password": "admin",
+    "role": "Gestor da Rede",
+    "escola": null,
+    "turma": null,
+    "created_at": "2026-08-14T16:48:06.250Z"
+  },
+  {
+    "id": "usr_admin",
+    "nome": "Administrador Geral (TI)",
+    "email": "admin@goncalvesdias.ma.gov.br",
+    "password": "admin",
+    "role": "Master Admin",
+    "escola": null,
+    "turma": null,
+    "created_at": "2026-08-14T16:48:06.250Z"
+  },
+  {
+    "id": "usr_diretor",
+    "nome": "Direção Escolar (U.E. Benta Vilanova)",
+    "email": "diretor@goncalvesdias.ma.gov.br",
+    "password": "123",
+    "role": "Diretor Escola",
+    "escola": "U.E. BENTA VILANOVA",
+    "turma": null,
+    "created_at": "2026-08-14T16:48:06.250Z"
+  },
+  {
+    "id": "usr_professor",
+    "nome": "Prof. Docente (2º Ano Alfabetização)",
+    "email": "professor@goncalvesdias.ma.gov.br",
+    "password": "123",
+    "role": "Professor",
+    "escola": "U.E. BENTA VILANOVA",
+    "turma": "2º Ano",
+    "created_at": "2026-08-14T16:48:06.250Z"
+  },
+  {
     "id": "usr_1",
     "nome": "Secretário Executivo (SEMED)",
     "email": "gestor@goncalvesdias.ma.gov.br",
