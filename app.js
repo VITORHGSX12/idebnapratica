@@ -846,29 +846,32 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
             window.initAlunosTab(schools);
         }
 
-        populateLoginTenants(schools);
-        populateIdebGoalsTable(schools);
-        populateWizardSchools();
-        populateScoreSchoolSelect();
-        populateDashboardResultsSelectors();
+        try {
+            if (typeof populateIdebGoalsTable === 'function') populateIdebGoalsTable(schools);
+            if (typeof populateWizardSchools === 'function') populateWizardSchools();
+            if (typeof populateScoreSchoolSelect === 'function') populateScoreSchoolSelect();
+            if (typeof populateDashboardResultsSelectors === 'function') populateDashboardResultsSelectors();
 
-        renderDbSchools();
-        renderDbStudents();
-        renderCreatedEvents();
-        renderOngoingAssessments();
-        renderActiveDescriptors();
-        renderQuestions();
-        renderReferenceMatrix();
-        generateIACSugestedCalendar(6.0);
-        populateManualWeeksAndDescriptors();
-        renderManualScheduleTable();
-        populateQuestionCreatorDropdowns();
-        initIdebComparativo();
-        renderPedagogicLibrary();
-        renderHeatmapGrid();
-        renderRiskGoalsTable();
-        loadUsersList();
-        checkOnboardingState();
+            if (typeof renderDbSchools === 'function') renderDbSchools();
+            if (typeof renderDbStudents === 'function') renderDbStudents();
+            if (typeof renderCreatedEvents === 'function') renderCreatedEvents();
+            if (typeof renderOngoingAssessments === 'function') renderOngoingAssessments();
+            if (typeof renderActiveDescriptors === 'function') renderActiveDescriptors();
+            if (typeof renderQuestions === 'function') renderQuestions();
+            if (typeof renderReferenceMatrix === 'function') renderReferenceMatrix();
+            if (typeof generateIACSugestedCalendar === 'function') generateIACSugestedCalendar(6.0);
+            if (typeof populateManualWeeksAndDescriptors === 'function') populateManualWeeksAndDescriptors();
+            if (typeof renderManualScheduleTable === 'function') renderManualScheduleTable();
+            if (typeof populateQuestionCreatorDropdowns === 'function') populateQuestionCreatorDropdowns();
+            if (typeof initIdebComparativo === 'function') initIdebComparativo();
+            if (typeof renderPedagogicLibrary === 'function') renderPedagogicLibrary();
+            if (typeof renderHeatmapGrid === 'function') renderHeatmapGrid();
+            if (typeof renderRiskGoalsTable === 'function') renderRiskGoalsTable();
+            if (typeof loadUsersList === 'function') loadUsersList();
+            if (typeof checkOnboardingState === 'function') checkOnboardingState();
+        } catch (err) {
+            console.warn('[IDEB Engine] Rendering warning:', err);
+        }
     }
 
     function syncNormalizedTablesFromLoadedData() {
