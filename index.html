@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>IDEB na Prática - Plataforma de Gestão e Avaliação Educacional</title>
-    <link rel="stylesheet" href="styles.css?v=edc96035">
+    <link rel="stylesheet" href="styles.css?v=e0058005">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -478,37 +478,190 @@
                 </section>
 
                 <section id="escolas-panel" class="tab-content">
-                    <div class="card card-full margin-bottom-lg">
-                        <div class="card-header flex-between flex-wrap gap-md">
-                            <div>
-                                <h3>Escolas da Rede</h3>
-                                <p class="card-subtitle">Monitore as unidades de ensino da rede municipal, o total de alunos enturmados e o aproveitamento pedagógico geral.</p>
+                    <!-- VIEW 1: SCHOOLS OVERVIEW & LIST (IMAGE REFERENCE MATCH) -->
+                    <div id="schools-overview-container">
+                        <div class="schools-header-row">
+                            <div class="schools-header-title">
+                                <h2>Escolas</h2>
+                                <p>Gestão das Unidades Escolares do Município</p>
                             </div>
-                            <button class="btn btn-primary" id="btn-open-create-school-modal" style="flex-shrink: 0;">
-                                <i data-lucide="plus-circle" style="width:16px; height:16px; margin-right:4px;"></i> Nova Escola
+                            <div class="schools-header-actions">
+                                <button class="btn-export-outline" id="btn-export-schools-list">
+                                    <i data-lucide="file-spreadsheet" style="width:16px; height:16px;"></i> Exportar Lista
+                                </button>
+                                <button class="btn-refresh-circle" id="btn-refresh-schools-list" title="Recarregar Escolas">
+                                    <i data-lucide="rotate-cw" style="width:16px; height:16px;"></i>
+                                </button>
+                                <button class="btn btn-primary" id="btn-open-create-school-modal" style="display:flex; align-items:center; gap:6px;">
+                                    <i data-lucide="plus" style="width:16px; height:16px;"></i> Nova Escola
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Search Bar -->
+                        <div class="schools-search-bar">
+                            <i data-lucide="search" style="width:18px; height:18px; color:var(--text-muted);"></i>
+                            <input type="text" id="db-school-search" class="schools-search-input" placeholder="Buscar por nome ou INEP...">
+                            <button class="btn-sort-toggle" id="btn-sort-schools" title="Alternar ordenação">
+                                <i data-lucide="arrow-up-down" style="width:16px; height:16px;"></i>
                             </button>
                         </div>
-                        <div class="card-header border-top flex-between flex-wrap gap-md" style="background-color: var(--bg-tertiary); padding: 12px 24px;">
-                            <div style="flex-grow: 1; min-width: 280px;">
-                                <input type="text" id="db-school-search" class="form-input-text" placeholder="Buscar escola por nome...">
+
+                        <!-- 3 KPI Summary Cards -->
+                        <div class="school-kpi-grid">
+                            <div class="school-kpi-card">
+                                <div class="school-kpi-icon-wrap blue">
+                                    <i data-lucide="building" style="width:24px; height:24px;"></i>
+                                </div>
+                                <div>
+                                    <div class="school-kpi-label">TOTAL DE ESCOLAS</div>
+                                    <div class="school-kpi-value" id="kpi-total-schools">12 Unidades</div>
+                                    <div class="school-kpi-sub" id="kpi-total-students-sub">Alunos: 1.758</div>
+                                </div>
+                            </div>
+
+                            <div class="school-kpi-card">
+                                <div class="school-kpi-icon-wrap green">
+                                    <i data-lucide="building-2" style="width:24px; height:24px;"></i>
+                                </div>
+                                <div>
+                                    <div class="school-kpi-label">ESCOLAS SEDE (URBANA)</div>
+                                    <div class="school-kpi-value" id="kpi-urban-schools">4 Unidades</div>
+                                    <div class="school-kpi-sub" id="kpi-urban-students-sub">Alunos: 1.222</div>
+                                </div>
+                            </div>
+
+                            <div class="school-kpi-card">
+                                <div class="school-kpi-icon-wrap amber">
+                                    <i data-lucide="map-pin" style="width:24px; height:24px;"></i>
+                                </div>
+                                <div>
+                                    <div class="school-kpi-label">ESCOLAS ZONA RURAL</div>
+                                    <div class="school-kpi-value" id="kpi-rural-schools">8 Unidades</div>
+                                    <div class="school-kpi-sub" id="kpi-rural-students-sub">Alunos: 536</div>
+                                </div>
                             </div>
                         </div>
-                        <div class="card-body no-padding" style="overflow-x: auto;">
-                            <table class="table-compact" style="width: 100%; border-collapse: collapse; text-align: left;">
-                                <thead>
-                                    <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-secondary); height: 40px;">
-                                        <th style="padding: 12px 16px;">Código INEP</th>
-                                        <th style="padding: 12px 16px;">Nome da Escola</th>
-                                        <th style="padding: 12px 16px; text-align: center;">Alunos Matriculados</th>
-                                        <th style="padding: 12px 16px; text-align: center;">Nº de Etapas</th>
-                                        <th style="padding: 12px 16px; text-align: center;">Proficiência Média</th>
-                                        <th style="padding: 12px 16px; text-align: center;">Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="db-schools-table-body">
-                                    <!-- Preenchido via Javascript -->
-                                </tbody>
-                            </table>
+
+                        <!-- Schools Table Card -->
+                        <div class="card card-full">
+                            <div class="card-body no-padding" style="overflow-x: auto;">
+                                <table class="table-compact" style="width: 100%; border-collapse: collapse; text-align: left;">
+                                    <thead>
+                                        <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-secondary); height: 42px; background-color: var(--bg-tertiary);">
+                                            <th style="padding: 12px 20px;">UNIDADE ESCOLAR</th>
+                                            <th style="padding: 12px 16px;">INEP</th>
+                                            <th style="padding: 12px 16px;">DIRETOR RESPONSÁVEL</th>
+                                            <th style="padding: 12px 16px; text-align: center;">STATUS</th>
+                                            <th style="padding: 12px 20px; text-align: center;">AÇÕES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="db-schools-table-body">
+                                        <!-- Preenchido dinamicamente via Javascript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- VIEW 2: DETAILED SCHOOL WORKSPACE ("ABRIR A ESCOLA") -->
+                    <div id="school-detail-workspace" class="hidden">
+                        <div style="margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
+                            <button class="btn btn-outline btn-sm" id="btn-back-to-schools-list" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">
+                                <i data-lucide="arrow-left" style="width:16px; height:16px;"></i> Voltar para Lista de Escolas
+                            </button>
+                            <span class="badge badge-info" id="school-workspace-badge">Ambiente de Gestão da Unidade</span>
+                        </div>
+
+                        <!-- School Header Card -->
+                        <div class="school-workspace-card">
+                            <div class="school-workspace-header">
+                                <div style="display: flex; align-items: center; gap: 16px;">
+                                    <div class="school-kpi-icon-wrap blue" style="width: 56px; height: 56px;">
+                                        <i data-lucide="school" style="width:30px; height:30px;"></i>
+                                    </div>
+                                    <div>
+                                        <h3 style="font-size: 1.4rem; font-weight: 700; margin: 0 0 4px 0;" id="workspace-school-name">U.E. BENTA VILANOVA</h3>
+                                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;" id="workspace-school-meta">INEP: 21128715 • Zona Urbana • Gonçalves Dias - MA</p>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <span class="school-status-pill">
+                                        <i data-lucide="check-circle" style="width:12px; height:12px;"></i> ATIVA
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Director Assignment Row -->
+                            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div style="width: 38px; height: 38px; border-radius: 50%; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center;">
+                                        <i data-lucide="user-check" style="width:20px; height:20px;"></i>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">DIRETOR(A) RESPONSÁVEL</div>
+                                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary);" id="workspace-director-name">Maria Helena da Silva</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <select id="workspace-director-select" class="form-select" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 6px 12px; font-size: 0.82rem;">
+                                        <option value="">Selecione / Alterar Diretor...</option>
+                                    </select>
+                                    <button class="btn btn-primary btn-sm" id="btn-save-school-director">
+                                        Salvar Vínculo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Classes Section (2º, 5º, 9º Anos) -->
+                        <div class="school-workspace-card">
+                            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+                                <div>
+                                    <h4 style="font-size: 1.15rem; font-weight: 700; margin: 0 0 2px 0;">Turmas Avaliadas (SAEB / SEAMA / IDEB)</h4>
+                                    <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0;">Gerencie as turmas de 2º, 5º e 9º anos, vincule professores e organize as listas nominais de alunos.</p>
+                                </div>
+                                <button class="btn btn-primary btn-sm" id="btn-open-new-class-workspace-modal" style="display: flex; align-items: center; gap: 6px;">
+                                    <i data-lucide="plus-circle" style="width:16px; height:16px;"></i> + Nova Turma
+                                </button>
+                            </div>
+
+                            <!-- Classes Grid -->
+                            <div class="school-classes-grid" id="workspace-classes-grid">
+                                <!-- Preenchido dinamicamente via JS -->
+                            </div>
+                        </div>
+
+                        <!-- Class Student Roster Panel (When a class is clicked) -->
+                        <div class="school-workspace-card hidden" id="workspace-class-students-card">
+                            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">
+                                <div>
+                                    <h4 style="font-size: 1.1rem; font-weight: 700; margin: 0 0 2px 0;" id="workspace-selected-class-title">Alunos Matriculados — 2º Ano A</h4>
+                                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;" id="workspace-selected-class-teacher">Professor(a) Responsável: Prof. Carlos Eduardo</p>
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-primary btn-sm" id="btn-open-bind-student-modal" style="display: flex; align-items: center; gap: 4px;">
+                                        <i data-lucide="user-plus" style="width:14px; height:14px;"></i> + Vincular Aluno
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div style="overflow-x: auto;">
+                                <table class="table-compact" style="width: 100%; border-collapse: collapse; text-align: left;">
+                                    <thead>
+                                        <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-secondary); height: 38px; background: var(--bg-tertiary);">
+                                            <th style="padding: 10px 16px;">MATRÍCULA</th>
+                                            <th style="padding: 10px 16px;">NOME DO ALUNO</th>
+                                            <th style="padding: 10px 16px; text-align: center;">DIAGNÓSTICO INICIAL</th>
+                                            <th style="padding: 10px 16px; text-align: center;">NÍVEL SAEB/SEAMA</th>
+                                            <th style="padding: 10px 16px; text-align: center;">AÇÕES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="workspace-class-students-table-body">
+                                        <!-- Preenchido via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -2479,6 +2632,158 @@
         </div>
     </div>
 
+    <!-- Create/Edit School Modal -->
+    <div id="create-school-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 540px; width: 90%;">
+            <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h3 id="school-modal-title">Cadastrar Nova Escola</h3>
+                    <p class="text-sm text-muted">Adicione uma unidade escolar de Gonçalves Dias - MA.</p>
+                </div>
+                <button class="btn btn-icon" id="btn-close-create-school-modal" style="cursor:pointer;"><i data-lucide="x"></i></button>
+            </div>
+            <form id="form-create-school">
+                <input type="hidden" id="school-edit-id" value="">
+                <div class="modal-body" style="padding-top: 16px; display:flex; flex-direction:column; gap:14px;">
+                    <div class="form-group">
+                        <label for="school-input-name" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Nome da Unidade Escolar *</label>
+                        <input type="text" id="school-input-name" class="form-input-text" required placeholder="Ex: U.E. BENTA VILANOVA">
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="school-input-inep" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Código INEP *</label>
+                            <input type="text" id="school-input-inep" class="form-input-text" required placeholder="Ex: 21128715" maxlength="8">
+                        </div>
+                        <div class="form-group">
+                            <label for="school-input-zone" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Localização / Zona *</label>
+                            <select id="school-input-zone" class="form-select" style="background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:8px 12px; width:100%;">
+                                <option value="Sede Urbana">Sede Urbana</option>
+                                <option value="Zona Rural">Zona Rural</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="school-input-address" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Endereço / Povoado / Bairro</label>
+                        <input type="text" id="school-input-address" class="form-input-text" placeholder="Ex: RUA ALMIR ASSIS, CENTRO - CEP: 65775-000">
+                    </div>
+                    <div class="form-group">
+                        <label for="school-input-director" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Diretor(a) Responsável</label>
+                        <select id="school-input-director" class="form-select" style="background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:8px 12px; width:100%;">
+                            <option value="">Selecione ou deixe Não informado...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer flex-end" style="gap: 8px; margin-top:16px; border-top:1px solid var(--border-color); padding-top:14px;">
+                    <button type="button" class="btn btn-outline" id="btn-cancel-create-school">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-new-school">Salvar Escola</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Workspace Create Class Modal -->
+    <div id="workspace-new-class-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 520px; width: 90%;">
+            <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h3>Criar Turma Avaliada</h3>
+                    <p class="text-sm text-muted" id="workspace-new-class-school-label">U.E. BENTA VILANOVA</p>
+                </div>
+                <button class="btn btn-icon" id="btn-close-ws-new-class-modal" style="cursor:pointer;"><i data-lucide="x"></i></button>
+            </div>
+            <form id="form-workspace-new-class">
+                <div class="modal-body" style="padding-top: 16px; display:flex; flex-direction:column; gap:14px;">
+                    <div class="form-group">
+                        <label style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Etapa Avaliada *</label>
+                        <select id="ws-class-stage-select" class="form-select" style="background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:8px 12px; width:100%;" required>
+                            <option value="2º Ano">2º Ano — Alfabetização & Fluência Leitora (SEAMA)</option>
+                            <option value="5º Ano" selected>5º Ano — Anos Iniciais (SAEB / IDEB)</option>
+                            <option value="9º Ano">9º Ano — Anos Finais (SAEB / IDEB)</option>
+                            <option value="1º Ano">1º Ano — Ensino Fundamental</option>
+                            <option value="3º Ano">3º Ano — Ensino Fundamental</option>
+                            <option value="4º Ano">4º Ano — Ensino Fundamental</option>
+                            <option value="6º Ano">6º Ano — Ensino Fundamental</option>
+                            <option value="7º Ano">7º Ano — Ensino Fundamental</option>
+                            <option value="8º Ano">8º Ano — Ensino Fundamental</option>
+                            <option value="EJA">EJA — Educação de Jovens e Adultos</option>
+                        </select>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="ws-class-name-input" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Identificação da Turma *</label>
+                            <input type="text" id="ws-class-name-input" class="form-input-text" required value="5º Ano A" placeholder="Ex: 5º Ano A ou Turma Alpha">
+                        </div>
+                        <div class="form-group">
+                            <label for="ws-class-shift-select" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Turno *</label>
+                            <select id="ws-class-shift-select" class="form-select" style="background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:8px 12px; width:100%;">
+                                <option value="Matutino">Matutino</option>
+                                <option value="Vespertino">Vespertino</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ws-class-teacher-select" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Professor(a) Responsável da Turma *</label>
+                        <select id="ws-class-teacher-select" class="form-select" style="background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:8px 12px; width:100%;">
+                            <!-- Preenchido via JS com lista de docentes -->
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer flex-end" style="gap: 8px; margin-top:16px; border-top:1px solid var(--border-color); padding-top:14px;">
+                    <button type="button" class="btn btn-outline" id="btn-cancel-ws-class">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-ws-class">Criar Turma</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bind Student to Class Modal -->
+    <div id="bind-student-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 520px; width: 90%;">
+            <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h3>Vincular Aluno à Turma</h3>
+                    <p class="text-sm text-muted" id="bind-student-class-label">Matricular aluno na turma selecionada.</p>
+                </div>
+                <button class="btn btn-icon" id="btn-close-bind-student-modal" style="cursor:pointer;"><i data-lucide="x"></i></button>
+            </div>
+            <form id="form-bind-student">
+                <div class="modal-body" style="padding-top: 16px; display:flex; flex-direction:column; gap:14px;">
+                    <div class="form-group">
+                        <label for="bind-student-name" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Nome Completo do Aluno *</label>
+                        <input type="text" id="bind-student-name" class="form-input-text" required placeholder="Digite o nome do aluno">
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="bind-student-matricula" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Matrícula / Código *</label>
+                            <input type="text" id="bind-student-matricula" class="form-input-text" required placeholder="Ex: 5042">
+                        </div>
+                        <div class="form-group">
+                            <label for="bind-student-nascimento" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Data de Nascimento</label>
+                            <input type="text" id="bind-student-nascimento" class="form-input-text" placeholder="DD/MM/AAAA">
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="bind-student-sexo" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Sexo</label>
+                            <select id="bind-student-sexo" class="form-select" style="background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:8px 12px; width:100%;">
+                                <option value="M">Masculino</option>
+                                <option value="F">Feminino</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="bind-student-nee" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Acessibilidade / NEE</label>
+                            <input type="text" id="bind-student-nee" class="form-input-text" placeholder="Deixe em branco se regular">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer flex-end" style="gap: 8px; margin-top:16px; border-top:1px solid var(--border-color); padding-top:14px;">
+                    <button type="button" class="btn btn-outline" id="btn-cancel-bind-student">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btn-submit-bind-student">Salvar e Enturmar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Reset Confirmation Modal -->
     <div id="reset-confirm-modal" class="modal-overlay hidden">
         <div class="modal-content" style="max-width: 460px; text-align: left; padding: 28px;">
@@ -2826,6 +3131,6 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=8b714199"></script>
+    <script src="app.js?v=19f08917"></script>
 </body>
 </html>

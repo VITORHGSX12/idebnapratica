@@ -2341,6 +2341,55 @@ DIRETRIZES DO DIAGNÓSTICO:
         }
     };
 
+    // State Maps for Directors, Teachers and School Locations
+    const schoolDirectorsMap = {
+        'U.E. BENTA VILANOVA': 'Maria Helena da Silva (Diretora)',
+        'U.E. RAIMUNDO VELOSO BARROS': 'Antônio Marcos Pereira (Diretor)',
+        'U.E. RAIMUNDO REIS': 'Francinete de Sousa Lima (Diretora)',
+        'U.I. ANTÔNIO GONÇALVES DIAS': 'Raimundo Nonato Costa (Diretor)',
+        'U.E. ANTÔNIO JOSÉ DE SANTANA': 'Cleonice Alves Bezerra (Diretora)',
+        'E.M. SÃO RAIMUNDO': 'José Ribamar de Oliveira (Diretor)',
+        'U.E. JOÃO FEITOSA DE ARAÚJO': 'Valdirene Soares Castro (Diretora)',
+        'E.M. 12 DE OUTUBRO': 'Ana Paula Ferreira (Diretora)',
+        'U.E. HILTAMAR DE FREITAS': 'Maria das Dores Santos (Diretora)',
+        'U.E. VEREADOR PEDRO BOGEA': 'Sebastião Carlos Mota (Diretor)',
+        'U.I. BASÍLIO ALVES': 'Teresa Cristina Silva (Diretora)',
+        'E.M. JOSÉ DAS DORES': 'Manoel Messias Ramos (Diretor)'
+    };
+
+    const schoolZonesMap = {
+        'U.E. BENTA VILANOVA': { zone: 'Sede Urbana', address: 'AVENIDA BENTO CHAVES, CENTRO - CEP: 65775-000', inep: 21128715 },
+        'U.E. RAIMUNDO VELOSO BARROS': { zone: 'Sede Urbana', address: 'RUA COELHO NETO, CENTRO - CEP: 65775-000', inep: 21084270 },
+        'U.E. RAIMUNDO REIS': { zone: 'Sede Urbana', address: 'RUA ALMIR ASSIS, CENTRO - CEP: 65775-000', inep: 21127832 },
+        'U.I. ANTÔNIO GONÇALVES DIAS': { zone: 'Sede Urbana', address: 'AV. FRANCISCO DIAS FILHO, CENTRO - CEP: 65775-000', inep: 21293430 },
+        'U.E. ANTÔNIO JOSÉ DE SANTANA': { zone: 'Zona Rural', address: 'POVOADO MATINHA - CEP: 65775-000', inep: 21284270 },
+        'E.M. SÃO RAIMUNDO': { zone: 'Zona Rural', address: 'POVOADO SÃO RAIMUNDO - CEP: 65775-000', inep: 21087422 },
+        'U.E. JOÃO FEITOSA DE ARAÚJO': { zone: 'Zona Rural', address: 'POVOADO LAGES - CEP: 65775-000', inep: 21085616 },
+        'E.M. 12 DE OUTUBRO': { zone: 'Zona Rural', address: 'POVOADO SANTO ANTÔNIO - CEP: 65775-000', inep: 21285004 },
+        'U.E. HILTAMAR DE FREITAS': { zone: 'Zona Rural', address: 'POVOADO CUMARU - CEP: 65775-000', inep: 21285403 },
+        'U.E. VEREADOR PEDRO BOGEA': { zone: 'Zona Rural', address: 'POVOADO BAIXA GRANDE - CEP: 65775-000', inep: 21285225 },
+        'U.I. BASÍLIO ALVES': { zone: 'Zona Rural', address: 'POVOADO PALMARES - CEP: 65775-000', inep: 21285110 },
+        'E.M. JOSÉ DAS DORES': { zone: 'Zona Rural', address: 'POVOADO BOM LUGAR - CEP: 65775-000', inep: 21284997 }
+    };
+
+    const classTeachersMap = {
+        'U.E. BENTA VILANOVA_2º Ano A': 'Profa. Ana Carolina Vilanova',
+        'U.E. BENTA VILANOVA_5º Ano A': 'Prof. Carlos Eduardo Mendes',
+        'U.E. RAIMUNDO VELOSO BARROS_9º Ano A': 'Prof. Marcos Vinícius Freitas',
+        'U.E. RAIMUNDO VELOSO BARROS_9º Ano B': 'Profa. Juliana Medeiros',
+        'U.E. RAIMUNDO REIS_5º Ano A': 'Profa. Eliane Cristina Santos',
+        'U.E. RAIMUNDO REIS_9º Ano A': 'Prof. Rodrigo Tavares',
+        'U.I. ANTÔNIO GONÇALVES DIAS_2º Ano A': 'Profa. Beatriz Oliveira',
+        'U.I. ANTÔNIO GONÇALVES DIAS_5º Ano A': 'Prof. Leandro Ribeiro',
+        'U.E. ANTÔNIO JOSÉ DE SANTANA_2º Ano A': 'Profa. Tatiana Souza',
+        'U.E. ANTÔNIO JOSÉ DE SANTANA_5º Ano A': 'Prof. Francisco Chagas',
+        'E.M. SÃO RAIMUNDO_5º Ano A': 'Profa. Marta Helena Silva',
+        'U.E. JOÃO FEITOSA DE ARAÚJO_9º Ano A': 'Prof. Antônio Carlos Lima'
+    };
+
+    let activeWorkspaceSchool = 'U.E. BENTA VILANOVA';
+    let activeWorkspaceClass = null;
+
     function renderDbSchools() {
         if (!dbSchoolsTableBody) return;
         dbSchoolsTableBody.innerHTML = '';
@@ -2348,14 +2397,49 @@ DIRETRIZES DO DIAGNÓSTICO:
         const query = dbSchoolSearch ? dbSchoolSearch.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : '';
         const filteredSchools = uniqueSchoolsList.filter(s => {
             const schNorm = s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            return schNorm.includes(query);
+            const info = schoolZonesMap[s];
+            const inepStr = info ? String(info.inep) : '';
+            return schNorm.includes(query) || inepStr.includes(query);
         });
+
+        // Compute KPI Summary
+        let totalStudents = loadedStudents.length;
+        let urbanSchoolsCount = 0;
+        let urbanStudentsCount = 0;
+        let ruralSchoolsCount = 0;
+        let ruralStudentsCount = 0;
+
+        uniqueSchoolsList.forEach(sch => {
+            const schStudents = loadedStudents.filter(s => s.escola === sch);
+            const isUrban = schoolZonesMap[sch] ? (schoolZonesMap[sch].zone === 'Sede Urbana') : true;
+            if (isUrban) {
+                urbanSchoolsCount++;
+                urbanStudentsCount += schStudents.length;
+            } else {
+                ruralSchoolsCount++;
+                ruralStudentsCount += schStudents.length;
+            }
+        });
+
+        const kpiTotal = document.getElementById('kpi-total-schools');
+        const kpiTotalSub = document.getElementById('kpi-total-students-sub');
+        const kpiUrban = document.getElementById('kpi-urban-schools');
+        const kpiUrbanSub = document.getElementById('kpi-urban-students-sub');
+        const kpiRural = document.getElementById('kpi-rural-schools');
+        const kpiRuralSub = document.getElementById('kpi-rural-students-sub');
+
+        if (kpiTotal) kpiTotal.textContent = `${uniqueSchoolsList.length} Unidades`;
+        if (kpiTotalSub) kpiTotalSub.textContent = `Alunos: ${totalStudents.toLocaleString('pt-BR')}`;
+        if (kpiUrban) kpiUrban.textContent = `${urbanSchoolsCount} Unidades`;
+        if (kpiUrbanSub) kpiUrbanSub.textContent = `Alunos: ${urbanStudentsCount.toLocaleString('pt-BR')}`;
+        if (kpiRural) kpiRural.textContent = `${ruralSchoolsCount} Unidades`;
+        if (kpiRuralSub) kpiRuralSub.textContent = `Alunos: ${ruralStudentsCount.toLocaleString('pt-BR')}`;
 
         if (filteredSchools.length === 0) {
             dbSchoolsTableBody.innerHTML = `
                 <tr>
-                    <td colspan="6" style="padding: 20px; text-align: center; color: var(--text-muted);">
-                        Nenhuma escola encontrada com este nome.
+                    <td colspan="5" style="padding: 30px; text-align: center; color: var(--text-muted);">
+                        Nenhuma escola encontrada com este termo de busca.
                     </td>
                 </tr>
             `;
@@ -2364,43 +2448,56 @@ DIRETRIZES DO DIAGNÓSTICO:
 
         filteredSchools.forEach(schName => {
             const schStudents = loadedStudents.filter(s => s.escola === schName);
-            const schStudentsCount = schStudents.length;
-            const schStages = Array.from(new Set(schStudents.map(s => s.etapa))).length;
+            const info = schoolZonesMap[schName] || {
+                zone: 'Sede Urbana',
+                address: 'GONÇALVES DIAS - MA - CEP: 65775-000',
+                inep: 21000000 + Math.abs(schName.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0) * 31 % 899999)
+            };
 
-            let hash = 0;
-            for (let i = 0; i < schName.length; i++) {
-                hash += schName.charCodeAt(i);
-            }
-            const inepCode = 21000000 + (hash % 899999);
-
-            // Compute actual average score dynamically from student roster!
-            let schTotalScores = 0;
-            let schCountScores = 0;
-            schStudents.forEach(st => {
-                if (st.avg_score !== undefined) {
-                    schTotalScores += st.avg_score;
-                    schCountScores++;
-                }
-            });
-            const avgScore = schCountScores > 0 ? (schTotalScores / schCountScores) : (62 + (hash % 20) + (hash % 10) / 10);
+            const directorName = schoolDirectorsMap[schName] || 'Não informado';
+            const hasDirector = directorName !== 'Não informado';
 
             const tr = document.createElement('tr');
             tr.style.borderBottom = '1px solid var(--border-color)';
-            tr.style.height = '46px';
+            tr.style.height = '62px';
+            tr.style.transition = 'background-color 0.15s ease';
 
             tr.innerHTML = `
-                <td style="padding: 10px 16px; font-family:var(--font-mono); font-size:0.75rem;">${inepCode}</td>
-                <td style="padding: 10px 16px; font-weight:600;">${schName}</td>
-                <td style="padding: 10px 16px; text-align:center; font-family:var(--font-mono);">${schStudentsCount.toLocaleString('pt-BR')}</td>
-                <td style="padding: 10px 16px; text-align:center;">${schStages}</td>
-                <td style="padding: 10px 16px; text-align:center; font-weight:600; color:var(--green-light);">${avgScore.toFixed(1)}%</td>
-                <td style="padding: 10px 16px; text-align:center;">
-                    <div style="display:flex; gap:8px; justify-content:center;">
-                        <button class="btn btn-outline btn-sm view-school-students-btn" data-school="${schName}">
-                            <i data-lucide="users" style="width:14px; height:14px; margin-right:4px;"></i> Alunos
+                <td style="padding: 12px 20px;">
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <div class="school-row-icon">
+                            <i data-lucide="school" style="width:20px; height:20px;"></i>
+                        </div>
+                        <div class="school-row-meta">
+                            <div class="school-row-name">${schName}</div>
+                            <div class="school-row-address">${info.address}</div>
+                        </div>
+                    </div>
+                </td>
+                <td style="padding: 12px 16px; font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-secondary);">
+                    ${info.inep}
+                </td>
+                <td style="padding: 12px 16px;">
+                    <span class="school-director-badge ${hasDirector ? 'assigned' : ''}">
+                        <i data-lucide="${hasDirector ? 'user-check' : 'user-x'}" style="width:13px; height:13px;"></i>
+                        ${directorName}
+                    </span>
+                </td>
+                <td style="padding: 12px 16px; text-align: center;">
+                    <span class="school-status-pill">
+                        <i data-lucide="check-circle" style="width:12px; height:12px;"></i> ATIVA
+                    </span>
+                </td>
+                <td style="padding: 12px 20px; text-align: center;">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <button class="btn-school-details-action open-school-workspace-btn" data-school="${schName}">
+                            DETALHES <i data-lucide="chevron-right" style="width:14px; height:14px;"></i>
                         </button>
-                        <button class="btn btn-outline btn-sm view-school-classes-btn" data-school="${schName}">
-                            <i data-lucide="book-open" style="width:14px; height:14px; margin-right:4px;"></i> Turmas
+                        <button class="btn-school-row-icon edit-school-btn" data-school="${schName}" title="Editar Escola">
+                            <i data-lucide="pencil" style="width:14px; height:14px;"></i>
+                        </button>
+                        <button class="btn-school-row-icon delete delete-school-btn" data-school="${schName}" title="Excluir Escola">
+                            <i data-lucide="trash-2" style="width:14px; height:14px;"></i>
                         </button>
                     </div>
                 </td>
@@ -2408,30 +2505,467 @@ DIRETRIZES DO DIAGNÓSTICO:
             dbSchoolsTableBody.appendChild(tr);
         });
 
-        const btnViewStudents = dbSchoolsTableBody.querySelectorAll('.view-school-students-btn');
-        btnViewStudents.forEach(btn => {
+        // Event listener for DETALHES > ("Abrir a Escola")
+        dbSchoolsTableBody.querySelectorAll('.open-school-workspace-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const sch = btn.getAttribute('data-school');
-                const tabBtn = document.querySelector('.menu-item[data-target="alunos-panel"]');
-                if (tabBtn) {
-                    tabBtn.click();
-                }
-                if (dbStudentSchoolFilter) {
-                    dbStudentSchoolFilter.value = sch;
-                    applyDbFilters();
-                }
+                openSchoolWorkspace(sch);
             });
         });
 
-        const btnViewClasses = dbSchoolsTableBody.querySelectorAll('.view-school-classes-btn');
-        btnViewClasses.forEach(btn => {
+        // Edit School
+        dbSchoolsTableBody.querySelectorAll('.edit-school-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const sch = btn.getAttribute('data-school');
-                openSchoolClassesModal(sch);
+                openEditSchoolModal(sch);
+            });
+        });
+
+        // Delete School
+        dbSchoolsTableBody.querySelectorAll('.delete-school-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const sch = btn.getAttribute('data-school');
+                if (confirm(`Deseja realmente remover a escola "${sch}" da rede?`)) {
+                    uniqueSchoolsList = uniqueSchoolsList.filter(s => s !== sch);
+                    loadedStudents = loadedStudents.filter(s => s.escola !== sch);
+                    renderDbSchools();
+                    showToast(`Escola "${sch}" removida com sucesso!`, 'trash-2');
+                }
             });
         });
 
         safeCreateIcons();
+    }
+
+    // ==========================================
+    // DETAILED SCHOOL WORKSPACE ("ABRIR A ESCOLA")
+    // ==========================================
+
+    function openSchoolWorkspace(schoolName) {
+        activeWorkspaceSchool = schoolName;
+        const overview = document.getElementById('schools-overview-container');
+        const workspace = document.getElementById('school-detail-workspace');
+        if (overview) overview.classList.add('hidden');
+        if (workspace) workspace.classList.remove('hidden');
+
+        // Populate School Metadata
+        const info = schoolZonesMap[schoolName] || { zone: 'Sede Urbana', address: 'Gonçalves Dias - MA', inep: '21128715' };
+        const wsName = document.getElementById('workspace-school-name');
+        const wsMeta = document.getElementById('workspace-school-meta');
+        const wsDirector = document.getElementById('workspace-director-name');
+        const directorSelect = document.getElementById('workspace-director-select');
+
+        if (wsName) wsName.textContent = schoolName;
+        if (wsMeta) wsMeta.textContent = `INEP: ${info.inep} • ${info.zone} • ${info.address}`;
+
+        const currentDirector = schoolDirectorsMap[schoolName] || 'Não informado';
+        if (wsDirector) wsDirector.textContent = currentDirector;
+
+        // Populate Director Options
+        if (directorSelect) {
+            directorSelect.innerHTML = '<option value="">Selecione / Alterar Diretor...</option>';
+            const directorPool = [
+                'Maria Helena da Silva (Diretora)',
+                'Antônio Marcos Pereira (Diretor)',
+                'Francinete de Sousa Lima (Diretora)',
+                'Raimundo Nonato Costa (Diretor)',
+                'Cleonice Alves Bezerra (Diretora)',
+                'José Ribamar de Oliveira (Diretor)',
+                'Valdirene Soares Castro (Diretora)',
+                'Ana Paula Ferreira (Diretora)',
+                'Maria das Dores Santos (Diretora)',
+                'Sebastião Carlos Mota (Diretor)',
+                'Teresa Cristina Silva (Diretora)',
+                'Manoel Messias Ramos (Diretor)'
+            ];
+
+            directorPool.forEach(dir => {
+                const opt = document.createElement('option');
+                opt.value = dir;
+                opt.textContent = dir;
+                if (dir === currentDirector) opt.selected = true;
+                directorSelect.appendChild(opt);
+            });
+        }
+
+        // Render Classes Grid
+        renderWorkspaceClassesGrid(schoolName);
+
+        // Hide student roster until a class is selected
+        const studentCard = document.getElementById('workspace-class-students-card');
+        if (studentCard) studentCard.classList.add('hidden');
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        safeCreateIcons();
+    }
+
+    function renderWorkspaceClassesGrid(schoolName) {
+        const grid = document.getElementById('workspace-classes-grid');
+        if (!grid) return;
+        grid.innerHTML = '';
+
+        const schoolStudents = loadedStudents.filter(s => s.escola === schoolName);
+        
+        // Find all unique classes for this school
+        const classesSet = new Set(schoolStudents.map(s => s.turma || s.etapa));
+        
+        // Ensure standard 2º, 5º, 9º anos are prominent
+        if (classesSet.size === 0) {
+            classesSet.add('2º Ano A');
+            classesSet.add('5º Ano A');
+            classesSet.add('9º Ano A');
+        }
+
+        classesSet.forEach(className => {
+            const classStudents = schoolStudents.filter(s => (s.turma === className || s.etapa === className));
+            const count = classStudents.length;
+
+            const teacherKey = `${schoolName}_${className}`;
+            const assignedTeacher = classTeachersMap[teacherKey] || 'Prof(a). a Vincular';
+
+            let stageClass = 'stage-general';
+            let stageLabel = 'Ensino Fundamental';
+            if (className.includes('2º') || className.includes('2')) {
+                stageClass = 'stage-2ano';
+                stageLabel = '2º Ano • SEAMA / Fluência';
+            } else if (className.includes('5º') || className.includes('5')) {
+                stageClass = 'stage-5ano';
+                stageLabel = '5º Ano • SAEB / IDEB';
+            } else if (className.includes('9º') || className.includes('9')) {
+                stageClass = 'stage-9ano';
+                stageLabel = '9º Ano • SAEB / IDEB';
+            }
+
+            const card = document.createElement('div');
+            card.className = 'school-class-card';
+
+            card.innerHTML = `
+                <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px;">
+                    <span class="school-class-stage-badge ${stageClass}">${stageLabel}</span>
+                    <span style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">${count} Alunos</span>
+                </div>
+                <h4 style="font-size: 1.05rem; font-weight: 700; margin: 0 0 6px 0; color: var(--text-primary);">${className}</h4>
+                
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px;">
+                    <i data-lucide="graduation-cap" style="width:15px; height:15px; color: var(--purple-light);"></i>
+                    <span style="font-weight: 600;">${assignedTeacher}</span>
+                </div>
+
+                <div style="display: flex; gap: 8px; border-top: 1px solid var(--border-color); padding-top: 10px;">
+                    <button class="btn btn-outline btn-sm manage-class-students-btn" data-class="${className}" style="flex: 1; font-size: 0.76rem;">
+                        <i data-lucide="users" style="width:13px; height:13px; margin-right: 4px;"></i> Alunos (${count})
+                    </button>
+                    <button class="btn btn-outline btn-sm bind-teacher-quick-btn" data-class="${className}" title="Alterar Professor">
+                        <i data-lucide="user-check" style="width:13px; height:13px;"></i>
+                    </button>
+                </div>
+            `;
+
+            grid.appendChild(card);
+        });
+
+        // Event listeners for Manage Students
+        grid.querySelectorAll('.manage-class-students-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const cls = btn.getAttribute('data-class');
+                openClassStudentsRoster(cls, schoolName);
+            });
+        });
+
+        // Event listeners for Bind Teacher
+        grid.querySelectorAll('.bind-teacher-quick-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const cls = btn.getAttribute('data-class');
+                const teacherKey = `${schoolName}_${cls}`;
+                const current = classTeachersMap[teacherKey] || '';
+                const newTeacher = prompt(`Informe o nome do(a) Professor(a) Responsável para a turma "${cls}":`, current);
+                if (newTeacher && newTeacher.trim()) {
+                    classTeachersMap[teacherKey] = newTeacher.trim();
+                    renderWorkspaceClassesGrid(schoolName);
+                    showToast(`Professor(a) "${newTeacher.trim()}" vinculado(a) à turma "${cls}"!`, 'check');
+                }
+            });
+        });
+
+        safeCreateIcons();
+    }
+
+    function openClassStudentsRoster(className, schoolName) {
+        activeWorkspaceClass = className;
+        const studentCard = document.getElementById('workspace-class-students-card');
+        const titleEl = document.getElementById('workspace-selected-class-title');
+        const teacherEl = document.getElementById('workspace-selected-class-teacher');
+        const tbody = document.getElementById('workspace-class-students-table-body');
+
+        if (!studentCard || !tbody) return;
+
+        studentCard.classList.remove('hidden');
+        const teacherKey = `${schoolName}_${className}`;
+        const teacherName = classTeachersMap[teacherKey] || 'Professor(a) a definir';
+
+        if (titleEl) titleEl.textContent = `Lista Nominal de Alunos — ${className} (${schoolName})`;
+        if (teacherEl) teacherEl.textContent = `Docente Responsável: ${teacherName}`;
+
+        const students = loadedStudents.filter(s => s.escola === schoolName && (s.turma === className || s.etapa === className));
+
+        tbody.innerHTML = '';
+        if (students.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="padding: 24px; text-align: center; color: var(--text-muted);">
+                        Nenhum aluno matriculado nesta turma ainda. Clique em "+ Vincular Aluno" para enturmar.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        students.forEach(st => {
+            const score = st.avg_score || (st.score_lp ? Math.round((st.score_lp + st.score_mat) / 2) : 72);
+            let badgeClass = 'badge-success';
+            let nivel = st.nivel_proficiencia || 'Adequado';
+
+            if (score < 50) {
+                badgeClass = 'badge-danger';
+                nivel = 'Abaixo do Básico';
+            } else if (score < 70) {
+                badgeClass = 'badge-warning';
+                nivel = 'Básico';
+            } else if (score < 85) {
+                badgeClass = 'badge-info';
+                nivel = 'Adequado';
+            } else {
+                badgeClass = 'badge-success';
+                nivel = 'Avançado';
+            }
+
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = '1px solid var(--border-color)';
+            tr.style.height = '48px';
+
+            tr.innerHTML = `
+                <td style="padding: 10px 16px; font-family: var(--font-mono); font-size: 0.78rem;">${st.matricula}</td>
+                <td style="padding: 10px 16px; font-weight: 600;">${st.nome}</td>
+                <td style="padding: 10px 16px; text-align: center; font-weight: 700; color: var(--purple-light);">${score}%</td>
+                <td style="padding: 10px 16px; text-align: center;">
+                    <span class="badge ${badgeClass}" style="font-size: 0.72rem; padding: 3px 8px;">${nivel}</span>
+                </td>
+                <td style="padding: 10px 16px; text-align: center;">
+                    <button class="btn btn-outline btn-sm remove-student-from-class-btn" data-matricula="${st.matricula}" style="color: var(--red-light); border-color: var(--border-color);">
+                        <i data-lucide="user-minus" style="width:13px; height:13px;"></i> Desvincular
+                    </button>
+                </td>
+            `;
+
+            tbody.appendChild(tr);
+        });
+
+        tbody.querySelectorAll('.remove-student-from-class-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const mat = btn.getAttribute('data-matricula');
+                const stObj = loadedStudents.find(s => s.matricula === mat);
+                if (stObj && confirm(`Deseja desvincular o(a) aluno(a) "${stObj.nome}" da turma ${className}?`)) {
+                    stObj.turma = 'Sem Turma';
+                    openClassStudentsRoster(className, schoolName);
+                    renderWorkspaceClassesGrid(schoolName);
+                    showToast(`Aluno(a) desvinculado(a) da turma!`, 'check');
+                }
+            });
+        });
+
+        studentCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        safeCreateIcons();
+    }
+
+    // Back to Schools Overview Button
+    const btnBackToSchools = document.getElementById('btn-back-to-schools-list');
+    if (btnBackToSchools) {
+        btnBackToSchools.addEventListener('click', () => {
+            const overview = document.getElementById('schools-overview-container');
+            const workspace = document.getElementById('school-detail-workspace');
+            if (workspace) workspace.classList.add('hidden');
+            if (overview) overview.classList.remove('hidden');
+            renderDbSchools();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+    // Save School Director Button
+    const btnSaveDirector = document.getElementById('btn-save-school-director');
+    if (btnSaveDirector) {
+        btnSaveDirector.addEventListener('click', () => {
+            const sel = document.getElementById('workspace-director-select');
+            if (sel && sel.value) {
+                schoolDirectorsMap[activeWorkspaceSchool] = sel.value;
+                const wsDirector = document.getElementById('workspace-director-name');
+                if (wsDirector) wsDirector.textContent = sel.value;
+                showToast(`Diretor(a) "${sel.value}" vinculado(a) à escola com sucesso!`, 'check');
+            }
+        });
+    }
+
+    // Export Schools List
+    const btnExportSchools = document.getElementById('btn-export-schools-list');
+    if (btnExportSchools) {
+        btnExportSchools.addEventListener('click', () => {
+            showToast('Exportando relatório consolidado das 12 escolas em planilha Excel...', 'file-spreadsheet');
+        });
+    }
+
+    // Refresh Schools Button
+    const btnRefreshSchools = document.getElementById('btn-refresh-schools-list');
+    if (btnRefreshSchools) {
+        btnRefreshSchools.addEventListener('click', () => {
+            renderDbSchools();
+            showToast('Lista de escolas atualizada!', 'rotate-cw');
+        });
+    }
+
+    // Modal Create School Handlers
+    const btnOpenCreateSchool = document.getElementById('btn-open-create-school-modal');
+    const modalCreateSchool = document.getElementById('create-school-modal');
+    const btnCloseCreateSchool = document.getElementById('btn-close-create-school-modal');
+    const btnCancelCreateSchool = document.getElementById('btn-cancel-create-school');
+    const formCreateSchool = document.getElementById('form-create-school');
+
+    if (btnOpenCreateSchool && modalCreateSchool) {
+        btnOpenCreateSchool.addEventListener('click', () => {
+            modalCreateSchool.classList.remove('hidden');
+            if (formCreateSchool) formCreateSchool.reset();
+        });
+    }
+    if (btnCloseCreateSchool && modalCreateSchool) {
+        btnCloseCreateSchool.addEventListener('click', () => modalCreateSchool.classList.add('hidden'));
+    }
+    if (btnCancelCreateSchool && modalCreateSchool) {
+        btnCancelCreateSchool.addEventListener('click', () => modalCreateSchool.classList.add('hidden'));
+    }
+    if (formCreateSchool && modalCreateSchool) {
+        formCreateSchool.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('school-input-name').value.trim().toUpperCase();
+            const inep = document.getElementById('school-input-inep').value.trim();
+            const zone = document.getElementById('school-input-zone').value;
+            const address = document.getElementById('school-input-address').value.trim() || 'GONÇALVES DIAS - MA';
+            const director = document.getElementById('school-input-director').value || 'Não informado';
+
+            if (!name) {
+                showToast('Informe o nome da escola.', 'alert-triangle');
+                return;
+            }
+
+            if (!uniqueSchoolsList.includes(name)) {
+                uniqueSchoolsList.push(name);
+            }
+            schoolZonesMap[name] = { zone, address, inep: inep || 21128715 };
+            schoolDirectorsMap[name] = director;
+
+            modalCreateSchool.classList.add('hidden');
+            renderDbSchools();
+            showToast(`Escola "${name}" cadastrada com sucesso!`, 'check');
+        });
+    }
+
+    // Modal Create Class in Workspace Handlers
+    const btnOpenWsNewClass = document.getElementById('btn-open-new-class-workspace-modal');
+    const modalWsNewClass = document.getElementById('workspace-new-class-modal');
+    const btnCloseWsNewClass = document.getElementById('btn-close-ws-new-class-modal');
+    const btnCancelWsNewClass = document.getElementById('btn-cancel-ws-class');
+    const formWsNewClass = document.getElementById('form-workspace-new-class');
+
+    if (btnOpenWsNewClass && modalWsNewClass) {
+        btnOpenWsNewClass.addEventListener('click', () => {
+            modalWsNewClass.classList.remove('hidden');
+            const schoolLabel = document.getElementById('workspace-new-class-school-label');
+            if (schoolLabel) schoolLabel.textContent = activeWorkspaceSchool;
+
+            const teacherSel = document.getElementById('ws-class-teacher-select');
+            if (teacherSel) {
+                teacherSel.innerHTML = `
+                    <option value="Profa. Ana Carolina Vilanova">Profa. Ana Carolina Vilanova</option>
+                    <option value="Prof. Carlos Eduardo Mendes">Prof. Carlos Eduardo Mendes</option>
+                    <option value="Profa. Eliane Cristina Santos">Profa. Eliane Cristina Santos</option>
+                    <option value="Prof. Marcos Vinícius Freitas">Prof. Marcos Vinícius Freitas</option>
+                    <option value="Profa. Juliana Medeiros">Profa. Juliana Medeiros</option>
+                    <option value="Prof. Rodrigo Tavares">Prof. Rodrigo Tavares</option>
+                    <option value="Profa. Beatriz Oliveira">Profa. Beatriz Oliveira</option>
+                    <option value="Prof. Leandro Ribeiro">Prof. Leandro Ribeiro</option>
+                `;
+            }
+        });
+    }
+    if (btnCloseWsNewClass && modalWsNewClass) {
+        btnCloseWsNewClass.addEventListener('click', () => modalWsNewClass.classList.add('hidden'));
+    }
+    if (btnCancelWsNewClass && modalWsNewClass) {
+        btnCancelWsNewClass.addEventListener('click', () => modalWsNewClass.classList.add('hidden'));
+    }
+    if (formWsNewClass && modalWsNewClass) {
+        formWsNewClass.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const className = document.getElementById('ws-class-name-input').value.trim();
+            const stage = document.getElementById('ws-class-stage-select').value;
+            const teacher = document.getElementById('ws-class-teacher-select').value;
+
+            const teacherKey = `${activeWorkspaceSchool}_${className}`;
+            classTeachersMap[teacherKey] = teacher;
+
+            modalWsNewClass.classList.add('hidden');
+            renderWorkspaceClassesGrid(activeWorkspaceSchool);
+            showToast(`Turma "${className}" criada e vinculada ao(à) ${teacher}!`, 'check');
+        });
+    }
+
+    // Modal Bind Student Handlers
+    const btnOpenBindStudent = document.getElementById('btn-open-bind-student-modal');
+    const modalBindStudent = document.getElementById('bind-student-modal');
+    const btnCloseBindStudent = document.getElementById('btn-close-bind-student-modal');
+    const btnCancelBindStudent = document.getElementById('btn-cancel-bind-student');
+    const formBindStudent = document.getElementById('form-bind-student');
+
+    if (btnOpenBindStudent && modalBindStudent) {
+        btnOpenBindStudent.addEventListener('click', () => {
+            modalBindStudent.classList.remove('hidden');
+            const classLabel = document.getElementById('bind-student-class-label');
+            if (classLabel) classLabel.textContent = `Turma: ${activeWorkspaceClass} • ${activeWorkspaceSchool}`;
+        });
+    }
+    if (btnCloseBindStudent && modalBindStudent) {
+        btnCloseBindStudent.addEventListener('click', () => modalBindStudent.classList.add('hidden'));
+    }
+    if (btnCancelBindStudent && modalBindStudent) {
+        btnCancelBindStudent.addEventListener('click', () => modalBindStudent.classList.add('hidden'));
+    }
+    if (formBindStudent && modalBindStudent) {
+        formBindStudent.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('bind-student-name').value.trim().toUpperCase();
+            const mat = document.getElementById('bind-student-matricula').value.trim();
+            const sex = document.getElementById('bind-student-sexo').value;
+            const nee = document.getElementById('bind-student-nee').value.trim();
+
+            const newStudent = {
+                matricula: mat || String(Math.floor(1000 + Math.random() * 9000)),
+                nome: name,
+                escola: activeWorkspaceSchool,
+                turma: activeWorkspaceClass,
+                etapa: activeWorkspaceClass,
+                sexo: sex,
+                nee: nee,
+                score_lp: 220,
+                score_mat: 215,
+                avg_score: 75,
+                nivel_proficiencia: 'Adequado'
+            };
+
+            loadedStudents.push(newStudent);
+            modalBindStudent.classList.add('hidden');
+            if (formBindStudent) formBindStudent.reset();
+
+            renderWorkspaceClassesGrid(activeWorkspaceSchool);
+            openClassStudentsRoster(activeWorkspaceClass, activeWorkspaceSchool);
+            showToast(`Aluno(a) "${name}" matriculado(a) com sucesso na turma ${activeWorkspaceClass}!`, 'check');
+        });
     }
 
     if (dbSchoolSearch) {
