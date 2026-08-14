@@ -2857,8 +2857,10 @@ DIRETRIZES DO DIAGNÓSTICO:
         filtered.forEach(st => {
             const initial = (st.nome || 'A').charAt(0).toUpperCase();
             
-            // Score and Performance Color Notification (Explicit User Request)
-            const score = st.avg_score || (st.score_lp ? Math.round((st.score_lp + st.score_mat) / 6) : 68);
+            // Score and Performance Color Notification (Normalized % acertos 0 a 100)
+            let rawScore = st.avg_score || (st.score_lp ? (st.score_lp + st.score_mat) / 6 : 68);
+            if (rawScore > 100) rawScore = Math.min(98, Math.max(35, Math.round(rawScore / 3.2)));
+            const score = Math.round(rawScore);
 
             let alertPillClass = 'perf-adequado';
             let alertLabel = `Adequado (${score}%)`;
@@ -3031,7 +3033,9 @@ DIRETRIZES DO DIAGNÓSTICO:
         const currentLevel = evalResult.finalLevel;
         const config = evalResult.config;
 
-        const score = student.avg_score || (student.score_lp ? Math.round((student.score_lp + student.score_mat) / 6) : 68);
+        let rawScore = student.avg_score || (student.score_lp ? (student.score_lp + student.score_mat) / 6 : 68);
+        if (rawScore > 100) rawScore = Math.min(98, Math.max(35, Math.round(rawScore / 3.2)));
+        const score = Math.round(rawScore);
 
         // Separate mastered skills vs skills to improve
         const mastered = SAEB_REFERENCE_ITEMS.filter(q => q.nivel <= currentLevel);
@@ -8093,14 +8097,36 @@ DIRETRIZES DO DIAGNÓSTICO:
     // ==========================================
     // CINEMATIC MOTION CANVAS ENGINE (8-10s Loop)
     // ==========================================
+    // UNIFIED NETWORK IDEB PERFORMANCE CONFIG (SINGLE SOURCE OF TRUTH)
     // ==========================================
-    // CINEMATIC MOTION CANVAS ENGINE (Clean White/Blue & Meta 2027)
+    const NETWORK_IDEB_PERFORMANCE_CONFIG = {
+        indicatorTitle: "Evolução do IDEB (Escala 0 a 10)",
+        targetBadge: "Meta Pactuada 2025 • 6.5",
+        targetLineAnnotation: "Meta Local Pactuada: 6.5",
+        caption: "Série Histórica INEP (2019-2023) • Meta Pactuada pela Rede 2025",
+        seal: "Dados oficiais INEP/SAEB (2019-2023) com metas municipais pactuadas",
+        chartPoints: [
+            { year: "2019", val: "4.8", x: 55, y: 135, isOfficial: true },
+            { year: "2021", val: "5.1", x: 165, y: 118, isOfficial: true },
+            { year: "2023", val: "5.8", x: 275, y: 88, isOfficial: true },
+            { year: "2025 (Meta)", val: "6.5", x: 395, y: 48, isTarget: true }
+        ]
+    };
+
+    // ==========================================
+    // CINEMATIC MOTION CANVAS ENGINE (Clean White/Blue & Meta Pactuada 2025)
     // ==========================================
     function initLoginMotionCanvas() {
         const canvas = document.getElementById('login-motion-canvas');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
+
+        // Synchronize DOM elements with unified config
+        const targetBadgeEl = document.getElementById('login-card-target-badge');
+        const captionEl = document.getElementById('login-card-caption-text');
+        if (targetBadgeEl) targetBadgeEl.textContent = NETWORK_IDEB_PERFORMANCE_CONFIG.targetBadge;
+        if (captionEl) captionEl.textContent = NETWORK_IDEB_PERFORMANCE_CONFIG.caption;
 
         let width = canvas.clientWidth || 480;
         let height = canvas.clientHeight || 195;
@@ -8133,14 +8159,8 @@ DIRETRIZES DO DIAGNÓSTICO:
             { label: "Avaliação", icon: "check-circle", x: 425, y: 140, color: "#4f46e5" }
         ];
 
-        // Historical Evolution (2019 -> 2025) & Projected Meta 2027
-        const chartPoints = [
-            { year: "2019", val: "4.8", x: 45, y: 135 },
-            { year: "2021", val: "5.1", x: 130, y: 120 },
-            { year: "2023", val: "5.8", x: 215, y: 92 },
-            { year: "2025", val: "6.5", x: 300, y: 62 },
-            { year: "2027 (Meta)", val: "7.0", x: 395, y: 32 }
-        ];
+        // Chart Points from Single Source of Truth
+        const chartPoints = NETWORK_IDEB_PERFORMANCE_CONFIG.chartPoints;
 
         function drawIcon(type, x, y, size, color) {
             ctx.save();
@@ -8237,7 +8257,7 @@ DIRETRIZES DO DIAGNÓSTICO:
                 ctx.fill();
             });
 
-            // 3. Projected Target Dashed Line (Meta 2027: 7.0)
+            // 3. Projected Target Dashed Line (Meta Local Pactuada: 6.5)
             const metaLineAlpha = Math.min(1, Math.max(0, (elapsed - 1200) / 1000));
             if (metaLineAlpha > 0) {
                 ctx.save();
@@ -8245,20 +8265,19 @@ DIRETRIZES DO DIAGNÓSTICO:
                 ctx.strokeStyle = `rgba(37, 99, 235, ${metaLineAlpha * 0.5})`;
                 ctx.lineWidth = 1.5;
                 ctx.beginPath();
-                ctx.moveTo(35, 80);
-                ctx.lineTo(120, 68);
-                ctx.lineTo(210, 54);
-                ctx.lineTo(300, 42);
-                ctx.lineTo(405, 28);
+                ctx.moveTo(40, 75);
+                ctx.lineTo(150, 65);
+                ctx.lineTo(260, 56);
+                ctx.lineTo(405, 48);
                 ctx.stroke();
 
                 ctx.fillStyle = `rgba(37, 99, 235, ${metaLineAlpha * 0.95})`;
                 ctx.font = "bold 9px 'Plus Jakarta Sans', sans-serif";
-                ctx.fillText("Meta 2027: 7.0", 390, 22);
+                ctx.fillText(NETWORK_IDEB_PERFORMANCE_CONFIG.targetLineAnnotation, 390, 32);
                 ctx.restore();
             }
 
-            // 4. Progressive Line Graph Evolution (2019 -> 2025 -> 2027)
+            // 4. Progressive Line Graph Evolution (2019 -> 2021 -> 2023 -> 2025 Meta)
             const graphProgress = Math.min(1, Math.max(0, (elapsed - 1600) / 3800));
             const totalPoints = chartPoints.length;
             const currentPointIndex = graphProgress * (totalPoints - 1);
@@ -8320,41 +8339,40 @@ DIRETRIZES DO DIAGNÓSTICO:
                     const pointAlpha = Math.min(1, (graphProgress - (i / (totalPoints - 1))) * 4);
 
                     if (pointAlpha > 0) {
-                        const isMeta2027 = i === 4;
-                        const isConsolidado2025 = i === 3;
+                        const isTarget = pt.isTarget;
 
                         // Point Circle
                         ctx.save();
                         ctx.beginPath();
-                        ctx.arc(pt.x, pt.y, isMeta2027 ? 5.5 : 4.5, 0, Math.PI * 2);
+                        ctx.arc(pt.x, pt.y, isTarget ? 5.5 : 4.5, 0, Math.PI * 2);
                         ctx.fillStyle = "#ffffff";
-                        ctx.strokeStyle = isMeta2027 ? "#059669" : (isConsolidado2025 ? "#2563eb" : "#0284c7");
+                        ctx.strokeStyle = isTarget ? "#059669" : "#2563eb";
                         ctx.lineWidth = 2.5;
                         ctx.shadowColor = "rgba(37, 99, 235, 0.35)";
                         ctx.shadowBlur = 8;
                         ctx.fill();
                         ctx.stroke();
 
-                        // Ripple pulse on Meta 2027 & 2025
-                        if (isMeta2027 || isConsolidado2025) {
+                        // Ripple pulse on Target point
+                        if (isTarget) {
                             const pulseR = 5 + (elapsed % 1400) / 90;
                             const pulseOp = 1 - (elapsed % 1400) / 1400;
                             ctx.beginPath();
                             ctx.arc(pt.x, pt.y, pulseR, 0, Math.PI * 2);
-                            ctx.strokeStyle = isMeta2027 ? `rgba(5, 150, 105, ${pulseOp})` : `rgba(37, 99, 235, ${pulseOp})`;
+                            ctx.strokeStyle = `rgba(5, 150, 105, ${pulseOp})`;
                             ctx.lineWidth = 1.5;
                             ctx.stroke();
                         }
 
                         // Year Label
                         ctx.fillStyle = "#64748b";
-                        ctx.font = `600 ${isMeta2027 ? '8.5px' : '8px'} 'Plus Jakarta Sans', sans-serif`;
+                        ctx.font = `600 ${isTarget ? '8.5px' : '8px'} 'Plus Jakarta Sans', sans-serif`;
                         ctx.textAlign = "center";
                         ctx.fillText(pt.year, pt.x, height - 4);
 
                         // Value Pill / Tag
-                        ctx.fillStyle = isMeta2027 ? "#059669" : "#1e293b";
-                        ctx.font = `bold ${isMeta2027 ? '11px' : '9.5px'} 'Plus Jakarta Sans', sans-serif`;
+                        ctx.fillStyle = isTarget ? "#059669" : "#1e293b";
+                        ctx.font = `bold ${isTarget ? '11px' : '9.5px'} 'Plus Jakarta Sans', sans-serif`;
                         ctx.fillText(pt.val, pt.x, pt.y - 8);
                         ctx.restore();
                     }
@@ -8814,7 +8832,7 @@ DIRETRIZES DO DIAGNÓSTICO:
                 if (bannerTag) bannerTag.textContent = 'SECRETARIA MUNICIPAL DE EDUCAÇÃO';
             }
             if (bannerTitle) bannerTitle.textContent = 'Painel Executivo Municipal — SEMED Gonçalves Dias - MA';
-            if (bannerSubtitle) bannerSubtitle.textContent = '12 Escolas Avaliadas (SAEB/SEAMA/IDEB) • 1.758 Alunos do Ensino Fundamental • Meta IDEB 2025: 6.5 • Meta 2027: 7.0';
+            if (bannerSubtitle) bannerSubtitle.textContent = '12 Escolas Avaliadas (SAEB/SEAMA/IDEB) • 1.758 Alunos do Ensino Fundamental • Meta IDEB 2025: 6.5 (Pactuada)';
 
             if (bannerActions) {
                 bannerActions.innerHTML = `

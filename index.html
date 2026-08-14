@@ -48,22 +48,22 @@
                         <div class="login-motion-header">
                             <div style="display:flex; align-items:center; gap:8px;">
                                 <span class="pulse-dot"></span>
-                                <span class="login-motion-tag">Inteligência de Dados Educacionais</span>
+                                <span class="login-motion-tag">Evolução do IDEB (Escala 0 a 10)</span>
                             </div>
-                            <span class="badge badge-success" style="background:#2563eb; color:#ffffff; font-weight:700;">Meta 2027 • 7.0</span>
+                            <span class="badge badge-success" id="login-card-target-badge" style="background:#2563eb; color:#ffffff; font-weight:700;">Meta Pactuada 2025 • 6.5</span>
                         </div>
                         <div class="login-canvas-wrapper" id="login-canvas-container">
                             <canvas id="login-motion-canvas" width="480" height="200"></canvas>
                         </div>
                         <div class="login-motion-caption">
-                            <span>Série Histórica 2019-2025 • Projeção & Meta 2027 (SAEB)</span>
+                            <span id="login-card-caption-text">Série Histórica INEP (2019-2023) • Meta Pactuada pela Rede 2025</span>
                         </div>
                     </div>
 
                     <!-- Seal of official data -->
                     <div class="login-official-badge">
                         <i data-lucide="shield-check" style="width: 15px; height: 15px; color: #2563eb;"></i>
-                        <span>Dados oficiais INEP/SAEB integrados em conformidade com a LGPD</span>
+                        <span>Dados oficiais INEP/SAEB (2019-2023) com metas municipais pactuadas</span>
                     </div>
                 </div>
             </div>
@@ -342,7 +342,7 @@
                             <span id="role-banner-tag">SECRETARIA MUNICIPAL DE EDUCAÇÃO</span>
                         </div>
                         <h3 id="role-banner-title">Painel Executivo Municipal — SEMED Gonçalves Dias - MA</h3>
-                        <p id="role-banner-subtitle">12 Escolas Avaliadas (SAEB/SEAMA/IDEB) • 1.758 Alunos do Ensino Fundamental • Meta IDEB 2025: 6.5 • Meta 2027: 7.0</p>
+                        <p id="role-banner-subtitle">12 Escolas Avaliadas (SAEB/SEAMA/IDEB) • 1.758 Alunos do Ensino Fundamental • Meta IDEB 2025: 6.5 (Pactuada)</p>
                     </div>
                     <div class="role-banner-actions" id="role-banner-actions">
                         <!-- Role-specific actions dynamically rendered via JS -->
@@ -3582,6 +3582,6 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=5136d2f7"></script>
+    <script src="app.js?v=19ed56ef"></script>
 </body>
 </html>
