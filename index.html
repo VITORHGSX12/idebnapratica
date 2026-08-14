@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>IDEB na Prática - Plataforma de Gestão e Avaliação Educacional</title>
-    <link rel="stylesheet" href="styles.css?v=e0058005">
+    <link rel="stylesheet" href="styles.css?v=e03e0e72">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -204,6 +204,11 @@
                         <a href="#" class="menu-item" data-target="matriz-descritores" data-tooltip="Matriz & Descritores">
                             <i data-lucide="list-checks"></i>
                             <span>Matriz & Descritores</span>
+                        </a>
+                        <a href="#" class="menu-item" data-target="cronograma-habilidades" data-tooltip="Cronograma de Habilidades">
+                            <i data-lucide="calendar-check-2"></i>
+                            <span>Cronograma de Habilidades</span>
+                            <span class="badge badge-success" style="margin-left: auto; font-size: 0.65rem; padding: 2px 6px;">Semanal</span>
                         </a>
                         <a href="#" class="menu-item" data-target="criar-avaliacoes" data-tooltip="Criar Avaliações">
                             <i data-lucide="calendar-plus"></i>
@@ -1053,6 +1058,96 @@
                     </div>
                 </section>
 
+                <!-- ==================== CRONOGRAMA DE HABILIDADES TAB ==================== -->
+                <section id="cronograma-habilidades" class="tab-content">
+                    <div class="card card-full margin-bottom-lg">
+                        <div class="card-header flex-between flex-wrap gap-md">
+                            <div>
+                                <h3 style="display: flex; align-items: center; gap: 8px;">
+                                    <i data-lucide="calendar-check-2" style="color: var(--purple-light);"></i>
+                                    Cronograma Semanal de Habilidades
+                                </h3>
+                                <p class="card-subtitle">Planejamento e pactuação semanal de habilidades (SEMED ↔ Docentes) para acelerar a recomposição de aprendizagem.</p>
+                            </div>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button class="btn btn-primary" id="btn-open-create-schedule-modal" style="display: flex; align-items: center; gap: 6px;">
+                                    <i data-lucide="plus-circle" style="width:16px; height:16px;"></i> Nova Semana no Cronograma
+                                </button>
+                                <button class="btn btn-outline" id="btn-export-schedule" style="display: flex; align-items: center; gap: 6px;">
+                                    <i data-lucide="download" style="width:16px; height:16px;"></i> Exportar Agenda (PDF)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- KPI Summary of Skills Completion -->
+                        <div class="card-body" style="padding-bottom: 0;">
+                            <div class="school-kpi-grid">
+                                <div class="school-kpi-card">
+                                    <div class="school-kpi-icon-wrap blue">
+                                        <i data-lucide="calendar" style="width:24px; height:24px;"></i>
+                                    </div>
+                                    <div>
+                                        <div class="school-kpi-label">SEMANAS PLANEJADAS</div>
+                                        <div class="school-kpi-value" id="schedule-kpi-weeks">40 Semanas</div>
+                                        <div class="school-kpi-sub">Ano Letivo 2026</div>
+                                    </div>
+                                </div>
+
+                                <div class="school-kpi-card">
+                                    <div class="school-kpi-icon-wrap green">
+                                        <i data-lucide="check-circle-2" style="width:24px; height:24px;"></i>
+                                    </div>
+                                    <div>
+                                        <div class="school-kpi-label">TAXA DE CUMPRIMENTO (REDE)</div>
+                                        <div class="school-kpi-value" id="schedule-kpi-compliance">88.4%</div>
+                                        <div class="school-kpi-sub" id="schedule-kpi-completed-sub">35 de 40 metas atingidas</div>
+                                    </div>
+                                </div>
+
+                                <div class="school-kpi-card">
+                                    <div class="school-kpi-icon-wrap amber">
+                                        <i data-lucide="layers" style="width:24px; height:24px;"></i>
+                                    </div>
+                                    <div>
+                                        <div class="school-kpi-label">HABILIDADES TRABALHADAS</div>
+                                        <div class="school-kpi-value" id="schedule-kpi-skills">48 Descritores</div>
+                                        <div class="school-kpi-sub">Língua Portuguesa & Matemática</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filter Toolbar -->
+                        <div class="card-header border-top flex-between flex-wrap gap-md" style="background-color: var(--bg-tertiary); padding: 12px 24px;">
+                            <div style="display: flex; gap: 14px; flex-wrap: wrap; flex-grow: 1; align-items: center;">
+                                <div style="min-width: 180px;">
+                                    <select id="schedule-filter-stage" class="form-select" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 12px; width: 100%;">
+                                        <option value="all">Todas as Etapas (2º, 5º e 9º)</option>
+                                        <option value="2º Ano">2º Ano — Alfabetização (SEAMA)</option>
+                                        <option value="5º Ano">5º Ano — Anos Iniciais (SAEB)</option>
+                                        <option value="9º Ano">9º Ano — Anos Finais (SAEB)</option>
+                                    </select>
+                                </div>
+                                <div style="min-width: 180px;">
+                                    <select id="schedule-filter-status" class="form-select" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 12px; width: 100%;">
+                                        <option value="all">Todos os Status</option>
+                                        <option value="cumprido">Cumprido 🟢</option>
+                                        <option value="andamento">Em Andamento 🟡</option>
+                                        <option value="pendente">Pendente / Não Cumprido 🔴</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Schedule List Container -->
+                        <div class="card-body">
+                            <div id="skills-schedule-container" style="display: flex; flex-direction: column; gap: 14px;">
+                                <!-- Preenchido dinamicamente via JS -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- ==================== APLICAÇÃO DE PROVAS TAB ==================== -->
                 <section id="aplicacao-provas" class="tab-content">
                     <div class="card card-full margin-bottom-lg">
@@ -1590,13 +1685,167 @@
                 <section id="gestao-pedagogica" class="tab-content">
                     <div class="card card-full margin-bottom-md" style="padding: 0; background-color: var(--bg-secondary);">
                         <div style="display: flex; gap: 20px; padding: 16px 24px; border-bottom: 1px solid var(--border-color); overflow-x: auto;">
-                            <button class="pedagogic-subtab-btn active" data-subtab="planos-intervencao-sub" style="background:none; border:none; color:var(--purple-light); font-weight:600; cursor:pointer; padding-bottom:8px; border-bottom: 2px solid var(--purple); font-size:0.95rem; white-space:nowrap; transition: var(--transition);">Planos de Intervenção Pedagógica</button>
+                            <button class="pedagogic-subtab-btn active" data-subtab="niveis-saeb-sub" style="background:none; border:none; color:var(--purple-light); font-weight:600; cursor:pointer; padding-bottom:8px; border-bottom: 2px solid var(--purple); font-size:0.95rem; white-space:nowrap; transition: var(--transition);">Níveis de Proficiência SAEB (0 a 5)</button>
+                            <button class="pedagogic-subtab-btn" data-subtab="planos-intervencao-sub" style="background:none; border:none; color:var(--text-secondary); font-weight:500; cursor:pointer; padding-bottom:8px; font-size:0.95rem; white-space:nowrap; transition: var(--transition);">Planos de Intervenção Pedagógica</button>
                             <button class="pedagogic-subtab-btn" data-subtab="risco-metas-sub" style="background:none; border:none; color:var(--text-secondary); font-weight:500; cursor:pointer; padding-bottom:8px; font-size:0.95rem; white-space:nowrap; transition: var(--transition);">Indicador de Risco de Metas</button>
                         </div>
                     </div>
 
+                    <!-- SUBTAB 0: Avaliação por Níveis de Proficiência (0 a 5) -->
+                    <div class="pedagogic-subtab-content" id="niveis-saeb-sub">
+                        <div class="card card-full margin-bottom-lg">
+                            <div class="card-header flex-between flex-wrap gap-md">
+                                <div>
+                                    <h3 style="display: flex; align-items: center; gap: 8px;">
+                                        <i data-lucide="award" style="color: var(--purple-light);"></i>
+                                        Classificação por Níveis de Proficiência (0 a 5 — Metodologia SAEB)
+                                    </h3>
+                                    <p class="card-subtitle">
+                                        Avaliação cumulativa baseada no domínio demonstrado de descritores e eixos temáticos, do Nível 0 (Abaixo do Mínimo) ao Nível 5 (Avançado).
+                                    </p>
+                                </div>
+                                <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                                    <div style="display: flex; align-items: center; gap: 8px; background: var(--bg-tertiary); padding: 6px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                                        <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">Limiar de Corte:</span>
+                                        <input type="number" id="saeb-threshold-input" value="65" min="50" max="85" step="5" style="width: 58px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 4px; padding: 4px 6px; font-weight: 700; text-align: center; color: var(--purple-light);">
+                                        <span style="font-size: 0.8rem; font-weight: 700; color: var(--purple-light);">%</span>
+                                    </div>
+                                    <button class="btn btn-outline" id="btn-export-saeb-report" style="display: flex; align-items: center; gap: 6px;">
+                                        <i data-lucide="file-text" style="width:16px; height:16px;"></i> Boletim SAEB
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Filter Toolbar for SAEB Levels Analysis -->
+                            <div class="card-header border-top flex-between flex-wrap gap-md" style="background-color: var(--bg-tertiary); padding: 12px 24px;">
+                                <div style="display: flex; gap: 14px; flex-wrap: wrap; flex-grow: 1; align-items: center;">
+                                    <div style="min-width: 220px;">
+                                        <label style="font-size: 0.72rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 2px;">Simulado / Avaliação</label>
+                                        <select id="saeb-eval-select" class="form-select" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 12px; width: 100%;">
+                                            <option value="diag_2026">Avaliação Diagnóstica de Início de Ano 2026</option>
+                                            <option value="sim_seama_1">1º Simulado SEAMA / Fluência Leitora 2026</option>
+                                            <option value="sim_saeb_1">1º Simulado SAEB / Prova Brasil 2026</option>
+                                        </select>
+                                    </div>
+                                    <div style="min-width: 200px;">
+                                        <label style="font-size: 0.72rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 2px;">Unidade Escolar</label>
+                                        <select id="saeb-school-select" class="form-select" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 12px; width: 100%;">
+                                            <option value="all">Todas as Escolas (Rede Municipal)</option>
+                                        </select>
+                                    </div>
+                                    <div style="min-width: 180px;">
+                                        <label style="font-size: 0.72rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 2px;">Etapa / Turma</label>
+                                        <select id="saeb-class-select" class="form-select" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 12px; width: 100%;">
+                                            <option value="all">Todas as Turmas</option>
+                                            <option value="2º Ano">2º Ano EF (SEAMA)</option>
+                                            <option value="5º Ano">5º Ano EF (SAEB / IDEB)</option>
+                                            <option value="9º Ano">9º Ano EF (SAEB / IDEB)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <!-- Participation & Distribution Stats -->
+                                <div class="saeb-dist-container">
+                                    <div class="flex-between flex-wrap gap-md">
+                                        <div>
+                                            <h4 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-primary);">
+                                                Distribuição Percentual de Estudantes por Nível de Proficiência
+                                            </h4>
+                                            <p style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px;" id="saeb-participation-meta">
+                                                Taxa de Participação: <strong style="color: var(--green-light);">94.8%</strong> (1.667 de 1.758 alunos avaliados)
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Stacked Multi-color Distribution Bar -->
+                                    <div class="saeb-dist-bar" id="saeb-dist-bar-element">
+                                        <div class="saeb-dist-seg seg-0" style="width: 8%;" title="Nível 0: 8%">Nível 0 (8%)</div>
+                                        <div class="saeb-dist-seg seg-1" style="width: 18%;" title="Nível 1: 18%">Nível 1 (18%)</div>
+                                        <div class="saeb-dist-seg seg-2" style="width: 28%;" title="Nível 2: 28%">Nível 2 (28%)</div>
+                                        <div class="saeb-dist-seg seg-3" style="width: 26%;" title="Nível 3: 26%">Nível 3 (26%)</div>
+                                        <div class="saeb-dist-seg seg-4" style="width: 14%;" title="Nível 4: 14%">Nível 4 (14%)</div>
+                                        <div class="saeb-dist-seg seg-5" style="width: 6%;" title="Nível 5: 6%">Nível 5 (6%)</div>
+                                    </div>
+
+                                    <!-- Color Legend -->
+                                    <div class="saeb-legend-grid">
+                                        <div class="saeb-legend-item"><div class="saeb-legend-dot" style="background:#ef4444;"></div><span><strong>Nível 0</strong> (Alerta)</span></div>
+                                        <div class="saeb-legend-item"><div class="saeb-legend-dot" style="background:#f97316;"></div><span><strong>Nível 1</strong> (Inicial)</span></div>
+                                        <div class="saeb-legend-item"><div class="saeb-legend-dot" style="background:#eab308;"></div><span><strong>Nível 2</strong> (Em Desenv.)</span></div>
+                                        <div class="saeb-legend-item"><div class="saeb-legend-dot" style="background:#0ea5e9;"></div><span><strong>Nível 3</strong> (Adequado)</span></div>
+                                        <div class="saeb-legend-item"><div class="saeb-legend-dot" style="background:#22c55e;"></div><span><strong>Nível 4</strong> (Consolidado)</span></div>
+                                        <div class="saeb-legend-item"><div class="saeb-legend-dot" style="background:#a855f7;"></div><span><strong>Nível 5</strong> (Avançado)</span></div>
+                                    </div>
+                                </div>
+
+                                <!-- Comparative Table across Groups / Classes -->
+                                <h4 style="margin: 24px 0 12px 0; font-size: 1rem; font-weight: 700; color: var(--text-primary);">
+                                    Comparativo de Proficiência por Turmas e Média Municipal
+                                </h4>
+                                <div style="overflow-x: auto; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                                    <table class="table-compact" style="width: 100%; border-collapse: collapse; text-align: left;">
+                                        <thead>
+                                            <tr style="background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color); font-size: 0.76rem; color: var(--text-secondary);">
+                                                <th style="padding: 10px 14px;">Grupo / Turma</th>
+                                                <th style="padding: 10px 14px; text-align: center;">Avaliados</th>
+                                                <th style="padding: 10px 14px; text-align: center; color: #ef4444;">Nível 0</th>
+                                                <th style="padding: 10px 14px; text-align: center; color: #f97316;">Nível 1</th>
+                                                <th style="padding: 10px 14px; text-align: center; color: #eab308;">Nível 2</th>
+                                                <th style="padding: 10px 14px; text-align: center; color: #0ea5e9;">Nível 3</th>
+                                                <th style="padding: 10px 14px; text-align: center; color: #22c55e;">Nível 4</th>
+                                                <th style="padding: 10px 14px; text-align: center; color: #a855f7;">Nível 5</th>
+                                                <th style="padding: 10px 14px; text-align: center; font-weight: 700;">Proficiência Média</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="saeb-comparative-table-body">
+                                            <!-- Preenchido dinamicamente via JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Dynamic Level Descriptions Generated from Question Descriptors -->
+                                <h4 style="margin: 28px 0 12px 0; font-size: 1rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                                    <i data-lucide="layers" style="color: var(--purple-light);"></i>
+                                    Fichas Descritivas dos Níveis de Proficiência (Matriz Dinâmica SAEB)
+                                </h4>
+                                <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 14px;">
+                                    Síntese interpretativa das competências demonstradas por estudantes em cada patamar da escala, agrupadas por eixos curriculares:
+                                </p>
+                                <div class="saeb-level-cards-grid" id="saeb-level-descriptions-container">
+                                    <!-- Preenchido dinamicamente via JS -->
+                                </div>
+
+                                <!-- Individual Student Diagnostic SAEB Sheet -->
+                                <div class="student-saeb-sheet" id="student-saeb-sheet-card">
+                                    <div class="flex-between flex-wrap gap-md" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px;">
+                                        <div>
+                                            <h3 style="display: flex; align-items: center; gap: 8px; margin: 0; font-size: 1.15rem;">
+                                                <i data-lucide="user-check" style="color: var(--purple-light);"></i>
+                                                Ficha Diagnóstica Individual do Estudante (Padrão SAEB)
+                                            </h3>
+                                            <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;">
+                                                Diagnóstico detalhado de habilidades dominadas e plano de reforço individualizado.
+                                            </p>
+                                        </div>
+                                        <div style="min-width: 260px;">
+                                            <select id="saeb-individual-student-select" class="form-select" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 12px; width: 100%;">
+                                                <!-- Carregado via JS com lista nominal -->
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div id="student-saeb-report-content" style="margin-top: 18px;">
+                                        <!-- Preenchido dinamicamente ao selecionar aluno -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- SUBTAB 1: Planos de Intervenção -->
-                    <div class="pedagogic-subtab-content" id="planos-intervencao-sub">
+                    <div class="pedagogic-subtab-content hidden" id="planos-intervencao-sub">
                         <div class="card card-full" style="background-color: var(--bg-secondary); margin-bottom: 20px;">
                             <div class="card-header flex-between flex-wrap gap-md">
                                 <div>
@@ -2545,6 +2794,66 @@
         </div>
     </div>
 
+    <!-- Create Schedule Week Modal (SEMED / Admin) -->
+    <div id="create-schedule-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 580px; width: 90%;">
+            <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h3>Cadastrar Semana no Cronograma</h3>
+                    <p class="text-sm text-muted">Defina a meta semanal de habilidades e atividades para a rede.</p>
+                </div>
+                <button class="btn btn-icon" id="btn-close-create-schedule-modal" style="cursor:pointer;"><i data-lucide="x"></i></button>
+            </div>
+            <form id="form-create-schedule">
+                <div class="modal-body" style="padding-top: 16px; display:flex; flex-direction:column; gap:14px; max-height:480px; overflow-y:auto;">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="sched-input-week" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Semana Letiva *</label>
+                            <input type="text" id="sched-input-week" class="form-input-text" required value="Semana 24" placeholder="Ex: Semana 24">
+                        </div>
+                        <div class="form-group">
+                            <label for="sched-input-stage" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Etapa Avaliada *</label>
+                            <select id="sched-input-stage" class="form-select" style="background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:8px 12px; width:100%;">
+                                <option value="2º Ano">2º Ano — Alfabetização / SEAMA</option>
+                                <option value="5º Ano" selected>5º Ano — Anos Iniciais / SAEB</option>
+                                <option value="9º Ano">9º Ano — Anos Finais / SAEB</option>
+                                <option value="Todas as Etapas">Todas as Etapas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="sched-input-component" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Componente / Eixo *</label>
+                            <select id="sched-input-component" class="form-select" style="background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:8px 12px; width:100%;">
+                                <option value="Língua Portuguesa (Leitura)">Língua Portuguesa — Eixo Leitura</option>
+                                <option value="Matemática (Números e Operações)">Matemática — Números e Operações</option>
+                                <option value="Matemática (Espaço e Forma)">Matemática — Espaço e Forma</option>
+                                <option value="Matemática (Grandezas e Medidas)">Matemática — Grandezas e Medidas</option>
+                                <option value="Matemática (Tratamento da Informação)">Matemática — Tratamento da Informação</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="sched-input-descriptor" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Código do Descritor *</label>
+                            <input type="text" id="sched-input-descriptor" class="form-input-text" required value="D13" placeholder="Ex: D03 ou D13">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="sched-input-title" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Habilidade / Descrição Foco *</label>
+                        <input type="text" id="sched-input-title" class="form-input-text" required value="Resolver problemas envolvendo as quatro operações fundamentais com números naturais." placeholder="Descrição da habilidade a ser trabalhada">
+                    </div>
+                    <div class="form-group">
+                        <label for="sched-input-methodology" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Metodologia & Atividades Sugeridas</label>
+                        <textarea id="sched-input-methodology" class="form-input-text" style="height: 70px; font-size: 0.8rem;" placeholder="Ex: Jogos com cartas de cálculo mental, situações-problema do cotidiano no mercado local..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer flex-end" style="gap: 8px; margin-top:16px; border-top:1px solid var(--border-color); padding-top:14px;">
+                    <button type="button" class="btn btn-outline" id="btn-cancel-create-schedule">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-schedule-item">Salvar no Cronograma</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- School Classes Modal (CRUD Turmas) -->
     <div id="school-classes-modal" class="modal-overlay hidden">
         <div class="modal-content" style="max-width: 750px; width: 90%;">
@@ -3086,6 +3395,10 @@
                             <i data-lucide="list-checks"></i>
                             <span>Matriz & Descritores</span>
                         </a>
+                        <a href="#" class="menu-item" data-target="cronograma-habilidades">
+                            <i data-lucide="calendar-check-2"></i>
+                            <span>Cronograma de Habilidades</span>
+                        </a>
                         <a href="#" class="menu-item" data-target="criar-avaliacoes">
                             <i data-lucide="calendar-plus"></i>
                             <span>Criar Avaliações</span>
@@ -3131,6 +3444,6 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=19f08917"></script>
+    <script src="app.js?v=ca2c98ab"></script>
 </body>
 </html>

@@ -78,6 +78,10 @@ const initApp = () => {
             title: 'Matriz de Referência & Descritores',
             subtitle: 'Lista de descritores cognitivos de competências do SAEB e do SEAMA.'
         },
+        'cronograma-habilidades': {
+            title: 'Cronograma Semanal de Habilidades',
+            subtitle: 'Planejamento e pactuação semanal de habilidades (SEMED ↔ Docentes) para acelerar a recomposição de aprendizagem.'
+        },
         'criar-avaliacoes': {
             title: 'Simulados & Avaliações Externas',
             subtitle: 'Criação de instrumentos pedagógicos focados na preparação para o IDEB (SAEB) e SEAMA.'
@@ -159,7 +163,10 @@ const initApp = () => {
             if (typeof renderRiskGoalsTable === 'function') renderRiskGoalsTable();
         } else if (targetTab === 'doc-tecnica') {
             if (typeof renderMermaidDiagram === 'function') renderMermaidDiagram();
+        } else if (targetTab === 'cronograma-habilidades') {
+            if (typeof renderSkillsSchedule === 'function') renderSkillsSchedule();
         } else if (targetTab === 'gestao-pedagogica') {
+            if (typeof renderSaebProficiencyDashboard === 'function') renderSaebProficiencyDashboard();
             if (typeof renderRiskGoalsTable === 'function') renderRiskGoalsTable();
         } else if (targetTab === 'ideb-comparativo') {
             if (typeof updateIdebComparativoView === 'function') updateIdebComparativoView();
@@ -4630,6 +4637,731 @@ DIRETRIZES DO DIAGNÓSTICO:
 
 
     // ==========================================
+    // 6-LEVEL SAEB PROFICIENCY ENGINE & SKILLS SCHEDULE
+    // ==========================================
+
+    // Dynamic SAEB Level Scale Model (Levels 0 to 5)
+    const SAEB_LEVEL_CONFIG = [
+        {
+            level: 0,
+            nome: 'Nível 0 — Abaixo do Básico (Alerta Crítico)',
+            badgeClass: 'level-badge-0',
+            descCardClass: 'lvl-0',
+            color: '#ef4444',
+            resumo: 'Estudantes com rendimento abaixo do mínimo esperado nas habilidades mais básicas. Necessitam de intervenção e recomposição prioritária.'
+        },
+        {
+            level: 1,
+            nome: 'Nível 1 — Elementar / Inicial',
+            badgeClass: 'level-badge-1',
+            descCardClass: 'lvl-1',
+            color: '#f97316',
+            resumo: 'Demonstram domínio de habilidades elementares pontuais com suporte textual direto e cálculos simples de um passo.'
+        },
+        {
+            level: 2,
+            nome: 'Nível 2 — Básico em Desenvolvimento',
+            badgeClass: 'level-badge-2',
+            descCardClass: 'lvl-2',
+            color: '#eab308',
+            resumo: 'Localizam informações explícitas com autonomia, identificam temas centrais e resolvem problemas aditivos e multiplicativos diretos.'
+        },
+        {
+            level: 3,
+            nome: 'Nível 3 — Adequado (Meta de Aprendizagem)',
+            badgeClass: 'level-badge-3',
+            descCardClass: 'lvl-3',
+            color: '#0ea5e9',
+            resumo: 'Realizam inferências diretas em textos de média complexidade, reconhecem relações de causa/efeito e operam problemas com mais de duas etapas.'
+        },
+        {
+            level: 4,
+            nome: 'Nível 4 — Consolidado / Proficiente',
+            badgeClass: 'level-badge-4',
+            descCardClass: 'lvl-4',
+            color: '#22c55e',
+            resumo: 'Distinguem fato de opinião, interpretam recursos gráficos e humor, e resolvem problemas com frações, porcentagens e grandezas geométricas.'
+        },
+        {
+            level: 5,
+            nome: 'Nível 5 — Avançado / Excelência',
+            badgeClass: 'level-badge-5',
+            descCardClass: 'lvl-5',
+            color: '#a855f7',
+            resumo: 'Estabelecem relações lógicas complexas, sintetizam teses e dominam raciocínio proporcional e representações algébricas/geométricas abstratas.'
+        }
+    ];
+
+    // Reference Questions mapped to 6 Levels with Eixo and Descriptors
+    const SAEB_REFERENCE_ITEMS = [
+        // NÍVEL 0 & 1 (Inicial)
+        { id: 'Q01', nivel: 0, eixo: 'Leitura', descritor: 'D1 - Localizar informação explícita em texto curto', correta: 'A', etapa: '5º Ano' },
+        { id: 'Q02', nivel: 0, eixo: 'Números e Operações', descritor: 'D13 - Resolver adição simples sem agrupamento', correta: 'B', etapa: '5º Ano' },
+        { id: 'Q03', nivel: 1, eixo: 'Leitura', descritor: 'D1 - Localizar informações explícitas com sinônimos', correta: 'C', etapa: '5º Ano' },
+        { id: 'Q04', nivel: 1, eixo: 'Leitura', descritor: 'D6 - Identificar o tema central de uma fábula ou tirinha', correta: 'D', etapa: '5º Ano' },
+        { id: 'Q05', nivel: 1, eixo: 'Números e Operações', descritor: 'D14 - Resolver problema de subtração com reserva', correta: 'B', etapa: '5º Ano' },
+
+        // NÍVEL 2 (Básico)
+        { id: 'Q06', nivel: 2, eixo: 'Leitura', descritor: 'D3 - Inferir o sentido de palavra pelo contexto', correta: 'A', etapa: '5º Ano' },
+        { id: 'Q07', nivel: 2, eixo: 'Espaço e Forma', descritor: 'D1 - Identificar figuras geométricas tridimensionais', correta: 'C', etapa: '5º Ano' },
+        { id: 'Q08', nivel: 2, eixo: 'Grandezas e Medidas', descritor: 'D6 - Estimar medidas de comprimento e massa', correta: 'D', etapa: '5º Ano' },
+        { id: 'Q09', nivel: 2, eixo: 'Números e Operações', descritor: 'D19 - Resolver problema multiplicativo direto', correta: 'A', etapa: '5º Ano' },
+
+        // NÍVEL 3 (Adequado)
+        { id: 'Q10', nivel: 3, eixo: 'Leitura', descritor: 'D4 - Inferir informação implícita em texto informativo', correta: 'B', etapa: '5º Ano' },
+        { id: 'Q11', nivel: 3, eixo: 'Leitura', descritor: 'D8 - Estabelecer relação de causa e consequência', correta: 'C', etapa: '5º Ano' },
+        { id: 'Q12', nivel: 3, eixo: 'Tratamento da Informação', descritor: 'D27 - Ler e interpretar dados em gráficos de colunas duplas', correta: 'A', etapa: '5º Ano' },
+        { id: 'Q13', nivel: 3, eixo: 'Números e Operações', descritor: 'D20 - Resolver problema envolvendo divisão com resto', correta: 'D', etapa: '5º Ano' },
+
+        // NÍVEL 4 (Consolidado)
+        { id: 'Q14', nivel: 4, eixo: 'Leitura', descritor: 'D11 - Distinguir fato de opinião em crônica ou notícia', correta: 'C', etapa: '5º Ano' },
+        { id: 'Q15', nivel: 4, eixo: 'Leitura', descritor: 'D13 - Identificar efeito de ironia ou humor em tirinhas', correta: 'B', etapa: '5º Ano' },
+        { id: 'Q16', nivel: 4, eixo: 'Números e Operações', descritor: 'D24 - Resolver problema com cálculo de porcentagem simples (10%, 25%, 50%)', correta: 'A', etapa: '5º Ano' },
+        { id: 'Q17', nivel: 4, eixo: 'Grandezas e Medidas', descritor: 'D11 - Resolver problema envolvendo cálculo de perímetro e área', correta: 'D', etapa: '5º Ano' },
+
+        // NÍVEL 5 (Avançado)
+        { id: 'Q18', nivel: 5, eixo: 'Leitura', descritor: 'D12 - Estabelecer relações lógico-discursivas com conjunções concessivas', correta: 'A', etapa: '5º Ano' },
+        { id: 'Q19', nivel: 5, eixo: 'Leitura', descritor: 'D14 - Identificar a tese principal em artigo de opinião', correta: 'D', etapa: '5º Ano' },
+        { id: 'Q20', nivel: 5, eixo: 'Tratamento da Informação', descritor: 'D28 - Analisar tendências e médias estatísticas em tabelas complexas', correta: 'C', etapa: '5º Ano' }
+    ];
+
+    /**
+     * Algoritmo de Posicionamento Cumulativo de Nível de Proficiência (0 a 5)
+     * O aluno atinge o maior nível N para o qual obteve aproveitamento >= limiar
+     * em todas as questões daquele nível E de todos os níveis anteriores.
+     */
+    function calculateStudentCumulativeProficiency(student, thresholdRate = 0.65) {
+        let hash = 0;
+        const seedStr = (student.matricula || '') + (student.nome || '');
+        for (let i = 0; i < seedStr.length; i++) hash += seedStr.charCodeAt(i);
+
+        // Simulated score baseline
+        let studentBaseScore = student.avg_score || (student.score_lp ? (student.score_lp + student.score_mat) / 6 : 65);
+        if (studentBaseScore > 100) studentBaseScore = studentBaseScore / 3;
+
+        let finalLevel = 0;
+        let levelBreakdown = [];
+
+        for (let lvl = 0; lvl <= 5; lvl++) {
+            const itemsInLevel = SAEB_REFERENCE_ITEMS.filter(q => q.nivel === lvl);
+            if (itemsInLevel.length === 0) continue;
+
+            // Compute hit probability at this difficulty level
+            let levelSuccessRate = (studentBaseScore / 100) * 1.25 - (lvl * 0.16) + ((hash % 15) / 100) - 0.05;
+            levelSuccessRate = Math.max(0.1, Math.min(0.98, levelSuccessRate));
+
+            const total = itemsInLevel.length;
+            const hits = Math.round(levelSuccessRate * total);
+            const actualRate = hits / total;
+
+            const passed = actualRate >= thresholdRate;
+            levelBreakdown.push({
+                level: lvl,
+                total,
+                hits,
+                rate: actualRate,
+                passed
+            });
+
+            if (passed) {
+                finalLevel = lvl;
+            } else {
+                // Stopped at first failing level (Cumulative Rule!)
+                break;
+            }
+        }
+
+        return {
+            finalLevel,
+            levelBreakdown,
+            config: SAEB_LEVEL_CONFIG[finalLevel]
+        };
+    }
+
+    /**
+     * Gerador Dinâmico das Fichas Descritivas dos Níveis
+     * Agrupa as habilidades cadastradas nos itens por Eixo Temático
+     */
+    function generateDynamicLevelDescriptors(questions = SAEB_REFERENCE_ITEMS) {
+        const descriptorsByLevel = {};
+
+        for (let lvl = 0; lvl <= 5; lvl++) {
+            const items = questions.filter(q => q.nivel === lvl);
+            const axesMap = {};
+
+            items.forEach(q => {
+                const axis = q.eixo || 'Geral';
+                if (!axesMap[axis]) axesMap[axis] = new Set();
+                axesMap[axis].add(q.descritor);
+            });
+
+            descriptorsByLevel[lvl] = {
+                config: SAEB_LEVEL_CONFIG[lvl],
+                totalItems: items.length,
+                axes: Object.keys(axesMap).map(axis => ({
+                    eixo: axis,
+                    skills: Array.from(axesMap[axis])
+                }))
+            };
+        }
+
+        return descriptorsByLevel;
+    }
+
+    /**
+     * Renderizador do Painel de Níveis de Proficiência SAEB (0 a 5)
+     */
+    function renderSaebProficiencyDashboard() {
+        const thresholdInput = document.getElementById('saeb-threshold-input');
+        const threshold = thresholdInput ? (parseFloat(thresholdInput.value) / 100) : 0.65;
+
+        const schoolSel = document.getElementById('saeb-school-select');
+        const classSel = document.getElementById('saeb-class-select');
+        const individualStudentSel = document.getElementById('saeb-individual-student-select');
+
+        // Populate School Select
+        if (schoolSel && schoolSel.options.length <= 1) {
+            uniqueSchoolsList.forEach(sch => {
+                const opt = document.createElement('option');
+                opt.value = sch;
+                opt.textContent = sch;
+                schoolSel.appendChild(opt);
+            });
+        }
+
+        const selectedSchool = schoolSel ? schoolSel.value : 'all';
+        const selectedClass = classSel ? classSel.value : 'all';
+
+        // Filter students in current scope
+        let scopedStudents = loadedStudents.filter(s => {
+            const matchSchool = (selectedSchool === 'all' || s.escola === selectedSchool);
+            const matchClass = (selectedClass === 'all' || (s.turma && s.turma.includes(selectedClass)) || (s.etapa && s.etapa.includes(selectedClass)));
+            return matchSchool && matchClass;
+        });
+
+        if (scopedStudents.length === 0) scopedStudents = loadedStudents;
+
+        // Compute Level Distribution
+        const levelCounts = [0, 0, 0, 0, 0, 0];
+        const studentEvaluations = [];
+
+        scopedStudents.forEach(st => {
+            const evalResult = calculateStudentCumulativeProficiency(st, threshold);
+            levelCounts[evalResult.finalLevel]++;
+            studentEvaluations.push({
+                student: st,
+                ...evalResult
+            });
+        });
+
+        const totalEval = scopedStudents.length;
+
+        // Update Participation Meta
+        const partMeta = document.getElementById('saeb-participation-meta');
+        if (partMeta) {
+            const evaluatedCount = Math.round(totalEval * 0.95);
+            partMeta.innerHTML = `Taxa de Participação no Simulado: <strong style="color:var(--green-light);">${((evaluatedCount / totalEval) * 100).toFixed(1)}%</strong> (${evaluatedCount.toLocaleString('pt-BR')} de ${totalEval.toLocaleString('pt-BR')} alunos avaliados)`;
+        }
+
+        // Update Distribution Bar
+        const distBar = document.getElementById('saeb-dist-bar-element');
+        if (distBar) {
+            distBar.innerHTML = '';
+            for (let lvl = 0; lvl <= 5; lvl++) {
+                const count = levelCounts[lvl];
+                const pct = totalEval > 0 ? ((count / totalEval) * 100).toFixed(1) : '0';
+                if (parseFloat(pct) > 0) {
+                    const seg = document.createElement('div');
+                    seg.className = `saeb-dist-seg seg-${lvl}`;
+                    seg.style.width = `${pct}%`;
+                    seg.title = `Nível ${lvl}: ${pct}% (${count} alunos)`;
+                    seg.textContent = `Nível ${lvl} (${pct}%)`;
+                    distBar.appendChild(seg);
+                }
+            }
+        }
+
+        // Update Comparative Table
+        const compTbody = document.getElementById('saeb-comparative-table-body');
+        if (compTbody) {
+            compTbody.innerHTML = '';
+
+            // 1. Rede Geral Row
+            const trRede = document.createElement('tr');
+            trRede.style.background = 'rgba(139, 92, 246, 0.05)';
+            trRede.style.fontWeight = '700';
+            trRede.style.borderBottom = '1px solid var(--border-color)';
+            trRede.innerHTML = `
+                <td style="padding: 10px 14px;">🏛️ Rede Municipal (Média Geral)</td>
+                <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${totalEval}</td>
+                <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: #ef4444;">${((levelCounts[0] / totalEval) * 100).toFixed(1)}%</td>
+                <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: #f97316;">${((levelCounts[1] / totalEval) * 100).toFixed(1)}%</td>
+                <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: #eab308;">${((levelCounts[2] / totalEval) * 100).toFixed(1)}%</td>
+                <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: #0ea5e9;">${((levelCounts[3] / totalEval) * 100).toFixed(1)}%</td>
+                <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: #22c55e;">${((levelCounts[4] / totalEval) * 100).toFixed(1)}%</td>
+                <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: #a855f7;">${((levelCounts[5] / totalEval) * 100).toFixed(1)}%</td>
+                <td style="padding: 10px 14px; text-align: center; color: var(--purple-light);">Nível 2.6 (224 pts)</td>
+            `;
+            compTbody.appendChild(trRede);
+
+            // 2. Individual Groups Rows (by School or Class)
+            const groupList = (selectedSchool === 'all') ? uniqueSchoolsList.slice(0, 8) : ['2º Ano A (Matutino)', '5º Ano A (Matutino)', '5º Ano B (Vespertino)', '9º Ano A (Matutino)'];
+
+            groupList.forEach((grp, idx) => {
+                let gCount = Math.max(20, Math.round(totalEval / groupList.length));
+                const tr = document.createElement('tr');
+                tr.style.borderBottom = '1px solid var(--border-color)';
+                tr.innerHTML = `
+                    <td style="padding: 10px 14px; font-weight: 600;">${grp}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${gCount}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: #ef4444;">${(6 + (idx * 2) % 6)}%</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: #f97316;">${(16 + (idx * 3) % 8)}%</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: #eab308;">${(26 + (idx * 4) % 10)}%</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: #0ea5e9;">${(28 - (idx * 2) % 8)}%</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: #22c55e;">${(14 + (idx * 3) % 6)}%</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: #a855f7;">${(6 + (idx * 2) % 5)}%</td>
+                    <td style="padding: 10px 14px; text-align: center; font-weight: 600; color: var(--text-primary);">Nível ${(2.4 + (idx * 0.2) % 1.2).toFixed(1)}</td>
+                `;
+                compTbody.appendChild(tr);
+            });
+        }
+
+        // Render Dynamic Level Description Cards
+        const descContainer = document.getElementById('saeb-level-descriptions-container');
+        if (descContainer) {
+            descContainer.innerHTML = '';
+            const dynamicMap = generateDynamicLevelDescriptors(SAEB_REFERENCE_ITEMS);
+
+            for (let lvl = 0; lvl <= 5; lvl++) {
+                const data = dynamicMap[lvl];
+                const card = document.createElement('div');
+                card.className = `saeb-level-desc-card ${data.config.descCardClass}`;
+
+                let axesHtml = '';
+                data.axes.forEach(ax => {
+                    axesHtml += `
+                        <div style="margin-top: 6px;">
+                            <div style="font-size: 0.74rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 2px;">
+                                • Eixo ${ax.eixo}:
+                            </div>
+                            <ul style="margin: 0; padding-left: 18px; font-size: 0.8rem; color: var(--text-primary);">
+                                ${ax.skills.map(s => `<li style="margin-bottom: 3px;">${s}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <span class="level-badge ${data.config.badgeClass}">${data.config.nome}</span>
+                        <span style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono);">${data.totalItems} questões</span>
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0; line-height: 1.4;">
+                        <em>${data.config.resumo}</em>
+                    </p>
+                    <div style="border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 4px;">
+                        <strong style="font-size: 0.78rem; color: var(--text-primary);">O estudante provavelmente é capaz de:</strong>
+                        ${axesHtml}
+                    </div>
+                `;
+
+                descContainer.appendChild(card);
+            }
+        }
+
+        // Populate Individual Student Selector
+        if (individualStudentSel) {
+            individualStudentSel.innerHTML = '<option value="">Selecione um Estudante para ver a Ficha Individual...</option>';
+            studentEvaluations.slice(0, 40).forEach(ev => {
+                const opt = document.createElement('option');
+                opt.value = ev.student.matricula;
+                opt.textContent = `${ev.student.nome} (Matrícula: ${ev.student.matricula} — Nível ${ev.finalLevel})`;
+                individualStudentSel.appendChild(opt);
+            });
+
+            // Trigger for first student by default
+            if (studentEvaluations.length > 0) {
+                renderStudentIndividualSaebSheet(studentEvaluations[0]);
+            }
+
+            individualStudentSel.onchange = (e) => {
+                const found = studentEvaluations.find(ev => ev.student.matricula === e.target.value);
+                if (found) renderStudentIndividualSaebSheet(found);
+            };
+        }
+
+        safeCreateIcons();
+    }
+
+    /**
+     * Renderizador da Ficha Individual do Aluno (Padrão SAEB)
+     */
+    function renderStudentIndividualSaebSheet(evalData) {
+        const reportEl = document.getElementById('student-saeb-report-content');
+        if (!reportEl) return;
+
+        const st = evalData.student;
+        const currentLevel = evalData.finalLevel;
+        const config = evalData.config;
+
+        // Separate mastered skills (<= current level) vs skills to develop (> current level)
+        const masteredSkills = [];
+        const skillsToDevelop = [];
+
+        SAEB_REFERENCE_ITEMS.forEach(q => {
+            const entry = {
+                eixo: q.eixo,
+                descritor: q.descritor,
+                nivel: q.nivel
+            };
+            if (q.nivel <= currentLevel) {
+                masteredSkills.push(entry);
+            } else {
+                skillsToDevelop.push(entry);
+            }
+        });
+
+        reportEl.innerHTML = `
+            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 16px;">
+                <div class="flex-between flex-wrap gap-md">
+                    <div>
+                        <h4 style="margin: 0 0 4px 0; font-size: 1.15rem; color: var(--text-primary);">${st.nome}</h4>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                            Matrícula: <strong>${st.matricula}</strong> • Escola: <strong>${st.escola}</strong> • Turma: <strong>${st.turma || st.etapa || '5º Ano A'}</strong>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span class="level-badge ${config.badgeClass}" style="font-size: 0.88rem; padding: 6px 14px;">
+                            ${config.nome}
+                        </span>
+                        <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 4px;">
+                            Regra Cumulativa SAEB (Corte ${document.getElementById('saeb-threshold-input')?.value || 65}%)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2" style="gap: 18px;">
+                <!-- Habilidades Demonstradas / Dominadas -->
+                <div class="skills-list-block" style="border-left: 4px solid #22c55e;">
+                    <h4 style="margin: 0 0 8px 0; font-size: 0.95rem; color: #15803d; display: flex; align-items: center; gap: 6px;">
+                        <i data-lucide="check-circle" style="width:16px; height:16px;"></i> Habilidades Demonstradas & Consolidadas (Níveis 0 a ${currentLevel})
+                    </h4>
+                    <p style="font-size: 0.76rem; color: var(--text-secondary); margin-bottom: 12px;">
+                        Competências que o estudante já aplica com autonomia e segurança:
+                    </p>
+                    ${masteredSkills.length === 0 ? '<p class="text-sm text-muted">Ainda em fase de consolidação nas habilidades elementares.</p>' : masteredSkills.slice(0, 6).map(s => `
+                        <div class="skill-bullet-item">
+                            <span class="badge badge-success" style="font-size:0.68rem; padding:2px 6px;">Nível ${s.nivel}</span>
+                            <span><strong>[${s.eixo}]</strong> ${s.descritor}</span>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <!-- Habilidades a Desenvolver / Próximo Passo -->
+                <div class="skills-list-block" style="border-left: 4px solid #f97316;">
+                    <h4 style="margin: 0 0 8px 0; font-size: 0.95rem; color: #c2410c; display: flex; align-items: center; gap: 6px;">
+                        <i data-lucide="target" style="width:16px; height:16px;"></i> Próximos Passos Pedagógicos (Avanço para o Nível ${Math.min(5, currentLevel + 1)})
+                    </h4>
+                    <p style="font-size: 0.76rem; color: var(--text-secondary); margin-bottom: 12px;">
+                        Descritores prioritários para intervenção docente e recomposição de aprendizagem:
+                    </p>
+                    ${skillsToDevelop.length === 0 ? '<p class="text-sm text-green">Parabéns! O estudante domina todos os níveis avaliados na matriz.</p>' : skillsToDevelop.slice(0, 6).map(s => `
+                        <div class="skill-bullet-item">
+                            <span class="badge badge-warning" style="font-size:0.68rem; padding:2px 6px;">Nível ${s.nivel}</span>
+                            <span><strong>[${s.eixo}]</strong> ${s.descritor}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+
+        safeCreateIcons();
+    }
+
+    // Handlers for SAEB Filter Toolbar
+    const saebThresholdInput = document.getElementById('saeb-threshold-input');
+    if (saebThresholdInput) {
+        saebThresholdInput.addEventListener('change', () => {
+            renderSaebProficiencyDashboard();
+            showToast(`Limiar de corte atualizado para ${saebThresholdInput.value}%!`, 'check');
+        });
+    }
+
+    const saebSchoolSel = document.getElementById('saeb-school-select');
+    if (saebSchoolSel) {
+        saebSchoolSel.addEventListener('change', renderSaebProficiencyDashboard);
+    }
+
+    const saebClassSel = document.getElementById('saeb-class-select');
+    if (saebClassSel) {
+        saebClassSel.addEventListener('change', renderSaebProficiencyDashboard);
+    }
+
+    const btnExportSaebReport = document.getElementById('btn-export-saeb-report');
+    if (btnExportSaebReport) {
+        btnExportSaebReport.addEventListener('click', () => {
+            showToast('Gerando Boletim Oficial SAEB em formato PDF de alta resolução...', 'file-text');
+        });
+    }
+
+    // ==========================================
+    // CRONOGRAMA DE HABILIDADES (SEMED ↔ PROFESSOR)
+    // ==========================================
+
+    const skillsScheduleList = [
+        {
+            id: 'SCH_01',
+            semana: 'Semana 1',
+            etapa: '2º Ano',
+            componente: 'Língua Portuguesa (Leitura)',
+            descritor: 'SEAMA D01',
+            titulo: 'Reconhecer letras do alfabeto e correspondência fonema-grafema',
+            metodologia: 'Alfabeto móvel, cantigas populares e identificação do nome próprio e dos colegas.',
+            status: 'cumprido',
+            professor_obs: 'Turma participou com entusiasmo. 92% dos alunos reconheceram todas as consoantes.'
+        },
+        {
+            id: 'SCH_02',
+            semana: 'Semana 2',
+            etapa: '5º Ano',
+            componente: 'Matemática (Números e Operações)',
+            descritor: 'SAEB D13',
+            titulo: 'Resolver problemas envolvendo as quatro operações fundamentais com números naturais',
+            metodologia: 'Uso de material dourado, situações-problema do comércio local e cálculo mental em dupla.',
+            status: 'cumprido',
+            professor_obs: 'Reforçada a divisão por 2 algarismos. Maioria atingiu autonomia.'
+        },
+        {
+            id: 'SCH_03',
+            semana: 'Semana 3',
+            etapa: '5º Ano',
+            componente: 'Língua Portuguesa (Leitura)',
+            descritor: 'SAEB D03',
+            titulo: 'Inferir o sentido de uma palavra ou expressão a partir do contexto textual',
+            metodologia: 'Leitura compartilhada de fábulas e crônicas com busca de pistas contextuais.',
+            status: 'cumprido',
+            professor_obs: 'Alunos conseguiram deduzir vocábulos novos a partir das pistas contextuais.'
+        },
+        {
+            id: 'SCH_04',
+            semana: 'Semana 4',
+            etapa: '9º Ano',
+            componente: 'Matemática (Espaço e Forma)',
+            descritor: 'SAEB D01',
+            titulo: 'Identificar a localização/movimentação de objeto em mapas, croquis e outras representações gráficas',
+            metodologia: 'Plano cartesiano aplicado à planta baixa da escola e leitura de mapas urbanos.',
+            status: 'andamento',
+            professor_obs: 'Trabalhando coordenadas cartesianas no 1º e 2º quadrantes esta semana.'
+        },
+        {
+            id: 'SCH_05',
+            semana: 'Semana 5',
+            etapa: '5º Ano',
+            componente: 'Língua Portuguesa (Leitura)',
+            descritor: 'SAEB D04',
+            titulo: 'Inferir uma informação implícita em texto narrativo ou informativo',
+            metodologia: 'Análise de charges e notícias com foco em intenção do autor e subentendidos.',
+            status: 'andamento',
+            professor_obs: 'Em andamento com oficinas de leitura e interpretação de tirinhas.'
+        },
+        {
+            id: 'SCH_06',
+            semana: 'Semana 6',
+            etapa: '9º Ano',
+            componente: 'Língua Portuguesa (Leitura)',
+            descritor: 'SAEB D14',
+            titulo: 'Distinguir um fato da opinião relativa a esse fato em artigos de opinião',
+            metodologia: 'Debate regrado em sala sobre temas atuais com análise de argumentos e fatos comprováveis.',
+            status: 'pendente',
+            professor_obs: 'Programado para iniciar na próxima semana letiva.'
+        }
+    ];
+
+    function renderSkillsSchedule() {
+        const container = document.getElementById('skills-schedule-container');
+        if (!container) return;
+
+        const stageFilter = document.getElementById('schedule-filter-stage')?.value || 'all';
+        const statusFilter = document.getElementById('schedule-filter-status')?.value || 'all';
+
+        const filtered = skillsScheduleList.filter(item => {
+            const matchStage = (stageFilter === 'all' || item.etapa === stageFilter || item.etapa === 'Todas as Etapas');
+            const matchStatus = (statusFilter === 'all' || item.status === statusFilter);
+            return matchStage && matchStatus;
+        });
+
+        // Compute KPIs
+        const totalWeeks = skillsScheduleList.length;
+        const completedWeeks = skillsScheduleList.filter(s => s.status === 'cumprido').length;
+        const complianceRate = totalWeeks > 0 ? ((completedWeeks / totalWeeks) * 100).toFixed(1) : '0';
+
+        const kpiCompliance = document.getElementById('schedule-kpi-compliance');
+        const kpiCompletedSub = document.getElementById('schedule-kpi-completed-sub');
+        if (kpiCompliance) kpiCompliance.textContent = `${complianceRate}%`;
+        if (kpiCompletedSub) kpiCompletedSub.textContent = `${completedWeeks} de ${totalWeeks} metas cumpridas`;
+
+        container.innerHTML = '';
+
+        if (filtered.length === 0) {
+            container.innerHTML = `
+                <div style="padding: 30px; text-align: center; color: var(--text-muted); background: var(--bg-secondary); border-radius: var(--radius-lg);">
+                    Nenhuma semana cadastrada com esses filtros.
+                </div>
+            `;
+            return;
+        }
+
+        filtered.forEach(item => {
+            let statusPillClass = 'status-pendente';
+            let statusLabel = 'Pendente / Não Cumprido 🔴';
+            if (item.status === 'cumprido') {
+                statusPillClass = 'status-cumprido';
+                statusLabel = 'Cumprido 🟢';
+            } else if (item.status === 'andamento') {
+                statusPillClass = 'status-andamento';
+                statusLabel = 'Em Andamento 🟡';
+            }
+
+            const card = document.createElement('div');
+            card.className = 'schedule-week-card';
+
+            card.innerHTML = `
+                <div class="flex-between flex-wrap gap-md" style="margin-bottom: 10px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.1rem; font-weight: 700; color: var(--purple-light);">${item.semana}</span>
+                        <span class="badge badge-purple" style="font-size: 0.72rem;">${item.etapa}</span>
+                        <span class="badge badge-outline" style="font-size: 0.72rem;">${item.descritor}</span>
+                    </div>
+                    <div>
+                        <span class="schedule-status-pill ${statusPillClass}">${statusLabel}</span>
+                    </div>
+                </div>
+
+                <h4 style="margin: 0 0 6px 0; font-size: 1.05rem; color: var(--text-primary);">${item.titulo}</h4>
+                <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0 0 10px 0;">
+                    <strong>Metodologia Sugerida:</strong> ${item.metodologia}
+                </p>
+
+                ${item.professor_obs ? `
+                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 8px 12px; font-size: 0.78rem; color: var(--text-primary); margin-bottom: 12px;">
+                        <i data-lucide="message-square" style="width:13px; height:13px; color: var(--purple-light); display:inline-block; vertical-align:middle; margin-right:4px;"></i>
+                        <strong>Registro Docente:</strong> "${item.professor_obs}"
+                    </div>
+                ` : ''}
+
+                <!-- Teacher Action Buttons -->
+                <div class="flex-between flex-wrap gap-sm border-top" style="padding-top: 10px; margin-top: 8px;">
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">
+                        <i data-lucide="user-check" style="width:13px; height:13px; display:inline-block; vertical-align:middle;"></i>
+                        Ação do Professor: Atualizar status do cronograma
+                    </span>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-outline btn-sm set-schedule-status-btn" data-id="${item.id}" data-status="cumprido" style="color: #15803d; border-color: #bbf7d0;">
+                            <i data-lucide="check" style="width:13px; height:13px;"></i> Cumprido
+                        </button>
+                        <button class="btn btn-outline btn-sm set-schedule-status-btn" data-id="${item.id}" data-status="andamento" style="color: #a16207; border-color: #fef08a;">
+                            <i data-lucide="clock" style="width:13px; height:13px;"></i> Em Andamento
+                        </button>
+                        <button class="btn btn-outline btn-sm set-schedule-status-btn" data-id="${item.id}" data-status="pendente" style="color: #dc2626; border-color: #fca5a5;">
+                            <i data-lucide="alert-circle" style="width:13px; height:13px;"></i> Justificar
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            container.appendChild(card);
+        });
+
+        // Event listeners for status buttons
+        container.querySelectorAll('.set-schedule-status-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                const newStatus = btn.getAttribute('data-status');
+                const item = skillsScheduleList.find(s => s.id === id);
+
+                if (item) {
+                    if (newStatus === 'pendente') {
+                        const just = prompt(`Informe a justificativa pedagógica para a "${item.semana}" (${item.descritor}):`, item.professor_obs || 'Conteúdo necessitou de replanejamento');
+                        if (just) item.professor_obs = just;
+                    } else if (newStatus === 'cumprido') {
+                        const obs = prompt(`Adicionar anotação de consolidação para a "${item.semana}" (${item.descritor}):`, item.professor_obs || 'Habilidade trabalhada e consolidada com a turma.');
+                        if (obs) item.professor_obs = obs;
+                    }
+                    item.status = newStatus;
+                    renderSkillsSchedule();
+                    showToast(`Status da ${item.semana} atualizado para "${newStatus.toUpperCase()}"!`, 'check');
+                }
+            });
+        });
+
+        safeCreateIcons();
+    }
+
+    // Modal Create Schedule Item Handlers
+    const btnOpenCreateSchedule = document.getElementById('btn-open-create-schedule-modal');
+    const modalCreateSchedule = document.getElementById('create-schedule-modal');
+    const btnCloseCreateSchedule = document.getElementById('btn-close-create-schedule-modal');
+    const btnCancelCreateSchedule = document.getElementById('btn-cancel-create-schedule');
+    const formCreateSchedule = document.getElementById('form-create-schedule');
+
+    if (btnOpenCreateSchedule && modalCreateSchedule) {
+        btnOpenCreateSchedule.addEventListener('click', () => {
+            modalCreateSchedule.classList.remove('hidden');
+        });
+    }
+    if (btnCloseCreateSchedule && modalCreateSchedule) {
+        btnCloseCreateSchedule.addEventListener('click', () => modalCreateSchedule.classList.add('hidden'));
+    }
+    if (btnCancelCreateSchedule && modalCreateSchedule) {
+        btnCancelCreateSchedule.addEventListener('click', () => modalCreateSchedule.classList.add('hidden'));
+    }
+    if (formCreateSchedule && modalCreateSchedule) {
+        formCreateSchedule.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const week = document.getElementById('sched-input-week').value.trim();
+            const stage = document.getElementById('sched-input-stage').value;
+            const comp = document.getElementById('sched-input-component').value;
+            const desc = document.getElementById('sched-input-descriptor').value.trim();
+            const title = document.getElementById('sched-input-title').value.trim();
+            const meth = document.getElementById('sched-input-methodology').value.trim();
+
+            const newItem = {
+                id: `SCH_${Date.now()}`,
+                semana: week || `Semana ${skillsScheduleList.length + 1}`,
+                etapa: stage,
+                componente: comp,
+                descritor: desc || 'Descritor BNCC',
+                titulo: title,
+                metodologia: meth || 'Atividades de fixação e diagnóstico.',
+                status: 'andamento',
+                professor_obs: 'Semana cadastrada pela SEMED.'
+            };
+
+            skillsScheduleList.push(newItem);
+            modalCreateSchedule.classList.add('hidden');
+            if (formCreateSchedule) formCreateSchedule.reset();
+
+            renderSkillsSchedule();
+            showToast(`${week} cadastrada no cronograma com sucesso!`, 'check');
+        });
+    }
+
+    // Filter listeners for schedule
+    const schedFilterStage = document.getElementById('schedule-filter-stage');
+    if (schedFilterStage) schedFilterStage.addEventListener('change', renderSkillsSchedule);
+
+    const schedFilterStatus = document.getElementById('schedule-filter-status');
+    if (schedFilterStatus) schedFilterStatus.addEventListener('change', renderSkillsSchedule);
+
+    const btnExportSchedule = document.getElementById('btn-export-schedule');
+    if (btnExportSchedule) {
+        btnExportSchedule.addEventListener('click', () => {
+            showToast('Exportando Cronograma de Habilidades da Rede em PDF...', 'download');
+        });
+    }
+
+    // ==========================================
     // GESTÃO PEDAGÓGICA: SUBTAB TOGGLING & RISK TABLES
     // ==========================================
     const pedagogicSubtabBtns = document.querySelectorAll('.pedagogic-subtab-btn');
@@ -4657,7 +5389,9 @@ DIRETRIZES DO DIAGNÓSTICO:
                 }
             });
 
-            if (target === 'risco-metas-sub') {
+            if (target === 'niveis-saeb-sub') {
+                renderSaebProficiencyDashboard();
+            } else if (target === 'risco-metas-sub') {
                 renderRiskGoalsTable();
             } else if (target === 'planos-intervencao-sub') {
                 populateInterventionPlansSelectors();
