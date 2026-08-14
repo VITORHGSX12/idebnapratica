@@ -6835,16 +6835,29 @@ DIRETRIZES DO DIAGNÓSTICO:
                 sessionStorage.setItem('userTurma', assignedTurma);
             }
 
-            setTimeout(async () => {
+            try {
                 await loadDatabaseState();
-                updateMenuVisibilityByRole();
+            } catch (err) {
+                console.warn('[IDEB Engine] Warning in loadDatabaseState:', err);
+            }
 
-                // Direct Navigation to the Role's Panel
+            try {
+                updateMenuVisibilityByRole();
+            } catch (err) {
+                console.warn('[IDEB Engine] Warning in updateMenuVisibilityByRole:', err);
+            }
+
+            // Direct Navigation to the Role's Panel
+            try {
                 if (window.navigateToTab) {
                     window.navigateToTab(targetTab);
                 }
+            } catch (err) {
+                console.warn('[IDEB Engine] Warning in navigateToTab:', err);
+            }
 
-                // Apply role-specific filters
+            // Apply role-specific filters
+            try {
                 if (detectedRole === 'Diretor Escola') {
                     const dbSchoolSearch = document.getElementById('db-school-search');
                     if (dbSchoolSearch) {
@@ -6864,19 +6877,21 @@ DIRETRIZES DO DIAGNÓSTICO:
                         if (typeof applyDbFilters === 'function') applyDbFilters();
                     }
                 }
+            } catch (err) {
+                console.warn('[IDEB Engine] Filter warning:', err);
+            }
 
-                // Smooth Fade-out animation
-                loginScreen.classList.add('fade-out');
-                showToast(`Bem-vindo ao IDEB na Prática! Painel ${detectedRole} carregado.`, 'check');
-                window.scrollTo(0, 0);
+            // Smooth Fade-out animation
+            loginScreen.classList.add('fade-out');
+            showToast(`Bem-vindo ao IDEB na Prática! Painel ${detectedRole} carregado.`, 'check');
+            window.scrollTo(0, 0);
 
-                setTimeout(() => {
-                    loginScreen.style.display = 'none';
-                    if (window.lucide) {
-                        lucide.createIcons({ attrs: { class: 'lucide' } });
-                    }
-                }, 600);
-            }, 450);
+            setTimeout(() => {
+                loginScreen.style.display = 'none';
+                if (window.lucide) {
+                    lucide.createIcons({ attrs: { class: 'lucide' } });
+                }
+            }, 500);
         });
     }
 

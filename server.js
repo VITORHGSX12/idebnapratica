@@ -683,11 +683,28 @@ app.delete('/api/users/:id', (req, res) => {
     }
 });
 
-// Serve Static Frontend Assets
-app.use(express.static(__dirname));
+// Global Anti-Cache Middleware
+app.use((req, res, next) => {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    next();
+});
+
+// Serve Static Frontend Assets with anti-cache headers
+app.use(express.static(__dirname, {
+    setHeaders: (res, path) => {
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+    }
+}));
 
 // Serve index.html for all other routes (Single Page Application routing)
 app.get('*', (req, res) => {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
