@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>IDEB na Prática - Plataforma de Gestão e Avaliação Educacional</title>
-    <link rel="stylesheet" href="styles.css?v=a2ed6ab0">
+    <link rel="stylesheet" href="styles.css?v=edc96035">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -326,7 +326,21 @@
             </header>
 
             <div class="content-body">
-                <!-- ==================== DASHBOARD TAB ==================== -->
+                <!-- Dynamic Role Context Banner -->
+                <div id="role-context-banner" class="role-context-banner">
+                    <div class="role-banner-left">
+                        <div class="role-banner-badge badge-semed" id="role-banner-badge">
+                            <i data-lucide="shield" id="role-banner-icon" style="width: 12px; height: 12px;"></i>
+                            <span id="role-banner-tag">SECRETARIA MUNICIPAL DE EDUCAÇÃO</span>
+                        </div>
+                        <h3 id="role-banner-title">Painel Executivo Municipal — SEMED Gonçalves Dias - MA</h3>
+                        <p id="role-banner-subtitle">14 Escolas Municipais • 2.975 Alunos Cadastrados • Meta IDEB 2025: 6.5 • Meta 2027: 7.0</p>
+                    </div>
+                    <div class="role-banner-actions" id="role-banner-actions">
+                        <!-- Role-specific actions dynamically rendered via JS -->
+                    </div>
+                </div>
+
                 <!-- ==================== DASHBOARD TAB ==================== -->
                 <section id="dashboard" class="tab-content active">
                     <!-- Dashboard Onboarding State -->
@@ -2805,6 +2819,6 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=a23701c8"></script>
+    <script src="app.js?v=ad044321"></script>
 </body>
 </html>
