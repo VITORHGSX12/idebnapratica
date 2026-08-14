@@ -153,20 +153,39 @@ const initApp = () => {
         }
 
         // Trigger specific actions when switching tabs
-        if (targetTab === 'doc-tecnica') {
-            renderMermaidDiagram();
+        if (targetTab === 'dashboard') {
+            if (typeof recalculateNetworkStats === 'function') recalculateNetworkStats();
+            if (typeof renderHeatmapGrid === 'function') renderHeatmapGrid();
+            if (typeof renderRiskGoalsTable === 'function') renderRiskGoalsTable();
+        } else if (targetTab === 'doc-tecnica') {
+            if (typeof renderMermaidDiagram === 'function') renderMermaidDiagram();
         } else if (targetTab === 'gestao-pedagogica') {
-            renderRiskGoalsTable();
+            if (typeof renderRiskGoalsTable === 'function') renderRiskGoalsTable();
         } else if (targetTab === 'ideb-comparativo') {
-            updateIdebComparativoView();
+            if (typeof updateIdebComparativoView === 'function') updateIdebComparativoView();
         } else if (targetTab === 'ai-playground') {
-            populateAiSelectors();
+            if (typeof populateAiSelectors === 'function') populateAiSelectors();
         } else if (targetTab === 'alunos-panel') {
             if (typeof renderDbStudents === 'function') renderDbStudents();
         } else if (targetTab === 'escolas-panel') {
             if (typeof renderDbSchools === 'function') renderDbSchools();
         } else if (targetTab === 'biblioteca-recursos') {
             if (typeof renderPedagogicLibrary === 'function') renderPedagogicLibrary();
+        } else if (targetTab === 'criar-avaliacoes') {
+            if (typeof renderCreatedEvents === 'function') renderCreatedEvents();
+            if (typeof populateWizardSchools === 'function') populateWizardSchools();
+        } else if (targetTab === 'aplicacao-provas') {
+            if (typeof renderOngoingAssessments === 'function') renderOngoingAssessments();
+            if (typeof populateScoreSchoolSelect === 'function') populateScoreSchoolSelect();
+        } else if (targetTab === 'matriz-descritores') {
+            if (typeof renderReferenceMatrix === 'function') renderReferenceMatrix();
+        } else if (targetTab === 'questions') {
+            if (typeof renderQuestions === 'function') renderQuestions();
+            if (typeof populateQuestionCreatorDropdowns === 'function') populateQuestionCreatorDropdowns();
+        } else if (targetTab === 'metas-ideb') {
+            if (typeof populateIdebGoalsTable === 'function') populateIdebGoalsTable();
+        } else if (targetTab === 'admin-panel') {
+            if (typeof loadUsersList === 'function') loadUsersList();
         }
         
         safeCreateIcons();
