@@ -67,8 +67,8 @@ const initApp = () => {
             subtitle: 'Consulta de fichas cadastrais completas, dados de contato e acessibilidade da rede.'
         },
         'metas-ideb': {
-            title: 'Metas & Planejamento (IDEB)',
-            subtitle: 'Planejamento e acompanhamento das metas padronizadas e proficiências pactuadas para a rede.'
+            title: 'Metas e Planos de Desenvolvimento Escolar',
+            subtitle: 'Acompanhamento de metas pactuadas e planos de ação direcionados para escolas com desvio de aprendizagem.'
         },
         'ideb-comparativo': {
             title: 'Comparativo Regional (INEP)',
@@ -1054,31 +1054,321 @@ DIRETRIZES DO DIAGNÓSTICO:
         if (!tableBody) return;
         tableBody.innerHTML = '';
 
-        schools.forEach((schName, idx) => {
+        const schoolList = (schools && schools.length > 0) ? schools : Array.from(new Set(loadedStudents.map(s => s.escola))).sort();
+        const filterVal = document.getElementById('pde-filter-status')?.value || 'all';
+
+        const rowsData = schoolList.map(schName => {
             let hash = 0;
             for (let i = 0; i < schName.length; i++) {
                 hash += schName.charCodeAt(i);
             }
             const baseIdeb = 4.2 + (hash % 15) / 10;
             const projectedIdeb = baseIdeb + 0.2 + (hash % 4) / 10;
-            const targetIdeb = baseIdeb + 0.4;
+            const targetIdeb = baseIdeb + 0.5; // meta pactuada
             const gap = projectedIdeb - targetIdeb;
-            const gapText = gap >= 0 ? `+${gap.toFixed(1)}` : `${gap.toFixed(1)}`;
-            const gapColor = gap >= 0 ? 'var(--green-light)' : 'var(--red-light)';
-            const statusBadge = gap >= 0 ? '<span class="badge badge-success">Meta Atingida</span>' : '<span class="badge badge-danger">Alerta de Gap</span>';
+            
+            let riskLevel = 'Baixo';
+            let riskBadge = '<span class="badge badge-success">Baixo Risco 🟢</span>';
+            let riskCategory = 'ok';
+
+            if (gap < -0.3) {
+                riskLevel = 'Alto';
+                riskBadge = '<span class="badge badge-danger">Alto Risco 🔴</span>';
+                riskCategory = 'risk';
+            } else if (gap < 0) {
+                riskLevel = 'Médio';
+                riskBadge = '<span class="badge badge-warning">Médio Risco 🟡</span>';
+                riskCategory = 'risk';
+            }
+
+            return {
+                schName,
+                baseIdeb,
+                projectedIdeb,
+                targetIdeb,
+                gap,
+                riskLevel,
+                riskBadge,
+                riskCategory
+            };
+        });
+
+        // Sort by gap ascending (most negative / critical gap first)
+        rowsData.sort((a, b) => a.gap - b.gap);
+
+        const filtered = rowsData.filter(item => {
+            if (filterVal === 'risk') return item.riskCategory === 'risk';
+            if (filterVal === 'ok') return item.riskCategory === 'ok';
+            return true;
+        });
+
+        if (filtered.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="7" style="padding: 24px; text-align: center; color: var(--text-muted);">
+                        Nenhuma escola encontrada para o filtro selecionado.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        filtered.forEach(item => {
+            const gapText = item.gap >= 0 ? `+${item.gap.toFixed(1)}` : `${item.gap.toFixed(1)}`;
+            const gapColor = item.gap >= 0 ? 'var(--green-light)' : 'var(--red-light)';
 
             const tr = document.createElement('tr');
             tr.style.borderBottom = '1px solid var(--border-color)';
-            tr.style.height = '42px';
+            tr.style.height = '46px';
             tr.innerHTML = `
-                <td style="padding: 10px 16px; font-weight:600;">${schName}</td>
-                <td style="padding: 10px 16px; text-align:center; font-family:var(--font-mono);">${baseIdeb.toFixed(1)}</td>
-                <td style="padding: 10px 16px; text-align:center; font-family:var(--font-mono); font-weight:600; color:var(--purple-light);">${projectedIdeb.toFixed(1)}</td>
-                <td style="padding: 10px 16px; text-align:center; font-family:var(--font-mono); color:var(--text-secondary);">${targetIdeb.toFixed(1)}</td>
-                <td style="padding: 10px 16px; text-align:center; font-family:var(--font-mono); color:${gapColor}; font-weight:600;">${gapText}</td>
-                <td style="padding: 10px 16px; text-align:center;">${statusBadge}</td>
+                <td style="padding: 10px 16px; font-weight:600; color:var(--text-primary);">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <i data-lucide="school" style="width:14px; height:14px; color:var(--purple-light);"></i>
+                        <span>${item.schName}</span>
+                    </div>
+                </td>
+                <td style="padding: 10px 16px; text-align:center; font-family:var(--font-mono);">${item.baseIdeb.toFixed(1)}</td>
+                <td style="padding: 10px 16px; text-align:center; font-family:var(--font-mono); font-weight:700; color:var(--purple-light);">${item.projectedIdeb.toFixed(1)}</td>
+                <td style="padding: 10px 16px; text-align:center; font-family:var(--font-mono); color:var(--text-secondary);">${item.targetIdeb.toFixed(1)}</td>
+                <td style="padding: 10px 16px; text-align:center; font-family:var(--font-mono); color:${gapColor}; font-weight:700;">${gapText}</td>
+                <td style="padding: 10px 16px; text-align:center;">${item.riskBadge}</td>
+                <td style="padding: 10px 16px; text-align:center;">
+                    <button class="btn ${item.gap < 0 ? 'btn-primary' : 'btn-outline'} btn-sm btn-open-pde-modal" 
+                            data-school="${item.schName}" 
+                            data-base="${item.baseIdeb.toFixed(1)}" 
+                            data-proj="${item.projectedIdeb.toFixed(1)}" 
+                            data-target="${item.targetIdeb.toFixed(1)}" 
+                            data-gap="${gapText}" 
+                            data-risk="${item.riskLevel}" 
+                            style="display:inline-flex; align-items:center; gap:5px; font-size:0.75rem; padding: 4px 10px; cursor:pointer;">
+                        <i data-lucide="${item.gap < 0 ? 'file-spreadsheet' : 'eye'}" style="width:13px; height:13px;"></i>
+                        <span>${item.gap < 0 ? 'Ver Plano de Ação (PDE)' : 'Ver Detalhes'}</span>
+                    </button>
+                </td>
             `;
             tableBody.appendChild(tr);
+        });
+
+        // Attach event listeners for PDE buttons
+        tableBody.querySelectorAll('.btn-open-pde-modal').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const sch = btn.getAttribute('data-school');
+                const base = btn.getAttribute('data-base');
+                const proj = btn.getAttribute('data-proj');
+                const tgt = btn.getAttribute('data-target');
+                const gap = btn.getAttribute('data-gap');
+                const risk = btn.getAttribute('data-risk');
+                openSchoolPdeModal({ sch, base, proj, tgt, gap, risk });
+            });
+        });
+
+        safeCreateIcons();
+    }
+
+    function openSchoolPdeModal(info) {
+        const modal = document.getElementById('modal-school-pde-plan');
+        const titleEl = document.getElementById('modal-pde-school-name');
+        const metaEl = document.getElementById('modal-pde-school-meta');
+        const badgeEl = document.getElementById('modal-pde-risk-badge');
+        const bodyEl = document.getElementById('modal-pde-content-body');
+        if (!modal || !bodyEl) return;
+
+        if (titleEl) titleEl.textContent = `Plano de Desenvolvimento Escolar (PDE) — ${info.sch}`;
+        if (metaEl) metaEl.textContent = `${info.sch} • IDEB 2023: ${info.base} | Projeção Atual: ${info.proj} | Meta Pactuada: ${info.tgt} (Desvio: ${info.gap})`;
+        
+        if (badgeEl) {
+            badgeEl.className = info.risk === 'Alto' ? 'badge badge-danger' : (info.risk === 'Médio' ? 'badge badge-warning' : 'badge badge-success');
+            badgeEl.textContent = `${info.risk} Risco`;
+        }
+
+        // Count students in this school
+        const schoolStudents = loadedStudents.filter(s => s.escola === info.sch);
+        const countStudents = schoolStudents.length || 184;
+
+        bodyEl.innerHTML = `
+            <!-- Top Summary Diagnostics Card -->
+            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 16px;">
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; text-align: center;">
+                    <div>
+                        <span style="font-size:0.72rem; color:var(--text-muted); display:block;">IDEB 2023</span>
+                        <strong style="font-size:1.2rem; color:var(--text-primary); font-family:var(--font-mono);">${info.base}</strong>
+                    </div>
+                    <div>
+                        <span style="font-size:0.72rem; color:var(--text-muted); display:block;">Projeção Atual</span>
+                        <strong style="font-size:1.2rem; color:var(--purple-light); font-family:var(--font-mono);">${info.proj}</strong>
+                    </div>
+                    <div>
+                        <span style="font-size:0.72rem; color:var(--text-muted); display:block;">Meta Pactuada</span>
+                        <strong style="font-size:1.2rem; color:var(--blue-light); font-family:var(--font-mono);">${info.tgt}</strong>
+                    </div>
+                    <div>
+                        <span style="font-size:0.72rem; color:var(--text-muted); display:block;">Desvio / Gap</span>
+                        <strong style="font-size:1.2rem; color:${info.gap.startsWith('+') ? 'var(--green-light)' : 'var(--red-light)'}; font-family:var(--font-mono);">${info.gap}</strong>
+                    </div>
+                    <div>
+                        <span style="font-size:0.72rem; color:var(--text-muted); display:block;">Alunos Mapeados</span>
+                        <strong style="font-size:1.2rem; color:var(--text-primary); font-family:var(--font-mono);">${countStudents}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Critical Gaps Section -->
+            <div style="margin-bottom: 20px;">
+                <h4 style="display:flex; align-items:center; gap:6px; font-size:0.95rem; margin:0 0 10px 0; color:var(--text-primary);">
+                    <i data-lucide="alert-triangle" style="width:16px; height:16px; color:var(--red-light);"></i>
+                    Lacunas Críticas Diagnosticadas nos Simulados (Foco Prioritário)
+                </h4>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;">
+                    <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-left:4px solid var(--red-light); padding:12px; border-radius:var(--radius-sm);">
+                        <div class="flex-between" style="margin-bottom:4px;">
+                            <span class="badge badge-danger" style="font-size:0.7rem;">Matemática • SAEB D13</span>
+                            <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">${Math.round(countStudents * 0.58)} alunos com gap</span>
+                        </div>
+                        <strong style="font-size:0.85rem; color:var(--text-primary); display:block; margin-bottom:4px;">Operações Fundamentais com Números Naturais</strong>
+                        <p style="font-size:0.75rem; color:var(--text-secondary); margin:0;">Dificuldade na interpretação de enunciados com multiplicação e divisão por 2 algarismos.</p>
+                    </div>
+
+                    <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-left:4px solid var(--warning-light, #f59e0b); padding:12px; border-radius:var(--radius-sm);">
+                        <div class="flex-between" style="margin-bottom:4px;">
+                            <span class="badge badge-warning" style="font-size:0.7rem;">Português • SAEB D03</span>
+                            <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">${Math.round(countStudents * 0.44)} alunos com gap</span>
+                        </div>
+                        <strong style="font-size:0.85rem; color:var(--text-primary); display:block; margin-bottom:4px;">Inferência de Sentido a partir do Contexto</strong>
+                        <p style="font-size:0.75rem; color:var(--text-secondary); margin:0;">Alunos com leitura linear sem identificar pistas contextuais e sentidos figurados.</p>
+                    </div>
+
+                    <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-left:4px solid var(--purple-light); padding:12px; border-radius:var(--radius-sm);">
+                        <div class="flex-between" style="margin-bottom:4px;">
+                            <span class="badge badge-purple" style="font-size:0.7rem;">Português • SAEB D11</span>
+                            <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">${Math.round(countStudents * 0.36)} alunos com gap</span>
+                        </div>
+                        <strong style="font-size:0.85rem; color:var(--text-primary); display:block; margin-bottom:4px;">Distinção entre Fato e Opinião</strong>
+                        <p style="font-size:0.75rem; color:var(--text-secondary); margin:0;">Confusão frequente entre dados objetivos informados e posicionamentos subjetivos do autor.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Structured 4-Week Pedagogical Action Plan -->
+            <div style="margin-bottom: 20px;">
+                <h4 style="display:flex; align-items:center; gap:6px; font-size:0.95rem; margin:0 0 12px 0; color:var(--text-primary);">
+                    <i data-lucide="sparkles" style="width:16px; height:16px; color:var(--purple-light);"></i>
+                    Plano de Intervenção Pedagógica Estruturado (Ciclo Intensivo de 4 Semanas)
+                </h4>
+                
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:12px 16px;">
+                        <div class="flex-between" style="margin-bottom:6px;">
+                            <span style="font-size:0.8rem; font-weight:700; color:var(--purple-light);">Semana 1: Nivelamento Conceitual & Material Concreto</span>
+                            <span class="badge badge-outline" style="font-size:0.68rem;">Oficina em Sala</span>
+                        </div>
+                        <p style="font-size:0.8rem; color:var(--text-secondary); margin:0 0 4px 0;">
+                            <strong>Ação Docente:</strong> Utilização de material dourado, ábacos e cartões de leitura rápida. Reagrupamento dos alunos em trios com monitores.
+                        </p>
+                        <span style="font-size:0.72rem; color:var(--text-muted);">Meta da Semana: 100% dos alunos com gap participando das oficinas ativas.</span>
+                    </div>
+
+                    <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:12px 16px;">
+                        <div class="flex-between" style="margin-bottom:6px;">
+                            <span style="font-size:0.8rem; font-weight:700; color:var(--purple-light);">Semana 2: Resolução de Problemas Contextualizados</span>
+                            <span class="badge badge-outline" style="font-size:0.68rem;">Sequência Didática</span>
+                        </div>
+                        <p style="font-size:0.8rem; color:var(--text-secondary); margin:0 0 4px 0;">
+                            <strong>Ação Docente:</strong> Situações-problema baseadas na economia e cotidiano do município. Exercícios de caça a pistas em fábulas e notícias.
+                        </p>
+                        <span style="font-size:0.72rem; color:var(--text-muted);">Meta da Semana: Atingir no mínimo 60% de acerto nas atividades diagnósticas formativas.</span>
+                    </div>
+
+                    <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:12px 16px;">
+                        <div class="flex-between" style="margin-bottom:6px;">
+                            <span style="font-size:0.8rem; font-weight:700; color:var(--purple-light);">Semana 3: Produção Guiada & Debates Regrados</span>
+                            <span class="badge badge-outline" style="font-size:0.68rem;">Aprofundamento</span>
+                        </div>
+                        <p style="font-size:0.8rem; color:var(--text-secondary); margin:0 0 4px 0;">
+                            <strong>Ação Docente:</strong> Roda de leitura com identificação de fato vs opinião e desafios relâmpago de cálculo mental.
+                        </p>
+                        <span style="font-size:0.72rem; color:var(--text-muted);">Meta da Semana: Consolidação da autonomia leitora e das 4 operações.</span>
+                    </div>
+
+                    <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:12px 16px;">
+                        <div class="flex-between" style="margin-bottom:6px;">
+                            <span style="font-size:0.8rem; font-weight:700; color:var(--purple-light);">Semana 4: Mini-Simulado de Checagem & Correção Imediata</span>
+                            <span class="badge badge-warning" style="font-size:0.68rem;">Avaliação Formativa</span>
+                        </div>
+                        <p style="font-size:0.8rem; color:var(--text-secondary); margin:0 0 4px 0;">
+                            <strong>Ação Docente:</strong> Aplicação do mini-simulado de 10 itens calibrados nos descritores trabalhados. Tabulação instantânea no SaaS.
+                        </p>
+                        <span style="font-size:0.72rem; color:var(--text-muted);">Meta da Semana: Redução de pelo menos 50% no contingente de alunos no nível crítico.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Institutional Commitments -->
+            <div style="background:rgba(139, 92, 246, 0.04); border:1px solid rgba(139, 92, 246, 0.2); border-radius:var(--radius-md); padding:14px 18px;">
+                <h5 style="margin:0 0 8px 0; font-size:0.85rem; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
+                    <i data-lucide="check-square" style="width:14px; height:14px; color:var(--purple-light);"></i>
+                    Pacto de Acompanhamento SEMED ↔ Gestão Escolar
+                </h5>
+                <ul style="margin:0; padding-left:18px; font-size:0.78rem; color:var(--text-secondary); line-height:1.5;">
+                    <li><strong>Direção Escolar:</strong> Realizar alinhamento pedagógico semanal com docentes das turmas de 2º, 5º e 9º anos.</li>
+                    <li><strong>Supervisão SEMED:</strong> Visita de tutoria técnica quinzenal e fornecimento dos cadernos de reforço impressos.</li>
+                    <li><strong>Meta de Recuperação:</strong> Elevar a proficiência estimada da unidade escolar para atingir a meta pactuada de <strong>${info.tgt}</strong>.</li>
+                </ul>
+            </div>
+        `;
+
+        modal.classList.remove('hidden');
+        safeCreateIcons();
+    }
+
+    // Modal PDE Handlers
+    const modalSchoolPde = document.getElementById('modal-school-pde-plan');
+    const btnCloseSchoolPde = document.getElementById('btn-close-school-pde-modal');
+    const btnSavePdeModal = document.getElementById('btn-save-pde-modal');
+    const btnPrintPdeModal = document.getElementById('btn-print-pde-modal');
+    const btnRegeneratePdeModal = document.getElementById('btn-regenerate-pde-modal');
+
+    if (btnCloseSchoolPde && modalSchoolPde) {
+        btnCloseSchoolPde.addEventListener('click', () => modalSchoolPde.classList.add('hidden'));
+    }
+    if (btnSavePdeModal && modalSchoolPde) {
+        btnSavePdeModal.addEventListener('click', () => {
+            modalSchoolPde.classList.add('hidden');
+            showToast('Plano de Desenvolvimento Escolar (PDE) aprovado e registrado com sucesso!', 'check');
+        });
+    }
+    if (btnPrintPdeModal) {
+        btnPrintPdeModal.addEventListener('click', () => {
+            showToast('Gerando Caderno PDF do Plano de Desenvolvimento Escolar (PDE)...', 'printer');
+        });
+    }
+    if (btnRegeneratePdeModal) {
+        btnRegeneratePdeModal.addEventListener('click', () => {
+            showToast('IA recalculou o plano pedagógico com base nas últimas respostas!', 'sparkles');
+        });
+    }
+
+    const pdeFilterStatus = document.getElementById('pde-filter-status');
+    if (pdeFilterStatus) {
+        pdeFilterStatus.addEventListener('change', () => {
+            populateIdebGoalsTable();
+        });
+    }
+
+    const btnGenerateAllPdePlans = document.getElementById('btn-generate-all-pde-plans');
+    if (btnGenerateAllPdePlans) {
+        btnGenerateAllPdePlans.addEventListener('click', () => {
+            showToast('Gerando Planos de Desenvolvimento Escolar (PDE) via IA para todas as escolas com gap...', 'sparkles');
+            setTimeout(() => {
+                populateIdebGoalsTable();
+                showToast('Planos PDE gerados com sucesso para as 12 unidades escolares da rede!', 'check');
+            }, 500);
+        });
+    }
+
+    const btnExportPdeReport = document.getElementById('btn-export-pde-report');
+    if (btnExportPdeReport) {
+        btnExportPdeReport.addEventListener('click', () => {
+            showToast('Exportando Relatório Consolidado de Metas e Planos PDE em PDF...', 'download');
         });
     }
 
@@ -5950,8 +6240,6 @@ DIRETRIZES DO DIAGNÓSTICO:
 
             if (target === 'niveis-saeb-sub') {
                 renderSaebProficiencyDashboard();
-            } else if (target === 'risco-metas-sub') {
-                renderRiskGoalsTable();
             } else if (target === 'planos-intervencao-sub') {
                 populateInterventionPlansSelectors();
             }
@@ -5959,46 +6247,7 @@ DIRETRIZES DO DIAGNÓSTICO:
     });
 
     function renderRiskGoalsTable() {
-        const tableBody = document.getElementById('risk-goals-table-body');
-        if (!tableBody) return;
-        tableBody.innerHTML = '';
-
-        const schools = Array.from(new Set(loadedStudents.map(s => s.escola))).sort();
-        schools.forEach((schName, idx) => {
-            let hash = 0;
-            for (let i = 0; i < schName.length; i++) {
-                hash += schName.charCodeAt(i);
-            }
-            const baseIdeb = 4.2 + (hash % 15) / 10;
-            const projectedIdeb = baseIdeb + 0.2 + (hash % 4) / 10;
-            const targetIdeb = baseIdeb + 0.5; // meta pactuada
-            const desvio = projectedIdeb - targetIdeb;
-            const desvioText = desvio >= 0 ? `+${desvio.toFixed(1)}` : `${desvio.toFixed(1)}`;
-            const desvioColor = desvio >= 0 ? 'var(--green-light)' : 'var(--red-light)';
-
-            let riskLabel = 'Baixo';
-            let riskBadgeClass = 'badge-success';
-            if (desvio < -0.3) {
-                riskLabel = 'Alto';
-                riskBadgeClass = 'badge-danger';
-            } else if (desvio < 0) {
-                riskLabel = 'Médio';
-                riskBadgeClass = 'badge-warning';
-            }
-
-            const tr = document.createElement('tr');
-            tr.style.borderBottom = '1px solid var(--border-color)';
-            tr.style.height = '42px';
-            tr.innerHTML = `
-                <td style="padding: 10px 16px; font-weight:600;">${schName}</td>
-                <td style="padding: 10px 16px; text-align:center; font-family:var(--font-mono);">${targetIdeb.toFixed(1)}</td>
-                <td style="padding: 10px 16px; text-align:center; font-family:var(--font-mono); font-weight:600; color:var(--purple-light);">${projectedIdeb.toFixed(1)}</td>
-                <td style="padding: 10px 16px; text-align:center; font-family:var(--font-mono); color:${desvioColor}; font-weight:600;">${desvioText}</td>
-                <td style="padding: 10px 16px; text-align:center;"><span class="badge ${riskBadgeClass}">${riskLabel}</span></td>
-                <td style="padding: 10px 16px; text-align:center; font-size:0.75rem; color:var(--text-muted);">${desvio < 0 ? 'Ação Corretiva Recomendada' : 'No Rumo da Meta'}</td>
-            `;
-            tableBody.appendChild(tr);
-        });
+        populateIdebGoalsTable();
     }
 
     const btnGenerateAiPlan = document.getElementById('btn-generate-ai-plan');

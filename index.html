@@ -193,9 +193,9 @@
                 <div class="menu-group">
                     <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Avaliação</span>
                     <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <a href="#" class="menu-item" data-target="metas-ideb" data-tooltip="Metas & Planejamento (IDEB)">
-                            <i data-lucide="line-chart"></i>
-                            <span>Metas & Plan. (IDEB)</span>
+                        <a href="#" class="menu-item" data-target="metas-ideb" data-tooltip="Metas e Planos de Desenvolvimento Escolar">
+                            <i data-lucide="target"></i>
+                            <span>Metas e Planos (PDE)</span>
                         </a>
                         <a href="#" class="menu-item" data-target="ideb-comparativo" data-tooltip="Comparativo Regional (INEP)">
                             <i data-lucide="globe"></i>
@@ -784,13 +784,29 @@
                     </div>
                 </section>
 
-                <!-- ==================== METAS & PLANEJAMENTO (IDEB) TAB ==================== -->
+                <!-- ==================== METAS E PLANOS DE DESENVOLVIMENTO ESCOLAR (PDE) TAB ==================== -->
                 <section id="metas-ideb" class="tab-content">
                     <div class="card card-full margin-bottom-lg">
-                        <div class="card-header">
-                            <h3>Metas de IDEB e Desempenho da Rede</h3>
-                            <p class="card-subtitle">Planejamento estratégico de metas calculadas com base nas taxas de rendimento e médias de proficiência (SAEB).</p>
+                        <div class="card-header flex-between flex-wrap gap-md">
+                            <div>
+                                <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(139, 92, 246, 0.1); color:var(--purple-light); padding:3px 10px; border-radius:12px; font-size:0.75rem; font-weight:700; margin-bottom:6px;">
+                                    <i data-lucide="target" style="width:12px; height:12px;"></i> PLANOS DE DESENVOLVIMENTO ESCOLAR (PDE)
+                                </div>
+                                <h3 style="margin: 0; font-size: 1.35rem; font-weight: 700; color: var(--text-primary);">Metas e Planos de Desenvolvimento Escolar</h3>
+                                <p class="card-subtitle" style="margin: 4px 0 0 0;">Mapeamento das escolas abaixo da meta pactuada e execução direta de Planos de Intervenção Pedagógica (PDE).</p>
+                            </div>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button class="btn btn-primary" id="btn-generate-all-pde-plans" style="display: flex; align-items: center; gap: 8px;">
+                                    <i data-lucide="sparkles"></i>
+                                    <span>Gerar Planos PDE via IA (Escolas com Gap)</span>
+                                </button>
+                                <button class="btn btn-outline" id="btn-export-pde-report" style="display: flex; align-items: center; gap: 8px;">
+                                    <i data-lucide="download"></i>
+                                    <span>Exportar Relatório PDE (PDF)</span>
+                                </button>
+                            </div>
                         </div>
+
                         <div class="card-body">
                             <!-- IDEB Summary indicators -->
                             <div class="grid-3-lg margin-bottom-lg" style="margin-bottom: 24px;">
@@ -802,7 +818,7 @@
                                 <div style="background-color: var(--bg-secondary); border: 1px solid var(--border-color); padding: 18px; border-radius: var(--radius-lg); text-align: center;">
                                     <span style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 8px;">Taxa Média de Rendimento (Aprovação)</span>
                                     <strong id="metas-summary-rendimento" style="font-size: 2.2rem; color: var(--blue-light);">96.8%</strong>
-                                    <div class="text-sm margin-top-sm" style="color: var(--text-secondary);">Meta de fluxo: 97.5%</div>
+                                    <div class="text-sm margin-top-sm" style="color: var(--text-secondary);">Meta pactuada de fluxo: 97.5%</div>
                                 </div>
                                 <div style="background-color: var(--bg-secondary); border: 1px solid var(--border-color); padding: 18px; border-radius: var(--radius-lg); text-align: center;">
                                     <span style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 8px;">Média Padronizada de Proficiência (N)</span>
@@ -811,58 +827,41 @@
                                 </div>
                             </div>
 
-                            <!-- Plan Table -->
-                            <div style="overflow-x: auto; margin-top: 24px;">
+                            <!-- Filter Toolbar -->
+                            <div class="card-header border-top flex-between flex-wrap gap-md" style="background-color: var(--bg-tertiary); padding: 12px 18px; border-radius: var(--radius-md); margin-bottom: 16px;">
+                                <div style="display: flex; gap: 14px; flex-wrap: wrap; align-items: center; flex-grow: 1;">
+                                    <div style="min-width: 240px;">
+                                        <select id="pde-filter-status" class="form-select" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 12px; width: 100%;">
+                                            <option value="all">Todas as Escolas (12 Unidades da Rede)</option>
+                                            <option value="risk">Escolas em Risco / Abaixo da Meta (Alerta Vermelho/Laranja)</option>
+                                            <option value="ok">Escolas com Meta Atingida (Verde)</option>
+                                        </select>
+                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        <i data-lucide="info" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 4px; color: var(--purple-light);"></i>
+                                        Ordenadas por maior desvio/gap (escolas mais críticas no topo para intervenção prioritária).
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Unified Actionable PDE Table -->
+                            <div style="overflow-x: auto;">
                                 <table class="table-compact" style="width: 100%; border-collapse: collapse; text-align: left;">
                                     <thead>
-                                        <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-secondary); height: 40px;">
+                                        <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-secondary); height: 42px; background: var(--bg-tertiary);">
                                             <th style="padding: 12px 16px;">Unidade Escolar</th>
-                                            <th style="padding: 12px 16px; text-align: center;">IDEB 2023</th>
+                                            <th style="padding: 12px 16px; text-align: center;">IDEB 2023 (INEP)</th>
                                             <th style="padding: 12px 16px; text-align: center;">Projeção Atual</th>
                                             <th style="padding: 12px 16px; text-align: center;">Meta Pactuada</th>
                                             <th style="padding: 12px 16px; text-align: center;">Desvio / Gap</th>
-                                            <th style="padding: 12px 16px; text-align: center;">Status</th>
+                                            <th style="padding: 12px 16px; text-align: center;">Nível de Risco</th>
+                                            <th style="padding: 12px 16px; text-align: center;">Ação Pedagógica (Plano PDE)</th>
                                         </tr>
                                     </thead>
                                     <tbody id="ideb-goals-table-body">
-                                        <!-- Preenchido dinamicamente com as principais escolas de Gonçalves Dias -->
+                                        <!-- Injetado dinamicamente via JS ordenado por desvio com botões de ação -->
                                     </tbody>
                                 </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Planejamento Estratégico & Pactuação de Metas da Rede -->
-                    <div class="card card-full margin-top-lg" style="margin-top: 24px; background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(59, 130, 246, 0.03) 100%); border-left: 4px solid var(--purple);">
-                        <div class="card-header flex-between flex-wrap gap-md" style="border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
-                            <div>
-                                <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(139, 92, 246, 0.1); color:var(--purple-light); padding:3px 10px; border-radius:12px; font-size:0.75rem; font-weight:700; margin-bottom:6px;">
-                                    <i data-lucide="target" style="width:12px; height:12px;"></i> PLANEJAMENTO ESTRATÉGICO DA REDE
-                                </div>
-                                <h3 style="margin: 0; font-size: 1.3rem; font-weight: 700; color: var(--text-primary);">Pactuação de Metas & Cronograma de Aceleração</h3>
-                                <p class="card-subtitle" style="margin: 4px 0 0 0; color: var(--text-secondary); font-size: 0.85rem;">Estipule a meta municipal de IDEB e acesse a matriz de distribuição semanal de habilidades prioritárias para as 12 escolas.</p>
-                            </div>
-                            <div style="display:flex; align-items:center; gap:12px; background:var(--bg-secondary); padding:8px 14px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
-                                <label for="target-ideb-input" style="font-size:0.85rem; font-weight:700; color:var(--text-primary);">Meta IDEB Alvo:</label>
-                                <input type="number" id="target-ideb-input" class="form-input-text" value="6.5" step="0.1" min="1.0" max="10.0" style="width: 80px; text-align: center; font-weight:800; font-size:1.05rem; color:var(--purple-light); font-family:var(--font-mono);">
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) auto; gap: 20px; align-items: center;">
-                                <div>
-                                    <div style="font-size:0.85rem; font-weight:700; color:var(--text-primary); margin-bottom:6px;" id="strategic-model-title">
-                                        Modelo Estratégico Sugerido: <span style="color:var(--purple-light);">Aceleração Avançada (Sobral/Ceará)</span>
-                                    </div>
-                                    <p style="font-size:0.8rem; color:var(--text-secondary); line-height:1.5; margin:0;" id="strategic-model-desc">
-                                        Para atingir a meta de <strong>6.5</strong>, a rede distribui os 48 descritores críticos de Língua Portuguesa e Matemática ao longo de <strong>40 semanas letivas</strong>, com simulados diagnósticos e intervenções pedagógicas contínuas.
-                                    </p>
-                                </div>
-                                <div>
-                                    <button class="btn btn-primary" id="btn-goto-skills-schedule" style="height: 46px; padding: 0 20px; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; cursor: pointer; white-space: nowrap;">
-                                        <i data-lucide="calendar-check-2"></i>
-                                        <span>Gerar / Ver Cronograma Semanal (40 Semanas) ➔</span>
-                                    </button>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -1714,8 +1713,7 @@
                     <div class="card card-full margin-bottom-md" style="padding: 0; background-color: var(--bg-secondary);">
                         <div style="display: flex; gap: 20px; padding: 16px 24px; border-bottom: 1px solid var(--border-color); overflow-x: auto;">
                             <button class="pedagogic-subtab-btn active" data-subtab="niveis-saeb-sub" style="background:none; border:none; color:var(--purple-light); font-weight:600; cursor:pointer; padding-bottom:8px; border-bottom: 2px solid var(--purple); font-size:0.95rem; white-space:nowrap; transition: var(--transition);">Níveis de Proficiência SAEB (0 a 5)</button>
-                            <button class="pedagogic-subtab-btn" data-subtab="planos-intervencao-sub" style="background:none; border:none; color:var(--text-secondary); font-weight:500; cursor:pointer; padding-bottom:8px; font-size:0.95rem; white-space:nowrap; transition: var(--transition);">Planos de Intervenção Pedagógica</button>
-                            <button class="pedagogic-subtab-btn" data-subtab="risco-metas-sub" style="background:none; border:none; color:var(--text-secondary); font-weight:500; cursor:pointer; padding-bottom:8px; font-size:0.95rem; white-space:nowrap; transition: var(--transition);">Indicador de Risco de Metas</button>
+                            <button class="pedagogic-subtab-btn" data-subtab="planos-intervencao-sub" style="background:none; border:none; color:var(--text-secondary); font-weight:500; cursor:pointer; padding-bottom:8px; font-size:0.95rem; white-space:nowrap; transition: var(--transition);">Modelos de Intervenção Pedagógica</button>
                         </div>
                     </div>
 
@@ -1951,32 +1949,6 @@
                         </div>
                     </div>
 
-                    <!-- SUBTAB 2: Risco de Metas -->
-                    <div class="pedagogic-subtab-content hidden" id="risco-metas-sub">
-                        <div class="card card-full" style="background-color: var(--bg-secondary);">
-                            <div class="card-header">
-                                <h3>Alerta de Risco de Desvio de Metas (IDEB)</h3>
-                                <p class="card-subtitle">Análise preditiva do risco de a escola não atingir a meta pactuada de IDEB para 2026.</p>
-                            </div>
-                            <div class="card-body no-padding" style="overflow-x:auto;">
-                                <table class="table-compact" style="width: 100%; border-collapse: collapse; text-align: left;">
-                                    <thead>
-                                        <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-secondary); height: 40px;">
-                                            <th style="padding: 12px 16px;">Unidade Escolar</th>
-                                            <th style="padding: 12px 16px; text-align: center;">IDEB Meta</th>
-                                            <th style="padding: 12px 16px; text-align: center;">Projeção Atual</th>
-                                            <th style="padding: 12px 16px; text-align: center;">Desvio</th>
-                                            <th style="padding: 12px 16px; text-align: center;">Nível de Risco</th>
-                                            <th style="padding: 12px 16px; text-align: center;">Status do Risco</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="risk-goals-table-body">
-                                        <!-- Gerado via JS de acordo com a base de dados recalculada -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
                 </section>
 
                 <!-- ==================== DOCUMENTAÇÃO TÉCNICA TAB ==================== -->
@@ -2907,6 +2879,48 @@
         </div>
     </div>
 
+    <!-- Modal Plano de Desenvolvimento Escolar (PDE) / Intervenção da Escola -->
+    <div id="modal-school-pde-plan" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 820px; width: 92%; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px; display:flex; justify-content:space-between; align-items:center;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(139, 92, 246, 0.1); color: var(--purple-light); display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                        <i data-lucide="file-spreadsheet"></i>
+                    </div>
+                    <div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <h3 id="modal-pde-school-name" style="margin: 0;">Plano de Desenvolvimento Escolar (PDE)</h3>
+                            <span id="modal-pde-risk-badge" class="badge badge-danger">Alto Risco</span>
+                        </div>
+                        <p class="text-sm text-muted" id="modal-pde-school-meta" style="margin-top:2px;">U.E. BENTA VILANOVA • Projeção: 4.8 | Meta: 5.6 (Gap: -0.8)</p>
+                    </div>
+                </div>
+                <button class="btn btn-icon" id="btn-close-school-pde-modal" style="cursor:pointer;"><i data-lucide="x"></i></button>
+            </div>
+
+            <div class="modal-body" style="padding-top: 18px;" id="modal-pde-content-body">
+                <!-- Preenchido dinamicamente via JS -->
+            </div>
+
+            <div class="modal-footer flex-between" style="margin-top: 18px; border-top: 1px solid var(--border-color); padding-top: 14px; flex-wrap:wrap; gap:10px;">
+                <button class="btn btn-outline" id="btn-print-pde-modal" style="display:flex; align-items:center; gap:6px;">
+                    <i data-lucide="printer"></i>
+                    <span>Imprimir Plano PDE (PDF)</span>
+                </button>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn btn-outline" id="btn-regenerate-pde-modal" style="color:var(--purple-light); border-color:var(--purple-light); display:flex; align-items:center; gap:6px;">
+                        <i data-lucide="sparkles"></i>
+                        <span>Regenerar via IA</span>
+                    </button>
+                    <button class="btn btn-primary" id="btn-save-pde-modal" style="display:flex; align-items:center; gap:6px;">
+                        <i data-lucide="check"></i>
+                        <span>Aprovar e Salvar Plano</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Create Schedule Week Modal (SEMED / Admin) -->
     <div id="create-schedule-modal" class="modal-overlay hidden">
         <div class="modal-content" style="max-width: 580px; width: 90%;">
@@ -3497,8 +3511,8 @@
                     <span class="mobile-sheet-group-title">Avaliação</span>
                     <div style="display: flex; flex-direction: column; gap: 4px;">
                         <a href="#" class="menu-item" data-target="metas-ideb">
-                            <i data-lucide="line-chart"></i>
-                            <span>Metas & Planejamento (IDEB)</span>
+                            <i data-lucide="target"></i>
+                            <span>Metas e Planos (PDE)</span>
                         </a>
                         <a href="#" class="menu-item" data-target="ideb-comparativo">
                             <i data-lucide="globe"></i>
@@ -3557,6 +3571,6 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=22aac04b"></script>
+    <script src="app.js?v=bb8be4f3"></script>
 </body>
 </html>
