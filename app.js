@@ -120,6 +120,13 @@ const initApp = () => {
     window.navigateToTab = function(targetTab) {
         if (!targetTab) return;
 
+        // RBAC Access Control Guard for IT/Governance modules
+        const userRole = sessionStorage.getItem('userRole') || 'SEMED';
+        if ((targetTab === 'doc-tecnica' || targetTab === 'admin-panel') && userRole !== 'Master Admin') {
+            showToast('Acesso restrito ao perfil de Administrador de TI e DPO.', 'shield-alert');
+            targetTab = 'dashboard';
+        }
+
         // Switch active menu class for all items with same target
         menuItems.forEach(i => {
             if (i.getAttribute('data-target') === targetTab) {
@@ -8657,14 +8664,6 @@ DIRETRIZES DO DIAGNÓSTICO:
         const userEscola = sessionStorage.getItem('userEscola') || 'U.E. BENTA VILANOVA';
         const userTurma = sessionStorage.getItem('userTurma') || '2º Ano';
 
-        const roleBanner = document.getElementById('role-context-banner');
-        const bannerBadge = document.getElementById('role-banner-badge');
-        const bannerIcon = document.getElementById('role-banner-icon');
-        const bannerTag = document.getElementById('role-banner-tag');
-        const bannerTitle = document.getElementById('role-banner-title');
-        const bannerSubtitle = document.getElementById('role-banner-subtitle');
-        const bannerActions = document.getElementById('role-banner-actions');
-
         const activeNetworkLabel = document.getElementById('sidebar-active-network-label');
         const userProfileName = document.querySelector('.user-profile .user-name');
         const userProfileRole = document.querySelector('.user-profile .user-role');
@@ -8676,8 +8675,8 @@ DIRETRIZES DO DIAGNÓSTICO:
 
         // Hide specific groups/items based on Role Hierarchy
         if (userRole === 'Professor' || userRole === 'Professor AEE') {
-            // Visible for Professor: Alunos, Biblioteca, Aplicação de Provas, Matriz, Questões
-            const allowedTabs = ['alunos-panel', 'biblioteca-recursos', 'aplicacao-provas', 'matriz-descritores', 'questions'];
+            // Visible for Professor: Alunos, Biblioteca, Cronograma, Aplicação de Provas, Matriz, Questões
+            const allowedTabs = ['alunos-panel', 'biblioteca-recursos', 'cronograma-habilidades', 'aplicacao-provas', 'matriz-descritores', 'questions'];
             allMenuItems.forEach(item => {
                 const target = item.getAttribute('data-target');
                 item.style.display = allowedTabs.includes(target) ? 'flex' : 'none';
@@ -8698,34 +8697,9 @@ DIRETRIZES DO DIAGNÓSTICO:
                 userProfileAvatar.style.backgroundColor = '#2563eb';
             }
 
-            // Role Context Banner
-            if (bannerBadge) {
-                bannerBadge.className = 'role-banner-badge badge-professor';
-                if (bannerTag) bannerTag.textContent = 'SALA DE AULA • PROFESSOR(A)';
-            }
-            if (bannerTitle) bannerTitle.textContent = `Painel do Docente — ${userEscola}`;
-            if (bannerSubtitle) bannerSubtitle.textContent = `Turma: ${userTurma} • Foco em Alfabetização & Fluência Leitora SAEB • Lançamento de Gabaritos e Provas A4`;
-            
-            if (bannerActions) {
-                bannerActions.innerHTML = `
-                    <button class="btn-role-action" onclick="window.navigateToTab('biblioteca-recursos')">
-                        <i data-lucide="book-open"></i> Imprimir Simulados A4
-                    </button>
-                    <button class="btn-role-action" onclick="window.navigateToTab('aplicacao-provas')">
-                        <i data-lucide="clipboard-check"></i> Lançar Gabaritos
-                    </button>
-                    <button class="btn-role-action" onclick="window.navigateToTab('alunos-panel')">
-                        <i data-lucide="users"></i> Fichas da Turma
-                    </button>
-                    <button class="btn-role-action" onclick="window.navigateToTab('matriz-descritores')">
-                        <i data-lucide="target"></i> Matriz SAEB
-                    </button>
-                `;
-            }
-
         } else if (userRole === 'Diretor Escola') {
-            // Visible for Diretor: Escolas, Alunos, Metas, Aplicação, Gestão Pedagógica, Relatórios, Biblioteca
-            const allowedTabs = ['escolas-panel', 'alunos-panel', 'metas-ideb', 'aplicacao-provas', 'gestao-pedagogica', 'ai-playground', 'biblioteca-recursos'];
+            // Visible for Diretor: Escolas, Alunos, Metas, Cronograma, Aplicação, Gestão Pedagógica, Relatórios, Biblioteca
+            const allowedTabs = ['escolas-panel', 'alunos-panel', 'metas-ideb', 'cronograma-habilidades', 'aplicacao-provas', 'gestao-pedagogica', 'ai-playground', 'biblioteca-recursos'];
             allMenuItems.forEach(item => {
                 const target = item.getAttribute('data-target');
                 item.style.display = allowedTabs.includes(target) ? 'flex' : 'none';
@@ -8746,33 +8720,8 @@ DIRETRIZES DO DIAGNÓSTICO:
                 userProfileAvatar.style.backgroundColor = '#059669';
             }
 
-            // Role Context Banner
-            if (bannerBadge) {
-                bannerBadge.className = 'role-banner-badge badge-diretor';
-                if (bannerTag) bannerTag.textContent = 'DIREÇÃO ESCOLAR';
-            }
-            if (bannerTitle) bannerTitle.textContent = `Painel da Direção Escolar — ${userEscola}`;
-            if (bannerSubtitle) bannerSubtitle.textContent = `186 Alunos Matriculados • 6 Turmas Ativas • Meta IDEB 2025: 5.8 • Taxa de Adesão aos Simulados: 94%`;
-
-            if (bannerActions) {
-                bannerActions.innerHTML = `
-                    <button class="btn-role-action" onclick="window.navigateToTab('escolas-panel')">
-                        <i data-lucide="school"></i> Turmas da Unidade
-                    </button>
-                    <button class="btn-role-action" onclick="window.navigateToTab('biblioteca-recursos')">
-                        <i data-lucide="printer"></i> Provas da Escola A4
-                    </button>
-                    <button class="btn-role-action" onclick="window.navigateToTab('metas-ideb')">
-                        <i data-lucide="line-chart"></i> Metas da Unidade
-                    </button>
-                    <button class="btn-role-action" onclick="window.navigateToTab('gestao-pedagogica')">
-                        <i data-lucide="brain-circuit"></i> Intervenções
-                    </button>
-                `;
-            }
-
         } else if (userRole === 'Master Admin') {
-            // Visible for Admin: All modules, with emphasis on Governance & TI
+            // Visible for Admin: All modules including Governance & TI
             allMenuItems.forEach(item => { item.style.display = 'flex'; });
 
             // Sidebar User Card
@@ -8784,34 +8733,9 @@ DIRETRIZES DO DIAGNÓSTICO:
                 userProfileAvatar.style.backgroundColor = '#e11d48';
             }
 
-            // Role Context Banner
-            if (bannerBadge) {
-                bannerBadge.className = 'role-banner-badge badge-admin';
-                if (bannerTag) bannerTag.textContent = 'GOVERNANÇA & TI';
-            }
-            if (bannerTitle) bannerTitle.textContent = 'Painel de Administração Global & Segurança';
-            if (bannerSubtitle) bannerSubtitle.textContent = 'Controle RBAC Ativo • Conformidade LGPD • Sincronização Postgres & Modelo Relacional ERD';
-
-            if (bannerActions) {
-                bannerActions.innerHTML = `
-                    <button class="btn-role-action" onclick="window.navigateToTab('admin-panel')">
-                        <i data-lucide="users"></i> Usuários & RBAC
-                    </button>
-                    <button class="btn-role-action" onclick="window.navigateToTab('doc-tecnica')">
-                        <i data-lucide="settings"></i> Especificação SQL
-                    </button>
-                    <button class="btn-role-action" onclick="window.navigateToTab('escolas-panel')">
-                        <i data-lucide="school"></i> Base de Escolas
-                    </button>
-                    <button class="btn-role-action" onclick="window.navigateToTab('dashboard')">
-                        <i data-lucide="layout-dashboard"></i> Monitor Geral
-                    </button>
-                `;
-            }
-
         } else {
             // SEMED (Gestor da Rede)
-            const allowedTabs = ['dashboard', 'escolas-panel', 'alunos-panel', 'metas-ideb', 'ideb-comparativo', 'matriz-descritores', 'criar-avaliacoes', 'aplicacao-provas', 'questions', 'ai-playground', 'gestao-pedagogica', 'biblioteca-recursos'];
+            const allowedTabs = ['dashboard', 'escolas-panel', 'alunos-panel', 'metas-ideb', 'ideb-comparativo', 'matriz-descritores', 'cronograma-habilidades', 'criar-avaliacoes', 'aplicacao-provas', 'questions', 'ai-playground', 'gestao-pedagogica', 'biblioteca-recursos'];
             allMenuItems.forEach(item => {
                 const target = item.getAttribute('data-target');
                 item.style.display = (target === 'doc-tecnica' || target === 'admin-panel') ? 'none' : 'flex';
@@ -8824,31 +8748,6 @@ DIRETRIZES DO DIAGNÓSTICO:
             if (userProfileAvatar) {
                 userProfileAvatar.textContent = 'SM';
                 userProfileAvatar.style.backgroundColor = '#9333ea';
-            }
-
-            // Role Context Banner
-            if (bannerBadge) {
-                bannerBadge.className = 'role-banner-badge badge-semed';
-                if (bannerTag) bannerTag.textContent = 'SECRETARIA MUNICIPAL DE EDUCAÇÃO';
-            }
-            if (bannerTitle) bannerTitle.textContent = 'Painel Executivo Municipal — SEMED Gonçalves Dias - MA';
-            if (bannerSubtitle) bannerSubtitle.textContent = '12 Escolas Avaliadas (SAEB/SEAMA/IDEB) • 1.758 Alunos do Ensino Fundamental • Meta IDEB 2025: 6.5 (Pactuada)';
-
-            if (bannerActions) {
-                bannerActions.innerHTML = `
-                    <button class="btn-role-action" onclick="window.navigateToTab('dashboard')">
-                        <i data-lucide="line-chart"></i> Monitoramento Geral
-                    </button>
-                    <button class="btn-role-action" onclick="window.navigateToTab('ideb-comparativo')">
-                        <i data-lucide="globe"></i> Comparativo INEP
-                    </button>
-                    <button class="btn-role-action" onclick="window.navigateToTab('escolas-panel')">
-                        <i data-lucide="school"></i> 12 Escolas da Rede
-                    </button>
-                    <button class="btn-role-action" onclick="window.navigateToTab('biblioteca-recursos')">
-                        <i data-lucide="book-open"></i> Biblioteca da Rede
-                    </button>
-                `;
             }
         }
 

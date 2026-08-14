@@ -334,21 +334,6 @@
             </header>
 
             <div class="content-body">
-                <!-- Dynamic Role Context Banner -->
-                <div id="role-context-banner" class="role-context-banner">
-                    <div class="role-banner-left">
-                        <div class="role-banner-badge badge-semed" id="role-banner-badge">
-                            <i data-lucide="shield" id="role-banner-icon" style="width: 12px; height: 12px;"></i>
-                            <span id="role-banner-tag">SECRETARIA MUNICIPAL DE EDUCAÇÃO</span>
-                        </div>
-                        <h3 id="role-banner-title">Painel Executivo Municipal — SEMED Gonçalves Dias - MA</h3>
-                        <p id="role-banner-subtitle">12 Escolas Avaliadas (SAEB/SEAMA/IDEB) • 1.758 Alunos do Ensino Fundamental • Meta IDEB 2025: 6.5 (Pactuada)</p>
-                    </div>
-                    <div class="role-banner-actions" id="role-banner-actions">
-                        <!-- Role-specific actions dynamically rendered via JS -->
-                    </div>
-                </div>
-
                 <!-- ==================== DASHBOARD TAB ==================== -->
                 <section id="dashboard" class="tab-content active">
                     <!-- Dashboard Onboarding State -->
@@ -2022,6 +2007,22 @@
 
                 <!-- ==================== DOCUMENTAÇÃO TÉCNICA TAB ==================== -->
                 <section id="doc-tecnica" class="tab-content">
+                    <div class="card margin-bottom-lg" style="background: linear-gradient(135deg, rgba(225, 29, 72, 0.06) 0%, rgba(147, 51, 234, 0.04) 100%); border-left: 4px solid var(--red-light); padding: 18px 24px;">
+                        <div class="flex-between flex-wrap gap-md">
+                            <div>
+                                <div style="display:inline-flex; align-items:center; gap:6px; background:#ffe4e6; color:#e11d48; padding:3px 10px; border-radius:12px; font-size:0.75rem; font-weight:700; margin-bottom:6px;">
+                                    <i data-lucide="shield" style="width:12px; height:12px;"></i> GOVERNANÇA & TI
+                                </div>
+                                <h3 style="font-size:1.25rem; font-weight:700; color:var(--text-primary); margin:0 0 4px 0;">Especificação Técnica & Arquitetura de Dados</h3>
+                                <p style="font-size:0.85rem; color:var(--text-secondary); margin:0;">Controle RBAC Ativo • Conformidade LGPD • Sincronização Postgres & Modelo Relacional ERD</p>
+                            </div>
+                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                <button class="btn btn-outline btn-sm" onclick="window.navigateToTab('admin-panel')"><i data-lucide="users"></i> Usuários & RBAC</button>
+                                <button class="btn btn-outline btn-sm" onclick="window.navigateToTab('escolas-panel')"><i data-lucide="school"></i> Base de Escolas</button>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="db-tabs-header">
                         <button class="db-tab-btn active" data-tech-tab="modules">Módulos do Sistema</button>
                         <button class="db-tab-btn" data-tech-tab="erd">Modelo de Dados (ERD)</button>
@@ -3582,6 +3583,6 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=19ed56ef"></script>
+    <script src="app.js?v=a1335250"></script>
 </body>
 </html>
