@@ -113,60 +113,70 @@ const initApp = () => {
         }
     };
 
+    window.navigateToTab = function(targetTab) {
+        if (!targetTab) return;
+
+        // Switch active menu class for all items with same target
+        menuItems.forEach(i => {
+            if (i.getAttribute('data-target') === targetTab) {
+                i.classList.add('active');
+            } else {
+                i.classList.remove('active');
+            }
+        });
+
+        // Handle mobileMoreBtn active class coordination
+        const bottomNav = document.querySelector('.mobile-bottom-nav');
+        if (bottomNav) {
+            const matchingBottomTab = bottomNav.querySelector(`.menu-item[data-target="${targetTab}"]`);
+            const mobileMoreBtn = document.getElementById('btn-mobile-more');
+            if (mobileMoreBtn) {
+                if (matchingBottomTab) {
+                    mobileMoreBtn.classList.remove('active');
+                } else {
+                    mobileMoreBtn.classList.add('active');
+                }
+            }
+        }
+
+        // Switch active tab content
+        tabContents.forEach(tab => tab.classList.remove('active'));
+        const activeTab = document.getElementById(targetTab);
+        if (activeTab) {
+            activeTab.classList.add('active');
+        }
+
+        // Update titles
+        if (tabMeta[targetTab]) {
+            if (pageTitle) pageTitle.textContent = tabMeta[targetTab].title;
+            if (pageSubtitle) pageSubtitle.textContent = tabMeta[targetTab].subtitle;
+        }
+
+        // Trigger specific actions when switching tabs
+        if (targetTab === 'doc-tecnica') {
+            renderMermaidDiagram();
+        } else if (targetTab === 'gestao-pedagogica') {
+            renderRiskGoalsTable();
+        } else if (targetTab === 'ideb-comparativo') {
+            updateIdebComparativoView();
+        } else if (targetTab === 'ai-playground') {
+            populateAiSelectors();
+        } else if (targetTab === 'alunos-panel') {
+            if (typeof renderDbStudents === 'function') renderDbStudents();
+        } else if (targetTab === 'escolas-panel') {
+            if (typeof renderDbSchools === 'function') renderDbSchools();
+        } else if (targetTab === 'biblioteca-recursos') {
+            if (typeof renderPedagogicLibrary === 'function') renderPedagogicLibrary();
+        }
+        
+        safeCreateIcons();
+    };
+
     menuItems.forEach(item => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
             const targetTab = item.getAttribute('data-target');
-
-            // Switch active menu class for all items with same target
-            menuItems.forEach(i => {
-                if (i.getAttribute('data-target') === targetTab) {
-                    i.classList.add('active');
-                } else {
-                    i.classList.remove('active');
-                }
-            });
-
-            // Handle mobileMoreBtn active class coordination
-            const bottomNav = document.querySelector('.mobile-bottom-nav');
-            if (bottomNav) {
-                const matchingBottomTab = bottomNav.querySelector(`.menu-item[data-target="${targetTab}"]`);
-                const mobileMoreBtn = document.getElementById('btn-mobile-more');
-                if (mobileMoreBtn) {
-                    if (matchingBottomTab) {
-                        mobileMoreBtn.classList.remove('active');
-                    } else {
-                        // The selected item is inside the bottom sheet, so highlight More button
-                        mobileMoreBtn.classList.add('active');
-                    }
-                }
-            }
-
-            // Switch active tab content
-            tabContents.forEach(tab => tab.classList.remove('active'));
-            const activeTab = document.getElementById(targetTab);
-            if (activeTab) {
-                activeTab.classList.add('active');
-            }
-
-            // Update titles
-            if (tabMeta[targetTab]) {
-                pageTitle.textContent = tabMeta[targetTab].title;
-                pageSubtitle.textContent = tabMeta[targetTab].subtitle;
-            }
-
-            // Trigger specific actions when switching tabs
-            if (targetTab === 'doc-tecnica') {
-                renderMermaidDiagram();
-            } else if (targetTab === 'gestao-pedagogica') {
-                renderRiskGoalsTable();
-            } else if (targetTab === 'ideb-comparativo') {
-                updateIdebComparativoView();
-            } else if (targetTab === 'ai-playground') {
-                populateAiSelectors();
-            }
-            
-            safeCreateIcons();
+            window.navigateToTab(targetTab);
         });
     });
 
@@ -6322,6 +6332,9 @@ DIRETRIZES DO DIAGNÓSTICO:
     // ==========================================
     // CINEMATIC MOTION CANVAS ENGINE (8-10s Loop)
     // ==========================================
+    // ==========================================
+    // CINEMATIC MOTION CANVAS ENGINE (Clean White/Blue & Meta 2027)
+    // ==========================================
     function initLoginMotionCanvas() {
         const canvas = document.getElementById('login-motion-canvas');
         if (!canvas) return;
@@ -6329,49 +6342,50 @@ DIRETRIZES DO DIAGNÓSTICO:
         if (!ctx) return;
 
         let width = canvas.clientWidth || 480;
-        let height = canvas.clientHeight || 200;
+        let height = canvas.clientHeight || 195;
         const dpr = window.devicePixelRatio || 1;
         canvas.width = width * dpr;
         canvas.height = height * dpr;
         ctx.scale(dpr, dpr);
 
-        const LOOP_DURATION = 9000; // 9 seconds total loop
+        const LOOP_DURATION = 9500; // 9.5 seconds total fluid loop
         let startTime = null;
 
-        // Ambient floating particles
-        const particles = Array.from({ length: 24 }, () => ({
+        // Ambient floating particles (clean blue/sky tones)
+        const particles = Array.from({ length: 22 }, () => ({
             x: Math.random() * width,
             y: Math.random() * height,
-            radius: Math.random() * 1.5 + 0.8,
-            vx: (Math.random() - 0.5) * 0.3,
-            vy: (Math.random() - 0.5) * 0.3,
-            alpha: Math.random() * 0.5 + 0.2
+            radius: Math.random() * 1.6 + 0.8,
+            vx: (Math.random() - 0.5) * 0.25,
+            vy: (Math.random() - 0.5) * 0.25,
+            alpha: Math.random() * 0.4 + 0.15
         }));
 
         // 7 Educational Nodes with minimal icons & positions
         const eduNodes = [
-            { label: "Escola", icon: "school", x: 60, y: 45, color: "#38bdf8" },
-            { label: "Alunos", icon: "users", x: 170, y: 35, color: "#a855f7" },
-            { label: "Professor", icon: "user-check", x: 425, y: 65, color: "#34d399" },
-            { label: "Livro", icon: "book", x: 80, y: 165, color: "#fbbf24" },
-            { label: "Gráfico", icon: "bar-chart", x: 210, y: 165, color: "#60a5fa" },
-            { label: "Meta", icon: "target", x: 330, y: 165, color: "#f43f5e" },
-            { label: "Avaliação", icon: "check-circle", x: 425, y: 145, color: "#818cf8" }
+            { label: "Escola", icon: "school", x: 55, y: 40, color: "#2563eb" },
+            { label: "Alunos", icon: "users", x: 155, y: 32, color: "#7c3aed" },
+            { label: "Professor", icon: "user-check", x: 425, y: 55, color: "#059669" },
+            { label: "Livro", icon: "book", x: 75, y: 160, color: "#d97706" },
+            { label: "Gráfico", icon: "bar-chart", x: 195, y: 160, color: "#0284c7" },
+            { label: "Meta", icon: "target", x: 310, y: 160, color: "#e11d48" },
+            { label: "Avaliação", icon: "check-circle", x: 425, y: 140, color: "#4f46e5" }
         ];
 
-        // Chart line coordinates (Progressive Growth)
+        // Historical Evolution (2019 -> 2025) & Projected Meta 2027
         const chartPoints = [
-            { year: "2019", val: "4.8", x: 50, y: 135 },
-            { year: "2021", val: "5.1", x: 160, y: 115 },
-            { year: "2023", val: "5.8", x: 270, y: 80 },
-            { year: "2025", val: "6.5", x: 380, y: 45 }
+            { year: "2019", val: "4.8", x: 45, y: 135 },
+            { year: "2021", val: "5.1", x: 130, y: 120 },
+            { year: "2023", val: "5.8", x: 215, y: 92 },
+            { year: "2025", val: "6.5", x: 300, y: 62 },
+            { year: "2027 (Meta)", val: "7.0", x: 395, y: 32 }
         ];
 
         function drawIcon(type, x, y, size, color) {
             ctx.save();
             ctx.strokeStyle = color;
             ctx.fillStyle = color;
-            ctx.lineWidth = 1.5;
+            ctx.lineWidth = 1.6;
             ctx.lineCap = "round";
             ctx.lineJoin = "round";
 
@@ -6385,7 +6399,7 @@ DIRETRIZES DO DIAGNÓSTICO:
                 ctx.stroke();
                 ctx.strokeRect(x - size * 0.7, y, size * 1.4, size * 1.1);
             } else if (type === "users" || type === "user-check") {
-                // Graduation/User head + body
+                // User / Student avatar
                 ctx.beginPath();
                 ctx.arc(x, y - size * 0.4, size * 0.45, 0, Math.PI * 2);
                 ctx.stroke();
@@ -6437,17 +6451,17 @@ DIRETRIZES DO DIAGNÓSTICO:
 
             ctx.clearRect(0, 0, width, height);
 
-            // 1. Subtle Background Grid Lines
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.04)";
+            // 1. Subtle Clean Light Blue Grid Lines
+            ctx.strokeStyle = "rgba(37, 99, 235, 0.06)";
             ctx.lineWidth = 1;
-            for (let y = 30; y < height; y += 35) {
+            for (let y = 25; y < height; y += 32) {
                 ctx.beginPath();
                 ctx.moveTo(10, y);
                 ctx.lineTo(width - 10, y);
                 ctx.stroke();
             }
 
-            // 2. Ambient Particles
+            // 2. Ambient Floating Particles (Soft Blue)
             particles.forEach(p => {
                 p.x += p.vx;
                 p.y += p.vy;
@@ -6458,46 +6472,47 @@ DIRETRIZES DO DIAGNÓSTICO:
 
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(139, 92, 246, ${p.alpha * 0.8})`;
+                ctx.fillStyle = `rgba(37, 99, 235, ${p.alpha})`;
                 ctx.fill();
             });
 
-            // 3. Projected Target Dashed Line (Meta 6.5)
-            const metaLineAlpha = Math.min(1, Math.max(0, (elapsed - 1500) / 1000));
+            // 3. Projected Target Dashed Line (Meta 2027: 7.0)
+            const metaLineAlpha = Math.min(1, Math.max(0, (elapsed - 1200) / 1000));
             if (metaLineAlpha > 0) {
                 ctx.save();
                 ctx.setLineDash([4, 4]);
-                ctx.strokeStyle = `rgba(244, 63, 94, ${metaLineAlpha * 0.65})`;
+                ctx.strokeStyle = `rgba(37, 99, 235, ${metaLineAlpha * 0.5})`;
                 ctx.lineWidth = 1.5;
                 ctx.beginPath();
-                ctx.moveTo(40, 95);
-                ctx.lineTo(150, 80);
-                ctx.lineTo(260, 65);
-                ctx.lineTo(390, 40);
+                ctx.moveTo(35, 80);
+                ctx.lineTo(120, 68);
+                ctx.lineTo(210, 54);
+                ctx.lineTo(300, 42);
+                ctx.lineTo(405, 28);
                 ctx.stroke();
 
-                ctx.fillStyle = `rgba(244, 63, 94, ${metaLineAlpha * 0.9})`;
+                ctx.fillStyle = `rgba(37, 99, 235, ${metaLineAlpha * 0.95})`;
                 ctx.font = "bold 9px 'Plus Jakarta Sans', sans-serif";
-                ctx.fillText("Meta 2025: 6.5", 395, 38);
+                ctx.fillText("Meta 2027: 7.0", 390, 22);
                 ctx.restore();
             }
 
-            // 4. Progressive Line Graph Evolution (CENA 2: 2.0s -> 5.5s)
-            const graphProgress = Math.min(1, Math.max(0, (elapsed - 1800) / 3500));
+            // 4. Progressive Line Graph Evolution (2019 -> 2025 -> 2027)
+            const graphProgress = Math.min(1, Math.max(0, (elapsed - 1600) / 3800));
             const totalPoints = chartPoints.length;
             const currentPointIndex = graphProgress * (totalPoints - 1);
             const baseIndex = Math.floor(currentPointIndex);
             const segmentProgress = currentPointIndex - baseIndex;
 
             if (graphProgress > 0) {
-                // Gradient under curve
+                // Gradient Fill Under Curve
                 ctx.save();
                 const grad = ctx.createLinearGradient(0, 0, 0, height);
-                grad.addColorStop(0, "rgba(59, 130, 246, 0.3)");
-                grad.addColorStop(1, "rgba(59, 130, 246, 0.0)");
+                grad.addColorStop(0, "rgba(37, 99, 235, 0.18)");
+                grad.addColorStop(1, "rgba(37, 99, 235, 0.00)");
 
                 ctx.beginPath();
-                ctx.moveTo(chartPoints[0].x, height - 20);
+                ctx.moveTo(chartPoints[0].x, height - 16);
                 ctx.lineTo(chartPoints[0].x, chartPoints[0].y);
 
                 for (let i = 1; i <= baseIndex; i++) {
@@ -6507,21 +6522,23 @@ DIRETRIZES DO DIAGNÓSTICO:
                     const nextX = chartPoints[baseIndex].x + (chartPoints[baseIndex + 1].x - chartPoints[baseIndex].x) * segmentProgress;
                     const nextY = chartPoints[baseIndex].y + (chartPoints[baseIndex + 1].y - chartPoints[baseIndex].y) * segmentProgress;
                     ctx.lineTo(nextX, nextY);
-                    ctx.lineTo(nextX, height - 20);
+                    ctx.lineTo(nextX, height - 16);
                 } else {
-                    ctx.lineTo(chartPoints[totalPoints - 1].x, height - 20);
+                    ctx.lineTo(chartPoints[totalPoints - 1].x, height - 16);
                 }
                 ctx.closePath();
                 ctx.fillStyle = grad;
                 ctx.fill();
                 ctx.restore();
 
-                // Draw glowing progress path
+                // Draw Glowing Royal Blue Progress Line
                 ctx.save();
-                ctx.strokeStyle = "#38bdf8";
-                ctx.lineWidth = 3;
-                ctx.shadowColor = "#38bdf8";
-                ctx.shadowBlur = 12;
+                ctx.strokeStyle = "#2563eb";
+                ctx.lineWidth = 3.2;
+                ctx.lineCap = "round";
+                ctx.lineJoin = "round";
+                ctx.shadowColor = "rgba(37, 99, 235, 0.4)";
+                ctx.shadowBlur = 10;
 
                 ctx.beginPath();
                 ctx.moveTo(chartPoints[0].x, chartPoints[0].y);
@@ -6536,55 +6553,58 @@ DIRETRIZES DO DIAGNÓSTICO:
                 ctx.stroke();
                 ctx.restore();
 
-                // Draw points and values
+                // Draw Points & Labels
                 for (let i = 0; i <= baseIndex; i++) {
                     const pt = chartPoints[i];
                     const pointAlpha = Math.min(1, (graphProgress - (i / (totalPoints - 1))) * 4);
 
                     if (pointAlpha > 0) {
-                        // Point glow circle
+                        const isMeta2027 = i === 4;
+                        const isConsolidado2025 = i === 3;
+
+                        // Point Circle
                         ctx.save();
                         ctx.beginPath();
-                        ctx.arc(pt.x, pt.y, 4.5, 0, Math.PI * 2);
+                        ctx.arc(pt.x, pt.y, isMeta2027 ? 5.5 : 4.5, 0, Math.PI * 2);
                         ctx.fillStyle = "#ffffff";
-                        ctx.strokeStyle = i === 3 ? "#10b981" : "#38bdf8";
-                        ctx.lineWidth = 2;
-                        ctx.shadowColor = i === 3 ? "#10b981" : "#38bdf8";
+                        ctx.strokeStyle = isMeta2027 ? "#059669" : (isConsolidado2025 ? "#2563eb" : "#0284c7");
+                        ctx.lineWidth = 2.5;
+                        ctx.shadowColor = "rgba(37, 99, 235, 0.35)";
                         ctx.shadowBlur = 8;
                         ctx.fill();
                         ctx.stroke();
 
-                        // Ripple pulse on 6.5
-                        if (i === 3) {
-                            const pulseR = 5 + (elapsed % 1500) / 100;
-                            const pulseOp = 1 - (elapsed % 1500) / 1500;
+                        // Ripple pulse on Meta 2027 & 2025
+                        if (isMeta2027 || isConsolidado2025) {
+                            const pulseR = 5 + (elapsed % 1400) / 90;
+                            const pulseOp = 1 - (elapsed % 1400) / 1400;
                             ctx.beginPath();
                             ctx.arc(pt.x, pt.y, pulseR, 0, Math.PI * 2);
-                            ctx.strokeStyle = `rgba(16, 185, 129, ${pulseOp})`;
+                            ctx.strokeStyle = isMeta2027 ? `rgba(5, 150, 105, ${pulseOp})` : `rgba(37, 99, 235, ${pulseOp})`;
                             ctx.lineWidth = 1.5;
                             ctx.stroke();
                         }
 
-                        // Year label below
-                        ctx.fillStyle = "rgba(255, 255, 255, 0.45)";
-                        ctx.font = "500 8.5px 'Plus Jakarta Sans', sans-serif";
+                        // Year Label
+                        ctx.fillStyle = "#64748b";
+                        ctx.font = `600 ${isMeta2027 ? '8.5px' : '8px'} 'Plus Jakarta Sans', sans-serif`;
                         ctx.textAlign = "center";
-                        ctx.fillText(pt.year, pt.x, height - 8);
+                        ctx.fillText(pt.year, pt.x, height - 4);
 
-                        // Value badge above
-                        ctx.fillStyle = i === 3 ? "#34d399" : "#ffffff";
-                        ctx.font = `bold ${i === 3 ? '11px' : '9.5px'} 'Plus Jakarta Sans', sans-serif`;
-                        ctx.fillText(pt.val, pt.x, pt.y - 10);
+                        // Value Pill / Tag
+                        ctx.fillStyle = isMeta2027 ? "#059669" : "#1e293b";
+                        ctx.font = `bold ${isMeta2027 ? '11px' : '9.5px'} 'Plus Jakarta Sans', sans-serif`;
+                        ctx.fillText(pt.val, pt.x, pt.y - 8);
                         ctx.restore();
                     }
                 }
             }
 
-            // 5. Connecting Mesh Beams (CENA 3: 5.5s -> 8.2s)
-            const meshProgress = Math.min(1, Math.max(0, (elapsed - 5500) / 2500));
+            // 5. Connecting Mesh Beams (CENA 3: 5.6s -> 8.2s)
+            const meshProgress = Math.min(1, Math.max(0, (elapsed - 5600) / 2400));
             if (meshProgress > 0) {
                 ctx.save();
-                ctx.lineWidth = 1;
+                ctx.lineWidth = 1.2;
 
                 eduNodes.forEach((node, idx) => {
                     const originPt = chartPoints[idx % chartPoints.length];
@@ -6595,8 +6615,8 @@ DIRETRIZES DO DIAGNÓSTICO:
 
                     // Beam line
                     const beamGrad = ctx.createLinearGradient(originPt.x, originPt.y, node.x, node.y);
-                    beamGrad.addColorStop(0, "rgba(56, 189, 248, 0.5)");
-                    beamGrad.addColorStop(1, "rgba(168, 85, 247, 0.2)");
+                    beamGrad.addColorStop(0, "rgba(37, 99, 235, 0.45)");
+                    beamGrad.addColorStop(1, "rgba(59, 130, 246, 0.15)");
 
                     ctx.strokeStyle = beamGrad;
                     ctx.beginPath();
@@ -6610,17 +6630,17 @@ DIRETRIZES DO DIAGNÓSTICO:
                     const sparkY = originPt.y + (node.y - originPt.y) * sparkT;
 
                     ctx.beginPath();
-                    ctx.arc(sparkX, sparkY, 2, 0, Math.PI * 2);
-                    ctx.fillStyle = "#ffffff";
-                    ctx.shadowColor = "#38bdf8";
+                    ctx.arc(sparkX, sparkY, 2.2, 0, Math.PI * 2);
+                    ctx.fillStyle = "#2563eb";
+                    ctx.shadowColor = "#3b82f6";
                     ctx.shadowBlur = 6;
                     ctx.fill();
                 });
                 ctx.restore();
             }
 
-            // 6. Educational Minimalist Nodes (Fade In & Gentle Float)
-            const nodeAlpha = Math.min(1, Math.max(0, (elapsed - 500) / 1500));
+            // 6. Educational Minimalist Nodes (Clean White Cards Floating)
+            const nodeAlpha = Math.min(1, Math.max(0, (elapsed - 400) / 1400));
             if (nodeAlpha > 0) {
                 eduNodes.forEach((node, idx) => {
                     const floatOffset = Math.sin((elapsed * 0.002) + idx) * 3;
@@ -6629,37 +6649,39 @@ DIRETRIZES DO DIAGNÓSTICO:
                     ctx.save();
                     ctx.globalAlpha = nodeAlpha * (progress > 0.92 ? (1 - (progress - 0.92) / 0.08) : 1);
 
-                    // Node background pill
-                    ctx.fillStyle = "rgba(15, 23, 42, 0.75)";
-                    ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
-                    ctx.lineWidth = 1;
+                    // Node Card Circle
+                    ctx.fillStyle = "#ffffff";
+                    ctx.strokeStyle = "rgba(226, 232, 240, 0.9)";
+                    ctx.lineWidth = 1.5;
+                    ctx.shadowColor = "rgba(37, 99, 235, 0.08)";
+                    ctx.shadowBlur = 8;
                     ctx.beginPath();
                     ctx.arc(node.x, curY, 12, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.stroke();
 
                     // Icon
-                    drawIcon(node.icon, node.x, curY, 6, node.color);
+                    drawIcon(node.icon, node.x, curY, 5.5, node.color);
 
                     // Label
-                    ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
-                    ctx.font = "600 7.5px 'Plus Jakarta Sans', sans-serif";
+                    ctx.fillStyle = "#1e293b";
+                    ctx.font = "700 7.5px 'Plus Jakarta Sans', sans-serif";
                     ctx.textAlign = "center";
-                    ctx.fillText(node.label, node.x, curY + 18);
+                    ctx.fillText(node.label, node.x, curY + 17);
 
                     ctx.restore();
                 });
             }
 
-            // 7. Luminous Brand Sweep Transition (CENA 4: 8.0s -> 9.0s Seamless Loop)
-            if (elapsed > 7800) {
-                const sweepProgress = (elapsed - 7800) / 1200;
+            // 7. Luminous Blue Brand Sweep Transition (Seamless Loop)
+            if (elapsed > 8200) {
+                const sweepProgress = (elapsed - 8200) / 1300;
                 const sweepX = width * sweepProgress;
 
                 ctx.save();
-                const sweepGrad = ctx.createLinearGradient(sweepX - 60, 0, sweepX + 60, 0);
+                const sweepGrad = ctx.createLinearGradient(sweepX - 70, 0, sweepX + 70, 0);
                 sweepGrad.addColorStop(0, "rgba(255, 255, 255, 0)");
-                sweepGrad.addColorStop(0.5, "rgba(56, 189, 248, 0.18)");
+                sweepGrad.addColorStop(0.5, "rgba(37, 99, 235, 0.12)");
                 sweepGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
 
                 ctx.fillStyle = sweepGrad;
@@ -6718,7 +6740,7 @@ DIRETRIZES DO DIAGNÓSTICO:
         });
     }
 
-    // Login Form Submit Handlers
+    // Login Form Submit Handlers & Role-Based Dashboard Routing
     const loginForm = document.getElementById('login-form');
     const loginScreen = document.getElementById('login-screen');
     const btnLoginSubmit = document.getElementById('btn-login-submit');
@@ -6731,21 +6753,34 @@ DIRETRIZES DO DIAGNÓSTICO:
             const passInput = document.getElementById('login-password')?.value || '123';
 
             let detectedRole = 'Gestor da Rede';
-            if (emailInput.startsWith('professor') || emailInput.includes('aee') || emailInput.includes('caee')) {
-                detectedRole = 'Professor';
-            } else if (emailInput.startsWith('diretor') || emailInput.includes('cora') || emailInput.includes('escola')) {
-                detectedRole = 'Diretor Escola';
-            } else if (emailInput.startsWith('dpo') || emailInput.startsWith('admin') || emailInput.includes('semed')) {
+            let targetTab = 'dashboard';
+            let assignedSchool = '';
+            let assignedTurma = '';
+
+            if (emailInput.startsWith('admin') || emailInput.startsWith('carlos') || emailInput.startsWith('gestor') || emailInput.includes('semed')) {
                 detectedRole = 'Master Admin';
-            } else if (emailInput.startsWith('gestor')) {
-                detectedRole = 'Gestor da Rede';
+                targetTab = 'dashboard';
+            } else if (emailInput.startsWith('diretor') || emailInput.startsWith('helena') || emailInput.includes('escola') || emailInput.includes('cora')) {
+                detectedRole = 'Diretor Escola';
+                targetTab = 'escolas-panel';
+                assignedSchool = 'U.E. BENTA VILANOVA';
+            } else if (emailInput.startsWith('regina') || emailInput.includes('caee') || emailInput.startsWith('professor.benta2')) {
+                detectedRole = 'Professor';
+                targetTab = 'alunos-panel';
+                assignedSchool = 'U.E. BENTA VILANOVA';
+                assignedTurma = '2º Ano A';
+            } else if (emailInput.startsWith('anapaula') || emailInput.includes('aee') || emailInput.startsWith('professor.veloso9')) {
+                detectedRole = 'Professor AEE';
+                targetTab = 'alunos-panel';
+                assignedSchool = 'U.E. RAIMUNDO VELOSO';
+                assignedTurma = 'AEE Inclusão';
             }
 
             // Loading status feedback
             btnLoginSubmit.disabled = true;
             const btnSpan = btnLoginSubmit.querySelector('span');
-            const originalText = btnSpan.textContent;
-            btnSpan.textContent = 'Autenticando...';
+            const originalText = btnSpan ? btnSpan.textContent : '';
+            if (btnSpan) btnSpan.textContent = 'Autenticando...';
 
             try {
                 const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
@@ -6759,30 +6794,60 @@ DIRETRIZES DO DIAGNÓSTICO:
                     sessionStorage.setItem('isLoggedIn', 'true');
                     sessionStorage.setItem('activeTenant', 'default');
                     sessionStorage.setItem('userEmail', authData.user.email);
-                    sessionStorage.setItem('userRole', authData.user.role);
-                    sessionStorage.setItem('userName', authData.user.nome);
-                    sessionStorage.setItem('userEscola', authData.user.escola || '');
-                    sessionStorage.setItem('userTurma', authData.user.turma || '');
+                    sessionStorage.setItem('userRole', authData.user.role || detectedRole);
+                    sessionStorage.setItem('userName', authData.user.nome || 'Usuário');
+                    sessionStorage.setItem('userEscola', authData.user.escola || assignedSchool);
+                    sessionStorage.setItem('userTurma', authData.user.turma || assignedTurma);
                 } else {
                     sessionStorage.setItem('isLoggedIn', 'true');
                     sessionStorage.setItem('activeTenant', 'default');
                     sessionStorage.setItem('userEmail', emailInput);
                     sessionStorage.setItem('userRole', detectedRole);
+                    sessionStorage.setItem('userEscola', assignedSchool);
+                    sessionStorage.setItem('userTurma', assignedTurma);
                 }
             } catch (err) {
                 sessionStorage.setItem('isLoggedIn', 'true');
                 sessionStorage.setItem('activeTenant', 'default');
                 sessionStorage.setItem('userEmail', emailInput);
                 sessionStorage.setItem('userRole', detectedRole);
+                sessionStorage.setItem('userEscola', assignedSchool);
+                sessionStorage.setItem('userTurma', assignedTurma);
             }
 
             setTimeout(async () => {
                 await loadDatabaseState();
                 updateMenuVisibilityByRole();
 
+                // Direct Navigation to the Role's Panel
+                if (window.navigateToTab) {
+                    window.navigateToTab(targetTab);
+                }
+
+                // Apply role-specific filters
+                if (detectedRole === 'Diretor Escola') {
+                    const dbSchoolSearch = document.getElementById('db-school-search');
+                    if (dbSchoolSearch) {
+                        dbSchoolSearch.value = 'Benta Vilanova';
+                        if (typeof renderDbSchools === 'function') renderDbSchools();
+                    }
+                } else if (detectedRole === 'Professor') {
+                    const dbStudentSchoolFilter = document.getElementById('db-student-school-filter');
+                    if (dbStudentSchoolFilter) {
+                        dbStudentSchoolFilter.value = 'U.E. BENTA VILANOVA';
+                        if (typeof applyDbFilters === 'function') applyDbFilters();
+                    }
+                } else if (detectedRole === 'Professor AEE') {
+                    const dbStudentNeeFilter = document.getElementById('db-student-nee-filter');
+                    if (dbStudentNeeFilter) {
+                        dbStudentNeeFilter.value = 'sim';
+                        if (typeof applyDbFilters === 'function') applyDbFilters();
+                    }
+                }
+
                 // Smooth Fade-out animation
                 loginScreen.classList.add('fade-out');
-                showToast(`Bem-vindo ao IDEB na Prática! Acesso concedido.`, 'check');
+                showToast(`Bem-vindo ao IDEB na Prática! Painel ${detectedRole} carregado.`, 'check');
                 window.scrollTo(0, 0);
 
                 setTimeout(() => {
@@ -6791,7 +6856,7 @@ DIRETRIZES DO DIAGNÓSTICO:
                         lucide.createIcons({ attrs: { class: 'lucide' } });
                     }
                 }, 600);
-            }, 500);
+            }, 450);
         });
     }
 
@@ -6803,22 +6868,24 @@ DIRETRIZES DO DIAGNÓSTICO:
         // Admin Panel: hidden for Professor and Diretor
         const adminMenuItems = document.querySelectorAll('.menu-item[data-target="admin-panel"]');
         adminMenuItems.forEach(item => {
-            item.style.display = (userRole === 'Professor' || userRole === 'Diretor Escola') ? 'none' : 'flex';
+            item.style.display = (userRole === 'Professor' || userRole === 'Professor AEE' || userRole === 'Diretor Escola') ? 'none' : 'flex';
         });
 
-        // Escolas Panel: hidden for Professor (focused on their assigned class)
+        // Escolas Panel: hidden for Professor
         const escolaMenuItems = document.querySelectorAll('.menu-item[data-target="escolas-panel"]');
         escolaMenuItems.forEach(item => {
-            item.style.display = (userRole === 'Professor') ? 'none' : 'flex';
+            item.style.display = (userRole === 'Professor' || userRole === 'Professor AEE') ? 'none' : 'flex';
         });
 
         // Update active network / user indicator in sidebar
         const activeNetworkLabel = document.getElementById('sidebar-active-network-label');
         if (activeNetworkLabel) {
             if (userRole === 'Professor') {
-                activeNetworkLabel.textContent = `${userEscola || 'U.E. BENTA VILANOVA'} (${userTurma || '2º Ano'})`;
+                activeNetworkLabel.textContent = `${userEscola || 'U.E. BENTA VILANOVA'} (${userTurma || '2º Ano A'})`;
+            } else if (userRole === 'Professor AEE') {
+                activeNetworkLabel.textContent = `AEE - Inclusão & Acessibilidade`;
             } else if (userRole === 'Diretor Escola') {
-                activeNetworkLabel.textContent = `${userEscola || 'U.E. BENTA VILANOVA'}`;
+                activeNetworkLabel.textContent = `${userEscola || 'U.E. BENTA VILANOVA'} (Direção)`;
             } else {
                 activeNetworkLabel.textContent = 'SEMED Gonçalves Dias - MA';
             }
