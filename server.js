@@ -136,6 +136,105 @@ function encryptSensitiveDataInState(state) {
     return cloned;
 }
 
+const USERS_FILE = path.join(__dirname, 'users.json');
+
+const DEFAULT_USERS = [
+    {
+        id: 'usr_1',
+        nome: 'Secretário Executivo (SEMED)',
+        email: 'gestor@goncalvesdias.ma.gov.br',
+        password: 'admin',
+        role: 'Gestor da Rede',
+        escola: null,
+        turma: null,
+        created_at: new Date().toISOString()
+    },
+    {
+        id: 'usr_2',
+        nome: 'Administrador DPO / TI',
+        email: 'admin@goncalvesdias.ma.gov.br',
+        password: 'admin',
+        role: 'Master Admin',
+        escola: null,
+        turma: null,
+        created_at: new Date().toISOString()
+    },
+    {
+        id: 'usr_3',
+        nome: 'Diretora Maria Vilanova',
+        email: 'diretor.benta@goncalvesdias.ma.gov.br',
+        password: '123',
+        role: 'Diretor Escola',
+        escola: 'U.E. BENTA VILANOVA',
+        turma: null,
+        created_at: new Date().toISOString()
+    },
+    {
+        id: 'usr_4',
+        nome: 'Diretor Raimundo Nonato',
+        email: 'diretor.veloso@goncalvesdias.ma.gov.br',
+        password: '123',
+        role: 'Diretor Escola',
+        escola: 'U.E. RAIMUNDO VELOSO BARROS',
+        turma: null,
+        created_at: new Date().toISOString()
+    },
+    {
+        id: 'usr_5',
+        nome: 'Profª. Ana Lúcia (Alfabetização)',
+        email: 'professor.benta2@goncalvesdias.ma.gov.br',
+        password: '123',
+        role: 'Professor',
+        escola: 'U.E. BENTA VILANOVA',
+        turma: '2º Ano',
+        created_at: new Date().toISOString()
+    },
+    {
+        id: 'usr_6',
+        nome: 'Prof. Carlos Eduardo (5º Ano)',
+        email: 'professor.benta5@goncalvesdias.ma.gov.br',
+        password: '123',
+        role: 'Professor',
+        escola: 'U.E. BENTA VILANOVA',
+        turma: '5º Ano',
+        created_at: new Date().toISOString()
+    },
+    {
+        id: 'usr_7',
+        nome: 'Profª. Juliana Silva (9º Ano)',
+        email: 'professor.veloso9@goncalvesdias.ma.gov.br',
+        password: '123',
+        role: 'Professor',
+        escola: 'U.E. RAIMUNDO VELOSO BARROS',
+        turma: '9º Ano',
+        created_at: new Date().toISOString()
+    }
+];
+
+function getUsers() {
+    if (!fs.existsSync(USERS_FILE)) {
+        try {
+            fs.writeFileSync(USERS_FILE, JSON.stringify(DEFAULT_USERS, null, 2), 'utf8');
+        } catch (e) {}
+        return DEFAULT_USERS;
+    }
+    try {
+        const content = fs.readFileSync(USERS_FILE, 'utf8');
+        const parsed = JSON.parse(content);
+        return Array.isArray(parsed) ? parsed : DEFAULT_USERS;
+    } catch (e) {
+        return DEFAULT_USERS;
+    }
+}
+
+function saveUsers(users) {
+    try {
+        fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf8');
+    } catch (e) {
+        console.error('Error saving users to disk:', e);
+    }
+}
+
 function authenticateRequest(req) {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -146,7 +245,21 @@ function authenticateRequest(req) {
         const email = Buffer.from(token, 'base64').toString('utf8').trim().toLowerCase();
         if (!email) return null;
 
-        // Resolve role dynamically based on email prefix
+        const allUsers = getUsers();
+        const found = allUsers.find(u => u.email.toLowerCase() === email);
+
+        if (found) {
+            return {
+                id: found.id,
+                nome: found.nome,
+                email: found.email,
+                role: found.role,
+                escola: found.escola || null,
+                turma: found.turma || null
+            };
+        }
+
+        // Fallback role resolution for standard email prefixes
         let role = 'Gestor da Rede';
         if (email.startsWith('professor')) {
             role = 'Professor';
@@ -158,14 +271,11 @@ function authenticateRequest(req) {
             role = 'Gestor da Rede';
         }
 
-        // Additional mapping info if configured
-        const mapping = MOCK_USER_MAPPINGS[email] || {};
-
         return {
             email,
             role,
-            escola: mapping.escola || null,
-            turma: mapping.turma || null
+            escola: email.includes('benta') ? 'U.E. BENTA VILANOVA' : (email.includes('veloso') ? 'U.E. RAIMUNDO VELOSO BARROS' : 'U.E. BENTA VILANOVA'),
+            turma: email.includes('2') ? '2º Ano' : (email.includes('5') ? '5º Ano' : '9º Ano')
         };
     } catch (e) {
         console.error('Failed to parse auth token:', e);
@@ -173,56 +283,50 @@ function authenticateRequest(req) {
     }
 }
 
-const MOCK_USER_MAPPINGS = {
-    'professor@municipio.gov.br': {
-        role: 'Professor',
-        escola: 'UNIDADE ESCOLAR ANTONIO SIMAO OLIVEIRA',
-        turma: '2º Ano'
-    },
-    'diretor@municipio.gov.br': {
-        role: 'Diretor Escola',
-        escola: 'UNIDADE ESCOLAR ANTONIO SIMAO OLIVEIRA'
-    }
-};
-
 function applyRBACFilterToState(state, role, email) {
-    if (role === 'Master Admin' || !email) {
+    if (role === 'Master Admin' || role === 'Gestor da Rede' || !email) {
         return state;
     }
-    const mapping = MOCK_USER_MAPPINGS[email.trim().toLowerCase()];
-    if (!mapping) {
-        return state;
-    }
+    const allUsers = getUsers();
+    const user = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase()) || {
+        role,
+        escola: email.includes('benta') ? 'U.E. BENTA VILANOVA' : 'U.E. RAIMUNDO VELOSO BARROS',
+        turma: email.includes('2') ? '2º Ano' : (email.includes('5') ? '5º Ano' : '9º Ano')
+    };
+
     const cloned = JSON.parse(JSON.stringify(state));
     
     if (role === 'Professor') {
         if (cloned.dbEscolas && Array.isArray(cloned.dbEscolas)) {
-            cloned.dbEscolas = cloned.dbEscolas.filter(e => e.nome === mapping.escola);
+            cloned.dbEscolas = cloned.dbEscolas.filter(e => !user.escola || e.nome.toLowerCase().includes(user.escola.toLowerCase()) || user.escola.toLowerCase().includes(e.nome.toLowerCase()));
         }
         const schoolIds = new Set(cloned.dbEscolas ? cloned.dbEscolas.map(e => e.id) : []);
         if (cloned.dbTurmas && Array.isArray(cloned.dbTurmas)) {
-            cloned.dbTurmas = cloned.dbTurmas.filter(t => schoolIds.has(t.escola_id) && t.nome.includes(mapping.turma));
+            cloned.dbTurmas = cloned.dbTurmas.filter(t => schoolIds.has(t.escola_id) && (!user.turma || t.nome.toLowerCase().includes(user.turma.toLowerCase())));
         }
         if (cloned.dbAlunos && Array.isArray(cloned.dbAlunos)) {
-            cloned.dbAlunos = cloned.dbAlunos.filter(a => a.escola === mapping.escola && a.etapa.includes(mapping.turma));
+            cloned.dbAlunos = cloned.dbAlunos.filter(a => 
+                (!user.escola || a.escola.toLowerCase().includes(user.escola.toLowerCase()) || user.escola.toLowerCase().includes(a.escola.toLowerCase())) && 
+                (!user.turma || a.etapa.toLowerCase().includes(user.turma.toLowerCase()))
+            );
         }
         if (cloned.dbResultadosAluno && Array.isArray(cloned.dbResultadosAluno)) {
-            const studentIds = new Set(cloned.dbAlunos.map(a => a.matricula));
+            const studentIds = new Set(cloned.dbAlunos ? cloned.dbAlunos.map(a => a.matricula) : []);
             cloned.dbResultadosAluno = cloned.dbResultadosAluno.filter(r => studentIds.has(r.aluno_id));
         }
     } else if (role === 'Diretor Escola') {
         if (cloned.dbEscolas && Array.isArray(cloned.dbEscolas)) {
-            cloned.dbEscolas = cloned.dbEscolas.filter(e => e.nome === mapping.escola);
+            cloned.dbEscolas = cloned.dbEscolas.filter(e => !user.escola || e.nome.toLowerCase().includes(user.escola.toLowerCase()) || user.escola.toLowerCase().includes(e.nome.toLowerCase()));
         }
         const schoolIds = new Set(cloned.dbEscolas ? cloned.dbEscolas.map(e => e.id) : []);
         if (cloned.dbTurmas && Array.isArray(cloned.dbTurmas)) {
             cloned.dbTurmas = cloned.dbTurmas.filter(t => schoolIds.has(t.escola_id));
         }
         if (cloned.dbAlunos && Array.isArray(cloned.dbAlunos)) {
-            cloned.dbAlunos = cloned.dbAlunos.filter(a => a.escola === mapping.escola);
+            cloned.dbAlunos = cloned.dbAlunos.filter(a => !user.escola || a.escola.toLowerCase().includes(user.escola.toLowerCase()) || user.escola.toLowerCase().includes(a.escola.toLowerCase()));
         }
         if (cloned.dbResultadosAluno && Array.isArray(cloned.dbResultadosAluno)) {
-            const studentIds = new Set(cloned.dbAlunos.map(a => a.matricula));
+            const studentIds = new Set(cloned.dbAlunos ? cloned.dbAlunos.map(a => a.matricula) : []);
             cloned.dbResultadosAluno = cloned.dbResultadosAluno.filter(r => studentIds.has(r.aluno_id));
         }
     }
@@ -445,6 +549,137 @@ app.post('/api/alunos/reveal', async (req, res) => {
     } catch (err) {
         console.error('Error in /api/alunos/reveal:', err);
         res.status(500).json({ error: 'Failed to reveal student sensitive field.' });
+    }
+});
+
+// POST /api/auth/login - Autenticação por credenciais
+app.post('/api/auth/login', (req, res) => {
+    try {
+        const { email, password } = req.body || {};
+        if (!email) {
+            return res.status(400).json({ error: 'E-mail é obrigatório.' });
+        }
+        const cleanEmail = email.trim().toLowerCase();
+        const users = getUsers();
+        const user = users.find(u => u.email.toLowerCase() === cleanEmail);
+        
+        if (user) {
+            if (user.password && password && user.password !== password) {
+                return res.status(401).json({ error: 'Senha incorreta.' });
+            }
+            const token = Buffer.from(user.email).toString('base64');
+            return res.json({
+                success: true,
+                token,
+                user: {
+                    id: user.id,
+                    nome: user.nome,
+                    email: user.email,
+                    role: user.role,
+                    escola: user.escola,
+                    turma: user.turma
+                }
+            });
+        }
+
+        // Auto-provisioning/fallback for predefined email patterns
+        let role = 'Gestor da Rede';
+        if (cleanEmail.startsWith('professor')) role = 'Professor';
+        else if (cleanEmail.startsWith('diretor')) role = 'Diretor Escola';
+        else if (cleanEmail.startsWith('dpo') || cleanEmail.startsWith('admin')) role = 'Master Admin';
+
+        const token = Buffer.from(cleanEmail).toString('base64');
+        return res.json({
+            success: true,
+            token,
+            user: {
+                id: 'usr_' + Date.now(),
+                nome: cleanEmail.split('@')[0],
+                email: cleanEmail,
+                role,
+                escola: cleanEmail.includes('benta') ? 'U.E. BENTA VILANOVA' : (cleanEmail.includes('veloso') ? 'U.E. RAIMUNDO VELOSO BARROS' : 'U.E. BENTA VILANOVA'),
+                turma: cleanEmail.includes('2') ? '2º Ano' : (cleanEmail.includes('5') ? '5º Ano' : '9º Ano')
+            }
+        });
+    } catch (err) {
+        console.error('Error in /api/auth/login:', err);
+        res.status(500).json({ error: 'Falha no processamento do login.' });
+    }
+});
+
+// GET /api/users - Listar usuários cadastrados
+app.get('/api/users', (req, res) => {
+    try {
+        const user = authenticateRequest(req);
+        if (!user || (user.role !== 'Master Admin' && user.role !== 'Gestor da Rede')) {
+            return res.status(403).json({ error: 'Acesso restrito a administradores e gestores da rede.' });
+        }
+        const users = getUsers().map(u => {
+            const { password, ...rest } = u;
+            return rest;
+        });
+        res.json(users);
+    } catch (err) {
+        console.error('Error in GET /api/users:', err);
+        res.status(500).json({ error: 'Erro ao listar usuários.' });
+    }
+});
+
+// POST /api/users - Cadastrar novo usuário
+app.post('/api/users', (req, res) => {
+    try {
+        const user = authenticateRequest(req);
+        if (!user || (user.role !== 'Master Admin' && user.role !== 'Gestor da Rede')) {
+            return res.status(403).json({ error: 'Acesso restrito a administradores e gestores da rede.' });
+        }
+        const { nome, email, password, role, escola, turma } = req.body || {};
+        if (!nome || !email || !role) {
+            return res.status(400).json({ error: 'Nome, e-mail e perfil são obrigatórios.' });
+        }
+        const users = getUsers();
+        const existing = users.find(u => u.email.toLowerCase() === email.trim().toLowerCase());
+        if (existing) {
+            return res.status(409).json({ error: 'Já existe um usuário com este e-mail.' });
+        }
+        const newUser = {
+            id: 'usr_' + Date.now(),
+            nome: nome.trim(),
+            email: email.trim().toLowerCase(),
+            password: password || '123456',
+            role,
+            escola: escola || null,
+            turma: turma || null,
+            created_at: new Date().toISOString()
+        };
+        users.push(newUser);
+        saveUsers(users);
+        const { password: _, ...clean } = newUser;
+        res.json({ success: true, user: clean });
+    } catch (err) {
+        console.error('Error in POST /api/users:', err);
+        res.status(500).json({ error: 'Erro ao cadastrar usuário.' });
+    }
+});
+
+// DELETE /api/users/:id - Excluir usuário
+app.delete('/api/users/:id', (req, res) => {
+    try {
+        const user = authenticateRequest(req);
+        if (!user || (user.role !== 'Master Admin' && user.role !== 'Gestor da Rede')) {
+            return res.status(403).json({ error: 'Acesso restrito a administradores e gestores da rede.' });
+        }
+        const { id } = req.params;
+        let users = getUsers();
+        const initialLen = users.length;
+        users = users.filter(u => u.id !== id);
+        if (users.length === initialLen) {
+            return res.status(404).json({ error: 'Usuário não encontrado.' });
+        }
+        saveUsers(users);
+        res.json({ success: true });
+    } catch (err) {
+        console.error('Error in DELETE /api/users/:id:', err);
+        res.status(500).json({ error: 'Erro ao excluir usuário.' });
     }
 });
 

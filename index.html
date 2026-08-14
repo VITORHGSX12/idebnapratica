@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>IDEB na Prática - Plataforma de Gestão e Avaliação Educacional</title>
-    <link rel="stylesheet" href="styles.css?v=159ad0a0">
+    <link rel="stylesheet" href="styles.css?v=284fd574">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -233,6 +233,12 @@
                         <a href="#" class="menu-item" data-target="gestao-pedagogica" data-tooltip="Gestão Pedagógica">
                             <i data-lucide="brain-circuit"></i>
                             <span>Gestão Pedagógica</span>
+                        </a>
+
+                        <a href="#" class="menu-item" data-target="biblioteca-recursos" data-tooltip="Biblioteca Pedagógica & Impressão">
+                            <i data-lucide="book-open"></i>
+                            <span>Biblioteca Pedagógica</span>
+                            <span class="badge badge-purple" style="margin-left: auto; font-size: 0.65rem; padding: 2px 6px;">A4 / Provas</span>
                         </a>
                     </div>
                 </div>
@@ -2030,15 +2036,127 @@
                     </div>
                 </section>
 
-                <!-- ==================== ÁREA ADMINISTRATIVA TAB ==================== -->
+                <!-- ==================== BIBLIOTECA PEDAGÓGICA & IMPRESSÃO TAB ==================== -->
+                <section id="biblioteca-recursos" class="tab-content">
+                    <!-- Top Action / Stats Header -->
+                    <div class="card margin-bottom-lg" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(59, 130, 246, 0.05) 100%); border-left: 4px solid var(--purple);">
+                        <div class="flex-between" style="flex-wrap: wrap; gap: 16px;">
+                            <div>
+                                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                                    <i data-lucide="book-open" style="color: var(--purple-light);"></i>
+                                    Biblioteca Pedagógica & Cadernos de Prova (A4)
+                                </h3>
+                                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px;">
+                                    Acervo oficial da SEMED Gonçalves Dias - MA. Acesse simulados prontos, matrizes curriculares SEAMA/SAEB e gere cadernos de prova formatados para impressão direta.
+                                </p>
+                            </div>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button class="btn btn-primary" id="btn-open-exam-generator" style="display: flex; align-items: center; gap: 8px;">
+                                    <i data-lucide="printer"></i>
+                                    <span>Gerar Prova A4 para Impressão</span>
+                                </button>
+                                <button class="btn btn-outline" id="btn-upload-pedagogic-file" style="display: flex; align-items: center; gap: 8px;">
+                                    <i data-lucide="upload-cloud"></i>
+                                    <span>Adicionar Material / PDF</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filter Toolbar -->
+                    <div class="card margin-bottom-lg">
+                        <div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center;">
+                            <div style="flex: 1; min-width: 200px;">
+                                <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; display: block;">Componente Curricular</label>
+                                <select id="filter-bib-componente" class="form-select" style="height: 40px; font-size: 0.85rem;">
+                                    <option value="all">Todos os Componentes</option>
+                                    <option value="Língua Portuguesa">Língua Portuguesa</option>
+                                    <option value="Matemática">Matemática</option>
+                                    <option value="Multidisciplinar">Multidisciplinar / Geral</option>
+                                </select>
+                            </div>
+                            <div style="flex: 1; min-width: 200px;">
+                                <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; display: block;">Etapa / Ano</label>
+                                <select id="filter-bib-etapa" class="form-select" style="height: 40px; font-size: 0.85rem;">
+                                    <option value="all">Todas as Etapas</option>
+                                    <option value="2º Ano">2º Ano (Alfabetização & Fluência)</option>
+                                    <option value="5º Ano">5º Ano (Anos Iniciais SAEB)</option>
+                                    <option value="9º Ano">9º Ano (Anos Finais SAEB)</option>
+                                </select>
+                            </div>
+                            <div style="flex: 1; min-width: 200px;">
+                                <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; display: block;">Tipo de Material</label>
+                                <select id="filter-bib-tipo" class="form-select" style="height: 40px; font-size: 0.85rem;">
+                                    <option value="all">Todos os Tipos</option>
+                                    <option value="Simulado">Cadernos de Simulado / Prova</option>
+                                    <option value="Matriz">Matrizes & Descritores SEAMA</option>
+                                    <option value="Intervencao">Planos de Intervenção Pedagógica</option>
+                                    <option value="Gabarito">Gabaritos & Resoluções</option>
+                                </select>
+                            </div>
+                            <div style="flex: 1.5; min-width: 240px;">
+                                <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; display: block;">Pesquisar no Acervo</label>
+                                <div style="position: relative;">
+                                    <input type="text" id="search-bib-input" class="form-input-text" placeholder="Buscar por título, descritor..." style="height: 40px; font-size: 0.85rem; padding-left: 36px;">
+                                    <i data-lucide="search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted);"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pedagogical Library Grid List -->
+                    <div id="bib-materials-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
+                        <!-- Injetado dinamicamente via JS -->
+                    </div>
+                </section>
+
+                <!-- ==================== ÁREA ADMINISTRATIVA & GESTÃO DE USUÁRIOS ==================== -->
                 <section id="admin-panel" class="tab-content">
-                    <div class="card" style="max-width: 600px; margin: 40px auto; padding: 28px; border-top: 4px solid var(--red-light);">
+                    <div class="card margin-bottom-lg" style="border-top: 4px solid var(--purple);">
+                        <div class="flex-between" style="flex-wrap: wrap; gap: 16px; margin-bottom: 20px;">
+                            <div>
+                                <h4 style="color:var(--text-primary); display:flex; align-items:center; gap:8px; font-size:1.2rem; font-weight:700;">
+                                    <i data-lucide="users" style="color:var(--purple-light); width:22px; height:22px;"></i>
+                                    Gestão de Usuários e Permissões (SEMED Gonçalves Dias)
+                                </h4>
+                                <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:4px;">
+                                    Gerencie os acessos de Diretores, Professores e Gestores. O escopo de visualização (escola e turma) é aplicado automaticamente a cada login.
+                                </p>
+                            </div>
+                            <button class="btn btn-primary" id="btn-open-create-user-modal" style="display: flex; align-items: center; gap: 8px;">
+                                <i data-lucide="user-plus"></i>
+                                <span>Cadastrar Novo Usuário</span>
+                            </button>
+                        </div>
+
+                        <!-- Users Table -->
+                        <div style="overflow-x: auto;">
+                            <table class="table-compact" style="width: 100%; border-collapse: collapse; text-align: left;">
+                                <thead>
+                                    <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-secondary); height: 40px;">
+                                        <th style="padding: 12px 16px;">Nome do Usuário</th>
+                                        <th style="padding: 12px 16px;">E-mail Institucional</th>
+                                        <th style="padding: 12px 16px;">Perfil / Cargo</th>
+                                        <th style="padding: 12px 16px;">Escola Vinculada</th>
+                                        <th style="padding: 12px 16px;">Turma</th>
+                                        <th style="padding: 12px 16px; text-align: center;">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="users-table-body">
+                                    <!-- Injetado dinamicamente via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Zona de Perigo -->
+                    <div class="card" style="max-width: 700px; margin: 40px auto; padding: 28px; border-top: 4px solid var(--red-light);">
                         <h4 style="color:var(--text-primary); margin-bottom:12px; display:flex; align-items:center; gap:8px; font-size:1.15rem; font-weight:700;">
                             <i data-lucide="shield-alert" style="color:var(--red-light); width:22px; height:22px;"></i>
-                            Área Administrativa do Sistema
+                            Área de Manutenção do Banco de Dados
                         </h4>
                         <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:24px; line-height:1.5;">
-                            As ações abaixo são extremamente críticas e restritas a gestores e administradores de TI. O uso indevido dessas opções pode corromper ou apagar a base de dados permanentemente.
+                            As ações abaixo são extremamente críticas e restritas a gestores e administradores de TI. O uso indevido dessas opções pode apagar a base de dados permanentemente.
                         </p>
                         
                         <div style="background-color: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: var(--radius-md); padding: 20px;">
@@ -2468,6 +2586,141 @@
         </div>
     </div>
 
+    <!-- Print Exam Generator Modal (A4 Standard) -->
+    <div id="print-exam-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 900px; width: 95%; max-height: 90vh; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <i data-lucide="printer" style="color:var(--purple-light);"></i>
+                    <h3 id="print-modal-title">Caderno de Avaliação Diagnóstica (A4)</h3>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn btn-primary" id="btn-trigger-browser-print" style="padding:6px 14px; font-size:0.85rem; display:flex; align-items:center; gap:6px;">
+                        <i data-lucide="printer"></i>
+                        <span>Imprimir Agora (A4)</span>
+                    </button>
+                    <button class="btn btn-icon" id="close-print-exam-modal-btn"><i data-lucide="x"></i></button>
+                </div>
+            </div>
+            <div class="modal-body" style="overflow-y: auto; background: #fff; color: #111; padding: 24px; border-radius: var(--radius-sm);">
+                <!-- Printable Document Area -->
+                <div id="printable-exam-document" class="printable-exam-sheet">
+                    <!-- Dynamic Exam Content Rendered Here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create User Modal -->
+    <div id="create-user-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 540px;">
+            <div class="modal-header">
+                <h3>Cadastrar Novo Usuário</h3>
+                <button class="btn btn-icon" id="close-create-user-modal-btn"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="create-user-form" style="display:flex; flex-direction:column; gap:14px;">
+                    <div class="form-group">
+                        <label for="new-user-name">Nome Completo *</label>
+                        <input type="text" id="new-user-name" class="form-input-text" required placeholder="Ex: Prof. Raimundo Nonato da Silva">
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="new-user-email">E-mail Institucional *</label>
+                            <input type="email" id="new-user-email" class="form-input-text" required placeholder="nome@goncalvesdias.ma.gov.br">
+                        </div>
+                        <div class="form-group">
+                            <label for="new-user-password">Senha de Acesso *</label>
+                            <input type="password" id="new-user-password" class="form-input-text" required placeholder="••••••••">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-user-role">Perfil de Acesso / Cargo *</label>
+                        <select id="new-user-role" class="form-select" required>
+                            <option value="Professor">Professor (Acesso à turma designada)</option>
+                            <option value="Diretor Escola">Diretor de Escola (Acesso à escola vinculada)</option>
+                            <option value="Gestor da Rede">Gestor da Rede (SEMED Gonçalves Dias)</option>
+                            <option value="Master Admin">Administrador do Sistema / DPO</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="group-user-school">
+                        <label for="new-user-school">Escola Vinculada</label>
+                        <select id="new-user-school" class="form-select">
+                            <!-- Injetado dinamicamente com escolas de Gonçalves Dias -->
+                        </select>
+                    </div>
+                    <div class="form-group" id="group-user-grade">
+                        <label for="new-user-grade">Turma / Etapa</label>
+                        <select id="new-user-grade" class="form-select">
+                            <option value="2º Ano">2º Ano (Alfabetização & Fluência)</option>
+                            <option value="5º Ano">5º Ano (Anos Iniciais SAEB)</option>
+                            <option value="9º Ano">9º Ano (Anos Finais SAEB)</option>
+                            <option value="Todas as Turmas">Todas as Turmas da Escola</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer flex-end" style="gap: 8px; margin-top: 12px;">
+                        <button type="button" class="btn btn-outline" id="btn-cancel-create-user">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" id="btn-submit-create-user">Salvar Usuário</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Pedagogic File Modal -->
+    <div id="upload-pedagogic-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 520px;">
+            <div class="modal-header">
+                <h3>Adicionar Material à Biblioteca</h3>
+                <button class="btn btn-icon" id="close-upload-pedagogic-modal-btn"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="upload-pedagogic-form" style="display:flex; flex-direction:column; gap:14px;">
+                    <div class="form-group">
+                        <label for="new-material-title">Título do Material / Documento *</label>
+                        <input type="text" id="new-material-title" class="form-input-text" required placeholder="Ex: Simulado SAEB 2026 - 5º Ano Língua Portuguesa">
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="new-material-comp">Componente</label>
+                            <select id="new-material-comp" class="form-select">
+                                <option value="Língua Portuguesa">Língua Portuguesa</option>
+                                <option value="Matemática">Matemática</option>
+                                <option value="Multidisciplinar">Multidisciplinar / Geral</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-material-etapa">Etapa / Ano</label>
+                            <select id="new-material-etapa" class="form-select">
+                                <option value="2º Ano">2º Ano</option>
+                                <option value="5º Ano" selected>5º Ano</option>
+                                <option value="9º Ano">9º Ano</option>
+                                <option value="Todas">Todas as Etapas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-material-tipo">Tipo de Recurso</label>
+                        <select id="new-material-tipo" class="form-select">
+                            <option value="Simulado">Caderno de Prova / Simulado</option>
+                            <option value="Matriz">Matriz & Descritores</option>
+                            <option value="Intervencao">Plano de Intervenção Pedagógica</option>
+                            <option value="Gabarito">Gabarito / Resoluções</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-material-desc">Descrição / Instruções de Aplicação</label>
+                        <textarea id="new-material-desc" class="form-input-text" style="height:60px; font-size:0.8rem; padding:8px;" placeholder="Orientações pedagógicas para os professores..."></textarea>
+                    </div>
+                    <div class="modal-footer flex-end" style="gap: 8px; margin-top: 12px;">
+                        <button type="button" class="btn btn-outline" id="btn-cancel-upload-pedagogic">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Adicionar ao Acervo</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Mobile Bottom Navigation Bar -->
     <nav class="mobile-bottom-nav">
         <a href="#" class="menu-item active" data-target="dashboard">
@@ -2538,6 +2791,10 @@
                             <i data-lucide="check-square"></i>
                             <span>Gestão Pedagógica</span>
                         </a>
+                        <a href="#" class="menu-item" data-target="biblioteca-recursos">
+                            <i data-lucide="book-open"></i>
+                            <span>Biblioteca Pedagógica</span>
+                        </a>
                         <a href="#" class="menu-item" data-target="doc-tecnica">
                             <i data-lucide="file-text"></i>
                             <span>Documentação Técnica</span>
@@ -2554,6 +2811,6 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=0e7ac80e"></script>
+    <script src="app.js?v=dc128a44"></script>
 </body>
 </html>

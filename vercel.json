@@ -8,7 +8,8 @@
     { "src": "app.js", "use": "@vercel/static" },
     { "src": "alunos_db.js", "use": "@vercel/static" },
     { "src": "ideb_publico_db.js", "use": "@vercel/static" },
-    { "src": "alunos.json", "use": "@vercel/static" }
+    { "src": "alunos.json", "use": "@vercel/static" },
+    { "src": "users.json", "use": "@vercel/static" }
   ],
   "rewrites": [
     {

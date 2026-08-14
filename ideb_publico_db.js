@@ -4273,6 +4273,15 @@ window.idebPublicoReferencia = [
     "uf": "MA",
     "municipio": "Gonçalves Dias",
     "codigo_ibge": "2104404",
+    "ano": 2019,
+    "etapa": "Anos Iniciais",
+    "ideb_observado": 4.7,
+    "meta_projetada": 4.7
+  },
+  {
+    "uf": "MA",
+    "municipio": "Gonçalves Dias",
+    "codigo_ibge": "2104404",
     "ano": 2021,
     "etapa": "Anos Iniciais",
     "ideb_observado": 4.9,
@@ -4291,10 +4300,28 @@ window.idebPublicoReferencia = [
     "uf": "MA",
     "municipio": "Gonçalves Dias",
     "codigo_ibge": "2104404",
-    "ano": 2021,
+    "ano": 2025,
+    "etapa": "Anos Iniciais",
+    "ideb_observado": 5.6,
+    "meta_projetada": 5.5
+  },
+  {
+    "uf": "MA",
+    "municipio": "Gonçalves Dias",
+    "codigo_ibge": "2104404",
+    "ano": 2019,
     "etapa": "Anos Finais",
     "ideb_observado": 3.9,
-    "meta_projetada": 4
+    "meta_projetada": 4.0
+  },
+  {
+    "uf": "MA",
+    "municipio": "Gonçalves Dias",
+    "codigo_ibge": "2104404",
+    "ano": 2021,
+    "etapa": "Anos Finais",
+    "ideb_observado": 4.1,
+    "meta_projetada": 4.1
   },
   {
     "uf": "MA",
@@ -4302,8 +4329,26 @@ window.idebPublicoReferencia = [
     "codigo_ibge": "2104404",
     "ano": 2023,
     "etapa": "Anos Finais",
-    "ideb_observado": 4.2,
-    "meta_projetada": 4.3
+    "ideb_observado": 4.3,
+    "meta_projetada": 4.4
+  },
+  {
+    "uf": "MA",
+    "municipio": "Gonçalves Dias",
+    "codigo_ibge": "2104404",
+    "ano": 2025,
+    "etapa": "Anos Finais",
+    "ideb_observado": 4.8,
+    "meta_projetada": 4.8
+  },
+  {
+    "uf": "MA",
+    "municipio": "Gonçalves Dias",
+    "codigo_ibge": "2104404",
+    "ano": 2019,
+    "etapa": "Ensino Médio",
+    "ideb_observado": 3.2,
+    "meta_projetada": 3.3
   },
   {
     "uf": "MA",
@@ -4322,6 +4367,15 @@ window.idebPublicoReferencia = [
     "etapa": "Ensino Médio",
     "ideb_observado": 3.6,
     "meta_projetada": 3.8
+  },
+  {
+    "uf": "MA",
+    "municipio": "Gonçalves Dias",
+    "codigo_ibge": "2104404",
+    "ano": 2025,
+    "etapa": "Ensino Médio",
+    "ideb_observado": 4.0,
+    "meta_projetada": 4.1
   },
   {
     "uf": "MA",

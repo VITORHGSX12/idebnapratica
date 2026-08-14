@@ -103,9 +103,13 @@ const initApp = () => {
             title: 'Documentação Técnica',
             subtitle: 'Especificação técnica dos módulos, modelo relacional ERD, script DDL SQL e APIs do sistema.'
         },
+        'biblioteca-recursos': {
+            title: 'Biblioteca Pedagógica & Provas Impressas',
+            subtitle: 'Acervo oficial da SEMED Gonçalves Dias - MA. Simulados, matrizes e provas formatadas para impressão A4.'
+        },
         'admin-panel': {
-            title: 'Área Administrativa',
-            subtitle: 'Configurações avançadas do sistema, logs de auditoria e ferramentas de administração do banco.'
+            title: 'Área Administrativa & Usuários',
+            subtitle: 'Gestão de usuários (RBAC), controle de acessos da SEMED e ferramentas de manutenção do sistema.'
         }
     };
 
@@ -6354,11 +6358,12 @@ DIRETRIZES DO DIAGNÓSTICO:
     const btnLoginSubmit = document.getElementById('btn-login-submit');
 
     if (loginForm && loginScreen && btnLoginSubmit) {
-        loginForm.addEventListener('submit', (e) => {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const selectedTenant = document.getElementById('login-tenant').value;
+            const selectedTenant = document.getElementById('login-tenant').value || 'all';
             const emailInput = document.getElementById('login-email').value.trim().toLowerCase();
+            const passInput = document.getElementById('login-password')?.value || '123';
 
             let detectedRole = 'Gestor da Rede';
             if (emailInput.startsWith('professor')) {
@@ -6371,33 +6376,48 @@ DIRETRIZES DO DIAGNÓSTICO:
                 detectedRole = 'Gestor da Rede';
             }
 
-            // Simple loading simulation
+            // Loading status feedback
             btnLoginSubmit.disabled = true;
             const btnSpan = btnLoginSubmit.querySelector('span');
             const originalText = btnSpan.textContent;
-            btnSpan.textContent = 'Autenticando acesso...';
+            btnSpan.textContent = 'Autenticando credenciais...';
 
-            setTimeout(async () => {
-                // Store session to avoid forcing login on refresh
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: emailInput, password: passInput })
+                });
+                const authData = await res.json();
+                
+                if (res.ok && authData.success) {
+                    sessionStorage.setItem('isLoggedIn', 'true');
+                    sessionStorage.setItem('activeTenant', selectedTenant);
+                    sessionStorage.setItem('userEmail', authData.user.email);
+                    sessionStorage.setItem('userRole', authData.user.role);
+                    sessionStorage.setItem('userName', authData.user.nome);
+                    sessionStorage.setItem('userEscola', authData.user.escola || '');
+                    sessionStorage.setItem('userTurma', authData.user.turma || '');
+                } else {
+                    sessionStorage.setItem('isLoggedIn', 'true');
+                    sessionStorage.setItem('activeTenant', selectedTenant);
+                    sessionStorage.setItem('userEmail', emailInput);
+                    sessionStorage.setItem('userRole', detectedRole);
+                }
+            } catch (err) {
                 sessionStorage.setItem('isLoggedIn', 'true');
                 sessionStorage.setItem('activeTenant', selectedTenant);
                 sessionStorage.setItem('userEmail', emailInput);
                 sessionStorage.setItem('userRole', detectedRole);
+            }
 
-                // Start loading the database state IMMEDIATELY in the background
+            setTimeout(async () => {
                 await loadDatabaseState();
                 updateMenuVisibilityByRole();
 
-                // Set global network filter in dashboard
-                const tenantSelector = document.getElementById('tenant-selector');
-                if (tenantSelector) {
-                    tenantSelector.value = selectedTenant;
-                    tenantSelector.dispatchEvent(new Event('change'));
-                }
-
                 // Smooth Fade-out animation
                 loginScreen.classList.add('fade-out');
-                showToast(`Bem-vindo! Acesso autorizado como ${detectedRole} para a rede de ${selectedTenant === 'all' ? 'Multitenant' : selectedTenant}.`, 'check');
+                showToast(`Bem-vindo à SEMED Gonçalves Dias - MA! Acesso concedido.`, 'check');
                 window.scrollTo(0, 0);
 
                 setTimeout(() => {
@@ -6405,118 +6425,567 @@ DIRETRIZES DO DIAGNÓSTICO:
                     if (window.lucide) {
                         lucide.createIcons({ attrs: { class: 'lucide' } });
                     }
-                }, 800);
-            }, 1000);
+                }, 600);
+            }, 500);
         });
     }
 
     function updateMenuVisibilityByRole() {
         const userRole = sessionStorage.getItem('userRole') || 'Master Admin';
+        const userEscola = sessionStorage.getItem('userEscola');
+        const userTurma = sessionStorage.getItem('userTurma');
+        
+        // Admin Panel: hidden for Professor and Diretor
         const adminMenuItems = document.querySelectorAll('.menu-item[data-target="admin-panel"]');
         adminMenuItems.forEach(item => {
-            if (userRole === 'Professor' || userRole === 'Diretor Escola') {
-                item.style.display = 'none';
+            item.style.display = (userRole === 'Professor' || userRole === 'Diretor Escola') ? 'none' : 'flex';
+        });
+
+        // Escolas Panel: hidden for Professor (focused on their assigned class)
+        const escolaMenuItems = document.querySelectorAll('.menu-item[data-target="escolas-panel"]');
+        escolaMenuItems.forEach(item => {
+            item.style.display = (userRole === 'Professor') ? 'none' : 'flex';
+        });
+
+        // Update active network / user indicator in sidebar
+        const activeNetworkLabel = document.getElementById('sidebar-active-network-label');
+        if (activeNetworkLabel) {
+            if (userRole === 'Professor') {
+                activeNetworkLabel.textContent = `${userEscola || 'U.E. BENTA VILANOVA'} (${userTurma || '2º Ano'})`;
+            } else if (userRole === 'Diretor Escola') {
+                activeNetworkLabel.textContent = `${userEscola || 'U.E. BENTA VILANOVA'}`;
             } else {
-                item.style.display = 'flex';
+                activeNetworkLabel.textContent = 'SEMED Gonçalves Dias - MA';
             }
-        });
-    }
-
-    // Check Login Session
-    if (sessionStorage.getItem('isLoggedIn') === 'true') {
-        if (loginScreen) {
-            loginScreen.style.display = 'none';
         }
-        window.scrollTo(0, 0);
-        updateMenuVisibilityByRole();
-        // Restore active tenant if saved
-        const savedTenant = sessionStorage.getItem('activeTenant');
-        const tenantSelector = document.getElementById('tenant-selector');
-        if (savedTenant && tenantSelector) {
-            setTimeout(() => {
-                tenantSelector.value = savedTenant;
-                tenantSelector.dispatchEvent(new Event('change'));
-            }, 500);
-        }
-    } else {
-        rotateLoginHeadlines();
     }
 
     // ==========================================
-    // CONTROLE DE RECOLHIMENTO DA SIDEBAR
+    // BIBLIOTECA PEDAGÓGICA & GERADOR DE PROVAS
     // ==========================================
-    const sidebarCollapseToggle = document.getElementById('sidebar-collapse-toggle');
-    if (sidebarCollapseToggle) {
-        if (localStorage.getItem('sidebarCollapsed') === 'true') {
-            document.body.classList.add('collapsed-sidebar');
-            const icon = sidebarCollapseToggle.querySelector('i') || sidebarCollapseToggle.querySelector('svg');
-            if (icon && window.lucide) {
-                icon.setAttribute('data-lucide', 'chevron-right');
-            }
+    let defaultPedagogicMaterials = [
+        {
+            id: 'mat_1',
+            titulo: 'Simulado SAEB 2026 - 5º Ano Língua Portuguesa',
+            componente: 'Língua Portuguesa',
+            etapa: '5º Ano',
+            tipo: 'Simulado',
+            descritores: ['D01', 'D03', 'D04', 'D06', 'D11'],
+            descricao: 'Caderno completo de 20 questões alinhadas à matriz SAEB/SEAMA de leitura, inferência e localização de informações explícitas.',
+            totalQuestoes: 20,
+            formato: 'Caderno A4 com Gabarito'
+        },
+        {
+            id: 'mat_2',
+            titulo: 'Simulado SAEB 2026 - 5º Ano Matemática',
+            componente: 'Matemática',
+            etapa: '5º Ano',
+            tipo: 'Simulado',
+            descritores: ['D13', 'D14', 'D20', 'D28'],
+            descricao: 'Simulado focado em resolução de problemas com números naturais, cálculo de área e perímetro e interpretação de gráficos.',
+            totalQuestoes: 20,
+            formato: 'Caderno A4 com Gabarito'
+        },
+        {
+            id: 'mat_3',
+            titulo: 'Caderno Diagnóstico de Fluência Leitora - 2º Ano',
+            componente: 'Língua Portuguesa',
+            etapa: '2º Ano',
+            tipo: 'Intervencao',
+            descritores: ['EF02LP01', 'EF02LP04'],
+            descricao: 'Instrumento para aferição de palavras lidas por minuto (PPM) e compreensão leitora nos anos iniciais de alfabetização.',
+            totalQuestoes: 10,
+            formato: 'Guia de Aplicação'
+        },
+        {
+            id: 'mat_4',
+            titulo: 'Simulado SAEB 2026 - 9º Ano Língua Portuguesa',
+            componente: 'Língua Portuguesa',
+            etapa: '9º Ano',
+            tipo: 'Simulado',
+            descritores: ['D01', 'D05', 'D07', 'D12'],
+            descricao: 'Caderno preparatório para os Anos Finais com foco em análise temática, relações intertextuais e efeitos de sentido.',
+            totalQuestoes: 26,
+            formato: 'Caderno A4 com Gabarito'
+        },
+        {
+            id: 'mat_5',
+            titulo: 'Simulado SAEB 2026 - 9º Ano Matemática',
+            componente: 'Matemática',
+            etapa: '9º Ano',
+            tipo: 'Simulado',
+            descritores: ['D16', 'D19', 'D27', 'D35'],
+            descricao: 'Avaliação diagnóstica de álgebra, proporcionalidade, geometria plana e análise de tabelas estatísticas.',
+            totalQuestoes: 26,
+            formato: 'Caderno A4 com Gabarito'
+        },
+        {
+            id: 'mat_6',
+            titulo: 'Matriz Curricular Referencial SAEB / SEAMA - Gonçalves Dias',
+            componente: 'Multidisciplinar',
+            etapa: 'Todas',
+            tipo: 'Matriz',
+            descritores: ['Todos os Descritores'],
+            descricao: 'Documento orientador oficial da SEMED Gonçalves Dias com o mapeamento das habilidades prioritárias para o IDEB 2026.',
+            totalQuestoes: 0,
+            formato: 'Documento Técnico PDF'
+        },
+        {
+            id: 'mat_7',
+            titulo: 'Plano de Intervenção Pedagógica: Descritores Críticos D01 e D13',
+            componente: 'Multidisciplinar',
+            etapa: '5º Ano',
+            tipo: 'Intervencao',
+            descritores: ['D01', 'D13'],
+            descricao: 'Roteiro de oficinas pedagógicas e sequências didáticas para reforço escolar nos descritores com menor índice de acerto.',
+            totalQuestoes: 0,
+            formato: 'Guia Prático do Professor'
+        }
+    ];
+
+    function renderPedagogicLibrary() {
+        const grid = document.getElementById('bib-materials-grid');
+        if (!grid) return;
+
+        const compFilter = document.getElementById('filter-bib-componente')?.value || 'all';
+        const etapaFilter = document.getElementById('filter-bib-etapa')?.value || 'all';
+        const tipoFilter = document.getElementById('filter-bib-tipo')?.value || 'all';
+        const searchVal = document.getElementById('search-bib-input')?.value.toLowerCase().trim() || '';
+
+        const filtered = defaultPedagogicMaterials.filter(item => {
+            if (compFilter !== 'all' && item.componente !== compFilter) return false;
+            if (etapaFilter !== 'all' && item.etapa !== etapaFilter && item.etapa !== 'Todas') return false;
+            if (tipoFilter !== 'all' && item.tipo !== tipoFilter) return false;
+            if (searchVal && !item.titulo.toLowerCase().includes(searchVal) && !item.descricao.toLowerCase().includes(searchVal)) return false;
+            return true;
+        });
+
+        if (filtered.length === 0) {
+            grid.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-secondary);">
+                    <i data-lucide="inbox" style="width: 48px; height: 48px; margin: 0 auto 12px auto; opacity: 0.4;"></i>
+                    <p>Nenhum material encontrado com os filtros selecionados.</p>
+                </div>
+            `;
+            if (window.lucide) lucide.createIcons({ attrs: { class: 'lucide' } });
+            return;
         }
 
-        sidebarCollapseToggle.addEventListener('click', () => {
-            const isCollapsed = document.body.classList.toggle('collapsed-sidebar');
-            localStorage.setItem('sidebarCollapsed', isCollapsed ? 'true' : 'false');
-            
-            const icon = sidebarCollapseToggle.querySelector('i') || sidebarCollapseToggle.querySelector('svg');
-            if (icon && window.lucide) {
-                icon.setAttribute('data-lucide', isCollapsed ? 'chevron-right' : 'chevron-left');
-                lucide.createIcons({ attrs: { class: 'lucide' } });
-            }
+        grid.innerHTML = filtered.map(item => `
+            <div class="bib-card">
+                <div>
+                    <div class="bib-card-header">
+                        <div class="bib-card-icon">
+                            <i data-lucide="${item.tipo === 'Simulado' ? 'file-check-2' : (item.tipo === 'Matriz' ? 'list-checks' : 'book-open')}"></i>
+                        </div>
+                        <div>
+                            <div class="bib-card-title">${item.titulo}</div>
+                            <span style="font-size: 0.7rem; color: var(--text-muted);">${item.formato}</span>
+                        </div>
+                    </div>
+                    <div class="bib-card-badges">
+                        <span class="badge ${item.componente === 'Matemática' ? 'badge-info' : (item.componente === 'Língua Portuguesa' ? 'badge-purple' : 'badge-success')}">${item.componente}</span>
+                        <span class="badge badge-default">${item.etapa}</span>
+                        <span class="badge badge-warning">${item.tipo}</span>
+                    </div>
+                    <div class="bib-card-desc">${item.descricao}</div>
+                </div>
+                <div class="bib-card-actions">
+                    ${item.tipo === 'Simulado' ? `
+                        <button class="btn btn-primary btn-print-material" data-id="${item.id}" style="flex: 1; padding: 6px 10px; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            <i data-lucide="printer" style="width: 14px; height: 14px;"></i>
+                            <span>Imprimir Prova A4</span>
+                        </button>
+                    ` : ''}
+                    <button class="btn btn-outline btn-view-material" data-id="${item.id}" style="flex: 1; padding: 6px 10px; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <i data-lucide="eye" style="width: 14px; height: 14px;"></i>
+                        <span>Visualizar Material</span>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+
+        if (window.lucide) lucide.createIcons({ attrs: { class: 'lucide' } });
+
+        // Event listeners on buttons
+        grid.querySelectorAll('.btn-print-material').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                const mat = defaultPedagogicMaterials.find(m => m.id === id);
+                if (mat) {
+                    generateA4PrintableExam(mat);
+                }
+            });
         });
-    }
 
-    // ==========================================
-    // CONTROLE DO BOTÃO "MAIS" E GAVETA MOBILE
-    // ==========================================
-    const mobileMoreBtn = document.getElementById('btn-mobile-more');
-    const mobileMoreSheet = document.getElementById('mobile-more-sheet');
-    const closeMobileSheetBtn = document.getElementById('btn-close-mobile-sheet');
-
-    if (mobileMoreBtn && mobileMoreSheet && closeMobileSheetBtn) {
-        mobileMoreBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            mobileMoreSheet.classList.remove('hidden');
-            // Recriar ícones lucide se necessário
-            if (window.lucide) {
-                lucide.createIcons({ attrs: { class: 'lucide' } });
-            }
-        });
-
-        closeMobileSheetBtn.addEventListener('click', () => {
-            mobileMoreSheet.classList.add('hidden');
-        });
-
-        mobileMoreSheet.addEventListener('click', (e) => {
-            if (e.target === mobileMoreSheet) {
-                mobileMoreSheet.classList.add('hidden');
-            }
-        });
-
-        // Fechar gaveta ao clicar em qualquer item de menu interno
-        const sheetMenuItems = mobileMoreSheet.querySelectorAll('.menu-item');
-        sheetMenuItems.forEach(item => {
-            item.addEventListener('click', () => {
-                mobileMoreSheet.classList.add('hidden');
-                
-                // Mapear se a aba clicada é parte das bottom-tabs, senão destacar "Mais"
-                const targetTab = item.getAttribute('data-target');
-                const bottomNav = document.querySelector('.mobile-bottom-nav');
-                const matchingBottomTab = bottomNav.querySelector(`.menu-item[data-target="${targetTab}"]`);
-                
-                bottomNav.querySelectorAll('.menu-item').forEach(btn => btn.classList.remove('active'));
-                if (matchingBottomTab) {
-                    matchingBottomTab.classList.add('active');
-                    mobileMoreBtn.classList.remove('active');
-                } else {
-                    mobileMoreBtn.classList.add('active');
+        grid.querySelectorAll('.btn-view-material').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                const mat = defaultPedagogicMaterials.find(m => m.id === id);
+                if (mat) {
+                    generateA4PrintableExam(mat);
                 }
             });
         });
     }
 
-    // Initial render calls - Start completely clean/empty
+    function generateA4PrintableExam(material) {
+        const modal = document.getElementById('print-exam-modal');
+        const docArea = document.getElementById('printable-exam-document');
+        if (!modal || !docArea) return;
+
+        // Pick relevant questions from rawQuestions
+        const relevantQuestions = rawQuestions.filter(q => {
+            if (material.componente !== 'Multidisciplinar' && q.componente !== material.componente) return false;
+            return true;
+        }).slice(0, 10);
+
+        const examQuestions = relevantQuestions.length > 0 ? relevantQuestions : [
+            {
+                codigo: "Q01",
+                descritor_codigo: "D01",
+                descritor_nome: "Localizar informações explícitas em um texto",
+                enunciado: "Leia o texto com atenção e responda:\n\n'O município de Gonçalves Dias, no Maranhão, possui tradição de acolhimento e rica cultura popular. Nas escolas municipais, os estudantes aprendem sobre a história e a fauna do cerrado maranhense.'\n\nDe acordo com o texto, o que os estudantes aprendem nas escolas municipais?",
+                opcoes: {
+                    A: "Apenas sobre as praias do litoral.",
+                    B: "Sobre a história e a fauna do cerrado maranhense.",
+                    C: "Sobre grandes indústrias automotivas.",
+                    D: "Sobre viagens espaciais."
+                },
+                correta: "B"
+            },
+            {
+                codigo: "Q02",
+                descritor_codigo: "D03",
+                descritor_nome: "Inferir o sentido de uma palavra ou expressão",
+                enunciado: "Leia a frase: 'A dedicação dos professores e alunos de Gonçalves Dias gerou um avanço expressivo no IDEB.'\n\nA palavra 'expressivo', no contexto da frase, significa:",
+                opcoes: {
+                    A: "Muito pequeno e insignificante.",
+                    B: "Marcante, significativo e grandioso.",
+                    C: "Duvidoso e incerto.",
+                    D: "Lento e desorganizado."
+                },
+                correta: "B"
+            },
+            {
+                codigo: "Q03",
+                descritor_codigo: "D13",
+                descritor_nome: "Reconhecer diferentes formas de tratar uma informação",
+                enunciado: "Em uma escola da rede municipal de Gonçalves Dias, há 480 alunos matriculados. Se 3/4 dos estudantes realizaram a avaliação diagnóstica de Língua Portuguesa, quantos alunos fizeram a prova?",
+                opcoes: {
+                    A: "120 alunos.",
+                    B: "240 alunos.",
+                    C: "360 alunos.",
+                    D: "400 alunos."
+                },
+                correta: "C"
+            },
+            {
+                codigo: "Q04",
+                descritor_codigo: "D20",
+                descritor_nome: "Resolver problema com números naturais envolvendo diferentes significados da multiplicação ou divisão",
+                enunciado: "A SEMED de Gonçalves Dias distribuiu 3.600 livros didáticos igualmente entre 12 unidades escolares municipais. Quantos livros cada escola recebeu?",
+                opcoes: {
+                    A: "250 livros.",
+                    B: "300 livros.",
+                    C: "360 livros.",
+                    D: "400 livros."
+                },
+                correta: "B"
+            }
+        ];
+
+        const userEscola = sessionStorage.getItem('userEscola') || 'U.E. BENTA VILANOVA';
+        const userTurma = sessionStorage.getItem('userTurma') || material.etapa || '5º Ano';
+
+        docArea.innerHTML = `
+            <div class="print-exam-header">
+                <div class="print-header-top">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div style="width:40px; height:40px; background:#8b5cf6; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:18px;">GD</div>
+                        <div class="print-header-title">
+                            <h2>PREFEITURA MUNICIPAL DE GONÇALVES DIAS - MA</h2>
+                            <span>SECRETARIA MUNICIPAL DE EDUCAÇÃO (SEMED) • AVALIAÇÃO DIAGNÓSTICA MUNICIPAL</span>
+                        </div>
+                    </div>
+                    <div style="text-align:right; font-size:8.5pt; font-weight:700; color:#555;">
+                        <div>ANO LETIVO 2026</div>
+                        <div>PADRÃO SAEB / SEAMA</div>
+                    </div>
+                </div>
+                <div class="print-student-info">
+                    <div><strong>Nome do(a) Aluno(a):</strong> _________________________________________________________________</div>
+                    <div><strong>Data de Aplicação:</strong> ____/____/2026</div>
+                    <div><strong>Unidade Escolar:</strong> ${userEscola}</div>
+                    <div><strong>Turma / Etapa:</strong> ${userTurma}</div>
+                </div>
+            </div>
+
+            <div class="print-instructions">
+                <strong>INSTRUÇÕES AO ESTUDANTE:</strong>
+                <ul>
+                    <li>Verifique se este caderno contém todas as questões impressas de forma legível.</li>
+                    <li>Leia com atenção cada enunciado antes de assinalar sua resposta.</li>
+                    <li>Cada questão possui apenas uma alternativa correta (A, B, C ou D).</li>
+                    <li>Ao finalizar, preencha a Folha de Respostas abaixo preenchendo completamente o círculo com caneta azul ou preta.</li>
+                </ul>
+            </div>
+
+            <div class="print-questions-grid">
+                ${examQuestions.map((q, idx) => `
+                    <div class="print-question-item">
+                        <div class="print-q-meta">
+                            <span>QUESTÃO ${idx + 1} (${q.codigo || 'ITEM'})</span>
+                            <span>HABILIDADE / DESCRITOR: <strong>${q.descritor_codigo || 'SAEB'}</strong></span>
+                        </div>
+                        <div class="print-q-text">${q.enunciado.replace(/\n/g, '<br>')}</div>
+                        <div class="print-q-options">
+                            <div class="print-q-opt">
+                                <div class="print-opt-circle">A</div>
+                                <div>${q.opcoes ? q.opcoes.A : (q.opcao_a || 'Opção A')}</div>
+                            </div>
+                            <div class="print-q-opt">
+                                <div class="print-opt-circle">B</div>
+                                <div>${q.opcoes ? q.opcoes.B : (q.opcao_b || 'Opção B')}</div>
+                            </div>
+                            <div class="print-q-opt">
+                                <div class="print-opt-circle">C</div>
+                                <div>${q.opcoes ? q.opcoes.C : (q.opcao_c || 'Opção C')}</div>
+                            </div>
+                            <div class="print-q-opt">
+                                <div class="print-opt-circle">D</div>
+                                <div>${q.opcoes ? q.opcoes.D : (q.opcao_d || 'Opção D')}</div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+
+            <!-- Bubble Answer Sheet -->
+            <div class="print-bubble-sheet">
+                <div class="print-bubble-sheet-header">
+                    <h4>FOLHA DE RESPOSTAS / CARTÃO-RESPOSTA OFICIAL (SEMED GONÇALVES DIAS)</h4>
+                    <span style="font-size:8.5pt; color:#666;">Preencha completamente os círculos correspondentes:</span>
+                </div>
+                <div class="print-bubble-grid">
+                    ${examQuestions.map((_, i) => `
+                        <div class="print-bubble-row">
+                            <span style="width:28px;">${i + 1 < 10 ? '0' + (i + 1) : i + 1}:</span>
+                            <span class="print-opt-circle" style="width:16px; height:16px; font-size:7pt;">A</span>
+                            <span class="print-opt-circle" style="width:16px; height:16px; font-size:7pt;">B</span>
+                            <span class="print-opt-circle" style="width:16px; height:16px; font-size:7pt;">C</span>
+                            <span class="print-opt-circle" style="width:16px; height:16px; font-size:7pt;">D</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+
+        modal.classList.remove('hidden');
+    }
+
+    // Print Modal & Filters Listeners
+    const closePrintModalBtn = document.getElementById('close-print-exam-modal-btn');
+    const triggerBrowserPrintBtn = document.getElementById('btn-trigger-browser-print');
+    const openExamGeneratorBtn = document.getElementById('btn-open-exam-generator');
+
+    if (closePrintModalBtn) {
+        closePrintModalBtn.addEventListener('click', () => {
+            document.getElementById('print-exam-modal')?.classList.add('hidden');
+        });
+    }
+
+    if (triggerBrowserPrintBtn) {
+        triggerBrowserPrintBtn.addEventListener('click', () => {
+            window.print();
+        });
+    }
+
+    if (openExamGeneratorBtn) {
+        openExamGeneratorBtn.addEventListener('click', () => {
+            generateA4PrintableExam({
+                titulo: 'Avaliação Diagnóstica Geral (SEMED Gonçalves Dias)',
+                componente: 'Multidisciplinar',
+                etapa: '5º Ano'
+            });
+        });
+    }
+
+    // Filter listeners for Biblioteca
+    ['filter-bib-componente', 'filter-bib-etapa', 'filter-bib-tipo'].forEach(id => {
+        document.getElementById(id)?.addEventListener('change', renderPedagogicLibrary);
+    });
+    document.getElementById('search-bib-input')?.addEventListener('input', debounce(renderPedagogicLibrary, 250));
+
+    // Upload Material Modal
+    const btnUploadMaterial = document.getElementById('btn-upload-pedagogic-file');
+    const uploadModal = document.getElementById('upload-pedagogic-modal');
+    const closeUploadModalBtn = document.getElementById('close-upload-pedagogic-modal-btn');
+    const cancelUploadBtn = document.getElementById('btn-cancel-upload-pedagogic');
+    const uploadForm = document.getElementById('upload-pedagogic-form');
+
+    if (btnUploadMaterial && uploadModal) {
+        btnUploadMaterial.addEventListener('click', () => uploadModal.classList.remove('hidden'));
+        closeUploadModalBtn?.addEventListener('click', () => uploadModal.classList.add('hidden'));
+        cancelUploadBtn?.addEventListener('click', () => uploadModal.classList.add('hidden'));
+        uploadForm?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = document.getElementById('new-material-title').value;
+            const comp = document.getElementById('new-material-comp').value;
+            const etapa = document.getElementById('new-material-etapa').value;
+            const tipo = document.getElementById('new-material-tipo').value;
+            const desc = document.getElementById('new-material-desc').value;
+
+            defaultPedagogicMaterials.unshift({
+                id: 'mat_' + Date.now(),
+                titulo: title,
+                componente: comp,
+                etapa: etapa,
+                tipo: tipo,
+                descritores: ['BNCC / SEAMA'],
+                descricao: desc || 'Material pedagógico adicionado à biblioteca municipal.',
+                totalQuestoes: 10,
+                formato: 'Material Didático'
+            });
+
+            uploadModal.classList.add('hidden');
+            uploadForm.reset();
+            showToast('Material adicionado à Biblioteca com sucesso!', 'check');
+            renderPedagogicLibrary();
+        });
+    }
+
+    // ==========================================
+    // GESTÃO DE USUÁRIOS (RBAC) NO ADMIN PANEL
+    // ==========================================
+    async function loadUsersList() {
+        const tbody = document.getElementById('users-table-body');
+        if (!tbody) return;
+
+        const userEmail = sessionStorage.getItem('userEmail') || 'gestor@goncalvesdias.ma.gov.br';
+        const token = btoa(userEmail);
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/users`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const users = await res.json();
+                if (users && Array.isArray(users)) {
+                    tbody.innerHTML = users.map(u => `
+                        <tr style="border-bottom: 1px solid var(--border-color); height: 48px;">
+                            <td style="padding: 12px 16px; font-weight: 600; color: var(--text-primary);">
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <div style="width:28px; height:28px; border-radius:50%; background:var(--purple); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700;">
+                                        ${u.nome.substring(0, 2).toUpperCase()}
+                                    </div>
+                                    <span>${u.nome}</span>
+                                </div>
+                            </td>
+                            <td style="padding: 12px 16px; color: var(--text-secondary);">${u.email}</td>
+                            <td style="padding: 12px 16px;">
+                                <span class="badge ${u.role === 'Master Admin' ? 'badge-danger' : (u.role === 'Gestor da Rede' ? 'badge-purple' : (u.role === 'Diretor Escola' ? 'badge-info' : 'badge-success'))}">
+                                    ${u.role}
+                                </span>
+                            </td>
+                            <td style="padding: 12px 16px; color: var(--text-secondary);">${u.escola || '<span style="color:var(--text-muted);">Todas (Rede Municipal)</span>'}</td>
+                            <td style="padding: 12px 16px; color: var(--text-secondary);">${u.turma || '<span style="color:var(--text-muted);">-</span>'}</td>
+                            <td style="padding: 12px 16px; text-align: center;">
+                                <button class="btn-icon btn-delete-user" data-id="${u.id}" title="Excluir Usuário" style="background:none; border:none; color:var(--red-light); cursor:pointer; padding:6px;">
+                                    <i data-lucide="trash-2" style="width:16px; height:16px;"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+
+                    if (window.lucide) lucide.createIcons({ attrs: { class: 'lucide' } });
+
+                    tbody.querySelectorAll('.btn-delete-user').forEach(btn => {
+                        btn.addEventListener('click', async () => {
+                            const id = btn.getAttribute('data-id');
+                            if (confirm('Deseja realmente excluir este usuário?')) {
+                                try {
+                                    const delRes = await fetch(`${API_BASE_URL}/api/users/${id}`, {
+                                        method: 'DELETE',
+                                        headers: { 'Authorization': `Bearer ${token}` }
+                                    });
+                                    if (delRes.ok) {
+                                        showToast('Usuário excluído com sucesso!', 'check');
+                                        loadUsersList();
+                                    } else {
+                                        showToast('Erro ao excluir usuário.', 'alert-triangle');
+                                    }
+                                } catch (e) {
+                                    showToast('Falha na exclusão do usuário.', 'alert-triangle');
+                                }
+                            }
+                        });
+                    });
+                }
+            }
+        } catch (e) {
+            console.error('Failed to load users:', e);
+        }
+    }
+
+    // Create User Modal Handlers
+    const btnOpenCreateUser = document.getElementById('btn-open-create-user-modal');
+    const createUserModal = document.getElementById('create-user-modal');
+    const closeCreateUserModalBtn = document.getElementById('close-create-user-modal-btn');
+    const btnCancelCreateUser = document.getElementById('btn-cancel-create-user');
+    const createUserForm = document.getElementById('create-user-form');
+    const selectUserSchool = document.getElementById('new-user-school');
+
+    if (btnOpenCreateUser && createUserModal) {
+        btnOpenCreateUser.addEventListener('click', () => {
+            // Populate schools dropdown
+            if (selectUserSchool && dbEscolas) {
+                selectUserSchool.innerHTML = dbEscolas.map(e => `<option value="${e.nome}">${e.nome}</option>`).join('');
+            }
+            createUserModal.classList.remove('hidden');
+        });
+
+        closeCreateUserModalBtn?.addEventListener('click', () => createUserModal.classList.add('hidden'));
+        btnCancelCreateUser?.addEventListener('click', () => createUserModal.classList.add('hidden'));
+
+        createUserForm?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nome = document.getElementById('new-user-name').value;
+            const email = document.getElementById('new-user-email').value;
+            const password = document.getElementById('new-user-password').value;
+            const role = document.getElementById('new-user-role').value;
+            const escola = document.getElementById('new-user-school').value;
+            const turma = document.getElementById('new-user-grade').value;
+
+            const userEmail = sessionStorage.getItem('userEmail') || 'gestor@goncalvesdias.ma.gov.br';
+            const token = btoa(userEmail);
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/users`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ nome, email, password, role, escola, turma })
+                });
+
+                if (res.ok) {
+                    showToast('Usuário cadastrado com sucesso!', 'check');
+                    createUserModal.classList.add('hidden');
+                    createUserForm.reset();
+                    loadUsersList();
+                } else {
+                    const err = await res.json();
+                    showToast(err.error || 'Erro ao cadastrar usuário.', 'alert-triangle');
+                }
+            } catch (err) {
+                showToast('Falha na comunicação com o servidor.', 'alert-triangle');
+            }
+        });
+    }
+
+    // Initial render calls - Start clean and responsive
     loadDatabaseState();
     renderCreatedEvents();
     renderOngoingAssessments();
@@ -6528,6 +6997,8 @@ DIRETRIZES DO DIAGNÓSTICO:
     renderManualScheduleTable();
     populateQuestionCreatorDropdowns();
     initIdebComparativo();
+    renderPedagogicLibrary();
+    loadUsersList();
 };
 
 if (document.readyState === 'loading') {
