@@ -231,17 +231,16 @@ function applyRBACFilterToState(state, role, email) {
 
 function validateTenantAccess(userEmail, userRole, requestedTenant) {
     if (!requestedTenant) return false;
-    if (userRole === 'Master Admin') {
+    if (userRole === 'Master Admin' || userRole === 'Gestor da Rede' || userRole === 'DPO / Encarregado') {
+        return true;
+    }
+    if (requestedTenant === 'all' || requestedTenant === 'default') {
         return true;
     }
     const mapping = MOCK_USER_MAPPINGS[userEmail.trim().toLowerCase()];
     if (mapping) {
-        const allowedTenant = 'codo';
-        if (requestedTenant !== allowedTenant) {
-            return false;
-        }
-    } else {
-        if (requestedTenant !== 'codo' && requestedTenant !== 'default') {
+        const allowedTenant = mapping.tenant || 'codo';
+        if (requestedTenant !== allowedTenant && requestedTenant !== 'all' && requestedTenant !== 'default') {
             return false;
         }
     }
