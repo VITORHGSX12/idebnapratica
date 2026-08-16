@@ -16911,3 +16911,130 @@ window.showTab = window.switchTab;
     window.showTab = switchTab;
     window.openSchoolClassesView = openSchoolClassesView;
     window.backToSchoolsList = backToSchoolsList;
+
+
+    // =========================================================================
+    // RESTAURAÇÃO EMERGENCIAL DO MANIPULADOR DE CLIQUE DA SIDEBAR PRINCIPAL
+    // =========================================================================
+
+    document.addEventListener('click', function(e) {
+        const menuItem = e.target.closest('.menu-item');
+        if (menuItem) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const target = menuItem.getAttribute('data-target') || menuItem.getAttribute('data-tab');
+            if (target) {
+                console.log('[Sidebar Click Event] Navigating to:', target);
+                switchTab(target);
+            }
+        }
+    }, true);
+
+    // ROTEADOR COMPLETO DE TELAS DO CONTAINER PRINCIPAL (SWITCH ACTIVETAB / OUTLET)
+    function switchTab(targetTab) {
+        const safeTarget = (targetTab || 'dashboard').toString().trim();
+
+        const tabMap = {
+            'dashboard': 'dashboard',
+            'escolas-panel': 'escolas-panel',
+            'alunos-panel': 'alunos-panel',
+            'metas-ideb': 'metas-ideb',
+            'ideb-comparativo': 'ideb-comparativo',
+            'matriz-descritores': 'matriz-descritores',
+            'cronograma-habilidades': 'cronograma-habilidades',
+            'sec-criar-avaliacoes': 'sec-criar-avaliacoes',
+            'criar-avaliacoes': 'sec-criar-avaliacoes',
+            'sec-aplicacao-provas': 'sec-aplicacao-provas',
+            'aplicacao-provas': 'sec-aplicacao-provas',
+            'banco-questoes': 'banco-questoes',
+            'questions': 'banco-questoes',
+            'relatorios-monitoramento': 'relatorios-monitoramento',
+            'ai-playground': 'relatorios-monitoramento',
+            'gestao-pedagogica': 'gestao-pedagogica',
+            'biblioteca-recursos': 'biblioteca-recursos',
+            'doc-tecnica': 'doc-tecnica',
+            'admin-panel': 'admin-panel'
+        };
+
+        const resolvedId = tabMap[safeTarget] || safeTarget;
+        console.log('[Router] Resolved target ID:', resolvedId);
+
+        try {
+            try { localStorage.setItem('lastActiveTab', resolvedId); } catch(err) {}
+
+            // 1. Ocultar todas as seções do container principal <main>
+            const allSections = document.querySelectorAll('.tab-content');
+            allSections.forEach(function(sec) {
+                sec.classList.remove('active');
+                sec.classList.add('hidden');
+                sec.style.display = 'none';
+            });
+
+            // 2. Ocultar visão detalhada da escola
+            const schoolDetail = document.getElementById('school-classes-table-view');
+            if (schoolDetail) {
+                schoolDetail.classList.add('hidden');
+                schoolDetail.style.display = 'none';
+            }
+
+            // 3. Exibir container da lista de escolas se for o módulo de escolas
+            const schoolsList = document.getElementById('schools-list-container');
+            if (resolvedId === 'escolas-panel' && schoolsList) {
+                schoolsList.classList.remove('hidden');
+                schoolsList.style.display = 'block';
+            }
+
+            // 4. Exibir seção ativa correspondente
+            let targetEl = document.getElementById(resolvedId);
+            if (!targetEl) {
+                targetEl = document.getElementById(safeTarget);
+            }
+
+            if (targetEl) {
+                targetEl.classList.remove('hidden');
+                targetEl.classList.add('active');
+                targetEl.style.display = 'block';
+            } else {
+                console.warn('[Router Warning] Section element missing for ID:', resolvedId, '- Rendering Fallback to Dashboard');
+                const dashEl = document.getElementById('dashboard');
+                if (dashEl) {
+                    dashEl.classList.remove('hidden');
+                    dashEl.classList.add('active');
+                    dashEl.style.display = 'block';
+                }
+            }
+
+            // 5. Destacar o item do menu ativo na Sidebar
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(function(item) {
+                const dt = item.getAttribute('data-target');
+                if (dt === resolvedId || dt === safeTarget || tabMap[dt] === resolvedId) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+
+            // 6. Acionar renderizadores de conteúdo das telas
+            if (resolvedId === 'escolas-panel' && typeof renderDbSchools === 'function') {
+                renderDbSchools();
+            } else if (resolvedId === 'alunos-panel' && typeof renderDbStudents === 'function') {
+                renderDbStudents();
+            } else if (resolvedId === 'metas-ideb' && typeof populateIdebGoalsTable === 'function') {
+                populateIdebGoalsTable();
+            } else if (resolvedId === 'ideb-comparativo' && typeof initIdebCitySelector === 'function') {
+                initIdebCitySelector();
+            }
+
+            if (window.lucide && typeof lucide.createIcons === 'function') {
+                try { lucide.createIcons(); } catch(err) {}
+            }
+        } catch(e) {
+            console.error('[Router Emergency Error]', e);
+        }
+    }
+
+    window.switchTab = switchTab;
+    window.switchMainTab = switchTab;
+    window.showTab = switchTab;
