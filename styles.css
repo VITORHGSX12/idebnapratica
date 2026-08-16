@@ -4095,3 +4095,45 @@ body.collapsed-sidebar .sidebar-footer .user-dropdown-menu {
 .app-container.sidebar-collapsed .main-content {
     margin-left: 72px !important;
 }
+
+
+/* Robust Sidebar Collapse Toggle */
+.sidebar {
+    position: relative !important;
+}
+
+.sidebar-collapse-toggle {
+    position: absolute !important;
+    right: -14px !important;
+    top: 24px !important;
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 50% !important;
+    background-color: var(--bg-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+    z-index: 9999 !important;
+    transition: all 0.2s ease !important;
+}
+
+.sidebar-collapse-toggle:hover {
+    background-color: var(--purple) !important;
+    color: #ffffff !important;
+    border-color: var(--purple) !important;
+    transform: scale(1.15) !important;
+}
+
+.sidebar-collapse-toggle svg {
+    display: block !important;
+    width: 16px !important;
+    height: 16px !important;
+}
+
+body.collapsed-sidebar .sidebar-collapse-toggle svg {
+    transform: rotate(180deg) !important;
+}

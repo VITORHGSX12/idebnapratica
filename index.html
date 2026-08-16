@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>IDEB na Prática - Plataforma de Gestão e Avaliação Educacional</title>
-    <link rel="stylesheet" href="styles.css?v=e7756454">
+    <link rel="stylesheet" href="styles.css?v=01160aa2">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,6 +20,60 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/dist/marked.min.js"></script>
     <!-- MathJax for LaTeX Equations rendering -->
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Global Immediate UI Handlers -->
+    <script>
+        function toggleSidebarCollapse() {
+            document.body.classList.toggle('collapsed-sidebar');
+            var isCollapsed = document.body.classList.contains('collapsed-sidebar');
+            localStorage.setItem('sidebar_collapsed', isCollapsed ? 'true' : 'false');
+            var svg = document.getElementById('sidebar-toggle-svg');
+            if (svg) {
+                svg.style.transform = isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)';
+            }
+        }
+
+        function handleGlobalBackNavigation() {
+            var schoolClassesView = document.getElementById('school-classes-table-view');
+            var diaryView = document.getElementById('class-diary-view');
+            var userProfileView = document.getElementById('user-profile-view');
+
+            if (diaryView && !diaryView.classList.contains('hidden')) {
+                diaryView.classList.add('hidden');
+                if (schoolClassesView) schoolClassesView.classList.remove('hidden');
+                return;
+            }
+
+            if (schoolClassesView && !schoolClassesView.classList.contains('hidden')) {
+                schoolClassesView.classList.add('hidden');
+                var overview = document.getElementById('schools-overview-container');
+                if (overview) overview.classList.remove('hidden');
+                return;
+            }
+
+            if (userProfileView && !userProfileView.classList.contains('hidden')) {
+                userProfileView.classList.add('hidden');
+                var usersList = document.getElementById('users-list-view');
+                if (usersList) usersList.classList.remove('hidden');
+                return;
+            }
+
+            if (typeof window.navigateToTab === 'function') {
+                window.navigateToTab('dashboard');
+            }
+        }
+
+        // Restore sidebar state immediately before render
+        if (localStorage.getItem('sidebar_collapsed') === 'true') {
+            document.documentElement.classList.add('collapsed-sidebar');
+            window.addEventListener('DOMContentLoaded', function() {
+                document.body.classList.add('collapsed-sidebar');
+                var svg = document.getElementById('sidebar-toggle-svg');
+                if (svg) svg.style.transform = 'rotate(180deg)';
+            });
+        }
+    </script>
+
 </head>
 <body>
     <!-- Login Screen Split-Screen -->
@@ -145,8 +199,10 @@
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <!-- Sidebar Collapse Toggle Button -->
-            <button id="sidebar-collapse-toggle" class="sidebar-collapse-toggle" title="Recolher Menu">
-                <i data-lucide="chevron-left" style="width: 14px; height: 14px;"></i>
+            <button id="sidebar-collapse-toggle" class="sidebar-collapse-toggle" onclick="toggleSidebarCollapse();" title="Recolher / Expandir Menu" aria-label="Recolher menu">
+                <svg id="sidebar-toggle-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.3s ease; color: var(--text-primary);">
+                    <path d="M15 18l-6-6 6-6"/>
+                </svg>
             </button>
             <div class="sidebar-header" style="padding: 20px 24px; border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column;">
                 <div class="logo-row" style="display: flex; align-items: center; gap: 12px; width: 100%;">
@@ -293,8 +349,11 @@
             <!-- Top Navbar -->
             <header class="top-navbar">
                 <div class="navbar-left" style="display: flex; align-items: center; gap: 12px;">
-                    <button id="btn-global-header-back" class="btn btn-icon" style="width: 38px; height: 38px; border-radius: var(--radius-md); background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Voltar à seção anterior">
-                        <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i>
+                    <button id="btn-global-header-back" class="btn btn-icon" onclick="handleGlobalBackNavigation();" style="width: 38px; height: 38px; border-radius: var(--radius-md); background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Voltar à seção anterior" aria-label="Voltar">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
                     </button>
                     <button class="btn-icon" id="mobile-menu-toggle" style="display:none; background: none; border: none; color: var(--text-primary); cursor: pointer; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: var(--radius-md);">
                         <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
