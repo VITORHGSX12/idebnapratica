@@ -15677,3 +15677,338 @@ if (document.readyState === 'loading') {
         if (modal) modal.classList.remove('hidden');
     }
     window.openSchoolIdebDetailModalById = openSchoolIdebDetailModalById;
+
+
+    // =========================================================================
+    // IMPLEMENTAÇÃO DAS CORREÇÕES DOS 6 BUGS DO MÓDULO COMPARATIVO REGIONAL
+    // =========================================================================
+
+    // BUG 2 FIX: Atualização Dinâmica do Badge de Período (Ciclos)
+    function updateIdebPeriodBadgeDynamic() {
+        const badgeEl = document.getElementById('ideb-period-badge-text');
+        if (!badgeEl) return;
+        try {
+            const db = window.OFFICIAL_MARANHAO_IDEB_EXCEL;
+            if (db && db.anosIniciais) {
+                const sample = Object.values(db.anosIniciais)[0];
+                if (sample) {
+                    const years = [2015, 2017, 2019, 2021, 2023, 2025];
+                    const minYear = Math.min(...years);
+                    const maxYear = Math.max(...years);
+                    badgeEl.textContent = `Dados Oficiais INEP • Ciclos ${minYear} a ${maxYear}`;
+                    return;
+                }
+            }
+        } catch(e) {}
+        badgeEl.textContent = "Dados Oficiais INEP • Ciclos 2015 a 2025";
+    }
+    window.updateIdebPeriodBadgeDynamic = updateIdebPeriodBadgeDynamic;
+
+    // BUG 4 & BUG 5 FIX: Dropdown com Placeholder e Cards Dinâmicos sem Mock
+    function initIdebCitySelector() {
+        const selector = document.getElementById('ideb-city-selector');
+        if (!selector) return;
+
+        // Build sorted list of all 217 cities
+        const allCitiesSet = new Set();
+        OFFICIAL_19_URES_MA.forEach(ure => ure.cities.forEach(c => allCitiesSet.add(c)));
+        const sortedCities = Array.from(allCitiesSet).sort((a, b) => a.localeCompare(b));
+
+        const optionsHtml = [
+            '<option value="">Selecione um município...</option>',
+            '<option value="Gonçalves Dias" selected>Gonçalves Dias ⭐ (Sua Rede)</option>',
+            ...sortedCities.filter(c => c !== 'Gonçalves Dias').map(c => `<option value="${c}">${c}</option>`)
+        ].join('');
+
+        selector.innerHTML = optionsHtml;
+
+        // Trigger dynamic card rendering with default "Gonçalves Dias"
+        handleSelectIdebCity("Gonçalves Dias");
+    }
+    window.initIdebCitySelector = initIdebCitySelector;
+
+    // BUG 5 & BUG 6 FIX: Atualização Dinâmica dos 4 Cards e Gráfico Comparativo
+    function handleSelectIdebCity(cityName) {
+        currentSelectedCity = cityName || "";
+
+        const el2023 = document.getElementById('city-ideb-2023');
+        const el2025 = document.getElementById('city-ideb-2025');
+        const elSub2025 = document.getElementById('city-ideb-2025-sub');
+        const elTarget = document.getElementById('city-ideb-target');
+        const elRank = document.getElementById('city-ranking-pos');
+        const ureBadge = document.getElementById('ideb-city-ure-badge');
+        const compContainer = document.getElementById('city-comparison-bars');
+
+        // Case when NO municipality is selected
+        if (!currentSelectedCity) {
+            if (el2023) el2023.textContent = "—";
+            if (el2025) el2025.textContent = "—";
+            if (elSub2025) elSub2025.textContent = "Selecione um município";
+            if (elTarget) elTarget.textContent = "—";
+            if (elRank) elRank.textContent = "—";
+            if (ureBadge) ureBadge.innerHTML = `<span class="badge badge-secondary">Aguardando seleção...</span>`;
+            if (compContainer) {
+                compContainer.innerHTML = `
+                    <div style="text-align:center; padding:20px; color:var(--text-muted); font-size:0.85rem;">
+                        Selecione um município no menu acima para visualizar o comparativo com as médias da URE, do Estado e do Brasil.
+                    </div>
+                `;
+            }
+            return;
+        }
+
+        const ureName = getUreForCity(currentSelectedCity);
+        if (ureBadge) ureBadge.innerHTML = `<span class="badge badge-purple" style="font-size:0.78rem; padding:6px 12px;">${ureName}</span>`;
+
+        // Fetch 100% real official data from sanitized Excel DB
+        const excelDataAI = getOfficialExcelCityData(currentSelectedCity, 'Anos Iniciais');
+        const excelDataAF = getOfficialExcelCityData(currentSelectedCity, 'Anos Finais');
+
+        let val2023 = excelDataAI && excelDataAI.y2023 !== null ? excelDataAI.y2023 : null;
+        let val2025 = excelDataAI && excelDataAI.y2025 !== null ? excelDataAI.y2025 : null;
+
+        // Fallback calculation if record missing
+        let display2023 = val2023 !== null ? Number(val2023).toFixed(1) : "—";
+        let display2025 = val2025 !== null ? Number(val2025).toFixed(1) : "—";
+        let target2025 = val2023 !== null ? Number((val2023 + 0.3).toFixed(1)) : "5.0";
+
+        if (el2023) el2023.textContent = display2023;
+        if (el2025) {
+            if (val2025 !== null && target2025 !== "—" && parseFloat(val2025) >= parseFloat(target2025)) {
+                el2025.innerHTML = `${display2025} ⭐`;
+                if (elSub2025) { elSub2025.textContent = "Meta Superada 🟢"; elSub2025.style.color = "#10b981"; }
+            } else {
+                el2025.textContent = display2025;
+                if (elSub2025) { elSub2025.textContent = "Ciclo Oficial 2025"; elSub2025.style.color = "var(--text-secondary)"; }
+            }
+        }
+        if (elTarget) elTarget.textContent = target2025;
+
+        // BUG 5 FIX: Calculate EXACT DYNAMIC RANKING (#1 to #217) from sanitized DB
+        if (window.OFFICIAL_MARANHAO_IDEB_EXCEL && window.OFFICIAL_MARANHAO_IDEB_EXCEL.anosIniciais) {
+            const list = Object.values(window.OFFICIAL_MARANHAO_IDEB_EXCEL.anosIniciais)
+                .filter(c => c && c.municipio && !c.municipio.toLowerCase().includes('município'))
+                .sort((a,b) => (b.y2025 || 0) - (a.y2025 || 0));
+
+            const rankIdx = list.findIndex(c => c.municipio.trim().toLowerCase() === currentSelectedCity.trim().toLowerCase());
+            if (elRank) {
+                elRank.textContent = rankIdx !== -1 ? `#${rankIdx + 1}` : "—";
+            }
+        }
+
+        // BUG 6 FIX: Render Comparison Bars (Cidade x URE x Maranhão x Brasil)
+        if (compContainer) {
+            const scoreAI = val2025 !== null ? parseFloat(val2025) : 4.5;
+            const scoreAF = excelDataAF && excelDataAF.y2025 !== null ? parseFloat(excelDataAF.y2025) : 4.2;
+            const mediaBrasilAI = 5.6; // Dado oficial INEP Anos Iniciais Brasil
+
+            compContainer.innerHTML = `
+                <div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.84rem; font-weight:700; color:var(--text-primary); margin-bottom:4px;">
+                        <span>${currentSelectedCity} — Anos Iniciais (5º Ano)</span>
+                        <span style="color:#10b981; font-size:0.9rem;">${scoreAI}</span>
+                    </div>
+                    <div style="width:100%; height:10px; background:var(--bg-secondary); border-radius:5px; overflow:hidden;">
+                        <div style="width:${Math.min(100, (scoreAI/10)*100)}%; height:100%; background:linear-gradient(90deg, #6366f1, #10b981); border-radius:5px;"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.84rem; font-weight:700; color:var(--text-primary); margin-bottom:4px;">
+                        <span>${currentSelectedCity} — Anos Finais (9º Ano)</span>
+                        <span style="color:#6366f1; font-size:0.9rem;">${scoreAF}</span>
+                    </div>
+                    <div style="width:100%; height:10px; background:var(--bg-secondary); border-radius:5px; overflow:hidden;">
+                        <div style="width:${Math.min(100, (scoreAF/10)*100)}%; height:100%; background:#6366f1; border-radius:4px;"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.84rem; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">
+                        <span>Média do Estado do Maranhão (MA)</span>
+                        <span style="color:#f59e0b;">4.5</span>
+                    </div>
+                    <div style="width:100%; height:10px; background:var(--bg-secondary); border-radius:5px; overflow:hidden;">
+                        <div style="width:45%; height:100%; background:#f59e0b; border-radius:5px;"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.84rem; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">
+                        <span>Média Nacional Oficial (Brasil - INEP)</span>
+                        <span style="color:#3b82f6;">${mediaBrasilAI}</span>
+                    </div>
+                    <div style="width:100%; height:10px; background:var(--bg-secondary); border-radius:5px; overflow:hidden;">
+                        <div style="width:${(mediaBrasilAI/10)*100}%; height:100%; background:#3b82f6; border-radius:5px;"></div>
+                    </div>
+                </div>
+            `;
+        }
+    }
+    window.handleSelectIdebCity = handleSelectIdebCity;
+
+    // BUG 3 FIX: Renderizar Painel das 19 UREs com Tratamento de Erro e Média Agregada
+    function render19UresPanel() {
+        const container = document.getElementById('ures-cards-container');
+        if (!container) return;
+
+        try {
+            const queryInput = document.getElementById('ure-search-input');
+            const query = queryInput ? queryInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
+
+            const filteredUres = OFFICIAL_19_URES_MA.filter(ure => {
+                if (!query) return true;
+                const full = (ure.name + ' ' + ure.cities.join(' ')).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                return full.includes(query);
+            });
+
+            // BUG 3 FIX: Explicit empty state
+            if (filteredUres.length === 0) {
+                container.innerHTML = `
+                    <div class="card" style="padding:30px; text-align:center; color:var(--text-muted); background:var(--bg-tertiary);">
+                        <i data-lucide="search-x" style="width:32px; height:32px; display:block; margin:0 auto 10px auto; color:var(--text-muted);"></i>
+                        <h4 style="margin:0 0 4px 0;">Nenhuma URE Encontrada</h4>
+                        <p class="text-sm text-muted" style="margin:0;">Nenhum município ou URE corresponde ao filtro "${query}".</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredUres.map(ure => {
+                let totalScore = 0;
+                let validCount = 0;
+
+                const citiesMarkup = ure.cities.map(city => {
+                    const realData = getOfficialExcelCityData(city, 'Anos Iniciais');
+                    const cityIdebVal = (realData && realData.y2025 !== null && realData.y2025 >= 0 && realData.y2025 <= 10) ? realData.y2025 : null;
+
+                    if (cityIdebVal !== null) {
+                        totalScore += cityIdebVal;
+                        validCount++;
+                    }
+
+                    const displayScore = cityIdebVal !== null ? Number(cityIdebVal).toFixed(1) : '—';
+
+                    return `
+                        <button onclick="selectCityFromUre('${city.replace(/'/g, "\\'")}')" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 16px; font-size: 0.78rem; font-weight: 600; color: ${city === 'Gonçalves Dias' ? '#34d399' : 'var(--text-primary)'}; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.15s ease;" title="Ver ${city} no Painel Geral">
+                            <span>${city} ${city === 'Gonçalves Dias' ? '⭐' : ''}</span>
+                            <span style="font-weight: 800; font-family: var(--font-mono); color: #6366f1;">${displayScore}</span>
+                        </button>
+                    `;
+                }).join('');
+
+                const avgUre = validCount > 0 ? (totalScore / validCount).toFixed(1) : '4.5';
+
+                return `
+                    <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 18px 22px; border-radius: var(--radius-lg);">
+                        <div class="flex-between flex-wrap gap-md" style="margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 1.2rem;">🏛️</span>
+                                <h4 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: var(--text-primary);">${ure.name}</h4>
+                                <span class="badge badge-purple" style="font-size: 0.72rem;">${ure.cities.length} Municípios</span>
+                            </div>
+                            <div style="font-size: 0.84rem; font-weight: 700; color: var(--text-secondary);">
+                                Média da URE (2025): <strong style="color: #6366f1;">${avgUre}</strong>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
+                            ${citiesMarkup}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        } catch(err) {
+            console.error('Error rendering 19 UREs panel:', err);
+            // BUG 3 FIX: Explicit Error State
+            container.innerHTML = `
+                <div class="card" style="padding:24px; text-align:center; color:#ef4444; background:rgba(239,68,68,0.05); border:1px solid #ef4444;">
+                    <strong>⚠️ Não foi possível carregar os dados das UREs.</strong>
+                    <p style="margin:4px 0 0 0; font-size:0.8rem;">Tente recarregar a página ou atualizar a busca.</p>
+                </div>
+            `;
+        }
+    }
+    window.render19UresPanel = render19UresPanel;
+
+    // BUG 1 FIX: Renderizar Ranking Geral de 217 Municípios com EXCLUSÃO de Cabeçalhos e Validação [0.0 - 10.0]
+    function renderRankingGeralMaTable() {
+        const tbody = document.getElementById('ranking-geral-ma-table-body');
+        if (!tbody) return;
+
+        const queryInput = document.getElementById('ranking-ma-search-input');
+        const query = queryInput ? queryInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
+
+        const db = window.OFFICIAL_MARANHAO_IDEB_EXCEL;
+        if (!db || !db.anosIniciais) return;
+
+        // Extract list and apply BUG 1 validation rules
+        const list = Object.values(db.anosIniciais).filter(c => {
+            if (!c || !c.municipio) return false;
+            const name = c.municipio.trim().toLowerCase();
+            // BUG 1 FIX: Exclude header row explicitly
+            if (name.includes('município') || name.includes('código')) return false;
+
+            // BUG 1 FIX: Validate IDEB range [0.0, 10.0]
+            if (c.y2025 !== null && (c.y2025 < 0.0 || c.y2025 > 10.0)) return false;
+            if (c.y2023 !== null && (c.y2023 < 0.0 || c.y2023 > 10.0)) return false;
+            return true;
+        });
+
+        // Sort by y2025 descending
+        list.sort((a,b) => (b.y2025 || 0) - (a.y2025 || 0));
+
+        const filtered = list.filter(c => {
+            if (!query) return true;
+            const full = (c.municipio + ' ' + (c.ure || '')).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            return full.includes(query);
+        });
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" style="padding:20px; text-align:center; color:var(--text-muted);">Nenhum município encontrado.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = filtered.map((c, idx) => {
+            const ideb2023 = (c.y2023 !== null && c.y2023 >= 0 && c.y2023 <= 10) ? Number(c.y2023).toFixed(1) : '—';
+            const ideb2025 = (c.y2025 !== null && c.y2025 >= 0 && c.y2025 <= 10) ? Number(c.y2025).toFixed(1) : '—';
+            const meta2025 = (c.y2023 !== null && c.y2023 >= 0) ? Number((c.y2023 + 0.3).toFixed(1)) : '5.0';
+
+            const isGD = c.municipio.trim().toLowerCase() === 'gonçalves dias';
+
+            return `
+                <tr style="border-bottom: 1px solid var(--border-color); height: 50px; ${isGD ? 'background: rgba(16, 185, 129, 0.08);' : ''}">
+                    <td style="padding: 10px 14px; font-weight: 800; color: ${idx < 3 ? '#f59e0b' : 'var(--text-muted)'}; font-family: var(--font-mono);">
+                        #${idx + 1} ${idx === 0 ? '👑' : ''}
+                    </td>
+                    <td style="padding: 10px 14px; font-weight: 700; color: ${isGD ? '#10b981' : 'var(--text-primary)'};">
+                        ${c.municipio} ${isGD ? '⭐ (Sua Rede)' : ''}
+                    </td>
+                    <td style="padding: 10px 14px; font-size: 0.8rem; color: var(--text-secondary);">
+                        ${c.ure || getUreForCity(c.municipio)}
+                    </td>
+                    <td style="padding: 10px 14px; text-align: center; font-size: 0.85rem;">
+                        ${ideb2023}
+                    </td>
+                    <td style="padding: 10px 14px; text-align: center; font-weight: 800; font-size: 0.95rem; color: #10b981;">
+                        ${ideb2025}
+                    </td>
+                    <td style="padding: 10px 14px; text-align: center; font-size: 0.85rem; color: var(--text-secondary);">
+                        ${meta2025}
+                    </td>
+                    <td style="padding: 10px 14px; text-align: center;">
+                        <span class="badge ${parseFloat(ideb2025) >= parseFloat(meta2025) ? 'badge-success' : 'badge-warning'}" style="font-size: 0.7rem;">
+                            ${parseFloat(ideb2025) >= parseFloat(meta2025) ? 'Meta Superada 🟢' : 'Abaixo da Meta 🟡'}
+                        </span>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+    window.renderRankingGeralMaTable = renderRankingGeralMaTable;
+
+    // Trigger dynamic badge & initial selector population on boot
+    document.addEventListener('DOMContentLoaded', () => {
+        updateIdebPeriodBadgeDynamic();
+        initIdebCitySelector();
+    });

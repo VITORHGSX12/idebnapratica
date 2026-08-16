@@ -1,19 +1,8 @@
 // Base de Dados Oficial do IDEB do Maranhão (2015 - 2025)
-// Extraída do arquivo oficial fornecido pelo gestor: IDEB_Maranhao_Municipios_2015-2025.xlsx
+// Sanitizada rigorosamente: Validação de faixa [0.0 - 10.0] e remoção de cabeçalhos
 
 window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
   "anosIniciais": {
-    "Município": {
-      "codigo_ibge": "Código Município",
-      "municipio": "Município",
-      "ure": "URE Presidente Dutra",
-      "y2015": 2015,
-      "y2017": 2017,
-      "y2019": 2019,
-      "y2021": 2021,
-      "y2023": 2023,
-      "y2025": 2025
-    },
     "Afonso Cunha": {
       "codigo_ibge": "2100105",
       "municipio": "Afonso Cunha",
@@ -2403,17 +2392,6 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
     }
   },
   "anosFinais": {
-    "Município": {
-      "codigo_ibge": "Código Município",
-      "municipio": "Município",
-      "ure": "URE Presidente Dutra",
-      "y2015": 2015,
-      "y2017": 2017,
-      "y2019": 2019,
-      "y2021": 2021,
-      "y2023": 2023,
-      "y2025": 2025
-    },
     "Afonso Cunha": {
       "codigo_ibge": "2100105",
       "municipio": "Afonso Cunha",

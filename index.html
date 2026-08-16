@@ -1614,10 +1614,10 @@
                     <div class="card margin-bottom-lg" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%); border-radius: var(--radius-lg); padding: 24px 28px; color: #ffffff; box-shadow: 0 10px 25px -5px rgba(49, 46, 129, 0.3);">
                         <div class="flex-between flex-wrap gap-md" style="align-items: center;">
                             <div>
-                                <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); padding: 4px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.2);">
-                                    <i data-lucide="award" style="width: 13px; height: 13px;"></i>
-                                    Dados Oficiais INEP • Ciclos 2023 & 2025
-                                </div>
+                                <div id="ideb-period-badge" style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); padding: 4px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.2);">
+    <i data-lucide="award" style="width: 13px; height: 13px;"></i>
+    <span id="ideb-period-badge-text">Dados Oficiais INEP • Ciclos 2015 a 2025</span>
+</div>
                                 <h2 style="font-size: 1.7rem; font-weight: 800; margin: 0 0 6px 0; color: #ffffff;">
                                     Comparativo Regional do IDEB — Gonçalves Dias (MA)
                                 </h2>
@@ -1654,16 +1654,18 @@
                         </div>
 
                         <!-- SUBTAB 1: PAINEL GERAL DO MUNICÍPIO (Com Seletor Cidade Padrão Gonçalves Dias) -->
+                        <!-- SUBTAB 1: PAINEL GERAL DO MUNICÍPIO -->
                         <div id="tab-ideb-painel-principal" class="ideb-regional-tab-content" style="padding: 24px;">
                             <!-- Header do Seletor de Município -->
                             <div class="card margin-bottom-md" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 14px 18px; border-radius: var(--radius-md);">
                                 <div style="display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap;">
                                     <div style="display: flex; align-items: center; gap: 10px; flex-grow: 1;">
-                                        <span style="font-size: 0.85rem; font-weight: 800; color: var(--text-primary); white-space: nowrap;">
+                                        <label for="ideb-city-selector" style="font-size: 0.85rem; font-weight: 800; color: var(--text-primary); white-space: nowrap;">
                                             📍 Município Selecionado:
-                                        </span>
+                                        </label>
                                         <select id="ideb-city-selector" onchange="handleSelectIdebCity(this.value)" class="form-select" style="height: 38px; min-width: 260px; max-width: 400px; font-size: 0.88rem; font-weight: 700; color: #6366f1; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
-                                            <!-- Preenchido via JS com Gonçalves Dias pré-selecionado + 217 cidades -->
+                                            <option value="">Selecione um município</option>
+                                            <option value="Gonçalves Dias" selected>Gonçalves Dias ⭐ (Sua Rede)</option>
                                         </select>
                                     </div>
                                     <div id="ideb-city-ure-badge">
@@ -1671,6 +1673,44 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Cards de Desempenho do Município Selecionado (BUG 5 FIX: Totalmente Dinâmicos) -->
+                            <div class="grid-4-lg margin-bottom-lg" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 24px;">
+                                <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); text-align: center;">
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">IDEB 2023 Observado</span>
+                                    <strong id="city-ideb-2023" style="font-size: 1.8rem; font-weight: 800; color: var(--text-primary);">—</strong>
+                                    <span style="font-size: 0.7rem; color: var(--text-secondary); display: block; margin-top: 2px;">Ciclo Anterior</span>
+                                </div>
+                                <div class="card" style="background: rgba(16, 185, 129, 0.08); border: 1px solid #10b981; padding: 16px; border-radius: var(--radius-md); text-align: center;">
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: #10b981; display: block; margin-bottom: 4px;">IDEB 2025 (Mais Recente)</span>
+                                    <strong id="city-ideb-2025" style="font-size: 1.8rem; font-weight: 800; color: #10b981;">—</strong>
+                                    <span id="city-ideb-2025-sub" style="font-size: 0.7rem; color: var(--green-light); font-weight: 700; display: block; margin-top: 2px;">Divulgação Oficial</span>
+                                </div>
+                                <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); text-align: center;">
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Meta Pactuada 2025</span>
+                                    <strong id="city-ideb-target" style="font-size: 1.8rem; font-weight: 800; color: #6366f1;">—</strong>
+                                    <span style="font-size: 0.7rem; color: var(--text-secondary); display: block; margin-top: 2px;">MEC / INEP</span>
+                                </div>
+                                <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); text-align: center;">
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Posição no Ranking MA</span>
+                                    <strong id="city-ranking-pos" style="font-size: 1.8rem; font-weight: 800; color: #f59e0b;">—</strong>
+                                    <span style="font-size: 0.7rem; color: var(--text-secondary); display: block; margin-top: 2px;">Dentre 217 municípios</span>
+                                </div>
+                            </div>
+
+                            <!-- BUG 6 FIX: Comparativo do Município Selecionado vs URE vs Maranhão vs Brasil -->
+                            <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 20px; border-radius: var(--radius-lg);">
+                                <h4 style="margin: 0 0 14px 0; font-size: 1.05rem; font-weight: 800; color: var(--text-primary);">
+                                    📊 Comparativo da Cidade x Média da URE x Média Estadual (MA) x Média Nacional (BR)
+                                </h4>
+                                <div style="display: flex; flex-direction: column; gap: 14px;" id="city-comparison-bars">
+                                    <div style="text-align:center; padding:16px; color:var(--text-muted);">
+                                        Selecione um município no campo acima para visualizar o comparativo gráfico.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+</div>
 
                             <!-- Cards de Desempenho do Município Selecionado -->
                             <div class="grid-4-lg margin-bottom-lg" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 24px;">
@@ -5398,7 +5438,7 @@
     <script src="ideb_publico_db.js"></script>
     <script src="ideb_maranhao_oficial_2015_2025.js"></script>
     <script src="escolas_maranhao_oficial_2015_2025.js"></script>
-    <script src="app.js?v=a33c6aed"></script>
+    <script src="app.js?v=f34b99f3"></script>
 
     <!-- Modal Vincular Professor à Turma -->
     <div id="modal-assign-teacher" class="modal-overlay hidden">
