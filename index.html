@@ -3755,7 +3755,7 @@
                                     Gestão centralizada de alunos, professores, diretores e equipe técnica da SEMED Gonçalves Dias.
                                 </p>
                             </div>
-                            <button class="btn btn-primary" id="btn-open-create-user-modal" style="display: flex; align-items: center; gap: 8px; font-weight: 700;">
+                            <button class="btn btn-primary" id="btn-open-create-user-modal" onclick="openCreateUserModal(); return false;">
                                 <i data-lucide="user-plus"></i>
                                 <span>+ Cadastrar Novo Usuário</span>
                             </button>
@@ -4110,139 +4110,96 @@
                     </div>
 
                     <!-- Modal Cadastrar Usuário Global -->
-                    <div id="create-user-modal" class="modal-overlay hidden">
-                        <div class="modal-content" style="max-width: 580px; width: 90%;">
-                            <div class="modal-header flex-between" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
-                                <h3 style="margin: 0; font-size: 1.15rem;">Cadastrar Novo Usuário</h3>
-                                <button class="btn btn-icon" id="close-create-user-modal-btn"><i data-lucide="x"></i></button>
-                            </div>
-                            <form id="create-user-form" style="padding-top: 14px; display: flex; flex-direction: column; gap: 10px;">
-                                <div class="form-group">
-                                    <label style="font-size: 0.75rem; font-weight: 600; display: block; margin-bottom: 3px;">Nome Completo *</label>
-                                    <input type="text" id="new-user-name" class="form-input-text" required placeholder="Ex: Maria Joaquina Sousa da Cunha">
-                                </div>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                    <div class="form-group">
-                                        <label style="font-size: 0.75rem; font-weight: 600; display: block; margin-bottom: 3px;">Tipo de Usuário *</label>
-                                        <select id="new-user-role" class="form-select">
-                                            <option value="Aluno(a)">Aluno(a)</option>
-                                            <option value="Professor(a)">Professor(a)</option>
-                                            <option value="Diretor(a)">Diretor(a)</option>
-                                            <option value="Coordenador(a)">Coordenador(a)</option>
-                                            <option value="Gestor SEMED">Gestor SEMED</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label style="font-size: 0.75rem; font-weight: 600; display: block; margin-bottom: 3px;">Telefone / WhatsApp</label>
-                                        <input type="text" id="new-user-phone" class="form-input-text" placeholder="(99) 99984-4666">
-                                    </div>
-                                </div>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                    <div class="form-group">
-                                        <label style="font-size: 0.75rem; font-weight: 600; display: block; margin-bottom: 3px;">CPF</label>
-                                        <input type="text" id="new-user-cpf" class="form-input-text" placeholder="000.000.000-00">
-                                    </div>
-                                    <div class="form-group">
-                                        <label style="font-size: 0.75rem; font-weight: 600; display: block; margin-bottom: 3px;">INEP</label>
-                                        <input type="text" id="new-user-inep" class="form-input-text" placeholder="21128723">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label style="font-size: 0.75rem; font-weight: 600; display: block; margin-bottom: 3px;">Nome da Mãe (Filiação)</label>
-                                    <input type="text" id="new-user-mother" class="form-input-text" placeholder="Ex: Elinalva Feitosa de Sousa">
-                                </div>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                    <div class="form-group">
-                                        <label style="font-size: 0.75rem; font-weight: 600; display: block; margin-bottom: 3px;">Unidade Escolar</label>
-                                        <select id="new-user-school" class="form-select">
-                                            <!-- Preenchido via JS -->
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label style="font-size: 0.75rem; font-weight: 600; display: block; margin-bottom: 3px;">Turma / Cargo</label>
-                                        <input type="text" id="new-user-grade" class="form-input-text" placeholder="Ex: 5º Ano A">
-                                    </div>
-                                </div>
-                                <div class="modal-footer flex-end" style="border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 10px; gap: 8px;">
-                                    <button type="button" class="btn btn-outline" id="btn-cancel-create-user">Cancelar</button>
-                                    <button type="submit" class="btn btn-primary">Cadastrar Usuário</button>
-                                </div>
-                            </form>
+                    <!-- Create User Modal (Dados Básicos + Gerador de Acesso Seguro) -->
+    <div id="create-user-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 580px; width: 92%;">
+            <div class="modal-header flex-between" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px;">
+                <div>
+                    <h3 style="margin:0; font-size:1.25rem;">Cadastrar Novo Usuário & Gerar Acesso</h3>
+                    <p class="text-sm text-muted" style="margin:2px 0 0 0;">Gestão de Acessos Institucionais • SEMED Gonçalves Dias</p>
+                </div>
+                <button class="btn btn-icon" id="close-create-user-modal-btn" onclick="closeModal('create-user-modal'); return false;"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body" style="padding-top: 16px;">
+                <form id="create-user-form" onsubmit="handleSaveNewUser(event)" style="display:flex; flex-direction:column; gap:12px;">
+                    <div class="form-group">
+                        <label for="new-user-name" style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Nome Completo *</label>
+                        <input type="text" id="new-user-name" class="form-input-text" required placeholder="Ex: Profa. Maria Helena Ribeiro">
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="new-user-cpf" style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">CPF / Matrícula *</label>
+                            <input type="text" id="new-user-cpf" class="form-input-text" required placeholder="000.000.000-00">
+                        </div>
+                        <div class="form-group">
+                            <label for="new-user-phone" style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Telefone / WhatsApp</label>
+                            <input type="text" id="new-user-phone" class="form-input-text" placeholder="(99) 98888-7777">
                         </div>
                     </div>
 
-                    <!-- Zona de Perigo -->
-                    <div class="card" style="max-width: 700px; margin: 40px auto; padding: 24px; border-top: 4px solid var(--red-light);">
-                        <h4 style="color:var(--text-primary); margin-bottom:8px; display:flex; align-items:center; gap:8px; font-size:1.05rem; font-weight:700;">
-                            <i data-lucide="shield-alert" style="color:var(--red-light); width:20px; height:20px;"></i>
-                            Área de Manutenção do Banco de Dados
-                        </h4>
-                        <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:16px; line-height:1.45;">
-                            Opções críticas restritas a gestores de TI da SEMED Gonçalves Dias.
-                        </p>
-                        <div style="background-color: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: var(--radius-md); padding: 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-                            <div>
-                                <strong style="color:var(--red-light); font-size:0.85rem; display:block;">Zerar Banco de Dados</strong>
-                                <span style="font-size:0.75rem; color:var(--text-secondary);">Restaura as 9 escolas oficiais e base inicial padrão.</span>
-                            </div>
-                            <button class="btn" id="btn-reset-db" title="Zerar Banco de Dados" style="background-color: var(--red-light); color: white; border: none; padding: 8px 14px; font-weight: 700; font-size:0.78rem; cursor: pointer; display: flex; align-items: center; gap: 6px;">
-                                <i data-lucide="trash-2" style="width:14px; height:14px;"></i> Zerar Dados
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="new-user-role" style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Perfil / Cargo *</label>
+                            <select id="new-user-role" class="form-select" required onchange="handleUserRoleChange(this.value)">
+                                <option value="Professor(a)">Professor(a) (Acesso às Turmas)</option>
+                                <option value="Diretor(a)">Diretor(a) (Gestão da Escola)</option>
+                                <option value="Coordenador(a)">Coordenador(a) Pedagógico</option>
+                                <option value="Gestor SEMED">Gestor da Rede (SEMED)</option>
+                                <option value="Master Admin">Administrador Geral</option>
+                                <option value="Aluno(a)">Aluno(a) / Responsável</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="group-user-school">
+                            <label for="new-user-school" style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Escola Vinculada *</label>
+                            <select id="new-user-school" class="form-select">
+                                <option value="UI JOSE CORREA LIMA">UI JOSE CORREA LIMA</option>
+                                <option value="UI EMILIO MURAD">UI EMILIO MURAD</option>
+                                <option value="UE VEREADOR LEONARDO FERREIRA LIMA">UE VEREADOR LEONARDO FERREIRA LIMA</option>
+                                <option value="U I BASILIO ALVES">U I BASILIO ALVES</option>
+                                <option value="UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ">UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ</option>
+                                <option value="UE RAIMUNDO DOS REIS DA SILVA">UE RAIMUNDO DOS REIS DA SILVA</option>
+                                <option value="UNIDADE INTEGRADA JOSE GONCALVES DIAS">UNIDADE INTEGRADA JOSE GONCALVES DIAS</option>
+                                <option value="UNIDADE ESCOLAR ANISIO GOMES">UNIDADE ESCOLAR ANISIO GOMES</option>
+                                <option value="UE ANITA FURTADO">UE ANITA FURTADO</option>
+                                <option value="Todas as Escolas (SEMED)">Todas as Escolas (SEMED)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Bloco de Segurança: Credenciais Oficiais Geradas -->
+                    <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: var(--radius-md); padding: 14px; margin-top: 4px;">
+                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+                            <span style="font-size:0.78rem; font-weight:800; color:#6366f1; text-transform:uppercase; display:flex; align-items:center; gap:6px;">
+                                🔒 Acesso Gerado pelo Sistema (Segurança Ativa)
+                            </span>
+                            <button type="button" onclick="generateAutoCredentials()" style="background:#6366f1; color:#fff; border:none; border-radius:4px; padding:3px 8px; font-size:0.72rem; font-weight:700; cursor:pointer;">
+                                ⚡ Gerar Automático
                             </button>
                         </div>
-                    </div>
-                </section>
-            </div>
-        </main>
-    </div>
-
-    <!-- Premium Student Detail Modal with Progression History -->
-    <div id="student-modal" class="modal-overlay hidden">
-        <div class="modal-content" style="max-width: 820px; width: 94%; max-height: 90vh; overflow-y: auto;">
-            <div class="modal-header flex-between" style="border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
-                <div style="display: flex; align-items: center; gap: 14px;">
-                    <div id="modal-student-avatar-circle" style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--purple), var(--blue)); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem;">
-                        A
-                    </div>
-                    <div>
-                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                            <h3 id="modal-student-name" style="margin: 0; font-size: 1.2rem; font-weight: 700; color: var(--text-primary);">Nome do Aluno</h3>
-                            <span class="badge badge-info" id="modal-student-matricula">Matrícula: 12345</span>
-                            <span class="badge" id="modal-student-proficiency-badge" style="background: rgba(16, 185, 129, 0.15); color: var(--green-light); border: 1px solid rgba(16, 185, 129, 0.3);">Adequado</span>
-                        </div>
-                        <p class="text-sm text-muted" id="modal-student-header-meta" style="margin: 3px 0 0 0;">5º ANO "A" • UI JOSE CORREA LIMA • Matutino</p>
-                    </div>
-                </div>
-                <button class="btn btn-icon" id="close-student-modal-btn" style="cursor: pointer;"><i data-lucide="x"></i></button>
-            </div>
-
-            <!-- Modal Subtab Navigation -->
-            <div style="display: flex; gap: 10px; border-bottom: 1px solid var(--border-color); padding: 12px 0 0 0; margin-bottom: 16px;">
-                <button class="btn btn-sm" id="btn-tab-student-cadastral" style="border: none; background: transparent; color: var(--purple-light); border-bottom: 2px solid var(--purple); padding-bottom: 8px; font-weight: 700; border-radius: 0; cursor: pointer; display: flex; align-items: center; gap: 6px;">
-                    <i data-lucide="user-check" style="width: 15px; height: 15px;"></i>
-                    <span>Ficha Cadastral</span>
-                </button>
-                <button class="btn btn-sm" id="btn-tab-student-progressao" style="border: none; background: transparent; color: var(--text-secondary); padding-bottom: 8px; font-weight: 600; border-radius: 0; cursor: pointer; display: flex; align-items: center; gap: 6px;">
-                    <i data-lucide="trending-up" style="width: 15px; height: 15px;"></i>
-                    <span>Histórico de Progressão (Simulados)</span>
-                </button>
-            </div>
-
-            <div class="modal-body" style="padding-top: 4px;">
-                <!-- TAB 1: FICHA CADASTRAL LIMPA & PREMIUM -->
-                <div id="panel-student-cadastral">
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px;">
-                        <!-- Card 1: Dados Pessoais -->
-                        <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
-                            <h5 style="margin: 0 0 10px 0; font-size: 0.85rem; font-weight: 700; color: var(--purple-light); text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px;">
-                                <i data-lucide="id-card" style="width: 14px; height: 14px;"></i> Identificação Pessoal
-                            </h5>
-                            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.82rem;">
-                                <div><span style="color: var(--text-muted);">CPF:</span> <strong id="modal-student-cpf">-</strong></div>
-                                <div><span style="color: var(--text-muted);">Nascimento:</span> <strong id="modal-student-nascimento">-</strong></div>
-                                <div><span style="color: var(--text-muted);">Sexo:</span> <strong id="modal-student-sexo">-</strong></div>
-                                <div><span style="color: var(--text-muted);">Cor/Raça:</span> <strong id="modal-student-cor">-</strong></div>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="new-user-email" style="font-size:0.75rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:2px;">E-mail de Login *</label>
+                                <input type="email" id="new-user-email" class="form-input-text" required placeholder="usuario@goncalvesdias.ma.gov.br" style="font-size:0.82rem;">
+                            </div>
+                            <div class="form-group">
+                                <label for="new-user-password" style="font-size:0.75rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:2px;">Senha de Acesso *</label>
+                                <input type="text" id="new-user-password" class="form-input-text" required value="Gondias@2026" style="font-size:0.82rem; font-family:var(--font-mono);">
                             </div>
                         </div>
+                        <p style="margin:6px 0 0 0; font-size:0.7rem; color:var(--text-muted);">
+                            O sistema aceitará autenticações exclusivamente correspondentes a este e-mail e senha cadastrados.
+                        </p>
+                    </div>
+
+                    <div class="modal-footer flex-end" style="gap: 8px; margin-top: 14px; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                        <button type="button" class="btn btn-outline" onclick="closeModal('create-user-modal')">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" style="font-weight:700;">Salvar e Liberar Acesso</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
                         <!-- Card 2: Vínculo Escolar -->
                         <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
@@ -5318,7 +5275,7 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=885af37d"></script>
+    <script src="app.js?v=62b67db5"></script>
 
     <!-- Modal Vincular Professor à Turma -->
     <div id="modal-assign-teacher" class="modal-overlay hidden">

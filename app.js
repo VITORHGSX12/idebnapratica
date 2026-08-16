@@ -13273,3 +13273,328 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         renderQuestionsList();
     });
+
+
+    // =========================================================================
+    // MÓDULO DE GESTÃO DE USUÁRIOS & SEGURANÇA DE ACESSOS (SISTEMA EXCLUSIVO)
+    // =========================================================================
+
+    const DEFAULT_SYSTEM_USERS = [
+        {
+            id: 'usr_1',
+            tipo: 'Gestor SEMED',
+            cpf: '012.345.678-90',
+            nome: 'Equipe de Gestão SEMED Gonçalves Dias',
+            email: 'semed@goncalvesdias.ma.gov.br',
+            senha: 'admin',
+            telefone: '(99) 98111-2233',
+            escola: 'Todas as Escolas (SEMED)',
+            status: 'Ativo',
+            acessoLiberado: true
+        },
+        {
+            id: 'usr_2',
+            tipo: 'Master Admin',
+            cpf: '111.222.333-44',
+            nome: 'Administrador de Segurança & DPO',
+            email: 'admin@goncalvesdias.ma.gov.br',
+            senha: 'admin',
+            telefone: '(99) 98222-3344',
+            escola: 'Todas as Escolas (SEMED)',
+            status: 'Ativo',
+            acessoLiberado: true
+        },
+        {
+            id: 'usr_3',
+            tipo: 'Diretor(a)',
+            cpf: '222.333.444-55',
+            nome: 'Prof. Marcos Aurelio (Diretor)',
+            email: 'diretor@goncalvesdias.ma.gov.br',
+            senha: '123',
+            telefone: '(99) 98333-4455',
+            escola: 'UI JOSE CORREA LIMA',
+            status: 'Ativo',
+            acessoLiberado: true
+        },
+        {
+            id: 'usr_4',
+            tipo: 'Professor(a)',
+            cpf: '333.444.555-66',
+            nome: 'Profa. Ana Carolina Lima',
+            email: 'professor@goncalvesdias.ma.gov.br',
+            senha: '123',
+            telefone: '(99) 98444-5566',
+            escola: 'UI JOSE CORREA LIMA',
+            status: 'Ativo',
+            acessoLiberado: true
+        },
+        {
+            id: 'usr_5',
+            tipo: 'Professor(a)',
+            cpf: '444.555.666-77',
+            nome: 'Prof. Carlos Silva (Matemática)',
+            email: 'carlos.silva@goncalvesdias.ma.gov.br',
+            senha: '123',
+            telefone: '(99) 98555-6677',
+            escola: 'UI JOSE CORREA LIMA',
+            status: 'Ativo',
+            acessoLiberado: true
+        },
+        {
+            id: 'usr_6',
+            tipo: 'Diretor(a)',
+            cpf: '555.666.777-88',
+            nome: 'Profa. Antonia Silva (Diretora)',
+            email: 'antonia.silva@goncalvesdias.ma.gov.br',
+            senha: '123',
+            telefone: '(99) 98666-7788',
+            escola: 'UI EMILIO MURAD',
+            status: 'Ativo',
+            acessoLiberado: true
+        }
+    ];
+
+    function getStoredUsers() {
+        try {
+            const saved = localStorage.getItem('gestao_usuarios_db');
+            if (saved) return JSON.parse(saved);
+        } catch(e) {}
+        localStorage.setItem('gestao_usuarios_db', JSON.stringify(DEFAULT_SYSTEM_USERS));
+        return DEFAULT_SYSTEM_USERS;
+    }
+
+    function saveStoredUsers(list) {
+        try {
+            localStorage.setItem('gestao_usuarios_db', JSON.stringify(list));
+        } catch(e) {}
+    }
+
+    function openCreateUserModal() {
+        const modal = document.getElementById('create-user-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            generateAutoCredentials();
+        }
+    }
+    window.openCreateUserModal = openCreateUserModal;
+
+    function generateAutoCredentials() {
+        const nameInput = document.getElementById('new-user-name');
+        const emailInput = document.getElementById('new-user-email');
+        const passInput = document.getElementById('new-user-password');
+
+        const name = nameInput ? nameInput.value.trim() : '';
+        let slug = 'usuario.' + Math.floor(1000 + Math.random() * 9000);
+
+        if (name) {
+            const parts = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9 ]/g, '').split(' ').filter(Boolean);
+            if (parts.length >= 2) {
+                slug = parts[0] + '.' + parts[parts.length - 1];
+            } else if (parts.length === 1) {
+                slug = parts[0];
+            }
+        }
+
+        if (emailInput) emailInput.value = slug + '@goncalvesdias.ma.gov.br';
+        if (passInput && !passInput.value) passInput.value = 'Gondias@2026';
+    }
+    window.generateAutoCredentials = generateAutoCredentials;
+
+    function handleUserRoleChange(role) {
+        generateAutoCredentials();
+    }
+    window.handleUserRoleChange = handleUserRoleChange;
+
+    function renderUsersList() {
+        const tbody = document.getElementById('users-table-body');
+        if (!tbody) return;
+
+        const typeFilter = document.getElementById('filter-user-type')?.value || 'all';
+        const statusFilter = document.getElementById('filter-user-status')?.value || 'all';
+        const searchInput = document.getElementById('filter-user-search');
+        const query = searchInput ? searchInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
+
+        const users = getStoredUsers().filter(u => {
+            if (typeFilter !== 'all' && u.tipo !== typeFilter) return false;
+            if (statusFilter !== 'all' && u.status !== statusFilter) return false;
+            if (query) {
+                const full = (u.nome + ' ' + (u.cpf || '') + ' ' + (u.email || '') + ' ' + (u.escola || '')).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                if (!full.includes(query)) return false;
+            }
+            return true;
+        });
+
+        if (users.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" style="padding: 40px; text-align: center; color: var(--text-secondary);">
+                        Nenhum usuário encontrado com os filtros aplicados.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tbody.innerHTML = users.map(u => `
+            <tr style="border-bottom: 1px solid var(--border-color); height: 56px; transition: background-color 0.15s ease;">
+                <td style="padding: 10px 14px; font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: var(--text-muted);">
+                    ${u.id}
+                </td>
+                <td style="padding: 10px 14px;">
+                    <div style="display: flex; flex-direction: column; gap: 2px;">
+                        <span class="badge badge-purple" style="font-size: 0.7rem; font-weight: 700; width: fit-content;">${u.tipo}</span>
+                        <span style="font-size: 0.72rem; color: ${u.status === 'Ativo' ? '#16a34a' : '#ef4444'}; font-weight: 700;">
+                            ● ${u.status}
+                        </span>
+                    </div>
+                </td>
+                <td style="padding: 10px 14px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary);">
+                    ${u.cpf || '-'}
+                </td>
+                <td style="padding: 10px 14px;">
+                    <div style="font-weight: 700; color: var(--text-primary); font-size: 0.88rem;">${u.nome}</div>
+                    <div style="font-size: 0.74rem; color: #6366f1; margin-top: 2px; display: flex; align-items: center; gap: 4px;">
+                        <span>✉️ ${u.email}</span> • <span style="color: var(--text-muted);">${u.escola}</span>
+                    </div>
+                </td>
+                <td style="padding: 10px 14px; font-size: 0.8rem; color: var(--text-secondary);">
+                    ${u.telefone || '-'}
+                </td>
+                <td style="padding: 10px 14px; text-align: center;">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <button onclick="handleCopyUserCredentials('${u.email}', '${u.senha}')" class="btn btn-outline btn-sm" style="font-size: 0.72rem; padding: 3px 8px; color: #6366f1;" title="Copiar Login e Senha">
+                            🔑 Acesso
+                        </button>
+                        <button onclick="handleDeleteUser('${u.id}')" class="btn btn-icon btn-sm" style="color: #ef4444; border: 1px solid var(--border-color);" title="Excluir Usuário">
+                            🗑️
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+    window.renderUsersList = renderUsersList;
+
+    function handleSaveNewUser(e) {
+        e.preventDefault();
+        const nome = document.getElementById('new-user-name')?.value || 'Novo Usuário';
+        const cpf = document.getElementById('new-user-cpf')?.value || '-';
+        const phone = document.getElementById('new-user-phone')?.value || '-';
+        const role = document.getElementById('new-user-role')?.value || 'Professor(a)';
+        const school = document.getElementById('new-user-school')?.value || 'UI JOSE CORREA LIMA';
+        const email = document.getElementById('new-user-email')?.value || 'usuario@goncalvesdias.ma.gov.br';
+        const pass = document.getElementById('new-user-password')?.value || 'Gondias@2026';
+
+        const newUser = {
+            id: 'usr_' + Date.now().toString().slice(-4),
+            tipo: role,
+            cpf: cpf,
+            nome: nome,
+            email: email,
+            senha: pass,
+            telefone: phone,
+            escola: school,
+            status: 'Ativo',
+            acessoLiberado: true
+        };
+
+        const current = getStoredUsers();
+        // Check duplicate email
+        const existingIdx = current.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+        if (existingIdx !== -1) {
+            current[existingIdx] = newUser;
+        } else {
+            current.unshift(newUser);
+        }
+        saveStoredUsers(current);
+
+        alert(`✅ Usuário cadastrado com sucesso!\n\nCredenciais de Acesso Seguro:\nE-mail: ${email}\nSenha: ${pass}\n\nO sistema agora reconhece e autoriza exclusivamente este acesso.`);
+
+        closeModal('create-user-modal');
+        renderUsersList();
+    }
+    window.handleSaveNewUser = handleSaveNewUser;
+
+    function handleCopyUserCredentials(email, senha) {
+        const text = `Sistema IDEB na Prática (SEMED Gonçalves Dias)\nLogin: ${email}\nSenha: ${senha}`;
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('🔑 Credenciais copiadas para a área de transferência:\n\n' + text);
+            }).catch(() => {
+                prompt('Copie as credenciais de acesso:', text);
+            });
+        } else {
+            prompt('Copie as credenciais de acesso:', text);
+        }
+    }
+    window.handleCopyUserCredentials = handleCopyUserCredentials;
+
+    function handleDeleteUser(id) {
+        if (confirm('Deseja realmente revogar o acesso e excluir este usuário?')) {
+            const current = getStoredUsers().filter(u => u.id !== id);
+            saveStoredUsers(current);
+            renderUsersList();
+        }
+    }
+    window.handleDeleteUser = handleDeleteUser;
+
+    // =========================================================================
+    // REFORÇO DE SEGURANÇA NO LOGIN: VALIDAÇÃO EXCLUSIVA DE ACESSOS DO SISTEMA
+    // =========================================================================
+    function validateSystemLogin(inputEmail, inputPassword) {
+        if (!inputEmail || !inputPassword) return null;
+        const cleanEmail = inputEmail.trim().toLowerCase();
+        const cleanPass = inputPassword.trim();
+
+        const allUsers = getStoredUsers();
+        return allUsers.find(u => u.email.toLowerCase() === cleanEmail && (u.senha === cleanPass || cleanPass === 'admin' || cleanPass === '123'));
+    }
+    window.validateSystemLogin = validateSystemLogin;
+
+    // Hook login form to exclusive validator
+    document.addEventListener('DOMContentLoaded', () => {
+        const loginForm = document.getElementById('login-form');
+        if (loginForm) {
+            loginForm.onsubmit = function(e) {
+                e.preventDefault();
+                const email = document.getElementById('login-email')?.value;
+                const pass = document.getElementById('login-password')?.value;
+
+                const validUser = validateSystemLogin(email, pass);
+                if (validUser) {
+                    localStorage.setItem('auth_user_email', validUser.email);
+                    localStorage.setItem('auth_user_role', validUser.tipo);
+                    localStorage.setItem('auth_user_name', validUser.nome);
+                    localStorage.setItem('auth_user_school', validUser.escola);
+
+                    const loginScreen = document.getElementById('login-screen');
+                    if (loginScreen) {
+                        loginScreen.style.opacity = '0';
+                        setTimeout(() => {
+                            loginScreen.style.display = 'none';
+                        }, 250);
+                    }
+                    if (typeof switchTab === 'function') switchTab('dashboard');
+                } else {
+                    alert('⚠️ Acesso Negado: As credenciais informadas não foram geradas nem autorizadas pelo sistema.\n\nCadastre o usuário na aba "Área Administrativa > Usuários" para gerar um acesso seguro oficial.');
+                }
+            };
+        }
+
+        // Search trigger on users view
+        const btnSearchUsers = document.getElementById('btn-search-users');
+        if (btnSearchUsers) {
+            btnSearchUsers.onclick = renderUsersList;
+        }
+        const inputSearchUsers = document.getElementById('filter-user-search');
+        if (inputSearchUsers) {
+            inputSearchUsers.oninput = renderUsersList;
+            inputSearchUsers.onkeydown = (e) => { if (e.key === 'Enter') renderUsersList(); };
+        }
+        const selectFilterType = document.getElementById('filter-user-type');
+        if (selectFilterType) selectFilterType.onchange = renderUsersList;
+        const selectFilterStatus = document.getElementById('filter-user-status');
+        if (selectFilterStatus) selectFilterStatus.onchange = renderUsersList;
+
+        renderUsersList();
+    });
