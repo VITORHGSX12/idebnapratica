@@ -3817,7 +3817,7 @@
                     </div>
 
                     <!-- ==================== VISTA 2: PERFIL / FICHA COMPLETA DO USUÁRIO (IMAGEM 2) ==================== -->
-                    <div id="user-profile-detail-view" class="hidden">
+                    <div id="user-profile-detail-view" class="hidden" style="margin-top: 20px;">
                         
                         <!-- Top Navigation Bar Estilo Imagem 2 -->
                         <div class="flex-between margin-bottom-md" style="flex-wrap: wrap; gap: 10px; align-items: center;">
@@ -4111,93 +4111,79 @@
 
                     <!-- Modal Cadastrar Usuário Global -->
                     <!-- Create User Modal (Dados Básicos + Gerador de Acesso Seguro) -->
+    <!-- Modal de Cadastro Simples e Limpo de Usuário -->
     <div id="create-user-modal" class="modal-overlay hidden">
-        <div class="modal-content" style="max-width: 580px; width: 92%;">
+        <div class="modal-content" style="max-width: 520px; width: 92%; border-radius: var(--radius-lg); background: var(--bg-secondary); border: 1px solid var(--border-color);">
             <div class="modal-header flex-between" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px;">
                 <div>
-                    <h3 style="margin:0; font-size:1.25rem;">Cadastrar Novo Usuário & Gerar Acesso</h3>
-                    <p class="text-sm text-muted" style="margin:2px 0 0 0;">Gestão de Acessos Institucionais • SEMED Gonçalves Dias</p>
+                    <h3 style="margin:0; font-size:1.2rem; font-weight:800; color:var(--text-primary);">Cadastrar Novo Usuário</h3>
+                    <p class="text-sm text-muted" style="margin:2px 0 0 0;">Preencha os dados básicos do usuário para liberar o acesso ao sistema.</p>
                 </div>
-                <button class="btn btn-icon" id="close-create-user-modal-btn" onclick="closeModal('create-user-modal'); return false;"><i data-lucide="x"></i></button>
+                <button class="btn btn-icon" onclick="closeModal('create-user-modal'); return false;"><i data-lucide="x"></i></button>
             </div>
-            <div class="modal-body" style="padding-top: 16px;">
-                <form id="create-user-form" onsubmit="handleSaveNewUser(event)" style="display:flex; flex-direction:column; gap:12px;">
+            
+            <form id="create-user-form" onsubmit="handleSaveNewUser(event)" style="padding-top: 16px; display:flex; flex-direction:column; gap:14px;">
+                <div class="form-group">
+                    <label for="new-user-name" style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Nome Completo *</label>
+                    <input type="text" id="new-user-name" class="form-input-text" required placeholder="Ex: Profa. Maria Helena Ribeiro" style="width:100%; height:38px;">
+                </div>
+
+                <div class="grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                     <div class="form-group">
-                        <label for="new-user-name" style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Nome Completo *</label>
-                        <input type="text" id="new-user-name" class="form-input-text" required placeholder="Ex: Profa. Maria Helena Ribeiro">
+                        <label for="new-user-cpf" style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">CPF / Matrícula *</label>
+                        <input type="text" id="new-user-cpf" class="form-input-text" required placeholder="000.000.000-00" style="width:100%; height:38px;">
                     </div>
+                    <div class="form-group">
+                        <label for="new-user-phone" style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Telefone / WhatsApp</label>
+                        <input type="text" id="new-user-phone" class="form-input-text" placeholder="(99) 98888-7777" style="width:100%; height:38px;">
+                    </div>
+                </div>
 
-                    <div class="grid-2">
-                        <div class="form-group">
-                            <label for="new-user-cpf" style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">CPF / Matrícula *</label>
-                            <input type="text" id="new-user-cpf" class="form-input-text" required placeholder="000.000.000-00">
-                        </div>
-                        <div class="form-group">
-                            <label for="new-user-phone" style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Telefone / WhatsApp</label>
-                            <input type="text" id="new-user-phone" class="form-input-text" placeholder="(99) 98888-7777">
-                        </div>
+                <div class="grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div class="form-group">
+                        <label for="new-user-role" style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Perfil / Cargo *</label>
+                        <select id="new-user-role" class="form-select" required onchange="generateAutoCredentials();" style="width:100%; height:38px; background:var(--bg-tertiary);">
+                            <option value="Professor(a)">Professor(a)</option>
+                            <option value="Diretor(a)">Diretor(a)</option>
+                            <option value="Coordenador(a)">Coordenador(a)</option>
+                            <option value="Gestor SEMED">Gestor SEMED</option>
+                            <option value="Master Admin">Administrador</option>
+                            <option value="Aluno(a)">Aluno(a)</option>
+                        </select>
                     </div>
+                    <div class="form-group">
+                        <label for="new-user-school" style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Escola Vinculada *</label>
+                        <select id="new-user-school" class="form-select" style="width:100%; height:38px; background:var(--bg-tertiary);">
+                            <option value="UI JOSE CORREA LIMA">UI JOSE CORREA LIMA</option>
+                            <option value="UI EMILIO MURAD">UI EMILIO MURAD</option>
+                            <option value="UE VEREADOR LEONARDO FERREIRA LIMA">UE VEREADOR LEONARDO FERREIRA LIMA</option>
+                            <option value="U I BASILIO ALVES">U I BASILIO ALVES</option>
+                            <option value="UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ">UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ</option>
+                            <option value="UE RAIMUNDO DOS REIS DA SILVA">UE RAIMUNDO DOS REIS DA SILVA</option>
+                            <option value="UNIDADE INTEGRADA JOSE GONCALVES DIAS">UNIDADE INTEGRADA JOSE GONCALVES DIAS</option>
+                            <option value="UNIDADE ESCOLAR ANISIO GOMES">UNIDADE ESCOLAR ANISIO GOMES</option>
+                            <option value="UE ANITA FURTADO">UE ANITA FURTADO</option>
+                            <option value="Todas as Escolas (SEMED)">Todas as Escolas (SEMED)</option>
+                        </select>
+                    </div>
+                </div>
 
-                    <div class="grid-2">
-                        <div class="form-group">
-                            <label for="new-user-role" style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Perfil / Cargo *</label>
-                            <select id="new-user-role" class="form-select" required onchange="handleUserRoleChange(this.value)">
-                                <option value="Professor(a)">Professor(a) (Acesso às Turmas)</option>
-                                <option value="Diretor(a)">Diretor(a) (Gestão da Escola)</option>
-                                <option value="Coordenador(a)">Coordenador(a) Pedagógico</option>
-                                <option value="Gestor SEMED">Gestor da Rede (SEMED)</option>
-                                <option value="Master Admin">Administrador Geral</option>
-                                <option value="Aluno(a)">Aluno(a) / Responsável</option>
-                            </select>
-                        </div>
-                        <div class="form-group" id="group-user-school">
-                            <label for="new-user-school" style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Escola Vinculada *</label>
-                            <select id="new-user-school" class="form-select">
-                                <option value="UI JOSE CORREA LIMA">UI JOSE CORREA LIMA</option>
-                                <option value="UI EMILIO MURAD">UI EMILIO MURAD</option>
-                                <option value="UE VEREADOR LEONARDO FERREIRA LIMA">UE VEREADOR LEONARDO FERREIRA LIMA</option>
-                                <option value="U I BASILIO ALVES">U I BASILIO ALVES</option>
-                                <option value="UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ">UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ</option>
-                                <option value="UE RAIMUNDO DOS REIS DA SILVA">UE RAIMUNDO DOS REIS DA SILVA</option>
-                                <option value="UNIDADE INTEGRADA JOSE GONCALVES DIAS">UNIDADE INTEGRADA JOSE GONCALVES DIAS</option>
-                                <option value="UNIDADE ESCOLAR ANISIO GOMES">UNIDADE ESCOLAR ANISIO GOMES</option>
-                                <option value="UE ANITA FURTADO">UE ANITA FURTADO</option>
-                                <option value="Todas as Escolas (SEMED)">Todas as Escolas (SEMED)</option>
-                            </select>
-                        </div>
+                <div class="grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; background:var(--bg-tertiary); padding:12px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+                    <div class="form-group">
+                        <label for="new-user-email" style="font-size:0.75rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Login (E-mail)</label>
+                        <input type="email" id="new-user-email" class="form-input-text" required placeholder="email@goncalvesdias.ma.gov.br" style="width:100%; height:36px; font-size:0.8rem;">
                     </div>
+                    <div class="form-group">
+                        <label for="new-user-password" style="font-size:0.75rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Senha de Acesso</label>
+                        <input type="text" id="new-user-password" class="form-input-text" required value="Gondias@2026" style="width:100%; height:36px; font-size:0.8rem; font-family:var(--font-mono);">
+                    </div>
+                </div>
 
-                    <!-- Bloco de Segurança: Credenciais Oficiais Geradas -->
-                    <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: var(--radius-md); padding: 14px; margin-top: 4px;">
-                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
-                            <span style="font-size:0.78rem; font-weight:800; color:#6366f1; text-transform:uppercase; display:flex; align-items:center; gap:6px;">
-                                🔒 Acesso Gerado pelo Sistema (Segurança Ativa)
-                            </span>
-                            <button type="button" onclick="generateAutoCredentials()" style="background:#6366f1; color:#fff; border:none; border-radius:4px; padding:3px 8px; font-size:0.72rem; font-weight:700; cursor:pointer;">
-                                ⚡ Gerar Automático
-                            </button>
-                        </div>
-                        <div class="grid-2">
-                            <div class="form-group">
-                                <label for="new-user-email" style="font-size:0.75rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:2px;">E-mail de Login *</label>
-                                <input type="email" id="new-user-email" class="form-input-text" required placeholder="usuario@goncalvesdias.ma.gov.br" style="font-size:0.82rem;">
-                            </div>
-                            <div class="form-group">
-                                <label for="new-user-password" style="font-size:0.75rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:2px;">Senha de Acesso *</label>
-                                <input type="text" id="new-user-password" class="form-input-text" required value="Gondias@2026" style="font-size:0.82rem; font-family:var(--font-mono);">
-                            </div>
-                        </div>
-                        <p style="margin:6px 0 0 0; font-size:0.7rem; color:var(--text-muted);">
-                            O sistema aceitará autenticações exclusivamente correspondentes a este e-mail e senha cadastrados.
-                        </p>
-                    </div>
-
-                    <div class="modal-footer flex-end" style="gap: 8px; margin-top: 14px; border-top: 1px solid var(--border-color); padding-top: 12px;">
-                        <button type="button" class="btn btn-outline" onclick="closeModal('create-user-modal')">Cancelar</button>
-                        <button type="submit" class="btn btn-primary" style="font-weight:700;">Salvar e Liberar Acesso</button>
-                    </div>
-                </form>
-            </div>
+                <div class="modal-footer flex-end" style="gap: 8px; margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('create-user-modal')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" style="font-weight:700;">Cadastrar Usuário</button>
+                </div>
+            </form>
         </div>
     </div>
 
