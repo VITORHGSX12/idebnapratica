@@ -14453,3 +14453,229 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         renderDbStudents();
     });
+
+
+    // =========================================================================
+    // REGRA DE NEGÓCIO DA ABA METAS E PLANOS (PDE): AVALIAÇÕES E ANOS LETIVOS
+    // =========================================================================
+
+    // Lista oficial das 9 escolas da rede municipal
+    const OFFICIAL_NETWORK_SCHOOLS = [
+        "UI JOSE CORREA LIMA",
+        "UI EMILIO MURAD",
+        "UE VEREADOR LEONARDO FERREIRA LIMA",
+        "U I BASILIO ALVES",
+        "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ",
+        "UE RAIMUNDO DOS REIS DA SILVA",
+        "UNIDADE INTEGRADA JOSE GONCALVES DIAS",
+        "UNIDADE ESCOLAR ANISIO GOMES",
+        "UE ANITA FURTADO"
+    ];
+
+    // Mapeamento de avaliações realizadas por Escola + Ano Letivo (possui_avaliacao_realizada)
+    const SCHOOL_ASSESSMENTS_STATE = {
+        // Anos Anteriores (Histórico - Sempre true)
+        '2023': { default: true },
+        '2025': { default: true },
+        // Ano Corrente e Anos Seguintes (Diferenciados por Escola)
+        '2026': {
+            "UI JOSE CORREA LIMA": true,
+            "UI EMILIO MURAD": true,
+            "UE VEREADOR LEONARDO FERREIRA LIMA": true,
+            "U I BASILIO ALVES": true,
+            "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ": true,
+            "UE RAIMUNDO DOS REIS DA SILVA": false, // Aguardando 1ª avaliação
+            "UNIDADE INTEGRADA JOSE GONCALVES DIAS": false, // Aguardando 1ª avaliação
+            "UNIDADE ESCOLAR ANISIO GOMES": true,
+            "UE ANITA FURTADO": false // Aguardando 1ª avaliação
+        },
+        '2027': { default: false } // Ano futuro: todas aguardando 1ª avaliação
+    };
+
+    function checkPossuiAvaliacaoRealizada(schName, selectedYear) {
+        if (selectedYear === '2023' || selectedYear === '2025') return true;
+        const yearState = SCHOOL_ASSESSMENTS_STATE[selectedYear];
+        if (!yearState) return false;
+        if (yearState.hasOwnProperty(schName)) return yearState[schName];
+        return yearState.default !== undefined ? yearState.default : false;
+    }
+    window.checkPossuiAvaliacaoRealizada = checkPossuiAvaliacaoRealizada;
+
+    function handleRegisterFirstAssessment(schName, year) {
+        if (!SCHOOL_ASSESSMENTS_STATE[year]) {
+            SCHOOL_ASSESSMENTS_STATE[year] = {};
+        }
+        SCHOOL_ASSESSMENTS_STATE[year][schName] = true;
+        alert(`✅ 1ª Avaliação Diagnóstica de ${year} registrada com sucesso para ${schName}!\n\nOs dados de desempenho, desvio e metas de PDE para este ciclo foram liberados.`);
+        populateIdebGoalsTable();
+    }
+    window.handleRegisterFirstAssessment = handleRegisterFirstAssessment;
+
+    // TAREFA 1 & TAREFA 2 — Renderização Completa das 9 Escolas e Regras por Ano Letivo
+    function populateIdebGoalsTable() {
+        const tableBody = document.getElementById('ideb-goals-table-body');
+        if (!tableBody) return;
+        tableBody.innerHTML = '';
+
+        const selectedYear = document.getElementById('pde-filter-year')?.value || '2026';
+        const filterStatus = document.getElementById('pde-filter-status')?.value || 'all';
+
+        // TAREFA 1: Carregar rigorosamente todas as 9 escolas ativas da rede
+        const schoolList = OFFICIAL_NETWORK_SCHOOLS;
+
+        // Atualizar badge de total de escolas
+        const countBadge = document.getElementById('pde-count-schools-badge');
+        if (countBadge) countBadge.textContent = `${schoolList.length} Escolas Mapeadas (${selectedYear})`;
+
+        const rowsData = schoolList.map(schName => {
+            const possuiAvaliacao = checkPossuiAvaliacaoRealizada(schName, selectedYear);
+
+            let hash = 0;
+            for (let i = 0; i < schName.length; i++) hash += schName.charCodeAt(i);
+            const baseIdeb = 4.2 + (hash % 10) / 10;
+            const targetIdeb = Number((baseIdeb + 0.6).toFixed(1));
+            const projectedIdeb = Number((baseIdeb + 0.5 + (hash % 5)/10).toFixed(1));
+            const gap = Number((projectedIdeb - targetIdeb).toFixed(1));
+
+            let riskCategory = 'ok';
+            let riskBadge = '<span class="badge badge-success">Meta Atingida 🟢</span>';
+            if (gap < -0.3) {
+                riskCategory = 'risk';
+                riskBadge = '<span class="badge badge-danger">Alto Risco 🔴</span>';
+            } else if (gap < 0) {
+                riskCategory = 'risk';
+                riskBadge = '<span class="badge badge-warning">Médio Risco 🟡</span>';
+            }
+
+            const pdePlan = schoolPdePlansMap[schName] || null;
+
+            return {
+                schName,
+                selectedYear,
+                possuiAvaliacao,
+                baseIdeb,
+                targetIdeb,
+                projectedIdeb,
+                gap,
+                riskCategory,
+                riskBadge,
+                pdePlan
+            };
+        });
+
+        const filtered = rowsData.filter(item => {
+            if (filterStatus === 'risk') return item.riskCategory === 'risk';
+            if (filterStatus === 'ok') return item.riskCategory === 'ok';
+            return true;
+        });
+
+        if (filtered.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" style="padding:30px; text-align:center; color:var(--text-secondary);">
+                        Nenhuma escola encontrada no filtro selecionado para o ano ${selectedYear}.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tableBody.innerHTML = filtered.map(item => {
+            // TAREFA 2.2 — Regra possui_avaliacao_realizada = false
+            if (!item.possuiAvaliacao) {
+                return `
+                    <tr style="border-bottom: 1px solid var(--border-color); background: rgba(245, 158, 11, 0.03); height: 60px;">
+                        <td style="padding: 12px 16px;">
+                            <div style="font-weight: 700; color: var(--text-primary); font-size: 0.9rem;">${item.schName}</div>
+                            <div style="font-size: 0.74rem; color: var(--text-secondary);">Ano Letivo ${item.selectedYear}</div>
+                        </td>
+                        <td colspan="4" style="padding: 12px 16px; text-align: center;">
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                                <span class="badge badge-warning" style="font-size: 0.76rem; padding: 6px 12px;">
+                                    ⏳ Aguardando registro da 1ª Avaliação Diagnóstica do Ano Letivo ${item.selectedYear}
+                                </span>
+                                <button onclick="handleRegisterFirstAssessment('${item.schName}', '${item.selectedYear}')" class="btn btn-outline btn-sm" style="font-size: 0.74rem; font-weight: 700; color: #6366f1; border-color: #6366f1;">
+                                    📝 Lançar 1ª Avaliação
+                                </button>
+                            </div>
+                        </td>
+                        <td style="padding: 12px 16px; text-align: center;">
+                            <span class="text-sm text-muted">-</span>
+                        </td>
+                    </tr>
+                `;
+            }
+
+            // TAREFA 2.2 — Regra possui_avaliacao_realizada = true (Liberado)
+            const planText = item.pdePlan ? `
+                <div style="display:flex; flex-direction:column; gap:2px; text-align:left;">
+                    <span style="font-size:0.75rem; font-weight:700; color:var(--purple-light);">${item.pdePlan.indicator}</span>
+                    <span style="font-size:0.7rem; color:var(--text-secondary);">Resp: ${item.pdePlan.responsible || 'Coordenador'} • Prazo: ${item.pdePlan.deadline || '30/11'}</span>
+                    <span class="badge badge-success" style="font-size:0.65rem; width:fit-content;">${item.pdePlan.status || 'Em Execução'}</span>
+                </div>
+            ` : `
+                <span class="text-sm text-muted">Nenhum plano cadastrado</span>
+            `;
+
+            return `
+                <tr style="border-bottom: 1px solid var(--border-color); height: 60px;">
+                    <td style="padding: 12px 16px;">
+                        <div style="font-weight: 700; color: var(--text-primary); font-size: 0.9rem;">${item.schName}</div>
+                        <div style="font-size: 0.74rem; color: var(--text-secondary);">Ano Letivo ${item.selectedYear} • IDEB Inicial: ${item.baseIdeb}</div>
+                    </td>
+                    <td style="padding: 12px 16px; text-align: center; font-weight: 800; font-size: 0.95rem; color: #6366f1;">
+                        ${item.projectedIdeb} / ${item.targetIdeb}
+                    </td>
+                    <td style="padding: 12px 16px; text-align: center; font-weight: 800; font-size: 0.9rem; color: ${item.gap < 0 ? '#ef4444' : '#10b981'};">
+                        ${item.gap > 0 ? '+' : ''}${item.gap}
+                    </td>
+                    <td style="padding: 12px 16px; text-align: center;">
+                        ${item.riskBadge}
+                    </td>
+                    <td style="padding: 12px 16px; text-align: center;">
+                        ${planText}
+                    </td>
+                    <td style="padding: 12px 16px; text-align: center;">
+                        <button onclick="openCreatePdeModalForSchool('${item.schName}')" class="btn btn-primary btn-sm" style="font-weight: 700; font-size: 0.75rem; background: #6366f1; border-color: #6366f1;">
+                            ${item.pdePlan ? '✏️ Editar PDE' : '📋 Criar PDE'}
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+    window.populateIdebGoalsTable = populateIdebGoalsTable;
+
+    function openCreatePdeModalForSchool(schName) {
+        const modal = document.getElementById('modal-create-pde-manual');
+        const select = document.getElementById('pde-school-select');
+        if (select) select.value = schName;
+        if (modal) modal.classList.remove('hidden');
+    }
+    window.openCreatePdeModalForSchool = openCreatePdeModalForSchool;
+
+    function handleSavePdePlan(e) {
+        e.preventDefault();
+        const schName = document.getElementById('pde-school-select')?.value || 'UI JOSE CORREA LIMA';
+        const indicator = document.getElementById('pde-indicator-select')?.value || 'Fluência Leitora (D1 - D6)';
+        const responsible = document.getElementById('pde-responsible-input')?.value || 'Coordenador Pedagógico';
+        const deadline = document.getElementById('pde-deadline-input')?.value || '2026-11-30';
+        const strategy = document.getElementById('pde-strategy-text')?.value || 'Ação de recomposição da aprendizagem';
+        const status = document.getElementById('pde-status-select')?.value || 'Em Execução';
+
+        schoolPdePlansMap[schName] = {
+            indicator,
+            responsible,
+            deadline,
+            strategy,
+            status
+        };
+
+        alert(`✅ Plano de Ação (PDE) registrado com sucesso para ${schName}!\n\nFoco: ${indicator}\nResponsável: ${responsible}\nPrazo: ${deadline}\nStatus: ${status}`);
+
+        const modal = document.getElementById('modal-create-pde-manual');
+        if (modal) modal.classList.add('hidden');
+
+        populateIdebGoalsTable();
+    }
+    window.handleSavePdePlan = handleSavePdePlan;

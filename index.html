@@ -1452,6 +1452,37 @@
                         </div>
 
                         <div class="card-body">
+
+                            <!-- Toolbar de Filtros do Módulo Metas e Planos -->
+                            <div class="card margin-bottom-md" style="padding: 14px 18px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); margin-bottom: 20px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap;">
+                                    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                                        <div>
+                                            <label style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 2px;">ANO LETIVO</label>
+                                            <select id="pde-filter-year" onchange="populateIdebGoalsTable()" class="form-select" style="height: 36px; font-size: 0.82rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0 10px; font-weight: 700; color: #6366f1;">
+                                                <option value="2026" selected>Ano Letivo 2026 (Corrente)</option>
+                                                <option value="2027">Ano Letivo 2027 (Planejamento)</option>
+                                                <option value="2025">2025 (Histórico Homologado)</option>
+                                                <option value="2023">2023 (Histórico Inicial)</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 2px;">SITUAÇÃO DE RISCO</label>
+                                            <select id="pde-filter-status" onchange="populateIdebGoalsTable()" class="form-select" style="height: 36px; font-size: 0.82rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0 10px;">
+                                                <option value="all">Todas as Escolas da Rede</option>
+                                                <option value="risk">Escolas com Risco (Alto / Médio)</option>
+                                                <option value="ok">Escolas com Meta Atingida 🟢</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div style="font-size: 0.78rem; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;">
+                                        <span class="badge badge-purple" style="font-size: 0.7rem;" id="pde-count-schools-badge">9 Escolas Mapeadas</span>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- IDEB Summary indicators -->
                             <div class="grid-3-lg margin-bottom-lg" style="margin-bottom: 24px;">
                                 <div style="background-color: var(--bg-secondary); border: 1px solid var(--border-color); padding: 18px; border-radius: var(--radius-lg); text-align: center;">
@@ -1511,20 +1542,21 @@
                     </div>
                 
     <!-- Modal de Criação Manual de Plano de Desenvolvimento Escolar (PDE) -->
+    <!-- Modal de Criação / Edição de Plano de Desenvolvimento Escolar (PDE) -->
     <div id="modal-create-pde-manual" class="modal-overlay hidden">
-        <div class="modal-content" style="max-width: 680px; width: 92%;">
+        <div class="modal-content" style="max-width: 680px; width: 92%; border-radius: var(--radius-lg); background: var(--bg-secondary); border: 1px solid var(--border-color);">
             <div class="modal-header flex-between" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
                 <div>
-                    <h3 style="margin:0; font-size:1.2rem;">Criar Plano de Intervenção Pedagógica (PDE)</h3>
-                    <p class="text-sm text-muted" style="margin:2px 0 0 0;">Ano Letivo 2026 • Gestão Pedagógica SEMED</p>
+                    <h3 style="margin:0; font-size:1.2rem; font-weight:800; color:var(--text-primary);">Plano de Intervenção Pedagógica (PDE)</h3>
+                    <p class="text-sm text-muted" style="margin:2px 0 0 0;" id="pde-modal-subtitle">Ações de Melhoria e Estratégia para Elevação do IDEB</p>
                 </div>
-                <button class="btn btn-icon" id="btn-close-pde-modal"><i data-lucide="x"></i></button>
+                <button class="btn btn-icon" onclick="closeModal('modal-create-pde-manual'); return false;"><i data-lucide="x"></i></button>
             </div>
-            <form id="form-create-pde-manual" class="modal-body" style="padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+            <form id="form-create-pde-manual" onsubmit="handleSavePdePlan(event)" style="padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
                 <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 12px;">
                     <div class="form-group">
-                        <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 4px;">Unidade Escolar *</label>
-                        <select id="pde-school-select" class="form-select" required>
+                        <label style="font-size: 0.78rem; font-weight: 700; color:var(--text-secondary); display: block; margin-bottom: 4px;">Unidade Escolar *</label>
+                        <select id="pde-school-select" class="form-select" required style="width:100%; height:38px; background:var(--bg-tertiary);">
                             <option value="UI JOSE CORREA LIMA">UI JOSE CORREA LIMA</option>
                             <option value="UI EMILIO MURAD">UI EMILIO MURAD</option>
                             <option value="UE VEREADOR LEONARDO FERREIRA LIMA">UE VEREADOR LEONARDO FERREIRA LIMA</option>
@@ -1537,39 +1569,44 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 4px;">Etapa / Ano *</label>
-                        <select id="pde-stage-select" class="form-select" required>
-                            <option value="5º Ano">5º Ano (Fundamental Menor)</option>
-                            <option value="2º Ano">2º Ano (Alfabetização)</option>
-                            <option value="9º Ano">9º Ano (Fundamental Maior)</option>
+                        <label style="font-size: 0.78rem; font-weight: 700; color:var(--text-secondary); display: block; margin-bottom: 4px;">Foco / Indicador Crítico *</label>
+                        <select id="pde-indicator-select" class="form-select" style="width:100%; height:38px; background:var(--bg-tertiary);">
+                            <option value="Fluência Leitora (D1 - D6)">Fluência Leitora & Leitura (D1 - D6)</option>
+                            <option value="Cálculo e Resolução (D17 - D20)">Cálculo & Problemas (D17 - D20)</option>
+                            <option value="Frequência e Combate à Evasão">Frequência Escolar & Evasão</option>
+                            <option value="Reforço de Descritores Críticos SAEB">Reforço de Descritores Críticos SAEB</option>
                         </select>
                     </div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                     <div class="form-group">
-                        <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 4px;">Meta Numérica IDEB *</label>
-                        <input type="number" id="pde-target-ideb" class="form-input-text" step="0.1" value="5.6" required>
+                        <label style="font-size: 0.78rem; font-weight: 700; color:var(--text-secondary); display: block; margin-bottom: 4px;">Responsável da Ação *</label>
+                        <input type="text" id="pde-responsible-input" class="form-input-text" required placeholder="Ex: Profa. Coordenadora Maria Helena" style="width:100%; height:38px;">
                     </div>
                     <div class="form-group">
-                        <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 4px;">Responsável / Coordenador *</label>
-                        <input type="text" id="pde-coordinator" class="form-input-text" value="Coordenação Pedagógica SEMED" required>
+                        <label style="font-size: 0.78rem; font-weight: 700; color:var(--text-secondary); display: block; margin-bottom: 4px;">Prazo de Conclusão / Ciclo *</label>
+                        <input type="date" id="pde-deadline-input" class="form-input-text" required style="width:100%; height:38px; background:var(--bg-tertiary);">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 4px;">Descritores Críticos Prioritários *</label>
-                    <input type="text" id="pde-descriptors" class="form-input-text" value="D01, D03, D04 (LP) e D13, D14, D19 (MAT)" required>
+                    <label style="font-size: 0.78rem; font-weight: 700; color:var(--text-secondary); display: block; margin-bottom: 4px;">Estratégia Pedagógica / Ação de Intervenção *</label>
+                    <textarea id="pde-strategy-text" class="form-input-text" rows="3" required placeholder="Descreva a intervenção (ex: Oficina semanal de recomposição em matemática, plantões de leitura e monitoramento quinzenal)..." style="width:100%; font-size:0.82rem; padding:8px 10px;"></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 4px;">Ações Pedagógicas e Metodologia Estruturada *</label>
-                    <textarea id="pde-actions" class="form-input-text" style="height: 80px; font-size: 0.82rem;" required>Oficinas semanais de fluência leitora e recomposição de aprendizagem matemática com material manipulativo.</textarea>
+                    <label style="font-size: 0.78rem; font-weight: 700; color:var(--text-secondary); display: block; margin-bottom: 4px;">Status de Acompanhamento *</label>
+                    <select id="pde-status-select" class="form-select" style="width:100%; height:38px; background:var(--bg-tertiary);">
+                        <option value="Em Execução" selected>🟡 Em Execução</option>
+                        <option value="Em Planejamento">🔵 Em Planejamento</option>
+                        <option value="Concluído com Sucesso">🟢 Concluído com Sucesso</option>
+                    </select>
                 </div>
 
-                <div class="modal-footer flex-end" style="border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 8px; gap: 8px;">
-                    <button type="button" class="btn btn-outline" id="btn-cancel-pde-modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary" id="btn-submit-pde-modal">Salvar e Publicar Plano</button>
+                <div class="modal-footer flex-end" style="gap: 8px; margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modal-create-pde-manual')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" style="font-weight:700;">Salvar Plano de Ação (PDE)</button>
                 </div>
             </form>
         </div>
@@ -5271,7 +5308,7 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=f119139b"></script>
+    <script src="app.js?v=e929d3fb"></script>
 
     <!-- Modal Vincular Professor à Turma -->
     <div id="modal-assign-teacher" class="modal-overlay hidden">
