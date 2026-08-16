@@ -1,5 +1,48 @@
 const initApp = () => {
 
+    // =========================================================================
+    // GLOBAL VARIABLE DECLARATIONS (Must be at top to avoid Temporal Dead Zone)
+    // =========================================================================
+    
+    // Pagination size for students table
+    let alunosPageSize = 25;
+    
+    // Lista oficial das 9 escolas da rede municipal
+    const OFFICIAL_NETWORK_SCHOOLS = [
+        "UI JOSE CORREA LIMA",
+        "UI EMILIO MURAD",
+        "UE VEREADOR LEONARDO FERREIRA LIMA",
+        "U I BASILIO ALVES",
+        "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ",
+        "UE RAIMUNDO DOS REIS DA SILVA",
+        "UNIDADE INTEGRADA JOSE GONCALVES DIAS",
+        "UNIDADE ESCOLAR ANISIO GOMES",
+        "UE ANITA FURTADO"
+    ];
+    
+    // ESTRUTURA OFICIAL DAS 19 UREs DO MARANHÃO & PAINEL DE MUNICÍPIOS
+    const OFFICIAL_19_URES_MA = [
+        { name: "URE Açailândia", id: "acailandia", cities: ["Açailândia", "Cidelândia", "Itinga do Maranhão", "São Francisco do Brejão", "Vila Nova dos Martírios"] },
+        { name: "URE Bacabal", id: "bacabal", cities: ["Altamira do Maranhão", "Lago da Pedra", "Lagoa Grande do Maranhão", "Paulo Ramos", "Marajá do Sena", "Brejo de Areia", "Vitorino Freire", "São Luís Gonzaga do Maranhão", "Bacabal", "Olho d'Água das Cunhãs", "Lago Verde", "Conceição do Lago-Açu"] },
+        { name: "URE Balsas", id: "balsas", cities: ["Alto Parnaíba", "Balsas", "Carolina", "Feira Nova do Maranhão", "Riachão", "Tasso Fragoso", "Fortaleza dos Nogueiras", "Nova Colinas", "São Raimundo das Mangabeiras", "Loreto", "Sambaíba"] },
+        { name: "URE Barra do Corda", id: "barra-do-corda", cities: ["Barra do Corda", "Fernando Falcão", "Jenipapo dos Vieiras", "Itaipava do Grajaú", "Grajaú", "Arame"] },
+        { name: "URE Caxias", id: "caxias", cities: ["Caxias", "Aldeias Altas", "São João do Sóter", "Parnarama", "Matões"] },
+        { name: "URE Chapadinha", id: "chapadinha", cities: ["Anapurus", "Belágua", "Brejo", "Buriti", "Chapadinha", "Mata Roma", "Milagres do Maranhão", "Santa Quitéria do Maranhão", "São Benedito do Rio Preto", "Urbano Santos"] },
+        { name: "URE Codó", id: "codo", cities: ["Codó", "Timbiras", "Coroatá"] },
+        { name: "URE Imperatriz", id: "imperatriz", cities: ["Amarante do Maranhão", "Buritirana", "Davinópolis", "Governador Edison Lobão", "Imperatriz", "João Lisboa", "Lajeado Novo", "Montes Altos", "Ribamar Fiquene", "Senador La Rocque", "Sítio Novo"] },
+        { name: "URE Itapecuru-Mirim", id: "itapecuru", cities: ["Cantanhede", "Itapecuru-Mirim", "Matões do Norte", "Miranda do Norte", "Nina Rodrigues", "Pirapemas", "Presidente Vargas", "Vargem Grande"] },
+        { name: "URE Lago da Pedra", id: "lago-da-pedra", cities: ["Lago da Pedra", "Lagoa Grande do Maranhão", "Lago do Junco", "Lago dos Rodrigues", "Poção de Pedras", "Igarapé Grande"] },
+        { name: "URE Pedreiras", id: "pedreiras", cities: ["Bernardo do Mêdo", "Capinzal do Norte", "Esperantinópolis", "Igarapé Grande", "Lima Campos", "Pedreiras", "Trizidela do Vale", "Poção de Pedras", "Santo Antônio dos Lopes", "São Raimundo do Doca Bezerra", "São Roberto"] },
+        { name: "URE Pinheiro", id: "pinheiro", cities: ["Pedro do Rosário", "Pinheiro", "Presidente Sarney", "Santa Helena", "Turilândia", "Turiaçu", "Central do Maranhão", "Guimarães", "Mirinzal", "Porto Rico do Maranhão", "Serrano do Maranhão", "Bequimão", "Peri Mirim", "Palmeirândia", "Alcântara", "Nova Olinda do Maranhão"] },
+        { name: "URE Presidente Dutra", id: "presidente-dutra", cities: ["Dom Pedro", "Fortuna", "Gonçalves Dias", "Governador Archer", "Governador Eugênio Barros", "Governador Luiz Rocha", "Graça Aranha", "Joselândia", "Presidente Dutra", "São Domingos do Maranhão", "São José dos Basílios", "Senador Alexandre Costa"] },
+        { name: "URE Rosário", id: "rosario", cities: ["Axixá", "Bacabeira", "Cachoeira Grande", "Icatu", "Morros", "Presidente Juscelino", "Rosário", "Santa Rita"] },
+        { name: "URE Santa Inês", id: "santa-ines", cities: ["Bom Jardim", "Monção", "Pindaré-Mirim", "Santa Inês", "Santa Luzia", "São João do Carú", "Tufilândia", "Pio XII", "Bela Vista do Maranhão", "Igarapé do Meio"] },
+        { name: "URE São João dos Patos", id: "sao-joao-dos-patos", cities: ["Barão de Grajaú", "Benedito Leite", "Passagem Franca", "Pastos Bons", "Nova Iorque", "Paraibano", "São Francisco do Maranhão", "São João dos Patos", "Sucupira do Riachão", "Jatobá", "Colinas", "Mirador", "Sucupira do Norte", "São Domingos do Azeitão"] },
+        { name: "URE São Luís", id: "sao-luis", cities: ["Paço do Lumiar", "Raposa", "São José de Ribamar", "São Luís"] },
+        { name: "URE Viana", id: "viana", cities: ["Arari", "Cajari", "Matinha", "Olinda Nova do Maranhão", "Penalva", "São Bento", "São João Batista", "Viana", "Vitória do Mearim", "Cajapió", "Vicente Ferrer"] },
+        { name: "URE Zé Doca", id: "ze-doca", cities: ["Araguanã", "Centro do Guilherme", "Centro Novo do Maranhão", "Maranhãozinho", "Nova Olinda do Maranhão", "Presidente Médici", "Santa Luzia do Paruá", "Governador Nunes Freire", "Junco do Maranhão", "Amapá do Maranhão", "Cândido Mendes", "Godofredo Viana", "Luís Domingues", "Carutapera", "Zé Doca"] }
+    ];
+
     // Auto-login & Session Recovery on Page Reload / F5
     const isLogged = (localStorage.getItem('isLoggedIn') === 'true' || sessionStorage.getItem('isLoggedIn') === 'true');
     var loginScreenEl = document.getElementById('login-screen');
@@ -14459,18 +14502,7 @@ if (document.readyState === 'loading') {
     // REGRA DE NEGÓCIO DA ABA METAS E PLANOS (PDE): AVALIAÇÕES E ANOS LETIVOS
     // =========================================================================
 
-    // Lista oficial das 9 escolas da rede municipal
-    const OFFICIAL_NETWORK_SCHOOLS = [
-        "UI JOSE CORREA LIMA",
-        "UI EMILIO MURAD",
-        "UE VEREADOR LEONARDO FERREIRA LIMA",
-        "U I BASILIO ALVES",
-        "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ",
-        "UE RAIMUNDO DOS REIS DA SILVA",
-        "UNIDADE INTEGRADA JOSE GONCALVES DIAS",
-        "UNIDADE ESCOLAR ANISIO GOMES",
-        "UE ANITA FURTADO"
-    ];
+    // OFFICIAL_NETWORK_SCHOOLS moved to top of file to avoid Temporal Dead Zone
 
     // Mapeamento de avaliações realizadas por Escola + Ano Letivo (possui_avaliacao_realizada)
     const SCHOOL_ASSESSMENTS_STATE = {
@@ -14685,27 +14717,7 @@ if (document.readyState === 'loading') {
     // ESTRUTURA OFICIAL DAS 19 UREs DO MARANHÃO & PAINEL DE MUNICÍPIOS
     // =========================================================================
 
-    const OFFICIAL_19_URES_MA = [
-        { name: "URE Açailândia", id: "acailandia", cities: ["Açailândia", "Cidelândia", "Itinga do Maranhão", "São Francisco do Brejão", "Vila Nova dos Martírios"] },
-        { name: "URE Bacabal", id: "bacabal", cities: ["Altamira do Maranhão", "Lago da Pedra", "Lagoa Grande do Maranhão", "Paulo Ramos", "Marajá do Sena", "Brejo de Areia", "Vitorino Freire", "São Luís Gonzaga do Maranhão", "Bacabal", "Olho d'Água das Cunhãs", "Lago Verde", "Conceição do Lago-Açu"] },
-        { name: "URE Balsas", id: "balsas", cities: ["Alto Parnaíba", "Balsas", "Carolina", "Feira Nova do Maranhão", "Riachão", "Tasso Fragoso", "Fortaleza dos Nogueiras", "Nova Colinas", "São Raimundo das Mangabeiras", "Loreto", "Sambaíba"] },
-        { name: "URE Barra do Corda", id: "barra-do-corda", cities: ["Barra do Corda", "Fernando Falcão", "Jenipapo dos Vieiras", "Itaipava do Grajaú", "Grajaú", "Arame"] },
-        { name: "URE Caxias", id: "caxias", cities: ["Caxias", "Aldeias Altas", "São João do Sóter", "Parnarama", "Matões"] },
-        { name: "URE Chapadinha", id: "chapadinha", cities: ["Anapurus", "Belágua", "Brejo", "Buriti", "Chapadinha", "Mata Roma", "Milagres do Maranhão", "Santa Quitéria do Maranhão", "São Benedito do Rio Preto", "Urbano Santos"] },
-        { name: "URE Codó", id: "codo", cities: ["Codó", "Timbiras", "Coroatá"] },
-        { name: "URE Imperatriz", id: "imperatriz", cities: ["Amarante do Maranhão", "Buritirana", "Davinópolis", "Governador Edison Lobão", "Imperatriz", "João Lisboa", "Lajeado Novo", "Montes Altos", "Ribamar Fiquene", "Senador La Rocque", "Sítio Novo"] },
-        { name: "URE Itapecuru-Mirim", id: "itapecuru", cities: ["Cantanhede", "Itapecuru-Mirim", "Matões do Norte", "Miranda do Norte", "Nina Rodrigues", "Pirapemas", "Presidente Vargas", "Vargem Grande"] },
-        { name: "URE Lago da Pedra", id: "lago-da-pedra", cities: ["Lago da Pedra", "Lagoa Grande do Maranhão", "Lago do Junco", "Lago dos Rodrigues", "Poção de Pedras", "Igarapé Grande"] },
-        { name: "URE Pedreiras", id: "pedreiras", cities: ["Bernardo do Mêdo", "Capinzal do Norte", "Esperantinópolis", "Igarapé Grande", "Lima Campos", "Pedreiras", "Trizidela do Vale", "Poção de Pedras", "Santo Antônio dos Lopes", "São Raimundo do Doca Bezerra", "São Roberto"] },
-        { name: "URE Pinheiro", id: "pinheiro", cities: ["Pedro do Rosário", "Pinheiro", "Presidente Sarney", "Santa Helena", "Turilândia", "Turiaçu", "Central do Maranhão", "Guimarães", "Mirinzal", "Porto Rico do Maranhão", "Serrano do Maranhão", "Bequimão", "Peri Mirim", "Palmeirândia", "Alcântara", "Nova Olinda do Maranhão"] },
-        { name: "URE Presidente Dutra", id: "presidente-dutra", cities: ["Dom Pedro", "Fortuna", "Gonçalves Dias", "Governador Archer", "Governador Eugênio Barros", "Governador Luiz Rocha", "Graça Aranha", "Joselândia", "Presidente Dutra", "São Domingos do Maranhão", "São José dos Basílios", "Senador Alexandre Costa"] },
-        { name: "URE Rosário", id: "rosario", cities: ["Axixá", "Bacabeira", "Cachoeira Grande", "Icatu", "Morros", "Presidente Juscelino", "Rosário", "Santa Rita"] },
-        { name: "URE Santa Inês", id: "santa-ines", cities: ["Bom Jardim", "Monção", "Pindaré-Mirim", "Santa Inês", "Santa Luzia", "São João do Carú", "Tufilândia", "Pio XII", "Bela Vista do Maranhão", "Igarapé do Meio"] },
-        { name: "URE São João dos Patos", id: "sao-joao-dos-patos", cities: ["Barão de Grajaú", "Benedito Leite", "Passagem Franca", "Pastos Bons", "Nova Iorque", "Paraibano", "São Francisco do Maranhão", "São João dos Patos", "Sucupira do Riachão", "Jatobá", "Colinas", "Mirador", "Sucupira do Norte", "São Domingos do Azeitão"] },
-        { name: "URE São Luís", id: "sao-luis", cities: ["Paço do Lumiar", "Raposa", "São José de Ribamar", "São Luís"] },
-        { name: "URE Viana", id: "viana", cities: ["Arari", "Cajari", "Matinha", "Olinda Nova do Maranhão", "Penalva", "São Bento", "São João Batista", "Viana", "Vitória do Mearim", "Cajapió", "Vicente Ferrer"] },
-        { name: "URE Zé Doca", id: "ze-doca", cities: ["Araguanã", "Centro do Guilherme", "Centro Novo do Maranhão", "Maranhãozinho", "Nova Olinda do Maranhão", "Presidente Médici", "Santa Luzia do Paruá", "Governador Nunes Freire", "Junco do Maranhão", "Amapá do Maranhão", "Cândido Mendes", "Godofredo Viana", "Luís Domingues", "Carutapera", "Zé Doca"] }
-    ];
+    // OFFICIAL_19_URES_MA moved to top of file to avoid Temporal Dead Zone
 
     let currentSelectedCity = "Gonçalves Dias";
 
@@ -16380,7 +16392,7 @@ window.showTab = window.switchTab;
     }
 
     let currentAlunosPage = 1;
-    const alunosPageSize = 25;
+    // alunosPageSize moved to top of file to avoid Temporal Dead Zone
 
     function renderDbStudents() {
         const tbody = document.getElementById('db-students-table-body');
@@ -16539,6 +16551,17 @@ window.showTab = window.switchTab;
     function switchTab(targetTab) {
         if (!targetTab) targetTab = 'dashboard';
         
+        // Defensive checks for global variables that might be undefined
+        if (typeof alunosPageSize === 'undefined') { 
+            window.alunosPageSize = 25; 
+        }
+        if (typeof OFFICIAL_NETWORK_SCHOOLS === 'undefined') {
+            window.OFFICIAL_NETWORK_SCHOOLS = [];
+        }
+        if (typeof OFFICIAL_19_URES_MA === 'undefined') {
+            window.OFFICIAL_19_URES_MA = [];
+        }
+        
         // Normalize alias targets
         const tabAliases = {
             'criar-avaliacoes': 'sec-criar-avaliacoes',
@@ -16670,6 +16693,17 @@ window.showTab = window.switchTab;
 
     // PASSO 1 ROUTER GUARD: switchTab with Optional Chaining & Zero Crash
     function switchTab(targetTab) {
+        // Defensive checks for global variables that might be undefined
+        if (typeof alunosPageSize === 'undefined') { 
+            window.alunosPageSize = 25; 
+        }
+        if (typeof OFFICIAL_NETWORK_SCHOOLS === 'undefined') {
+            window.OFFICIAL_NETWORK_SCHOOLS = [];
+        }
+        if (typeof OFFICIAL_19_URES_MA === 'undefined') {
+            window.OFFICIAL_19_URES_MA = [];
+        }
+        
         const safeTarget = targetTab?.toString()?.trim() || 'dashboard';
 
         const tabAliases = {
@@ -16771,6 +16805,17 @@ window.showTab = window.switchTab;
     let isSchoolViewActive = false;
 
     function switchTab(targetTab) {
+        // Defensive checks for global variables that might be undefined
+        if (typeof alunosPageSize === 'undefined') { 
+            window.alunosPageSize = 25; 
+        }
+        if (typeof OFFICIAL_NETWORK_SCHOOLS === 'undefined') {
+            window.OFFICIAL_NETWORK_SCHOOLS = [];
+        }
+        if (typeof OFFICIAL_19_URES_MA === 'undefined') {
+            window.OFFICIAL_19_URES_MA = [];
+        }
+        
         const safeTarget = targetTab?.toString()?.trim() || 'dashboard';
 
         const tabAliases = {
@@ -16933,6 +16978,17 @@ window.showTab = window.switchTab;
 
     // ROTEADOR COMPLETO DE TELAS DO CONTAINER PRINCIPAL (SWITCH ACTIVETAB / OUTLET)
     function switchTab(targetTab) {
+        // Defensive checks for global variables that might be undefined
+        if (typeof alunosPageSize === 'undefined') { 
+            window.alunosPageSize = 25; 
+        }
+        if (typeof OFFICIAL_NETWORK_SCHOOLS === 'undefined') {
+            window.OFFICIAL_NETWORK_SCHOOLS = [];
+        }
+        if (typeof OFFICIAL_19_URES_MA === 'undefined') {
+            window.OFFICIAL_19_URES_MA = [];
+        }
+        
         const safeTarget = (targetTab || 'dashboard').toString().trim();
 
         const tabMap = {
