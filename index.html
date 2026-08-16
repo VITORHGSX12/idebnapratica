@@ -91,6 +91,7 @@
     </script>
 
 
+    
     <!-- Global Standalone Tab Switcher -->
     <script>
         function switchTab(targetTab) {
@@ -122,6 +123,21 @@
                     }
                 }
 
+                // Call internal tab renderers
+                if (targetTab === 'escolas-panel' && typeof renderDbSchools === 'function') {
+                    renderDbSchools();
+                } else if (targetTab === 'alunos-panel' && typeof renderDbStudents === 'function') {
+                    renderDbStudents();
+                } else if (targetTab === 'cronograma-habilidades' && typeof render7ColCalendar === 'function') {
+                    render7ColCalendar();
+                } else if (targetTab === 'gestao-pedagogica' && typeof renderSaebComparativeTable === 'function') {
+                    renderSaebComparativeTable();
+                } else if (targetTab === 'ideb-comparativo' && typeof initIdebComparativo === 'function') {
+                    initIdebComparativo();
+                } else if (targetTab === 'metas-ideb' && typeof populateIdebGoalsTable === 'function') {
+                    populateIdebGoalsTable();
+                }
+
                 // Call internal app lifecycle if available
                 if (typeof window.navigateToTab === 'function') {
                     try { window.navigateToTab(targetTab); } catch(err) { console.warn(err); }
@@ -137,6 +153,7 @@
         }
         window.switchTab = switchTab;
     </script>
+
 
 </head>
 <body>
@@ -4209,6 +4226,6 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=1456c843"></script>
+    <script src="app.js?v=f867f001"></script>
 </body>
 </html>

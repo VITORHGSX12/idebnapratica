@@ -12232,3 +12232,10 @@ if (document.readyState === 'loading') {
             }
         }
     });
+
+
+    window.renderDbSchools = renderDbSchools;
+    window.renderDbStudents = renderDbStudents;
+    window.render7ColCalendar = render7ColCalendar;
+    window.renderSaebComparativeTable = renderSaebComparativeTable;
+    window.initIdebComparativo = initIdebComparativo;
