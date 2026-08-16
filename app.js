@@ -11613,3 +11613,429 @@ if (document.readyState === 'loading') {
 
         safeCreateIcons();
     });
+
+
+    // ==========================================
+    // SIDEBAR TOGGLE & GLOBAL BACK NAVIGATION
+    // ==========================================
+    let navigationHistory = ['dashboard'];
+
+    function setupSidebarAndNavigation() {
+        const btnToggleSidebar = document.getElementById('btn-toggle-sidebar');
+        const appContainer = document.querySelector('.app-container') || document.body;
+
+        if (btnToggleSidebar) {
+            btnToggleSidebar.addEventListener('click', () => {
+                appContainer.classList.toggle('sidebar-collapsed');
+                const isCollapsed = appContainer.classList.contains('sidebar-collapsed');
+                localStorage.setItem('sidebar_collapsed', isCollapsed ? 'true' : 'false');
+            });
+
+            if (localStorage.getItem('sidebar_collapsed') === 'true') {
+                appContainer.classList.add('sidebar-collapsed');
+            }
+        }
+
+        const btnGlobalBack = document.getElementById('btn-global-header-back');
+        if (btnGlobalBack) {
+            btnGlobalBack.addEventListener('click', () => {
+                // Check if inside School Workspace or Class Diary
+                const schoolClassesView = document.getElementById('school-classes-table-view');
+                const diaryView = document.getElementById('class-diary-view');
+                const userProfileView = document.getElementById('user-profile-view');
+
+                if (diaryView && !diaryView.classList.contains('hidden')) {
+                    diaryView.classList.add('hidden');
+                    if (schoolClassesView) schoolClassesView.classList.remove('hidden');
+                    return;
+                }
+
+                if (schoolClassesView && !schoolClassesView.classList.contains('hidden')) {
+                    schoolClassesView.classList.add('hidden');
+                    const overview = document.getElementById('schools-overview-container');
+                    if (overview) overview.classList.remove('hidden');
+                    return;
+                }
+
+                if (userProfileView && !userProfileView.classList.contains('hidden')) {
+                    userProfileView.classList.add('hidden');
+                    const usersList = document.getElementById('users-list-view');
+                    if (usersList) usersList.classList.remove('hidden');
+                    return;
+                }
+
+                if (navigationHistory.length > 1) {
+                    navigationHistory.pop(); // current
+                    const prevTab = navigationHistory.pop() || 'dashboard';
+                    window.navigateToTab(prevTab);
+                } else {
+                    window.navigateToTab('dashboard');
+                }
+            });
+        }
+    }
+
+
+    // ==========================================
+    // PERSISTÊNCIA DE LOGIN & RECUPERAÇÃO OFFLINE
+    // ==========================================
+    function checkPersistentLogin() {
+        const logged = localStorage.getItem('isLoggedIn') === 'true';
+        const userEmail = localStorage.getItem('userEmail') || 'gestor@municipio.gov.br';
+        const userProfile = localStorage.getItem('userProfile') || 'admin';
+        const lastTab = localStorage.getItem('lastActiveTab') || 'dashboard';
+
+        if (logged) {
+            currentUser = { email: userEmail, profile: userProfile };
+            const loginSection = document.getElementById('login-section');
+            const mainAppSection = document.getElementById('main-app-section');
+            if (loginSection) loginSection.classList.add('hidden');
+            if (mainAppSection) mainAppSection.classList.remove('hidden');
+
+            const userEmailEl = document.getElementById('user-display-email');
+            if (userEmailEl) userEmailEl.textContent = userEmail;
+
+            setTimeout(() => {
+                window.navigateToTab(lastTab);
+            }, 100);
+        }
+    }
+
+
+    // ==========================================
+    // ENTER KEYPRESS TRIGGER PARA TODAS AS BARRAS DE BUSCA
+    // ==========================================
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            const activeEl = document.activeElement;
+            if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'SELECT')) {
+                // School search
+                if (activeEl.id === 'db-school-search') {
+                    if (typeof renderDbSchools === 'function') renderDbSchools();
+                }
+                // IDEB City search
+                else if (activeEl.id === 'ideb-city-search') {
+                    selectedIdebCity = activeEl.value.trim() || 'Gonçalves Dias';
+                    document.getElementById('ideb-city-suggestions')?.classList.add('hidden');
+                    if (typeof updateIdebComparativoView === 'function') updateIdebComparativoView();
+                }
+                // Classes table search
+                else if (activeEl.id === 'classes-table-search-input') {
+                    if (typeof renderSchoolClassesTable === 'function') renderSchoolClassesTable();
+                }
+                // Student search
+                else if (activeEl.id === 'student-search') {
+                    if (typeof renderDbStudents === 'function') renderDbStudents();
+                }
+                // Questions search
+                else if (activeEl.id === 'search-questions-input') {
+                    if (typeof renderQuestionsList === 'function') renderQuestionsList();
+                }
+            }
+        }
+    });
+
+
+    // ==========================================
+    // CALENDÁRIO 7 COLUNAS (LAYOUT DO SCREENSHOT)
+    // ==========================================
+    let calMonth = 8; // Agosto / 2026 default
+    let calYear = 2026;
+    let selectedCalDay = 15; // Destaque no dia 15
+
+    const MONTH_LABELS = {
+        2: 'Fevereiro', 3: 'Março', 4: 'Abril', 5: 'Maio', 6: 'Junho',
+        7: 'Julho', 8: 'Agosto', 9: 'Setembro', 10: 'Outubro', 11: 'Novembro', 12: 'Dezembro'
+    };
+
+    function render7ColCalendar() {
+        const grid = document.getElementById('calendar-7col-cells-grid');
+        const heading = document.getElementById('cal-month-year-heading');
+        const dropdown = document.getElementById('cal-month-dropdown-select');
+        const stage = document.getElementById('cal-filter-stage-v2')?.value || '5º Ano';
+
+        if (!grid) return;
+
+        if (heading) heading.textContent = `${MONTH_LABELS[calMonth] || 'Mês'} de ${calYear}`;
+        if (dropdown) dropdown.value = String(calMonth);
+
+        grid.innerHTML = '';
+
+        // First day of month and total days
+        const firstDate = new Date(calYear, calMonth - 1, 1);
+        const startDayOfWeek = firstDate.getDay(); // 0 = Domingo
+        const daysInCurrentMonth = new Date(calYear, calMonth, 0).getDate();
+        const daysInPrevMonth = new Date(calYear, calMonth - 1, 0).getDate();
+
+        // 1. Previous month trailing days
+        for (let i = startDayOfWeek - 1; i >= 0; i--) {
+            const prevDayNum = daysInPrevMonth - i;
+            const cell = document.createElement('div');
+            cell.className = 'cal-day-cell other-month';
+            cell.innerHTML = `<div class="cal-day-number" style="color:var(--text-muted);">${prevDayNum}</div>`;
+            grid.appendChild(cell);
+        }
+
+        // 2. Current month days
+        for (let d = 1; d <= daysInCurrentMonth; d++) {
+            const dateObj = new Date(calYear, calMonth - 1, d);
+            const dayOfWeek = dateObj.getDay();
+            const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+
+            const monthData = ANNUAL_SKILLS_CALENDAR_DATA[calMonth] || {};
+            const dayData = monthData[d];
+            const daySkill = dayData ? dayData.skills[stage] : null;
+
+            const isWorked = daySkill && daySkill.status === 'trabalhada';
+            const hasSkill = !!daySkill;
+
+            const cell = document.createElement('div');
+            cell.className = 'cal-day-cell';
+            const isSelected = (d === selectedCalDay);
+
+            let dotsHtml = '';
+            if (hasSkill && !isWeekend && calMonth !== 7) {
+                dotsHtml = `
+                    <div class="cal-dots-container">
+                        <span class="cal-dot ${isWorked ? 'worked' : 'pending'}" title="${daySkill.code} (${isWorked ? 'Trabalhada' : 'Pendente'})"></span>
+                        <span class="cal-dot ${isWorked ? 'worked' : 'pending'}"></span>
+                    </div>
+                `;
+            }
+
+            cell.innerHTML = `
+                <div class="flex-between" style="align-items: flex-start;">
+                    <div class="cal-day-number ${isSelected ? 'active-today' : ''}">${d}</div>
+                </div>
+                ${dotsHtml}
+            `;
+
+            cell.addEventListener('click', () => {
+                selectedCalDay = d;
+                document.querySelectorAll('.cal-day-number').forEach(el => el.classList.remove('active-today'));
+                cell.querySelector('.cal-day-number')?.classList.add('active-today');
+
+                if (hasSkill) {
+                    openCalendarDayDetailModal(d, stage);
+                } else {
+                    showToast(`Dia ${d} de ${MONTH_LABELS[calMonth]}: Sem descritores planejados para este dia.`, 'calendar');
+                }
+            });
+
+            grid.appendChild(cell);
+        }
+
+        // 3. Next month leading days (to fill 35 or 42 cells)
+        const totalRendered = startDayOfWeek + daysInCurrentMonth;
+        const totalCellsNeeded = totalRendered > 35 ? 42 : 35;
+        const remaining = totalCellsNeeded - totalRendered;
+
+        for (let nextD = 1; nextD <= remaining; nextD++) {
+            const cell = document.createElement('div');
+            cell.className = 'cal-day-cell other-month';
+            cell.innerHTML = `<div class="cal-day-number" style="color:var(--text-muted);">${nextD}</div>`;
+            grid.appendChild(cell);
+        }
+
+        safeCreateIcons();
+    }
+
+    function setup7ColCalendarEvents() {
+        const btnPrev = document.getElementById('btn-cal-prev-month');
+        const btnNext = document.getElementById('btn-cal-next-month');
+        const dropdown = document.getElementById('cal-month-dropdown-select');
+
+        if (btnPrev) {
+            btnPrev.addEventListener('click', () => {
+                if (calMonth > 2) {
+                    calMonth--;
+                    render7ColCalendar();
+                }
+            });
+        }
+
+        if (btnNext) {
+            btnNext.addEventListener('click', () => {
+                if (calMonth < 12) {
+                    calMonth++;
+                    render7ColCalendar();
+                }
+            });
+        }
+
+        if (dropdown) {
+            dropdown.addEventListener('change', (e) => {
+                calMonth = parseInt(e.target.value, 10);
+                render7ColCalendar();
+            });
+        }
+
+        ['cal-filter-stage-v2', 'cal-filter-subject-v2', 'cal-filter-school-v2'].forEach(id => {
+            document.getElementById(id)?.addEventListener('change', render7ColCalendar);
+        });
+
+        document.getElementById('btn-cal-mark-month-done')?.addEventListener('click', () => {
+            const stage = document.getElementById('cal-filter-stage-v2')?.value || '5º Ano';
+            const monthData = ANNUAL_SKILLS_CALENDAR_DATA[calMonth] || {};
+            Object.values(monthData).forEach(dayItem => {
+                if (dayItem.skills[stage]) dayItem.skills[stage].status = 'trabalhada';
+            });
+            render7ColCalendar();
+            showToast(`Todas as habilidades de ${MONTH_LABELS[calMonth]} foram marcadas como TRABALHADAS 🟢!`, 'check');
+        });
+
+        document.getElementById('btn-cal-print-month')?.addEventListener('click', () => {
+            window.print();
+        });
+    }
+
+
+    // ==========================================
+    // DADOS OFICIAIS SAEB 2025 POR ESCOLA (GONÇALVES DIAS)
+    // ==========================================
+    const SAEB_2025_OFFICIAL_DATA = {
+        '21128723': {
+            nome: 'UI JOSE CORREA LIMA',
+            inep: '21128723',
+            zona: 'Zona Rural',
+            inse: 'Nível III',
+            adequacaoDocenteAI: '88.9%',
+            adequacaoDocenteAF: '10.9%',
+            participacao5Ano: '100%',
+            participacao9Ano: '100%',
+            proficienciaLP_5Ano: 218.4,
+            proficienciaMAT_5Ano: 224.6,
+            idebObservado2023: 4.8,
+            idebCalculado2025: 5.2,
+            meta2026: 5.6
+        },
+        '21128146': {
+            nome: 'UI EMILIO MURAD',
+            inep: '21128146',
+            zona: 'Zona Rural',
+            inse: 'Nível III',
+            adequacaoDocenteAI: '85.0%',
+            adequacaoDocenteAF: '50.0%',
+            participacao5Ano: '100%',
+            participacao9Ano: '100%',
+            proficienciaLP_5Ano: 212.1,
+            proficienciaMAT_5Ano: 219.8,
+            idebObservado2023: 4.6,
+            idebCalculado2025: 5.0,
+            meta2026: 5.4
+        },
+        '21128740': {
+            nome: 'UE VEREADOR LEONARDO FERREIRA LIMA',
+            inep: '21128740',
+            zona: 'Sede Urbana',
+            inse: 'Nível IV',
+            adequacaoDocenteAI: '90.5%',
+            adequacaoDocenteAF: '75.0%',
+            participacao5Ano: '100%',
+            participacao9Ano: '98%',
+            proficienciaLP_5Ano: 226.5,
+            proficienciaMAT_5Ano: 231.2,
+            idebObservado2023: 5.1,
+            idebCalculado2025: 5.5,
+            meta2026: 5.9
+        },
+        '21128120': {
+            nome: 'U I BASILIO ALVES',
+            inep: '21128120',
+            zona: 'Zona Rural',
+            inse: 'Nível III',
+            adequacaoDocenteAI: '80.0%',
+            adequacaoDocenteAF: '45.0%',
+            participacao5Ano: '100%',
+            participacao9Ano: '100%',
+            proficienciaLP_5Ano: 209.7,
+            proficienciaMAT_5Ano: 215.3,
+            idebObservado2023: 4.4,
+            idebCalculado2025: 4.9,
+            meta2026: 5.3
+        },
+        '21286973': {
+            nome: 'UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ',
+            inep: '21286973',
+            zona: 'Sede Urbana',
+            inse: 'Nível IV',
+            adequacaoDocenteAI: '57.9%',
+            adequacaoDocenteAF: '54.9%',
+            participacao5Ano: '100%',
+            participacao9Ano: '97.4%',
+            proficienciaLP_5Ano: 222.8,
+            proficienciaMAT_5Ano: 228.4,
+            idebObservado2023: 4.9,
+            idebCalculado2025: 5.3,
+            meta2026: 5.7
+        },
+        '21128758': {
+            nome: 'UE RAIMUNDO DOS REIS DA SILVA',
+            inep: '21128758',
+            zona: 'Zona Rural',
+            inse: 'Nível III',
+            adequacaoDocenteAI: '75.0%',
+            adequacaoDocenteAF: '40.0%',
+            participacao5Ano: '100%',
+            participacao9Ano: '100%',
+            proficienciaLP_5Ano: 206.5,
+            proficienciaMAT_5Ano: 211.9,
+            idebObservado2023: 4.3,
+            idebCalculado2025: 4.7,
+            meta2026: 5.1
+        },
+        '21286990': {
+            nome: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS',
+            inep: '21286990',
+            zona: 'Zona Rural',
+            inse: 'Nível III',
+            adequacaoDocenteAI: '60.0%',
+            adequacaoDocenteAF: '50.0%',
+            participacao5Ano: '106.6%',
+            participacao9Ano: '100%',
+            proficienciaLP_5Ano: 215.3,
+            proficienciaMAT_5Ano: 220.7,
+            idebObservado2023: 4.7,
+            idebCalculado2025: 5.1,
+            meta2026: 5.5
+        },
+        '21128774': {
+            nome: 'UNIDADE ESCOLAR ANISIO GOMES',
+            inep: '21128774',
+            zona: 'Zona Rural',
+            inse: 'Nível III',
+            adequacaoDocenteAI: '70.0%',
+            adequacaoDocenteAF: '45.0%',
+            participacao5Ano: '100%',
+            participacao9Ano: '100%',
+            proficienciaLP_5Ano: 210.4,
+            proficienciaMAT_5Ano: 216.8,
+            idebObservado2023: 4.5,
+            idebCalculado2025: 4.9,
+            meta2026: 5.3
+        },
+        '21192544': {
+            nome: 'UE ANITA FURTADO',
+            inep: '21192544',
+            zona: 'Sede Urbana',
+            inse: 'Nível IV',
+            adequacaoDocenteAI: '85.0%',
+            adequacaoDocenteAF: '65.0%',
+            participacao5Ano: '100%',
+            participacao9Ano: '98%',
+            proficienciaLP_5Ano: 224.2,
+            proficienciaMAT_5Ano: 230.1,
+            idebObservado2023: 5.0,
+            idebCalculado2025: 5.4,
+            meta2026: 5.8
+        }
+    };
+
+
+    // Bootstrap enhancements
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof setupSidebarAndNavigation === 'function') setupSidebarAndNavigation();
+        if (typeof checkPersistentLogin === 'function') checkPersistentLogin();
+        if (typeof setup7ColCalendarEvents === 'function') setup7ColCalendarEvents();
+        if (typeof render7ColCalendar === 'function') render7ColCalendar();
+    });

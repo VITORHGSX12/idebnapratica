@@ -3999,3 +3999,99 @@ body.collapsed-sidebar .sidebar-footer .user-dropdown-menu {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md) !important;
 }
+
+
+/* 7-Column Classic Monthly Calendar */
+.cal-header-day-cell {
+    padding: 12px 8px;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+    letter-spacing: 0.5px;
+}
+
+.cal-day-cell {
+    background: var(--bg-primary);
+    min-height: 86px;
+    padding: 10px 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    position: relative;
+}
+
+.cal-day-cell:hover {
+    background: var(--bg-secondary);
+}
+
+.cal-day-cell.other-month {
+    background: var(--bg-secondary);
+    opacity: 0.45;
+    cursor: default;
+}
+
+.cal-day-number {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+}
+
+.cal-day-number.active-today {
+    background: #6366f1;
+    color: #ffffff !important;
+    font-weight: 800;
+}
+
+.cal-dots-container {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 6px;
+}
+
+.cal-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.cal-dot.pending {
+    background: #ef4444;
+}
+
+.cal-dot.worked {
+    background: #22c55e;
+}
+
+/* Collapsible Sidebar */
+.app-container.sidebar-collapsed .sidebar {
+    width: 72px !important;
+}
+
+.app-container.sidebar-collapsed .sidebar-header h2,
+.app-container.sidebar-collapsed .menu-item span,
+.app-container.sidebar-collapsed .menu-category,
+.app-container.sidebar-collapsed .sidebar-footer-user-info {
+    display: none !important;
+}
+
+.app-container.sidebar-collapsed .menu-item {
+    justify-content: center;
+    padding: 12px 0;
+}
+
+.app-container.sidebar-collapsed .main-content {
+    margin-left: 72px !important;
+}
