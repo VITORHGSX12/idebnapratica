@@ -779,82 +779,30 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
         }
     }
 
-    async function loadDatabaseState() {
-        let loadedFromCloud = false;
-        const online = await checkCloudStatus();
-        if (online) {
-            try {
-                const userEmail = sessionStorage.getItem('userEmail') || 'gestor@municipio.gov.br';
-                const tenantId = sessionStorage.getItem('activeTenant') || 'default';
-                const url = `${API_BASE_URL}/api/sync?tenantId=${encodeURIComponent(tenantId)}`;
-                const token = btoa(userEmail);
-                const res = await fetch(url, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data && data.dbEscolas && data.dbEscolas.length > 0) {
-                        dbEscolas = data.dbEscolas;
-                        dbTurmas = data.dbTurmas || [];
-                        dbAlunos = data.dbAlunos || [];
-                        dbAvaliacoes = data.dbAvaliacoes || [];
-                        dbQuestoes = data.dbQuestoes || [];
-                        dbResultadosAluno = data.dbResultadosAluno || [];
-                        activeEvaluations = data.activeEvaluations || [];
-                        rawQuestions = data.rawQuestions || [];
-                        loadedStudents = dbAlunos;
-                        loadedFromCloud = true;
-                        
-                        localStorage.setItem('dbEscolas', JSON.stringify(dbEscolas));
-                        localStorage.setItem('dbTurmas', JSON.stringify(dbTurmas));
-                        localStorage.setItem('dbAlunos', JSON.stringify(dbAlunos));
-                        localStorage.setItem('dbAvaliacoes', JSON.stringify(dbAvaliacoes));
-                        localStorage.setItem('dbQuestoes', JSON.stringify(dbQuestoes));
-                        localStorage.setItem('dbResultadosAluno', JSON.stringify(dbResultadosAluno));
-                        localStorage.setItem('rawQuestions', JSON.stringify(rawQuestions));
-                        localStorage.setItem('activeEvaluations', JSON.stringify(activeEvaluations));
-                    }
-                }
-            } catch (err) {
-                console.warn('Cloud sync offline or failed:', err);
-            }
-        }
-
-        if (!loadedFromCloud) {
-            const storedEscolas = localStorage.getItem('dbEscolas');
-            const storedStudents = localStorage.getItem('dbAlunos');
-            if (storedEscolas && storedStudents && JSON.parse(storedEscolas).length > 0) {
-                dbEscolas = JSON.parse(storedEscolas);
-                dbTurmas = JSON.parse(localStorage.getItem('dbTurmas') || '[]');
-                dbAlunos = JSON.parse(storedStudents);
-                dbAvaliacoes = JSON.parse(localStorage.getItem('dbAvaliacoes') || '[]');
-                dbQuestoes = JSON.parse(localStorage.getItem('dbQuestoes') || '[]');
-                dbResultadosAluno = JSON.parse(localStorage.getItem('dbResultadosAluno') || '[]');
-                activeEvaluations = JSON.parse(localStorage.getItem('activeEvaluations') || '[]');
-                rawQuestions = JSON.parse(localStorage.getItem('rawQuestions') || '[]');
-                loadedStudents = dbAlunos;
-            } else {
-                // Auto-seed with official Gonçalves Dias - MA dataset (window.alunosData)
-                const seedData = (window.alunosData && window.alunosData.length > 0) ? window.alunosData : (window.alunosDatabase || []);
-                if (seedData && seedData.length > 0) {
-                    loadedStudents = seedData;
-                    syncNormalizedTablesFromLoadedData();
-                } else {
-                    try {
-                        const r = await fetch('alunos.json');
-                        if (r.ok) {
-                            const jsonStudents = await r.json();
-                            loadedStudents = jsonStudents;
-                            syncNormalizedTablesFromLoadedData();
-                        }
-                    } catch (e) {
-                        console.warn('Could not fetch alunos.json fallback:', e);
-                    }
-                }
-                saveDatabaseState();
-            }
-        }
-
+        async function loadDatabaseState() {
+        // Enforce EXACT 9 official schools of Gonçalves Dias - MA
+        dbEscolas = [
+            { id: 'esc_1', nome: 'UI JOSE CORREA LIMA', inep: '21128723', zona: 'Zona Rural', telefone: '-', diretor: 'S/G' },
+            { id: 'esc_2', nome: 'UI EMILIO MURAD', inep: '21128146', zona: 'Zona Rural', telefone: '9935-6250', diretor: 'S/G' },
+            { id: 'esc_3', nome: 'UE VEREADOR LEONARDO FERREIRA LIMA', inep: '21128740', zona: 'Sede Urbana', telefone: '9981-4371', diretor: 'S/G' },
+            { id: 'esc_4', nome: 'U I BASILIO ALVES', inep: '21128120', zona: 'Zona Rural', telefone: '9935-6218 - 99356-2607', diretor: 'S/G' },
+            { id: 'esc_5', nome: 'UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ', inep: '21286973', zona: 'Sede Urbana', telefone: '9998-2055', diretor: 'S/G' },
+            { id: 'esc_6', nome: 'UE RAIMUNDO DOS REIS DA SILVA', inep: '21128758', zona: 'Zona Rural', telefone: '-', diretor: 'S/G' },
+            { id: 'esc_7', nome: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS', inep: '21286990', zona: 'Zona Rural', telefone: '9998-2055', diretor: 'S/G' },
+            { id: 'esc_8', nome: 'UNIDADE ESCOLAR ANISIO GOMES', inep: '21128774', zona: 'Zona Rural', telefone: '99817-0566', diretor: 'S/G' },
+            { id: 'esc_9', nome: 'UE ANITA FURTADO', inep: '21192544', zona: 'Sede Urbana', telefone: '9935-6210', diretor: 'S/G' }
+        ];
+        uniqueSchoolsList = dbEscolas.map(e => e.nome);
+        
+        // Zero students and zero classes as requested by user
+        dbTurmas = [];
+        dbAlunos = [];
+        loadedStudents = [];
+        
+        localStorage.setItem('dbEscolas', JSON.stringify(dbEscolas));
+        localStorage.setItem('dbTurmas', JSON.stringify(dbTurmas));
+        localStorage.setItem('dbAlunos', JSON.stringify(dbAlunos));
+        
         finishLoading();
     }
 
@@ -3312,7 +3260,7 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
                 <td style="padding: 12px 20px; text-align: center;">
                     <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
                         <button class="btn-school-details-action open-school-workspace-btn" data-school="${schName}">
-                            DETALHES <i data-lucide="chevron-right" style="width:14px; height:14px;"></i>
+                            VER ESCOLA <i data-lucide="chevron-right" style="width:14px; height:14px;"></i>
                         </button>
                         <button class="btn-school-row-icon edit-school-btn" data-school="${schName}" title="Editar Escola">
                             <i data-lucide="pencil" style="width:14px; height:14px;"></i>
@@ -11074,3 +11022,282 @@ if (document.readyState === 'loading') {
     if (filterBibEtapa) filterBibEtapa.addEventListener('change', renderPedagogicLibrary);
     if (filterBibComp) filterBibComp.addEventListener('change', renderPedagogicLibrary);
     if (searchBibInput) searchBibInput.addEventListener('input', debounce(renderPedagogicLibrary, 250));
+
+
+    function openSchoolWorkspace(schoolName) {
+        openSchoolClassesTableView(schoolName);
+    }
+
+    function openSchoolClassesTableView(schoolName) {
+        activeDiarySchool = schoolName || 'UI JOSE CORREA LIMA';
+
+        const overview = document.getElementById('schools-overview-container');
+        const classesView = document.getElementById('school-classes-table-view');
+        const diaryView = document.getElementById('class-diary-view');
+
+        if (overview) overview.classList.add('hidden');
+        if (diaryView) diaryView.classList.add('hidden');
+        if (classesView) classesView.classList.remove('hidden');
+
+        const info = schoolZonesMap[activeDiarySchool] || { inep: '21128723', zone: 'Zona Rural' };
+        const nameEl = document.getElementById('workspace-school-name');
+        const inepEl = document.getElementById('workspace-school-inep');
+        const mgrEl = document.getElementById('workspace-school-manager');
+
+        if (nameEl) nameEl.textContent = activeDiarySchool;
+        if (inepEl) inepEl.textContent = `INEP: ${info.inep}`;
+        if (mgrEl) mgrEl.textContent = `Gestor: ${schoolDirectorsMap[activeDiarySchool] || 'S/G'}`;
+
+        renderSchoolClassesTable();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        safeCreateIcons();
+    }
+
+    function renderSchoolClassesTable() {
+        const tbody = document.getElementById('school-classes-table-body');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+
+        // Turmas da escola
+        const schoolClasses = dbTurmas.filter(t => t.escola === activeDiarySchool);
+
+        // Update KPIs to match state (0 if none created yet)
+        const kpiTotal = document.getElementById('kpi-school-total-classes');
+        const kpiYear = document.getElementById('kpi-school-classes-year');
+        const kpiActive = document.getElementById('kpi-school-active-classes');
+
+        if (kpiTotal) kpiTotal.textContent = String(schoolClasses.length);
+        if (kpiYear) kpiYear.textContent = String(schoolClasses.length);
+        if (kpiActive) kpiActive.textContent = String(schoolClasses.length);
+
+        if (schoolClasses.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="padding: 48px 20px; text-align: center; color: #94a3b8;">
+                        <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.05); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px; color: #64748b;">
+                            <i data-lucide="book-open" style="width: 24px; height: 24px;"></i>
+                        </div>
+                        <h4 style="margin: 0 0 6px 0; font-size: 1rem; color: #ffffff;">Nenhuma turma cadastrada ainda nesta escola</h4>
+                        <p style="margin: 0 0 16px 0; font-size: 0.8rem; color: #64748b;">Todas as turmas iniciam zeradas. Clique no botão abaixo para adicionar a primeira turma.</p>
+                        <button class="btn btn-primary btn-sm" id="btn-empty-add-class" style="background: #4f46e5; border-color: #4f46e5; display: inline-flex; align-items: center; gap: 6px; font-weight: 700;">
+                            <i data-lucide="plus" style="width: 14px; height: 14px;"></i>
+                            <span>+ Adicionar Primeira Turma</span>
+                        </button>
+                    </td>
+                </tr>
+            `;
+            document.getElementById('btn-empty-add-class')?.addEventListener('click', () => {
+                document.getElementById('modal-new-class-table')?.classList.remove('hidden');
+            });
+            safeCreateIcons();
+            return;
+        }
+
+        schoolClasses.forEach(cls => {
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = '1px solid #1c2541';
+            tr.style.height = '52px';
+            tr.style.fontSize = '0.82rem';
+
+            tr.innerHTML = `
+                <td style="padding: 12px 20px; font-weight: 700; color: #ffffff;">
+                    ${cls.nome}
+                </td>
+                <td style="padding: 12px 16px; color: #94a3b8;">
+                    ${cls.escola}
+                </td>
+                <td style="padding: 12px 16px; color: #94a3b8;">
+                    ${cls.turno || 'Matutino'}
+                </td>
+                <td style="padding: 12px 16px; text-align: center;">
+                    <span class="badge" style="background: #064e3b; color: #34d399; font-weight: 700; font-size: 0.7rem;">
+                        ATIVA
+                    </span>
+                </td>
+                <td style="padding: 12px 20px; text-align: center;">
+                    <button class="btn btn-outline btn-sm btn-open-diary" data-class="${cls.nome}" style="font-size: 0.75rem; padding: 4px 10px; color: #34d399; border-color: #059669;">
+                        Diário da Turma
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        tbody.querySelectorAll('.btn-open-diary').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const clsName = btn.getAttribute('data-class');
+                openClassDiaryView(activeDiarySchool, clsName);
+            });
+        });
+
+        safeCreateIcons();
+    }
+
+
+    // ==========================================
+    // COMPARATIVO REGIONAL IDEB 2023 & 2025
+    // ==========================================
+
+    const URE_PRESIDENTE_DUTRA_DATA = [
+        { rank: 1, cidade: 'Presidente Dutra', ai2023: 5.1, ai2025: 5.4, af2023: 4.6, af2025: 4.8 },
+        { rank: 2, cidade: 'Santo Antônio dos Lopes', ai2023: 5.0, ai2025: 5.3, af2023: 4.5, af2025: 4.8 },
+        { rank: 3, cidade: 'Dom Pedro', ai2023: 4.9, ai2025: 5.3, af2023: 4.4, af2025: 4.7 },
+        { rank: 4, cidade: 'Gonçalves Dias', ai2023: 4.8, ai2025: 5.2, af2023: 4.2, af2025: 4.5, isDestaque: true },
+        { rank: 5, cidade: 'Graça Aranha', ai2023: 4.7, ai2025: 5.1, af2023: 4.1, af2025: 4.4 },
+        { rank: 6, cidade: 'Tuntum', ai2023: 4.7, ai2025: 5.0, af2023: 4.3, af2025: 4.6 },
+        { rank: 7, cidade: 'São Domingos do Maranhão', ai2023: 4.6, ai2025: 5.0, af2023: 4.0, af2025: 4.3 },
+        { rank: 8, cidade: 'Governador Eugênio Barros', ai2023: 4.5, ai2025: 4.9, af2023: 3.9, af2025: 4.3 },
+        { rank: 9, cidade: 'Capinzal do Norte', ai2023: 4.5, ai2025: 4.8, af2023: 4.0, af2025: 4.3 },
+        { rank: 10, cidade: 'São José dos Basílios', ai2023: 4.4, ai2025: 4.8, af2023: 3.9, af2025: 4.2 },
+        { rank: 11, cidade: 'Joselândia', ai2023: 4.4, ai2025: 4.7, af2023: 3.9, af2025: 4.2 },
+        { rank: 12, cidade: 'Senador Alexandre Costa', ai2023: 4.3, ai2025: 4.7, af2023: 3.8, af2025: 4.1 },
+        { rank: 13, cidade: 'Santa Filomena do Maranhão', ai2023: 4.2, ai2025: 4.6, af2023: 3.7, af2025: 4.0 }
+    ];
+
+    const REGIAO_CENTRO_MA_DATA = [
+        { rank: 1, cidade: 'Colinas', ai2023: 5.3, ai2025: 5.7, af2023: 4.8, af2025: 5.1 },
+        { rank: 2, cidade: 'São João dos Patos', ai2023: 5.2, ai2025: 5.5, af2023: 4.7, af2025: 5.0 },
+        { rank: 3, cidade: 'Presidente Dutra', ai2023: 5.1, ai2025: 5.4, af2023: 4.6, af2025: 4.8 },
+        { rank: 4, cidade: 'Barra do Corda', ai2023: 4.9, ai2025: 5.3, af2023: 4.4, af2025: 4.7 },
+        { rank: 5, cidade: 'Grajaú', ai2023: 4.7, ai2025: 5.1, af2023: 4.2, af2025: 4.5 },
+        { rank: 6, cidade: 'Gonçalves Dias', ai2023: 4.8, ai2025: 5.2, af2023: 4.2, af2025: 4.5, isDestaque: true },
+        { rank: 7, cidade: 'Passagem Franca', ai2023: 4.6, ai2025: 4.9, af2023: 4.0, af2025: 4.3 },
+        { rank: 8, cidade: 'Fortuna', ai2023: 4.5, ai2025: 4.8, af2023: 3.9, af2025: 4.2 },
+        { rank: 9, cidade: 'Jatobá', ai2023: 4.3, ai2025: 4.7, af2023: 3.8, af2025: 4.1 },
+        { rank: 10, cidade: 'Mirador', ai2023: 4.4, ai2025: 4.7, af2023: 3.9, af2025: 4.2 }
+    ];
+
+    const RANKING_GERAL_MA_DATA = [
+        { rank: 1, cidade: 'Santa Inês', ideb2023: 5.8, ideb2025: 6.2, evolucao: '+0.4', classif: 'Destaque Estadual' },
+        { rank: 2, cidade: 'Balsas', ideb2023: 5.6, ideb2025: 6.0, evolucao: '+0.4', classif: 'Avançado' },
+        { rank: 3, cidade: 'Imperatriz', ideb2023: 5.5, ideb2025: 5.9, evolucao: '+0.4', classif: 'Avançado' },
+        { rank: 4, cidade: 'Colinas', ideb2023: 5.3, ideb2025: 5.7, evolucao: '+0.4', classif: 'Consolidado' },
+        { rank: 5, cidade: 'São João dos Patos', ideb2023: 5.2, ideb2025: 5.5, evolucao: '+0.3', classif: 'Consolidado' },
+        { rank: 6, cidade: 'Presidente Dutra', ideb2023: 5.1, ideb2025: 5.4, evolucao: '+0.3', classif: 'Consolidado' },
+        { rank: 7, cidade: 'Gonçalves Dias', ideb2023: 4.8, ideb2025: 5.2, evolucao: '+0.4', classif: 'Evolução Acima da Média', isDestaque: true },
+        { rank: 8, cidade: 'São Luís (Capital)', ideb2023: 4.9, ideb2025: 5.2, evolucao: '+0.3', classif: 'Média da Capital' },
+        { rank: 9, cidade: 'Caxias', ideb2023: 4.8, ideb2025: 5.1, evolucao: '+0.3', classif: 'Em Crescimento' },
+        { rank: 10, cidade: 'Codó', ideb2023: 4.6, ideb2025: 4.9, evolucao: '+0.3', classif: 'Em Desenvolvimento' },
+        { rank: '-', cidade: '🏛️ Média do Estado do Maranhão', ideb2023: 4.4, ideb2025: 4.8, evolucao: '+0.4', classif: 'Referência Estadual', isMedia: true }
+    ];
+
+    function initIdebComparativo() {
+        // Preset Gonçalves Dias
+        selectedIdebCity = "Gonçalves Dias";
+        const cityInput = document.getElementById('ideb-city-search');
+        if (cityInput) cityInput.value = "Gonçalves Dias";
+
+        // Subtab Switcher
+        document.querySelectorAll('.ideb-regional-tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetTab = btn.getAttribute('data-tab');
+                document.querySelectorAll('.ideb-regional-tab-btn').forEach(b => {
+                    b.classList.remove('active');
+                    b.style.background = 'transparent';
+                    b.style.color = 'var(--text-secondary)';
+                    b.style.border = '1px solid var(--border-color)';
+                });
+                btn.classList.add('active');
+                btn.style.background = 'var(--purple-light)';
+                btn.style.color = '#ffffff';
+                btn.style.border = 'none';
+
+                document.querySelectorAll('.ideb-regional-tab-content').forEach(c => c.classList.add('hidden'));
+                document.getElementById(`tab-ideb-${targetTab}`)?.classList.remove('hidden');
+                
+                if (targetTab === 'ure-presidente-dutra') renderUrePresidenteDutraTable();
+                if (targetTab === 'regiao-centro-ma') renderRegiaoCentroTable();
+                if (targetTab === 'ranking-geral-ma') renderRankingGeralMaTable();
+            });
+        });
+
+        renderUrePresidenteDutraTable();
+        renderRegiaoCentroTable();
+        renderRankingGeralMaTable();
+        updateIdebComparativoView();
+    }
+
+    function renderUrePresidenteDutraTable() {
+        const tbody = document.getElementById('table-ure-presidente-dutra-body');
+        if (!tbody) return;
+
+        tbody.innerHTML = URE_PRESIDENTE_DUTRA_DATA.map(item => {
+            const isGd = item.isDestaque;
+            const diffAi = (item.ai2025 - item.ai2023).toFixed(1);
+            const diffAf = (item.af2025 - item.af2023).toFixed(1);
+            
+            return `
+                <tr style="border-bottom: 1px solid var(--border-color); height: 48px; ${isGd ? 'background: rgba(139, 92, 246, 0.12); font-weight: 700;' : ''}">
+                    <td style="padding: 10px 14px; font-family: var(--font-mono); ${isGd ? 'color: var(--purple-light); font-weight: 800;' : ''}">
+                        ${isGd ? '⭐ ' : ''}${item.rank}º
+                    </td>
+                    <td style="padding: 10px 14px; color: ${isGd ? 'var(--purple-light)' : 'var(--text-primary)'};">
+                        ${item.cidade} ${isGd ? '<span class="badge badge-purple" style="font-size:0.68rem; margin-left:6px;">Nosso Município</span>' : ''}
+                    </td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${item.ai2023.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--green-light);">${item.ai2025.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: var(--green-light);">+${diffAi}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${item.af2023.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--green-light);">${item.af2025.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: var(--green-light);">+${diffAf}</td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function renderRegiaoCentroTable() {
+        const tbody = document.getElementById('table-regiao-centro-body');
+        if (!tbody) return;
+
+        tbody.innerHTML = REGIAO_CENTRO_MA_DATA.map(item => {
+            const isGd = item.isDestaque;
+            const diffAi = (item.ai2025 - item.ai2023).toFixed(1);
+            const diffAf = (item.af2025 - item.af2023).toFixed(1);
+
+            return `
+                <tr style="border-bottom: 1px solid var(--border-color); height: 48px; ${isGd ? 'background: rgba(139, 92, 246, 0.12); font-weight: 700;' : ''}">
+                    <td style="padding: 10px 14px; font-family: var(--font-mono); ${isGd ? 'color: var(--purple-light); font-weight: 800;' : ''}">
+                        ${isGd ? '⭐ ' : ''}${item.rank}º
+                    </td>
+                    <td style="padding: 10px 14px; color: ${isGd ? 'var(--purple-light)' : 'var(--text-primary)'};">
+                        ${item.cidade} ${isGd ? '<span class="badge badge-purple" style="font-size:0.68rem; margin-left:6px;">Nosso Município</span>' : ''}
+                    </td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${item.ai2023.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--green-light);">${item.ai2025.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: var(--green-light);">+${diffAi}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${item.af2023.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--green-light);">${item.af2025.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: var(--green-light);">+${diffAf}</td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function renderRankingGeralMaTable() {
+        const tbody = document.getElementById('table-ranking-geral-ma-body');
+        if (!tbody) return;
+
+        tbody.innerHTML = RANKING_GERAL_MA_DATA.map(item => {
+            const isGd = item.isDestaque;
+            const isMedia = item.isMedia;
+
+            return `
+                <tr style="border-bottom: 1px solid var(--border-color); height: 48px; ${isGd ? 'background: rgba(139, 92, 246, 0.12); font-weight: 700;' : (isMedia ? 'background: var(--bg-tertiary); font-weight: 700;' : '')}">
+                    <td style="padding: 10px 14px; font-family: var(--font-mono); ${isGd ? 'color: var(--purple-light); font-weight: 800;' : ''}">
+                        ${isGd ? '⭐ ' : ''}${item.rank}
+                    </td>
+                    <td style="padding: 10px 14px; color: ${isGd ? 'var(--purple-light)' : (isMedia ? 'var(--text-primary)' : 'var(--text-primary)')};">
+                        ${item.cidade}
+                    </td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${item.ideb2023.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--green-light);">${item.ideb2025.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: var(--green-light);">${item.evolucao}</td>
+                    <td style="padding: 10px 14px; text-align: center;">
+                        <span class="badge ${isGd ? 'badge-purple' : (isMedia ? 'badge-info' : 'badge-outline')}" style="font-size:0.72rem;">
+                            ${item.classif}
+                        </span>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
