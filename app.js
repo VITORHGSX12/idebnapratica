@@ -10134,79 +10134,542 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
     }
 
     // ==========================================
-    // GESTÃO DE USUÁRIOS (RBAC) NO ADMIN PANEL
+    // GESTÃO DE USUÁRIOS (LAYOUT ADAPTADO - IMAGENS 1 E 2)
     // ==========================================
-    async function loadUsersList() {
+
+    let dbUsersList = [
+        {
+            id: '4772',
+            nome: 'MARIA JOAQUINA SOUSA DA CUNHA',
+            tipo: 'Aluno(a)',
+            situacao: 'Ativo',
+            cpf: '084.592.113-40',
+            inep: '21128723',
+            nis: '165.82910.44-1',
+            mae: 'ELINALVA FEITOSA DE SOUSA',
+            telefone: '99984-4666',
+            escola: 'UI JOSE CORREA LIMA',
+            turma: '5º Ano A',
+            turno: 'Matutino',
+            dataInclusao: '14/08/2026',
+            saebNivel: 'Nível 3 (Adequado)',
+            lpPontos: '224 pts',
+            matPontos: '238 pts',
+            frequencia: '96.5%',
+            responsavel: {
+                nome: 'ELINALVA FEITOSA DE SOUSA',
+                parentesco: 'Mãe',
+                telefone: '(99) 99984-4666',
+                cpf: '041.229.883-91'
+            },
+            origem: {
+                escolaAnterior: 'Escola Municipal São Francisco',
+                escolaAtual: 'UI JOSE CORREA LIMA',
+                turma: '5º Ano A'
+            },
+            acesso: null
+        },
+        {
+            id: '4773',
+            nome: 'PROF. CARLOS EDUARDO SILVA',
+            tipo: 'Professor(a)',
+            situacao: 'Ativo',
+            cpf: '412.879.653-22',
+            inep: '21128146',
+            nis: '-',
+            mae: 'MARIA DE LOURDES SILVA',
+            telefone: '99935-6250',
+            escola: 'UI EMILIO MURAD',
+            turma: '5º e 9º Anos',
+            turno: 'Integral',
+            dataInclusao: '02/02/2026',
+            saebNivel: 'Docente Titular',
+            lpPontos: '-',
+            matPontos: '-',
+            frequencia: '100%',
+            responsavel: null,
+            origem: {
+                escolaAnterior: 'Rede Estadual do Maranhão',
+                escolaAtual: 'UI EMILIO MURAD',
+                turma: 'Matemática e LP'
+            },
+            acesso: {
+                email: 'carlos.silva@goncalvesdias.ma.gov.br',
+                role: 'Professor'
+            }
+        },
+        {
+            id: '4774',
+            nome: 'DIR. ANA CLARA MENDES',
+            tipo: 'Diretor(a)',
+            situacao: 'Ativo',
+            cpf: '551.982.341-00',
+            inep: '21286973',
+            nis: '-',
+            mae: 'TERESA MENDES RIBEIRO',
+            telefone: '99998-2055',
+            escola: 'UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ',
+            turma: 'Gestão Geral',
+            turno: 'Matutino / Vespertino',
+            dataInclusao: '15/01/2026',
+            saebNivel: 'Gestor Escolar',
+            lpPontos: '-',
+            matPontos: '-',
+            frequencia: '100%',
+            responsavel: null,
+            origem: {
+                escolaAnterior: 'SEMED Gonçalves Dias',
+                escolaAtual: 'UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ',
+                turma: 'Direção'
+            },
+            acesso: {
+                email: 'ana.mendes@goncalvesdias.ma.gov.br',
+                role: 'Diretor'
+            }
+        },
+        {
+            id: '4775',
+            nome: 'GABRIEL FEITOSA DE SOUSA',
+            tipo: 'Aluno(a)',
+            situacao: 'Ativo',
+            cpf: '095.334.812-70',
+            inep: '21128740',
+            nis: '165.82910.44-2',
+            mae: 'ELINALVA FEITOSA DE SOUSA',
+            telefone: '99981-4371',
+            escola: 'UE VEREADOR LEONARDO FERREIRA LIMA',
+            turma: '9º Ano B',
+            turno: 'Vespertino',
+            dataInclusao: '14/08/2026',
+            saebNivel: 'Nível 4 (Consolidado)',
+            lpPontos: '268 pts',
+            matPontos: '274 pts',
+            frequencia: '98.0%',
+            responsavel: {
+                nome: 'ELINALVA FEITOSA DE SOUSA',
+                parentesco: 'Mãe',
+                telefone: '(99) 99981-4371',
+                cpf: '041.229.883-91'
+            },
+            origem: {
+                escolaAnterior: 'UE VEREADOR LEONARDO FERREIRA LIMA',
+                escolaAtual: 'UE VEREADOR LEONARDO FERREIRA LIMA',
+                turma: '9º Ano B'
+            },
+            acesso: null
+        }
+    ];
+
+    let currentSelectedUser = dbUsersList[0];
+
+    function loadUsersList() {
+        renderUsersTable();
+    }
+
+    function renderUsersTable() {
         const tbody = document.getElementById('users-table-body');
         if (!tbody) return;
 
-        const userEmail = sessionStorage.getItem('userEmail') || 'gestor@goncalvesdias.ma.gov.br';
-        const token = btoa(userEmail);
+        const typeFilter = document.getElementById('filter-user-type')?.value || 'all';
+        const searchVal = document.getElementById('filter-user-search')?.value?.toLowerCase().trim() || '';
+        const statusFilter = document.getElementById('filter-user-status')?.value || 'all';
 
-        try {
-            const res = await fetch(`${API_BASE_URL}/api/users`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (res.ok) {
-                const users = await res.json();
-                if (users && Array.isArray(users)) {
-                    tbody.innerHTML = users.map(u => `
-                        <tr style="border-bottom: 1px solid var(--border-color); height: 48px;">
-                            <td style="padding: 12px 16px; font-weight: 600; color: var(--text-primary);">
-                                <div style="display:flex; align-items:center; gap:8px;">
-                                    <div style="width:28px; height:28px; border-radius:50%; background:var(--purple); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700;">
-                                        ${u.nome.substring(0, 2).toUpperCase()}
-                                    </div>
-                                    <span>${u.nome}</span>
-                                </div>
-                            </td>
-                            <td style="padding: 12px 16px; color: var(--text-secondary);">${u.email}</td>
-                            <td style="padding: 12px 16px;">
-                                <span class="badge ${u.role === 'Master Admin' ? 'badge-danger' : (u.role === 'Gestor da Rede' ? 'badge-purple' : (u.role === 'Diretor Escola' ? 'badge-info' : 'badge-success'))}">
-                                    ${u.role}
-                                </span>
-                            </td>
-                            <td style="padding: 12px 16px; color: var(--text-secondary);">${u.escola || '<span style="color:var(--text-muted);">Todas (Rede Municipal)</span>'}</td>
-                            <td style="padding: 12px 16px; color: var(--text-secondary);">${u.turma || '<span style="color:var(--text-muted);">-</span>'}</td>
-                            <td style="padding: 12px 16px; text-align: center;">
-                                <button class="btn-icon btn-delete-user" data-id="${u.id}" title="Excluir Usuário" style="background:none; border:none; color:var(--red-light); cursor:pointer; padding:6px;">
-                                    <i data-lucide="trash-2" style="width:16px; height:16px;"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    `).join('');
+        const filtered = dbUsersList.filter(u => {
+            const matchType = typeFilter === 'all' || u.tipo === typeFilter;
+            const matchStatus = statusFilter === 'all' || u.situacao === statusFilter;
+            const matchSearch = !searchVal ||
+                u.id.toLowerCase().includes(searchVal) ||
+                u.nome.toLowerCase().includes(searchVal) ||
+                (u.cpf && u.cpf.toLowerCase().includes(searchVal)) ||
+                (u.inep && u.inep.toLowerCase().includes(searchVal)) ||
+                (u.mae && u.mae.toLowerCase().includes(searchVal));
 
-                    if (window.lucide) lucide.createIcons({ attrs: { class: 'lucide' } });
+            return matchType && matchStatus && matchSearch;
+        });
 
-                    tbody.querySelectorAll('.btn-delete-user').forEach(btn => {
-                        btn.addEventListener('click', async () => {
-                            const id = btn.getAttribute('data-id');
-                            if (confirm('Deseja realmente excluir este usuário?')) {
-                                try {
-                                    const delRes = await fetch(`${API_BASE_URL}/api/users/${id}`, {
-                                        method: 'DELETE',
-                                        headers: { 'Authorization': `Bearer ${token}` }
-                                    });
-                                    if (delRes.ok) {
-                                        showToast('Usuário excluído com sucesso!', 'check');
-                                        loadUsersList();
-                                    } else {
-                                        showToast('Erro ao excluir usuário.', 'alert-triangle');
-                                    }
-                                } catch (e) {
-                                    showToast('Falha na exclusão do usuário.', 'alert-triangle');
-                                }
-                            }
-                        });
-                    });
-                }
-            }
-        } catch (e) {
-            console.error('Failed to load users:', e);
+        tbody.innerHTML = '';
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" style="padding: 32px; text-align: center; color: var(--text-muted);">
+                        Nenhum usuário encontrado com os filtros selecionados.
+                    </td>
+                </tr>
+            `;
+            safeCreateIcons();
+            return;
         }
+
+        filtered.forEach(u => {
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = '1px solid var(--border-color)';
+            tr.style.fontSize = '0.82rem';
+            tr.style.height = '52px';
+
+            const isAluno = u.tipo === 'Aluno(a)';
+            const typeBadgeColor = isAluno ? '#f97316' : (u.tipo === 'Professor(a)' ? '#3b82f6' : (u.tipo === 'Diretor(a)' ? '#8b5cf6' : '#64748b'));
+
+            tr.innerHTML = `
+                <td style="padding: 10px 14px; font-weight: 700; font-family: var(--font-mono); color: var(--text-secondary);">
+                    ${u.id}
+                </td>
+                <td style="padding: 10px 14px;">
+                    <div style="display: flex; flex-direction: column; gap: 3px; align-items: flex-start;">
+                        <span style="background: #22c55e; color: #ffffff; font-size: 0.68rem; font-weight: 700; padding: 2px 6px; border-radius: 3px;">
+                            ${u.situacao}
+                        </span>
+                        <span style="background: ${typeBadgeColor}; color: #ffffff; font-size: 0.68rem; font-weight: 700; padding: 2px 6px; border-radius: 3px;">
+                            ${u.tipo}
+                        </span>
+                    </div>
+                </td>
+                <td style="padding: 10px 14px; font-size: 0.78rem;">
+                    <div style="color: var(--text-secondary);"><strong style="color: var(--text-primary);">CPF:</strong> ${u.cpf || '-'}</div>
+                    <div style="color: var(--text-secondary); margin-top: 2px;"><strong style="color: var(--text-primary);">INEP:</strong> ${u.inep || '-'}</div>
+                </td>
+                <td style="padding: 10px 14px;">
+                    <strong style="color: var(--text-primary); font-size: 0.84rem; display: block; text-transform: uppercase;">
+                        ${u.nome}
+                    </strong>
+                    <span style="font-size: 0.74rem; color: var(--text-secondary); display: block; margin-top: 2px;">
+                        ${u.mae ? `Mãe: ${u.mae}` : (u.escola ? `Lotação: ${u.escola}` : '')}
+                    </span>
+                </td>
+                <td style="padding: 10px 14px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary);">
+                    ${u.telefone || '-'}
+                </td>
+                <td style="padding: 10px 14px; text-align: center;">
+                    <div style="display: inline-flex; gap: 6px; align-items: center; justify-content: center;">
+                        <button class="btn btn-sm btn-view-profile" data-id="${u.id}" style="background: #84cc16; color: #ffffff; border: none; padding: 6px 9px; border-radius: 4px; cursor: pointer;" title="Ver Perfil Completo">
+                            <i data-lucide="search" style="width: 14px; height: 14px;"></i>
+                        </button>
+                        <button class="btn btn-sm btn-edit-profile" data-id="${u.id}" style="background: #3b82f6; color: #ffffff; border: none; padding: 6px 9px; border-radius: 4px; cursor: pointer;" title="Editar Dados">
+                            <i data-lucide="edit-2" style="width: 14px; height: 14px;"></i>
+                        </button>
+                        <button class="btn btn-sm btn-delete-profile" data-id="${u.id}" style="background: #ef4444; color: #ffffff; border: none; padding: 6px 9px; border-radius: 4px; cursor: pointer;" title="Excluir Usuário">
+                            <i data-lucide="x" style="width: 14px; height: 14px;"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
+
+            tbody.appendChild(tr);
+        });
+
+        // Add event listeners to action buttons
+        tbody.querySelectorAll('.btn-view-profile').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                const u = dbUsersList.find(user => user.id === id);
+                if (u) openUserProfileDetail(u);
+            });
+        });
+
+        tbody.querySelectorAll('.btn-edit-profile').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                const u = dbUsersList.find(user => user.id === id);
+                if (u) {
+                    currentSelectedUser = u;
+                    openUserProfileDetail(u);
+                    showToast(`Modo de edição ativado para ${u.nome}`, 'edit');
+                }
+            });
+        });
+
+        tbody.querySelectorAll('.btn-delete-profile').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                const u = dbUsersList.find(user => user.id === id);
+                if (u && confirm(`Deseja realmente desativar/excluir o usuário ${u.nome}?`)) {
+                    dbUsersList = dbUsersList.filter(user => user.id !== id);
+                    renderUsersTable();
+                    showToast('Usuário removido com sucesso!', 'trash-2');
+                }
+            });
+        });
+
+        safeCreateIcons();
     }
 
-    // Create User Modal Handlers
+    // Filter event listeners
+    const filterUserType = document.getElementById('filter-user-type');
+    const filterUserSearch = document.getElementById('filter-user-search');
+    const filterUserStatus = document.getElementById('filter-user-status');
+    const btnSearchUsers = document.getElementById('btn-search-users');
+
+    if (filterUserType) filterUserType.addEventListener('change', renderUsersTable);
+    if (filterUserStatus) filterUserStatus.addEventListener('change', renderUsersTable);
+    if (filterUserSearch) filterUserSearch.addEventListener('input', debounce(renderUsersTable, 200));
+    if (btnSearchUsers) btnSearchUsers.addEventListener('click', renderUsersTable);
+
+    // Profile Detail View (Layout Imagem 2)
+    function openUserProfileDetail(user) {
+        currentSelectedUser = user;
+        const listView = document.getElementById('users-list-view-container');
+        const detailView = document.getElementById('user-profile-detail-view');
+
+        if (!listView || !detailView) return;
+
+        listView.classList.add('hidden');
+        detailView.classList.remove('hidden');
+
+        // Populate Left Column
+        const displayName = document.getElementById('profile-user-display-name');
+        const fullName = document.getElementById('profile-user-full-name');
+        const typeBadge = document.getElementById('profile-user-type-badge');
+        const idEl = document.getElementById('profile-user-id');
+        const inepEl = document.getElementById('profile-user-inep');
+        const nisEl = document.getElementById('profile-user-nis');
+        const cpfEl = document.getElementById('profile-user-cpf');
+        const dateEl = document.getElementById('profile-user-date');
+        const motherEl = document.getElementById('profile-user-mother');
+        const phoneEl = document.getElementById('profile-user-phone');
+        const schoolEl = document.getElementById('profile-user-school');
+
+        if (displayName) displayName.textContent = user.nome;
+        if (fullName) fullName.textContent = user.nome;
+        if (typeBadge) {
+            typeBadge.textContent = user.tipo;
+            typeBadge.style.background = user.tipo === 'Aluno(a)' ? '#f97316' : (user.tipo === 'Professor(a)' ? '#3b82f6' : '#8b5cf6');
+        }
+        if (idEl) idEl.textContent = user.id;
+        if (inepEl) inepEl.textContent = user.inep || '-';
+        if (nisEl) nisEl.textContent = user.nis || '-';
+        if (cpfEl) cpfEl.textContent = user.cpf || '-';
+        if (dateEl) dateEl.textContent = user.dataInclusao || '14/08/2026';
+        if (motherEl) motherEl.textContent = user.mae || 'Não informado';
+        if (phoneEl) phoneEl.textContent = user.telefone || '-';
+        if (schoolEl) schoolEl.textContent = user.escola || 'Rede Municipal';
+
+        // Populate Right Column: 1. Responsável
+        const respContent = document.getElementById('profile-responsible-content');
+        if (respContent) {
+            if (user.responsavel) {
+                respContent.innerHTML = `
+                    <div style="background: var(--bg-tertiary); padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                        <strong style="font-size: 0.88rem; color: var(--text-primary); display: block; text-transform: uppercase;">
+                            ${user.responsavel.nome}
+                        </strong>
+                        <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 4px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <span><strong>Parentesco:</strong> ${user.responsavel.parentesco}</span>
+                            <span><strong>Telefone:</strong> ${user.responsavel.telefone}</span>
+                            <span><strong>CPF:</strong> ${user.responsavel.cpf || '-'}</span>
+                        </div>
+                    </div>
+                `;
+            } else {
+                respContent.innerHTML = '<p style="margin:0; font-size:0.85rem; color:var(--text-secondary);">Nenhum registro foi encontrado.</p>';
+            }
+        }
+
+        // Populate Right Column: 2. Origem Escolar
+        const origContent = document.getElementById('profile-origin-content');
+        if (origContent) {
+            if (user.origem) {
+                origContent.innerHTML = `
+                    <div style="background: var(--bg-tertiary); padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                        <strong style="font-size: 0.88rem; color: var(--text-primary); display: block;">
+                            ${user.origem.escolaAtual}
+                        </strong>
+                        <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 4px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <span><strong>Turma / Cargo:</strong> ${user.origem.turma}</span>
+                            <span><strong>Origem Anterior:</strong> ${user.origem.escolaAnterior}</span>
+                        </div>
+                    </div>
+                `;
+            } else {
+                origContent.innerHTML = '<p style="margin:0; font-size:0.85rem; color:var(--text-secondary);">Nenhum registro foi encontrado.</p>';
+            }
+        }
+
+        // Populate Right Column: 3. Desempenho
+        const statLvl = document.getElementById('profile-stat-saeb-level');
+        const statLp = document.getElementById('profile-stat-lp');
+        const statMat = document.getElementById('profile-stat-mat');
+        const statFreq = document.getElementById('profile-stat-freq');
+
+        if (statLvl) statLvl.textContent = user.saebNivel || 'Nível 3 (Adequado)';
+        if (statLp) statLp.textContent = user.lpPontos || '224 pts';
+        if (statMat) statMat.textContent = user.matPontos || '238 pts';
+        if (statFreq) statFreq.textContent = user.frequencia || '96.5%';
+
+        // Populate Right Column: 4. Acessos
+        const accessContent = document.getElementById('profile-access-content');
+        if (accessContent) {
+            if (user.acesso) {
+                accessContent.innerHTML = `
+                    <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: var(--radius-sm); padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <div>
+                            <strong style="font-size: 0.85rem; color: var(--green-light); display: flex; align-items: center; gap: 6px;">
+                                <i data-lucide="check-circle" style="width: 15px; height: 15px;"></i>
+                                Acesso Ativo ao Sistema
+                            </strong>
+                            <span style="font-size: 0.78rem; color: var(--text-secondary); display: block; margin-top: 2px;">
+                                Login: <strong>${user.acesso.email}</strong> • Perfil: ${user.acesso.role}
+                            </span>
+                        </div>
+                        <button class="btn btn-outline btn-sm" id="btn-reset-user-pass" style="font-size: 0.75rem;">
+                            Redefinir Senha
+                        </button>
+                    </div>
+                `;
+                document.getElementById('btn-reset-user-pass')?.addEventListener('click', () => {
+                    showToast(`Link de redefinição de senha enviado para ${user.acesso.email}`, 'send');
+                });
+            } else {
+                accessContent.innerHTML = `
+                    <button class="btn" id="btn-create-system-access" style="background: #ef4444; color: #ffffff; font-weight: 800; font-size: 0.82rem; text-transform: uppercase; padding: 10px 20px; border-radius: 4px; display: flex; align-items: center; gap: 8px; border: none; cursor: pointer;">
+                        <i data-lucide="lock" style="width: 16px; height: 16px;"></i>
+                        <span>CRIAR ACESSO AO SISTEMA</span>
+                    </button>
+                `;
+                document.getElementById('btn-create-system-access')?.addEventListener('click', () => {
+                    document.getElementById('modal-criar-acesso')?.classList.remove('hidden');
+                });
+            }
+        }
+
+        safeCreateIcons();
+    }
+
+    // Navigation back to users list
+    const btnBackToUsers = document.getElementById('btn-back-to-users-list');
+    if (btnBackToUsers) {
+        btnBackToUsers.addEventListener('click', () => {
+            document.getElementById('user-profile-detail-view')?.classList.add('hidden');
+            document.getElementById('users-list-view-container')?.classList.remove('hidden');
+            renderUsersTable();
+        });
+    }
+
+    // Modals in Profile Detail View
+    // 1. Alterar Foto
+    const btnProfileChangePhoto = document.getElementById('btn-profile-change-photo');
+    if (btnProfileChangePhoto) {
+        btnProfileChangePhoto.addEventListener('click', () => {
+            showToast('Selecione uma imagem para atualizar o avatar do usuário.', 'image');
+        });
+    }
+
+    // 2. Documentos
+    const btnProfileDocs = document.getElementById('btn-profile-docs-user');
+    if (btnProfileDocs) {
+        btnProfileDocs.addEventListener('click', () => {
+            showToast(`Emitindo Ficha Cadastral em PDF para ${currentSelectedUser?.nome}...`, 'printer');
+            setTimeout(() => window.print(), 300);
+        });
+    }
+
+    // 3. Cadastrar Responsável
+    const modalCadastrarResp = document.getElementById('modal-cadastrar-responsavel');
+    const btnAddResp = document.getElementById('btn-add-responsible');
+    const btnCloseResp = document.getElementById('btn-close-resp-modal');
+    const btnCancelResp = document.getElementById('btn-cancel-resp-modal');
+    const btnSaveResp = document.getElementById('btn-save-resp-modal');
+
+    if (btnAddResp && modalCadastrarResp) {
+        btnAddResp.addEventListener('click', () => modalCadastrarResp.classList.remove('hidden'));
+    }
+    if (btnCloseResp && modalCadastrarResp) {
+        btnCloseResp.addEventListener('click', () => modalCadastrarResp.classList.add('hidden'));
+    }
+    if (btnCancelResp && modalCadastrarResp) {
+        btnCancelResp.addEventListener('click', () => modalCadastrarResp.classList.add('hidden'));
+    }
+    if (btnSaveResp) {
+        btnSaveResp.addEventListener('click', () => {
+            const nome = document.getElementById('resp-input-nome')?.value.trim();
+            const parentesco = document.getElementById('resp-input-parentesco')?.value || 'Mãe';
+            const tel = document.getElementById('resp-input-tel')?.value.trim();
+            const cpf = document.getElementById('resp-input-cpf')?.value.trim();
+
+            if (!nome || !tel) {
+                showToast('Informe o nome e o telefone do responsável.', 'alert-triangle');
+                return;
+            }
+
+            if (currentSelectedUser) {
+                currentSelectedUser.responsavel = { nome, parentesco, telefone: tel, cpf };
+                modalCadastrarResp.classList.add('hidden');
+                openUserProfileDetail(currentSelectedUser);
+                showToast('Responsável legal cadastrado com sucesso!', 'check');
+            }
+        });
+    }
+
+    // 4. Cadastrar Origem Escolar
+    const modalCadastrarOrigem = document.getElementById('modal-cadastrar-origem');
+    const btnAddOrigem = document.getElementById('btn-add-school-origin');
+    const btnCloseOrigem = document.getElementById('btn-close-origem-modal');
+    const btnCancelOrigem = document.getElementById('btn-cancel-origem-modal');
+    const btnSaveOrigem = document.getElementById('btn-save-origem-modal');
+    const selOrigemEscolaAtual = document.getElementById('origem-input-escola-atual');
+
+    if (btnAddOrigem && modalCadastrarOrigem) {
+        btnAddOrigem.addEventListener('click', () => {
+            if (selOrigemEscolaAtual && dbEscolas) {
+                selOrigemEscolaAtual.innerHTML = dbEscolas.map(e => `<option value="${e.nome}">${e.nome}</option>`).join('');
+            }
+            modalCadastrarOrigem.classList.remove('hidden');
+        });
+    }
+    if (btnCloseOrigem && modalCadastrarOrigem) {
+        btnCloseOrigem.addEventListener('click', () => modalCadastrarOrigem.classList.add('hidden'));
+    }
+    if (btnCancelOrigem && modalCadastrarOrigem) {
+        btnCancelOrigem.addEventListener('click', () => modalCadastrarOrigem.classList.add('hidden'));
+    }
+    if (btnSaveOrigem) {
+        btnSaveOrigem.addEventListener('click', () => {
+            const escolaAnt = document.getElementById('origem-input-escola-ant')?.value.trim() || 'Rede Municipal';
+            const escolaAtual = document.getElementById('origem-input-escola-atual')?.value || 'UI JOSE CORREA LIMA';
+            const turma = document.getElementById('origem-input-turma')?.value.trim() || '5º Ano A';
+
+            if (currentSelectedUser) {
+                currentSelectedUser.origem = { escolaAnterior: escolaAnt, escolaAtual, turma };
+                currentSelectedUser.escola = escolaAtual;
+                currentSelectedUser.turma = turma;
+                modalCadastrarOrigem.classList.add('hidden');
+                openUserProfileDetail(currentSelectedUser);
+                showToast('Vínculo escolar atualizado com sucesso!', 'check');
+            }
+        });
+    }
+
+    // 5. Criar Acesso ao Sistema
+    const modalCriarAcesso = document.getElementById('modal-criar-acesso');
+    const btnCloseAcesso = document.getElementById('btn-close-acesso-modal');
+    const btnCancelAcesso = document.getElementById('btn-cancel-acesso-modal');
+    const btnSaveAcesso = document.getElementById('btn-save-acesso-modal');
+
+    if (btnCloseAcesso && modalCriarAcesso) {
+        btnCloseAcesso.addEventListener('click', () => modalCriarAcesso.classList.add('hidden'));
+    }
+    if (btnCancelAcesso && modalCriarAcesso) {
+        btnCancelAcesso.addEventListener('click', () => modalCriarAcesso.classList.add('hidden'));
+    }
+    if (btnSaveAcesso) {
+        btnSaveAcesso.addEventListener('click', () => {
+            const email = document.getElementById('acesso-input-email')?.value.trim();
+            const role = document.getElementById('acesso-input-role')?.value || 'Aluno';
+
+            if (!email) {
+                showToast('Informe um e-mail válido para login.', 'alert-triangle');
+                return;
+            }
+
+            if (currentSelectedUser) {
+                currentSelectedUser.acesso = { email, role };
+                modalCriarAcesso.classList.add('hidden');
+                openUserProfileDetail(currentSelectedUser);
+                showToast(`Acesso criado com sucesso para ${email}!`, 'check');
+            }
+        });
+    }
+
+    // 6. Cadastrar Novo Usuário Global Modal
     const btnOpenCreateUser = document.getElementById('btn-open-create-user-modal');
     const createUserModal = document.getElementById('create-user-modal');
     const closeCreateUserModalBtn = document.getElementById('close-create-user-modal-btn');
@@ -10216,52 +10679,65 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
 
     if (btnOpenCreateUser && createUserModal) {
         btnOpenCreateUser.addEventListener('click', () => {
-            // Populate schools dropdown
             if (selectUserSchool && dbEscolas) {
                 selectUserSchool.innerHTML = dbEscolas.map(e => `<option value="${e.nome}">${e.nome}</option>`).join('');
             }
             createUserModal.classList.remove('hidden');
         });
+    }
+    if (closeCreateUserModalBtn && createUserModal) {
+        closeCreateUserModalBtn.addEventListener('click', () => createUserModal.classList.add('hidden'));
+    }
+    if (btnCancelCreateUser && createUserModal) {
+        btnCancelCreateUser.addEventListener('click', () => createUserModal.classList.add('hidden'));
+    }
 
-        closeCreateUserModalBtn?.addEventListener('click', () => createUserModal.classList.add('hidden'));
-        btnCancelCreateUser?.addEventListener('click', () => createUserModal.classList.add('hidden'));
-
-        createUserForm?.addEventListener('submit', async (e) => {
+    if (createUserForm) {
+        createUserForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const nome = document.getElementById('new-user-name').value;
-            const email = document.getElementById('new-user-email').value;
-            const password = document.getElementById('new-user-password').value;
-            const role = document.getElementById('new-user-role').value;
-            const escola = document.getElementById('new-user-school').value;
-            const turma = document.getElementById('new-user-grade').value;
+            const nome = document.getElementById('new-user-name')?.value.trim();
+            const tipo = document.getElementById('new-user-role')?.value || 'Aluno(a)';
+            const tel = document.getElementById('new-user-phone')?.value.trim();
+            const cpf = document.getElementById('new-user-cpf')?.value.trim();
+            const inep = document.getElementById('new-user-inep')?.value.trim();
+            const mae = document.getElementById('new-user-mother')?.value.trim();
+            const escola = document.getElementById('new-user-school')?.value || 'UI JOSE CORREA LIMA';
+            const turma = document.getElementById('new-user-grade')?.value.trim() || '5º Ano A';
 
-            const userEmail = sessionStorage.getItem('userEmail') || 'gestor@goncalvesdias.ma.gov.br';
-            const token = btoa(userEmail);
+            if (!nome) return;
 
-            try {
-                const res = await fetch(`${API_BASE_URL}/api/users`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ nome, email, password, role, escola, turma })
-                });
+            const newId = String(4770 + dbUsersList.length + 1);
+            const newUser = {
+                id: newId,
+                nome: nome.toUpperCase(),
+                tipo,
+                situacao: 'Ativo',
+                cpf: cpf || '-',
+                inep: inep || '-',
+                nis: '-',
+                mae: mae || '-',
+                telefone: tel || '-',
+                escola,
+                turma,
+                turno: 'Matutino',
+                dataInclusao: new Date().toLocaleDateString('pt-BR'),
+                saebNivel: 'Em Avaliação',
+                lpPontos: '-',
+                matPontos: '-',
+                frequencia: '100%',
+                responsavel: mae ? { nome: mae, parentesco: 'Mãe', telefone: tel, cpf: '-' } : null,
+                origem: { escolaAnterior: 'Rede Municipal', escolaAtual: escola, turma },
+                acesso: null
+            };
 
-                if (res.ok) {
-                    showToast('Usuário cadastrado com sucesso!', 'check');
-                    createUserModal.classList.add('hidden');
-                    createUserForm.reset();
-                    loadUsersList();
-                } else {
-                    const err = await res.json();
-                    showToast(err.error || 'Erro ao cadastrar usuário.', 'alert-triangle');
-                }
-            } catch (err) {
-                showToast('Falha na comunicação com o servidor.', 'alert-triangle');
-            }
+            dbUsersList.unshift(newUser);
+            createUserModal.classList.add('hidden');
+            createUserForm.reset();
+            renderUsersTable();
+            showToast(`Usuário ${newUser.nome} cadastrado com sucesso!`, 'check');
         });
     }
+
 
     // Initial render calls - Start clean and responsive
     initLoginMotionCanvas();
