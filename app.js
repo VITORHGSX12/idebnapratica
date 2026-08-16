@@ -12219,3 +12219,16 @@ if (document.readyState === 'loading') {
             });
         });
     }
+
+
+    // Bulletproof Global Event Delegation for Sidebar Menu Items
+    document.addEventListener('click', function(e) {
+        const item = e.target.closest('.menu-item');
+        if (item) {
+            const targetTab = item.getAttribute('data-target');
+            if (targetTab && typeof window.navigateToTab === 'function') {
+                e.preventDefault();
+                window.navigateToTab(targetTab);
+            }
+        }
+    });
