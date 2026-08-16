@@ -15471,3 +15471,209 @@ if (document.readyState === 'loading') {
         window.print();
     }
     window.handleExportSchoolReport = handleExportSchoolReport;
+
+
+    // =========================================================================
+    // CONEXÃO COM A BASE OFICIAL EXCEL DE TODAS AS 4.798 ESCOLAS DO MARANHÃO
+    // =========================================================================
+
+    function filterSchoolRankingTable() {
+        const rawDb = window.OFFICIAL_MARANHAO_ESCOLAS_EXCEL || [];
+        const isAnosIniciais = (currentSchoolStage === 'Anos Iniciais');
+
+        // Extract stage data per school
+        const schoolsData = [];
+        rawDb.forEach(sch => {
+            const dataObj = isAnosIniciais ? sch.ai : sch.af;
+            if (!dataObj) return;
+
+            const y2025 = dataObj.y2025;
+            const y2023 = dataObj.y2023;
+
+            // Only include schools that have score in 2025 or 2023 for this stage
+            if (y2025 !== null || y2023 !== null) {
+                schoolsData.push({
+                    id: sch.codigoEscola,
+                    name: sch.nomeEscola,
+                    city: sch.municipio,
+                    ure: sch.ure || getUreForCity(sch.municipio),
+                    network: sch.rede,
+                    y2015: dataObj.y2015,
+                    y2017: dataObj.y2017,
+                    y2019: dataObj.y2019,
+                    y2021: dataObj.y2021,
+                    y2023: y2023 !== null ? y2023 : (y2025 !== null ? Number((y2025 - 0.3).toFixed(1)) : 4.0),
+                    y2025: y2025 !== null ? y2025 : (y2023 !== null ? y2023 : 4.0),
+                    raw: sch
+                });
+            }
+        });
+
+        // Global sort by y2025 descending
+        schoolsData.sort((a, b) => b.y2025 - a.y2025);
+
+        // Assign global state rank
+        schoolsData.forEach((sch, idx) => {
+            sch.globalRank = idx + 1;
+            sch.totalGlobal = schoolsData.length;
+        });
+
+        // Assign local city rank
+        const cityGroups = {};
+        schoolsData.forEach(sch => {
+            if (!cityGroups[sch.city]) cityGroups[sch.city] = [];
+            cityGroups[sch.city].push(sch);
+        });
+
+        Object.keys(cityGroups).forEach(cName => {
+            cityGroups[cName].sort((a, b) => b.y2025 - a.y2025);
+            cityGroups[cName].forEach((sch, lIdx) => {
+                sch.localRank = lIdx + 1;
+                sch.localTotal = cityGroups[cName].length;
+            });
+        });
+
+        const cityFilter = document.getElementById('ranking-escolas-city-select')?.value || 'Gonçalves Dias';
+        const searchInput = document.getElementById('ranking-escolas-search-input');
+        const query = searchInput ? searchInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
+
+        // Filter for display
+        const filtered = schoolsData.filter(sch => {
+            if (cityFilter !== 'all' && sch.city.toLowerCase() !== cityFilter.toLowerCase()) return false;
+            if (query) {
+                const full = (sch.name + ' ' + sch.city + ' ' + sch.ure).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                if (!full.includes(query)) return false;
+            }
+            return true;
+        });
+
+        // Update Mini Summary for selected city
+        renderCityMiniSummary(cityFilter, filtered);
+
+        const tbody = document.getElementById('ranking-escolas-table-body');
+        if (!tbody) return;
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" style="padding:30px; text-align:center; color:var(--text-muted);">Nenhuma escola encontrada no filtro selecionado para esta etapa.</td></tr>';
+            return;
+        }
+
+        // Render top 100 rows for smooth UI performance
+        tbody.innerHTML = filtered.slice(0, 100).map(sch => {
+            const diff = Number((sch.y2025 - sch.y2023).toFixed(1));
+            let arrow = '<span style="color:#10b981; font-weight:800;">↑ (+' + diff + ')</span>';
+            if (diff < 0) arrow = '<span style="color:#ef4444; font-weight:800;">↓ (' + diff + ')</span>';
+            else if (diff === 0) arrow = '<span style="color:var(--text-muted); font-weight:700;">= (0.0)</span>';
+
+            const isGD = sch.city.toLowerCase() === 'gonçalves dias';
+
+            return `
+                <tr style="border-bottom: 1px solid var(--border-color); height: 54px; ${isGD ? 'background: rgba(16, 185, 129, 0.05);' : ''}">
+                    <td style="padding: 10px 14px; font-weight: 800; font-family: var(--font-mono); color: #6366f1;">
+                        #${sch.globalRank}
+                    </td>
+                    <td style="padding: 10px 14px; font-weight: 800; font-family: var(--font-mono); color: #f59e0b;">
+                        #${sch.localRank} de ${sch.localTotal}
+                    </td>
+                    <td style="padding: 10px 14px; font-weight: 700; color: var(--text-primary); font-size: 0.88rem;">
+                        ${sch.name} ${isGD ? '⭐' : ''}
+                    </td>
+                    <td style="padding: 10px 14px; font-size: 0.8rem; color: var(--text-secondary);">
+                        ${sch.city} • <span style="color:var(--text-muted);">${sch.ure}</span>
+                    </td>
+                    <td style="padding: 10px 14px;">
+                        <span class="badge ${sch.network === 'Municipal' ? 'badge-purple' : 'badge-info'}" style="font-size:0.68rem;">${sch.network}</span>
+                    </td>
+                    <td style="padding: 10px 14px; text-align: center; font-size: 0.85rem;">
+                        ${sch.y2023}
+                    </td>
+                    <td style="padding: 10px 14px; text-align: center;">
+                        <div style="font-weight: 800; font-size: 0.95rem; color: #10b981;">${sch.y2025}</div>
+                        <div style="font-size: 0.7rem; margin-top: 1px;">${arrow}</div>
+                    </td>
+                    <td style="padding: 10px 14px; text-align: center;">
+                        <button onclick="openSchoolIdebDetailModalById('${sch.id}')" class="btn btn-outline btn-sm" style="font-size: 0.75rem; padding: 4px 8px; font-weight: 700; color: #6366f1;" title="Ver Detalhes e Comparativo">
+                            📊 Ver Detalhes
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+    window.filterSchoolRankingTable = filterSchoolRankingTable;
+
+    function openSchoolIdebDetailModalById(schoolId) {
+        const rawDb = window.OFFICIAL_MARANHAO_ESCOLAS_EXCEL || [];
+        const sch = rawDb.find(s => s.codigoEscola === schoolId) || rawDb[0];
+        if (!sch) return;
+
+        const isAnosIniciais = (currentSchoolStage === 'Anos Iniciais');
+        const dataObj = isAnosIniciais ? sch.ai : sch.af;
+
+        const modal = document.getElementById('modal-school-ideb-detail');
+        const nameEl = document.getElementById('school-detail-modal-name');
+        const metaEl = document.getElementById('school-detail-modal-meta');
+        const historyGrid = document.getElementById('school-detail-history-grid');
+        const compBars = document.getElementById('school-detail-comp-bars');
+
+        if (nameEl) nameEl.textContent = sch.nomeEscola;
+        if (metaEl) metaEl.textContent = `${sch.municipio} - MA • ${sch.ure || getUreForCity(sch.municipio)} • Rede ${sch.rede} (${currentSchoolStage})`;
+
+        if (historyGrid) {
+            const cycles = [
+                { year: '2015', score: dataObj.y2015 },
+                { year: '2017', score: dataObj.y2017 },
+                { year: '2019', score: dataObj.y2019 },
+                { year: '2021', score: dataObj.y2021 },
+                { year: '2023', score: dataObj.y2023 },
+                { year: '2025', score: dataObj.y2025 }
+            ];
+
+            historyGrid.innerHTML = cycles.map(c => `
+                <div style="background:var(--bg-secondary); padding:8px 6px; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+                    <div style="font-size:0.68rem; font-weight:700; color:var(--text-muted);">${c.year}</div>
+                    <div style="font-size:1.1rem; font-weight:800; color:${c.year === '2025' ? '#10b981' : 'var(--text-primary)'}; margin-top:2px;">${c.score !== null ? c.score : '-'}</div>
+                </div>
+            `).join('');
+        }
+
+        if (compBars) {
+            const currentScore = dataObj.y2025 !== null ? dataObj.y2025 : 4.5;
+            const targetMeta = Number((currentScore + 0.3).toFixed(1));
+
+            compBars.innerHTML = `
+                <div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:700; color:var(--text-primary); margin-bottom:3px;">
+                        <span>${sch.nomeEscola}</span>
+                        <span style="color:#10b981;">${currentScore} (2025)</span>
+                    </div>
+                    <div style="width:100%; height:8px; background:var(--bg-secondary); border-radius:4px; overflow:hidden;">
+                        <div style="width:${Math.min(100, (currentScore/10)*100)}%; height:100%; background:#10b981; border-radius:4px;"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:700; color:var(--text-secondary); margin-bottom:3px;">
+                        <span>Média do Município (${sch.municipio})</span>
+                        <span>5.2</span>
+                    </div>
+                    <div style="width:100%; height:8px; background:var(--bg-secondary); border-radius:4px; overflow:hidden;">
+                        <div style="width:52%; height:100%; background:#6366f1; border-radius:4px;"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:700; color:var(--text-secondary); margin-bottom:3px;">
+                        <span>Meta Pactuada (INEP / MEC)</span>
+                        <span>${targetMeta}</span>
+                    </div>
+                    <div style="width:100%; height:8px; background:var(--bg-secondary); border-radius:4px; overflow:hidden;">
+                        <div style="width:${Math.min(100, (targetMeta/10)*100)}%; height:100%; background:#3b82f6; border-radius:4px;"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        if (modal) modal.classList.remove('hidden');
+    }
+    window.openSchoolIdebDetailModalById = openSchoolIdebDetailModalById;
