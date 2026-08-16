@@ -1636,16 +1636,20 @@
 
                     <!-- Subtabs de Navegação Regional: 1. Gonçalves Dias x BR/MA • 2. URE Presidente Dutra • 3. Região Centro • 4. Ranking Geral MA -->
                     <!-- Subtabs de Navegação Regional: 1. Painel Geral (Com Seletor) • 2. Painel de UREs (As 19 UREs) • 3. Ranking Geral (217 Municípios) -->
+                    <!-- Subtabs de Navegação Regional: 1. Painel Geral • 2. Painel 19 UREs • 3. Ranking 217 Municípios • 4. Ranking por Escolas -->
                     <div class="card margin-bottom-lg" style="padding: 0; overflow: hidden; background: var(--bg-secondary); border: 1px solid var(--border-color);">
                         <div style="display: flex; gap: 6px; padding: 12px 18px; border-bottom: 1px solid var(--border-color); overflow-x: auto; background: var(--bg-tertiary);">
-                            <button class="ideb-regional-tab-btn active" onclick="switchIdebSubtab('painel-principal'); return false;" data-tab="painel-principal" style="padding: 8px 18px; border-radius: 20px; font-size: 0.82rem; font-weight: 700; background: #6366f1; color: #ffffff; border: none; cursor: pointer; white-space: nowrap;">
+                            <button class="ideb-regional-tab-btn active" onclick="switchIdebSubtab('painel-principal'); return false;" data-tab="painel-principal" style="padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; background: #6366f1; color: #ffffff; border: none; cursor: pointer; white-space: nowrap;">
                                 📊 Painel Geral do Município
                             </button>
-                            <button class="ideb-regional-tab-btn" onclick="switchIdebSubtab('painel-ures'); return false;" data-tab="painel-ures" style="padding: 8px 18px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
+                            <button class="ideb-regional-tab-btn" onclick="switchIdebSubtab('painel-ures'); return false;" data-tab="painel-ures" style="padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
                                 🏛️ Painel das 19 UREs do Maranhão
                             </button>
-                            <button class="ideb-regional-tab-btn" onclick="switchIdebSubtab('ranking-geral-ma'); return false;" data-tab="ranking-geral-ma" style="padding: 8px 18px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
-                                🏆 Ranking Geral (217 Municípios MA)
+                            <button class="ideb-regional-tab-btn" onclick="switchIdebSubtab('ranking-geral-ma'); return false;" data-tab="ranking-geral-ma" style="padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
+                                🏆 Ranking Geral (217 Municípios)
+                            </button>
+                            <button class="ideb-regional-tab-btn" onclick="switchIdebSubtab('ranking-escolas-ma'); return false;" data-tab="ranking-escolas-ma" style="padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
+                                🏫 Ranking por Escolas (MA)
                             </button>
                         </div>
 
@@ -1758,6 +1762,75 @@
                                     </tbody>
                                 </table>
                             </div>
+<!-- SUBTAB 4: RANKING POR ESCOLAS (MARANHÃO) -->
+                        <div id="tab-ideb-ranking-escolas-ma" class="ideb-regional-tab-content hidden" style="padding: 24px;">
+                            <div class="flex-between flex-wrap gap-md" style="margin-bottom: 16px;">
+                                <div>
+                                    <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">
+                                        🏫 Ranking Geral de Escolas do Maranhão
+                                    </h3>
+                                    <p class="text-sm text-muted" style="margin: 2px 0 0 0;">
+                                        Classificação das unidades escolares por desempenho no IDEB com filtros por município e etapa.
+                                    </p>
+                                </div>
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <!-- Toggle Etapa Anos Iniciais / Anos Finais -->
+                                    <div style="display: flex; background: var(--bg-tertiary); padding: 3px; border-radius: 20px; border: 1px solid var(--border-color);">
+                                        <button class="school-stage-toggle active" id="btn-toggle-escolas-ai" onclick="switchSchoolRankingStage('Anos Iniciais'); return false;" style="padding: 4px 12px; border-radius: 16px; font-size: 0.76rem; font-weight: 700; background: #6366f1; color: #fff; border: none; cursor: pointer;">
+                                            5º Ano (Anos Iniciais)
+                                        </button>
+                                        <button class="school-stage-toggle" id="btn-toggle-escolas-af" onclick="switchSchoolRankingStage('Anos Finais'); return false;" style="padding: 4px 12px; border-radius: 16px; font-size: 0.76rem; font-weight: 600; background: transparent; color: var(--text-secondary); border: none; cursor: pointer;">
+                                            9º Ano (Anos Finais)
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Filtro de Município + Mini-Resumo do Município -->
+                            <div class="card margin-bottom-md" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 14px 18px; border-radius: var(--radius-lg); margin-bottom: 20px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 12px;">
+                                    <div style="display: flex; align-items: center; gap: 10px; flex-grow: 1;">
+                                        <span style="font-size: 0.84rem; font-weight: 800; color: var(--text-primary); white-space: nowrap;">
+                                            📍 Filtrar por Município:
+                                        </span>
+                                        <select id="ranking-escolas-city-select" onchange="filterSchoolRankingTable()" class="form-select" style="height: 38px; min-width: 240px; max-width: 380px; font-size: 0.85rem; font-weight: 700; color: #6366f1; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                                            <option value="all">Todos os Municípios do Maranhão</option>
+                                            <option value="Gonçalves Dias" selected>Gonçalves Dias ⭐ (Sua Rede)</option>
+                                            <!-- Preenchido via JS com 217 cidades -->
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <input type="text" id="ranking-escolas-search-input" oninput="filterSchoolRankingTable()" placeholder="Buscar escola por nome..." style="height: 38px; width: 240px; padding: 0 12px; font-size: 0.82rem; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary);">
+                                    </div>
+                                </div>
+
+                                <!-- Mini Resumo da Cidade Selecionada -->
+                                <div id="school-ranking-city-summary" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding-top: 12px; border-top: 1px solid var(--border-color);">
+                                    <!-- Preenchido via JS -->
+                                </div>
+                            </div>
+
+                            <!-- Tabela de Ranking por Escolas -->
+                            <div class="card" style="padding: 0; overflow-x: auto; border: 1px solid var(--border-color);">
+                                <table class="table-compact" style="width: 100%; border-collapse: collapse; text-align: left;">
+                                    <thead>
+                                        <tr style="background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; height: 42px;">
+                                            <th style="padding: 10px 14px; width: 70px;">POS MA</th>
+                                            <th style="padding: 10px 14px; width: 80px;">POS LOCAL</th>
+                                            <th style="padding: 10px 14px;">UNIDADE ESCOLAR</th>
+                                            <th style="padding: 10px 14px;">MUNICÍPIO / URE</th>
+                                            <th style="padding: 10px 14px; width: 100px;">REDE</th>
+                                            <th style="padding: 10px 14px; text-align: center; width: 110px;">IDEB 2023</th>
+                                            <th style="padding: 10px 14px; text-align: center; width: 130px;">IDEB 2025</th>
+                                            <th style="padding: 10px 14px; text-align: center; width: 100px;">AÇÃO</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ranking-escolas-table-body">
+                                        <!-- Preenchido via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                         </div>
                     </div>
                     </div>
@@ -5324,7 +5397,7 @@
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
     <script src="ideb_maranhao_oficial_2015_2025.js"></script>
-    <script src="app.js?v=e86f9463"></script>
+    <script src="app.js?v=4de47212"></script>
 
     <!-- Modal Vincular Professor à Turma -->
     <div id="modal-assign-teacher" class="modal-overlay hidden">
@@ -5517,5 +5590,49 @@
         </div>
     </div>
 
+<!-- Modal de Detalhe e Comparativo da Escola (Ação de Clique no Ranking de Escolas) -->
+    <div id="modal-school-ideb-detail" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 680px; width: 92%; border-radius: var(--radius-lg); background: var(--bg-secondary); border: 1px solid var(--border-color);">
+            <div class="modal-header flex-between" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px;">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <div style="width:44px; height:44px; border-radius:50%; background:#4f46e5; color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.2rem;">🏫</div>
+                    <div>
+                        <h3 id="school-detail-modal-name" style="margin:0; font-size:1.2rem; font-weight:800; color:var(--text-primary);">UI JOSE CORREA LIMA</h3>
+                        <p id="school-detail-modal-meta" class="text-sm text-muted" style="margin:2px 0 0 0;">Gonçalves Dias - MA • URE Presidente Dutra • Rede Municipal</p>
+                    </div>
+                </div>
+                <button class="btn btn-icon" onclick="closeModal('modal-school-ideb-detail'); return false;"><i data-lucide="x"></i></button>
+            </div>
+            
+            <div class="modal-body" style="padding-top: 16px; display:flex; flex-direction:column; gap:16px;">
+                <!-- Histórico Completo do IDEB da Escola (2015 - 2025) -->
+                <div style="background:var(--bg-tertiary); border:1px solid var(--border-color); padding:16px; border-radius:var(--radius-md);">
+                    <div style="font-size:0.82rem; font-weight:800; color:var(--text-primary); margin-bottom:10px;">
+                        📈 Histórico Oficial do IDEB da Escola (Ciclos 2015 – 2025)
+                    </div>
+                    <div style="display:grid; grid-template-columns:repeat(6, 1fr); gap:8px; text-align:center;" id="school-detail-history-grid">
+                        <!-- Preenchido via JS -->
+                    </div>
+                </div>
+
+                <!-- Comparativo: Escola x Média do Município x Média Estadual x Meta -->
+                <div style="background:var(--bg-tertiary); border:1px solid var(--border-color); padding:16px; border-radius:var(--radius-md);">
+                    <div style="font-size:0.82rem; font-weight:800; color:var(--text-primary); margin-bottom:10px;">
+                        📊 Comparativo Estratégico (2025)
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:10px;" id="school-detail-comp-bars">
+                        <!-- Preenchido via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer flex-between" style="margin-top: 14px; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                <button class="btn btn-outline" onclick="closeModal('modal-school-ideb-detail')">Fechar</button>
+                <button onclick="handleExportSchoolReport()" class="btn btn-primary" style="font-weight:700; background:#6366f1; border-color:#6366f1; display:flex; align-items:center; gap:6px;">
+                    🖨️ Exportar Relatório da Escola (PDF)
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
