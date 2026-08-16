@@ -4289,49 +4289,50 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         const lpList = document.getElementById('matriz-lp-list');
         const mtList = document.getElementById('matriz-mt-list');
         const ciList = document.getElementById('matriz-ci-list');
+        const chList = document.getElementById('matriz-ch-list');
 
         const searchInput = document.getElementById('matriz-search-input');
         const query = searchInput ? searchInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
 
-        function renderColumn(container, items, badgeColor, borderColor) {
+        const stageData = MASTER_EXHAUSTIVE_MATRICES[activeMatrizEtapa] || MASTER_EXHAUSTIVE_MATRICES['5ano'];
+
+        function renderColumn(container, items, badgeColor) {
             if (!container) return;
             container.innerHTML = '';
 
-            const filtered = items.filter(d => {
+            const filtered = (items || []).filter(d => {
                 const text = (d.codigo + ' ' + d.desc + ' ' + (d.topico || '')).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 return text.includes(query);
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.8rem;">Nenhum descritor encontrado.</div>';
+                container.innerHTML = '<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 0.78rem;">Nenhum descritor encontrado.</div>';
                 return;
             }
 
             filtered.forEach(d => {
                 const div = document.createElement('div');
-                div.style.padding = '10px 14px';
+                div.style.padding = '8px 12px';
                 div.style.borderRadius = 'var(--radius-sm)';
                 div.style.border = '1px solid var(--border-color)';
                 div.style.backgroundColor = 'var(--bg-tertiary)';
-                div.style.fontSize = '0.84rem';
-                div.style.lineHeight = '1.45';
-                div.style.transition = 'all 0.15s ease';
+                div.style.fontSize = '0.8rem';
+                div.style.lineHeight = '1.4';
                 div.innerHTML = `
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-                        <span style="font-weight: 800; font-family: var(--font-mono); color: ${badgeColor}; font-size: 0.85rem;">${d.codigo}</span>
-                        ${d.topico ? `<span style="font-size: 0.68rem; padding: 2px 6px; border-radius: 4px; background: rgba(0,0,0,0.05); color: var(--text-secondary); border: 1px solid var(--border-color);">${d.topico}</span>` : ''}
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px;">
+                        <span style="font-weight: 800; font-family: var(--font-mono); color: ${badgeColor}; font-size: 0.82rem;">${d.codigo}</span>
+                        ${d.topico ? `<span style="font-size: 0.65rem; padding: 1px 5px; border-radius: 4px; background: rgba(0,0,0,0.06); color: var(--text-secondary); border: 1px solid var(--border-color); font-weight:600;">${d.topico}</span>` : ''}
                     </div>
-                    <div style="color: var(--text-primary);">${d.desc}</div>
+                    <div style="color: var(--text-primary); font-weight: 500;">${d.desc}</div>
                 `;
                 container.appendChild(div);
             });
         }
 
-        if (typeof FULL_INEP_MATRICES !== 'undefined') {
-            renderColumn(lpList, FULL_INEP_MATRICES.portuguese || [], '#8b5cf6', '#8b5cf6');
-            renderColumn(mtList, FULL_INEP_MATRICES.math || [], '#3b82f6', '#3b82f6');
-            renderColumn(ciList, FULL_INEP_MATRICES.science || [], '#10b981', '#10b981');
-        }
+        renderColumn(lpList, stageData.portuguese, '#8b5cf6');
+        renderColumn(mtList, stageData.math, '#3b82f6');
+        renderColumn(ciList, stageData.science, '#10b981');
+        renderColumn(chList, stageData.humanas, '#f59e0b');
     }
     window.renderReferenceMatrix = renderReferenceMatrix;
 
@@ -13607,104 +13608,113 @@ if (document.readyState === 'loading') {
     // =========================================================================
     // BASE DE DADOS COMPLETA E EXAUSTIVA DE DESCRITORES SAEB / SEAMA / INEP / IDEB
     // =========================================================================
+    
     const MASTER_EXHAUSTIVE_MATRICES = {
         '5ano': {
             portuguese: [
                 { codigo: "D1", topico: "Procedimentos de Leitura", desc: "Localizar informações explícitas em um texto." },
+                { codigo: "D2", topico: "Coerência e Coesão", desc: "Estabelecer relações entre partes de um texto, identificando repetições ou substituições." },
                 { codigo: "D3", topico: "Procedimentos de Leitura", desc: "Inferir o sentido de uma palavra ou expressão." },
                 { codigo: "D4", topico: "Procedimentos de Leitura", desc: "Inferir uma informação implícita em um texto." },
+                { codigo: "D5", topico: "Implicância do Suporte", desc: "Interpretar texto com auxílio de material gráfico diverso (propagandas, tiras, fotos)." },
                 { codigo: "D6", topico: "Procedimentos de Leitura", desc: "Identificar o tema de um texto." },
-                { codigo: "D14", topico: "Procedimentos de Leitura", desc: "Distinguir um fato da opinião relativa a esse fato." },
-                { codigo: "D5", topico: "Implicâncias do Suporte/Gênero", desc: "Interpretar texto com auxílio de material gráfico diverso (propagandas, quadrinhos, fotos, etc.)." },
-                { codigo: "D9", topico: "Implicâncias do Suporte/Gênero", desc: "Identificar a finalidade de textos de diferentes gêneros." },
-                { codigo: "D7", topico: "Coerência e Coesão", desc: "Identificar o conflito gerador do enredo e os elementos que constroem a narrativa." },
+                { codigo: "D7", topico: "Coerência e Coesão", desc: "Identificar o conflito gerador do enredo e os elementos constitutivos da narrativa." },
                 { codigo: "D8", topico: "Coerência e Coesão", desc: "Estabelecer relação entre a causa e a consequência no desenvolvimento do texto." },
-                { codigo: "D12", topico: "Coerência e Coesão", desc: "Estabelecer relações lógico-discursivas marcadas por conjunções, advérbios, etc." },
-                { codigo: "D2", topico: "Coerência e Coesão", desc: "Estabelecer relações entre partes de um texto, identificando repetições ou substituições." },
-                { codigo: "D13", topico: "Relações entre Textos", desc: "Reconhecer diferentes formas de tratar uma informação na comparação de textos que tratam do mesmo assunto." },
+                { codigo: "D9", topico: "Implicância do Suporte", desc: "Identificar a finalidade de textos de diferentes gêneros." },
                 { codigo: "D10", topico: "Variação Linguística", desc: "Identificar as marcas linguísticas que evidenciam o locutor e o interlocutor de um texto." },
+                { codigo: "D12", topico: "Coerência e Coesão", desc: "Estabelecer relações lógico-discursivas marcadas por conjunções, advérbios, etc." },
+                { codigo: "D13", topico: "Relações entre Textos", desc: "Reconhecer diferentes formas de tratar uma informação na comparação de textos." },
+                { codigo: "D14", topico: "Procedimentos de Leitura", desc: "Distinguir um fato da opinião relativa a esse fato." },
                 { codigo: "D15", topico: "Recursos Expressivos", desc: "Reconhecer o efeito de sentido decorrente do uso da pontuação e de outras notações." }
             ],
             math: [
-                { codigo: "D1", topico: "Espaço e Forma", desc: "Identificar a localização/movimentação de objeto em mapas, croquis e outras representações gráficas." },
-                { codigo: "D2", topico: "Espaço e Forma", desc: "Identificar propriedades comuns e diferenças entre figuras bidimensionais e tridimensionais, relacionando-as com suas planificações." },
-                { codigo: "D3", topico: "Espaço e Forma", desc: "Identificar propriedades de triângulos pela comparação de medidas de lados e ângulos." },
+                { codigo: "D1", topico: "Espaço e Forma", desc: "Identificar a localização/movimentação de objeto em mapas, croquis e representações gráficas." },
+                { codigo: "D2", topico: "Espaço e Forma", desc: "Identificar propriedades comuns e diferenças entre figuras bi e tridimensionais e suas planificações." },
+                { codigo: "D3", topico: "Espaço e Forma", desc: "Identificar propriedades de triângulos pela comparação de lados e ângulos." },
                 { codigo: "D4", topico: "Espaço e Forma", desc: "Identificar relação entre quadriláteros por meio de suas propriedades." },
-                { codigo: "D5", topico: "Espaço e Forma", desc: "Reconhecer a conservação ou modificação de medidas nos redimensionamentos de figuras poligonais." },
-                { codigo: "D6", topico: "Grandezas e Medidas", desc: "Estimar a medida de grandezas utilizando unidades de medida não convencionais ou convencionais." },
-                { codigo: "D7", topico: "Grandezas e Medidas", desc: "Resolver problemas significativos utilizando unidades de medida padronizadas (km, m, cm, mm, kg, g, l, ml)." },
+                { codigo: "D5", topico: "Espaço e Forma", desc: "Reconhecer a conservação/modificação de medidas em ampliações e reduções de polígonos." },
+                { codigo: "D6", topico: "Grandezas e Medidas", desc: "Estimar a medida de grandezas utilizando unidades convencionais ou não." },
+                { codigo: "D7", topico: "Grandezas e Medidas", desc: "Resolver problemas utilizando unidades de medida padronizadas (km, m, cm, kg, g, l, ml)." },
                 { codigo: "D8", topico: "Grandezas e Medidas", desc: "Estabelecer relações entre unidades de medida de tempo." },
-                { codigo: "D9", topico: "Grandezas e Medidas", desc: "Estabelecer relações entre a hora de início e de término e/ou a duração de um evento." },
-                { codigo: "D10", topico: "Grandezas e Medidas", desc: "Numa composição de cédulas e moedas do sistema monetário brasileiro, determinar o valor total." },
+                { codigo: "D9", topico: "Grandezas e Medidas", desc: "Estabelecer relações entre hora de início/término e a duração de um evento." },
+                { codigo: "D10", topico: "Grandezas e Medidas", desc: "Determinar o valor total em cédulas e moedas do sistema monetário brasileiro." },
                 { codigo: "D11", topico: "Grandezas e Medidas", desc: "Resolver problemas envolvendo o cálculo do perímetro de figuras planas." },
                 { codigo: "D12", topico: "Grandezas e Medidas", desc: "Resolver problemas envolvendo a noção de área de figuras planas." },
                 { codigo: "D13", topico: "Números e Operações", desc: "Reconhecer e utilizar características do sistema de numeração decimal (valor posicional)." },
                 { codigo: "D14", topico: "Números e Operações", desc: "Identificar a localização de números naturais na reta numérica." },
                 { codigo: "D15", topico: "Números e Operações", desc: "Reconhecer a decomposição de números naturais nas suas diversas ordens." },
-                { codigo: "D16", topico: "Números e Operações", desc: "Reconhecer a composição e a decomposição de números naturais." },
+                { codigo: "D16", topico: "Números e Operações", desc: "Reconhecer a composição e decomposição de números naturais." },
                 { codigo: "D17", topico: "Números e Operações", desc: "Calcular o resultado de uma adição ou subtração de números naturais." },
                 { codigo: "D18", topico: "Números e Operações", desc: "Calcular o resultado de uma multiplicação ou divisão de números naturais." },
                 { codigo: "D19", topico: "Números e Operações", desc: "Resolver problemas com números naturais envolvendo adição ou subtração." },
                 { codigo: "D20", topico: "Números e Operações", desc: "Resolver problemas com números naturais envolvendo multiplicação ou divisão." },
-                { codigo: "D21", topico: "Números e Operações", desc: "Identificar diferentes representações de um mesmo número racional (fração, decimal, porcentagem)." },
-                { codigo: "D22", topico: "Números e Operações", desc: "Identificar a localização de números racionais representados na forma decimal na reta numérica." },
+                { codigo: "D21", topico: "Números e Operações", desc: "Identificar representações de um mesmo número racional (fração, decimal, porcentagem)." },
+                { codigo: "D22", topico: "Números e Operações", desc: "Identificar a localização de números decimais na reta numérica." },
                 { codigo: "D23", topico: "Números e Operações", desc: "Resolver problemas utilizando a escrita decimal de cédulas e moedas." },
-                { codigo: "D24", topico: "Números e Operações", desc: "Identificar fração como representação que pode estar associada a diferentes significados." },
+                { codigo: "D24", topico: "Números e Operações", desc: "Identificar fração como representação associada a partes de um todo ou razão." },
                 { codigo: "D25", topico: "Números e Operações", desc: "Resolver problemas com números racionais expressos na forma decimal." },
                 { codigo: "D26", topico: "Números e Operações", desc: "Resolver problemas envolvendo porcentagem (25%, 50%, 100%)." },
-                { codigo: "D27", topico: "Tratamento da Informação", desc: "Ler informações e dados apresentados em tabelas simples ou duplas." },
-                { codigo: "D28", topico: "Tratamento da Informação", desc: "Ler informações e dados apresentados em gráficos de colunas ou barras." }
+                { codigo: "D27", topico: "Tratamento da Informação", desc: "Ler e interpretar informações apresentadas em tabelas simples ou duplas." },
+                { codigo: "D28", topico: "Tratamento da Informação", desc: "Ler e interpretar dados em gráficos de colunas ou barras." }
             ],
             science: [
                 { codigo: "EF05CI01", topico: "Matéria e Energia", desc: "Explorar propriedades físicas dos materiais (densidade, condutibilidade)." },
-                { codigo: "EF05CI02", topico: "Matéria e Energia", desc: "Aplicar conhecimentos sobre as mudanças de estado físico da água no ciclo hidrológico." },
-                { codigo: "EF05CI03", topico: "Vida e Evolução", desc: "Selecionar argumentos que justifiquem a preservação da cobertura vegetal." },
-                { codigo: "EF05CI04", topico: "Vida e Evolução", desc: "Identificar os principais órgãos do sistema digestório e respiratório e suas funções." },
-                { codigo: "EF05CI05", topico: "Vida e Evolução", desc: "Construir propostas para o consumo consciente e descarte de resíduos." },
-                { codigo: "EF05CI06", topico: "Vida e Evolução", desc: "Justificar a importância do consumo de água potável para a saúde humana." },
-                { codigo: "EF05CI07", topico: "Terra e Universo", desc: "Justificar a relação entre a rotação da Terra e o movimento aparente do Sol." },
-                { codigo: "EF05CI08", topico: "Terra e Universo", desc: "Organizar cardápio equilibrado com base nos grupos alimentares." }
+                { codigo: "EF05CI02", topico: "Matéria e Energia", desc: "Aplicar conhecimentos sobre mudanças de estado físico no ciclo da água." },
+                { codigo: "EF05CI03", topico: "Vida e Evolução", desc: "Justificar a importância da cobertura vegetal para a manutenção da água." },
+                { codigo: "EF05CI04", topico: "Vida e Evolução", desc: "Identificar os órgãos dos sistemas digestório e respiratório." },
+                { codigo: "EF05CI05", topico: "Vida e Evolução", desc: "Propor ações de consumo consciente e descarte adequado de resíduos." },
+                { codigo: "EF05CI06", topico: "Vida e Evolução", desc: "Justificar a importância da água potável para a saúde humana." },
+                { codigo: "EF05CI07", topico: "Terra e Universo", desc: "Relacionar a rotação da Terra ao movimento aparente do Sol." },
+                { codigo: "EF05CI08", topico: "Terra e Universo", desc: "Organizar um cardápio equilibrado com base nos grupos alimentares." }
+            ],
+            humanas: [
+                { codigo: "EF05HI01", topico: "História & Cidadania", desc: "Identificar os processos de formação das culturas e dos povos." },
+                { codigo: "EF05HI02", topico: "História & Cidadania", desc: "Comparar os pontos de vista sobre a formação da sociedade maranhense e brasileira." },
+                { codigo: "EF05HI04", topico: "História & Cidadania", desc: "Associar a noção de cidadania aos direitos humanos e de minorias." },
+                { codigo: "EF05GE01", topico: "Geografia & Território", desc: "Descrever a dinâmica populacional e os fluxos migratórios regionais no Maranhão." },
+                { codigo: "EF05GE02", topico: "Geografia & Território", desc: "Identificar as transformações das paisagens nas cidades e no campo." },
+                { codigo: "EF05GE04", topico: "Geografia & Território", desc: "Reconhecer as características dos biomas brasileiros e do Cerrado/Mata dos Cocais." }
             ]
         },
         '9ano': {
             portuguese: [
                 { codigo: "D1", topico: "Procedimentos de Leitura", desc: "Localizar informações explícitas em um texto." },
-                { codigo: "D2", topico: "Procedimentos de Leitura", desc: "Estabelecer relações entre partes de um texto, identificando repetições ou substituições." },
+                { codigo: "D2", topico: "Procedimentos de Leitura", desc: "Estabelecer relações entre partes de um texto." },
                 { codigo: "D3", topico: "Procedimentos de Leitura", desc: "Inferir o sentido de uma palavra ou expressão." },
                 { codigo: "D4", topico: "Procedimentos de Leitura", desc: "Inferir uma informação implícita em um texto." },
+                { codigo: "D5", topico: "Implicância do Suporte", desc: "Interpretar texto com auxílio de recursos gráficos (charges, dados)." },
                 { codigo: "D6", topico: "Procedimentos de Leitura", desc: "Identificar o tema central de um texto." },
-                { codigo: "D11", topico: "Procedimentos de Leitura", desc: "Distinguir um fato da opinião relativa a esse fato." },
-                { codigo: "D5", topico: "Implicância do Suporte", desc: "Interpretar texto com auxílio de recursos gráficos diversos (charges, cartuns)." },
+                { codigo: "D7", topico: "Coerência e Coesão", desc: "Identificar o conflito gerador do enredo na narrativa." },
+                { codigo: "D8", topico: "Coerência e Coesão", desc: "Estabelecer relação entre a causa e o efeito no texto." },
                 { codigo: "D9", topico: "Implicância do Suporte", desc: "Identificar a finalidade de textos de diferentes gêneros." },
-                { codigo: "D7", topico: "Coerência e Coesão", desc: "Identificar o conflito gerador do enredo e os elementos constitutivos da narrativa." },
-                { codigo: "D8", topico: "Coerência e Coesão", desc: "Estabelecer relação entre a causa e o efeito no desenvolvimento do texto." },
+                { codigo: "D11", topico: "Procedimentos de Leitura", desc: "Distinguir um fato da opinião relativa a esse fato." },
                 { codigo: "D12", topico: "Coerência e Coesão", desc: "Estabelecer relações lógico-discursivas marcadas por conectivos." },
-                { codigo: "D15", topico: "Relações entre Textos", desc: "Reconhecer posições distintas entre dois ou mais textos que tratam do mesmo assunto." },
+                { codigo: "D15", topico: "Relações entre Textos", desc: "Reconhecer posições distintas entre dois textos sobre o mesmo assunto." },
                 { codigo: "D16", topico: "Relações entre Textos", desc: "Identificar a tese e os argumentos apresentados no texto argumentativo." },
-                { codigo: "D17", topico: "Variação Linguística", desc: "Reconhecer o efeito de sentido decorrente da escolha de palavra/expressão." },
+                { codigo: "D17", topico: "Variação Linguística", desc: "Reconhecer o efeito de sentido decorrente da escolha de palavras formais/informais." },
                 { codigo: "D18", topico: "Recursos Expressivos", desc: "Identificar o efeito de sentido decorrente do uso da pontuação." },
                 { codigo: "D19", topico: "Recursos Expressivos", desc: "Identificar efeitos de ironia ou humor em textos variados." },
-                { codigo: "D20", topico: "Recursos Expressivos", desc: "Reconhecer o efeito de sentido decorrente da exploração de recursos sintáticos." },
+                { codigo: "D20", topico: "Recursos Expressivos", desc: "Reconhecer o efeito de sentido decorrente de recursos sintáticos." },
                 { codigo: "D21", topico: "Recursos Expressivos", desc: "Reconhecer as relações entre a tese e os argumentos em textos opinativos." }
             ],
             math: [
-                { codigo: "D1", topico: "Espaço e Forma", desc: "Identificar a localização/movimentação de objeto em mapas, croquis e plano cartesiano." },
-                { codigo: "D2", topico: "Espaço e Forma", desc: "Identificar propriedades de figuras bidimensionais e tridimensionais." },
+                { codigo: "D1", topico: "Espaço e Forma", desc: "Identificar a localização/movimentação no plano cartesiano." },
+                { codigo: "D2", topico: "Espaço e Forma", desc: "Identificar propriedades de figuras bi e tridimensionais." },
                 { codigo: "D3", topico: "Espaço e Forma", desc: "Identificar propriedades de triângulos pela comparação de lados e ângulos." },
                 { codigo: "D4", topico: "Espaço e Forma", desc: "Identificar relação entre quadriláteros por meio de suas propriedades." },
-                { codigo: "D5", topico: "Espaço e Forma", desc: "Reconhecer a conservação ou modificação de medidas nos redimensionamentos de figuras." },
+                { codigo: "D5", topico: "Espaço e Forma", desc: "Reconhecer conservação/modificação de medidas em ampliações de polígonos." },
                 { codigo: "D6", topico: "Espaço e Forma", desc: "Reconhecer ângulos como mudança de direção ou giros." },
                 { codigo: "D7", topico: "Espaço e Forma", desc: "Reconhecer a simetria de reflexão em figuras planas." },
                 { codigo: "D8", topico: "Grandezas e Medidas", desc: "Resolver problemas envolvendo o cálculo de perímetro de figuras planas." },
                 { codigo: "D9", topico: "Grandezas e Medidas", desc: "Resolver problemas envolvendo o cálculo de área de figuras planas." },
-                { codigo: "D10", topico: "Grandezas e Medidas", desc: "Numa composição de cédulas e moedas, determinar o valor total." },
+                { codigo: "D10", topico: "Grandezas e Medidas", desc: "Determinar o valor total em cédulas e moedas no sistema monetário." },
                 { codigo: "D11", topico: "Grandezas e Medidas", desc: "Resolver problemas envolvendo o cálculo de volume de paralelepípedos." },
                 { codigo: "D12", topico: "Grandezas e Medidas", desc: "Resolver problemas envolvendo a capacidade de recipientes." },
                 { codigo: "D13", topico: "Números e Operações", desc: "Reconhecer características do sistema de numeração decimal." },
                 { codigo: "D14", topico: "Números e Operações", desc: "Identificar a localização de números inteiros/racionais na reta numérica." },
                 { codigo: "D15", topico: "Números e Operações", desc: "Calcular o resultado de operações de adição, subtração, multiplicação e divisão com inteiros." },
                 { codigo: "D16", topico: "Números e Operações", desc: "Estabelecer relações entre representações fracionárias e decimais." },
-                { codigo: "D17", topico: "Números e Operações", desc: "Resolver problemas com números racionais envolvendo as quatro operações." },
+                { codigo: "D17", topico: "Números e Operações", desc: "Resolver problemas com números racionais envolvendo as 4 operações." },
                 { codigo: "D18", topico: "Números e Operações", desc: "Calcular o valor numérico de uma expressão algébrica." },
                 { codigo: "D19", topico: "Números e Operações", desc: "Resolver problema envolvendo equação do 1º grau." },
                 { codigo: "D20", topico: "Números e Operações", desc: "Resolver problema envolvendo sistema de equações do 1º grau." },
@@ -13714,26 +13724,32 @@ if (document.readyState === 'loading') {
                 { codigo: "D24", topico: "Números e Operações", desc: "Resolver problema que envolva variação proporcional direta ou inversa." },
                 { codigo: "D25", topico: "Números e Operações", desc: "Resolver problema envolvendo porcentagem (aumentos e descontos)." },
                 { codigo: "D26", topico: "Números e Operações", desc: "Resolver problema envolvendo juros simples." },
-                { codigo: "D27", topico: "Tratamento da Informação", desc: "Ler e interpretar informações apresentadas em tabelas." },
+                { codigo: "D27", topico: "Tratamento da Informação", desc: "Ler e interpretar informações em tabelas." },
                 { codigo: "D28", topico: "Tratamento da Informação", desc: "Ler e interpretar dados em gráficos de colunas, setores, linhas e histogramas." },
                 { codigo: "D29", topico: "Tratamento da Informação", desc: "Resolver problemas envolvendo o cálculo da média aritmética." },
                 { codigo: "D30", topico: "Tratamento da Informação", desc: "Resolver problemas envolvendo noções de probabilidade." },
-                { codigo: "D31", topico: "Geometria Avançada", desc: "Resolver problemas utilizando relações métricas no triângulo retângulo (Teorema de Pitágoras)." },
-                { codigo: "D32", topico: "Geometria Avançada", desc: "Resolver problemas envolvendo a circunferência e o círculo (comprimento e área)." },
-                { codigo: "D33", topico: "Estatística", desc: "Interpretar mediana e moda em conjunto de dados estatísticos." },
-                { codigo: "D34", topico: "Tratamento da Informação", desc: "Resolver problemas de contagem utilizando o princípio multiplicativo." },
-                { codigo: "D35", topico: "Álgebra", desc: "Identificar relações entre os termos de uma sequência numérica ou padrão geométrico." },
+                { codigo: "D31", topico: "Geometria Avançada", desc: "Resolver problemas aplicando o Teorema de Pitágoras." },
+                { codigo: "D32", topico: "Geometria Avançada", desc: "Resolver problemas envolvendo a circunferência (comprimento e área)." },
+                { codigo: "D33", topico: "Estatística", desc: "Interpretar mediana e moda em conjuntos de dados." },
+                { codigo: "D34", topico: "Tratamento da Informação", desc: "Resolver problemas de contagem via princípio multiplicativo." },
+                { codigo: "D35", topico: "Álgebra", desc: "Identificar padrões e termos de uma sequência numérica." },
                 { codigo: "D36", topico: "Funções", desc: "Reconhecer a representação gráfica da função quadrática (parábola)." },
                 { codigo: "D37", topico: "Geometria", desc: "Resolver problemas usando razões trigonométricas no triângulo retângulo (seno, cosseno, tangente)." }
             ],
             science: [
-                { codigo: "EF09CI01", topico: "Matéria e Energia", desc: "Investigar as mudanças de estado físico da matéria e a conservação da massa." },
-                { codigo: "EF09CI02", topico: "Matéria e Energia", desc: "Comparar grandezas físicas como massa, volume, densidade e temperatura de ebulição." },
-                { codigo: "EF09CI03", topico: "Matéria e Energia", desc: "Identificar modelos atômicos clássicos e a estrutura básica do átomo." },
-                { codigo: "EF09CI04", topico: "Vida e Evolução", desc: "Descrever a estrutura do DNA e as bases genéticas da hereditariedade." },
-                { codigo: "EF09CI05", topico: "Vida e Evolução", desc: "Analisar as teorias evolucionistas de Darwin e Lamarck." },
+                { codigo: "EF09CI01", topico: "Matéria e Energia", desc: "Investigar mudanças de estado físico e conservação da massa." },
+                { codigo: "EF09CI02", topico: "Matéria e Energia", desc: "Comparar grandezas físicas (massa, volume, densidade)." },
+                { codigo: "EF09CI03", topico: "Matéria e Energia", desc: "Identificar os modelos atômicos e a estrutura do átomo." },
+                { codigo: "EF09CI04", topico: "Vida e Evolução", desc: "Descrever a estrutura do DNA e as leis da hereditariedade." },
+                { codigo: "EF09CI05", topico: "Vida e Evolução", desc: "Analisar as teorias de evolução e seleção natural." },
                 { codigo: "EF09CI06", topico: "Terra e Universo", desc: "Associar o ciclo das fases da Lua ao movimento de revolução." },
-                { codigo: "EF09CI07", topico: "Terra e Universo", desc: "Explicar a evolução das estrelas e a formação do Sistema Solar." }
+                { codigo: "EF09CI07", topico: "Terra e Universo", desc: "Explicar a evolução das estrelas e do Sistema Solar." }
+            ],
+            humanas: [
+                { codigo: "EF09HI01", topico: "História Contemporânea", desc: "Descrever os processos de urbanização e industrialização no século XX." },
+                { codigo: "EF09HI02", topico: "História do Brasil", desc: "Analisar a formação da República Brasileira e os movimentos sociais no Maranhão." },
+                { codigo: "EF09GE01", topico: "Geografia Mundial", desc: "Analisar a hegemonia europeia e os conflitos geopolíticos globais." },
+                { codigo: "EF09GE02", topico: "Geografia Econômica", desc: "Relacionar a globalização às transformações no mundo do trabalho." }
             ]
         },
         'alfabetizacao': {
@@ -13744,17 +13760,17 @@ if (document.readyState === 'loading') {
                 { codigo: "D4", topico: "Consciência Fonológica", desc: "Contar sílabas de palavras faladas (segmentação silábica)." },
                 { codigo: "D5", topico: "Decodificação & Fluência", desc: "Ler palavras de sílabas canônicas e não canônicas." },
                 { codigo: "D6", topico: "Decodificação & Fluência", desc: "Ler frases curtas com ritmo e entonação adequados." },
-                { codigo: "D7", topico: "Compreensão de Leitura", desc: "Localizar informação explícita em textos curtos lidos pelo próprio estudante." },
+                { codigo: "D7", topico: "Compreensão de Leitura", desc: "Localizar informação explícita em textos curtos." },
                 { codigo: "D8", topico: "Compreensão de Leitura", desc: "Identificar o assunto principal de um texto ilustrado." },
                 { codigo: "D9", topico: "Compreensão de Leitura", desc: "Inferir o sentido de palavras simples em cantigas e parlendas." },
                 { codigo: "D10", topico: "Escrita & Ortografia", desc: "Escrever palavras corretamente observando a correspondência grafofonêmica." },
-                { codigo: "D11", topico: "Fluência Leitora", desc: "Ler texto curto com velocidade de leitura igual ou superior a 60 palavras por minuto." },
-                { codigo: "D12", topico: "Produção de Texto", desc: "Produzir pequenos textos narrativos utilizando pontuação básica (ponto final)." }
+                { codigo: "D11", topico: "Fluência Leitora", desc: "Ler texto curto com velocidade igual ou superior a 60 palavras por minuto." },
+                { codigo: "D12", topico: "Produção de Texto", desc: "Produzir pequenos textos narrativos utilizando pontuação básica." }
             ],
             math: [
                 { codigo: "D1", topico: "Números", desc: "Reconhecer a contagem de coleções de objetos até 100." },
                 { codigo: "D2", topico: "Números", desc: "Identificar a posição de um número na sequência numérica até 100." },
-                { codigo: "D3", topico: "Números", desc: "Comparar quantidades de dois conjuntos de objetos (mais, menos, igual)." },
+                { codigo: "D3", topico: "Números", desc: "Comparar quantidades de dois conjuntos (mais, menos, igual)." },
                 { codigo: "D4", topico: "Operações", desc: "Calcular adição com números até dois algarismos sem reagrupamento." },
                 { codigo: "D5", topico: "Operações", desc: "Calcular subtração simples de dois algarismos." },
                 { codigo: "D6", topico: "Geometria", desc: "Reconhecer figuras geométricas planas básicas (quadrado, retângulo, triângulo, círculo)." },
@@ -13770,9 +13786,14 @@ if (document.readyState === 'loading') {
                 { codigo: "EF02CI02", topico: "Seres Vivos", desc: "Identificar plantas e animais do ambiente próximo e suas necessidades vitais." },
                 { codigo: "EF02CI03", topico: "Terra e Solo", desc: "Reconhecer a importância do solo e da água para o cultivo de alimentos." },
                 { codigo: "EF02CI04", topico: "Matéria e Materiais", desc: "Descrever posições e movimentos de objetos em relação ao observador." }
+            ],
+            humanas: [
+                { codigo: "EF02HI01", topico: "História da Família", desc: "Reconhecer a história e os laços da comunidade e da família." },
+                { codigo: "EF02GE01", topico: "Espaço Vivenciado", desc: "Descrever o trajeto da residência até a escola e os pontos de referência." }
             ]
         }
     };
+
 
 
 
