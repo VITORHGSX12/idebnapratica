@@ -16324,3 +16324,7 @@ if (document.readyState === 'loading') {
         renderSchoolClassesTab(schName);
     }
     window.handleSaveTurma = handleSaveTurma;
+
+window.switchTab = window.switchTab || switchTab;
+window.switchMainTab = window.switchTab;
+window.showTab = window.switchTab;
