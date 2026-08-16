@@ -1049,23 +1049,34 @@ DIRETRIZES DO DIAGNÓSTICO:
         }
     }
 
+    // Store PDE plans per school in memory
+    const schoolPdePlansMap = {};
+
     function populateIdebGoalsTable(schools) {
         const tableBody = document.getElementById('ideb-goals-table-body');
         if (!tableBody) return;
         tableBody.innerHTML = '';
 
-        const schoolList = (schools && schools.length > 0) ? schools : Array.from(new Set(loadedStudents.map(s => s.escola))).sort();
+        const schoolList = (schools && schools.length > 0) ? schools : uniqueSchoolsList;
         const filterVal = document.getElementById('pde-filter-status')?.value || 'all';
 
         const rowsData = schoolList.map(schName => {
-            let hash = 0;
-            for (let i = 0; i < schName.length; i++) {
-                hash += schName.charCodeAt(i);
+            const schStudents = loadedStudents.filter(s => s.escola === schName);
+            const countStudents = schStudents.length || 180;
+            
+            // Calculate real average score in SAEB scale (0 - 500)
+            let avgScore = 215;
+            if (schStudents.length > 0) {
+                const total = schStudents.reduce((acc, s) => acc + (s.avg_score || 215), 0);
+                avgScore = Math.round(total / schStudents.length);
             }
-            const baseIdeb = 4.2 + (hash % 15) / 10;
-            const projectedIdeb = baseIdeb + 0.2 + (hash % 4) / 10;
-            const targetIdeb = baseIdeb + 0.5; // meta pactuada
-            const gap = projectedIdeb - targetIdeb;
+
+            let hash = 0;
+            for (let i = 0; i < schName.length; i++) hash += schName.charCodeAt(i);
+            const baseIdeb = 4.2 + (hash % 12) / 10;
+            const projectedIdeb = Number((baseIdeb + (avgScore / 100) * 0.45).toFixed(1));
+            const targetIdeb = Number((baseIdeb + 0.6).toFixed(1));
+            const gap = Number((projectedIdeb - targetIdeb).toFixed(1));
             
             let riskLevel = 'Baixo';
             let riskBadge = '<span class="badge badge-success">Baixo Risco 🟢</span>';
@@ -1081,15 +1092,25 @@ DIRETRIZES DO DIAGNÓSTICO:
                 riskCategory = 'risk';
             }
 
+            let nivelProfLabel = 'Nível 3 (Básico)';
+            if (avgScore >= 275) nivelProfLabel = 'Nível 5 (Avançado)';
+            else if (avgScore >= 225) nivelProfLabel = 'Nível 4 (Adequado)';
+            else if (avgScore < 180) nivelProfLabel = 'Nível 2 (Crítico)';
+
+            const hasPlan = !!schoolPdePlansMap[schName];
+
             return {
                 schName,
                 baseIdeb,
                 projectedIdeb,
-                targetIdeb,
+                avgScore,
+                nivelProfLabel,
                 gap,
                 riskLevel,
                 riskBadge,
-                riskCategory
+                riskCategory,
+                hasPlan,
+                countStudents
             };
         });
 
@@ -1105,7 +1126,7 @@ DIRETRIZES DO DIAGNÓSTICO:
         if (filtered.length === 0) {
             tableBody.innerHTML = `
                 <tr>
-                    <td colspan="7" style="padding: 24px; text-align: center; color: var(--text-muted);">
+                    <td colspan="6" style="padding: 24px; text-align: center; color: var(--text-muted);">
                         Nenhuma escola encontrada para o filtro selecionado.
                     </td>
                 </tr>
@@ -1119,7 +1140,7 @@ DIRETRIZES DO DIAGNÓSTICO:
 
             const tr = document.createElement('tr');
             tr.style.borderBottom = '1px solid var(--border-color)';
-            tr.style.height = '46px';
+            tr.style.height = '48px';
             tr.innerHTML = `
                 <td style="padding: 10px 16px; font-weight:600; color:var(--text-primary);">
                     <div style="display:flex; align-items:center; gap:8px;">
@@ -1127,45 +1148,109 @@ DIRETRIZES DO DIAGNÓSTICO:
                         <span>${item.schName}</span>
                     </div>
                 </td>
-                <td style="padding: 10px 16px; text-align:center; font-family:var(--font-mono);">${item.baseIdeb.toFixed(1)}</td>
-                <td style="padding: 10px 16px; text-align:center; font-family:var(--font-mono); font-weight:700; color:var(--purple-light);">${item.projectedIdeb.toFixed(1)}</td>
-                <td style="padding: 10px 16px; text-align:center; font-family:var(--font-mono); color:var(--text-secondary);">${item.targetIdeb.toFixed(1)}</td>
-                <td style="padding: 10px 16px; text-align:center; font-family:var(--font-mono); color:${gapColor}; font-weight:700;">${gapText}</td>
+                <td style="padding: 10px 16px; text-align:center; font-family:var(--font-mono); font-size:0.85rem;">${item.baseIdeb.toFixed(1)}</td>
+                <td style="padding: 10px 16px; text-align:center; font-family:var(--font-mono); font-weight:700; color:var(--purple-light); font-size:0.85rem;">${item.projectedIdeb.toFixed(1)}</td>
+                <td style="padding: 10px 16px; text-align:center;">
+                    <span style="font-family:var(--font-mono); font-weight:700; color:var(--text-primary);">${item.avgScore} pts</span>
+                    <span style="display:block; font-size:0.7rem; color:var(--text-muted);">${item.nivelProfLabel}</span>
+                </td>
+                <td style="padding: 10px 16px; text-align:center; font-family:var(--font-mono); color:${gapColor}; font-weight:700; font-size:0.85rem;">${gapText}</td>
                 <td style="padding: 10px 16px; text-align:center;">${item.riskBadge}</td>
                 <td style="padding: 10px 16px; text-align:center;">
-                    <button class="btn ${item.gap < 0 ? 'btn-primary' : 'btn-outline'} btn-sm btn-open-pde-modal" 
-                            data-school="${item.schName}" 
-                            data-base="${item.baseIdeb.toFixed(1)}" 
-                            data-proj="${item.projectedIdeb.toFixed(1)}" 
-                            data-target="${item.targetIdeb.toFixed(1)}" 
-                            data-gap="${gapText}" 
-                            data-risk="${item.riskLevel}" 
-                            style="display:inline-flex; align-items:center; gap:5px; font-size:0.75rem; padding: 4px 10px; cursor:pointer;">
-                        <i data-lucide="${item.gap < 0 ? 'file-spreadsheet' : 'eye'}" style="width:13px; height:13px;"></i>
-                        <span>${item.gap < 0 ? 'Ver Plano de Ação (PDE)' : 'Ver Detalhes'}</span>
-                    </button>
+                    <div style="display:flex; gap:6px; justify-content:center; align-items:center;">
+                        ${item.hasPlan ? `
+                            <button class="btn btn-outline btn-sm btn-open-pde-modal" 
+                                    data-school="${item.schName}" 
+                                    data-base="${item.baseIdeb.toFixed(1)}" 
+                                    data-proj="${item.projectedIdeb.toFixed(1)}" 
+                                    data-score="${item.avgScore}"
+                                    data-gap="${gapText}" 
+                                    data-risk="${item.riskLevel}"
+                                    style="display:inline-flex; align-items:center; gap:4px; font-size:0.75rem; padding: 4px 8px; cursor:pointer;">
+                                <i data-lucide="file-text" style="width:13px; height:13px; color:var(--green-light);"></i>
+                                <span>Ver Plano PDE</span>
+                            </button>
+                            <button class="btn btn-outline btn-sm btn-quick-regen-pde" data-school="${item.schName}" title="Regenerar Plano" style="padding: 4px 6px;">
+                                <i data-lucide="rotate-cw" style="width:12px; height:12px;"></i>
+                            </button>
+                        ` : `
+                            <button class="btn btn-primary btn-sm btn-generate-single-pde" 
+                                    data-school="${item.schName}" 
+                                    data-base="${item.baseIdeb.toFixed(1)}" 
+                                    data-proj="${item.projectedIdeb.toFixed(1)}" 
+                                    data-score="${item.avgScore}"
+                                    data-gap="${gapText}" 
+                                    data-risk="${item.riskLevel}"
+                                    style="display:inline-flex; align-items:center; gap:4px; font-size:0.75rem; padding: 4px 8px; cursor:pointer;">
+                                <i data-lucide="sparkles" style="width:13px; height:13px;"></i>
+                                <span>Gerar Plano</span>
+                            </button>
+                            <button class="btn btn-outline btn-sm btn-manual-single-pde" data-school="${item.schName}" style="font-size:0.75rem; padding: 4px 8px;">
+                                <span>Manual</span>
+                            </button>
+                        `}
+                    </div>
                 </td>
             `;
             tableBody.appendChild(tr);
         });
 
-        // Attach event listeners for PDE buttons
+        // Event listeners
         tableBody.querySelectorAll('.btn-open-pde-modal').forEach(btn => {
             btn.addEventListener('click', () => {
                 const sch = btn.getAttribute('data-school');
                 const base = btn.getAttribute('data-base');
                 const proj = btn.getAttribute('data-proj');
-                const tgt = btn.getAttribute('data-target');
+                const score = btn.getAttribute('data-score');
                 const gap = btn.getAttribute('data-gap');
                 const risk = btn.getAttribute('data-risk');
-                openSchoolPdeModal({ sch, base, proj, tgt, gap, risk });
+                openSchoolPdeModal({ sch, base, proj, score, gap, risk }, 'view');
+            });
+        });
+
+        tableBody.querySelectorAll('.btn-generate-single-pde').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const sch = btn.getAttribute('data-school');
+                const base = btn.getAttribute('data-base');
+                const proj = btn.getAttribute('data-proj');
+                const score = btn.getAttribute('data-score');
+                const gap = btn.getAttribute('data-gap');
+                const risk = btn.getAttribute('data-risk');
+                
+                showToast(`Gerando Plano PDE conforme dados atuais para ${sch}...`, 'sparkles');
+                setTimeout(() => {
+                    schoolPdePlansMap[sch] = true;
+                    populateIdebGoalsTable();
+                    openSchoolPdeModal({ sch, base, proj, score, gap, risk }, 'view');
+                    showToast(`Plano PDE da escola "${sch}" gerado com sucesso!`, 'check');
+                }, 300);
+            });
+        });
+
+        tableBody.querySelectorAll('.btn-manual-single-pde').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const sch = btn.getAttribute('data-school');
+                const planText = prompt(`Criar Plano PDE Manual para "${sch}":\n\nInforme as ações prioritárias de intervenção:`, 'Oficinas quinzenais de leitura (D03/D11) e reforço de cálculo mental (D13).');
+                if (planText && planText.trim()) {
+                    schoolPdePlansMap[sch] = { manual: true, text: planText };
+                    populateIdebGoalsTable();
+                    showToast(`Plano PDE manual salvo para "${sch}"!`, 'check');
+                }
+            });
+        });
+
+        tableBody.querySelectorAll('.btn-quick-regen-pde').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const sch = btn.getAttribute('data-school');
+                showToast(`Plano de "${sch}" atualizado conforme dados atuais!`, 'sparkles');
+                populateIdebGoalsTable();
             });
         });
 
         safeCreateIcons();
     }
 
-    function openSchoolPdeModal(info) {
+    function openSchoolPdeModal(info, mode) {
         const modal = document.getElementById('modal-school-pde-plan');
         const titleEl = document.getElementById('modal-pde-school-name');
         const metaEl = document.getElementById('modal-pde-school-meta');
@@ -1174,144 +1259,151 @@ DIRETRIZES DO DIAGNÓSTICO:
         if (!modal || !bodyEl) return;
 
         if (titleEl) titleEl.textContent = `Plano de Desenvolvimento Escolar (PDE) — ${info.sch}`;
-        if (metaEl) metaEl.textContent = `${info.sch} • IDEB 2023: ${info.base} | Projeção Atual: ${info.proj} | Meta Pactuada: ${info.tgt} (Desvio: ${info.gap})`;
+        if (metaEl) metaEl.textContent = `${info.sch} • IDEB 2023: ${info.base} | Projeção: ${info.proj} | Média SAEB: ${info.score || '218'} pts (Gap: ${info.gap})`;
         
         if (badgeEl) {
             badgeEl.className = info.risk === 'Alto' ? 'badge badge-danger' : (info.risk === 'Médio' ? 'badge badge-warning' : 'badge badge-success');
             badgeEl.textContent = `${info.risk} Risco`;
         }
 
-        // Count students in this school
         const schoolStudents = loadedStudents.filter(s => s.escola === info.sch);
         const countStudents = schoolStudents.length || 184;
 
         bodyEl.innerHTML = `
-            <!-- Top Summary Diagnostics Card -->
-            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 16px;">
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; text-align: center;">
+            <!-- Official Header Standard PDE Document -->
+            <div style="border: 2px solid var(--border-color); border-radius: var(--radius-md); background: var(--bg-tertiary); padding: 16px 20px; margin-bottom: 16px;">
+                <div style="text-align: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 12px;">
+                    <h4 style="margin: 0; font-size: 0.95rem; font-weight: 800; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.5px;">
+                        SECRETARIA MUNICIPAL DE EDUCAÇÃO (SEMED GONÇALVES DIAS - MA)
+                    </h4>
+                    <span style="font-size: 0.76rem; color: var(--text-secondary); font-weight: 600;">
+                        PLANO DE DESENVOLVIMENTO ESCOLAR E RECUPERAÇÃO DE APRENDIZAGEM (PDE 2026)
+                    </span>
+                </div>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; text-align: center;">
                     <div>
                         <span style="font-size:0.72rem; color:var(--text-muted); display:block;">IDEB 2023</span>
-                        <strong style="font-size:1.2rem; color:var(--text-primary); font-family:var(--font-mono);">${info.base}</strong>
+                        <strong style="font-size:1.15rem; color:var(--text-primary); font-family:var(--font-mono);">${info.base}</strong>
                     </div>
                     <div>
                         <span style="font-size:0.72rem; color:var(--text-muted); display:block;">Projeção Atual</span>
-                        <strong style="font-size:1.2rem; color:var(--purple-light); font-family:var(--font-mono);">${info.proj}</strong>
+                        <strong style="font-size:1.15rem; color:var(--purple-light); font-family:var(--font-mono);">${info.proj}</strong>
                     </div>
                     <div>
-                        <span style="font-size:0.72rem; color:var(--text-muted); display:block;">Meta Pactuada</span>
-                        <strong style="font-size:1.2rem; color:var(--blue-light); font-family:var(--font-mono);">${info.tgt}</strong>
+                        <span style="font-size:0.72rem; color:var(--text-muted); display:block;">Proficiência Média</span>
+                        <strong style="font-size:1.15rem; color:var(--blue-light); font-family:var(--font-mono);">${info.score || '218'} pts</strong>
                     </div>
                     <div>
                         <span style="font-size:0.72rem; color:var(--text-muted); display:block;">Desvio / Gap</span>
-                        <strong style="font-size:1.2rem; color:${info.gap.startsWith('+') ? 'var(--green-light)' : 'var(--red-light)'}; font-family:var(--font-mono);">${info.gap}</strong>
+                        <strong style="font-size:1.15rem; color:${info.gap.startsWith('+') ? 'var(--green-light)' : 'var(--red-light)'}; font-family:var(--font-mono);">${info.gap}</strong>
                     </div>
                     <div>
                         <span style="font-size:0.72rem; color:var(--text-muted); display:block;">Alunos Mapeados</span>
-                        <strong style="font-size:1.2rem; color:var(--text-primary); font-family:var(--font-mono);">${countStudents}</strong>
+                        <strong style="font-size:1.15rem; color:var(--text-primary); font-family:var(--font-mono);">${countStudents}</strong>
                     </div>
                 </div>
             </div>
 
-            <!-- Critical Gaps Section -->
-            <div style="margin-bottom: 20px;">
-                <h4 style="display:flex; align-items:center; gap:6px; font-size:0.95rem; margin:0 0 10px 0; color:var(--text-primary);">
-                    <i data-lucide="alert-triangle" style="width:16px; height:16px; color:var(--red-light);"></i>
-                    Lacunas Críticas Diagnosticadas nos Simulados (Foco Prioritário)
+            <!-- Critical Gaps Section (Guia INEP) -->
+            <div style="margin-bottom: 18px;">
+                <h4 style="display:flex; align-items:center; gap:6px; font-size:0.92rem; margin:0 0 10px 0; color:var(--text-primary);">
+                    <i data-lucide="alert-triangle" style="width:15px; height:15px; color:var(--red-light);"></i>
+                    1. Lacunas Críticas Diagnosticadas nos Simulados (Base de Evidências)
                 </h4>
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;">
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px;">
                     <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-left:4px solid var(--red-light); padding:12px; border-radius:var(--radius-sm);">
                         <div class="flex-between" style="margin-bottom:4px;">
                             <span class="badge badge-danger" style="font-size:0.7rem;">Matemática • SAEB D13</span>
-                            <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">${Math.round(countStudents * 0.58)} alunos com gap</span>
+                            <span style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">${Math.round(countStudents * 0.54)} alunos com gap</span>
                         </div>
-                        <strong style="font-size:0.85rem; color:var(--text-primary); display:block; margin-bottom:4px;">Operações Fundamentais com Números Naturais</strong>
-                        <p style="font-size:0.75rem; color:var(--text-secondary); margin:0;">Dificuldade na interpretação de enunciados com multiplicação e divisão por 2 algarismos.</p>
+                        <strong style="font-size:0.82rem; color:var(--text-primary); display:block; margin-bottom:4px;">Operações Fundamentais com Números Naturais</strong>
+                        <p style="font-size:0.74rem; color:var(--text-secondary); margin:0;">Dificuldade na interpretação de enunciados com multiplicação e divisão por 2 algarismos.</p>
                     </div>
 
-                    <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-left:4px solid var(--warning-light, #f59e0b); padding:12px; border-radius:var(--radius-sm);">
+                    <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-left:4px solid #f59e0b; padding:12px; border-radius:var(--radius-sm);">
                         <div class="flex-between" style="margin-bottom:4px;">
                             <span class="badge badge-warning" style="font-size:0.7rem;">Português • SAEB D03</span>
-                            <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">${Math.round(countStudents * 0.44)} alunos com gap</span>
+                            <span style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">${Math.round(countStudents * 0.42)} alunos com gap</span>
                         </div>
-                        <strong style="font-size:0.85rem; color:var(--text-primary); display:block; margin-bottom:4px;">Inferência de Sentido a partir do Contexto</strong>
-                        <p style="font-size:0.75rem; color:var(--text-secondary); margin:0;">Alunos com leitura linear sem identificar pistas contextuais e sentidos figurados.</p>
+                        <strong style="font-size:0.82rem; color:var(--text-primary); display:block; margin-bottom:4px;">Inferência de Sentido a partir do Contexto</strong>
+                        <p style="font-size:0.74rem; color:var(--text-secondary); margin:0;">Alunos com leitura linear sem identificar pistas contextuais e sentidos figurados.</p>
                     </div>
 
                     <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-left:4px solid var(--purple-light); padding:12px; border-radius:var(--radius-sm);">
                         <div class="flex-between" style="margin-bottom:4px;">
                             <span class="badge badge-purple" style="font-size:0.7rem;">Português • SAEB D11</span>
-                            <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">${Math.round(countStudents * 0.36)} alunos com gap</span>
+                            <span style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">${Math.round(countStudents * 0.35)} alunos com gap</span>
                         </div>
-                        <strong style="font-size:0.85rem; color:var(--text-primary); display:block; margin-bottom:4px;">Distinção entre Fato e Opinião</strong>
-                        <p style="font-size:0.75rem; color:var(--text-secondary); margin:0;">Confusão frequente entre dados objetivos informados e posicionamentos subjetivos do autor.</p>
+                        <strong style="font-size:0.82rem; color:var(--text-primary); display:block; margin-bottom:4px;">Distinção entre Fato e Opinião</strong>
+                        <p style="font-size:0.74rem; color:var(--text-secondary); margin:0;">Confusão frequente entre dados objetivos informados e posicionamentos subjetivos do autor.</p>
                     </div>
                 </div>
             </div>
 
             <!-- Structured 4-Week Pedagogical Action Plan -->
-            <div style="margin-bottom: 20px;">
-                <h4 style="display:flex; align-items:center; gap:6px; font-size:0.95rem; margin:0 0 12px 0; color:var(--text-primary);">
-                    <i data-lucide="sparkles" style="width:16px; height:16px; color:var(--purple-light);"></i>
-                    Plano de Intervenção Pedagógica Estruturado (Ciclo Intensivo de 4 Semanas)
+            <div style="margin-bottom: 18px;">
+                <h4 style="display:flex; align-items:center; gap:6px; font-size:0.92rem; margin:0 0 10px 0; color:var(--text-primary);">
+                    <i data-lucide="sparkles" style="width:15px; height:15px; color:var(--purple-light);"></i>
+                    2. Plano de Intervenção Pedagógica (Ciclo Intensivo de 4 Semanas — Guia INEP)
                 </h4>
                 
-                <div style="display:flex; flex-direction:column; gap:10px;">
-                    <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:12px 16px;">
-                        <div class="flex-between" style="margin-bottom:6px;">
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                    <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:10px 14px;">
+                        <div class="flex-between" style="margin-bottom:4px;">
                             <span style="font-size:0.8rem; font-weight:700; color:var(--purple-light);">Semana 1: Nivelamento Conceitual & Material Concreto</span>
                             <span class="badge badge-outline" style="font-size:0.68rem;">Oficina em Sala</span>
                         </div>
-                        <p style="font-size:0.8rem; color:var(--text-secondary); margin:0 0 4px 0;">
+                        <p style="font-size:0.78rem; color:var(--text-secondary); margin:0 0 4px 0;">
                             <strong>Ação Docente:</strong> Utilização de material dourado, ábacos e cartões de leitura rápida. Reagrupamento dos alunos em trios com monitores.
                         </p>
-                        <span style="font-size:0.72rem; color:var(--text-muted);">Meta da Semana: 100% dos alunos com gap participando das oficinas ativas.</span>
+                        <span style="font-size:0.72rem; color:var(--text-muted);">Meta: 100% dos alunos com gap participando das oficinas ativas.</span>
                     </div>
 
-                    <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:12px 16px;">
-                        <div class="flex-between" style="margin-bottom:6px;">
+                    <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:10px 14px;">
+                        <div class="flex-between" style="margin-bottom:4px;">
                             <span style="font-size:0.8rem; font-weight:700; color:var(--purple-light);">Semana 2: Resolução de Problemas Contextualizados</span>
                             <span class="badge badge-outline" style="font-size:0.68rem;">Sequência Didática</span>
                         </div>
-                        <p style="font-size:0.8rem; color:var(--text-secondary); margin:0 0 4px 0;">
+                        <p style="font-size:0.78rem; color:var(--text-secondary); margin:0 0 4px 0;">
                             <strong>Ação Docente:</strong> Situações-problema baseadas na economia e cotidiano do município. Exercícios de caça a pistas em fábulas e notícias.
                         </p>
-                        <span style="font-size:0.72rem; color:var(--text-muted);">Meta da Semana: Atingir no mínimo 60% de acerto nas atividades diagnósticas formativas.</span>
+                        <span style="font-size:0.72rem; color:var(--text-muted);">Meta: Atingir no mínimo 60% de acerto nas atividades diagnósticas formativas.</span>
                     </div>
 
-                    <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:12px 16px;">
-                        <div class="flex-between" style="margin-bottom:6px;">
+                    <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:10px 14px;">
+                        <div class="flex-between" style="margin-bottom:4px;">
                             <span style="font-size:0.8rem; font-weight:700; color:var(--purple-light);">Semana 3: Produção Guiada & Debates Regrados</span>
                             <span class="badge badge-outline" style="font-size:0.68rem;">Aprofundamento</span>
                         </div>
-                        <p style="font-size:0.8rem; color:var(--text-secondary); margin:0 0 4px 0;">
+                        <p style="font-size:0.78rem; color:var(--text-secondary); margin:0 0 4px 0;">
                             <strong>Ação Docente:</strong> Roda de leitura com identificação de fato vs opinião e desafios relâmpago de cálculo mental.
                         </p>
-                        <span style="font-size:0.72rem; color:var(--text-muted);">Meta da Semana: Consolidação da autonomia leitora e das 4 operações.</span>
+                        <span style="font-size:0.72rem; color:var(--text-muted);">Meta: Consolidação da autonomia leitora e das 4 operações.</span>
                     </div>
 
-                    <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:12px 16px;">
-                        <div class="flex-between" style="margin-bottom:6px;">
+                    <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:10px 14px;">
+                        <div class="flex-between" style="margin-bottom:4px;">
                             <span style="font-size:0.8rem; font-weight:700; color:var(--purple-light);">Semana 4: Mini-Simulado de Checagem & Correção Imediata</span>
                             <span class="badge badge-warning" style="font-size:0.68rem;">Avaliação Formativa</span>
                         </div>
-                        <p style="font-size:0.8rem; color:var(--text-secondary); margin:0 0 4px 0;">
+                        <p style="font-size:0.78rem; color:var(--text-secondary); margin:0 0 4px 0;">
                             <strong>Ação Docente:</strong> Aplicação do mini-simulado de 10 itens calibrados nos descritores trabalhados. Tabulação instantânea no SaaS.
                         </p>
-                        <span style="font-size:0.72rem; color:var(--text-muted);">Meta da Semana: Redução de pelo menos 50% no contingente de alunos no nível crítico.</span>
+                        <span style="font-size:0.72rem; color:var(--text-muted);">Meta: Redução de pelo menos 50% no contingente de alunos no nível crítico.</span>
                     </div>
                 </div>
             </div>
 
             <!-- Institutional Commitments -->
-            <div style="background:rgba(139, 92, 246, 0.04); border:1px solid rgba(139, 92, 246, 0.2); border-radius:var(--radius-md); padding:14px 18px;">
-                <h5 style="margin:0 0 8px 0; font-size:0.85rem; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
+            <div style="background:rgba(139, 92, 246, 0.04); border:1px solid rgba(139, 92, 246, 0.2); border-radius:var(--radius-md); padding:12px 16px;">
+                <h5 style="margin:0 0 6px 0; font-size:0.82rem; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
                     <i data-lucide="check-square" style="width:14px; height:14px; color:var(--purple-light);"></i>
-                    Pacto de Acompanhamento SEMED ↔ Gestão Escolar
+                    3. Pacto de Acompanhamento SEMED ↔ Gestão Escolar
                 </h5>
-                <ul style="margin:0; padding-left:18px; font-size:0.78rem; color:var(--text-secondary); line-height:1.5;">
-                    <li><strong>Direção Escolar:</strong> Realizar alinhamento pedagógico semanal com docentes das turmas de 2º, 5º e 9º anos.</li>
+                <ul style="margin:0; padding-left:18px; font-size:0.76rem; color:var(--text-secondary); line-height:1.45;">
+                    <li><strong>Direção Escolar:</strong> Realizar alinhamento pedagógico semanal com docentes das turmas avaliadas.</li>
                     <li><strong>Supervisão SEMED:</strong> Visita de tutoria técnica quinzenal e fornecimento dos cadernos de reforço impressos.</li>
-                    <li><strong>Meta de Recuperação:</strong> Elevar a proficiência estimada da unidade escolar para atingir a meta pactuada de <strong>${info.tgt}</strong>.</li>
+                    <li><strong>Meta de Recuperação:</strong> Elevar a proficiência estimada da unidade escolar para atingir o nível adequado.</li>
                 </ul>
             </div>
         `;
@@ -1320,7 +1412,6 @@ DIRETRIZES DO DIAGNÓSTICO:
         safeCreateIcons();
     }
 
-    // Modal PDE Handlers
     const modalSchoolPde = document.getElementById('modal-school-pde-plan');
     const btnCloseSchoolPde = document.getElementById('btn-close-school-pde-modal');
     const btnSavePdeModal = document.getElementById('btn-save-pde-modal');
@@ -2643,53 +2734,49 @@ DIRETRIZES DO DIAGNÓSTICO:
         }
     };
 
-    // State Maps for Directors, Teachers and School Locations
+    // State Maps for Directors, Teachers and School Locations (9 Official Schools of Gonçalves Dias - MA)
     const schoolDirectorsMap = {
-        'U.E. BENTA VILANOVA': 'Maria Helena da Silva (Diretora)',
-        'U.E. RAIMUNDO VELOSO BARROS': 'Antônio Marcos Pereira (Diretor)',
-        'U.E. RAIMUNDO REIS': 'Francinete de Sousa Lima (Diretora)',
-        'U.I. ANTÔNIO GONÇALVES DIAS': 'Raimundo Nonato Costa (Diretor)',
-        'U.E. ANTÔNIO JOSÉ DE SANTANA': 'Cleonice Alves Bezerra (Diretora)',
-        'E.M. SÃO RAIMUNDO': 'José Ribamar de Oliveira (Diretor)',
-        'U.E. JOÃO FEITOSA DE ARAÚJO': 'Valdirene Soares Castro (Diretora)',
-        'E.M. 12 DE OUTUBRO': 'Ana Paula Ferreira (Diretora)',
-        'U.E. HILTAMAR DE FREITAS': 'Maria das Dores Santos (Diretora)',
-        'U.E. VEREADOR PEDRO BOGEA': 'Sebastião Carlos Mota (Diretor)',
-        'U.I. BASÍLIO ALVES': 'Teresa Cristina Silva (Diretora)',
-        'E.M. JOSÉ DAS DORES': 'Manoel Messias Ramos (Diretor)'
+        'UI JOSE CORREA LIMA': 'Profª Maria da Conceição Lima (Diretora)',
+        'UI EMILIO MURAD': 'Prof. Francisco Carlos Silva (Diretor)',
+        'UE VEREADOR LEONARDO FERREIRA LIMA': 'Profª Antonia Ferreira Lima (Diretora)',
+        'U I BASILIO ALVES': 'Prof. José Basílio Alves (Diretor)',
+        'UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ': 'Profª Aldenora Araújo Cruz (Diretora)',
+        'UE RAIMUNDO DOS REIS DA SILVA': 'Prof. Raimundo Nonato Reis (Diretor)',
+        'UNIDADE INTEGRADA JOSE GONCALVES DIAS': 'Prof. Raimundo José Dias (Diretor)',
+        'UNIDADE ESCOLAR ANISIO GOMES': 'Profª Francisca Anísio Gomes (Diretora)',
+        'UE ANITA FURTADO': 'Profª Ana Rita Anita Furtado (Diretora)'
     };
 
     const schoolZonesMap = {
-        'U.E. BENTA VILANOVA': { zone: 'Sede Urbana', address: 'AVENIDA BENTO CHAVES, CENTRO - CEP: 65775-000', inep: 21128715 },
-        'U.E. RAIMUNDO VELOSO BARROS': { zone: 'Sede Urbana', address: 'RUA COELHO NETO, CENTRO - CEP: 65775-000', inep: 21084270 },
-        'U.E. RAIMUNDO REIS': { zone: 'Sede Urbana', address: 'RUA ALMIR ASSIS, CENTRO - CEP: 65775-000', inep: 21127832 },
-        'U.I. ANTÔNIO GONÇALVES DIAS': { zone: 'Sede Urbana', address: 'AV. FRANCISCO DIAS FILHO, CENTRO - CEP: 65775-000', inep: 21293430 },
-        'U.E. ANTÔNIO JOSÉ DE SANTANA': { zone: 'Zona Rural', address: 'POVOADO MATINHA - CEP: 65775-000', inep: 21284270 },
-        'E.M. SÃO RAIMUNDO': { zone: 'Zona Rural', address: 'POVOADO SÃO RAIMUNDO - CEP: 65775-000', inep: 21087422 },
-        'U.E. JOÃO FEITOSA DE ARAÚJO': { zone: 'Zona Rural', address: 'POVOADO LAGES - CEP: 65775-000', inep: 21085616 },
-        'E.M. 12 DE OUTUBRO': { zone: 'Zona Rural', address: 'POVOADO SANTO ANTÔNIO - CEP: 65775-000', inep: 21285004 },
-        'U.E. HILTAMAR DE FREITAS': { zone: 'Zona Rural', address: 'POVOADO CUMARU - CEP: 65775-000', inep: 21285403 },
-        'U.E. VEREADOR PEDRO BOGEA': { zone: 'Zona Rural', address: 'POVOADO BAIXA GRANDE - CEP: 65775-000', inep: 21285225 },
-        'U.I. BASÍLIO ALVES': { zone: 'Zona Rural', address: 'POVOADO PALMARES - CEP: 65775-000', inep: 21285110 },
-        'E.M. JOSÉ DAS DORES': { zone: 'Zona Rural', address: 'POVOADO BOM LUGAR - CEP: 65775-000', inep: 21284997 }
+        'UI JOSE CORREA LIMA': { zone: 'Zona Rural', address: 'POVOADO CORRÊA, ZONA RURAL - CEP: 65775-000', inep: '21128723', phone: '-' },
+        'UI EMILIO MURAD': { zone: 'Zona Rural', address: 'POVOADO MURAD, ZONA RURAL - CEP: 65775-000', inep: '21128146', phone: '9935-6250' },
+        'UE VEREADOR LEONARDO FERREIRA LIMA': { zone: 'Sede Urbana', address: 'RUA LEONARDO LIMA, CENTRO - CEP: 65775-000', inep: '21128740', phone: '9981-4371' },
+        'U I BASILIO ALVES': { zone: 'Zona Rural', address: 'POVOADO PALMARES, ZONA RURAL - CEP: 65775-000', inep: '21128120', phone: '9935-6218 / 99356-2607' },
+        'UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ': { zone: 'Sede Urbana', address: 'AVENIDA PRINCIPAL, CENTRO - CEP: 65775-000', inep: '21286973', phone: '9998-2055' },
+        'UE RAIMUNDO DOS REIS DA SILVA': { zone: 'Zona Rural', address: 'POVOADO REIS, ZONA RURAL - CEP: 65775-000', inep: '21128758', phone: '-' },
+        'UNIDADE INTEGRADA JOSE GONCALVES DIAS': { zone: 'Zona Rural', address: 'POVOADO GONÇALVES, ZONA RURAL - CEP: 65775-000', inep: '21286990', phone: '9998-2055' },
+        'UNIDADE ESCOLAR ANISIO GOMES': { zone: 'Zona Rural', address: 'POVOADO ANÍSIO, ZONA RURAL - CEP: 65775-000', inep: '21128774', phone: '99817-0566' },
+        'UE ANITA FURTADO': { zone: 'Sede Urbana', address: 'RUA ANITA FURTADO, CENTRO - CEP: 65775-000', inep: '21192544', phone: '9935-6210' }
     };
 
     const classTeachersMap = {
-        'U.E. BENTA VILANOVA_2º Ano A': 'Profa. Ana Carolina Vilanova',
-        'U.E. BENTA VILANOVA_5º Ano A': 'Prof. Carlos Eduardo Mendes',
-        'U.E. RAIMUNDO VELOSO BARROS_9º Ano A': 'Prof. Marcos Vinícius Freitas',
-        'U.E. RAIMUNDO VELOSO BARROS_9º Ano B': 'Profa. Juliana Medeiros',
-        'U.E. RAIMUNDO REIS_5º Ano A': 'Profa. Eliane Cristina Santos',
-        'U.E. RAIMUNDO REIS_9º Ano A': 'Prof. Rodrigo Tavares',
-        'U.I. ANTÔNIO GONÇALVES DIAS_2º Ano A': 'Profa. Beatriz Oliveira',
-        'U.I. ANTÔNIO GONÇALVES DIAS_5º Ano A': 'Prof. Leandro Ribeiro',
-        'U.E. ANTÔNIO JOSÉ DE SANTANA_2º Ano A': 'Profa. Tatiana Souza',
-        'U.E. ANTÔNIO JOSÉ DE SANTANA_5º Ano A': 'Prof. Francisco Chagas',
-        'E.M. SÃO RAIMUNDO_5º Ano A': 'Profa. Marta Helena Silva',
-        'U.E. JOÃO FEITOSA DE ARAÚJO_9º Ano A': 'Prof. Antônio Carlos Lima'
+        'UI JOSE CORREA LIMA_5º Ano A': 'Profa. Ana Carolina Lima',
+        'UI JOSE CORREA LIMA_2º Ano A': 'Profa. Rita de Cássia',
+        'UI EMILIO MURAD_5º Ano A': 'Prof. Carlos Eduardo Murad',
+        'UI EMILIO MURAD_9º Ano A': 'Prof. Marcos Vinícius Silva',
+        'UE VEREADOR LEONARDO FERREIRA LIMA_5º Ano A': 'Profa. Juliana Medeiros',
+        'UE VEREADOR LEONARDO FERREIRA LIMA_9º Ano A': 'Prof. Rodrigo Tavares',
+        'U I BASILIO ALVES_2º Ano A': 'Profa. Beatriz Oliveira',
+        'U I BASILIO ALVES_5º Ano A': 'Prof. Leandro Ribeiro',
+        'UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ_5º Ano A': 'Profa. Tatiana Cruz',
+        'UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ_9º Ano A': 'Prof. Francisco Chagas',
+        'UE RAIMUNDO DOS REIS DA SILVA_5º Ano A': 'Profa. Marta Helena Reis',
+        'UNIDADE INTEGRADA JOSE GONCALVES DIAS_5º Ano A': 'Prof. Antônio Carlos Dias',
+        'UNIDADE ESCOLAR ANISIO GOMES_5º Ano A': 'Profa. Eliane Cristina Gomes',
+        'UE ANITA FURTADO_5º Ano A': 'Profa. Maria do Socorro Furtado'
     };
 
-    let activeWorkspaceSchool = 'U.E. BENTA VILANOVA';
+    let activeWorkspaceSchool = 'UI JOSE CORREA LIMA';
     let activeWorkspaceClass = null;
 
     function renderDbSchools() {
@@ -2839,12 +2926,70 @@ DIRETRIZES DO DIAGNÓSTICO:
         safeCreateIcons();
     }
 
+    function openEditSchoolModal(schoolName) {
+        const modal = document.getElementById('modal-edit-school');
+        if (!modal) return;
+        
+        const info = schoolZonesMap[schoolName] || { zone: 'Zona Rural', inep: '21128723', phone: '-' };
+        const director = schoolDirectorsMap[schoolName] || '';
+        
+        document.getElementById('edit-school-id').value = schoolName;
+        document.getElementById('edit-school-name').value = schoolName;
+        document.getElementById('edit-school-inep').value = info.inep || '';
+        document.getElementById('edit-school-zone').value = (info.zone && info.zone.includes('Urbana')) ? 'Urbana' : 'Rural';
+        document.getElementById('edit-school-phone').value = info.phone || '';
+        document.getElementById('edit-school-director').value = director.replace(' (Diretora)', '').replace(' (Diretor)', '');
+        
+        modal.classList.remove('hidden');
+    }
+
+    const formEditSchool = document.getElementById('form-edit-school');
+    if (formEditSchool) {
+        formEditSchool.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const oldName = document.getElementById('edit-school-id').value;
+            const newName = document.getElementById('edit-school-name').value.trim();
+            const inep = document.getElementById('edit-school-inep').value.trim();
+            const zone = document.getElementById('edit-school-zone').value;
+            const phone = document.getElementById('edit-school-phone').value.trim() || '-';
+            const director = document.getElementById('edit-school-director').value.trim();
+            
+            if (oldName !== newName) {
+                const idx = uniqueSchoolsList.indexOf(oldName);
+                if (idx !== -1) uniqueSchoolsList[idx] = newName;
+                loadedStudents.forEach(s => {
+                    if (s.escola === oldName) s.escola = newName;
+                });
+                delete schoolZonesMap[oldName];
+                delete schoolDirectorsMap[oldName];
+            }
+            
+            schoolZonesMap[newName] = {
+                zone: zone === 'Urbana' ? 'Sede Urbana' : 'Zona Rural',
+                address: `${zone === 'Urbana' ? 'CENTRO' : 'ZONA RURAL'} - CEP: 65775-000`,
+                inep,
+                phone
+            };
+            const isFem = director.startsWith('Profª') || director.startsWith('Profa') || director.includes('da ') || director.includes('Maria') || director.includes('Antonia');
+            schoolDirectorsMap[newName] = `${director} (Diretor${isFem ? 'a' : ''})`;
+            
+            document.getElementById('modal-edit-school')?.classList.add('hidden');
+            renderDbSchools();
+            showToast(`Dados cadastrais da escola "${newName}" atualizados!`, 'check');
+        });
+    }
+
+    const btnCloseEditSchool = document.getElementById('btn-close-edit-school-modal');
+    const btnCancelEditSchool = document.getElementById('btn-cancel-edit-school');
+    if (btnCloseEditSchool) btnCloseEditSchool.addEventListener('click', () => document.getElementById('modal-edit-school')?.classList.add('hidden'));
+    if (btnCancelEditSchool) btnCancelEditSchool.addEventListener('click', () => document.getElementById('modal-edit-school')?.classList.add('hidden'));
+
     // ==========================================
-    // TURMAS LIST VIEW (SCREENSHOT 1 MATCH) & DIÁRIO DA TURMA (SCREENSHOT 2 MATCH)
+    // TURMAS LIST VIEW & DIÁRIO DA TURMA
     // ==========================================
 
-    let activeDiarySchool = 'U.E. BENTA VILANOVA';
-    let activeDiaryClass = '5º ANO "A" - MATUTINO';
+    let activeDiarySchool = 'UI JOSE CORREA LIMA';
+    let activeDiaryClass = '5º Ano A';
 
     // Open Screen 1: Turmas List for the selected School
     function openSchoolWorkspace(schoolName) {
@@ -2852,7 +2997,7 @@ DIRETRIZES DO DIAGNÓSTICO:
     }
 
     function openSchoolClassesTableView(schoolName) {
-        activeDiarySchool = schoolName || 'U.E. BENTA VILANOVA';
+        activeDiarySchool = schoolName || 'UI JOSE CORREA LIMA';
 
         const overview = document.getElementById('schools-overview-container');
         const classesView = document.getElementById('school-classes-table-view');
@@ -6093,6 +6238,8 @@ DIRETRIZES DO DIAGNÓSTICO:
             });
         });
 
+        renderDailyCalendar();
+        renderSchoolRoutineMonitoring();
         safeCreateIcons();
     }
 
@@ -6170,6 +6317,157 @@ DIRETRIZES DO DIAGNÓSTICO:
     }
 
     // Filter listeners for schedule
+    // Daily Calendar Logic (Segunda a Sexta)
+    function renderDailyCalendar() {
+        const weekSelect = document.getElementById('calendar-week-select');
+        const stageSelect = document.getElementById('calendar-stage-select');
+        const cardsGrid = document.getElementById('calendar-daily-cards-grid');
+        if (!cardsGrid) return;
+
+        if (weekSelect && weekSelect.children.length === 0) {
+            for (let w = 1; w <= 40; w++) {
+                const opt = document.createElement('option');
+                opt.value = `Semana ${w}`;
+                opt.textContent = `Semana ${w} (Letiva)`;
+                if (w === 1) opt.selected = true;
+                weekSelect.appendChild(opt);
+            }
+            weekSelect.addEventListener('change', renderDailyCalendar);
+            if (stageSelect) stageSelect.addEventListener('change', renderDailyCalendar);
+        }
+
+        const selectedWeek = weekSelect ? weekSelect.value : 'Semana 1';
+        const selectedStage = stageSelect ? stageSelect.value : '5º Ano';
+
+        const weekItem = skillsScheduleList.find(s => s.semana === selectedWeek) || {
+            descritor: 'Matemática • D13',
+            titulo: 'Operações Fundamentais com Números Naturais'
+        };
+
+        const dailyPlan = [
+            {
+                dia: 'Segunda-feira',
+                fase: 'Abertura & Sondagem',
+                titulo: `Sondagem Prévia • ${weekItem.descritor}`,
+                acao: 'Apresentação do descritor com 2 situações rápidas no quadro. Diagnóstico oral com a turma.',
+                material: 'Quadro branco e fichas de sondagem rápida.',
+                tag: 'Diagnóstico 🟢'
+            },
+            {
+                dia: 'Terça-feira',
+                fase: 'Conceito & Prática',
+                titulo: 'Exploração com Material Concreto',
+                acao: 'Trabalho em duplas com material estruturado (material dourado ou texto impresso guiado).',
+                material: 'Caderno pedagógico e material manipulável.',
+                tag: 'Prática Ativa 🔵'
+            },
+            {
+                dia: 'Quarta-feira',
+                fase: 'Contextualização',
+                titulo: 'Situações-Problema do Cotidiano',
+                acao: 'Resolução de problemas contextualizados com dados e histórias da realidade local de Gonçalves Dias.',
+                material: 'Caderno do estudante SEMED.',
+                tag: 'Aplicação 🟣'
+            },
+            {
+                dia: 'Quinta-feira',
+                fase: 'Aprofundamento',
+                titulo: 'Desafio Rápido & Fixação',
+                acao: 'Oficina de cálculo mental ou leitura dinâmica com correção dialogada entre os estudantes.',
+                material: 'Folhas pautadas e cartões de resposta.',
+                tag: 'Oficina 🟠'
+            },
+            {
+                dia: 'Sexta-feira',
+                fase: 'Checagem Formativa',
+                titulo: 'Mini-Simulado Formativo (3 Itens)',
+                acao: 'Aplicação individual de 3 itens padrão SAEB/SEAMA e registro do índice de acerto no sistema.',
+                material: 'Folha de checagem formativa semanal.',
+                tag: 'Checagem 🔴'
+            }
+        ];
+
+        cardsGrid.innerHTML = '';
+        dailyPlan.forEach(d => {
+            const card = document.createElement('div');
+            card.style.background = 'var(--bg-tertiary)';
+            card.style.border = '1px solid var(--border-color)';
+            card.style.borderRadius = 'var(--radius-md)';
+            card.style.padding = '14px';
+            card.style.display = 'flex';
+            card.style.flexDirection = 'column';
+            card.style.justifyContent = 'space-between';
+
+            card.innerHTML = `
+                <div>
+                    <div class="flex-between" style="margin-bottom: 6px;">
+                        <span style="font-size: 0.8rem; font-weight: 700; color: var(--purple-light);">${d.dia}</span>
+                        <span class="badge badge-outline" style="font-size: 0.65rem;">${d.tag}</span>
+                    </div>
+                    <h5 style="margin: 0 0 6px 0; font-size: 0.82rem; color: var(--text-primary);">${d.titulo}</h5>
+                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0 0 8px 0; line-height: 1.45;">
+                        ${d.acao}
+                    </p>
+                </div>
+                <div style="border-top: 1px solid var(--border-color); padding-top: 6px; font-size: 0.7rem; color: var(--text-muted);">
+                    <strong>Recurso:</strong> ${d.material}
+                </div>
+            `;
+            cardsGrid.appendChild(card);
+        });
+    }
+
+    // School Routine Monitoring Report Logic
+    function renderSchoolRoutineMonitoring() {
+        const tbody = document.getElementById('school-routine-monitoring-table-body');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+
+        const schoolsMonitoring = [
+            { nome: 'UI JOSE CORREA LIMA', diretor: 'Profª Maria da Conceição Lima', taxa: 94, s2: 'cumprido', s5: 'cumprido', s9: 'cumprido', obs: 'Rotina pedagógica executada conforme o cronograma oficial.', status: 'Regular 🟢' },
+            { nome: 'UI EMILIO MURAD', diretor: 'Prof. Francisco Carlos Silva', taxa: 88, s2: 'cumprido', s5: 'andamento', s9: 'cumprido', obs: 'Acompanhamento do reforço de leitura no 5º ano.', status: 'Regular 🟢' },
+            { nome: 'UE VEREADOR LEONARDO FERREIRA LIMA', diretor: 'Profª Antonia Ferreira Lima', taxa: 98, s2: 'cumprido', s5: 'cumprido', s9: 'cumprido', obs: 'Destaque no cumprimento das oficinas de cálculo mental.', status: 'Destaque ⭐' },
+            { nome: 'U I BASILIO ALVES', diretor: 'Prof. José Basílio Alves', taxa: 82, s2: 'andamento', s5: 'andamento', s9: 'pendente', obs: 'Supervisão técnica SEMED agendada para apoio pedagógico.', status: 'Atenção 🟡' },
+            { nome: 'UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ', diretor: 'Profª Aldenora Araújo Cruz', taxa: 96, s2: 'cumprido', s5: 'cumprido', s9: 'cumprido', obs: 'Turmas do 9º ano com 100% de adesão aos simulados.', status: 'Regular 🟢' },
+            { nome: 'UE RAIMUNDO DOS REIS DA SILVA', diretor: 'Prof. Raimundo Nonato Reis', taxa: 86, s2: 'cumprido', s5: 'andamento', s9: 'cumprido', obs: 'Reforço no descritor SAEB D13 em execução.', status: 'Regular 🟢' },
+            { nome: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS', diretor: 'Prof. Raimundo José Dias', taxa: 92, s2: 'cumprido', s5: 'cumprido', s9: 'cumprido', obs: 'Frequência regular e checagem formativa registrada.', status: 'Regular 🟢' },
+            { nome: 'UNIDADE ESCOLAR ANISIO GOMES', diretor: 'Profª Francisca Anísio Gomes', taxa: 90, s2: 'cumprido', s5: 'cumprido', s9: 'andamento', obs: 'Orientação concluída sobre o registro docente no sistema.', status: 'Regular 🟢' },
+            { nome: 'UE ANITA FURTADO', diretor: 'Profª Ana Rita Anita Furtado', taxa: 97, s2: 'cumprido', s5: 'cumprido', s9: 'cumprido', obs: 'Oficinas de fluência leitora e matemática com alto engajamento.', status: 'Destaque ⭐' }
+        ];
+
+        schoolsMonitoring.forEach(sch => {
+            const badge2 = sch.s2 === 'cumprido' ? '<span class="badge badge-success">OK 🟢</span>' : '<span class="badge badge-warning">Em Andamento 🟡</span>';
+            const badge5 = sch.s5 === 'cumprido' ? '<span class="badge badge-success">OK 🟢</span>' : (sch.s5 === 'andamento' ? '<span class="badge badge-warning">Em Andamento 🟡</span>' : '<span class="badge badge-danger">Pendente 🔴</span>');
+            const badge9 = sch.s9 === 'cumprido' ? '<span class="badge badge-success">OK 🟢</span>' : (sch.s9 === 'andamento' ? '<span class="badge badge-warning">Em Andamento 🟡</span>' : '<span class="badge badge-danger">Pendente 🔴</span>');
+
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = '1px solid var(--border-color)';
+            tr.style.height = '44px';
+
+            tr.innerHTML = `
+                <td style="padding: 10px 14px; font-weight:600; color:var(--text-primary);">${sch.nome}</td>
+                <td style="padding: 10px 14px; font-size:0.8rem; color:var(--text-secondary);">${sch.diretor}</td>
+                <td style="padding: 10px 14px; text-align:center; font-family:var(--font-mono); font-weight:700; color:var(--purple-light);">${sch.taxa}%</td>
+                <td style="padding: 10px 14px; text-align:center;">${badge2}</td>
+                <td style="padding: 10px 14px; text-align:center;">${badge5}</td>
+                <td style="padding: 10px 14px; text-align:center;">${badge9}</td>
+                <td style="padding: 10px 14px; font-size:0.78rem; color:var(--text-secondary);">${sch.obs}</td>
+                <td style="padding: 10px 14px; text-align:center; font-weight:600; font-size:0.78rem;">${sch.status}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    const btnExportSchoolMonitoring = document.getElementById('btn-export-school-monitoring');
+    if (btnExportSchoolMonitoring) {
+        btnExportSchoolMonitoring.addEventListener('click', () => {
+            showToast('Preparando impressão do Relatório de Monitoramento da Rotina...', 'printer');
+            setTimeout(() => {
+                window.print();
+            }, 300);
+        });
+    }
+
     const schedFilterStage = document.getElementById('schedule-filter-stage');
     if (schedFilterStage) schedFilterStage.addEventListener('change', renderSkillsSchedule);
 
@@ -6442,7 +6740,7 @@ DIRETRIZES DO DIAGNÓSTICO:
     // ==========================================
     const dbStudentSearch = document.getElementById('db-student-search');
     const dbStudentSchoolFilter = document.getElementById('db-student-school-filter');
-    const dbStudentNeeFilter = document.getElementById('db-student-nee-filter');
+    const dbStudentStageFilter = document.getElementById('db-student-stage-filter');
     const dbStudentsTableBody = document.getElementById('db-students-table-body');
     const dbStudentsPaginationInfo = document.getElementById('db-students-pagination-info');
     const btnDbStudentsPrev = document.getElementById('btn-db-students-prev');
@@ -6450,6 +6748,8 @@ DIRETRIZES DO DIAGNÓSTICO:
 
     const studentModal = document.getElementById('student-modal');
     const closeStudentModalBtn = document.getElementById('close-student-modal-btn');
+    const btnCloseStudentAction = document.getElementById('btn-close-student-modal-action');
+    const btnPrintStudentRecord = document.getElementById('btn-print-student-record');
     
     let dbCurrentPage = 1;
     const dbPageSize = 50;
@@ -6457,8 +6757,9 @@ DIRETRIZES DO DIAGNÓSTICO:
 
     window.initAlunosTab = function(schools) {
         if (dbStudentSchoolFilter) {
-            dbStudentSchoolFilter.innerHTML = '<option value="all">Filtrar por Escola (Todas)</option>';
-            schools.forEach(sch => {
+            dbStudentSchoolFilter.innerHTML = '<option value="all">Filtrar por Escola (Todas as 9 Escolas)</option>';
+            const targetSchools = (schools && schools.length > 0) ? schools : uniqueSchoolsList;
+            targetSchools.forEach(sch => {
                 const opt = document.createElement('option');
                 opt.value = sch;
                 opt.textContent = sch.replace(/\s+/g, ' ');
@@ -6472,19 +6773,18 @@ DIRETRIZES DO DIAGNÓSTICO:
     };
 
     function applyDbFilters() {
-        const query = dbStudentSearch.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        const schoolFilter = dbStudentSchoolFilter.value;
-        const neeFilter = dbStudentNeeFilter.value;
+        const query = dbStudentSearch ? dbStudentSearch.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : '';
+        const schoolFilter = dbStudentSchoolFilter ? dbStudentSchoolFilter.value : 'all';
+        const stageFilter = dbStudentStageFilter ? dbStudentStageFilter.value : 'all';
 
         dbFilteredStudents = loadedStudents.filter(s => {
-            const nameNorm = s.nome.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const nameNorm = (s.nome || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             const cpfNorm = (s.cpf || '').replace(/\D/g, '');
-            const matchQuery = nameNorm.includes(query) || s.matricula.includes(query) || cpfNorm.includes(query);
+            const matchQuery = !query || nameNorm.includes(query) || (s.matricula && s.matricula.includes(query)) || cpfNorm.includes(query);
             const matchSchool = schoolFilter === 'all' || s.escola === schoolFilter;
-            const hasNee = !!s.nee;
-            const matchNee = neeFilter === 'all' || (neeFilter === 'sim' && hasNee) || (neeFilter === 'nao' && !hasNee);
+            const matchStage = stageFilter === 'all' || (s.etapa && s.etapa.includes(stageFilter)) || (s.turma && s.turma.includes(stageFilter));
 
-            return matchQuery && matchSchool && matchNee;
+            return matchQuery && matchSchool && matchStage;
         });
 
         dbCurrentPage = 1;
@@ -6493,7 +6793,7 @@ DIRETRIZES DO DIAGNÓSTICO:
 
     if (dbStudentSearch) dbStudentSearch.addEventListener('input', applyDbFilters);
     if (dbStudentSchoolFilter) dbStudentSchoolFilter.addEventListener('change', applyDbFilters);
-    if (dbStudentNeeFilter) dbStudentNeeFilter.addEventListener('change', applyDbFilters);
+    if (dbStudentStageFilter) dbStudentStageFilter.addEventListener('change', applyDbFilters);
 
     if (btnDbStudentsPrev) {
         btnDbStudentsPrev.addEventListener('click', () => {
@@ -6522,29 +6822,29 @@ DIRETRIZES DO DIAGNÓSTICO:
         const endIndex = Math.min(startIndex + dbPageSize, dbFilteredStudents.length);
         const pageStudents = dbFilteredStudents.slice(startIndex, endIndex);
 
-        btnDbStudentsPrev.disabled = dbCurrentPage === 1;
-        btnDbStudentsNext.disabled = endIndex >= dbFilteredStudents.length;
+        if (btnDbStudentsPrev) btnDbStudentsPrev.disabled = dbCurrentPage === 1;
+        if (btnDbStudentsNext) btnDbStudentsNext.disabled = endIndex >= dbFilteredStudents.length;
 
         if (dbFilteredStudents.length === 0) {
-            dbStudentsPaginationInfo.textContent = 'Nenhum aluno encontrado';
+            if (dbStudentsPaginationInfo) dbStudentsPaginationInfo.textContent = 'Nenhum aluno encontrado';
             dbStudentsTableBody.innerHTML = `
                 <tr>
                     <td colspan="6" style="padding: 20px; text-align: center; color: var(--text-muted);">
-                        Nenhum cadastro atende aos filtros definidos.
+                        Nenhum aluno atende aos filtros definidos.
                     </td>
                 </tr>
             `;
             return;
         }
 
-        dbStudentsPaginationInfo.textContent = `Mostrando ${startIndex + 1}-${endIndex} de ${dbFilteredStudents.length.toLocaleString('pt-BR')} alunos`;
+        if (dbStudentsPaginationInfo) dbStudentsPaginationInfo.textContent = `Mostrando ${startIndex + 1}-${endIndex} de ${dbFilteredStudents.length.toLocaleString('pt-BR')} alunos`;
 
         pageStudents.forEach(s => {
             const tr = document.createElement('tr');
             tr.style.borderBottom = '1px solid var(--border-color)';
             tr.style.height = '46px';
             
-            const stageClean = s.etapa.replace('Ensino fundamental de 9 anos - ', '').trim();
+            const stageClean = (s.etapa || s.turma || '5º Ano').replace('Ensino fundamental de 9 anos - ', '').trim();
             const neeBadge = s.nee ? `<span class="badge badge-warning" title="${s.nee}">${s.nee.slice(0, 15)}...</span>` : '<span class="text-muted text-sm">-</span>';
 
             tr.innerHTML = `
@@ -6654,8 +6954,45 @@ DIRETRIZES DO DIAGNÓSTICO:
     }
 
     function openStudentModal(student) {
+        if (!studentModal) return;
+
+        const initial = (student.nome || 'A').charAt(0).toUpperCase();
+        const avatar = document.getElementById('modal-student-avatar-circle');
+        if (avatar) avatar.textContent = initial;
+
         document.getElementById('modal-student-name').textContent = student.nome;
         document.getElementById('modal-student-matricula').textContent = `Matrícula: ${student.matricula}`;
+        
+        // Proficiency Badge
+        const profBadge = document.getElementById('modal-student-proficiency-badge');
+        const nivel = student.nivel_proficiencia || 'Adequado';
+        if (profBadge) {
+            profBadge.textContent = nivel;
+            if (nivel === 'Crítico') {
+                profBadge.style.background = 'rgba(239, 68, 68, 0.15)';
+                profBadge.style.color = 'var(--red-light)';
+                profBadge.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+            } else if (nivel === 'Básico') {
+                profBadge.style.background = 'rgba(245, 158, 11, 0.15)';
+                profBadge.style.color = 'var(--amber-light)';
+                profBadge.style.borderColor = 'rgba(245, 158, 11, 0.3)';
+            } else if (nivel === 'Avançado') {
+                profBadge.style.background = 'rgba(16, 185, 129, 0.2)';
+                profBadge.style.color = '#10b981';
+                profBadge.style.borderColor = '#10b981';
+            } else {
+                profBadge.style.background = 'rgba(59, 130, 246, 0.15)';
+                profBadge.style.color = 'var(--blue-light)';
+                profBadge.style.borderColor = 'rgba(59, 130, 246, 0.3)';
+            }
+        }
+
+        const headerMeta = document.getElementById('modal-student-header-meta');
+        if (headerMeta) {
+            headerMeta.textContent = `${student.turma || student.etapa} • ${student.escola} • ${student.turno || 'Matutino'}`;
+        }
+
+        // Tab 1: Ficha Cadastral Fields
         document.getElementById('modal-student-cpf').textContent = student.cpf || 'Não Informado';
         document.getElementById('modal-student-sexo').textContent = student.sexo === 'F' ? 'Feminino' : (student.sexo === 'M' ? 'Masculino' : 'Não Informado');
         document.getElementById('modal-student-nascimento').textContent = student.nascimento || 'Não Informada';
@@ -6666,20 +7003,91 @@ DIRETRIZES DO DIAGNÓSTICO:
         document.getElementById('modal-student-cep').textContent = student.cep || 'Não Informado';
         document.getElementById('modal-student-escola').textContent = student.escola;
         document.getElementById('modal-student-etapa').textContent = student.etapa;
-        document.getElementById('modal-student-inicio').textContent = student.data_matricula || 'Não Informada';
+        document.getElementById('modal-student-turma-turno').textContent = `${student.turma || student.etapa} (${student.turno || 'Matutino'})`;
+        document.getElementById('modal-student-inicio').textContent = student.data_matricula || '10/01/2026';
         
+        const scoreVal = student.avg_score || 215;
+        const scoreLp = student.score_lp || Math.round(scoreVal * 1.02);
+        const scoreMat = student.score_mat || Math.round(scoreVal * 0.98);
+        document.getElementById('modal-student-score').textContent = `${scoreVal} pts`;
+        document.getElementById('modal-student-score-lp').textContent = `${scoreLp} pts`;
+        document.getElementById('modal-student-score-mat').textContent = `${scoreMat} pts`;
+        document.getElementById('modal-student-freq').textContent = `${student.frequencia_pct || 98}%`;
+
         const neeField = document.getElementById('modal-student-nee');
-        if (student.nee) {
-            if (student.nee.includes('***')) {
-                neeField.className = 'text-warning';
-            } else {
+        if (neeField) {
+            if (student.nee) {
                 neeField.className = 'badge badge-warning';
+                neeField.textContent = student.nee;
+            } else {
+                neeField.className = 'text-muted';
+                neeField.textContent = 'Regular / Sem Deficiência Declarada';
             }
-            neeField.textContent = student.nee;
-        } else {
-            neeField.className = 'text-muted';
-            neeField.textContent = 'Nenhuma deficiência declarada / Ensino Regular';
         }
+
+        // Tab 2: Histórico de Progressão Longitudinal (Simulado a Simulado)
+        const histContainer = document.getElementById('student-progression-milestones-container');
+        if (histContainer) {
+            const simulados = student.historico_simulados || [
+                { simulado: 'Diagnóstico Inicial (Fev/2026)', lp: Math.round(scoreVal * 0.88), mat: Math.round(scoreVal * 0.90), total: Math.round(scoreVal * 0.89), acerto_pct: 54 },
+                { simulado: '1º Simulado Bimestral (Abr/2026)', lp: Math.round(scoreVal * 0.95), mat: Math.round(scoreVal * 0.96), total: Math.round(scoreVal * 0.95), acerto_pct: 65 },
+                { simulado: '2º Simulado Bimestral (Jun/2026)', lp: scoreLp, mat: scoreMat, total: scoreVal, acerto_pct: 78 }
+            ];
+
+            histContainer.innerHTML = '';
+            simulados.forEach((sim, idx) => {
+                const delta = idx > 0 ? sim.total - simulados[idx - 1].total : 0;
+                const deltaBadge = idx > 0 
+                    ? `<span style="font-size:0.75rem; font-weight:700; color:${delta >= 0 ? 'var(--green-light)' : 'var(--red-light)'};">(${delta >= 0 ? '+' : ''}${delta} pts)</span>`
+                    : '<span style="font-size:0.75rem; color:var(--text-muted);">(Marco Base)</span>';
+
+                const mCard = document.createElement('div');
+                mCard.style.background = 'var(--bg-tertiary)';
+                mCard.style.border = '1px solid var(--border-color)';
+                mCard.style.borderRadius = 'var(--radius-md)';
+                mCard.style.padding = '12px 14px';
+
+                mCard.innerHTML = `
+                    <div style="font-size:0.74rem; font-weight:700; color:var(--purple-light); text-transform:uppercase; margin-bottom:4px;">
+                        ${sim.simulado}
+                    </div>
+                    <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:6px;">
+                        <strong style="font-size:1.3rem; color:var(--text-primary); font-family:var(--font-mono);">${sim.total} pts</strong>
+                        ${deltaBadge}
+                    </div>
+                    <div style="font-size:0.76rem; color:var(--text-secondary); display:flex; justify-content:space-between; margin-bottom:4px;">
+                        <span>LP: <strong>${sim.lp}</strong> | MT: <strong>${sim.mat}</strong></span>
+                        <span>Acerto: <strong>${sim.acerto_pct}%</strong></span>
+                    </div>
+                    <div style="width:100%; height:5px; background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden;">
+                        <div style="width:${Math.min(100, Math.round((sim.total / 400) * 100))}%; height:100%; background:var(--purple-light);"></div>
+                    </div>
+                `;
+                histContainer.appendChild(mCard);
+            });
+        }
+
+        // Consolidated and Focus Skills
+        const consolidatedList = document.getElementById('student-consolidated-skills-list');
+        if (consolidatedList) {
+            consolidatedList.innerHTML = `
+                <li><strong>LP D01:</strong> Localizar informações explícitas no texto narrativo e poético.</li>
+                <li><strong>MT D13:</strong> Resolver problemas com operações de adição e subtração.</li>
+                <li><strong>LP D04:</strong> Identificar o sentido de palavra pelo contexto.</li>
+            `;
+        }
+
+        const focusList = document.getElementById('student-focus-skills-list');
+        if (focusList) {
+            focusList.innerHTML = `
+                <li><strong>LP D03:</strong> Inferir o sentido de uma palavra ou expressão (Ação: Leitura compartilhada).</li>
+                <li><strong>MT D28:</strong> Leitura e interpretação de tabelas e gráficos estatísticos.</li>
+                <li><strong>LP D11:</strong> Distinguir um fato da opinião relativa a esse fato.</li>
+            `;
+        }
+
+        // Ensure default Tab 1 is active
+        switchStudentModalTab('cadastral');
 
         setupRevealButton('modal-student-cpf', student.cpf, student.matricula, 'cpf');
         setupRevealButton('modal-student-mae', student.mae, student.matricula, 'mae');
@@ -6688,11 +7096,64 @@ DIRETRIZES DO DIAGNÓSTICO:
         setupRevealButton('modal-student-nee', student.nee, student.matricula, 'nee');
 
         studentModal.classList.remove('hidden');
+        safeCreateIcons();
     }
+
+    function switchStudentModalTab(targetTab) {
+        const btnCadastral = document.getElementById('btn-tab-student-cadastral');
+        const btnProgressao = document.getElementById('btn-tab-student-progressao');
+        const panelCadastral = document.getElementById('panel-student-cadastral');
+        const panelProgressao = document.getElementById('panel-student-progressao');
+
+        if (targetTab === 'cadastral') {
+            if (btnCadastral) {
+                btnCadastral.style.color = 'var(--purple-light)';
+                btnCadastral.style.borderBottom = '2px solid var(--purple)';
+            }
+            if (btnProgressao) {
+                btnProgressao.style.color = 'var(--text-secondary)';
+                btnProgressao.style.borderBottom = 'none';
+            }
+            if (panelCadastral) panelCadastral.classList.remove('hidden');
+            if (panelProgressao) panelProgressao.classList.add('hidden');
+        } else {
+            if (btnProgressao) {
+                btnProgressao.style.color = 'var(--purple-light)';
+                btnProgressao.style.borderBottom = '2px solid var(--purple)';
+            }
+            if (btnCadastral) {
+                btnCadastral.style.color = 'var(--text-secondary)';
+                btnCadastral.style.borderBottom = 'none';
+            }
+            if (panelProgressao) panelProgressao.classList.remove('hidden');
+            if (panelCadastral) panelCadastral.classList.add('hidden');
+        }
+        safeCreateIcons();
+    }
+
+    const btnTabStudentCadastral = document.getElementById('btn-tab-student-cadastral');
+    const btnTabStudentProgressao = document.getElementById('btn-tab-student-progressao');
+    if (btnTabStudentCadastral) btnTabStudentCadastral.addEventListener('click', () => switchStudentModalTab('cadastral'));
+    if (btnTabStudentProgressao) btnTabStudentProgressao.addEventListener('click', () => switchStudentModalTab('progressao'));
 
     if (closeStudentModalBtn) {
         closeStudentModalBtn.addEventListener('click', () => {
             studentModal.classList.add('hidden');
+        });
+    }
+
+    if (btnCloseStudentAction) {
+        btnCloseStudentAction.addEventListener('click', () => {
+            studentModal.classList.add('hidden');
+        });
+    }
+
+    if (btnPrintStudentRecord) {
+        btnPrintStudentRecord.addEventListener('click', () => {
+            showToast('Preparando impressão da ficha do aluno...', 'printer');
+            setTimeout(() => {
+                window.print();
+            }, 300);
         });
     }
 

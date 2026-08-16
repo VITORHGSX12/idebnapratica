@@ -505,7 +505,7 @@
                                 </div>
                                 <div>
                                     <div class="school-kpi-label">TOTAL DE ESCOLAS</div>
-                                    <div class="school-kpi-value" id="kpi-total-schools">12 Unidades</div>
+                                    <div class="school-kpi-value" id="kpi-total-schools">9 Unidades</div>
                                     <div class="school-kpi-sub" id="kpi-total-students-sub">Alunos: 1.758</div>
                                 </div>
                             </div>
@@ -516,8 +516,8 @@
                                 </div>
                                 <div>
                                     <div class="school-kpi-label">ESCOLAS SEDE (URBANA)</div>
-                                    <div class="school-kpi-value" id="kpi-urban-schools">4 Unidades</div>
-                                    <div class="school-kpi-sub" id="kpi-urban-students-sub">Alunos: 1.222</div>
+                                    <div class="school-kpi-value" id="kpi-urban-schools">3 Unidades</div>
+                                    <div class="school-kpi-sub" id="kpi-urban-students-sub">Alunos: 586</div>
                                 </div>
                             </div>
 
@@ -527,8 +527,8 @@
                                 </div>
                                 <div>
                                     <div class="school-kpi-label">ESCOLAS ZONA RURAL</div>
-                                    <div class="school-kpi-value" id="kpi-rural-schools">8 Unidades</div>
-                                    <div class="school-kpi-sub" id="kpi-rural-students-sub">Alunos: 536</div>
+                                    <div class="school-kpi-value" id="kpi-rural-schools">6 Unidades</div>
+                                    <div class="school-kpi-sub" id="kpi-rural-students-sub">Alunos: 1.172</div>
                                 </div>
                             </div>
                         </div>
@@ -739,20 +739,26 @@
                         </div>
                         <div class="card-header border-top flex-between flex-wrap gap-md" style="background-color: var(--bg-tertiary); padding: 12px 24px;">
                             <div class="flex-between gap-md flex-wrap" style="width: 100%;">
-                                <div class="form-group" style="flex-grow: 1; min-width: 200px;">
-                                    <input type="text" id="db-student-search" class="form-input-text" placeholder="Buscar por nome, matrícula ou CPF...">
+                                <div class="form-group" style="flex-grow: 1; min-width: 240px;">
+                                    <input type="text" id="db-student-search" class="form-input-text" placeholder="Buscar aluno por nome, matrícula ou CPF...">
                                 </div>
-                                <div class="form-group" style="width: 240px;">
+                                <div class="form-group" style="min-width: 260px; flex-grow: 1;">
                                     <select id="db-student-school-filter" class="form-select">
-                                        <option value="all">Filtrar por Escola (Todas)</option>
+                                        <option value="all">Filtrar por Escola (Todas as 9 Escolas)</option>
                                         <!-- Preenchido dinamicamente -->
                                     </select>
                                 </div>
-                                <div class="form-group" style="width: 180px;">
-                                    <select id="db-student-nee-filter" class="form-select">
-                                        <option value="all">Filtrar por NEE (Todas)</option>
-                                        <option value="sim">Com NEE / Deficiência</option>
-                                        <option value="nao">Sem NEE / Regular</option>
+                                <div class="form-group" style="min-width: 200px;">
+                                    <select id="db-student-stage-filter" class="form-select">
+                                        <option value="all">Filtrar por Etapa (Todas)</option>
+                                        <option value="2º Ano">2º Ano EF (Alfabetização)</option>
+                                        <option value="3º Ano">3º Ano EF</option>
+                                        <option value="4º Ano">4º Ano EF</option>
+                                        <option value="5º Ano">5º Ano EF (SAEB)</option>
+                                        <option value="6º Ano">6º Ano EF</option>
+                                        <option value="7º Ano">7º Ano EF</option>
+                                        <option value="8º Ano">8º Ano EF</option>
+                                        <option value="9º Ano">9º Ano EF (SAEB)</option>
                                     </select>
                                 </div>
                             </div>
@@ -852,10 +858,10 @@
                                             <th style="padding: 12px 16px;">Unidade Escolar</th>
                                             <th style="padding: 12px 16px; text-align: center;">IDEB 2023 (INEP)</th>
                                             <th style="padding: 12px 16px; text-align: center;">Projeção Atual</th>
-                                            <th style="padding: 12px 16px; text-align: center;">Meta Pactuada</th>
+                                            <th style="padding: 12px 16px; text-align: center;">Média de Proficiência (SAEB)</th>
                                             <th style="padding: 12px 16px; text-align: center;">Desvio / Gap</th>
                                             <th style="padding: 12px 16px; text-align: center;">Nível de Risco</th>
-                                            <th style="padding: 12px 16px; text-align: center;">Ação Pedagógica (Plano PDE)</th>
+                                            <th style="padding: 12px 16px; text-align: center;">Plano de Intervenção (PDE)</th>
                                         </tr>
                                     </thead>
                                     <tbody id="ideb-goals-table-body">
@@ -1142,6 +1148,37 @@
                                     </div>
                                 </div>
                             </div>
+                        <!-- CALENDÁRIO DIÁRIO DE HABILIDADES (SEGUNDA A SEXTA) -->
+                        <div class="card-body" style="padding-top: 14px; padding-bottom: 6px;">
+                            <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 20px;">
+                                <div class="flex-between flex-wrap gap-md" style="margin-bottom: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(139, 92, 246, 0.15); color: var(--purple-light); display: flex; align-items: center; justify-content: center;">
+                                            <i data-lucide="calendar-days" style="width: 20px; height: 20px;"></i>
+                                        </div>
+                                        <div>
+                                            <h4 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: var(--text-primary);">Calendário Diário de Instrução Pedagógica (Segunda a Sexta)</h4>
+                                            <p style="margin: 2px 0 0 0; font-size: 0.8rem; color: var(--text-secondary);">Roteiro passo a passo do professor em sala de aula para a habilidade da semana.</p>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                                        <label for="calendar-week-select" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">Semana Selecionada:</label>
+                                        <select id="calendar-week-select" class="form-select" style="background: var(--bg-tertiary); font-size: 0.8rem; padding: 6px 12px; width: 170px;">
+                                            <!-- Preenchido via JS com as semanas 1 a 40 -->
+                                        </select>
+                                        <select id="calendar-stage-select" class="form-select" style="background: var(--bg-tertiary); font-size: 0.8rem; padding: 6px 12px; width: 140px;">
+                                            <option value="5º Ano" selected>5º Ano EF (SAEB)</option>
+                                            <option value="2º Ano">2º Ano EF (SEAMA)</option>
+                                            <option value="9º Ano">9º Ano EF (SAEB)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- 5 Days Grid -->
+                                <div id="calendar-daily-cards-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px;">
+                                    <!-- Injetado dinamicamente via renderDailyCalendar() -->
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Filter Toolbar -->
@@ -1170,6 +1207,45 @@
                         <div class="card-body">
                             <div id="skills-schedule-container" style="display: flex; flex-direction: column; gap: 14px;">
                                 <!-- Preenchido dinamicamente via JS -->
+                            </div>
+                        </div>
+
+                        <!-- RELATÓRIO DE MONITORAMENTO DE ROTINA POR ESCOLA (RODAPÉ) -->
+                        <div class="card-body border-top" style="padding-top: 24px;">
+                            <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
+                                <div class="flex-between flex-wrap gap-md" style="margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                                    <div>
+                                        <h4 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                                            <i data-lucide="clipboard-check" style="color: var(--green-light); width: 20px; height: 20px;"></i>
+                                            Relatório de Monitoramento da Rotina por Escola (SEMED)
+                                        </h4>
+                                        <p style="margin: 4px 0 0 0; font-size: 0.82rem; color: var(--text-secondary);">Acompanhamento em tempo real do cumprimento da rotina semanal de habilidades nas 9 escolas da rede.</p>
+                                    </div>
+                                    <button class="btn btn-outline" id="btn-export-school-monitoring" style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem;">
+                                        <i data-lucide="printer" style="width: 14px; height: 14px;"></i>
+                                        <span>Imprimir Relatório de Monitoramento</span>
+                                    </button>
+                                </div>
+
+                                <div style="overflow-x: auto;">
+                                    <table class="table-compact" style="width: 100%; border-collapse: collapse; text-align: left;">
+                                        <thead>
+                                            <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-secondary); height: 40px; background: var(--bg-tertiary);">
+                                                <th style="padding: 10px 14px;">Unidade Escolar</th>
+                                                <th style="padding: 10px 14px;">Direção / Gestor</th>
+                                                <th style="padding: 10px 14px; text-align: center;">Rotina Semanal</th>
+                                                <th style="padding: 10px 14px; text-align: center;">2º Ano</th>
+                                                <th style="padding: 10px 14px; text-align: center;">5º Ano</th>
+                                                <th style="padding: 10px 14px; text-align: center;">9º Ano</th>
+                                                <th style="padding: 10px 14px;">Supervisão Pedagógica SEMED</th>
+                                                <th style="padding: 10px 14px; text-align: center;">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="school-routine-monitoring-table-body">
+                                            <!-- Preenchido dinamicamente com as 9 escolas -->
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2603,45 +2679,191 @@
         </main>
     </div>
 
-    <!-- Student Detail Modal -->
+    <!-- Premium Student Detail Modal with Progression History -->
     <div id="student-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div>
-                    <h3 id="modal-student-name">Nome do Aluno</h3>
-                    <span class="badge badge-info" id="modal-student-matricula">Matrícula: 12345</span>
+        <div class="modal-content" style="max-width: 820px; width: 94%; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header flex-between" style="border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div id="modal-student-avatar-circle" style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--purple), var(--blue)); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem;">
+                        A
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            <h3 id="modal-student-name" style="margin: 0; font-size: 1.2rem; font-weight: 700; color: var(--text-primary);">Nome do Aluno</h3>
+                            <span class="badge badge-info" id="modal-student-matricula">Matrícula: 12345</span>
+                            <span class="badge" id="modal-student-proficiency-badge" style="background: rgba(16, 185, 129, 0.15); color: var(--green-light); border: 1px solid rgba(16, 185, 129, 0.3);">Adequado</span>
+                        </div>
+                        <p class="text-sm text-muted" id="modal-student-header-meta" style="margin: 3px 0 0 0;">5º ANO "A" • UI JOSE CORREA LIMA • Matutino</p>
+                    </div>
                 </div>
-                <button class="btn btn-icon" id="close-student-modal-btn"><i data-lucide="x"></i></button>
+                <button class="btn btn-icon" id="close-student-modal-btn" style="cursor: pointer;"><i data-lucide="x"></i></button>
             </div>
-            <div class="modal-body">
-                <div class="grid-2">
-                    <div class="modal-sec">
-                        <h5>Dados Pessoais</h5>
-                        <p><strong>CPF:</strong> <span id="modal-student-cpf">-</span> <button type="button" class="btn-reveal-field" data-field="cpf" title="Revelar CPF completo" style="background:none; border:none; color:var(--purple-light); cursor:pointer; padding: 0 4px; vertical-align: middle; display:none;"><i data-lucide="eye" style="width:14px; height:14px;"></i></button></p>
-                        <p><strong>Sexo:</strong> <span id="modal-student-sexo">-</span></p>
-                        <p><strong>Nascimento:</strong> <span id="modal-student-nascimento">-</span></p>
-                        <p><strong>Raça/Cor:</strong> <span id="modal-student-cor">-</span></p>
-                    </div>
-                    <div class="modal-sec">
-                        <h5>Família e Residência</h5>
-                        <p><strong>Nome da Mãe:</strong> <span id="modal-student-mae">-</span> <button type="button" class="btn-reveal-field" data-field="mae" title="Revelar Nome da Mãe completo" style="background:none; border:none; color:var(--purple-light); cursor:pointer; padding: 0 4px; vertical-align: middle; display:none;"><i data-lucide="eye" style="width:14px; height:14px;"></i></button></p>
-                        <p><strong>Nome do Pai:</strong> <span id="modal-student-pai">-</span> <button type="button" class="btn-reveal-field" data-field="pai" title="Revelar Nome do Pai completo" style="background:none; border:none; color:var(--purple-light); cursor:pointer; padding: 0 4px; vertical-align: middle; display:none;"><i data-lucide="eye" style="width:14px; height:14px;"></i></button></p>
-                        <p><strong>Endereço:</strong> <span id="modal-student-endereco">-</span> <button type="button" class="btn-reveal-field" data-field="endereco" title="Revelar Endereço completo" style="background:none; border:none; color:var(--purple-light); cursor:pointer; padding: 0 4px; vertical-align: middle; display:none;"><i data-lucide="eye" style="width:14px; height:14px;"></i></button></p>
-                        <p><strong>CEP:</strong> <span id="modal-student-cep">-</span></p>
+
+            <!-- Modal Subtab Navigation -->
+            <div style="display: flex; gap: 10px; border-bottom: 1px solid var(--border-color); padding: 12px 0 0 0; margin-bottom: 16px;">
+                <button class="btn btn-sm" id="btn-tab-student-cadastral" style="border: none; background: transparent; color: var(--purple-light); border-bottom: 2px solid var(--purple); padding-bottom: 8px; font-weight: 700; border-radius: 0; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                    <i data-lucide="user-check" style="width: 15px; height: 15px;"></i>
+                    <span>Ficha Cadastral</span>
+                </button>
+                <button class="btn btn-sm" id="btn-tab-student-progressao" style="border: none; background: transparent; color: var(--text-secondary); padding-bottom: 8px; font-weight: 600; border-radius: 0; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                    <i data-lucide="trending-up" style="width: 15px; height: 15px;"></i>
+                    <span>Histórico de Progressão (Simulados)</span>
+                </button>
+            </div>
+
+            <div class="modal-body" style="padding-top: 4px;">
+                <!-- TAB 1: FICHA CADASTRAL LIMPA & PREMIUM -->
+                <div id="panel-student-cadastral">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px;">
+                        <!-- Card 1: Dados Pessoais -->
+                        <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
+                            <h5 style="margin: 0 0 10px 0; font-size: 0.85rem; font-weight: 700; color: var(--purple-light); text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px;">
+                                <i data-lucide="id-card" style="width: 14px; height: 14px;"></i> Identificação Pessoal
+                            </h5>
+                            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.82rem;">
+                                <div><span style="color: var(--text-muted);">CPF:</span> <strong id="modal-student-cpf">-</strong></div>
+                                <div><span style="color: var(--text-muted);">Nascimento:</span> <strong id="modal-student-nascimento">-</strong></div>
+                                <div><span style="color: var(--text-muted);">Sexo:</span> <strong id="modal-student-sexo">-</strong></div>
+                                <div><span style="color: var(--text-muted);">Cor/Raça:</span> <strong id="modal-student-cor">-</strong></div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Vínculo Escolar -->
+                        <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
+                            <h5 style="margin: 0 0 10px 0; font-size: 0.85rem; font-weight: 700; color: var(--blue-light); text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px;">
+                                <i data-lucide="graduation-cap" style="width: 14px; height: 14px;"></i> Vínculo Escolar
+                            </h5>
+                            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.82rem;">
+                                <div><span style="color: var(--text-muted);">Escola:</span> <strong id="modal-student-escola">-</strong></div>
+                                <div><span style="color: var(--text-muted);">Etapa:</span> <strong id="modal-student-etapa">-</strong></div>
+                                <div><span style="color: var(--text-muted);">Turma / Turno:</span> <strong id="modal-student-turma-turno">-</strong></div>
+                                <div><span style="color: var(--text-muted);">Data Matrícula:</span> <strong id="modal-student-inicio">-</strong></div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Família & Endereço -->
+                        <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
+                            <h5 style="margin: 0 0 10px 0; font-size: 0.85rem; font-weight: 700; color: var(--green-light); text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px;">
+                                <i data-lucide="home" style="width: 14px; height: 14px;"></i> Família & Contato
+                            </h5>
+                            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.82rem;">
+                                <div><span style="color: var(--text-muted);">Mãe:</span> <strong id="modal-student-mae">-</strong></div>
+                                <div><span style="color: var(--text-muted);">Pai:</span> <strong id="modal-student-pai">-</strong></div>
+                                <div><span style="color: var(--text-muted);">Endereço:</span> <strong id="modal-student-endereco">-</strong></div>
+                                <div><span style="color: var(--text-muted);">CEP:</span> <strong id="modal-student-cep">-</strong></div>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: Acessibilidade & Desempenho Atual -->
+                        <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
+                            <h5 style="margin: 0 0 10px 0; font-size: 0.85rem; font-weight: 700; color: var(--amber-light); text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px;">
+                                <i data-lucide="award" style="width: 14px; height: 14px;"></i> Desempenho & Acessibilidade
+                            </h5>
+                            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.82rem;">
+                                <div><span style="color: var(--text-muted);">Proficiência Média:</span> <strong id="modal-student-score" style="color: var(--purple-light); font-size: 1rem;">-</strong></div>
+                                <div><span style="color: var(--text-muted);">Língua Portuguesa:</span> <strong id="modal-student-score-lp">-</strong> | <span style="color: var(--text-muted);">Matemática:</span> <strong id="modal-student-score-mat">-</strong></div>
+                                <div><span style="color: var(--text-muted);">Frequência:</span> <strong id="modal-student-freq">98%</strong></div>
+                                <div><span style="color: var(--text-muted);">NEE / Deficiência:</span> <strong id="modal-student-nee">Nenhuma</strong></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="grid-2 margin-top-md">
-                    <div class="modal-sec">
-                        <h5>Dados Escolares</h5>
-                        <p><strong>Escola:</strong> <span id="modal-student-escola">-</span></p>
-                        <p><strong>Etapa:</strong> <span id="modal-student-etapa">-</span></p>
-                        <p><strong>Início Matrícula:</strong> <span id="modal-student-inicio">-</span></p>
+
+                <!-- TAB 2: HISTÓRICO DE PROGRESSÃO LONGITUDINAL (SIMULADO A SIMULADO) -->
+                <div id="panel-student-progressao" class="hidden">
+                    <div style="background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: var(--radius-md); padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
+                        <i data-lucide="sparkles" style="color: var(--purple-light); width: 20px; height: 20px; flex-shrink: 0;"></i>
+                        <div style="font-size: 0.82rem; color: var(--text-primary);">
+                            <strong>Trajetória Longitudinal do Aluno:</strong> Acompanhe o ganho de proficiência escala SAEB (0-500) e a evolução do domínio de habilidades entre as avaliações diagnósticas e bimestrais.
+                        </div>
                     </div>
-                    <div class="modal-sec">
-                        <h5>Acessibilidade</h5>
-                        <p><strong>NEE / Deficiência:</strong> <span id="modal-student-nee">-</span> <button type="button" class="btn-reveal-field" data-field="nee" title="Revelar NEE completo" style="background:none; border:none; color:var(--purple-light); cursor:pointer; padding: 0 4px; vertical-align: middle; display:none;"><i data-lucide="eye" style="width:14px; height:14px;"></i></button></p>
+
+                    <!-- 3 Simulado Milestone Cards -->
+                    <div id="student-progression-milestones-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 18px;">
+                        <!-- Injetado dinamicamente via JS -->
+                    </div>
+
+                    <!-- Performance Breakdown by Discipline & Skills -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                        <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
+                            <h5 style="margin: 0 0 8px 0; font-size: 0.82rem; color: var(--green-light); display: flex; align-items: center; gap: 6px;">
+                                <i data-lucide="check-circle" style="width: 14px; height: 14px;"></i> Habilidades Consolidadas (Acertos > 70%)
+                            </h5>
+                            <ul id="student-consolidated-skills-list" style="margin: 0; padding-left: 18px; font-size: 0.8rem; line-height: 1.5; color: var(--text-primary);">
+                                <!-- Injetado via JS -->
+                            </ul>
+                        </div>
+
+                        <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
+                            <h5 style="margin: 0 0 8px 0; font-size: 0.82rem; color: var(--red-light); display: flex; align-items: center; gap: 6px;">
+                                <i data-lucide="alert-circle" style="width: 14px; height: 14px;"></i> Habilidades Críticas a Desenvolver
+                            </h5>
+                            <ul id="student-focus-skills-list" style="margin: 0; padding-left: 18px; font-size: 0.8rem; line-height: 1.5; color: var(--text-primary);">
+                                <!-- Injetado via JS -->
+                            </ul>
+                        </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="modal-footer flex-between" style="margin-top: 18px; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                <button class="btn btn-outline" id="btn-print-student-record" style="display: flex; align-items: center; gap: 6px;">
+                    <i data-lucide="printer" style="width: 15px; height: 15px;"></i>
+                    <span>Imprimir Ficha do Aluno</span>
+                </button>
+                <button class="btn btn-primary" id="btn-close-student-modal-action">Fechar Ficha</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Dados Cadastrais da Escola & Vincular Diretor -->
+    <div id="modal-edit-school" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 580px; width: 92%;">
+            <div class="modal-header flex-between" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                <div>
+                    <h3 style="margin: 0; font-size: 1.2rem; font-weight: 700; color: var(--text-primary);">Editar Dados da Unidade Escolar</h3>
+                    <p class="text-sm text-muted" style="margin: 2px 0 0 0;">Atualize os dados cadastrais e o(a) Diretor(a) vinculado(a).</p>
+                </div>
+                <button class="btn btn-icon" id="btn-close-edit-school-modal" style="cursor: pointer;"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body" style="padding-top: 14px;">
+                <form id="form-edit-school" style="display: flex; flex-direction: column; gap: 14px;">
+                    <input type="hidden" id="edit-school-id">
+                    <div class="form-group">
+                        <label for="edit-school-name" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; display: block;">Nome da Escola *</label>
+                        <input type="text" id="edit-school-name" class="form-input-text" required placeholder="Nome completo da escola">
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="edit-school-inep" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; display: block;">Código INEP *</label>
+                            <input type="text" id="edit-school-inep" class="form-input-text" required maxlength="8" placeholder="Ex: 21128723">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-school-zone" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; display: block;">Localização / Zona *</label>
+                            <select id="edit-school-zone" class="form-select">
+                                <option value="Rural">Rural</option>
+                                <option value="Urbana">Urbana</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="edit-school-phone" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; display: block;">Telefone de Contato</label>
+                            <input type="text" id="edit-school-phone" class="form-input-text" placeholder="Ex: 9935-6250">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-school-director" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; display: block;">Diretor(a) Responsável *</label>
+                            <input type="text" id="edit-school-director" class="form-input-text" required placeholder="Nome do(a) gestor(a) escolar">
+                        </div>
+                    </div>
+                    <div class="modal-footer flex-end" style="margin-top: 14px; border-top: 1px solid var(--border-color); padding-top: 12px; gap: 10px;">
+                        <button type="button" class="btn btn-outline" id="btn-cancel-edit-school">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" style="display: flex; align-items: center; gap: 6px;">
+                            <i data-lucide="save" style="width: 15px; height: 15px;"></i>
+                            <span>Salvar Alterações</span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -2665,13 +2887,22 @@
                             <input type="text" id="new-school-inep" class="form-input-text" required maxlength="8" placeholder="Ex: 21094821">
                         </div>
                         <div class="form-group">
-                            <label for="new-school-cep">CEP</label>
-                            <input type="text" id="new-school-cep" class="form-input-text" placeholder="Ex: 65775-000">
+                            <label for="new-school-zone">Localização *</label>
+                            <select id="new-school-zone" class="form-select">
+                                <option value="Rural">Rural</option>
+                                <option value="Urbana">Urbana</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="new-school-address">Endereço / Povoado</label>
-                        <input type="text" id="new-school-address" class="form-input-text" placeholder="Ex: POVOADO CENTRO DO MEIO, ZONA RURAL">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="new-school-phone">Telefone</label>
+                            <input type="text" id="new-school-phone" class="form-input-text" placeholder="Ex: 9935-6250">
+                        </div>
+                        <div class="form-group">
+                            <label for="new-school-director">Diretor(a) Responsável</label>
+                            <input type="text" id="new-school-director" class="form-input-text" placeholder="Nome do(a) gestor(a)">
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary btn-full margin-top-md" id="btn-save-new-school">
                         <i data-lucide="save" style="width:16px; height:16px; margin-right:4px;"></i> Salvar Escola
@@ -3571,6 +3802,6 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=8f43d7a7"></script>
+    <script src="app.js?v=6042acd2"></script>
 </body>
 </html>
