@@ -16487,3 +16487,146 @@ window.showTab = window.switchTab;
             currentAlunosPage++; renderDbStudents();
         }
     });
+
+
+    // ABERTURA EXCLUSIVA DA TELA DE DETALHES DA ESCOLA (EscolaView / EscolaDetalhes)
+    function openSchoolClassesView(schoolName) {
+        const targetSchool = schoolName || 'UI JOSE CORREA LIMA';
+        const schoolsList = document.getElementById('schools-list-container');
+        const schoolView = document.getElementById('school-classes-table-view');
+
+        // Update header UI
+        const nameEl = document.getElementById('workspace-school-name');
+        if (nameEl) nameEl.textContent = targetSchool;
+
+        // Hide main schools list, show schoolView
+        if (schoolsList) {
+            schoolsList.classList.add('hidden');
+            schoolsList.style.display = 'none';
+        }
+        if (schoolView) {
+            schoolView.classList.remove('hidden');
+            schoolView.style.display = 'block';
+        }
+
+        // Render sub-sidebar tab
+        switchSchoolInnerTab('visao-geral');
+    }
+    window.openSchoolClassesView = openSchoolClassesView;
+
+    // RETORNO PARA A LISTA DE ESCOLAS
+    function backToSchoolsList() {
+        const schoolsList = document.getElementById('schools-list-container');
+        const schoolView = document.getElementById('school-classes-table-view');
+
+        if (schoolView) {
+            schoolView.classList.add('hidden');
+            schoolView.style.display = 'none';
+        }
+        if (schoolsList) {
+            schoolsList.classList.remove('hidden');
+            schoolsList.style.display = 'block';
+        }
+        renderDbSchools();
+    }
+    window.backToSchoolsList = backToSchoolsList;
+
+
+    // =========================================================================
+    // NAVEGAÇÃO RESILIENTE DA SIDEBAR PRINCIPAL (GESTAO, AVALIACAO, SISTEMA)
+    // =========================================================================
+
+    function switchTab(targetTab) {
+        if (!targetTab) targetTab = 'dashboard';
+        
+        // Normalize alias targets
+        const tabAliases = {
+            'criar-avaliacoes': 'sec-criar-avaliacoes',
+            'aplicacao-provas': 'sec-aplicacao-provas',
+            'questions': 'banco-questoes',
+            'ai-playground': 'relatorios-monitoramento'
+        };
+
+        const resolvedTab = tabAliases[targetTab] || targetTab;
+        console.log('[Router] Switching main tab to:', resolvedTab);
+
+        try {
+            localStorage.setItem('lastActiveTab', resolvedTab);
+            
+            // Hide all tab contents safely
+            const allTabs = document.querySelectorAll('.tab-content');
+            allTabs.forEach(tab => {
+                tab.classList.remove('active');
+                tab.classList.add('hidden');
+                tab.style.display = 'none';
+            });
+
+            // Hide inner school view if navigating away from escuelas-panel
+            const schoolView = document.getElementById('school-classes-table-view');
+            if (schoolView && resolvedTab !== 'escolas-panel') {
+                schoolView.classList.add('hidden');
+                schoolView.style.display = 'none';
+            }
+
+            // Show schools list container if navigating to escuelas-panel
+            const schoolsList = document.getElementById('schools-list-container');
+            if (schoolsList && resolvedTab === 'escolas-panel') {
+                schoolsList.classList.remove('hidden');
+                schoolsList.style.display = 'block';
+            }
+
+            // Show target section safely
+            let targetEl = document.getElementById(resolvedTab);
+            if (!targetEl && targetTab !== resolvedTab) {
+                targetEl = document.getElementById(targetTab);
+            }
+
+            if (targetEl) {
+                targetEl.classList.remove('hidden');
+                targetEl.classList.add('active');
+                targetEl.style.display = 'block';
+            } else {
+                console.warn('[Router] Target section not found:', resolvedTab, '- falling back to dashboard');
+                const dashEl = document.getElementById('dashboard');
+                if (dashEl) {
+                    dashEl.classList.remove('hidden');
+                    dashEl.classList.add('active');
+                    dashEl.style.display = 'block';
+                }
+            }
+
+            // Highlight active menu item in main sidebar
+            const allMenuItems = document.querySelectorAll('.menu-item');
+            allMenuItems.forEach(item => {
+                const dt = item.getAttribute('data-target');
+                if (dt === resolvedTab || dt === targetTab || (tabAliases[dt] === resolvedTab)) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+
+            // Trigger specific tab renderers safely
+            if (resolvedTab === 'escolas-panel' && typeof renderDbSchools === 'function') {
+                renderDbSchools();
+            } else if (resolvedTab === 'alunos-panel' && typeof renderDbStudents === 'function') {
+                renderDbStudents();
+            } else if (resolvedTab === 'metas-ideb' && typeof populateIdebGoalsTable === 'function') {
+                populateIdebGoalsTable();
+            } else if (resolvedTab === 'ideb-comparativo' && typeof initIdebCitySelector === 'function') {
+                initIdebCitySelector();
+            }
+
+            // Re-render Lucide SVG icons safely
+            if (window.lucide && typeof lucide.createIcons === 'function') {
+                try { lucide.createIcons(); } catch(err) {}
+            }
+        } catch (err) {
+            console.error('[Router Error] Failed to switch tab:', err);
+        }
+    }
+
+    // Export global navigation functions
+    window.switchTab = switchTab;
+    window.switchMainTab = switchTab;
+    window.showTab = switchTab;
