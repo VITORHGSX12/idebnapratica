@@ -571,45 +571,47 @@
                     <div id="dashboard-main-content">
                         <!-- Metric Cards Grid -->
                         <div class="metrics-grid">
-                        <div class="metric-card">
+                        <div class="metric-card" style="border: 1px solid var(--border-color); background: var(--bg-secondary);">
                             <div class="metric-header">
-                                <span class="metric-title">IDEB Projetado (Rede)</span>
-                                <div class="metric-icon purple"><i data-lucide="line-chart"></i></div>
+                                <span class="metric-title">IDEB Oficial da Rede</span>
+                                <div class="metric-icon purple"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 3 18 18"/><path d="m13 3 8 8-4 4-8-8Z"/></svg></div>
                             </div>
-                            <div class="metric-value" id="metric-ideb">N/A</div>
+                            <div class="metric-value" id="metric-ideb" style="color: var(--green-light); font-weight: 800; font-size: 2.2rem;">5.2</div>
                             <div class="metric-footer">
-                                <span class="trend up" id="metric-ideb-trend"><i data-lucide="trending-up"></i> --</span>
-                                <span class="trend-label" id="metric-ideb-sublabel">Sem dados</span>
+                                <span class="trend up" style="color: var(--green-light); font-weight: 700;">+0.4 vs 2023</span>
+                                <span class="trend-label" style="margin-left: auto;">Meta 2026: <strong>5.6</strong></span>
                             </div>
                         </div>
-                        <div class="metric-card">
+                        <div class="metric-card" style="border: 1px solid var(--border-color); background: var(--bg-secondary);">
                             <div class="metric-header">
-                                <span class="metric-title">Proficiência Média SEAMA</span>
-                                <div class="metric-icon blue"><i data-lucide="book-open"></i></div>
+                                <span class="metric-title">Proficiência SAEB 2025</span>
+                                <div class="metric-icon blue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
                             </div>
-                            <div class="metric-value" id="metric-seama-lp">N/A</div>
+                            <div class="metric-value" id="metric-seama-lp" style="color: var(--text-primary); font-weight: 800; font-size: 2.2rem;">212.8 pts</div>
                             <div class="metric-footer">
-                                <span class="trend-label" id="metric-seama-lp-sublabel">Sem dados</span>
+                                <span class="trend-label">LP: <strong>214.2</strong> • MAT: <strong>211.4</strong></span>
                             </div>
                         </div>
-                        <div class="metric-card">
+                        <div class="metric-card" style="border: 1px solid var(--border-color); background: var(--bg-secondary);">
                             <div class="metric-header">
-                                <span class="metric-title">Escolas na Meta</span>
-                                <div class="metric-icon green"><i data-lucide="award"></i></div>
+                                <span class="metric-title">Escolas na Meta Oficial</span>
+                                <div class="metric-icon green"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></div>
                             </div>
-                            <div class="metric-value" id="metric-schools-on-meta">N/A</div>
+                            <div class="metric-value" id="metric-schools-on-meta" style="color: #6366f1; font-weight: 800; font-size: 2.2rem;">4 / 9 Escolas</div>
                             <div class="metric-footer">
-                                <span class="trend-label" id="metric-schools-on-meta-sublabel">Sem dados</span>
+                                <span class="trend-label">44% superaram a meta no ciclo 2025</span>
                             </div>
                         </div>
-                        <div class="metric-card">
+                        <div class="metric-card" style="border: 1px solid var(--border-color); background: var(--bg-secondary);">
                             <div class="metric-header">
-                                <span class="metric-title">Taxa de Adesão aos Simulados (%)</span>
-                                <div class="metric-icon red"><i data-lucide="check-square"></i></div>
+                                <span class="metric-title">Simulados 2026</span>
+                                <div class="metric-icon red"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="m9 16 2 2 4-4"/></svg></div>
                             </div>
-                            <div class="metric-value" id="metric-participation">0%</div>
-                            <div class="metric-footer">
-                                <span class="trend-label" id="metric-students-eval">0 alunos avaliados</span>
+                            <div class="metric-value" style="font-size: 1.15rem; font-weight: 700; color: var(--text-secondary); margin: 6px 0;">Aguardando 1º Simulado</div>
+                            <div class="metric-footer" style="margin-top: 4px;">
+                                <button onclick="switchTab('aplicacao-provas')" style="background: rgba(99, 102, 241, 0.12); color: #6366f1; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+                                    Iniciar Aplicação →
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -4359,6 +4361,6 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=38475fb3"></script>
+    <script src="app.js?v=100ad9ff"></script>
 </body>
 </html>
