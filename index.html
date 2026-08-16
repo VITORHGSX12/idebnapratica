@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>IDEB na Prática - Plataforma de Gestão e Avaliação Educacional</title>
-    <link rel="stylesheet" href="styles.css?v=d3d0d050">
+    <link rel="stylesheet" href="styles.css?v=250375fb">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -72,6 +72,22 @@
                 if (svg) svg.style.transform = 'rotate(180deg)';
             });
         }
+    </script>
+
+
+    <script>
+        // Universal Click Handler for Menu Items
+        document.addEventListener('click', function(e) {
+            var item = e.target.closest('.menu-item');
+            if (item) {
+                e.preventDefault();
+                e.stopPropagation();
+                var targetTab = item.getAttribute('data-target');
+                if (targetTab && typeof window.navigateToTab === 'function') {
+                    window.navigateToTab(targetTab);
+                }
+            }
+        });
     </script>
 
 </head>
@@ -230,15 +246,15 @@
                     <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Gestão</span>
                     <div style="display: flex; flex-direction: column; gap: 4px;">
                         <a href="#" class="menu-item active" data-target="dashboard" data-tooltip="Monitoramento Geral">
-                            <i data-lucide="layout-dashboard"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
                             <span>Monitoramento Geral</span>
                         </a>
                         <a href="#" class="menu-item" data-target="escolas-panel" data-tooltip="Escolas da Rede">
-                            <i data-lucide="school"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 8-4 8 4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="M18 5v17"/><path d="M6 5v17"/></svg>
                             <span>Escolas da Rede</span>
                         </a>
                         <a href="#" class="menu-item" data-target="alunos-panel" data-tooltip="Alunos & Cadastros">
-                            <i data-lucide="users"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                             <span>Alunos & Cadastros</span>
                             <span class="badge badge-info" id="badge-count-students" style="margin-left: auto; font-size: 0.65rem; padding: 2px 6px;">1.7k</span>
                         </a>
@@ -250,47 +266,47 @@
                     <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Avaliação</span>
                     <div style="display: flex; flex-direction: column; gap: 4px;">
                         <a href="#" class="menu-item" data-target="metas-ideb" data-tooltip="Metas e Planos de Desenvolvimento Escolar">
-                            <i data-lucide="target"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
                             <span>Metas e Planos (PDE)</span>
                         </a>
                         <a href="#" class="menu-item" data-target="ideb-comparativo" data-tooltip="Comparativo Regional (INEP)">
-                            <i data-lucide="globe"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
                             <span>Comparativo Regional</span>
                         </a>
                         <a href="#" class="menu-item" data-target="matriz-descritores" data-tooltip="Matriz & Descritores">
-                            <i data-lucide="list-checks"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
                             <span>Matriz & Descritores</span>
                         </a>
                         <a href="#" class="menu-item" data-target="cronograma-habilidades" data-tooltip="Cronograma de Habilidades">
-                            <i data-lucide="calendar-check-2"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>
                             <span>Cronograma de Habilidades</span>
                             <span class="badge badge-success" style="margin-left: auto; font-size: 0.65rem; padding: 2px 6px;">Semanal</span>
                         </a>
                         <a href="#" class="menu-item" data-target="criar-avaliacoes" data-tooltip="Criar Avaliações">
-                            <i data-lucide="calendar-plus"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M12 14v4"/><path d="M10 16h4"/></svg>
                             <span>Criar Avaliações</span>
                         </a>
                         <a href="#" class="menu-item" data-target="aplicacao-provas" data-tooltip="Aplicação de Provas">
-                            <i data-lucide="clipboard-list"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
                             <span>Aplicação de Provas</span>
                         </a>
                         <a href="#" class="menu-item" data-target="questions" data-tooltip="Banco de Questões">
-                            <i data-lucide="file-question"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><circle cx="10" cy="13" r="1"/><path d="M9.1 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3"/></svg>
                             <span>Banco de Questões</span>
                             <span class="badge badge-purple" id="badge-count-questions" style="margin-left: auto; font-size: 0.65rem; padding: 2px 6px;">12</span>
                         </a>
                         <a href="#" class="menu-item" data-target="ai-playground" data-tooltip="Relatórios & Monitoramento">
-                            <i data-lucide="bot"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
                             <span>Relatórios & Monitoramento</span>
                         </a>
 
                         <a href="#" class="menu-item" data-target="gestao-pedagogica" data-tooltip="Gestão Pedagógica">
-                            <i data-lucide="brain-circuit"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M12 18v4"/><path d="M8 22h8"/></svg>
                             <span>Gestão Pedagógica</span>
                         </a>
 
                         <a href="#" class="menu-item" data-target="biblioteca-recursos" data-tooltip="Biblioteca Pedagógica & Impressão">
-                            <i data-lucide="book-open"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                             <span>Biblioteca Pedagógica</span>
                             <span class="badge badge-purple" style="margin-left: auto; font-size: 0.65rem; padding: 2px 6px;">A4 / Provas</span>
                         </a>
@@ -302,11 +318,11 @@
                     <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Sistema</span>
                     <div style="display: flex; flex-direction: column; gap: 4px;">
                         <a href="#" class="menu-item" data-target="doc-tecnica" data-tooltip="Documentação Técnica">
-                            <i data-lucide="settings"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
                             <span>Documentação Técnica</span>
                         </a>
                         <a href="#" class="menu-item" data-target="admin-panel" data-tooltip="Área Administrativa">
-                            <i data-lucide="shield-alert"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
                             <span>Área Administrativa</span>
                         </a>
                     </div>
@@ -4050,19 +4066,19 @@
     <!-- Mobile Bottom Navigation Bar -->
     <nav class="mobile-bottom-nav">
         <a href="#" class="menu-item active" data-target="dashboard">
-            <i data-lucide="layout-dashboard"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
             <span>Painel</span>
         </a>
         <a href="#" class="menu-item" data-target="escolas-panel">
-            <i data-lucide="school"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 8-4 8 4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="M18 5v17"/><path d="M6 5v17"/></svg>
             <span>Escolas</span>
         </a>
         <a href="#" class="menu-item" data-target="alunos-panel">
-            <i data-lucide="users"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             <span>Alunos</span>
         </a>
         <a href="#" class="menu-item" data-target="aplicacao-provas">
-            <i data-lucide="clipboard-list"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
             <span>Provas</span>
         </a>
         <a href="#" id="btn-mobile-more" class="mobile-nav-more">
@@ -4085,31 +4101,31 @@
                     <span class="mobile-sheet-group-title">Avaliação</span>
                     <div style="display: flex; flex-direction: column; gap: 4px;">
                         <a href="#" class="menu-item" data-target="metas-ideb">
-                            <i data-lucide="target"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
                             <span>Metas e Planos (PDE)</span>
                         </a>
                         <a href="#" class="menu-item" data-target="ideb-comparativo">
-                            <i data-lucide="globe"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
                             <span>Comparativo Regional (INEP)</span>
                         </a>
                         <a href="#" class="menu-item" data-target="matriz-descritores">
-                            <i data-lucide="list-checks"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
                             <span>Matriz & Descritores</span>
                         </a>
                         <a href="#" class="menu-item" data-target="cronograma-habilidades">
-                            <i data-lucide="calendar-check-2"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>
                             <span>Cronograma de Habilidades</span>
                         </a>
                         <a href="#" class="menu-item" data-target="criar-avaliacoes">
-                            <i data-lucide="calendar-plus"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M12 14v4"/><path d="M10 16h4"/></svg>
                             <span>Criar Avaliações</span>
                         </a>
                         <a href="#" class="menu-item" data-target="aplicacao-provas">
-                            <i data-lucide="clipboard-list"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
                             <span>Aplicação de Provas</span>
                         </a>
                         <a href="#" class="menu-item" data-target="questions">
-                            <i data-lucide="file-question"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><circle cx="10" cy="13" r="1"/><path d="M9.1 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3"/></svg>
                             <span>Banco de Questões</span>
                         </a>
                     </div>
@@ -4118,23 +4134,23 @@
                     <span class="mobile-sheet-group-title">Pedagógico & Sistema</span>
                     <div style="display: flex; flex-direction: column; gap: 4px;">
                         <a href="#" class="menu-item" data-target="ai-playground">
-                            <i data-lucide="line-chart"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
                             <span>Relatórios & Monitoramento</span>
                         </a>
                         <a href="#" class="menu-item" data-target="gestao-pedagogica">
-                            <i data-lucide="check-square"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M12 18v4"/><path d="M8 22h8"/></svg>
                             <span>Gestão Pedagógica</span>
                         </a>
                         <a href="#" class="menu-item" data-target="biblioteca-recursos">
-                            <i data-lucide="book-open"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                             <span>Biblioteca Pedagógica</span>
                         </a>
                         <a href="#" class="menu-item" data-target="doc-tecnica">
-                            <i data-lucide="file-text"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
                             <span>Documentação Técnica</span>
                         </a>
                         <a href="#" class="menu-item" data-target="admin-panel">
-                            <i data-lucide="settings"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
                             <span>Área Administrativa</span>
                         </a>
                     </div>
