@@ -12150,3 +12150,72 @@ if (document.readyState === 'loading') {
     } else {
         setupMasterFeatures();
     }
+
+
+    // ==========================================
+    // RENDER QUADRO COMPARATIVO SAEB 2025 X SIMULADOS
+    // ==========================================
+    function renderSaebComparativeTable() {
+        const tbody = document.getElementById('table-saeb-comparativo-body');
+        if (!tbody) return;
+
+        const schools = Object.values(SAEB_2025_OFFICIAL_DATA);
+        tbody.innerHTML = schools.map(sch => {
+            return `
+                <tr style="border-bottom: 1px solid var(--border-color); height: 52px; transition: background 0.15s ease;">
+                    <td style="padding: 12px 14px;">
+                        <strong style="font-size: 0.85rem; color: var(--text-primary); display: block;">${sch.nome}</strong>
+                        <span style="font-size: 0.72rem; color: var(--text-secondary); font-family: var(--font-mono);">INEP: ${sch.inep}</span>
+                    </td>
+                    <td style="padding: 12px 14px; text-align: center;">
+                        <span class="badge badge-outline" style="font-size: 0.72rem;">${sch.zona}</span>
+                        <span style="font-size: 0.68rem; display: block; color: var(--text-muted); margin-top: 2px;">${sch.inse}</span>
+                    </td>
+                    <td style="padding: 12px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--blue-light);">
+                        ${sch.proficienciaLP_5Ano.toFixed(1)}
+                    </td>
+                    <td style="padding: 12px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--purple-light);">
+                        ${sch.proficienciaMAT_5Ano.toFixed(1)}
+                    </td>
+                    <td style="padding: 12px 14px; text-align: center; font-family: var(--font-mono); font-weight: 800; color: var(--green-light);">
+                        ${sch.idebCalculado2025.toFixed(1)}
+                    </td>
+                    <td style="padding: 12px 14px; text-align: center;">
+                        <span class="badge badge-warning" style="font-size: 0.72rem;">Aguardando Aplicação</span>
+                    </td>
+                    <td style="padding: 12px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--text-primary);">
+                        ${sch.meta2026.toFixed(1)}
+                    </td>
+                    <td style="padding: 12px 14px; text-align: center;">
+                        <button class="btn btn-sm btn-outline btn-ver-boletim-saeb" data-inep="${sch.inep}" style="font-size: 0.72rem; padding: 4px 8px;">
+                            Ver Detalhes
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+
+        // Subtab click handling inside Gestao Pedagogica
+        document.querySelectorAll('.pedagogic-subtab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.pedagogic-subtab-btn').forEach(b => {
+                    b.classList.remove('active');
+                    b.style.color = 'var(--text-secondary)';
+                    b.style.fontWeight = '500';
+                    b.style.borderBottom = 'none';
+                });
+                btn.classList.add('active');
+                btn.style.color = 'var(--purple-light)';
+                btn.style.fontWeight = '600';
+                btn.style.borderBottom = '2px solid var(--purple)';
+
+                const targetSub = btn.getAttribute('data-subtab');
+                document.querySelectorAll('.pedagogic-subtab-content').forEach(c => c.classList.add('hidden'));
+                const activeSub = document.getElementById(targetSub);
+                if (activeSub) activeSub.classList.remove('hidden');
+
+                if (targetSub === 'comparativo-saeb-sub') renderSaebComparativeTable();
+                safeCreateIcons();
+            });
+        });
+    }

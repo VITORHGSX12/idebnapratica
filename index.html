@@ -1404,6 +1404,7 @@
                         <div style="display: flex; gap: 20px; padding: 16px 24px; border-bottom: 1px solid var(--border-color); overflow-x: auto;">
                             <button class="pedagogic-subtab-btn active" data-subtab="niveis-saeb-sub" style="background:none; border:none; color:var(--purple-light); font-weight:600; cursor:pointer; padding-bottom:8px; border-bottom: 2px solid var(--purple); font-size:0.95rem; white-space:nowrap; transition: var(--transition);">Níveis de Proficiência SAEB (0 a 5)</button>
                             <button class="pedagogic-subtab-btn" data-subtab="planos-intervencao-sub" style="background:none; border:none; color:var(--text-secondary); font-weight:500; cursor:pointer; padding-bottom:8px; font-size:0.95rem; white-space:nowrap; transition: var(--transition);">Modelos de Intervenção Pedagógica</button>
+                            <button class="pedagogic-subtab-btn" data-subtab="comparativo-saeb-sub" style="background:none; border:none; color:var(--text-secondary); font-weight:500; cursor:pointer; padding-bottom:8px; font-size:0.95rem; white-space:nowrap; transition: var(--transition);">📊 Comparativo Oficial SAEB 2025 x Simulados</button>
                         </div>
                     </div>
 
@@ -1639,7 +1640,48 @@
                         </div>
                     </div>
 
-                </section>
+                
+                    <!-- SUBTAB 2: Comparativo Oficial SAEB 2025 x Simulados Internos -->
+                    <div class="pedagogic-subtab-content hidden" id="comparativo-saeb-sub">
+                        <div class="card card-full margin-bottom-lg" style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px;">
+                            <div class="card-header flex-between flex-wrap gap-md" style="margin-bottom: 20px;">
+                                <div>
+                                    <h3 style="display: flex; align-items: center; gap: 8px; font-size: 1.3rem; margin:0;">
+                                        <i data-lucide="bar-chart-2" style="color: var(--purple-light);"></i>
+                                        Quadro Comparativo: Boletim SAEB 2025 (Oficial) x Simulados da Rede
+                                    </h3>
+                                    <p class="card-subtitle" style="margin:4px 0 0 0;">
+                                        Dados consolidados das 9 escolas municipais de Gonçalves Dias - MA, integrando proficiências médias e indicadores contextuais.
+                                    </p>
+                                </div>
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <span class="badge badge-purple" style="font-size:0.75rem;">Boletins Oficiais 2025 Integrados</span>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table" style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="background: var(--bg-secondary); border-bottom: 2px solid var(--border-color); font-size: 0.75rem; text-transform: uppercase;">
+                                            <th style="padding: 12px 14px; text-align: left;">Escola / INEP</th>
+                                            <th style="padding: 12px 14px; text-align: center;">Zona / INSE</th>
+                                            <th style="padding: 12px 14px; text-align: center;">SAEB LP (5º Ano)</th>
+                                            <th style="padding: 12px 14px; text-align: center;">SAEB MAT (5º Ano)</th>
+                                            <th style="padding: 12px 14px; text-align: center;">IDEB 2025</th>
+                                            <th style="padding: 12px 14px; text-align: center;">Simulado 2026</th>
+                                            <th style="padding: 12px 14px; text-align: center;">Meta 2026</th>
+                                            <th style="padding: 12px 14px; text-align: center;">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table-saeb-comparativo-body">
+                                        <!-- Injetado dinamicamente via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+</section>
 
                 <!-- ==================== DOCUMENTAÇÃO TÉCNICA TAB ==================== -->
                 <section id="doc-tecnica" class="tab-content">
@@ -4044,6 +4086,6 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=8e272f7f"></script>
+    <script src="app.js?v=9cab4af6"></script>
 </body>
 </html>
