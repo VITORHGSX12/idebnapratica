@@ -12761,3 +12761,314 @@ if (document.readyState === 'loading') {
         }
     }
     window.handleDeleteClass = handleDeleteClass;
+
+
+    // =========================================================================
+    // CONTROLADORES INTERATIVOS DE AVALIAÇÕES E APLICAÇÃO DE PROVAS (COMPLETO)
+    // =========================================================================
+
+    const DEFAULT_EVENTS_LIST = [
+        {
+            id: 'ev_1',
+            nome: '1º Simulado Diagnóstico SAEB 2026 - Anos Iniciais',
+            escola: 'Todas as 9 Escolas da Rede',
+            janela: '01/09/2026 a 15/09/2026',
+            tipo: 'Simulado Diagnóstico',
+            etapa: '5º Ano (Anos Iniciais)',
+            gabaritoStatus: 'Gabarito Oficial Cadastrado (22 Questões)',
+            status: 'ativos',
+            questoesLP: 11,
+            questoesMT: 11
+        },
+        {
+            id: 'ev_2',
+            nome: 'Simulado Prova Brasil 2026 - Anos Finais',
+            escola: 'Todas as 9 Escolas da Rede',
+            janela: '10/09/2026 a 25/09/2026',
+            tipo: 'Simulado Bimestral',
+            etapa: '9º Ano (Anos Finais)',
+            gabaritoStatus: 'Gabarito Oficial Cadastrado (26 Questões)',
+            status: 'ativos',
+            questoesLP: 13,
+            questoesMT: 13
+        },
+        {
+            id: 'ev_3',
+            nome: 'Avaliação Diagnóstica de Alfabetização 2026',
+            escola: 'Todas as 9 Escolas da Rede',
+            janela: '15/08/2026 a 30/08/2026',
+            tipo: 'Avaliação Formativa',
+            etapa: '2º Ano (Alfabetização)',
+            gabaritoStatus: 'Finalizado e Homologado',
+            status: 'finalizados',
+            questoesLP: 10,
+            questoesMT: 10
+        }
+    ];
+
+    function getStoredEvents() {
+        try {
+            const saved = localStorage.getItem('gestao_eventos_db');
+            if (saved) return JSON.parse(saved);
+        } catch(e) {}
+        localStorage.setItem('gestao_eventos_db', JSON.stringify(DEFAULT_EVENTS_LIST));
+        return DEFAULT_EVENTS_LIST;
+    }
+
+    function saveStoredEvents(list) {
+        try {
+            localStorage.setItem('gestao_eventos_db', JSON.stringify(list));
+        } catch(e) {}
+    }
+
+    let currentEventFilter = 'ativos';
+    let currentWizardStep = 1;
+
+    // Subtab switcher for Criar Avaliações
+    function setupEvalSubtabs() {
+        document.querySelectorAll('.eval-subtab-btn').forEach(btn => {
+            btn.onclick = function(e) {
+                e.preventDefault();
+                const subtab = this.getAttribute('data-subtab');
+                
+                document.querySelectorAll('.eval-subtab-btn').forEach(b => {
+                    b.classList.remove('active');
+                    b.style.color = 'var(--text-secondary)';
+                    b.style.borderBottom = 'none';
+                    b.style.fontWeight = '500';
+                });
+                this.classList.add('active');
+                this.style.color = 'var(--purple-light)';
+                this.style.borderBottom = '2px solid var(--purple)';
+                this.style.fontWeight = '700';
+
+                document.querySelectorAll('.eval-subtab-content').forEach(c => c.classList.add('hidden'));
+                const targetContent = document.getElementById(subtab);
+                if (targetContent) targetContent.classList.remove('hidden');
+
+                if (subtab === 'criar-evento-sub') renderCreatedEventsTable();
+                if (subtab === 'lancar-notas-sub') renderLancarNotasTable();
+                if (subtab === 'resultados-dash-sub') renderResultadosDashboard();
+            };
+        });
+    }
+
+    // Toggle between Eventos Criados and Novo Evento Wizard
+    function setupEventWizardToggles() {
+        const btnShowEvents = document.getElementById('btn-show-created-events');
+        const btnShowWizard = document.getElementById('btn-show-new-event-wizard');
+        const panelEvents = document.getElementById('panel-created-events');
+        const panelWizard = document.getElementById('panel-new-event-wizard');
+
+        if (btnShowEvents) {
+            btnShowEvents.onclick = function(e) {
+                e.preventDefault();
+                if (panelEvents) panelEvents.classList.remove('hidden');
+                if (panelWizard) panelWizard.classList.add('hidden');
+                btnShowEvents.className = 'btn btn-primary';
+                if (btnShowWizard) btnShowWizard.className = 'btn btn-outline';
+                renderCreatedEventsTable();
+            };
+        }
+
+        if (btnShowWizard) {
+            btnShowWizard.onclick = function(e) {
+                e.preventDefault();
+                if (panelEvents) panelEvents.classList.add('hidden');
+                if (panelWizard) panelWizard.classList.remove('hidden');
+                btnShowWizard.className = 'btn btn-primary';
+                if (btnShowEvents) btnShowEvents.className = 'btn btn-outline';
+                goToWizardStep(1);
+            };
+        }
+
+        // Filter links: Ativos, Rascunhos, Finalizados
+        document.querySelectorAll('.event-filter-link').forEach(link => {
+            link.onclick = function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.event-filter-link').forEach(l => {
+                    l.classList.remove('active');
+                    l.style.color = 'var(--text-muted)';
+                    l.style.fontWeight = 'normal';
+                });
+                this.classList.add('active');
+                this.style.color = 'var(--green-light)';
+                this.style.fontWeight = '700';
+                currentEventFilter = this.getAttribute('data-filter') || 'ativos';
+                renderCreatedEventsTable();
+            };
+        });
+    }
+
+    // Render Events Table
+    function renderCreatedEventsTable() {
+        const tbody = document.getElementById('created-events-table-body');
+        if (!tbody) return;
+
+        const events = getStoredEvents().filter(ev => {
+            if (currentEventFilter === 'ativos') return ev.status === 'ativos';
+            if (currentEventFilter === 'rascunhos') return ev.status === 'rascunhos';
+            if (currentEventFilter === 'finalizados') return ev.status === 'finalizados';
+            return true;
+        });
+
+        if (events.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" style="padding: 30px; text-align: center; color: var(--text-secondary);">
+                        Nenhum evento de avaliação encontrado nesta categoria.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tbody.innerHTML = events.map(ev => `
+            <tr style="border-bottom: 1px solid var(--border-color); height: 56px;">
+                <td style="padding: 12px 16px;">
+                    <div style="font-weight: 700; color: var(--text-primary); font-size: 0.9rem;">${ev.nome}</div>
+                    <div style="font-size: 0.74rem; color: var(--text-secondary); margin-top: 2px;">
+                        LP: ${ev.questoesLP || 11} Questões • MAT: ${ev.questoesMT || 11} Questões
+                    </div>
+                </td>
+                <td style="padding: 12px 16px; color: var(--text-secondary); font-size: 0.82rem;">${ev.escola}</td>
+                <td style="padding: 12px 16px; font-size: 0.82rem;">${ev.janela}</td>
+                <td style="padding: 12px 16px;"><span class="badge badge-purple" style="font-size: 0.7rem;">${ev.tipo}</span></td>
+                <td style="padding: 12px 16px; font-size: 0.82rem; font-weight: 600;">${ev.etapa}</td>
+                <td style="padding: 12px 16px; text-align: center;">
+                    <span class="badge badge-success" style="font-size: 0.72rem;">${ev.gabaritoStatus}</span>
+                </td>
+                <td style="padding: 12px 16px; text-align: center;">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <button onclick="openLancarNotasForEvent('${ev.id}')" class="btn btn-outline btn-sm" style="font-weight: 700; font-size: 0.75rem; padding: 4px 8px; color: #6366f1;" title="Lançar Notas">
+                            📝 Lançar Notas
+                        </button>
+                        <button onclick="openPrintModalForEvent('${ev.id}')" class="btn btn-outline btn-sm" style="font-weight: 600; font-size: 0.75rem; padding: 4px 8px;" title="Imprimir Caderno">
+                            🖨️ Caderno A4
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+    window.renderCreatedEventsTable = renderCreatedEventsTable;
+
+    // Wizard Step Navigation
+    function goToWizardStep(step) {
+        currentWizardStep = step;
+        for (let i = 1; i <= 4; i++) {
+            const stepContent = document.getElementById('step-content-' + i);
+            const stepInd = document.getElementById('step-ind-' + i);
+            if (stepContent) {
+                if (i === step) stepContent.classList.remove('hidden');
+                else stepContent.classList.add('hidden');
+            }
+            if (stepInd) {
+                if (i === step) {
+                    stepInd.classList.add('active');
+                    stepInd.style.color = 'var(--purple-light)';
+                } else if (i < step) {
+                    stepInd.classList.remove('active');
+                    stepInd.style.color = 'var(--green-light)';
+                } else {
+                    stepInd.classList.remove('active');
+                    stepInd.style.color = 'var(--text-muted)';
+                }
+            }
+        }
+    }
+    window.goToWizardStep = goToWizardStep;
+
+    function handleFinishWizard() {
+        const title = document.getElementById('wizard-event-name')?.value || 'Novo Simulado Oficial 2026';
+        const type = document.getElementById('wizard-event-type')?.value || 'Simulado Diagnóstico';
+        const stage = document.getElementById('wizard-stage-select')?.value || '5º Ano (Anos Iniciais)';
+        const start = document.getElementById('wizard-date-start')?.value || '01/10/2026';
+        const end = document.getElementById('wizard-date-end')?.value || '15/10/2026';
+
+        const newEvent = {
+            id: 'ev_' + Date.now(),
+            nome: title,
+            escola: 'Todas as 9 Escolas da Rede',
+            janela: start + ' a ' + end,
+            tipo: type,
+            etapa: stage,
+            gabaritoStatus: 'Gabarito Oficial Cadastrado (24 Questões)',
+            status: 'ativos',
+            questoesLP: 12,
+            questoesMT: 12
+        };
+
+        const current = getStoredEvents();
+        current.unshift(newEvent);
+        saveStoredEvents(current);
+
+        alert('✅ Avaliação criada com sucesso! O gabarito e os cadernos de prova A4 foram gerados para todas as escolas da rede.');
+
+        const btnShowEvents = document.getElementById('btn-show-created-events');
+        if (btnShowEvents) btnShowEvents.click();
+    }
+    window.handleFinishWizard = handleFinishWizard;
+
+    // Render Ongoing Assessments in Aplicação de Provas
+    function renderOngoingAssessments() {
+        const container = document.getElementById('ongoing-assessments-list');
+        if (!container) return;
+
+        const events = getStoredEvents().filter(e => e.status === 'ativos');
+
+        container.innerHTML = events.map(ev => `
+            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 18px 22px; border-radius: var(--radius-lg);">
+                <div class="flex-between flex-wrap gap-md" style="margin-bottom: 14px;">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <h4 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: var(--text-primary);">${ev.nome}</h4>
+                            <span class="badge badge-success" style="font-size: 0.72rem;">Em Aplicação</span>
+                        </div>
+                        <p class="text-sm text-muted" style="margin: 4px 0 0 0;">Janela: ${ev.janela} • Público-Alvo: ${ev.etapa} • 9 Unidades Escolares</p>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button onclick="openLancarNotasForEvent('${ev.id}')" class="btn btn-primary btn-sm" style="font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                            <span>Digitar Cartões-Resposta</span>
+                        </button>
+                        <button onclick="switchTab('escolas-panel')" class="btn btn-outline btn-sm" style="font-weight: 600;">
+                            <span>Consolidar por Escola</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div style="margin-top: 10px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">
+                        <span>Progresso de Coleta dos Cartões da Rede</span>
+                        <span style="color: var(--green-light);">68% Concluído (1.195 / 1.758 Alunos)</span>
+                    </div>
+                    <div style="width: 100%; height: 8px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden;">
+                        <div style="width: 68%; height: 100%; background: linear-gradient(90deg, #6366f1, #10b981); border-radius: 4px;"></div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+    window.renderOngoingAssessments = renderOngoingAssessments;
+
+    function openLancarNotasForEvent(eventId) {
+        switchTab('criar-avaliacoes');
+        const subtabBtn = document.querySelector('.eval-subtab-btn[data-subtab="lancar-notas-sub"]');
+        if (subtabBtn) subtabBtn.click();
+    }
+    window.openLancarNotasForEvent = openLancarNotasForEvent;
+
+    function openPrintModalForEvent(eventId) {
+        const printModal = document.getElementById('print-exam-modal');
+        if (printModal) printModal.classList.remove('hidden');
+    }
+    window.openPrintModalForEvent = openPrintModalForEvent;
+
+    // Initialize all button listeners on startup
+    document.addEventListener('DOMContentLoaded', () => {
+        setupEvalSubtabs();
+        setupEventWizardToggles();
+        renderCreatedEventsTable();
+        renderOngoingAssessments();
+    });
