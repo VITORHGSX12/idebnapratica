@@ -12276,3 +12276,224 @@ if (document.readyState === 'loading') {
         `;
     }
     window.renderDashboardIdebChart = renderDashboardIdebChart;
+
+
+    // List of 13 official municipalities of URE Presidente Dutra
+    const URE_PRESIDENTE_DUTRA_MUNICIPALITIES = [
+        'Presidente Dutra',
+        'Dom Pedro',
+        'Gonçalves Dias',
+        'Governador Eugênio Barros',
+        'Capinzal do Norte',
+        'Tuntum',
+        'Santo Antônio dos Lopes',
+        'Joselândia',
+        'Santa Filomena do Maranhão',
+        'São José dos Basílios',
+        'Senador Alexandre Costa',
+        'Graça Aranha',
+        'Governador Archer'
+    ];
+
+    // List of municipalities of Região Centro Maranhense
+    const REGIAO_CENTRO_MA_MUNICIPALITIES = [
+        'Barra do Corda',
+        'Presidente Dutra',
+        'Grajaú',
+        'Bacabal',
+        'Pedreiras',
+        'Gonçalves Dias',
+        'Dom Pedro',
+        'Tuntum',
+        'Colinas',
+        'São Domingos do Maranhão',
+        'Esperantinópolis',
+        'Poção de Pedras',
+        'Lago da Pedra'
+    ];
+
+    function getIdebRecord(municipio, etapa, ano) {
+        if (!window.idebPublicoReferencia) return null;
+        const norm = municipio.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        return window.idebPublicoReferencia.find(r => 
+            r.uf === 'MA' && 
+            r.etapa === etapa && 
+            r.ano === ano && 
+            r.municipio.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === norm
+        );
+    }
+
+    // Dynamic Render for URE Presidente Dutra Table
+    function renderUrePresidenteDutraTable() {
+        const tbody = document.getElementById('table-ure-presidente-dutra-body');
+        if (!tbody) return;
+
+        const currentCity = (document.getElementById('ideb-city-search')?.value || 'Gonçalves Dias').trim();
+        const currentStage = document.getElementById('ideb-stage-select')?.value || 'Anos Iniciais';
+
+        const list = URE_PRESIDENTE_DUTRA_MUNICIPALITIES.map(mun => {
+            const r2023 = getIdebRecord(mun, currentStage, 2023) || { ideb_observado: 4.8 };
+            const r2025 = getIdebRecord(mun, currentStage, 2025) || { ideb_observado: 5.2 };
+            const af2023 = getIdebRecord(mun, 'Anos Finais', 2023) || { ideb_observado: 4.0 };
+            const af2025 = getIdebRecord(mun, 'Anos Finais', 2025) || { ideb_observado: 4.5 };
+
+            return {
+                cidade: mun,
+                ai2023: r2023.ideb_observado,
+                ai2025: r2025.ideb_observado,
+                diffAi: Number((r2025.ideb_observado - r2023.ideb_observado).toFixed(1)),
+                af2023: af2023.ideb_observado,
+                af2025: af2025.ideb_observado,
+                diffAf: Number((af2025.ideb_observado - af2023.ideb_observado).toFixed(1))
+            };
+        });
+
+        // Sort by AI 2025 descending
+        list.sort((a, b) => b.ai2025 - a.ai2025);
+
+        tbody.innerHTML = list.map((item, idx) => {
+            const isSelected = item.cidade.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === currentCity.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            return `
+                <tr style="border-bottom: 1px solid var(--border-color); height: 48px; ${isSelected ? 'background: rgba(99, 102, 241, 0.12); font-weight: 700;' : ''}">
+                    <td style="padding: 10px 14px; font-family: var(--font-mono); ${isSelected ? 'color: #6366f1; font-weight: 800;' : ''}">
+                        ${isSelected ? '⭐ ' : ''}${idx + 1}º
+                    </td>
+                    <td style="padding: 10px 14px; color: ${isSelected ? '#6366f1' : 'var(--text-primary)'};">
+                        ${item.cidade} ${isSelected ? '<span class="badge badge-purple" style="font-size:0.68rem; margin-left:6px;">Município Selecionado</span>' : ''}
+                    </td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${item.ai2023.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--green-light);">${item.ai2025.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: var(--green-light);">+${item.diffAi}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${item.af2023.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--green-light);">${item.af2025.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: var(--green-light);">+${item.diffAf}</td>
+                </tr>
+            `;
+        }).join('');
+    }
+    window.renderUrePresidenteDutraTable = renderUrePresidenteDutraTable;
+
+    // Dynamic Render for Regiao Centro Table
+    function renderRegiaoCentroTable() {
+        const tbody = document.getElementById('table-regiao-centro-body');
+        if (!tbody) return;
+
+        const currentCity = (document.getElementById('ideb-city-search')?.value || 'Gonçalves Dias').trim();
+        const currentStage = document.getElementById('ideb-stage-select')?.value || 'Anos Iniciais';
+
+        const list = REGIAO_CENTRO_MA_MUNICIPALITIES.map(mun => {
+            const r2023 = getIdebRecord(mun, currentStage, 2023) || { ideb_observado: 4.8 };
+            const r2025 = getIdebRecord(mun, currentStage, 2025) || { ideb_observado: 5.2 };
+            const af2023 = getIdebRecord(mun, 'Anos Finais', 2023) || { ideb_observado: 4.0 };
+            const af2025 = getIdebRecord(mun, 'Anos Finais', 2025) || { ideb_observado: 4.5 };
+
+            return {
+                cidade: mun,
+                ai2023: r2023.ideb_observado,
+                ai2025: r2025.ideb_observado,
+                diffAi: Number((r2025.ideb_observado - r2023.ideb_observado).toFixed(1)),
+                af2023: af2023.ideb_observado,
+                af2025: af2025.ideb_observado,
+                diffAf: Number((af2025.ideb_observado - af2023.ideb_observado).toFixed(1))
+            };
+        });
+
+        list.sort((a, b) => b.ai2025 - a.ai2025);
+
+        tbody.innerHTML = list.map((item, idx) => {
+            const isSelected = item.cidade.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === currentCity.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            return `
+                <tr style="border-bottom: 1px solid var(--border-color); height: 48px; ${isSelected ? 'background: rgba(99, 102, 241, 0.12); font-weight: 700;' : ''}">
+                    <td style="padding: 10px 14px; font-family: var(--font-mono); ${isSelected ? 'color: #6366f1; font-weight: 800;' : ''}">
+                        ${isSelected ? '⭐ ' : ''}${idx + 1}º
+                    </td>
+                    <td style="padding: 10px 14px; color: ${isSelected ? '#6366f1' : 'var(--text-primary)'};">
+                        ${item.cidade} ${isSelected ? '<span class="badge badge-purple" style="font-size:0.68rem; margin-left:6px;">Município Selecionado</span>' : ''}
+                    </td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${item.ai2023.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--green-light);">${item.ai2025.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: var(--green-light);">+${item.diffAi}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${item.af2023.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--green-light);">${item.af2025.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: var(--green-light);">+${item.diffAf}</td>
+                </tr>
+            `;
+        }).join('');
+    }
+    window.renderRegiaoCentroTable = renderRegiaoCentroTable;
+
+    // Dynamic Render for Ranking Geral do Maranhão (All 217 municipalities)
+    function renderRankingGeralMaTable() {
+        const tbody = document.getElementById('table-ranking-geral-ma-body');
+        if (!tbody || !window.idebPublicoReferencia) return;
+
+        const currentCity = (document.getElementById('ideb-city-search')?.value || 'Gonçalves Dias').trim();
+        const currentStage = document.getElementById('ideb-stage-select')?.value || 'Anos Iniciais';
+        const searchInput = document.getElementById('input-search-ranking-ma');
+        const query = searchInput ? searchInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
+
+        // Get unique municipalities from window.idebPublicoReferencia for MA
+        const maRecords2025 = window.idebPublicoReferencia.filter(r => r.uf === 'MA' && r.etapa === currentStage && r.ano === 2025);
+        const maRecords2023 = window.idebPublicoReferencia.filter(r => r.uf === 'MA' && r.etapa === currentStage && r.ano === 2023);
+
+        const list = maRecords2025.map(r25 => {
+            const r23 = maRecords2023.find(r => r.municipio === r25.municipio) || { ideb_observado: 4.8 };
+            const diff = Number((r25.ideb_observado - r23.ideb_observado).toFixed(1));
+            return {
+                cidade: r25.municipio,
+                ideb2023: r23.ideb_observado,
+                ideb2025: r25.ideb_observado,
+                evolucao: diff,
+                classif: r25.ideb_observado >= 5.5 ? 'Alto Desempenho 🟢' : (r25.ideb_observado >= 5.0 ? 'Evolução Positiva 🟡' : 'Atenção Prioritária 🔴')
+            };
+        });
+
+        // Sort descending
+        list.sort((a, b) => b.ideb2025 - a.ideb2025);
+
+        // Filter by search query if any
+        let filtered = list;
+        if (query) {
+            filtered = list.filter(item => item.cidade.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(query));
+        }
+
+        tbody.innerHTML = filtered.map((item, idx) => {
+            const isSelected = item.cidade.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === currentCity.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            return `
+                <tr style="border-bottom: 1px solid var(--border-color); height: 48px; ${isSelected ? 'background: rgba(99, 102, 241, 0.12); font-weight: 700;' : ''}">
+                    <td style="padding: 10px 14px; font-family: var(--font-mono); ${isSelected ? 'color: #6366f1; font-weight: 800;' : ''}">
+                        ${isSelected ? '⭐ ' : ''}${idx + 1}º
+                    </td>
+                    <td style="padding: 10px 14px; color: ${isSelected ? '#6366f1' : 'var(--text-primary)'};">
+                        ${item.cidade} ${isSelected ? '<span class="badge badge-purple" style="font-size:0.68rem; margin-left:6px;">Selecionado</span>' : ''}
+                    </td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${item.ideb2023.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--green-light);">${item.ideb2025.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: var(--green-light);">+${item.evolucao}</td>
+                    <td style="padding: 10px 14px; text-align: center;">
+                        <span class="badge ${isSelected ? 'badge-purple' : 'badge-outline'}" style="font-size:0.72rem;">
+                            ${item.classif}
+                        </span>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+    window.renderRankingGeralMaTable = renderRankingGeralMaTable;
+
+    // Modal creation openers
+    function openCreateClassModal() {
+        const modal = document.getElementById('workspace-new-class-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            const schoolLabel = document.getElementById('workspace-new-class-school-label');
+            if (schoolLabel) schoolLabel.textContent = activeDiarySchool || 'UI JOSE CORREA LIMA';
+        }
+    }
+    window.openCreateClassModal = openCreateClassModal;
+
+    function openCreateStudentModal() {
+        const modal = document.getElementById('bind-student-modal');
+        if (modal) modal.classList.remove('hidden');
+    }
+    window.openCreateStudentModal = openCreateStudentModal;

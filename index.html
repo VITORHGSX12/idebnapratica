@@ -1152,7 +1152,7 @@
                                 </div>
 
                                 <div style="flex-grow: 1;">
-                                    <h2 id="workspace-school-name" style="font-size: 1.35rem; font-weight: 800; color: #ffffff; margin: 0 0 4px 0; text-transform: uppercase; letter-spacing: -0.3px;">
+                                    <h2 id="workspace-school-name" style="font-size: 1.35rem; font-weight: 800; color: var(--text-primary); margin: 0 0 4px 0; text-transform: uppercase; letter-spacing: -0.3px;">
                                         UI JOSE CORREA LIMA
                                     </h2>
                                     <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 0.8rem; color: #94a3b8;">
@@ -1211,7 +1211,7 @@
                                             <i data-lucide="file-text" style="width: 15px; height: 15px;"></i>
                                             <span>Relatórios</span>
                                         </button>
-                                        <button class="btn btn-primary" id="btn-open-new-class-table-modal" style="height: 40px; background: #4f46e5; border-color: #4f46e5; display: flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 700; padding: 0 16px; border-radius: var(--radius-md); color: #ffffff;">
+                                        <button class="btn btn-primary" id="btn-open-new-class-table-modal" onclick="openCreateClassModal(); return false;" style="height: 40px; background: #4f46e5; border-color: #4f46e5; display: flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 700; padding: 0 16px; border-radius: var(--radius-md); color: #ffffff;">
                                             <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
                                             <span>+ Add Turma</span>
                                         </button>
@@ -1227,7 +1227,7 @@
                                             <i data-lucide="layout-grid" style="width: 22px; height: 22px;"></i>
                                         </div>
                                         <div>
-                                            <div class="school-kpi-value" id="kpi-school-total-classes" style="font-size: 1.6rem; font-weight: 800; color: #ffffff; line-height: 1;">0</div>
+                                            <div class="school-kpi-value" id="kpi-school-total-classes" style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary); line-height: 1;">0</div>
                                             <div class="school-kpi-label" style="font-size: 0.78rem; font-weight: 600; color: #94a3b8; margin-top: 4px;">Total de Turmas</div>
                                         </div>
                                     </div>
@@ -1238,7 +1238,7 @@
                                             <i data-lucide="calendar-check" style="width: 22px; height: 22px;"></i>
                                         </div>
                                         <div>
-                                            <div class="school-kpi-value" id="kpi-school-classes-year" style="font-size: 1.6rem; font-weight: 800; color: #ffffff; line-height: 1;">0</div>
+                                            <div class="school-kpi-value" id="kpi-school-classes-year" style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary); line-height: 1;">0</div>
                                             <div class="school-kpi-label" style="font-size: 0.78rem; font-weight: 600; color: #94a3b8; margin-top: 4px;">Turmas 2026</div>
                                         </div>
                                     </div>
@@ -1249,7 +1249,7 @@
                                             <i data-lucide="check-square" style="width: 22px; height: 22px;"></i>
                                         </div>
                                         <div>
-                                            <div class="school-kpi-value" id="kpi-school-active-classes" style="font-size: 1.6rem; font-weight: 800; color: #ffffff; line-height: 1;">0</div>
+                                            <div class="school-kpi-value" id="kpi-school-active-classes" style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary); line-height: 1;">0</div>
                                             <div class="school-kpi-label" style="font-size: 0.78rem; font-weight: 600; color: #94a3b8; margin-top: 4px;">Turmas Ativas</div>
                                         </div>
                                     </div>
@@ -4748,6 +4748,6 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=5b4ca5a4"></script>
+    <script src="app.js?v=828e4657"></script>
 </body>
 </html>
