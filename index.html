@@ -1901,45 +1901,80 @@
 
                 <!-- ==================== MATRIZ & DESCRITORES TAB ==================== -->
                 <section id="matriz-descritores" class="tab-content">
-                    <div class="card card-full margin-bottom-lg">
-                        <div class="card-header flex-between flex-wrap gap-md">
+                    <div class="card card-full margin-bottom-lg" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
+                        <div class="card-header flex-between flex-wrap gap-md" style="padding-bottom: 16px; border-bottom: 1px solid var(--border-color);">
                             <div>
-                                <h3>Matrizes de Referência de Avaliação</h3>
-                                <p class="card-subtitle">Descritores de habilidades cognitivas estruturados por componentes do SAEB (L. Portuguesa, Matemática, Ciências e Geografia).</p>
+                                <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(99, 102, 241, 0.1); color:#6366f1; padding:4px 10px; border-radius:16px; font-size:0.75rem; font-weight:700; margin-bottom:6px;">
+                                    📚 MATRIZES DE REFERÊNCIA SAEB & BNCC 2026
+                                </div>
+                                <h3 style="margin:0; font-size:1.35rem; font-weight:800; color:var(--text-primary);">Matrizes de Referência & Descritores</h3>
+                                <p class="card-subtitle" style="margin:4px 0 0 0;">Descritores de habilidades cognitivas estruturados por componentes do SAEB (Língua Portuguesa, Matemática, Ciências da Natureza e Humanas).</p>
+                            </div>
+                            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                                <input type="text" id="matriz-search-input" oninput="filterMatrizDescritores()" placeholder="Buscar por código ou tema (ex: D1, fração, inferir)..." style="height:38px; min-width:280px; font-size:0.82rem; padding:0 12px; background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-md); color:var(--text-primary);">
                             </div>
                         </div>
-                        <div class="card-body">
-                            <div class="grid-3-lg" style="gap: 24px;">
+
+                        <!-- Stage Selector Pill Tabs -->
+                        <div style="display: flex; gap: 8px; padding: 14px 20px; border-bottom: 1px solid var(--border-color); background: var(--bg-tertiary); overflow-x: auto;">
+                            <button class="matriz-etapa-btn active" onclick="switchMatrizEtapa('5ano'); return false;" data-etapa="5ano" style="padding: 6px 14px; border-radius: 16px; font-size: 0.78rem; font-weight: 700; background: #6366f1; color: #fff; border: none; cursor: pointer;">
+                                🎒 Anos Iniciais (5º Ano)
+                            </button>
+                            <button class="matriz-etapa-btn" onclick="switchMatrizEtapa('9ano'); return false;" data-etapa="9ano" style="padding: 6px 14px; border-radius: 16px; font-size: 0.78rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer;">
+                                🎓 Anos Finais (9º Ano)
+                            </button>
+                            <button class="matriz-etapa-btn" onclick="switchMatrizEtapa('alfabetizacao'); return false;" data-etapa="alfabetizacao" style="padding: 6px 14px; border-radius: 16px; font-size: 0.78rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer;">
+                                🔤 Alfabetização (2º Ano)
+                            </button>
+                        </div>
+
+                        <div class="card-body" style="padding: 20px;">
+                            <div class="grid-3-lg" style="gap: 20px;">
                                 <!-- Língua Portuguesa -->
-                                <div class="card-outline" style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; background-color: var(--bg-secondary); height: 100%;">
-                                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
-                                        <i data-lucide="book-open" class="text-purple" style="width:20px; height:20px;"></i>
-                                        <h4 style="margin:0;">Língua Portuguesa (SAEB)</h4>
+                                <div class="card-outline" style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; background-color: var(--bg-secondary); display: flex; flex-direction: column;">
+                                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                                        <div style="display:flex; align-items:center; gap:8px;">
+                                            <span style="display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:6px; background:rgba(139, 92, 246, 0.15); color:#8b5cf6;">
+                                                📖
+                                            </span>
+                                            <h4 style="margin:0; font-size:0.95rem; font-weight:700;">Língua Portuguesa</h4>
+                                        </div>
+                                        <span class="badge badge-purple" style="font-size:0.7rem;">SAEB / BNCC</span>
                                     </div>
-                                    <div id="matriz-lp-list" style="display:flex; flex-direction:column; gap:10px; max-height: 400px; overflow-y:auto; padding-right:6px;">
-                                        <!-- Injetado via JS -->
+                                    <div id="matriz-lp-list" style="display:flex; flex-direction:column; gap:10px; max-height: 480px; overflow-y:auto; padding-right:6px;">
+                                        <!-- Injetado dinamicamente via JS -->
                                     </div>
                                 </div>
 
                                 <!-- Matemática -->
-                                <div class="card-outline" style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; background-color: var(--bg-secondary); height: 100%;">
-                                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
-                                        <i data-lucide="plus-circle" class="text-blue" style="width:20px; height:20px;"></i>
-                                        <h4 style="margin:0;">Matemática (SAEB)</h4>
+                                <div class="card-outline" style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; background-color: var(--bg-secondary); display: flex; flex-direction: column;">
+                                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                                        <div style="display:flex; align-items:center; gap:8px;">
+                                            <span style="display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:6px; background:rgba(59, 130, 246, 0.15); color:#3b82f6;">
+                                                📐
+                                            </span>
+                                            <h4 style="margin:0; font-size:0.95rem; font-weight:700;">Matemática</h4>
+                                        </div>
+                                        <span class="badge badge-info" style="font-size:0.7rem;">SAEB / BNCC</span>
                                     </div>
-                                    <div id="matriz-mt-list" style="display:flex; flex-direction:column; gap:10px; max-height: 400px; overflow-y:auto; padding-right:6px;">
-                                        <!-- Injetado via JS -->
+                                    <div id="matriz-mt-list" style="display:flex; flex-direction:column; gap:10px; max-height: 480px; overflow-y:auto; padding-right:6px;">
+                                        <!-- Injetado dinamicamente via JS -->
                                     </div>
                                 </div>
 
-                                <!-- Ciências & Geografia -->
-                                <div class="card-outline" style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; background-color: var(--bg-secondary); height: 100%;">
-                                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
-                                        <i data-lucide="compass" class="text-green" style="width:20px; height:20px;"></i>
-                                        <h4 style="margin:0;">Ciências da Natureza (BNCC)</h4>
+                                <!-- Ciências da Natureza -->
+                                <div class="card-outline" style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; background-color: var(--bg-secondary); display: flex; flex-direction: column;">
+                                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                                        <div style="display:flex; align-items:center; gap:8px;">
+                                            <span style="display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:6px; background:rgba(16, 185, 129, 0.15); color:#10b981;">
+                                                🌱
+                                            </span>
+                                            <h4 style="margin:0; font-size:0.95rem; font-weight:700;">Ciências da Natureza</h4>
+                                        </div>
+                                        <span class="badge badge-success" style="font-size:0.7rem;">BNCC 2026</span>
                                     </div>
-                                    <div id="matriz-ci-list" style="display:flex; flex-direction:column; gap:10px; max-height: 400px; overflow-y:auto; padding-right:6px;">
-                                        <!-- Injetado via JS -->
+                                    <div id="matriz-ci-list" style="display:flex; flex-direction:column; gap:10px; max-height: 480px; overflow-y:auto; padding-right:6px;">
+                                        <!-- Injetado dinamicamente via JS -->
                                     </div>
                                 </div>
                             </div>
@@ -4748,6 +4783,6 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=828e4657"></script>
+    <script src="app.js?v=b0ba4ccd"></script>
 </body>
 </html>

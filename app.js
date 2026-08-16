@@ -4259,53 +4259,81 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         ]
     };
 
+    let activeMatrizEtapa = '5ano';
+
+    function switchMatrizEtapa(etapa) {
+        activeMatrizEtapa = etapa;
+        document.querySelectorAll('.matriz-etapa-btn').forEach(b => {
+            if (b.getAttribute('data-etapa') === etapa) {
+                b.classList.add('active');
+                b.style.background = '#6366f1';
+                b.style.color = '#fff';
+                b.style.border = 'none';
+            } else {
+                b.classList.remove('active');
+                b.style.background = 'var(--bg-secondary)';
+                b.style.color = 'var(--text-secondary)';
+                b.style.border = '1px solid var(--border-color)';
+            }
+        });
+        renderReferenceMatrix();
+    }
+    window.switchMatrizEtapa = switchMatrizEtapa;
+
+    function filterMatrizDescritores() {
+        renderReferenceMatrix();
+    }
+    window.filterMatrizDescritores = filterMatrizDescritores;
+
     function renderReferenceMatrix() {
         const lpList = document.getElementById('matriz-lp-list');
         const mtList = document.getElementById('matriz-mt-list');
         const ciList = document.getElementById('matriz-ci-list');
 
-        if (lpList) {
-            lpList.innerHTML = '';
-            FULL_INEP_MATRICES.portuguese.forEach(d => {
+        const searchInput = document.getElementById('matriz-search-input');
+        const query = searchInput ? searchInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
+
+        function renderColumn(container, items, badgeColor, borderColor) {
+            if (!container) return;
+            container.innerHTML = '';
+
+            const filtered = items.filter(d => {
+                const text = (d.codigo + ' ' + d.desc + ' ' + (d.topico || '')).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                return text.includes(query);
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.8rem;">Nenhum descritor encontrado.</div>';
+                return;
+            }
+
+            filtered.forEach(d => {
                 const div = document.createElement('div');
-                div.style.padding = '8px 12px';
+                div.style.padding = '10px 14px';
                 div.style.borderRadius = 'var(--radius-sm)';
                 div.style.border = '1px solid var(--border-color)';
                 div.style.backgroundColor = 'var(--bg-tertiary)';
-                div.style.fontSize = '0.85rem';
-                div.innerHTML = `<strong class="text-purple">${d.codigo}:</strong> ${d.desc}`;
-                lpList.appendChild(div);
+                div.style.fontSize = '0.84rem';
+                div.style.lineHeight = '1.45';
+                div.style.transition = 'all 0.15s ease';
+                div.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                        <span style="font-weight: 800; font-family: var(--font-mono); color: ${badgeColor}; font-size: 0.85rem;">${d.codigo}</span>
+                        ${d.topico ? `<span style="font-size: 0.68rem; padding: 2px 6px; border-radius: 4px; background: rgba(0,0,0,0.05); color: var(--text-secondary); border: 1px solid var(--border-color);">${d.topico}</span>` : ''}
+                    </div>
+                    <div style="color: var(--text-primary);">${d.desc}</div>
+                `;
+                container.appendChild(div);
             });
         }
 
-        if (mtList) {
-            mtList.innerHTML = '';
-            FULL_INEP_MATRICES.math.forEach(d => {
-                const div = document.createElement('div');
-                div.style.padding = '8px 12px';
-                div.style.borderRadius = 'var(--radius-sm)';
-                div.style.border = '1px solid var(--border-color)';
-                div.style.backgroundColor = 'var(--bg-tertiary)';
-                div.style.fontSize = '0.85rem';
-                div.innerHTML = `<strong class="text-blue">${d.codigo}:</strong> ${d.desc}`;
-                mtList.appendChild(div);
-            });
-        }
-
-        if (ciList) {
-            ciList.innerHTML = '';
-            FULL_INEP_MATRICES.science.forEach(d => {
-                const div = document.createElement('div');
-                div.style.padding = '8px 12px';
-                div.style.borderRadius = 'var(--radius-sm)';
-                div.style.border = '1px solid var(--border-color)';
-                div.style.backgroundColor = 'var(--bg-tertiary)';
-                div.style.fontSize = '0.85rem';
-                div.innerHTML = `<strong class="text-green">${d.codigo}:</strong> ${d.desc}`;
-                ciList.appendChild(div);
-            });
+        if (typeof FULL_INEP_MATRICES !== 'undefined') {
+            renderColumn(lpList, FULL_INEP_MATRICES.portuguese || [], '#8b5cf6', '#8b5cf6');
+            renderColumn(mtList, FULL_INEP_MATRICES.math || [], '#3b82f6', '#3b82f6');
+            renderColumn(ciList, FULL_INEP_MATRICES.science || [], '#10b981', '#10b981');
         }
     }
+    window.renderReferenceMatrix = renderReferenceMatrix;
 
     function initInepDescriptors() {
         const list = [];
