@@ -1371,7 +1371,7 @@
                                 <h3>Ficha Cadastral dos Alunos</h3>
                                 <p class="card-subtitle">Visualize, filtre e pesquise os dados cadastrais dos 1.758 alunos avaliados no Ensino Fundamental.</p>
                             </div>
-                            <button class="btn btn-primary" id="btn-open-create-student-modal" style="flex-shrink: 0;">
+                            <button class="btn btn-primary" id="btn-open-create-student-modal" onclick="openCreateStudentModal(); return false;" style="display: flex; align-items: center; gap: 8px; font-weight: 700; background: #2563eb; border-color: #2563eb;">
                                 <i data-lucide="user-plus" style="width:16px; height:16px; margin-right:4px;"></i> Novo Aluno
                             </button>
                         </div>
@@ -5271,7 +5271,7 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=043a8fbe"></script>
+    <script src="app.js?v=f119139b"></script>
 
     <!-- Modal Vincular Professor à Turma -->
     <div id="modal-assign-teacher" class="modal-overlay hidden">
@@ -5370,6 +5370,96 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal Cadastro Básico de Novo Aluno (Tarefa 2.1) -->
+    <div id="modal-create-student" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 560px; width: 92%; border-radius: var(--radius-lg); background: var(--bg-secondary); border: 1px solid var(--border-color);">
+            <div class="modal-header flex-between" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px;">
+                <div>
+                    <h3 style="margin:0; font-size:1.2rem; font-weight:800; color:var(--text-primary);">Cadastrar Novo Aluno</h3>
+                    <p class="text-sm text-muted" style="margin:2px 0 0 0;">Matrícula e Cadastro Básico na Rede Municipal</p>
+                </div>
+                <button class="btn btn-icon" onclick="closeModal('modal-create-student'); return false;"><i data-lucide="x"></i></button>
+            </div>
+            <form id="form-create-student" onsubmit="handleSaveNewStudent(event)" style="padding-top: 16px; display:flex; flex-direction:column; gap:12px;">
+                <div class="form-group">
+                    <label style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Nome Completo do Aluno *</label>
+                    <input type="text" id="create-student-name" class="form-input-text" required placeholder="Ex: Lucas Gabriel da Silva Moura" style="width:100%; height:38px;">
+                </div>
+
+                <div class="grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div class="form-group">
+                        <label style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Data de Nascimento *</label>
+                        <input type="date" id="create-student-dob" class="form-input-text" required style="width:100%; height:38px; background:var(--bg-tertiary);">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">CPF / INEP do Aluno *</label>
+                        <input type="text" id="create-student-doc" class="form-input-text" required placeholder="000.000.000-00 ou Cod INEP" style="width:100%; height:38px;">
+                    </div>
+                </div>
+
+                <div class="grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div class="form-group">
+                        <label style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Escola *</label>
+                        <select id="create-student-school" class="form-select" required style="width:100%; height:38px; background:var(--bg-tertiary);">
+                            <option value="UI JOSE CORREA LIMA">UI JOSE CORREA LIMA</option>
+                            <option value="UI EMILIO MURAD">UI EMILIO MURAD</option>
+                            <option value="UE VEREADOR LEONARDO FERREIRA LIMA">UE VEREADOR LEONARDO FERREIRA LIMA</option>
+                            <option value="U I BASILIO ALVES">U I BASILIO ALVES</option>
+                            <option value="UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ">UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ</option>
+                            <option value="UE RAIMUNDO DOS REIS DA SILVA">UE RAIMUNDO DOS REIS DA SILVA</option>
+                            <option value="UNIDADE INTEGRADA JOSE GONCALVES DIAS">UNIDADE INTEGRADA JOSE GONCALVES DIAS</option>
+                            <option value="UNIDADE ESCOLAR ANISIO GOMES">UNIDADE ESCOLAR ANISIO GOMES</option>
+                            <option value="UE ANITA FURTADO">UE ANITA FURTADO</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Etapa / Turma *</label>
+                        <select id="create-student-grade" class="form-select" required style="width:100%; height:38px; background:var(--bg-tertiary);">
+                            <option value="5º ANO 'A'">5º ANO "A" (Matutino)</option>
+                            <option value="5º ANO 'B'">5º ANO "B" (Vespertino)</option>
+                            <option value="9º ANO 'A'">9º ANO "A" (Matutino)</option>
+                            <option value="9º ANO 'B'">9º ANO "B" (Vespertino)</option>
+                            <option value="2º ANO 'A'">2º ANO "A" (Alfabetização)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Mãe / Responsável Legal</label>
+                    <input type="text" id="create-student-guardian" class="form-input-text" placeholder="Ex: Maria das Graças Moura" style="width:100%; height:38px;">
+                </div>
+
+                <div class="modal-footer flex-end" style="gap: 8px; margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modal-create-student')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" style="font-weight:700;">Salvar Aluno</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Ver Dados Gerais do Aluno (Tarefa 2.2) -->
+    <div id="modal-student-full-details" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 620px; width: 92%; border-radius: var(--radius-lg); background: var(--bg-secondary); border: 1px solid var(--border-color);">
+            <div class="modal-header flex-between" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px;">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <div style="width:42px; height:42px; border-radius:50%; background:#6366f1; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.1rem;" id="student-detail-avatar">A</div>
+                    <div>
+                        <h3 id="student-detail-name" style="margin:0; font-size:1.15rem; font-weight:800; color:var(--text-primary);">AGATHA DOS SANTOS SILVA</h3>
+                        <p id="student-detail-meta" class="text-sm text-muted" style="margin:2px 0 0 0;">Matrícula: 5042 • 5º ANO "A" • UI JOSE CORREA LIMA</p>
+                    </div>
+                </div>
+                <button class="btn btn-icon" onclick="closeModal('modal-student-full-details'); return false;"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body" style="padding-top: 16px; display:flex; flex-direction:column; gap:14px;" id="student-detail-body">
+                <!-- Preenchido via JS -->
+            </div>
+            <div class="modal-footer flex-end" style="margin-top: 14px; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                <button class="btn btn-outline" onclick="closeModal('modal-student-full-details')">Fechar</button>
             </div>
         </div>
     </div>
