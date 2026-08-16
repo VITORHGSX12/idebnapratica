@@ -16164,3 +16164,163 @@ if (document.readyState === 'loading') {
             originalSwitchMainTab(tabId);
         }
     };
+
+
+    // =========================================================================
+    // IMPLEMENTAÇÃO DAS FUNÇÕES DOS MÓDULOS INTERNOS DA ESCOLA
+    // =========================================================================
+
+    // Base de Dados de Turmas por Escola (Persistida em localStorage gestao_turmas_db)
+    function getStoredTurmas() {
+        try {
+            const raw = localStorage.getItem('gestao_turmas_db');
+            if (raw) return JSON.parse(raw);
+        } catch(e) {}
+        return [
+            { id: 'turma_1', escola: 'UI JOSE CORREA LIMA', nome: '5º ANO "A" - MATUTINO', etapa: '5º Ano (Anos Iniciais)', turno: 'Matutino', ano: '2026', professor: 'Profa. Ana Carolina Lima', alunosCount: 28, status: 'Ativa' },
+            { id: 'turma_2', escola: 'UI JOSE CORREA LIMA', nome: '5º ANO "B" - VESPERTINO', etapa: '5º Ano (Anos Iniciais)', turno: 'Vespertino', ano: '2026', professor: 'Prof. Carlos Silva', alunosCount: 30, status: 'Ativa' },
+            { id: 'turma_3', escola: 'UI JOSE CORREA LIMA', nome: '9º ANO "A" - MATUTINO', etapa: '9º Ano (Anos Finais)', turno: 'Matutino', ano: '2026', professor: 'Profa. Mariana Costa', alunosCount: 26, status: 'Ativa' },
+            { id: 'turma_4', escola: 'UI EMILIO MURAD', nome: '5º ANO "A" - MATUTINO', etapa: '5º Ano (Anos Iniciais)', turno: 'Matutino', ano: '2026', professor: 'Prof. Marcos Vinicius', alunosCount: 25, status: 'Ativa' }
+        ];
+    }
+
+    function saveStoredTurmas(turmasList) {
+        try {
+            localStorage.setItem('gestao_turmas_db', JSON.stringify(turmasList));
+        } catch(e) {}
+    }
+
+    // RENDERIZADOR DA ABA TURMAS DA ESCOLA
+    function renderSchoolClassesTab(schoolName) {
+        const container = document.getElementById('school-inner-tab-content-container');
+        if (!container) return;
+
+        const currentSchool = schoolName || document.getElementById('workspace-school-name')?.textContent?.trim() || 'UI JOSE CORREA LIMA';
+        const allTurmas = getStoredTurmas();
+        const schoolTurmas = allTurmas.filter(t => t.escola.trim().toLowerCase() === currentSchool.trim().toLowerCase());
+
+        const totalTurmas = schoolTurmas.length;
+        const totalAtivas = schoolTurmas.filter(t => t.status === 'Ativa').length;
+
+        container.innerHTML = `
+            <div style="display:flex; flex-direction:column; gap:16px;">
+                <div class="flex-between flex-wrap gap-md">
+                    <div>
+                        <h3 style="margin:0; font-size:1.15rem; font-weight:800; color:var(--text-primary);">Turmas da Unidade Escolar</h3>
+                        <p class="text-sm text-muted" style="margin:2px 0 0 0;">Gestão das turmas, alocação docente e matrículas para o Ano Letivo 2026</p>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <button onclick="openCreateTurmaModal()" class="btn btn-primary" style="font-weight:700; background:#6366f1; border-color:#6366f1; display:flex; align-items:center; gap:6px;">
+                            <i data-lucide="plus" style="width:16px; height:16px;"></i>
+                            <span>+ Add Turma</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cards de Métricas da Aba Turmas -->
+                <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px;">
+                    <div class="card" style="background:var(--bg-tertiary); border:1px solid var(--border-color); padding:16px; border-radius:var(--radius-md); text-align:center;">
+                        <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">TOTAL DE TURMAS</span>
+                        <strong style="font-size:1.8rem; font-weight:800; color:#6366f1;">${totalTurmas}</strong>
+                    </div>
+                    <div class="card" style="background:var(--bg-tertiary); border:1px solid var(--border-color); padding:16px; border-radius:var(--radius-md); text-align:center;">
+                        <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">TURMAS ANO 2026</span>
+                        <strong style="font-size:1.8rem; font-weight:800; color:#3b82f6;">${totalTurmas}</strong>
+                    </div>
+                    <div class="card" style="background:rgba(16, 185, 129, 0.08); border:1px solid #10b981; padding:16px; border-radius:var(--radius-md); text-align:center;">
+                        <span style="font-size:0.75rem; font-weight:700; color:#10b981; display:block; margin-bottom:4px;">TURMAS ATIVAS</span>
+                        <strong style="font-size:1.8rem; font-weight:800; color:#10b981;">${totalAtivas}</strong>
+                    </div>
+                </div>
+
+                <!-- Tabela de Turmas -->
+                <div class="card" style="padding:0; overflow-x:auto; border:1px solid var(--border-color);">
+                    <table class="table-compact" style="width:100%; border-collapse:collapse; text-align:left;">
+                        <thead>
+                            <tr style="background:var(--bg-tertiary); border-bottom:1px solid var(--border-color); font-size:0.75rem; color:var(--text-secondary); text-transform:uppercase; height:42px;">
+                                <th style="padding:10px 14px;">TURMA / ETAPA</th>
+                                <th style="padding:10px 14px;">DOCENTE REGENTE</th>
+                                <th style="padding:10px 14px; text-align:center;">TURNO</th>
+                                <th style="padding:10px 14px; text-align:center;">ESTUDANTES</th>
+                                <th style="padding:10px 14px; text-align:center;">STATUS</th>
+                                <th style="padding:10px 14px; text-align:center;">AÇÕES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${schoolTurmas.length === 0 ? `
+                                <tr><td colspan="6" style="padding:30px; text-align:center; color:var(--text-muted);">Nenhuma turma cadastrada para esta escola. Clique em "+ Add Turma" para cadastrar.</td></tr>
+                            ` : schoolTurmas.map(t => `
+                                <tr style="border-bottom:1px solid var(--border-color); height:50px;">
+                                    <td style="padding:10px 14px;">
+                                        <div style="font-weight:700; color:var(--text-primary); font-size:0.88rem;">${t.nome}</div>
+                                        <div style="font-size:0.74rem; color:var(--text-secondary);">${t.etapa}</div>
+                                    </td>
+                                    <td style="padding:10px 14px; font-size:0.84rem; color:var(--text-primary);">
+                                        ${t.professor || 'Aguardando alocação'}
+                                    </td>
+                                    <td style="padding:10px 14px; text-align:center; font-size:0.82rem;">
+                                        ${t.turno}
+                                    </td>
+                                    <td style="padding:10px 14px; text-align:center; font-weight:800; color:#6366f1;">
+                                        ${t.alunosCount || 28} alunos
+                                    </td>
+                                    <td style="padding:10px 14px; text-align:center;">
+                                        <span class="badge badge-success" style="font-size:0.7rem;">${t.status || 'Ativa'}</span>
+                                    </td>
+                                    <td style="padding:10px 14px; text-align:center;">
+                                        <button onclick="openBindStudentModal('${t.id}', '${t.nome.replace(/'/g, "\\'")}')" class="btn btn-outline btn-sm" style="font-size:0.75rem; font-weight:700; color:#6366f1;">
+                                            🎓 Matricular Aluno
+                                        </button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+    }
+    window.renderSchoolClassesTab = renderSchoolClassesTab;
+
+    function openCreateTurmaModal() {
+        const schName = document.getElementById('workspace-school-name')?.textContent?.trim() || 'UI JOSE CORREA LIMA';
+        const modal = document.getElementById('modal-create-turma');
+        const schSubtitle = document.getElementById('turma-modal-school-name');
+        if (schSubtitle) schSubtitle.textContent = `Unidade Escolar: ${schName}`;
+        if (modal) modal.classList.remove('hidden');
+    }
+    window.openCreateTurmaModal = openCreateTurmaModal;
+
+    function handleSaveTurma(e) {
+        e.preventDefault();
+        const schName = document.getElementById('workspace-school-name')?.textContent?.trim() || 'UI JOSE CORREA LIMA';
+        const nome = document.getElementById('turma-name-input')?.value?.trim() || 'NOVA TURMA';
+        const ano = document.getElementById('turma-year-select')?.value || '2026';
+        const etapa = document.getElementById('turma-stage-select')?.value || '5º Ano (Anos Iniciais)';
+        const turno = document.getElementById('turma-shift-select')?.value || 'Matutino';
+        const professor = document.getElementById('turma-teacher-select')?.value || 'Profa. Ana Carolina Lima';
+
+        const turmas = getStoredTurmas();
+        const newTurma = {
+            id: 'turma_' + Date.now(),
+            escola: schName,
+            nome,
+            etapa,
+            turno,
+            ano,
+            professor,
+            alunosCount: 0,
+            status: 'Ativa'
+        };
+
+        turmas.push(newTurma);
+        saveStoredTurmas(turmas);
+
+        alert(`✅ Turma "${nome}" cadastrada com sucesso para ${schName}!\n\nProfessor Regente: ${professor}\nTurno: ${turno}`);
+
+        const modal = document.getElementById('modal-create-turma');
+        if (modal) modal.classList.add('hidden');
+
+        renderSchoolClassesTab(schName);
+    }
+    window.handleSaveTurma = handleSaveTurma;
