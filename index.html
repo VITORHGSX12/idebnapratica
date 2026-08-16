@@ -4783,6 +4783,108 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=b0ba4ccd"></script>
+    <script src="app.js?v=06903642"></script>
+
+    <!-- Modal Vincular Professor à Turma -->
+    <div id="modal-assign-teacher" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 480px; width: 90%;">
+            <div class="modal-header flex-between" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px;">
+                <div>
+                    <h3 style="margin:0; font-size:1.15rem;">Vincular Docente à Turma</h3>
+                    <p class="text-sm text-muted" id="assign-teacher-class-name" style="margin:2px 0 0 0;">Turma: 5º ANO A</p>
+                </div>
+                <button class="btn btn-icon" onclick="closeModal('modal-assign-teacher'); return false;"><i data-lucide="x"></i></button>
+            </div>
+            <form id="form-assign-teacher" onsubmit="handleSaveTeacherAssignment(event)" class="modal-body" style="padding-top: 16px; display:flex; flex-direction:column; gap:14px;">
+                <input type="hidden" id="assign-teacher-class-id">
+                <div class="form-group">
+                    <label style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Professor(a) *</label>
+                    <select id="assign-teacher-select" class="form-select" required style="background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:8px 12px; width:100%;">
+                        <option value="Profa. Ana Carolina Lima">Profa. Ana Carolina Lima (Língua Portuguesa)</option>
+                        <option value="Prof. Carlos Silva">Prof. Carlos Silva (Matemática)</option>
+                        <option value="Prof. Marcos Aurelio">Prof. Marcos Aurelio (Polivalente)</option>
+                        <option value="Profa. Rita de Cássia">Profa. Rita de Cássia (Polivalente)</option>
+                        <option value="Prof. Joao Paulo Mendes">Prof. Joao Paulo Mendes (Ciências & Geografia)</option>
+                        <option value="Profa. Aldenora Cruz">Profa. Aldenora Cruz (Polivalente)</option>
+                        <option value="Profa. Francisca Lima">Profa. Francisca Lima (Língua Portuguesa)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Componente Curricular / Disciplina *</label>
+                    <select id="assign-discipline-select" class="form-select" required style="background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:8px 12px; width:100%;">
+                        <option value="Docência Polivalente">Docência Polivalente (Todas as Disciplinas)</option>
+                        <option value="Língua Portuguesa">Língua Portuguesa</option>
+                        <option value="Matemática">Matemática</option>
+                        <option value="Ciências da Natureza">Ciências da Natureza</option>
+                        <option value="História & Geografia">História & Geografia</option>
+                    </select>
+                </div>
+                <div class="modal-footer flex-end" style="gap: 8px; margin-top:16px; border-top:1px solid var(--border-color); padding-top:14px;">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modal-assign-teacher')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Confirmar Vínculo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Detalhe / Diário da Turma (Alunos e Resultados) -->
+    <div id="modal-class-diary-view" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 860px; width: 95%; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header flex-between" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px;">
+                <div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <h3 id="class-diary-title" style="margin:0; font-size:1.3rem; font-weight:800; color:var(--text-primary);">5º ANO "A" - MATUTINO</h3>
+                        <span id="class-diary-status-badge" class="badge badge-success">Ativa</span>
+                    </div>
+                    <p class="text-sm text-muted" id="class-diary-meta" style="margin:2px 0 0 0;">UI JOSE CORREA LIMA • 28 Alunos Matriculados • Docente: Profa. Ana Carolina Lima</p>
+                </div>
+                <button class="btn btn-icon" onclick="closeModal('modal-class-diary-view'); return false;"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body" style="padding-top: 16px; display:flex; flex-direction:column; gap:18px;">
+                <!-- Performance summary cards -->
+                <div class="grid-3" style="gap:12px;">
+                    <div class="card" style="background:var(--bg-tertiary); border:1px solid var(--border-color); padding:12px 16px; border-radius:var(--radius-md); text-align:center;">
+                        <span style="font-size:0.75rem; color:var(--text-secondary); display:block;">Média da Turma (SAEB)</span>
+                        <strong id="class-diary-avg-score" style="font-size:1.6rem; color:var(--purple-light); font-weight:800;">218.4 pts</strong>
+                    </div>
+                    <div class="card" style="background:var(--bg-tertiary); border:1px solid var(--border-color); padding:12px 16px; border-radius:var(--radius-md); text-align:center;">
+                        <span style="font-size:0.75rem; color:var(--text-secondary); display:block;">Taxa de Frequência</span>
+                        <strong id="class-diary-attendance" style="font-size:1.6rem; color:var(--green-light); font-weight:800;">96.2%</strong>
+                    </div>
+                    <div class="card" style="background:var(--bg-tertiary); border:1px solid var(--border-color); padding:12px 16px; border-radius:var(--radius-md); text-align:center;">
+                        <span style="font-size:0.75rem; color:var(--text-secondary); display:block;">Alunos na Meta</span>
+                        <strong id="class-diary-on-target" style="font-size:1.6rem; color:#6366f1; font-weight:800;">85%</strong>
+                    </div>
+                </div>
+
+                <div class="flex-between flex-wrap gap-md">
+                    <h4 style="margin:0; font-size:1rem; font-weight:700;">Estudantes Matriculados nesta Turma</h4>
+                    <button class="btn btn-primary btn-sm" onclick="openCreateStudentForClass();" style="display:flex; align-items:center; gap:6px; font-weight:700;">
+                        <i data-lucide="user-plus" style="width:14px; height:14px;"></i>
+                        <span>+ Matricular Novo Aluno</span>
+                    </button>
+                </div>
+
+                <div style="overflow-x:auto;">
+                    <table class="table-compact" style="width:100%; border-collapse:collapse; text-align:left;">
+                        <thead>
+                            <tr style="background:var(--bg-tertiary); border-bottom:1px solid var(--border-color); font-size:0.75rem; color:var(--text-secondary); text-transform:uppercase;">
+                                <th style="padding:10px 14px;">Matrícula</th>
+                                <th style="padding:10px 14px;">Nome do Estudante</th>
+                                <th style="padding:10px 14px; text-align:center;">Sexo</th>
+                                <th style="padding:10px 14px; text-align:center;">Proficiência Simulado</th>
+                                <th style="padding:10px 14px; text-align:center;">Status Pedagógico</th>
+                                <th style="padding:10px 14px; text-align:center;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="class-diary-students-table-body">
+                            <!-- Injetado dinamicamente via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

@@ -12525,3 +12525,239 @@ if (document.readyState === 'loading') {
         if (modal) modal.classList.remove('hidden');
     }
     window.openCreateStudentModal = openCreateStudentModal;
+
+
+    // ==========================================
+    // MÓDULO ROBUSTO DE GESTÃO DE TURMAS (5 ETAPAS)
+    // ==========================================
+
+    const DEFAULT_GONCALVES_CLASSES = [
+        { id: 'turma_1', nome: '5º ANO "A" - MATUTINO', escola: 'UI JOSE CORREA LIMA', turno: 'Matutino', serie: '5º Ano (Anos Iniciais)', ano: '2026', status: 'Ativa', professor: 'Profa. Ana Carolina Lima', disciplina: 'Docência Polivalente', alunosCount: 26 },
+        { id: 'turma_2', nome: '5º ANO "B" - VESPERTINO', escola: 'UI JOSE CORREA LIMA', turno: 'Vespertino', serie: '5º Ano (Anos Iniciais)', ano: '2026', status: 'Ativa', professor: 'Prof. Carlos Silva', disciplina: 'Matemática', alunosCount: 24 },
+        { id: 'turma_3', nome: '2º ANO "A" - MATUTINO', escola: 'UI JOSE CORREA LIMA', turno: 'Matutino', serie: '2º Ano (Alfabetização)', ano: '2026', status: 'Ativa', professor: 'Profa. Rita de Cássia', disciplina: 'Docência Polivalente', alunosCount: 22 },
+        { id: 'turma_4', nome: '9º ANO "A" - MATUTINO', escola: 'UI JOSE CORREA LIMA', turno: 'Matutino', serie: '9º Ano (Anos Finais)', ano: '2026', status: 'Ativa', professor: 'Prof. Joao Paulo Mendes', disciplina: 'Ciências & Geografia', alunosCount: 28 }
+    ];
+
+    // Initialize or read from localStorage
+    function getStoredClasses() {
+        try {
+            const saved = localStorage.getItem('gestao_turmas_db');
+            if (saved) return JSON.parse(saved);
+        } catch(e) {}
+        localStorage.setItem('gestao_turmas_db', JSON.stringify(DEFAULT_GONCALVES_CLASSES));
+        return DEFAULT_GONCALVES_CLASSES;
+    }
+
+    function saveStoredClasses(list) {
+        try {
+            localStorage.setItem('gestao_turmas_db', JSON.stringify(list));
+        } catch(e) {}
+    }
+
+    let activeSelectedClassId = null;
+
+    // Etapa 2: Render Classes Table
+    function renderSchoolClassesTable() {
+        const tbody = document.getElementById('school-classes-table-body');
+        const kpiTotal = document.getElementById('kpi-school-total-classes');
+        const kpiYear = document.getElementById('kpi-school-classes-year');
+        const kpiActive = document.getElementById('kpi-school-active-classes');
+
+        const classes = getStoredClasses().filter(t => t.escola === (activeDiarySchool || 'UI JOSE CORREA LIMA'));
+
+        const countVal = classes.length;
+        if (kpiTotal) kpiTotal.textContent = String(countVal);
+        if (kpiYear) kpiYear.textContent = String(countVal);
+        if (kpiActive) kpiActive.textContent = String(classes.filter(c => c.status === 'Ativa').length);
+
+        if (!tbody) return;
+
+        const query = (document.getElementById('classes-table-search-input')?.value || '').toLowerCase().trim();
+        const filtered = classes.filter(c => c.nome.toLowerCase().includes(query) || (c.professor && c.professor.toLowerCase().includes(query)));
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="padding: 40px 20px; text-align: center; color: var(--text-secondary);">
+                        <div style="font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; color: var(--text-primary);">Nenhuma turma encontrada nesta escola</div>
+                        <p style="margin: 0 0 14px 0; font-size: 0.82rem;">Clique no botão "+ Add Turma" para cadastrar a primeira turma oficial do ano letivo 2026.</p>
+                        <button class="btn btn-primary btn-sm" onclick="openCreateClassModal();" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700;">
+                            <span>+ Adicionar Primeira Turma</span>
+                        </button>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tbody.innerHTML = filtered.map(cls => `
+            <tr style="border-bottom: 1px solid var(--border-color); height: 60px;">
+                <td style="padding: 12px 18px;">
+                    <div style="font-weight: 800; color: var(--text-primary); font-size: 0.92rem;">${cls.nome}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">
+                        ${cls.serie} • ${cls.alunosCount || 0} Estudantes
+                    </div>
+                </td>
+                <td style="padding: 12px 14px; color: var(--text-secondary); font-size: 0.82rem;">
+                    ${cls.escola}
+                </td>
+                <td style="padding: 12px 14px; font-size: 0.82rem;">
+                    <span class="badge badge-outline" style="font-weight: 600;">${cls.turno}</span>
+                </td>
+                <td style="padding: 12px 14px;">
+                    <div style="display: flex; flex-direction: column; gap: 2px;">
+                        <span style="font-weight: 700; font-size: 0.82rem; color: #6366f1;">
+                            👤 ${cls.professor || 'Não vinculado'}
+                        </span>
+                        <span style="font-size: 0.7rem; color: var(--text-muted);">${cls.disciplina || 'Geral'}</span>
+                    </div>
+                </td>
+                <td style="padding: 12px 18px; text-align: center;">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <button onclick="openClassDiary('${cls.id}')" class="btn btn-outline btn-sm" style="font-weight: 700; font-size: 0.75rem; padding: 4px 10px; color: #6366f1; border-color: rgba(99, 102, 241, 0.3);" title="Ver Diário e Alunos">
+                            📖 Diário & Alunos
+                        </button>
+                        <button onclick="openAssignTeacherModal('${cls.id}')" class="btn btn-outline btn-sm" style="font-weight: 600; font-size: 0.75rem; padding: 4px 8px;" title="Vincular Professor">
+                            👨‍🏫 Docente
+                        </button>
+                        <button onclick="handleDeleteClass('${cls.id}')" class="btn btn-icon btn-sm" style="color: #ef4444; border: 1px solid var(--border-color); padding: 4px;" title="Excluir Turma">
+                            🗑️
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+    window.renderSchoolClassesTable = renderSchoolClassesTable;
+
+    // Etapa 2: Handler for Form Create Class
+    document.addEventListener('DOMContentLoaded', () => {
+        const formCreateClass = document.getElementById('form-workspace-new-class');
+        if (formCreateClass) {
+            formCreateClass.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('ws-class-name-input')?.value || 'Nova Turma';
+                const stage = document.getElementById('ws-class-stage-select')?.value || '5º Ano (Anos Iniciais)';
+                const shift = document.getElementById('ws-class-shift-select')?.value || 'Matutino';
+                const teacher = document.getElementById('ws-class-teacher-select')?.value || 'Profa. Ana Carolina Lima';
+
+                const newClass = {
+                    id: 'turma_' + Date.now(),
+                    nome: name.toUpperCase(),
+                    escola: activeDiarySchool || 'UI JOSE CORREA LIMA',
+                    turno: shift,
+                    serie: stage,
+                    ano: '2026',
+                    status: 'Ativa',
+                    professor: teacher,
+                    disciplina: 'Docência Polivalente',
+                    alunosCount: 0
+                };
+
+                const current = getStoredClasses();
+                current.push(newClass);
+                saveStoredClasses(current);
+
+                closeModal('workspace-new-class-modal');
+                renderSchoolClassesTable();
+                formCreateClass.reset();
+            });
+        }
+    });
+
+    // Etapa 3: Vincular Professor
+    function openAssignTeacherModal(classId) {
+        activeSelectedClassId = classId;
+        const cls = getStoredClasses().find(c => c.id === classId);
+        if (!cls) return;
+
+        const titleEl = document.getElementById('assign-teacher-class-name');
+        const idInput = document.getElementById('assign-teacher-class-id');
+        const teacherSelect = document.getElementById('assign-teacher-select');
+
+        if (titleEl) titleEl.textContent = `Turma: ${cls.nome} (${cls.escola})`;
+        if (idInput) idInput.value = classId;
+        if (teacherSelect && cls.professor) teacherSelect.value = cls.professor;
+
+        const modal = document.getElementById('modal-assign-teacher');
+        if (modal) modal.classList.remove('hidden');
+    }
+    window.openAssignTeacherModal = openAssignTeacherModal;
+
+    function handleSaveTeacherAssignment(e) {
+        e.preventDefault();
+        const classId = activeSelectedClassId || document.getElementById('assign-teacher-class-id')?.value;
+        const teacher = document.getElementById('assign-teacher-select')?.value;
+        const disc = document.getElementById('assign-discipline-select')?.value;
+
+        const current = getStoredClasses();
+        const target = current.find(c => c.id === classId);
+        if (target) {
+            target.professor = teacher;
+            target.disciplina = disc;
+            saveStoredClasses(current);
+            renderSchoolClassesTable();
+        }
+        closeModal('modal-assign-teacher');
+    }
+    window.handleSaveTeacherAssignment = handleSaveTeacherAssignment;
+
+    // Etapa 4 & 5: Diário da Turma e Monitoramento
+    const SAMPLE_STUDENTS_BY_CLASS = [
+        { id: 'al_1', matricula: '5042', nome: 'AGATHA DOS SANTOS SILVA', sexo: 'F', score: 224.5, status: 'Superou a Meta 🟢' },
+        { id: 'al_2', matricula: '5043', nome: 'BERNARDO LIMA DE SOUSA', sexo: 'M', score: 218.0, status: 'Atingiu a Meta 🟢' },
+        { id: 'al_3', matricula: '5044', nome: 'CAIO EDUARDO FERREIRA', sexo: 'M', score: 212.8, status: 'Evolução Positiva 🟡' },
+        { id: 'al_4', matricula: '5045', nome: 'DANIELA BEATRIZ CARVALHO', sexo: 'F', score: 198.4, status: 'Atenção Pedagógica 🔴' },
+        { id: 'al_5', matricula: '5046', nome: 'ENZO GABRIEL RODRIGUES', sexo: 'M', score: 230.2, status: 'Superou a Meta 🟢' }
+    ];
+
+    function openClassDiary(classId) {
+        activeSelectedClassId = classId;
+        const cls = getStoredClasses().find(c => c.id === classId);
+        if (!cls) return;
+
+        const titleEl = document.getElementById('class-diary-title');
+        const metaEl = document.getElementById('class-diary-meta');
+        const tbody = document.getElementById('class-diary-students-table-body');
+
+        if (titleEl) titleEl.textContent = cls.nome;
+        if (metaEl) metaEl.textContent = `${cls.escola} • Ano Letivo ${cls.ano} • Professor: ${cls.professor || 'Não definido'}`;
+
+        if (tbody) {
+            tbody.innerHTML = SAMPLE_STUDENTS_BY_CLASS.map(st => `
+                <tr style="border-bottom: 1px solid var(--border-color); height: 48px;">
+                    <td style="padding: 10px 14px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700;">${st.matricula}</td>
+                    <td style="padding: 10px 14px; font-weight: 700; color: var(--text-primary);">${st.nome}</td>
+                    <td style="padding: 10px 14px; text-align: center;">${st.sexo}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 800; color: #6366f1;">${st.score} pts</td>
+                    <td style="padding: 10px 14px; text-align: center;">
+                        <span class="badge" style="font-size: 0.72rem; font-weight: 700;">${st.status}</span>
+                    </td>
+                    <td style="padding: 10px 14px; text-align: center;">
+                        <button class="btn btn-outline btn-sm" onclick="alert('Histórico pedagógico completo de ' + '${st.nome}');" style="font-size: 0.72rem; padding: 2px 8px;">
+                            Ver Laudo
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        const modal = document.getElementById('modal-class-diary-view');
+        if (modal) modal.classList.remove('hidden');
+    }
+    window.openClassDiary = openClassDiary;
+
+    function openCreateStudentForClass() {
+        closeModal('modal-class-diary-view');
+        openCreateStudentModal();
+    }
+    window.openCreateStudentForClass = openCreateStudentForClass;
+
+    function handleDeleteClass(classId) {
+        if (confirm('Deseja realmente remover esta turma?')) {
+            const current = getStoredClasses().filter(c => c.id !== classId);
+            saveStoredClasses(current);
+            renderSchoolClassesTable();
+        }
+    }
+    window.handleDeleteClass = handleDeleteClass;
