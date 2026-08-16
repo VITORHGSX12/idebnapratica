@@ -3933,5 +3933,34 @@ body.collapsed-sidebar .sidebar-footer .user-dropdown-menu {
     border: 1px solid #fca5a5;
 }
 
+/* ==========================================
+   MEC LIVROS & BIBLIOTECA PEDAGÓGICA STYLES
+   ========================================== */
+.mec-book-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.15) !important;
+    border-color: var(--purple-light) !important;
+}
 
+.bib-category-pill {
+    transition: all 0.18s ease;
+}
 
+.bib-category-pill:hover:not(.active) {
+    background: var(--bg-hover) !important;
+    border-color: var(--purple-light) !important;
+    color: var(--purple-light) !important;
+}
+
+.questions-layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+@media (max-width: 980px) {
+    .questions-layout {
+        grid-template-columns: 1fr;
+    }
+}

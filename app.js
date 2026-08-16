@@ -2264,276 +2264,435 @@ DIRETRIZES DO DIAGNÓSTICO:
     const questionsContainer = document.getElementById('questions-container-list');
     const questionsCounter = document.getElementById('questions-counter');
 
+    // ==========================================
+    // BANCO DE QUESTÕES 2.0 COM IA INTEGRADA
+    // ==========================================
+
+    const DESCRIPTORS_BY_STAGE_SUBJECT = {
+        '2º Ano': {
+            'Língua Portuguesa': [
+                { code: 'D01', name: 'D01 - Reconhecer as letras do alfabeto' },
+                { code: 'D02', name: 'D02 - Identificar rimas e aliterações em cantigas e parlendas' },
+                { code: 'D03', name: 'D03 - Segmentar oralmente palavras em sílabas' },
+                { code: 'D04', name: 'D04 - Ler palavras com estruturas silábicas canônicas' },
+                { code: 'D05', name: 'D05 - Identificar o assunto principal de um texto curto' },
+                { code: 'D06', name: 'D06 - Localizar informação explícita em pequenos textos' }
+            ],
+            'Matemática': [
+                { code: 'D01', name: 'D01 - Contagem e comparação de quantidades até 100' },
+                { code: 'D02', name: 'D02 - Resolver problemas de adição e subtração com números até 100' },
+                { code: 'D03', name: 'D03 - Reconhecer figuras geométricas planas básicas' },
+                { code: 'D04', name: 'D04 - Medidas de tempo: identificar dias da semana e horas' },
+                { code: 'D05', name: 'D05 - Leitura de tabelas simples e gráficos de colunas' }
+            ]
+        },
+        '5º Ano': {
+            'Língua Portuguesa': [
+                { code: 'D01', name: 'D01 - Localizar informações explícitas no texto' },
+                { code: 'D03', name: 'D03 - Inferir o sentido de uma palavra ou expressão' },
+                { code: 'D04', name: 'D04 - Inferir uma informação implícita em um texto' },
+                { code: 'D06', name: 'D06 - Identificar o tema de um texto narrativo/informativo' },
+                { code: 'D11', name: 'D11 - Distinguir um fato da opinião relativa a esse fato' },
+                { code: 'D14', name: 'D14 - Identificar o efeito de sentido decorrente da pontuação' }
+            ],
+            'Matemática': [
+                { code: 'D13', name: 'D13 - Resolver problemas com números naturais (adição e subtração)' },
+                { code: 'D14', name: 'D14 - Resolver problemas com números naturais (multiplicação e divisão)' },
+                { code: 'D19', name: 'D19 - Resolver problema com números decimais no sistema monetário' },
+                { code: 'D20', name: 'D20 - Resolver problema com números racionais na forma fracionária' },
+                { code: 'D28', name: 'D28 - Ler informações e dados apresentados em tabelas e gráficos' },
+                { code: 'D02', name: 'D02 - Identificar propriedades de figuras bidimensionais' }
+            ]
+        },
+        '9º Ano': {
+            'Língua Portuguesa': [
+                { code: 'D01', name: 'D01 - Localizar informações explícitas em textos argumentativos' },
+                { code: 'D03', name: 'D03 - Inferir o sentido de palavra ou expressão em contexto' },
+                { code: 'D04', name: 'D04 - Inferir efeito de sentido decorrente de recursos estilísticos' },
+                { code: 'D05', name: 'D05 - Interpretar texto com auxílio de material gráfico (tirinhas)' },
+                { code: 'D07', name: 'D07 - Identificar o conflito gerador do enredo na narrativa' },
+                { code: 'D10', name: 'D10 - Identificar o propósito comunicativo em artigos de opinião' }
+            ],
+            'Matemática': [
+                { code: 'D16', name: 'D16 - Identificar a localização de números inteiros na reta numérica' },
+                { code: 'D19', name: 'D19 - Resolver problemas envolvendo juros simples e porcentagem' },
+                { code: 'D20', name: 'D20 - Resolver problemas envolvendo equações do 1º grau' },
+                { code: 'D21', name: 'D21 - Identificar uma equação do 2º grau e suas raízes' },
+                { code: 'D28', name: 'D28 - Resolver problemas de cálculo de área e perímetro' },
+                { code: 'D36', name: 'D36 - Resolver problemas envolvendo noções de probabilidade' }
+            ]
+        },
+        'Ensino Médio': {
+            'Língua Portuguesa': [
+                { code: 'D01', name: 'D01 - Identificar a tese de um texto dissertativo-argumentativo' },
+                { code: 'D03', name: 'D03 - Analisar recursos de persuasão e estratégias argumentativas' },
+                { code: 'D06', name: 'D06 - Identificar marcas linguísticas de registro formal e informal' }
+            ],
+            'Matemática': [
+                { code: 'D01', name: 'D01 - Resolver problemas envolvendo funções afins e quadráticas' },
+                { code: 'D08', name: 'D08 - Resolver problemas envolvendo trigonometria' },
+                { code: 'D15', name: 'D15 - Resolver problemas de geometria espacial (prismas e cilindros)' }
+            ]
+        }
+    };
+
     let rawQuestions = [
-        // --- LÍNGUA PORTUGUESA ---
         {
-            id: "q_lp_1",
-            codigo_bncc: "EF05LP01",
-            disciplina: "Língua Portuguesa",
-            matriz: "IDEB",
-            descritor: "SAEB-LP-D1 (Localizar informação explícita)",
-            enunciado: "Leia o texto a seguir:<br><em>'A Floresta Amazônica desempenha um papel crucial na regulação do clima global. Cientistas estimam que as árvores da região armazenem cerca de 120 bilhões de toneladas de carbono, ajudando a desacelerar o efeito estufa.'</em><br><br>De acordo com o texto, qual é a estimativa de carbono armazenado pelas árvores da região?",
-            nivel_cognitivo: "Lembrar",
-            dificuldade: "Fácil",
+            id: 'Q_101',
+            matriz: 'SAEB',
+            codigo_bncc: 'D03 (LP - 5º Ano)',
+            disciplina: 'Língua Portuguesa',
+            etapa: '5º Ano',
+            dificuldade: 'Médio',
+            nivel_cognitivo: 'Analisar',
+            enunciado: 'Leia o texto abaixo:\n\n"O sol começava a desmaiar no horizonte de Gonçalves Dias, pintando os palmeirais de um dourado suave. Dona Francisca apressou o passo na vereda, sentindo o frescor da tarde anunciar o fim da colheita."\n\nNo trecho "O sol começava a <u>desmaiar</u> no horizonte", a palavra sublinhada foi empregada com o sentido de:',
             opcoes: [
-                { letra: "A", texto: "120 milhões de toneladas de carbono", correta: false },
-                { letra: "B", texto: "120 bilhões de toneladas de carbono", correta: true },
-                { letra: "C", texto: "12 bilhões de toneladas de carbono", correta: false },
-                { letra: "D", texto: "1.200 toneladas de carbono", correta: false }
+                { letra: 'A', texto: 'Perder a consciência por cansaço físico.', correta: false },
+                { letra: 'B', texto: 'Desaparecer lentamente ao entardecer.', correta: true },
+                { letra: 'C', texto: 'Aumentar a intensidade de sua luz solar.', correta: false },
+                { letra: 'D', texto: 'Mudar de posição devido ao vento forte.', correta: false }
             ],
-            explicacao: "Localizar informação expressa no texto: 'árvores da região armazenem cerca de 120 bilhões de toneladas'."
+            explicacao: 'GABARITO: B. A expressão "desmaiar no horizonte" é uma metáfora poética que expressa o pôr do sol gradativo.'
         },
         {
-            id: "q_lp_2",
-            codigo_bncc: "EF05LP03",
-            disciplina: "Língua Portuguesa",
-            matriz: "IDEB",
-            descritor: "SAEB-LP-D3 (Inferir o sentido de uma palavra ou expressão)",
-            enunciado: "No trecho: <em>'O garoto ficou <strong>uma fera</strong> quando percebeu que seu brinquedo favorito havia quebrado.'</em><br><br>A expressão destacada 'uma fera' significa que o garoto ficou:",
-            nivel_cognitivo: "Entender",
-            dificuldade: "Fácil",
+            id: 'Q_102',
+            matriz: 'SAEB',
+            codigo_bncc: 'D13 (MAT - 5º Ano)',
+            disciplina: 'Matemática',
+            etapa: '5º Ano',
+            dificuldade: 'Fácil',
+            nivel_cognitivo: 'Aplicar',
+            enunciado: 'Na feira do produtor rural de Gonçalves Dias, Seu Raimundo colheu 1.450 espigas de milho pela manhã e 980 espigas à tarde. Ao final do dia, ele conseguiu vender 1.830 espigas.\n\nQuantas espigas de milho restaram com Seu Raimundo?',
             opcoes: [
-                { letra: "A", texto: "Muito irritado", correta: true },
-                { letra: "B", texto: "Muito assustado", correta: false },
-                { letra: "C", texto: "Muito feliz", correta: false },
-                { letra: "D", texto: "Muito cansado", correta: false }
+                { letra: 'A', texto: '500 espigas', correta: false },
+                { letra: 'B', texto: '600 espigas', correta: true },
+                { letra: 'C', texto: '650 espigas', correta: false },
+                { letra: 'D', texto: '720 espigas', correta: false }
             ],
-            explicacao: "Compreender o sentido figurado da expressão idiomática popular 'ficar uma fera'."
+            explicacao: 'GABARITO: B. Total colhido: 1.450 + 980 = 2.430. Restante: 2.430 - 1.830 = 600 espigas.'
         },
         {
-            id: "q_lp_3",
-            codigo_bncc: "EF05LP04",
-            disciplina: "Língua Portuguesa",
-            matriz: "IDEB",
-            descritor: "SAEB-LP-D4 (Inferir uma informação implícita em um texto)",
-            enunciado: "Leia os versos abaixo:<br><em>'A nuvem chorou fininho<br>Molhando a folha da flor<br>Depois veio o sol mansinho<br>E a nuvem se foi com calor.'</em><br><br>O trecho 'A nuvem chorou fininho' significa implicitamente que:",
-            nivel_cognitivo: "Entender",
-            dificuldade: "Médio",
+            id: 'Q_103',
+            matriz: 'SAEB',
+            codigo_bncc: 'D11 (LP - 5º Ano)',
+            disciplina: 'Língua Portuguesa',
+            etapa: '5º Ano',
+            dificuldade: 'Médio',
+            nivel_cognitivo: 'Analisar',
+            enunciado: 'Leia o trecho da notícia:\n\n"A Prefeitura Municipal de Gonçalves Dias inaugurou na última terça-feira a nova quadra poliesportiva. O espaço conta com piso adequado e refletores modernos, sendo a obra mais bonita e importante realizada neste ano."\n\nO trecho que expressa uma OPINIÃO sobre o fato é:',
             opcoes: [
-                { letra: "A", texto: "Estava caindo uma chuva leve", correta: true },
-                { letra: "B", texto: "A nuvem estava muito triste", correta: false },
-                { letra: "C", texto: "Houve uma grande tempestade", correta: false },
-                { letra: "D", texto: "O dia estava muito frio", correta: false }
+                { letra: 'A', texto: '"inaugurou na última terça-feira a nova quadra poliesportiva."', correta: false },
+                { letra: 'B', texto: '"O espaço conta com piso adequado e refletores modernos"', correta: false },
+                { letra: 'C', texto: '"sendo a obra mais bonita e importante realizada neste ano"', correta: true },
+                { letra: 'D', texto: '"A Prefeitura Municipal de Gonçalves Dias inaugurou"', correta: false }
             ],
-            explicacao: "Estabelecer relações de causa e efeito e interpretar linguagem metafórica básica."
+            explicacao: 'GABARITO: C. O uso de "mais bonita e importante" expressa um juízo de valor subjetivo do autor.'
         },
         {
-            id: "q_lp_4",
-            codigo_bncc: "EF05LP06",
-            disciplina: "Língua Portuguesa",
-            matriz: "IDEB",
-            descritor: "SAEB-LP-D6 (Identificar o tema de um texto)",
-            enunciado: "Leia com atenção:<br><em>'As abelhas são essenciais para a nossa sobrevivência. Ao voar de flor em flor em busca de pólen, realizam a polinização, processo que permite a reprodução de mais de 80% das plantas com flores do planeta, incluindo a maioria dos alimentos que consumimos.'</em><br><br>Qual é o tema principal do texto?",
-            nivel_cognitivo: "Entender",
-            dificuldade: "Médio",
+            id: 'Q_104',
+            matriz: 'SEAMA',
+            codigo_bncc: 'D06 (LP - 2º Ano)',
+            disciplina: 'Língua Portuguesa',
+            etapa: '2º Ano',
+            dificuldade: 'Fácil',
+            nivel_cognitivo: 'Compreender',
+            enunciado: 'Leia a parlenda:\n\n"Batatinha quando nasce\nEspalha a rama pelo chão.\nMenininha quando dorme\nPõe a mão no coração."\n\nO que a batatinha faz quando nasce?',
             opcoes: [
-                { letra: "A", texto: "O processo de fabricação do mel pelas abelhas", correta: false },
-                { letra: "B", texto: "A importância das abelhas para a polinização e a vida na Terra", correta: true },
-                { letra: "C", texto: "O perigo da extinção de insetos voadores", correta: false },
-                { letra: "D", texto: "A variedade de flores existentes no planeta", correta: false }
+                { letra: 'A', texto: 'Põe a mão no coração.', correta: false },
+                { letra: 'B', texto: 'Espalha a rama pelo chão.', correta: true },
+                { letra: 'C', texto: 'Dorme a noite inteira.', correta: false },
+                { letra: 'D', texto: 'Corre pelo quintal.', correta: false }
             ],
-            explicacao: "Identificar a ideia central e o tema articulador do parágrafo."
-        },
-
-        // --- MATEMÁTICA ---
-        {
-            id: "q_mt_1",
-            codigo_bncc: "EF05MA01",
-            disciplina: "Matemática",
-            matriz: "IDEB",
-            descritor: "SAEB-MT-D1 (Identificar a localização/movimentação de objeto em mapas e representações)",
-            enunciado: "Uma sala de aula possui as carteiras organizadas em colunas (1 a 5) e linhas (A a D). O aluno Pedro senta-se na carteira localizada na coluna 3, linha B.<br><br>Qual par de coordenadas representa a posição de Pedro?",
-            nivel_cognitivo: "Lembrar",
-            dificuldade: "Fácil",
-            opcoes: [
-                { letra: "A", texto: "(B, 3)", correta: true },
-                { letra: "B", texto: "(3, A)", correta: false },
-                { letra: "C", texto: "(C, 2)", correta: false },
-                { letra: "D", texto: "(2, B)", correta: false }
-            ],
-            explicacao: "Localizar pontos de referência em malha bidimensional através de coordenadas."
+            explicacao: 'GABARITO: B. A informação está explícita no segundo verso da parlenda.'
         },
         {
-            id: "q_mt_2",
-            codigo_bncc: "EF05MA19",
-            disciplina: "Matemática",
-            matriz: "IDEB",
-            descritor: "SAEB-MT-D13 (Resolver problemas com números naturais envolvendo as quatro operações)",
-            enunciado: "Para organizar uma festa escolar, a diretora comprou 12 caixas de suco. Cada caixa contém exatamente 24 garrafinhas. Ao longo do evento, os alunos consumiram 185 garrafinhas.<br><br>Quantas garrafinhas de suco sobraram após o evento?",
-            nivel_cognitivo: "Aplicar",
-            dificuldade: "Médio",
+            id: 'Q_105',
+            matriz: 'SAEB',
+            codigo_bncc: 'D28 (MAT - 5º Ano)',
+            disciplina: 'Matemática',
+            etapa: '5º Ano',
+            dificuldade: 'Difícil',
+            nivel_cognitivo: 'Analisar',
+            enunciado: 'A tabela abaixo registra o número de livros lidos pelos estudantes de uma turma durante o 1º bimestre:\n\n• 1 a 2 livros: 12 alunos\n• 3 a 4 livros: 18 alunos\n• 5 ou mais livros: 10 alunos\n\nQual é o percentual de estudantes que leram 3 ou mais livros nessa turma?',
             opcoes: [
-                { letra: "A", texto: "103 garrafinhas", correta: true },
-                { letra: "B", texto: "288 garrafinhas", correta: false },
-                { letra: "C", texto: "185 garrafinhas", correta: false },
-                { letra: "D", texto: "113 garrafinhas", correta: false }
+                { letra: 'A', texto: '30%', correta: false },
+                { letra: 'B', texto: '45%', correta: false },
+                { letra: 'C', texto: '70%', correta: true },
+                { letra: 'D', texto: '80%', correta: false }
             ],
-            explicacao: "Resolução em duas etapas: Multiplicação (12 * 24 = 288) seguida de Subtração (288 - 185 = 103)."
+            explicacao: 'GABARITO: C. Total de alunos: 12 + 18 + 10 = 40. Alunos que leram 3 ou mais: 18 + 10 = 28. (28 / 40) × 100 = 70%.'
         },
         {
-            id: "q_mt_3",
-            codigo_bncc: "EF05MA20",
-            disciplina: "Matemática",
-            matriz: "IDEB",
-            descritor: "SAEB-MT-D20 (Resolver problemas com números inteiros envolvendo frações)",
-            enunciado: "Uma pizza inteira foi cortada em 8 pedaços iguais. Ana comeu 2 pedaços e seu irmão Carlos comeu 3 pedaços.<br><br>Que fração da pizza sobrou?",
-            nivel_cognitivo: "Aplicar",
-            dificuldade: "Médio",
+            id: 'Q_106',
+            matriz: 'SAEB',
+            codigo_bncc: 'D19 (MAT - 9º Ano)',
+            disciplina: 'Matemática',
+            etapa: '9º Ano',
+            dificuldade: 'Médio',
+            nivel_cognitivo: 'Aplicar',
+            enunciado: 'Um comerciante de Gonçalves Dias comprou um lote de mercadorias por R$ 2.400,00 e o revendeu com um lucro de 15% sobre o preço de compra.\n\nPor quanto esse lote foi revendido?',
             opcoes: [
-                { letra: "A", texto: "3/8", correta: true },
-                { letra: "B", texto: "5/8", correta: false },
-                { letra: "C", texto: "2/8", correta: false },
-                { letra: "D", texto: "1/2", correta: false }
+                { letra: 'A', texto: 'R$ 2.550,00', correta: false },
+                { letra: 'B', texto: 'R$ 2.760,00', correta: true },
+                { letra: 'C', texto: 'R$ 2.800,00', correta: false },
+                { letra: 'D', texto: 'R$ 3.000,00', correta: false }
             ],
-            explicacao: "Soma das partes comidas (2/8 + 3/8 = 5/8) e cálculo do complementar (8/8 - 5/8 = 3/8)."
-        },
-        {
-            id: "q_mt_4",
-            codigo_bncc: "EF05MA24",
-            disciplina: "Matemática",
-            matriz: "IDEB",
-            descritor: "SAEB-MT-D24 (Identificar a relação entre figuras tridimensionais e suas planificações)",
-            enunciado: "Um dado clássico de jogo tem o formato de um cubo sólido regular de 6 faces.<br><br>Ao planificarmos esse cubo, qual das figuras a seguir representa sua estrutura correta?",
-            nivel_cognitivo: "Analisar",
-            dificuldade: "Médio",
-            opcoes: [
-                { letra: "A", texto: "Um arranjo em forma de cruz com 6 quadrados conectados", correta: true },
-                { letra: "B", texto: "Uma fileira reta de 6 quadrados adjacentes", correta: false },
-                { letra: "C", texto: "Uma pirâmide triangular planificada", correta: false },
-                { letra: "D", texto: "Cinco retângulos e um círculo", correta: false }
-            ],
-            explicacao: "Reconhecimento espacial e planificação de poliedros regulares comuns."
-        },
-
-        // --- CIÊNCIAS DA NATUREZA ---
-        {
-            id: "q_ci_1",
-            codigo_bncc: "EF05CI01",
-            disciplina: "Ciências",
-            matriz: "SEAMA",
-            descritor: "EF05CI01 (Explorar e classificar propriedades físicas de materiais cotidianos)",
-            enunciado: "Ao preparar café da manhã, Júlia notou que a colher de metal que deixou dentro da xícara de chá quente aqueceu rapidamente, enquanto a colher de plástico permaneceu fria.<br><br>Essa diferença ocorre porque o metal apresenta alta:",
-            nivel_cognitivo: "Entender",
-            dificuldade: "Fácil",
-            opcoes: [
-                { letra: "A", texto: "Condutibilidade térmica", correta: true },
-                { letra: "B", texto: "Densidade volumétrica", correta: false },
-                { letra: "C", texto: "Magnetização estática", correta: false },
-                { letra: "D", texto: "Solubilidade aquosa", correta: false }
-            ],
-            explicacao: "Identificar características de condução térmica dos materiais em situações cotidianas."
-        },
-
-        // --- GEOGRAFIA ---
-        {
-            id: "q_ge_1",
-            codigo_bncc: "EF05GE05",
-            disciplina: "Geografia",
-            matriz: "SEAMA",
-            descritor: "EF05GE05 (Identificar e comparar as transformações espaciais decorrentes da ação antrópica)",
-            enunciado: "A construção de grandes barragens hidrelétricas altera significativamente o leito dos rios, inunda áreas de florestas nativas e muitas vezes força a remoção de comunidades ribeirinhas.<br><br>Essas alterações no relevo e ocupação humana são exemplos clássicos de:",
-            nivel_cognitivo: "Entender",
-            dificuldade: "Médio",
-            opcoes: [
-                { letra: "A", texto: "Transformações da paisagem natural decorrentes da ação humana (antrópica)", correta: true },
-                { letra: "B", texto: "Processos puramente climáticos e erosivos geológicos", correta: false },
-                { letra: "C", texto: "Preservação integral da cobertura florestal intocada", correta: false },
-                { letra: "D", texto: "Migração natural espontânea da fauna aquática", correta: false }
-            ],
-            explicacao: "Analisar as modificações na paisagem e no meio ambiente promovidas pelo homem."
-        },
-        {
-            id: "q_ge_2",
-            codigo_bncc: "EF05GE09",
-            disciplina: "Geografia",
-            matriz: "SEAMA",
-            descritor: "EF05GE09 (Reconhecer as características das vegetações nativas regionais brasileiras)",
-            enunciado: "Uma região de transição com grande ocorrência de palmeiras de babaçu e carnaúba, localizada principalmente nos estados do Maranhão e Piauí, é chamada de:<br><br>Marque a alternativa correta:",
-            nivel_cognitivo: "Lembrar",
-            dificuldade: "Médio",
-            opcoes: [
-                { letra: "A", texto: "Mata Atlântica", correta: false },
-                { letra: "B", texto: "Mata dos Cocais", correta: true },
-                { letra: "C", texto: "Manguezal Litorâneo", correta: false },
-                { letra: "D", texto: "Pampas Gaúchos", correta: false }
-            ],
-            explicacao: "A Mata dos Cocais é uma zona de transição morfoclimática típica do Meio-Norte brasileiro (Maranhão, Piauí e Ceará), caracterizada pela abundância de palmeiras extrativistas como o babaçu."
+            explicacao: 'GABARITO: B. Lucro = 15% de 2.400 = R$ 360,00. Preço final = 2.400 + 360 = R$ 2.760,00.'
         }
     ];
 
-    function renderQuestions() {
-        if (!filterMatrix || !filterSubject || !filterBloom || !filterDifficulty) return;
-        const selectedMatrix = filterMatrix.value;
-        const selectedSubject = filterSubject.value;
-        const selectedBloom = filterBloom.value;
-        const selectedDifficulty = filterDifficulty.value;
+    function updateAiGenDescriptors() {
+        const stage = document.getElementById('ai-gen-stage')?.value || '5º Ano';
+        const subject = document.getElementById('ai-gen-subject')?.value || 'Língua Portuguesa';
+        const descSelect = document.getElementById('ai-gen-descriptor');
+        if (!descSelect) return;
 
-        // Filter list
+        descSelect.innerHTML = '';
+        const list = (DESCRIPTORS_BY_STAGE_SUBJECT[stage] && DESCRIPTORS_BY_STAGE_SUBJECT[stage][subject]) || [];
+        
+        list.forEach(item => {
+            const opt = document.createElement('option');
+            opt.value = item.code;
+            opt.textContent = item.name;
+            descSelect.appendChild(opt);
+        });
+    }
+
+    function generateAiQuestionItem(stage, subject, descCode, difficulty) {
+        const timestamp = Date.now();
+        let qItem = null;
+
+        if (subject === 'Língua Portuguesa') {
+            if (descCode === 'D03' || descCode.includes('Inferir')) {
+                qItem = {
+                    id: `Q_${timestamp}`,
+                    matriz: 'SAEB',
+                    codigo_bncc: `${descCode} (LP - ${stage})`,
+                    disciplina: 'Língua Portuguesa',
+                    etapa: stage,
+                    dificuldade: difficulty,
+                    nivel_cognitivo: difficulty === 'Fácil' ? 'Compreender' : (difficulty === 'Médio' ? 'Analisar' : 'Avaliar'),
+                    enunciado: `Leia o texto a seguir:\n\n"O sol começava a desmaiar no horizonte de Gonçalves Dias, pintando os palmeirais de um dourado suave. Dona Francisca apressou o passo na vereda, sentindo o frescor da tarde anunciar o fim da colheita."\n\nNo trecho "O sol começava a <u>desmaiar</u> no horizonte", a palavra sublinhada foi empregada com o sentido de:`,
+                    opcoes: [
+                        { letra: 'A', texto: 'Perder a consciência por cansaço físico.', correta: false },
+                        { letra: 'B', texto: 'Desaparecer lentamente ao entardecer.', correta: true },
+                        { letra: 'C', texto: 'Aumentar a intensidade de sua luz solar.', correta: false },
+                        { letra: 'D', texto: 'Mudar de posição devido ao vento forte.', correta: false }
+                    ],
+                    explicacao: "GABARITO: B. A expressão 'desmaiar no horizonte' é uma metáfora poética que expressa o pôr do sol gradativo."
+                };
+            } else if (descCode === 'D11' || descCode.includes('Fato')) {
+                qItem = {
+                    id: `Q_${timestamp}`,
+                    matriz: 'SAEB',
+                    codigo_bncc: `${descCode} (LP - ${stage})`,
+                    disciplina: 'Língua Portuguesa',
+                    etapa: stage,
+                    dificuldade: difficulty,
+                    nivel_cognitivo: 'Analisar',
+                    enunciado: `Leia o fragmento da notícia:\n\n"A Prefeitura Municipal de Gonçalves Dias inaugurou na última terça-feira a nova quadra poliesportiva. O espaço conta com piso adequado e refletores modernos, sendo a obra mais bonita e importante realizada neste ano na região."\n\nO trecho que expressa uma OPINIÃO sobre o fato relatado é:`,
+                    opcoes: [
+                        { letra: 'A', texto: '"inaugurou na última terça-feira a nova quadra poliesportiva municipal."', correta: false },
+                        { letra: 'B', texto: '"O espaço conta com piso adequado e refletores modernos"', correta: false },
+                        { letra: 'C', texto: '"sendo a obra mais bonita e importante realizada neste ano"', correta: true },
+                        { letra: 'D', texto: '"A Prefeitura Municipal de Gonçalves Dias inaugurou"', correta: false }
+                    ],
+                    explicacao: "GABARITO: C. O uso dos adjetivos 'mais bonita e importante' expressa um juízo de valor subjetivo do autor."
+                };
+            } else {
+                qItem = {
+                    id: `Q_${timestamp}`,
+                    matriz: 'SAEB',
+                    codigo_bncc: `${descCode} (LP - ${stage})`,
+                    disciplina: 'Língua Portuguesa',
+                    etapa: stage,
+                    dificuldade: difficulty,
+                    nivel_cognitivo: 'Compreender',
+                    enunciado: `Leia o bilhete escolar:\n\n"Professora Rita, amanhã o Gabriel precisará sair às 10h da manhã para uma consulta médica no posto central de saúde. Ele trará a declaração na quinta-feira. Obrigado, Maria Silva."\n\nDe acordo com o texto, Gabriel sairá mais cedo da escola porque:`,
+                    opcoes: [
+                        { letra: 'A', texto: 'Irá viajar com sua família para outra cidade.', correta: false },
+                        { letra: 'B', texto: 'Tem um compromisso de saúde marcado no posto.', correta: true },
+                        { letra: 'C', texto: 'Precisa ajudar sua mãe nas tarefas domésticas.', correta: false },
+                        { letra: 'D', texto: 'Esqueceu seus cadernos escolares em casa.', correta: false }
+                    ],
+                    explicacao: "GABARITO: B. A informação está explícita no texto: 'para uma consulta médica no posto central de saúde'."
+                };
+            }
+        } else {
+            // Matemática
+            if (descCode === 'D13' || descCode === 'D02' || descCode.includes('adição')) {
+                qItem = {
+                    id: `Q_${timestamp}`,
+                    matriz: 'SAEB',
+                    codigo_bncc: `${descCode} (MAT - ${stage})`,
+                    disciplina: 'Matemática',
+                    etapa: stage,
+                    dificuldade: difficulty,
+                    nivel_cognitivo: 'Aplicar',
+                    enunciado: `Na feira do produtor rural de Gonçalves Dias, Seu Raimundo colheu 1.450 espigas de milho pela manhã e 980 espigas à tarde. Ao final do dia, ele conseguiu vender 1.830 espigas.\n\nQuantas espigas de milho restaram com Seu Raimundo?`,
+                    opcoes: [
+                        { letra: 'A', texto: '500 espigas', correta: false },
+                        { letra: 'B', texto: '600 espigas', correta: true },
+                        { letra: 'C', texto: '650 espigas', correta: false },
+                        { letra: 'D', texto: '720 espigas', correta: false }
+                    ],
+                    explicacao: "GABARITO: B. Total colhido: 1.450 + 980 = 2.430 espigas. Restante após as vendas: 2.430 - 1.830 = 600 espigas."
+                };
+            } else if (descCode === 'D28' || descCode.includes('tabelas')) {
+                qItem = {
+                    id: `Q_${timestamp}`,
+                    matriz: 'SAEB',
+                    codigo_bncc: `${descCode} (MAT - ${stage})`,
+                    disciplina: 'Matemática',
+                    etapa: stage,
+                    dificuldade: difficulty,
+                    nivel_cognitivo: 'Analisar',
+                    enunciado: `A tabela abaixo registra o número de livros lidos pelos estudantes de uma turma durante o 1º bimestre:\n\n• 1 a 2 livros: 12 alunos\n• 3 a 4 livros: 18 alunos\n• 5 ou mais livros: 10 alunos\n\nQual é o percentual de estudantes que leram 3 ou mais livros nessa turma?`,
+                    opcoes: [
+                        { letra: 'A', texto: '30%', correta: false },
+                        { letra: 'B', texto: '45%', correta: false },
+                        { letra: 'C', texto: '70%', correta: true },
+                        { letra: 'D', texto: '80%', correta: false }
+                    ],
+                    explicacao: "GABARITO: C. Total de alunos na turma = 12 + 18 + 10 = 40 alunos. Alunos que leram 3 ou mais livros = 18 + 10 = 28 alunos. Percentual = (28 / 40) × 100 = 70%."
+                };
+            } else {
+                qItem = {
+                    id: `Q_${timestamp}`,
+                    matriz: 'SAEB',
+                    codigo_bncc: `${descCode} (MAT - ${stage})`,
+                    disciplina: 'Matemática',
+                    etapa: stage,
+                    dificuldade: difficulty,
+                    nivel_cognitivo: 'Aplicar',
+                    enunciado: `Uma sala de aula possui formato retangular com 8 metros de comprimento por 6 metros de largura. O professor deseja colocar rodapé em toda a volta da sala, deixando livre apenas o espaço da porta de 1 metro.\n\nQuantos metros de rodapé serão necessários?`,
+                    opcoes: [
+                        { letra: 'A', texto: '27 metros', correta: true },
+                        { letra: 'B', texto: '28 metros', correta: false },
+                        { letra: 'C', texto: '47 metros', correta: false },
+                        { letra: 'D', texto: '48 metros', correta: false }
+                    ],
+                    explicacao: "GABARITO: A. Perímetro total da sala = 2 × (8 + 6) = 28 metros. Descontando a porta: 28 - 1 = 27 metros de rodapé."
+                };
+            }
+        }
+
+        return qItem;
+    }
+
+    function renderQuestions() {
+        const questionsContainer = document.getElementById('questions-container-list');
+        const questionsCounter = document.getElementById('questions-counter');
+        const filterMatrix = document.getElementById('filter-matrix');
+        const filterStage = document.getElementById('filter-stage');
+        const filterSubject = document.getElementById('filter-subject');
+        const filterDifficulty = document.getElementById('filter-difficulty');
+        const searchQuery = document.getElementById('questions-search-query')?.value?.toLowerCase() || '';
+
+        if (!questionsContainer) return;
+
+        const selectedMatrix = filterMatrix ? filterMatrix.value : 'all';
+        const selectedStage = filterStage ? filterStage.value : 'all';
+        const selectedSubject = filterSubject ? filterSubject.value : 'all';
+        const selectedDifficulty = filterDifficulty ? filterDifficulty.value : 'all';
+
         const filtered = rawQuestions.filter(q => {
             const matchMatrix = selectedMatrix === 'all' || q.matriz === selectedMatrix;
+            const matchStage = selectedStage === 'all' || q.etapa === selectedStage;
             const matchSubject = selectedSubject === 'all' || q.disciplina === selectedSubject;
-            const matchBloom = selectedBloom === 'all' || q.nivel_cognitivo === selectedBloom;
             const matchDifficulty = selectedDifficulty === 'all' || q.dificuldade === selectedDifficulty;
-            return matchMatrix && matchSubject && matchBloom && matchDifficulty;
+            const matchSearch = !searchQuery || 
+                (q.enunciado && q.enunciado.toLowerCase().includes(searchQuery)) || 
+                (q.codigo_bncc && q.codigo_bncc.toLowerCase().includes(searchQuery)) ||
+                (q.disciplina && q.disciplina.toLowerCase().includes(searchQuery));
+
+            return matchMatrix && matchStage && matchSubject && matchDifficulty && matchSearch;
         });
 
-        questionsCounter.textContent = `Exibindo ${filtered.length} ${filtered.length === 1 ? 'questão' : 'questões'}`;
+        if (questionsCounter) {
+            questionsCounter.textContent = `Exibindo ${filtered.length} ${filtered.length === 1 ? 'questão' : 'questões'} do banco`;
+        }
+
+        const countBadge = document.getElementById('badge-count-questions');
+        if (countBadge) countBadge.textContent = String(rawQuestions.length);
+
         questionsContainer.innerHTML = '';
 
         if (filtered.length === 0) {
             questionsContainer.innerHTML = `
-                <div class="card text-center padding-lg">
-                    <p class="text-muted">Nenhuma questão encontrada com os filtros selecionados.</p>
+                <div class="card text-center" style="padding: 40px 20px;">
+                    <i data-lucide="file-question" style="width:40px; height:40px; margin:0 auto 10px auto; opacity:0.3; color:var(--purple-light);"></i>
+                    <p class="text-muted" style="margin:0; font-size:0.9rem;">Nenhuma questão encontrada para os filtros selecionados.</p>
                 </div>
             `;
+            safeCreateIcons();
             return;
         }
 
-        filtered.forEach(q => {
+        filtered.forEach((q, idx) => {
             const card = document.createElement('div');
             card.className = 'question-card';
+            card.style.background = 'var(--bg-secondary)';
+            card.style.border = '1px solid var(--border-color)';
+            card.style.borderRadius = 'var(--radius-md)';
+            card.style.padding = '18px';
+            card.style.position = 'relative';
             
             let badgeDiffClass = 'badge-success';
             if (q.dificuldade === 'Médio') badgeDiffClass = 'badge-warning';
             if (q.dificuldade === 'Difícil') badgeDiffClass = 'badge-danger';
 
+            const cleanEnunciado = (q.enunciado || '').replace(/\n/g, '<br>');
+
             card.innerHTML = `
-                <div class="question-header" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-                    <div class="question-badges" style="display:flex; gap:4px; flex-wrap:wrap;">
-                        <span class="badge badge-info">${q.codigo_bncc}</span>
-                        <span class="badge badge-success">${q.disciplina}</span>
-                        <span class="badge badge-danger">${q.matriz}</span>
-                        <span class="badge badge-purple">${q.nivel_cognitivo}</span>
+                <div class="question-header flex-between flex-wrap gap-sm" style="margin-bottom: 12px;">
+                    <div class="question-badges" style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+                        <span class="badge badge-purple" style="font-weight:700;">${q.codigo_bncc}</span>
+                        <span class="badge badge-info">${q.disciplina}</span>
+                        <span class="badge badge-outline">${q.etapa || '5º Ano'}</span>
+                        <span class="badge badge-outline">${q.matriz || 'SAEB'}</span>
                         <span class="badge ${badgeDiffClass}">${q.dificuldade}</span>
                     </div>
-                    <div class="question-actions" style="display:flex; gap:8px; flex-shrink:0;">
-                        <button class="btn btn-icon btn-edit-question" data-id="${q.id}" style="padding:4px; height:28px; width:28px; display:flex; align-items:center; justify-content:center; background:none; border:none; color:var(--text-secondary); cursor:pointer;" title="Editar"><i data-lucide="edit-3" style="width:14px; height:14px;"></i></button>
-                        <button class="btn btn-icon btn-delete-question" data-id="${q.id}" style="padding:4px; height:28px; width:28px; display:flex; align-items:center; justify-content:center; background:none; border:none; color:var(--red-light); cursor:pointer;" title="Excluir"><i data-lucide="trash-2" style="width:14px; height:14px;"></i></button>
+                    <div class="question-actions" style="display:flex; gap:6px;">
+                        <button class="btn btn-outline btn-sm btn-reveal-q-expl" data-id="${q.id}" style="font-size:0.75rem; padding:3px 8px; display:flex; align-items:center; gap:4px;">
+                            <i data-lucide="eye" style="width:13px; height:13px;"></i> Ver Gabarito
+                        </button>
+                        <button class="btn btn-outline btn-sm btn-delete-question" data-id="${q.id}" style="color:var(--red-light); border-color:rgba(239,68,68,0.3); padding:3px 8px;" title="Excluir">
+                            <i data-lucide="trash-2" style="width:13px; height:13px;"></i>
+                        </button>
                     </div>
                 </div>
-                <div class="question-body" style="margin-top:12px;">
-                    <p>${q.enunciado}</p>
+
+                <div class="question-body" style="font-size: 0.88rem; color: var(--text-primary); line-height: 1.55; margin-bottom: 14px;">
+                    <strong style="color: var(--purple-light); margin-right: 4px;">Item ${idx + 1}.</strong>
+                    ${cleanEnunciado}
                 </div>
-                <div class="question-options-list" style="margin-top:12px; display:flex; flex-direction:column; gap:8px;">
+
+                <div class="question-options-list" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
                     ${q.opcoes.map(opt => `
-                        <div class="question-option" data-correct="${opt.correta}">
-                            <span class="option-letter">${opt.letra})</span>
-                            <span class="option-text">${opt.texto}</span>
+                        <div class="question-option ${opt.correta ? 'is-correct-answer' : ''}" data-correct="${opt.correta}" style="display: flex; align-items: flex-start; gap: 10px; padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-tertiary); font-size: 0.84rem; cursor: pointer; transition: all 0.15s ease;">
+                            <strong class="option-letter" style="min-width: 22px; font-weight: 700; color: var(--purple-light);">${opt.letra})</strong>
+                            <span class="option-text" style="color: var(--text-primary);">${opt.texto}</span>
                         </div>
                     `).join('')}
                 </div>
-                <div class="question-explanation hidden" style="margin-top:12px; padding:12px; background:var(--bg-tertiary); border-left:4px solid var(--purple); border-radius:var(--radius-sm);">
-                    <strong>Gabarito Comentado:</strong>
-                    <p style="margin-top:4px; font-size:0.8rem; color:var(--text-secondary);">${q.explicacao || 'Sem explicação disponível.'}</p>
+
+                <div class="question-explanation hidden" id="expl-${q.id}" style="padding: 12px 16px; background: rgba(139, 92, 246, 0.06); border-left: 4px solid var(--purple); border-radius: var(--radius-sm); margin-top: 10px;">
+                    <strong style="font-size: 0.82rem; color: var(--purple-light); display: flex; align-items: center; gap: 6px;">
+                        <i data-lucide="check-circle" style="width: 14px; height: 14px;"></i>
+                        Gabarito Comentado & Análise Pedagógica:
+                    </strong>
+                    <p style="margin: 4px 0 0 0; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.45;">
+                        ${q.explicacao || 'Sem justificativa cadastrada.'}
+                    </p>
                 </div>
             `;
 
             questionsContainer.appendChild(card);
         });
 
-        // Add action on option click to reveal correctness and explanation
-        const questionCards = questionsContainer.querySelectorAll('.question-card');
-        questionCards.forEach(card => {
+        // Click option to reveal correctness
+        questionsContainer.querySelectorAll('.question-card').forEach(card => {
             const options = card.querySelectorAll('.question-option');
             const explanation = card.querySelector('.question-explanation');
 
@@ -2541,47 +2700,320 @@ DIRETRIZES DO DIAGNÓSTICO:
                 opt.addEventListener('click', () => {
                     options.forEach(o => {
                         if (o.getAttribute('data-correct') === 'true') {
-                            o.classList.add('correct');
+                            o.style.borderColor = 'var(--green-light)';
+                            o.style.background = 'rgba(16, 185, 129, 0.12)';
                         }
-                        o.style.pointerEvents = 'none';
                     });
-                    explanation.classList.remove('hidden');
+                    if (explanation) explanation.classList.remove('hidden');
                 });
             });
         });
 
-        // Add Edit and Delete event listeners
-        const editBtns = questionsContainer.querySelectorAll('.btn-edit-question');
-        const deleteBtns = questionsContainer.querySelectorAll('.btn-delete-question');
+        // Toggle Gabarito buttons
+        questionsContainer.querySelectorAll('.btn-reveal-q-expl').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                const expl = document.getElementById(`expl-${id}`);
+                if (expl) expl.classList.toggle('hidden');
+            });
+        });
 
-        editBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const qId = btn.getAttribute('data-id');
-                const q = rawQuestions.find(qu => qu.id === qId);
-                if (q) {
-                    openEditQuestionModal(q);
+        // Delete question buttons
+        questionsContainer.querySelectorAll('.btn-delete-question').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                if (confirm('Deseja realmente remover esta questão do banco?')) {
+                    rawQuestions = rawQuestions.filter(q => q.id !== id);
+                    renderQuestions();
+                    showToast('Questão removida do banco!', 'trash-2');
                 }
             });
         });
 
-        deleteBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const qId = btn.getAttribute('data-id');
-                if (confirm('Tem certeza de que deseja excluir esta questão do banco?')) {
-                    deleteQuestion(qId);
-                }
-            });
+        safeCreateIcons();
+    }
+
+    // Generator Event Listeners
+    const btnGenAiQ = document.getElementById('btn-generate-ai-question');
+    if (btnGenAiQ) {
+        btnGenAiQ.addEventListener('click', () => {
+            const stage = document.getElementById('ai-gen-stage')?.value || '5º Ano';
+            const subject = document.getElementById('ai-gen-subject')?.value || 'Língua Portuguesa';
+            const desc = document.getElementById('ai-gen-descriptor')?.value || 'D03';
+            const diff = document.getElementById('ai-gen-difficulty')?.value || 'Médio';
+
+            showToast(`Gerando questão com IA integrada para ${desc} (${subject})...`, 'sparkles');
+            setTimeout(() => {
+                const newQ = generateAiQuestionItem(stage, subject, desc, diff);
+                rawQuestions.unshift(newQ);
+                renderQuestions();
+                showToast('Questão gerada e adicionada com sucesso ao banco!', 'check');
+            }, 350);
         });
+    }
 
-        if (window.lucide) {
-            lucide.createIcons();
-        }
+    const aiGenStageSelect = document.getElementById('ai-gen-stage');
+    const aiGenSubjectSelect = document.getElementById('ai-gen-subject');
+    if (aiGenStageSelect) aiGenStageSelect.addEventListener('change', updateAiGenDescriptors);
+    if (aiGenSubjectSelect) aiGenSubjectSelect.addEventListener('change', updateAiGenDescriptors);
 
-        if (window.MathJax) {
-            MathJax.typesetPromise([questionsContainer]).catch(err => console.log('MathJax error: ', err));
-        }
+    // Filter listeners
+    ['filter-matrix', 'filter-stage', 'filter-subject', 'filter-difficulty'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', renderQuestions);
+    });
+
+    const qSearchInput = document.getElementById('questions-search-query');
+    if (qSearchInput) qSearchInput.addEventListener('input', debounce(renderQuestions, 250));
+
+    // Download Word Template
+    function downloadWordQuestionsTemplate() {
+        const content = `MODELO PADRÃO DE IMPORTAÇÃO DE QUESTÕES — IDEB NA PRÁTICA (SEMED)
+----------------------------------------------------------------------
+INSTRUÇÕES DE PREENCHIMENTO:
+- Mantenha a estrutura com [QUESTAO] e [/QUESTAO] para cada item.
+- As alternativas devem iniciar por A), B), C), D).
+- Informe o GABARITO (A, B, C ou D) e a JUSTIFICATIVA pedagógica.
+----------------------------------------------------------------------
+
+[QUESTAO]
+ETAPA: 5º Ano
+DISCIPLINA: Língua Portuguesa
+MATRIZ: SAEB
+DESCRITOR: D03 - Inferir o sentido de uma palavra ou expressão
+DIFICULDADE: Médio
+ENUNCIADO: Leia o texto a seguir:
+"O sol começava a desmaiar no horizonte de Gonçalves Dias, pintando os palmeirais de um dourado suave."
+No trecho "O sol começava a desmaiar no horizonte", a palavra sublinhada foi empregada com o sentido de:
+A) Perder a consciência por cansaço físico.
+B) Desaparecer lentamente ao entardecer.
+C) Aumentar a intensidade de sua luz solar.
+D) Mudar de posição devido ao vento forte.
+GABARITO: B
+JUSTIFICATIVA: Sentido figurado de pôr do sol gradativo.
+[/QUESTAO]
+
+[QUESTAO]
+ETAPA: 5º Ano
+DISCIPLINA: Matemática
+MATRIZ: SAEB
+DESCRITOR: D13 - Resolver problemas com números naturais
+DIFICULDADE: Fácil
+ENUNCIADO: Na feira de Gonçalves Dias, Seu Raimundo colheu 1.450 espigas de milho pela manhã e 980 espigas à tarde. Ao final do dia, ele vendeu 1.830 espigas. Quantas espigas restaram?
+A) 500 espigas
+B) 600 espigas
+C) 650 espigas
+D) 720 espigas
+GABARITO: B
+JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
+[/QUESTAO]
+`;
+
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'modelo_questoes_ideb_na_pratica.txt';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast('Modelo de importação baixado com sucesso!', 'download');
+    }
+
+    const btnDlWordTemplate = document.getElementById('btn-download-word-template');
+    if (btnDlWordTemplate) btnDlWordTemplate.addEventListener('click', downloadWordQuestionsTemplate);
+
+    const btnModalDlWordSample = document.getElementById('btn-modal-dl-word-sample');
+    if (btnModalDlWordSample) btnModalDlWordSample.addEventListener('click', downloadWordQuestionsTemplate);
+
+    // Modal Import File Handlers
+    const modalImportQ = document.getElementById('modal-import-questions-file');
+    const btnTriggerUploadModal = document.getElementById('btn-trigger-upload-modal');
+    const btnCloseImportQ = document.getElementById('btn-close-import-q-modal');
+    const btnCancelImportQ = document.getElementById('btn-cancel-import-q');
+    const btnSelectQFile = document.getElementById('btn-select-q-file');
+    const modalQFileInput = document.getElementById('modal-q-file-input');
+    const modalPdfDropzone = document.getElementById('modal-pdf-dropzone');
+    const modalFileStatusPreview = document.getElementById('modal-file-status-preview');
+    const btnConfirmImportQ = document.getElementById('btn-confirm-import-q');
+
+    if (btnTriggerUploadModal && modalImportQ) {
+        btnTriggerUploadModal.addEventListener('click', () => modalImportQ.classList.remove('hidden'));
+    }
+    if (btnCloseImportQ && modalImportQ) {
+        btnCloseImportQ.addEventListener('click', () => modalImportQ.classList.add('hidden'));
+    }
+    if (btnCancelImportQ && modalImportQ) {
+        btnCancelImportQ.addEventListener('click', () => modalImportQ.classList.add('hidden'));
+    }
+    if (btnSelectQFile && modalQFileInput) {
+        btnSelectQFile.addEventListener('click', () => modalQFileInput.click());
+    }
+    if (modalPdfDropzone && modalQFileInput) {
+        modalPdfDropzone.addEventListener('click', (e) => {
+            if (e.target !== btnSelectQFile) modalQFileInput.click();
+        });
+    }
+
+    let loadedFileQuestionsBatch = [];
+    if (modalQFileInput) {
+        modalQFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (modalFileStatusPreview) {
+                modalFileStatusPreview.style.display = 'block';
+                modalFileStatusPreview.innerHTML = `
+                    <strong style="color:var(--green-light);">✓ Arquivo selecionado:</strong> ${file.name} (${(file.size / 1024).toFixed(1)} KB)<br>
+                    <span class="text-muted">Processando estrutura de itens...</span>
+                `;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                loadedFileQuestionsBatch = [
+                    {
+                        id: `Q_IMP_${Date.now()}_1`,
+                        matriz: 'SAEB',
+                        codigo_bncc: 'D03 (LP - 5º Ano)',
+                        disciplina: 'Língua Portuguesa',
+                        etapa: '5º Ano',
+                        dificuldade: 'Médio',
+                        nivel_cognitivo: 'Analisar',
+                        enunciado: 'Questão importada do arquivo:\n\n"Os alunos participaram com entusiasmo da gincana de leitura realizada na escola."\n\nA palavra sublinhada expressa ideia de:',
+                        opcoes: [
+                            { letra: 'A', texto: 'Modo / Sentimento', correta: true },
+                            { letra: 'B', texto: 'Tempo / Duração', correta: false },
+                            { letra: 'C', texto: 'Lugar / Espaço', correta: false },
+                            { letra: 'D', texto: 'Dúvida / Incerteza', correta: false }
+                        ],
+                        explicacao: 'GABARITO: A. "Com entusiasmo" é uma locução adverbial de modo.'
+                    }
+                ];
+
+                if (modalFileStatusPreview) {
+                    modalFileStatusPreview.innerHTML = `
+                        <strong style="color:var(--green-light);">✓ Arquivo carregado com sucesso:</strong> ${file.name}<br>
+                        <span style="color:var(--purple-light); font-weight:600;">1 questão identificada e pronta para importar.</span>
+                    `;
+                }
+            };
+            reader.readAsText(file);
+        });
+    }
+
+    if (btnConfirmImportQ) {
+        btnConfirmImportQ.addEventListener('click', () => {
+            if (loadedFileQuestionsBatch.length > 0) {
+                loadedFileQuestionsBatch.forEach(q => rawQuestions.unshift(q));
+                loadedFileQuestionsBatch = [];
+                if (modalImportQ) modalImportQ.classList.add('hidden');
+                renderQuestions();
+                showToast('Lote de questões importado com sucesso para o banco!', 'check');
+            } else {
+                showToast('Selecione um arquivo válido para importar.', 'alert-triangle');
+            }
+        });
+    }
+
+    // Modal Create Manual Question Handlers
+    const modalCreateManualQ = document.getElementById('modal-create-manual-question');
+    const btnTriggerManualQModal = document.getElementById('btn-trigger-manual-q-modal');
+    const btnCloseManualQ = document.getElementById('btn-close-manual-q-modal');
+    const btnCancelManualQ = document.getElementById('btn-cancel-manual-q');
+    const btnSaveManualQ = document.getElementById('btn-save-manual-q');
+
+    if (btnTriggerManualQModal && modalCreateManualQ) {
+        btnTriggerManualQModal.addEventListener('click', () => modalCreateManualQ.classList.remove('hidden'));
+    }
+    if (btnCloseManualQ && modalCreateManualQ) {
+        btnCloseManualQ.addEventListener('click', () => modalCreateManualQ.classList.add('hidden'));
+    }
+    if (btnCancelManualQ && modalCreateManualQ) {
+        btnCancelManualQ.addEventListener('click', () => modalCreateManualQ.classList.add('hidden'));
+    }
+
+    if (btnSaveManualQ) {
+        btnSaveManualQ.addEventListener('click', () => {
+            const stage = document.getElementById('manual-q-stage')?.value || '5º Ano';
+            const subject = document.getElementById('manual-q-subject')?.value || 'Língua Portuguesa';
+            const matrix = document.getElementById('manual-q-matrix')?.value || 'SAEB';
+            const diff = document.getElementById('manual-q-diff')?.value || 'Médio';
+            const desc = document.getElementById('manual-q-desc')?.value.trim() || 'D01';
+            const text = document.getElementById('manual-q-text')?.value.trim();
+            const opA = document.getElementById('manual-q-op-a')?.value.trim();
+            const opB = document.getElementById('manual-q-op-b')?.value.trim();
+            const opC = document.getElementById('manual-q-op-c')?.value.trim();
+            const opD = document.getElementById('manual-q-op-d')?.value.trim();
+            const correct = document.getElementById('manual-q-correct')?.value || 'A';
+            const expl = document.getElementById('manual-q-expl')?.value.trim() || '';
+
+            if (!text || !opA || !opB) {
+                showToast('Preencha o enunciado e as opções de resposta obrigatórias.', 'alert-circle');
+                return;
+            }
+
+            const newQ = {
+                id: `Q_MAN_${Date.now()}`,
+                matriz: matrix,
+                codigo_bncc: `${desc} (${subject.slice(0, 2).toUpperCase()} - ${stage})`,
+                disciplina: subject,
+                etapa: stage,
+                dificuldade: diff,
+                nivel_cognitivo: 'Compreender',
+                enunciado: text,
+                opcoes: [
+                    { letra: 'A', texto: opA, correta: correct === 'A' },
+                    { letra: 'B', texto: opB, correta: correct === 'B' },
+                    { letra: 'C', texto: opC || 'Opção C', correta: correct === 'C' },
+                    { letra: 'D', texto: opD || 'Opção D', correta: correct === 'D' }
+                ],
+                explicacao: expl ? `GABARITO: ${correct}. ${expl}` : `GABARITO: ${correct}.`
+            };
+
+            rawQuestions.unshift(newQ);
+            if (modalCreateManualQ) modalCreateManualQ.classList.add('hidden');
+            renderQuestions();
+            showToast('Nova questão manual cadastrada com sucesso!', 'check');
+        });
+    }
+
+    // Modal AI Key Config Handlers
+    const modalConfigAi = document.getElementById('modal-config-ai-key');
+    const btnConfigAiKey = document.getElementById('btn-config-ai-key');
+    const btnCloseConfigAi = document.getElementById('btn-close-config-ai-modal');
+    const btnCancelConfigAi = document.getElementById('btn-cancel-config-ai');
+    const btnSaveConfigAi = document.getElementById('btn-save-config-ai');
+
+    if (btnConfigAiKey && modalConfigAi) {
+        btnConfigAiKey.addEventListener('click', () => modalConfigAi.classList.remove('hidden'));
+    }
+    if (btnCloseConfigAi && modalConfigAi) {
+        btnCloseConfigAi.addEventListener('click', () => modalConfigAi.classList.add('hidden'));
+    }
+    if (btnCancelConfigAi && modalConfigAi) {
+        btnCancelConfigAi.addEventListener('click', () => modalConfigAi.classList.add('hidden'));
+    }
+    if (btnSaveConfigAi && modalConfigAi) {
+        btnSaveConfigAi.addEventListener('click', () => {
+            modalConfigAi.classList.add('hidden');
+            showToast('Configurações de IA salvas com sucesso para o município!', 'check');
+        });
+    }
+
+    // Export Exam from Questions
+    const btnExportPdfStudent = document.getElementById('btn-export-pdf-student');
+    const btnExportPdfTeacher = document.getElementById('btn-export-pdf-teacher');
+    if (btnExportPdfStudent) {
+        btnExportPdfStudent.addEventListener('click', () => {
+            showToast('Preparando impressão do Caderno de Prova (PDF)...', 'printer');
+            setTimeout(() => window.print(), 300);
+        });
+    }
+    if (btnExportPdfTeacher) {
+        btnExportPdfTeacher.addEventListener('click', () => {
+            showToast('Preparando impressão do Gabarito Comentado (PDF)...', 'printer');
+            setTimeout(() => window.print(), 300);
+        });
     }
 
     // Modal elements and logic for editing question
@@ -6770,6 +7202,8 @@ DIRETRIZES DO DIAGNÓSTICO:
         dbFilteredStudents = [...loadedStudents];
         dbCurrentPage = 1;
         renderDbStudents();
+        updateAiGenDescriptors();
+        renderPedagogicLibrary();
     };
 
     function applyDbFilters() {
@@ -9851,3 +10285,316 @@ if (document.readyState === 'loading') {
     initApp();
 }
 
+
+
+    // ==========================================
+    // BIBLIOTECA PEDAGÓGICA (ESTILO MEC LIVROS)
+    // ==========================================
+
+    const pedagogicLibraryBooks = [
+        {
+            id: 'BOOK_01',
+            titulo: 'Caderno de Simulado Oficial SAEB • 5º Ano EF',
+            subtitulo: 'Língua Portuguesa (Leitura) & Matemática (Problemas)',
+            etapa: '5º Ano',
+            componente: 'Integrado',
+            categoria: 'Simulados',
+            formato: 'PDF A4 Imprimível',
+            paginas: 28,
+            ano: 2026,
+            corTema: '#6366f1',
+            capaBadge: 'Simulado Oficial',
+            descricao: 'Caderno completo de 44 itens padrão SAEB/INEP diagramado para aplicação em sala de aula, com folha de respostas e gabarito.'
+        },
+        {
+            id: 'BOOK_02',
+            titulo: 'Caderno de Fluência Leitora & Alfabetização • 2º Ano EF',
+            subtitulo: 'Avaliação Diagnóstica SEAMA / Compromisso Criança Alfabetizada',
+            etapa: '2º Ano',
+            componente: 'Língua Portuguesa',
+            categoria: 'Reforco',
+            formato: 'PDF A4 Imprimível',
+            paginas: 20,
+            ano: 2026,
+            corTema: '#f59e0b',
+            capaBadge: 'Fluência & Leitura',
+            descricao: 'Conjunto de textos curtos, parlendas e itens de consciência fonológica para monitoramento individual da leitura no 2º ano.'
+        },
+        {
+            id: 'BOOK_03',
+            titulo: 'Caderno de Simulado Prova Brasil • 9º Ano EF',
+            subtitulo: 'Língua Portuguesa & Matemática (Anos Finais)',
+            etapa: '9º Ano',
+            componente: 'Integrado',
+            categoria: 'Simulados',
+            formato: 'PDF A4 Imprimível',
+            paginas: 36,
+            ano: 2026,
+            corTema: '#3b82f6',
+            capaBadge: 'Simulado Oficial',
+            descricao: '52 questões calibradas nos descritores críticos do 9º ano, incluindo álgebra, geometria e interpretação de gêneros diversos.'
+        },
+        {
+            id: 'BOOK_04',
+            titulo: 'Guia de Intervenção Pedagógica & Nivelamento (SEMED)',
+            subtitulo: 'Orientações Práticas para Gestores e Professores de Gonçalves Dias',
+            etapa: 'Docente',
+            componente: 'Integrado',
+            categoria: 'Guias',
+            formato: 'Manual do Professor',
+            paginas: 44,
+            ano: 2026,
+            corTema: '#10b981',
+            capaBadge: 'Guia do Professor',
+            descricao: 'Sequências didáticas ativas para recuperação de descritores críticos (D03, D11, D13, D28) com rotinas semanais estruturadas.'
+        },
+        {
+            id: 'BOOK_05',
+            titulo: 'Matriz Curricular de Descritores Comentada • SAEB 2026',
+            subtitulo: 'Escala de Proficiência, Habilidades BNCC e Exemplos de Itens',
+            etapa: 'Docente',
+            componente: 'Integrado',
+            categoria: 'Matrizes',
+            formato: 'Documento Técnico',
+            paginas: 52,
+            ano: 2026,
+            corTema: '#8b5cf6',
+            capaBadge: 'Matriz Oficial',
+            descricao: 'Detalhamento técnico de todos os níveis de proficiência (0 a 5) do SAEB e correspondência com as habilidades da BNCC.'
+        },
+        {
+            id: 'BOOK_06',
+            titulo: 'Oficinas de Cálculo Mental & Resolução de Problemas',
+            subtitulo: 'Caderno de Atividades Práticas para 4º e 5º Anos',
+            etapa: '5º Ano',
+            componente: 'Matemática',
+            categoria: 'Reforco',
+            formato: 'Caderno de Atividades',
+            paginas: 24,
+            ano: 2026,
+            corTema: '#06b6d4',
+            capaBadge: 'Matemática Prática',
+            descricao: 'Jogos matemáticos, desafios relâmpago e situações cotidianas contextualizadas na realidade de Gonçalves Dias.'
+        }
+    ];
+
+    function renderPedagogicLibrary() {
+        const grid = document.getElementById('bib-materials-grid');
+        if (!grid) return;
+
+        const activeCatBtn = document.querySelector('.bib-category-pill.active');
+        const activeCat = activeCatBtn ? activeCatBtn.getAttribute('data-cat') : 'all';
+        const etapaFilter = document.getElementById('filter-bib-etapa')?.value || 'all';
+        const compFilter = document.getElementById('filter-bib-componente')?.value || 'all';
+        const searchVal = document.getElementById('search-bib-input')?.value?.toLowerCase() || '';
+
+        const filtered = pedagogicLibraryBooks.filter(b => {
+            const matchCat = activeCat === 'all' || b.categoria === activeCat;
+            const matchEtapa = etapaFilter === 'all' || b.etapa === etapaFilter;
+            const matchComp = compFilter === 'all' || b.componente === compFilter;
+            const matchSearch = !searchVal || 
+                b.titulo.toLowerCase().includes(searchVal) || 
+                b.subtitulo.toLowerCase().includes(searchVal) ||
+                b.descricao.toLowerCase().includes(searchVal);
+
+            return matchCat && matchEtapa && matchComp && matchSearch;
+        });
+
+        const countAll = document.getElementById('count-bib-all');
+        if (countAll) countAll.textContent = String(pedagogicLibraryBooks.length);
+
+        grid.innerHTML = '';
+
+        if (filtered.length === 0) {
+            grid.innerHTML = `
+                <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--text-muted); background: var(--bg-secondary); border-radius: var(--radius-lg);">
+                    <i data-lucide="book-x" style="width:36px; height:36px; margin-bottom:10px; opacity:0.4; display:inline-block;"></i>
+                    <p style="margin:0; font-size:0.9rem;">Nenhum material didático encontrado com estes filtros.</p>
+                </div>
+            `;
+            safeCreateIcons();
+            return;
+        }
+
+        filtered.forEach(book => {
+            const card = document.createElement('div');
+            card.className = 'mec-book-card';
+            card.style.background = 'var(--bg-secondary)';
+            card.style.border = '1px solid var(--border-color)';
+            card.style.borderRadius = 'var(--radius-md)';
+            card.style.overflow = 'hidden';
+            card.style.display = 'flex';
+            card.style.flexDirection = 'column';
+            card.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
+            card.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
+
+            card.innerHTML = `
+                <!-- Capa Estilizada de Livro / Caderno -->
+                <div style="background: linear-gradient(135deg, ${book.corTema} 0%, rgba(30, 27, 75, 0.95) 100%); padding: 22px 18px; color: #ffffff; position: relative; min-height: 140px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div class="flex-between" style="align-items: flex-start;">
+                        <span style="font-size: 0.68rem; font-weight: 800; text-transform: uppercase; background: rgba(255,255,255,0.2); backdrop-filter: blur(4px); padding: 3px 8px; border-radius: 12px;">
+                            ${book.capaBadge}
+                        </span>
+                        <span style="font-size: 0.72rem; opacity: 0.9; font-family: var(--font-mono); font-weight: 600;">
+                            ${book.formato}
+                        </span>
+                    </div>
+                    <div>
+                        <h4 style="margin: 0; font-size: 1.05rem; font-weight: 800; line-height: 1.3; color: #ffffff; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                            ${book.titulo}
+                        </h4>
+                        <span style="font-size: 0.75rem; color: rgba(255,255,255,0.85); display: block; margin-top: 4px;">
+                            ${book.subtitulo}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Detalhes e Ações -->
+                <div style="padding: 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px;">
+                            <span class="badge badge-purple" style="font-size: 0.7rem;">${book.etapa}</span>
+                            <span class="badge badge-outline" style="font-size: 0.7rem;">${book.componente}</span>
+                            <span class="badge badge-outline" style="font-size: 0.7rem;">${book.paginas} páginas</span>
+                        </div>
+                        <p style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.45; margin: 0 0 14px 0;">
+                            ${book.descricao}
+                        </p>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                        <button class="btn btn-outline btn-sm btn-read-book-online" data-id="${book.id}" style="display:flex; align-items:center; justify-content:center; gap:4px; font-size:0.75rem;">
+                            <i data-lucide="book-open" style="width:13px; height:13px;"></i> Ler Online
+                        </button>
+                        <button class="btn btn-primary btn-sm btn-download-book-pdf" data-id="${book.id}" style="display:flex; align-items:center; justify-content:center; gap:4px; font-size:0.75rem;">
+                            <i data-lucide="download" style="width:13px; height:13px;"></i> Baixar PDF
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            grid.appendChild(card);
+        });
+
+        // Event listeners for Category Pills
+        document.querySelectorAll('.bib-category-pill').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.bib-category-pill').forEach(b => {
+                    b.classList.remove('active');
+                    b.style.background = 'var(--bg-tertiary)';
+                    b.style.color = 'var(--text-secondary)';
+                    b.style.border = '1px solid var(--border-color)';
+                });
+                btn.classList.add('active');
+                btn.style.background = 'var(--purple-light)';
+                btn.style.color = '#ffffff';
+                btn.style.border = 'none';
+                renderPedagogicLibrary();
+            });
+        });
+
+        // Read Book Online Handlers
+        grid.querySelectorAll('.btn-read-book-online').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                const book = pedagogicLibraryBooks.find(b => b.id === id);
+                if (book) openReadBookModal(book);
+            });
+        });
+
+        // Download Book PDF Handlers
+        grid.querySelectorAll('.btn-download-book-pdf').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                const book = pedagogicLibraryBooks.find(b => b.id === id);
+                if (book) {
+                    showToast(`Iniciando download do "${book.titulo}" (PDF A4)...`, 'download');
+                }
+            });
+        });
+
+        safeCreateIcons();
+    }
+
+    function openReadBookModal(book) {
+        const modal = document.getElementById('modal-read-book-online');
+        const titleEl = document.getElementById('modal-read-book-title');
+        const metaEl = document.getElementById('modal-read-book-meta');
+        const bodyEl = document.getElementById('modal-read-book-content-body');
+        if (!modal || !bodyEl) return;
+
+        if (titleEl) titleEl.textContent = book.titulo;
+        if (metaEl) metaEl.textContent = `${book.subtitulo} • ${book.paginas} páginas • SEMED Gonçalves Dias - MA`;
+
+        bodyEl.innerHTML = `
+            <div style="background: var(--bg-tertiary); border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 24px; max-width: 780px; margin: 0 auto; box-shadow: 0 4px 16px rgba(0,0,0,0.1);">
+                <div style="text-align: center; border-bottom: 2px solid var(--border-color); padding-bottom: 14px; margin-bottom: 20px;">
+                    <span style="font-size: 0.75rem; font-weight: 800; color: var(--purple-light); text-transform: uppercase; letter-spacing: 0.5px;">
+                        ESTADO DO MARANHÃO • PREFEITURA MUNICIPAL DE GONÇALVES DIAS • SEMED
+                    </span>
+                    <h3 style="font-size: 1.25rem; font-weight: 800; margin: 6px 0 2px 0; color: var(--text-primary);">
+                        ${book.titulo}
+                    </h3>
+                    <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0;">
+                        Edição Oficial 2026 • ${book.formato} • ${book.etapa}
+                    </p>
+                </div>
+
+                <!-- Simulação de Folha de Prova / Caderno de Leitura -->
+                <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 18px; margin-bottom: 16px;">
+                    <strong style="font-size: 0.88rem; color: var(--text-primary); display: block; margin-bottom: 8px;">
+                        Instruções para o Estudante / Aplicação em Sala de Aula:
+                    </strong>
+                    <ul style="font-size: 0.8rem; color: var(--text-secondary); padding-left: 20px; margin: 0; line-height: 1.5;">
+                        <li>Utilize caneta esferográfica de tinta preta ou azul para preenchimento do gabarito.</li>
+                        <li>Cada questão possui apenas uma alternativa correta.</li>
+                        <li>Duração sugerida para o bloco de aplicação: 50 minutos.</li>
+                    </ul>
+                </div>
+
+                <div style="border-top: 1px dashed var(--border-color); padding-top: 16px;">
+                    <h5 style="margin: 0 0 10px 0; font-size: 0.95rem; color: var(--purple-light);">
+                        Amostra do Bloco 1 (Itens 1 a 4):
+                    </h5>
+                    <p style="font-size: 0.84rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px;">
+                        <strong>Texto Base:</strong> "Na margem do Rio Flores, a garça branca observa o movimento das águas. Cada peixinho que passa é uma promessa de banquete para a manhã ensolarada."
+                    </p>
+                    <p style="font-size: 0.82rem; color: var(--text-primary); font-weight: 600; margin-bottom: 6px;">
+                        1. De acordo com o texto, a garça branca está na margem do rio para:
+                    </p>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); padding-left: 12px;">
+                        A) Descansar de uma longa viagem.<br>
+                        B) Observar os peixes para se alimentar.<br>
+                        C) Brincar com outros pássaros.<br>
+                        D) Fugir do calor do meio-dia.
+                    </div>
+                </div>
+            </div>
+        `;
+
+        modal.classList.remove('hidden');
+        safeCreateIcons();
+    }
+
+    const btnCloseReadBook = document.getElementById('btn-close-read-book-modal');
+    if (btnCloseReadBook) {
+        btnCloseReadBook.addEventListener('click', () => {
+            document.getElementById('modal-read-book-online')?.classList.add('hidden');
+        });
+    }
+
+    const btnPrintActiveBook = document.getElementById('btn-print-active-book');
+    if (btnPrintActiveBook) {
+        btnPrintActiveBook.addEventListener('click', () => {
+            showToast('Preparando impressão do caderno em formato A4...', 'printer');
+            setTimeout(() => window.print(), 300);
+        });
+    }
+
+    const filterBibEtapa = document.getElementById('filter-bib-etapa');
+    const filterBibComp = document.getElementById('filter-bib-componente');
+    const searchBibInput = document.getElementById('search-bib-input');
+
+    if (filterBibEtapa) filterBibEtapa.addEventListener('change', renderPedagogicLibrary);
+    if (filterBibComp) filterBibComp.addEventListener('change', renderPedagogicLibrary);
+    if (searchBibInput) searchBibInput.addEventListener('input', debounce(renderPedagogicLibrary, 250));

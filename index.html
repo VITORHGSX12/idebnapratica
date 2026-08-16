@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>IDEB na Prática - Plataforma de Gestão e Avaliação Educacional</title>
-    <link rel="stylesheet" href="styles.css?v=17d49f17">
+    <link rel="stylesheet" href="styles.css?v=6b5a6073">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2387,233 +2387,471 @@
                     </div>
                 </section>
 
-                <!-- ==================== QUESTIONS TAB ==================== -->
+                <!-- ==================== QUESTIONS TAB (BANCO DE QUESTÕES 2.0 COM IA INTEGRADA) ==================== -->
                 <section id="questions" class="tab-content">
-                    <div class="questions-layout">
-                        <div class="questions-sidebar-col">
-                            <div class="card questions-filter-card">
-                                <div class="card-header">
-                                    <h3>Filtros de Avaliação</h3>
+                    <!-- Banner de Destaque / Ações Rápidas -->
+                    <div class="card margin-bottom-md" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(59, 130, 246, 0.05) 100%); border-left: 4px solid var(--purple);">
+                        <div class="flex-between" style="flex-wrap: wrap; gap: 14px;">
+                            <div>
+                                <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                                    <i data-lucide="file-question" style="color: var(--purple-light);"></i>
+                                    Banco de Questões & Gerador com IA Integrada (SAEB / SEAMA / BNCC)
+                                </h3>
+                                <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;">
+                                    Crie itens calibrados por IA, importe lotes de arquivos (PDF/Word) com nosso gabarito padrão, ou cadastre questões manualmente para suas avaliações.
+                                </p>
+                            </div>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                                <button class="btn btn-outline btn-sm" id="btn-download-word-template" style="display:flex; align-items:center; gap:6px; font-size:0.78rem;">
+                                    <i data-lucide="file-down"></i>
+                                    <span>Baixar Modelo Word (.docx)</span>
+                                </button>
+                                <button class="btn btn-outline btn-sm" id="btn-config-ai-key" style="display:flex; align-items:center; gap:6px; font-size:0.78rem; border-color: var(--purple-light); color: var(--purple-light);">
+                                    <i data-lucide="key-round"></i>
+                                    <span>Configurar Chave IA</span>
+                                </button>
+                                <button class="btn btn-primary btn-sm" id="btn-open-create-exam-from-q" style="display:flex; align-items:center; gap:6px; font-size:0.78rem;">
+                                    <i data-lucide="printer"></i>
+                                    <span>Montar Simulado com Itens</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="questions-layout" style="display: grid; grid-template-columns: 340px 1fr; gap: 20px;">
+                        <!-- Coluna Lateral: Gerador IA + Filtros + Importação -->
+                        <div class="questions-sidebar-col" style="display: flex; flex-direction: column; gap: 16px;">
+                            
+                            <!-- Card 1: Gerador de Questões por IA (Fluxo Oficial do Usuário) -->
+                            <div class="card" style="border-top: 3px solid var(--purple-light); background: var(--bg-secondary);">
+                                <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                                    <h4 style="margin:0; font-size:0.95rem; font-weight:700; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
+                                        <i data-lucide="sparkles" style="width:16px; height:16px; color:var(--purple-light);"></i>
+                                        Gerador de Questões (IA)
+                                    </h4>
+                                    <p style="margin:2px 0 0 0; font-size:0.72rem; color:var(--text-muted);">
+                                        Geração automatizada calibrada nas matrizes oficiais.
+                                    </p>
                                 </div>
-                                <div class="card-body">
+                                <div class="card-body" style="padding-top: 12px; display:flex; flex-direction:column; gap:10px;">
+                                    <!-- 1. Etapa -->
                                     <div class="form-group">
-                                        <label for="filter-matrix">Matriz de Referência</label>
-                                        <select id="filter-matrix" class="form-select">
-                                        <option value="all">Todas as Matrizes</option>
-                                        <option value="IDEB">SAEB / IDEB</option>
+                                        <label for="ai-gen-stage" style="font-size:0.75rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:3px;">1. Escolher Etapa</label>
+                                        <select id="ai-gen-stage" class="form-select" style="height:36px; font-size:0.8rem;">
+                                            <option value="2º Ano">2º Ano (Alfabetização & Fluência)</option>
+                                            <option value="5º Ano" selected>5º Ano (Fundamental Menor - SAEB)</option>
+                                            <option value="9º Ano">9º Ano (Fundamental Maior - SAEB)</option>
+                                            <option value="Ensino Médio">Ensino Médio (SAEB / ENEM)</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- 2. Disciplina -->
+                                    <div class="form-group">
+                                        <label for="ai-gen-subject" style="font-size:0.75rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:3px;">2. Escolher Disciplina</label>
+                                        <select id="ai-gen-subject" class="form-select" style="height:36px; font-size:0.8rem;">
+                                            <option value="Língua Portuguesa" selected>Língua Portuguesa</option>
+                                            <option value="Matemática">Matemática</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- 3. Descritor / Habilidade (Carregamento Dinâmico) -->
+                                    <div class="form-group">
+                                        <label for="ai-gen-descriptor" style="font-size:0.75rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:3px;">3. Escolher Descritor / Habilidade</label>
+                                        <select id="ai-gen-descriptor" class="form-select" style="height:36px; font-size:0.78rem; text-overflow: ellipsis;">
+                                            <!-- Preenchido dinamicamente via JS de acordo com Etapa e Disciplina -->
+                                        </select>
+                                    </div>
+
+                                    <!-- 4. Nível de Dificuldade -->
+                                    <div class="form-group">
+                                        <label for="ai-gen-difficulty" style="font-size:0.75rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:3px;">4. Nível de Dificuldade</label>
+                                        <select id="ai-gen-difficulty" class="form-select" style="height:36px; font-size:0.8rem;">
+                                            <option value="Fácil">Fácil (Nível Básico)</option>
+                                            <option value="Médio" selected>Médio (Nível Adequado)</option>
+                                            <option value="Difícil">Difícil (Nível Avançado)</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Botão Gerar Questão -->
+                                    <button class="btn btn-primary" id="btn-generate-ai-question" style="height:40px; margin-top:4px; font-size:0.85rem; font-weight:700; display:flex; align-items:center; justify-content:center; gap:6px; cursor:pointer;">
+                                        <i data-lucide="sparkles" style="width:16px; height:16px;"></i>
+                                        <span>Gerar Questão</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Card 2: Filtros de Avaliação & Navegação do Banco -->
+                            <div class="card questions-filter-card">
+                                <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                                    <h4 style="margin:0; font-size:0.9rem; font-weight:700; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
+                                        <i data-lucide="filter" style="width:14px; height:14px; color:var(--purple-light);"></i>
+                                        Filtros de Avaliação
+                                    </h4>
+                                </div>
+                                <div class="card-body" style="padding-top: 10px; display:flex; flex-direction:column; gap:8px;">
+                                    <div class="form-group">
+                                        <label for="filter-matrix" style="font-size:0.72rem; color:var(--text-secondary); display:block; margin-bottom:2px;">Matriz de Referência</label>
+                                        <select id="filter-matrix" class="form-select" style="height:32px; font-size:0.78rem;">
+                                            <option value="all">Todas as Matrizes</option>
+                                            <option value="SAEB">SAEB / Prova Brasil</option>
+                                            <option value="SEAMA">SEAMA (Maranhão)</option>
+                                            <option value="BNCC">Matriz BNCC</option>
+                                            <option value="Spaece">Spaece / Regional</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="filter-stage" style="font-size:0.72rem; color:var(--text-secondary); display:block; margin-bottom:2px;">Etapa de Ensino</label>
+                                        <select id="filter-stage" class="form-select" style="height:32px; font-size:0.78rem;">
+                                            <option value="all">Todas as Etapas</option>
+                                            <option value="2º Ano">2º Ano</option>
+                                            <option value="5º Ano">5º Ano</option>
+                                            <option value="9º Ano">9º Ano</option>
+                                            <option value="Ensino Médio">Ensino Médio</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="filter-subject" style="font-size:0.72rem; color:var(--text-secondary); display:block; margin-bottom:2px;">Disciplinas</label>
+                                        <select id="filter-subject" class="form-select" style="height:32px; font-size:0.78rem;">
+                                            <option value="all">Todas as Disciplinas</option>
+                                            <option value="Língua Portuguesa">Língua Portuguesa</option>
+                                            <option value="Matemática">Matemática</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="filter-difficulty" style="font-size:0.72rem; color:var(--text-secondary); display:block; margin-bottom:2px;">Dificuldade</label>
+                                        <select id="filter-difficulty" class="form-select" style="height:32px; font-size:0.78rem;">
+                                            <option value="all">Todas</option>
+                                            <option value="Fácil">Fácil (Básico)</option>
+                                            <option value="Médio">Médio (Adequado)</option>
+                                            <option value="Difícil">Difícil (Avançado)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 3: Outras Opções de Entrada (Arquivo / Manual) -->
+                            <div class="card" style="background: var(--bg-tertiary);">
+                                <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                                    <h4 style="margin:0; font-size:0.88rem; font-weight:700; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
+                                        <i data-lucide="plus-circle" style="width:14px; height:14px; color:var(--purple-light);"></i>
+                                        Outras Formas de Entrada
+                                    </h4>
+                                </div>
+                                <div class="card-body" style="padding-top: 10px; display:flex; flex-direction:column; gap:8px;">
+                                    <button class="btn btn-outline" id="btn-trigger-upload-modal" style="width:100%; height:36px; font-size:0.78rem; display:flex; align-items:center; justify-content:center; gap:6px;">
+                                        <i data-lucide="file-up" style="width:14px; height:14px;"></i>
+                                        <span>Importar Arquivo (PDF / Word)</span>
+                                    </button>
+                                    <button class="btn btn-outline" id="btn-trigger-manual-q-modal" style="width:100%; height:36px; font-size:0.78rem; display:flex; align-items:center; justify-content:center; gap:6px;">
+                                        <i data-lucide="edit-3" style="width:14px; height:14px;"></i>
+                                        <span>Criar Questão Manualmente</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Coluna Principal: Lista de Questões do Banco -->
+                        <div class="questions-list-container">
+                            <div class="card margin-bottom-md" style="padding: 12px 18px;">
+                                <div class="flex-between flex-wrap gap-md" style="align-items:center;">
+                                    <div style="display:flex; align-items:center; gap:10px;">
+                                        <span class="text-muted" id="questions-counter" style="font-size:0.85rem; font-weight:600;">Carregando banco de questões...</span>
+                                    </div>
+                                    <div style="display:flex; gap:8px; align-items:center;">
+                                        <div style="position:relative; width:220px;">
+                                            <input type="text" id="questions-search-query" class="form-input-text" placeholder="Buscar no banco..." style="height:34px; font-size:0.78rem; padding-left:32px;">
+                                            <i data-lucide="search" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--text-muted);"></i>
+                                        </div>
+                                        <button class="btn btn-outline btn-sm" id="btn-export-pdf-student" title="Exportar Caderno de Prova"><i data-lucide="printer"></i> Prova (PDF)</button>
+                                        <button class="btn btn-outline btn-sm" id="btn-export-pdf-teacher" title="Exportar Gabarito Pedagógico"><i data-lucide="check-square"></i> Gabarito</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="questions-grid-list" id="questions-container-list" style="display:flex; flex-direction:column; gap:14px;">
+                                <!-- Preenchido dinamicamente pelo JS com cards de questões 2.0 -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Modal Importar Arquivo PDF / Word -->
+                <div id="modal-import-questions-file" class="modal-overlay hidden">
+                    <div class="modal-content" style="max-width: 620px; width: 90%;">
+                        <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <h3>Importar Questões via Arquivo</h3>
+                                <p class="text-sm text-muted">Carregue arquivos PDF, Word (.docx) ou texto (.txt) com itens formatados.</p>
+                            </div>
+                            <button class="btn btn-icon" id="btn-close-import-q-modal" style="cursor:pointer;"><i data-lucide="x"></i></button>
+                        </div>
+                        <div class="modal-body" style="padding-top: 16px;">
+                            <div style="border: 2px dashed var(--purple-light); border-radius:var(--radius-md); padding:24px; text-align:center; background:var(--bg-tertiary); cursor:pointer;" id="modal-pdf-dropzone">
+                                <i data-lucide="file-up" style="width:36px; height:36px; margin-bottom:8px; color:var(--purple-light); display:inline-block;"></i>
+                                <h4 style="margin:0 0 4px 0; font-size:0.95rem;">Clique ou arraste seu arquivo PDF / Word aqui</h4>
+                                <p style="font-size:0.75rem; color:var(--text-secondary); margin:0 0 10px 0;">Suporta .pdf, .docx, .doc e .txt estruturados</p>
+                                <input type="file" id="modal-q-file-input" accept=".pdf,.docx,.doc,.txt" style="display:none;">
+                                <button class="btn btn-outline btn-sm" id="btn-select-q-file">Selecionar Arquivo do Computador</button>
+                            </div>
+                            
+                            <div id="modal-file-status-preview" style="margin-top:12px; font-size:0.8rem; display:none; padding:10px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-sm);"></div>
+
+                            <div style="margin-top:16px; background:rgba(139, 92, 246, 0.05); border:1px solid rgba(139, 92, 246, 0.2); border-radius:var(--radius-sm); padding:12px 14px;">
+                                <strong style="font-size:0.8rem; color:var(--purple-light); display:block; margin-bottom:4px;">💡 Como formatar o arquivo para importação correta:</strong>
+                                <p style="font-size:0.75rem; color:var(--text-secondary); margin:0 0 8px 0;">Cada questão deve conter o Enunciado, as alternativas iniciadas por A), B), C), D) e a linha de GABARITO.</p>
+                                <button class="btn btn-outline btn-sm" id="btn-modal-dl-word-sample" style="font-size:0.72rem; padding:3px 8px;">
+                                    <i data-lucide="download" style="width:12px; height:12px;"></i> Baixar Modelo Word Formatado Padrão
+                                </button>
+                            </div>
+                        </div>
+                        <div class="modal-footer flex-end" style="margin-top:16px; border-top:1px solid var(--border-color); padding-top:12px; gap:8px;">
+                            <button class="btn btn-outline" id="btn-cancel-import-q">Cancelar</button>
+                            <button class="btn btn-primary" id="btn-confirm-import-q"><i data-lucide="upload"></i> Processar e Importar Itens</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Criar Questão Manualmente -->
+                <div id="modal-create-manual-question" class="modal-overlay hidden">
+                    <div class="modal-content" style="max-width: 680px; width: 92%; max-height:90vh; overflow-y:auto;">
+                        <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <h3>Cadastrar Nova Questão Manualmente</h3>
+                                <p class="text-sm text-muted">Insira o enunciado, alternativas e gabarito com análise de distratores.</p>
+                            </div>
+                            <button class="btn btn-icon" id="btn-close-manual-q-modal" style="cursor:pointer;"><i data-lucide="x"></i></button>
+                        </div>
+                        <div class="modal-body" style="padding-top: 16px;">
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:10px;">
+                                <div class="form-group">
+                                    <label for="manual-q-stage" style="font-size:0.75rem; font-weight:600; display:block; margin-bottom:3px;">Etapa de Ensino *</label>
+                                    <select id="manual-q-stage" class="form-select" style="font-size:0.8rem;">
+                                        <option value="2º Ano">2º Ano</option>
+                                        <option value="5º Ano" selected>5º Ano</option>
+                                        <option value="9º Ano">9º Ano</option>
+                                        <option value="Ensino Médio">Ensino Médio</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="manual-q-subject" style="font-size:0.75rem; font-weight:600; display:block; margin-bottom:3px;">Disciplina *</label>
+                                    <select id="manual-q-subject" class="form-select" style="font-size:0.8rem;">
+                                        <option value="Língua Portuguesa">Língua Portuguesa</option>
+                                        <option value="Matemática">Matemática</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:10px;">
+                                <div class="form-group">
+                                    <label for="manual-q-matrix" style="font-size:0.75rem; font-weight:600; display:block; margin-bottom:3px;">Matriz de Referência</label>
+                                    <select id="manual-q-matrix" class="form-select" style="font-size:0.8rem;">
+                                        <option value="SAEB">SAEB / Prova Brasil</option>
                                         <option value="SEAMA">SEAMA (Maranhão)</option>
                                         <option value="BNCC">Matriz BNCC</option>
                                     </select>
                                 </div>
-
-                                <div class="form-group margin-top-md">
-                                    <label for="filter-subject">Componente Curricular</label>
-                                    <select id="filter-subject" class="form-select">
-                                        <option value="all">Todas as Disciplinas</option>
-                                        <option value="Língua Portuguesa">Língua Portuguesa</option>
-                                        <option value="Matemática">Matemática</option>
-                                        <option value="Ciências">Ciências</option>
-                                        <option value="Geografia">Geografia</option>
+                                <div class="form-group">
+                                    <label for="manual-q-diff" style="font-size:0.75rem; font-weight:600; display:block; margin-bottom:3px;">Dificuldade *</label>
+                                    <select id="manual-q-diff" class="form-select" style="font-size:0.8rem;">
+                                        <option value="Fácil">Fácil (Básico)</option>
+                                        <option value="Médio" selected>Médio (Adequado)</option>
+                                        <option value="Difícil">Difícil (Avançado)</option>
                                     </select>
                                 </div>
-
-                                <div class="form-group margin-top-md">
-                                    <label for="filter-bloom">Nível Cognitivo (Bloom)</label>
-                                    <select id="filter-bloom" class="form-select">
-                                        <option value="all">Todos os Níveis</option>
-                                        <option value="Lembrar">Lembrar</option>
-                                        <option value="Entender">Entender</option>
-                                        <option value="Aplicar">Aplicar</option>
-                                        <option value="Analisar">Analisar</option>
+                            </div>
+                            <div class="form-group" style="margin-bottom:10px;">
+                                <label for="manual-q-desc" style="font-size:0.75rem; font-weight:600; display:block; margin-bottom:3px;">Código / Nome do Descritor *</label>
+                                <input type="text" id="manual-q-desc" class="form-input-text" placeholder="Ex: D03 - Inferir o sentido de palavra ou expressão" style="font-size:0.8rem;">
+                            </div>
+                            <div class="form-group" style="margin-bottom:10px;">
+                                <label for="manual-q-text" style="font-size:0.75rem; font-weight:600; display:block; margin-bottom:3px;">Enunciado & Texto de Suporte *</label>
+                                <textarea id="manual-q-text" class="form-input-text" style="height:80px; font-size:0.8rem; padding:8px;" placeholder="Digite o texto base e o comando da questão..."></textarea>
+                            </div>
+                            <div class="form-group" style="margin-bottom:10px;">
+                                <label style="font-size:0.75rem; font-weight:600; display:block; margin-bottom:4px;">Alternativas de Resposta *</label>
+                                <input type="text" id="manual-q-op-a" class="form-input-text" style="font-size:0.8rem; margin-bottom:4px;" placeholder="A) Alternativa A">
+                                <input type="text" id="manual-q-op-b" class="form-input-text" style="font-size:0.8rem; margin-bottom:4px;" placeholder="B) Alternativa B">
+                                <input type="text" id="manual-q-op-c" class="form-input-text" style="font-size:0.8rem; margin-bottom:4px;" placeholder="C) Alternativa C">
+                                <input type="text" id="manual-q-op-d" class="form-input-text" style="font-size:0.8rem; margin-bottom:4px;" placeholder="D) Alternativa D">
+                            </div>
+                            <div style="display:grid; grid-template-columns: 140px 1fr; gap:12px;">
+                                <div class="form-group">
+                                    <label for="manual-q-correct" style="font-size:0.75rem; font-weight:600; display:block; margin-bottom:3px;">Gabarito Correto *</label>
+                                    <select id="manual-q-correct" class="form-select" style="font-size:0.8rem;">
+                                        <option value="A">Alternativa A</option>
+                                        <option value="B">Alternativa B</option>
+                                        <option value="C">Alternativa C</option>
+                                        <option value="D">Alternativa D</option>
                                     </select>
                                 </div>
-
-                                <div class="form-group margin-top-md">
-                                    <label for="filter-difficulty">Dificuldade</label>
-                                    <select id="filter-difficulty" class="form-select">
-                                        <option value="all">Todas</option>
-                                        <option value="Fácil">Fácil</option>
-                                        <option value="Médio">Médio</option>
-                                        <option value="Difícil">Difícil</option>
-                                    </select>
+                                <div class="form-group">
+                                    <label for="manual-q-expl" style="font-size:0.75rem; font-weight:600; display:block; margin-bottom:3px;">Justificativa Pedagógica</label>
+                                    <input type="text" id="manual-q-expl" class="form-input-text" placeholder="Explicação pedagógica e análise do gabarito..." style="font-size:0.8rem;">
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Card Adicionar Nova Questão -->
-                        <div class="card margin-top-md" style="margin-top: 16px; background-color: var(--bg-secondary);">
-                            <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
-                                <h3>Adicionar Nova Questão</h3>
-                            </div>
-                            <div class="card-body" style="padding-top: 12px;">
-                                <!-- Add Method Selector buttons -->
-                                <div style="display:flex; gap:6px; margin-bottom:12px; border-bottom:1px solid var(--border-color); padding-bottom:10px;">
-                                    <span id="btn-add-q-ia" style="font-size:0.75rem; font-weight:600; cursor:pointer; color:var(--purple-light); border-bottom:2px solid var(--purple); padding-bottom:4px; flex:1; text-align:center;">Conforme Dados</span>
-                                    <span id="btn-add-q-pdf" style="font-size:0.75rem; font-weight:500; cursor:pointer; color:var(--text-secondary); padding-bottom:4px; flex:1; text-align:center;">Via PDF</span>
-                                    <span id="btn-add-q-manual" style="font-size:0.75rem; font-weight:500; cursor:pointer; color:var(--text-secondary); padding-bottom:4px; flex:1; text-align:center;">Manual</span>
-                                </div>
-
-                                <!-- Generator Panel -->
-                                <div id="panel-add-q-ia">
-                                    <div class="form-group">
-                                        <label for="add-q-ia-desc" style="font-size:0.75rem; color:var(--text-secondary); display:block; margin-bottom:4px;">Descritor / Habilidade</label>
-                                        <select id="add-q-ia-desc" class="form-select" style="font-size:0.75rem; max-width:100%;">
-                                            <!-- Preenchido via JS -->
-                                        </select>
-                                    </div>
-                                    <div class="form-group margin-top-sm" style="margin-top:8px;">
-                                        <label for="add-q-ia-diff" style="font-size:0.75rem; color:var(--text-secondary); display:block; margin-bottom:4px;">Dificuldade</label>
-                                        <select id="add-q-ia-diff" class="form-select" style="font-size:0.75rem;">
-                                            <option value="Fácil">Fácil</option>
-                                            <option value="Médio">Médio</option>
-                                            <option value="Difícil">Difícil</option>
-                                        </select>
-                                    </div>
-                                    <button class="btn btn-primary" id="btn-generate-q-ia" style="width:100%; margin-top:14px; height:38px; display:flex; align-items:center; justify-content:center; gap:4px; font-size:0.8rem; cursor:pointer;"><i data-lucide="sparkles" style="width:14px; height:14px;"></i> Gerar conforme dados atuais</button>
-                                </div>
-
-                                <!-- PDF Import Panel -->
-                                <div id="panel-add-q-pdf" class="hidden">
-                                    <div style="border: 2px dashed var(--border-color); border-radius:var(--radius-md); padding:16px; text-align:center; background:var(--bg-tertiary); cursor:pointer; margin-top:8px;" id="pdf-dropzone">
-                                        <i data-lucide="file-text" style="width:24px; height:24px; margin-bottom:8px; opacity:0.5; color:var(--purple-light); display:inline-block;"></i>
-                                        <p style="font-size:0.7rem; color:var(--text-secondary); margin:0;">Clique ou solte o arquivo PDF aqui</p>
-                                        <input type="file" id="pdf-file-input" accept=".pdf" style="display:none;">
-                                    </div>
-                                    <div id="pdf-file-info" style="font-size:0.7rem; color:var(--green-light); margin-top:8px; display:none; text-align:center;"></div>
-                                    <button class="btn btn-primary" id="btn-import-q-pdf" style="width:100%; margin-top:14px; height:38px; display:flex; align-items:center; justify-content:center; gap:4px; font-size:0.8rem; cursor:pointer;"><i data-lucide="upload" style="width:14px; height:14px;"></i> Processar PDF</button>
-                                </div>
-
-                                <!-- Manual Input Panel -->
-                                <div id="panel-add-q-manual" class="hidden" style="max-height: 380px; overflow-y: auto; padding-right:4px;">
-                                    <div class="form-group" style="margin-top:8px;">
-                                        <label for="add-q-manual-desc" style="font-size:0.75rem; color:var(--text-secondary); display:block; margin-bottom:4px;">Descritor / Habilidade</label>
-                                        <select id="add-q-manual-desc" class="form-select" style="font-size:0.75rem; max-width:100%;">
-                                            <!-- Preenchido via JS -->
-                                        </select>
-                                    </div>
-                                    <div class="form-group margin-top-sm" style="margin-top:8px;">
-                                        <label for="add-q-manual-diff" style="font-size:0.75rem; color:var(--text-secondary); display:block; margin-bottom:4px;">Dificuldade</label>
-                                        <select id="add-q-manual-diff" class="form-select" style="font-size:0.75rem;">
-                                            <option value="Fácil">Fácil</option>
-                                            <option value="Médio">Médio</option>
-                                            <option value="Difícil">Difícil</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group margin-top-sm" style="margin-top:8px;">
-                                        <label for="add-q-manual-text" style="font-size:0.75rem; color:var(--text-secondary); display:block; margin-bottom:4px;">Enunciado da Questão *</label>
-                                        <textarea id="add-q-manual-text" class="form-input-text" style="height:60px; font-size:0.75rem; padding:8px;" placeholder="Digite o enunciado..."></textarea>
-                                    </div>
-                                    <div class="form-group margin-top-sm" style="margin-top:8px;">
-                                        <label style="font-size:0.75rem; color:var(--text-secondary); display:block; margin-bottom:4px;">Opções de Resposta *</label>
-                                        <input type="text" id="add-q-manual-op-a" class="form-input-text" style="font-size:0.75rem; margin-bottom:4px; padding:6px;" placeholder="Alternativa A">
-                                        <input type="text" id="add-q-manual-op-b" class="form-input-text" style="font-size:0.75rem; margin-bottom:4px; padding:6px;" placeholder="Alternativa B">
-                                        <input type="text" id="add-q-manual-op-c" class="form-input-text" style="font-size:0.75rem; margin-bottom:4px; padding:6px;" placeholder="Alternativa C">
-                                        <input type="text" id="add-q-manual-op-d" class="form-input-text" style="font-size:0.75rem; margin-bottom:4px; padding:6px;" placeholder="Alternativa D">
-                                    </div>
-                                    <div class="form-group margin-top-sm" style="margin-top:8px;">
-                                        <label for="add-q-manual-correct" style="font-size:0.75rem; color:var(--text-secondary); display:block; margin-bottom:4px;">Alternativa Correta *</label>
-                                        <select id="add-q-manual-correct" class="form-select" style="font-size:0.75rem;">
-                                            <option value="A">Alternativa A</option>
-                                            <option value="B">Alternativa B</option>
-                                            <option value="C">Alternativa C</option>
-                                            <option value="D">Alternativa D</option>
-                                        </select>
-                                    </div>
-                                    <button class="btn btn-primary" id="btn-save-q-manual" style="width:100%; margin-top:14px; height:38px; display:flex; align-items:center; justify-content:center; gap:4px; font-size:0.8rem; cursor:pointer;"><i data-lucide="save" style="width:14px; height:14px;"></i> Salvar Questão</button>
-                                </div>
-                            </div>
+                        <div class="modal-footer flex-end" style="margin-top:16px; border-top:1px solid var(--border-color); padding-top:12px; gap:8px;">
+                            <button class="btn btn-outline" id="btn-cancel-manual-q">Cancelar</button>
+                            <button class="btn btn-primary" id="btn-save-manual-q"><i data-lucide="check"></i> Salvar no Banco</button>
                         </div>
                     </div>
+                </div>
 
-                    <div class="questions-list-container">
-                        <div class="flex-between margin-bottom-md">
-                                <span class="text-muted" id="questions-counter">Exibindo 3 questões</span>
-                                <div class="btn-group">
-                                    <button class="btn btn-outline" id="btn-export-pdf-student"><i data-lucide="printer"></i> Exportar Prova (PDF)</button>
-                                    <button class="btn btn-outline" id="btn-export-pdf-teacher"><i data-lucide="check-square"></i> Exportar Gabarito Comentado</button>
-                                </div>
-                            </div>
-
-                            <div class="questions-grid-list" id="questions-container-list">
-                                <!-- Preenchido dinamicamente pelo JS -->
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- ==================== BIBLIOTECA PEDAGÓGICA & IMPRESSÃO TAB ==================== -->
-                <section id="biblioteca-recursos" class="tab-content">
-                    <!-- Top Action / Stats Header -->
-                    <div class="card margin-bottom-lg" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(59, 130, 246, 0.05) 100%); border-left: 4px solid var(--purple);">
-                        <div class="flex-between" style="flex-wrap: wrap; gap: 16px;">
+                <!-- Modal Configuração de Chave de IA para Admin / SEMED -->
+                <div id="modal-config-ai-key" class="modal-overlay hidden">
+                    <div class="modal-content" style="max-width: 520px; width: 90%;">
+                        <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; display:flex; justify-content:space-between; align-items:center;">
                             <div>
-                                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
-                                    <i data-lucide="book-open" style="color: var(--purple-light);"></i>
-                                    Biblioteca Pedagógica & Cadernos de Prova (A4)
-                                </h3>
-                                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px;">
-                                    Acervo oficial da SEMED Gonçalves Dias - MA. Acesse simulados prontos, matrizes curriculares SEAMA/SAEB e gere cadernos de prova formatados para impressão direta.
-                                </p>
+                                <h3>Integração de IA (Admin / SEMED)</h3>
+                                <p class="text-sm text-muted">Configure a inteligência artificial para geração de questões e relatórios.</p>
                             </div>
+                            <button class="btn btn-icon" id="btn-close-config-ai-modal" style="cursor:pointer;"><i data-lucide="x"></i></button>
+                        </div>
+                        <div class="modal-body" style="padding-top: 16px; display:flex; flex-direction:column; gap:12px;">
+                            <div class="form-group">
+                                <label for="config-ai-provider" style="font-size:0.78rem; font-weight:600; display:block; margin-bottom:4px;">Provedor de IA</label>
+                                <select id="config-ai-provider" class="form-select">
+                                    <option value="native">Motor Pedagógico Nativo (Integrado / Autônomo)</option>
+                                    <option value="gemini">Google Gemini AI</option>
+                                    <option value="openai">OpenAI (GPT-4o)</option>
+                                    <option value="claude">Anthropic Claude</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="config-ai-key-group">
+                                <label for="config-ai-api-key" style="font-size:0.78rem; font-weight:600; display:block; margin-bottom:4px;">Chave de API (Opcional)</label>
+                                <input type="password" id="config-ai-api-key" class="form-input-text" placeholder="Insira sua chave (ex: sk-... ou AIza...)">
+                                <small class="text-muted" style="display:block; margin-top:4px; font-size:0.72rem;">O motor nativo do sistema já funciona 100% de forma autônoma sem necessidade de chave externa.</small>
+                            </div>
+                            <div style="background:rgba(16, 185, 129, 0.08); border:1px solid rgba(16, 185, 129, 0.2); border-radius:var(--radius-sm); padding:10px 12px;">
+                                <span style="font-size:0.76rem; color:var(--green-light); font-weight:600; display:flex; align-items:center; gap:6px;">
+                                    <i data-lucide="check-circle" style="width:14px; height:14px;"></i>
+                                    Status: IA Pedagógica Ativa e Integrada ao Sistema
+                                </span>
+                            </div>
+                        </div>
+                        <div class="modal-footer flex-end" style="margin-top:16px; border-top:1px solid var(--border-color); padding-top:12px; gap:8px;">
+                            <button class="btn btn-outline" id="btn-cancel-config-ai">Fechar</button>
+                            <button class="btn btn-primary" id="btn-save-config-ai">Salvar Configuração</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== BIBLIOTECA PEDAGÓGICA (ESTILO MEC LIVROS - meclivros.mec.gov.br) ==================== -->
+                <section id="biblioteca-recursos" class="tab-content">
+                    <!-- Hero Header estilo Vitrine MEC Livros -->
+                    <div class="mec-library-hero" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%); border-radius: var(--radius-lg); padding: 28px 32px; color: #fff; margin-bottom: 24px; position: relative; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(49, 46, 129, 0.3);">
+                        <div style="position: relative; z-index: 2; max-width: 720px;">
+                            <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); padding: 4px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.2);">
+                                <i data-lucide="book-open" style="width: 13px; height: 13px;"></i>
+                                Acervo Digital Oficial • SEMED Gonçalves Dias - MA
+                            </div>
+                            <h2 style="font-size: 1.85rem; font-weight: 800; margin: 0 0 8px 0; color: #ffffff; letter-spacing: -0.5px;">
+                                Biblioteca Pedagógica de Provas & Livros Didáticos
+                            </h2>
+                            <p style="font-size: 0.9rem; color: rgba(255, 255, 255, 0.85); margin: 0 0 18px 0; line-height: 1.5;">
+                                Acesso livre aos cadernos de simulados impressos padrão SAEB/SEAMA, matrizes curriculares comentadas, guias do professor e sequências didáticas para sala de aula.
+                            </p>
                             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                <button class="btn btn-primary" id="btn-open-exam-generator" style="display: flex; align-items: center; gap: 8px;">
-                                    <i data-lucide="printer"></i>
-                                    <span>Gerar Prova A4 para Impressão</span>
+                                <button class="btn btn-primary" id="btn-bib-print-direct" style="background: #ffffff; color: #312e81; font-weight: 700; border: none; padding: 10px 18px; display: flex; align-items: center; gap: 8px;">
+                                    <i data-lucide="printer" style="width:16px; height:16px;"></i>
+                                    <span>Gerar Caderno A4 Completo</span>
                                 </button>
-                                <button class="btn btn-outline" id="btn-upload-pedagogic-file" style="display: flex; align-items: center; gap: 8px;">
-                                    <i data-lucide="upload-cloud"></i>
-                                    <span>Adicionar Material / PDF</span>
+                                <button class="btn btn-outline" id="btn-bib-upload-new" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: #ffffff; font-weight: 600; padding: 10px 18px; display: flex; align-items: center; gap: 8px;">
+                                    <i data-lucide="upload-cloud" style="width:16px; height:16px;"></i>
+                                    <span>Adicionar Livro / Material</span>
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Filter Toolbar -->
-                    <div class="card margin-bottom-lg">
-                        <div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center;">
-                            <div style="flex: 1; min-width: 200px;">
-                                <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; display: block;">Componente Curricular</label>
-                                <select id="filter-bib-componente" class="form-select" style="height: 40px; font-size: 0.85rem;">
-                                    <option value="all">Todos os Componentes</option>
-                                    <option value="Língua Portuguesa">Língua Portuguesa</option>
-                                    <option value="Matemática">Matemática</option>
-                                    <option value="Multidisciplinar">Multidisciplinar / Geral</option>
-                                </select>
-                            </div>
-                            <div style="flex: 1; min-width: 200px;">
-                                <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; display: block;">Etapa / Ano</label>
-                                <select id="filter-bib-etapa" class="form-select" style="height: 40px; font-size: 0.85rem;">
+                    <!-- Category Pills & Filter Bar (Estilo MEC Livros) -->
+                    <div class="card margin-bottom-lg" style="padding: 16px 20px;">
+                        <!-- Category Pills -->
+                        <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 14px; border-bottom: 1px solid var(--border-color);">
+                            <button class="bib-category-pill active" data-cat="all" style="padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; background: var(--purple-light); color: #ffffff; border: none; cursor: pointer; white-space: nowrap;">
+                                📚 Todos os Materiais (<span id="count-bib-all">12</span>)
+                            </button>
+                            <button class="bib-category-pill" data-cat="Simulados" style="padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 500; background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
+                                📝 Simulados Oficiais SAEB (A4)
+                            </button>
+                            <button class="bib-category-pill" data-cat="Reforco" style="padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 500; background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
+                                📖 Cadernos de Reforço & Fluência
+                            </button>
+                            <button class="bib-category-pill" data-cat="Matrizes" style="padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 500; background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
+                                🎯 Matrizes & Descritores BNCC
+                            </button>
+                            <button class="bib-category-pill" data-cat="Guias" style="padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 500; background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
+                                🎓 Guias Pedagógicos do Professor
+                            </button>
+                        </div>
+
+                        <!-- Secondary Filters -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) 1.5fr; gap: 12px; align-items: center;">
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 2px;">Etapa / Ano Escolar</label>
+                                <select id="filter-bib-etapa" class="form-select" style="height: 38px; font-size: 0.82rem;">
                                     <option value="all">Todas as Etapas</option>
-                                    <option value="2º Ano">2º Ano (Alfabetização & Fluência)</option>
-                                    <option value="5º Ano">5º Ano (Anos Iniciais SAEB)</option>
-                                    <option value="9º Ano">9º Ano (Anos Finais SAEB)</option>
+                                    <option value="2º Ano">2º Ano (Alfabetização / SEAMA)</option>
+                                    <option value="5º Ano">5º Ano (Anos Iniciais / SAEB)</option>
+                                    <option value="9º Ano">9º Ano (Anos Finais / SAEB)</option>
+                                    <option value="Docente">Formação Docente & Gestão</option>
                                 </select>
                             </div>
-                            <div style="flex: 1; min-width: 200px;">
-                                <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; display: block;">Tipo de Material</label>
-                                <select id="filter-bib-tipo" class="form-select" style="height: 40px; font-size: 0.85rem;">
-                                    <option value="all">Todos os Tipos</option>
-                                    <option value="Simulado">Cadernos de Simulado / Prova</option>
-                                    <option value="Matriz">Matrizes & Descritores SEAMA</option>
-                                    <option value="Intervencao">Planos de Intervenção Pedagógica</option>
-                                    <option value="Gabarito">Gabaritos & Resoluções</option>
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 2px;">Disciplina</label>
+                                <select id="filter-bib-componente" class="form-select" style="height: 38px; font-size: 0.82rem;">
+                                    <option value="all">Todas as Disciplinas</option>
+                                    <option value="Língua Portuguesa">Língua Portuguesa (Leitura)</option>
+                                    <option value="Matemática">Matemática (Resolução de Problemas)</option>
+                                    <option value="Integrado">Multidisciplinar / Geral</option>
                                 </select>
                             </div>
-                            <div style="flex: 1.5; min-width: 240px;">
-                                <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; display: block;">Pesquisar no Acervo</label>
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 2px;">Pesquisar no Acervo</label>
                                 <div style="position: relative;">
-                                    <input type="text" id="search-bib-input" class="form-input-text" placeholder="Buscar por título, descritor..." style="height: 40px; font-size: 0.85rem; padding-left: 36px;">
-                                    <i data-lucide="search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted);"></i>
+                                    <input type="text" id="search-bib-input" class="form-input-text" placeholder="Buscar por título, descritor, autor..." style="height: 38px; font-size: 0.82rem; padding-left: 36px;">
+                                    <i data-lucide="search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--text-muted);"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Pedagogical Library Grid List -->
-                    <div id="bib-materials-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
-                        <!-- Injetado dinamicamente via JS -->
+                    <!-- Vitrine de Livros / Cadernos (Grid Estilo MEC Livros) -->
+                    <div id="bib-materials-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+                        <!-- Preenchido dinamicamente via JS com cards estilo MEC Livros -->
                     </div>
                 </section>
+
+                <!-- Modal Leitor Digital de Livro / Caderno da Biblioteca -->
+                <div id="modal-read-book-online" class="modal-overlay hidden">
+                    <div class="modal-content" style="max-width: 860px; width: 92%; max-height: 92vh; overflow-y: auto; padding: 24px;">
+                        <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px; display:flex; justify-content:space-between; align-items:center;">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <div style="width:40px; height:40px; border-radius:8px; background:var(--purple); color:#fff; display:flex; align-items:center; justify-content:center;">
+                                    <i data-lucide="book-open"></i>
+                                </div>
+                                <div>
+                                    <h3 id="modal-read-book-title" style="margin:0; font-size:1.1rem;">Visualizador de Material Pedagógico</h3>
+                                    <p class="text-sm text-muted" id="modal-read-book-meta" style="margin:2px 0 0 0;">SEMED Gonçalves Dias - MA • Edição 2026</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-icon" id="btn-close-read-book-modal" style="cursor:pointer;"><i data-lucide="x"></i></button>
+                        </div>
+                        <div class="modal-body" id="modal-read-book-content-body" style="padding-top: 18px;">
+                            <!-- Preenchido dinamicamente com as páginas diagramadas do caderno -->
+                        </div>
+                        <div class="modal-footer flex-between" style="margin-top: 18px; border-top: 1px solid var(--border-color); padding-top: 14px;">
+                            <span class="text-sm text-muted">Formato Oficial para Impressão Escolar</span>
+                            <div style="display:flex; gap:8px;">
+                                <button class="btn btn-outline" id="btn-print-active-book"><i data-lucide="printer"></i> Imprimir Caderno</button>
+                                <button class="btn btn-primary" id="btn-download-active-book-pdf"><i data-lucide="download"></i> Baixar PDF</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- ==================== ÁREA ADMINISTRATIVA & GESTÃO DE USUÁRIOS ==================== -->
                 <section id="admin-panel" class="tab-content">
@@ -3802,6 +4040,6 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=6042acd2"></script>
+    <script src="app.js?v=01c917c1"></script>
 </body>
 </html>
