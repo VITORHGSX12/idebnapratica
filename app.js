@@ -12205,3 +12205,74 @@ if (document.readyState === 'loading') {
         if (typeof renderRiskGoalsTable === 'function') renderRiskGoalsTable();
         if (typeof renderDbSchools === 'function') renderDbSchools();
     });
+
+
+    function renderDashboardIdebChart(schoolName) {
+        const container = document.getElementById('dashboard-ideb-chart-container');
+        if (!container) return;
+
+        container.innerHTML = `
+            <svg viewBox="0 0 520 220" width="100%" height="200" style="overflow: visible; font-family: system-ui, -apple-system, sans-serif;">
+                <!-- Background Grid Lines -->
+                <line x1="45" y1="35" x2="495" y2="35" stroke="var(--border-color)" stroke-dasharray="3,3" stroke-width="1" opacity="0.6"/>
+                <text x="35" y="38" fill="var(--text-secondary)" font-size="10" font-weight="600" text-anchor="end">6.0</text>
+
+                <line x1="45" y1="75" x2="495" y2="75" stroke="var(--border-color)" stroke-dasharray="3,3" stroke-width="1" opacity="0.6"/>
+                <text x="35" y="78" fill="var(--text-secondary)" font-size="10" font-weight="600" text-anchor="end">5.0</text>
+
+                <line x1="45" y1="115" x2="495" y2="115" stroke="var(--border-color)" stroke-dasharray="3,3" stroke-width="1" opacity="0.6"/>
+                <text x="35" y="118" fill="var(--text-secondary)" font-size="10" font-weight="600" text-anchor="end">4.0</text>
+
+                <line x1="45" y1="155" x2="495" y2="155" stroke="var(--border-color)" stroke-dasharray="3,3" stroke-width="1" opacity="0.6"/>
+                <text x="35" y="158" fill="var(--text-secondary)" font-size="10" font-weight="600" text-anchor="end">3.0</text>
+
+                <!-- Target Projected Line (Green Dashed) -->
+                <path d="M 85 95 L 205 83 L 325 75 L 445 67" fill="none" stroke="#10b981" stroke-width="2.5" stroke-dasharray="5,5"/>
+                
+                <circle cx="85" cy="95" r="4" fill="#10b981" stroke="#ffffff" stroke-width="1.5"><title>Meta 2019: 4.5</title></circle>
+                <circle cx="205" cy="83" r="4" fill="#10b981" stroke="#ffffff" stroke-width="1.5"><title>Meta 2021: 4.8</title></circle>
+                <circle cx="325" cy="75" r="4" fill="#10b981" stroke="#ffffff" stroke-width="1.5"><title>Meta 2023: 5.0</title></circle>
+                <circle cx="445" cy="67" r="4" fill="#10b981" stroke="#ffffff" stroke-width="1.5"><title>Meta 2025: 5.2</title></circle>
+
+                <!-- Observed Line (Purple Solid) -->
+                <path d="M 85 107 L 205 95 L 325 83 L 445 67" fill="none" stroke="#6366f1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                
+                <!-- Observed Points & Score Labels -->
+                <circle cx="85" cy="107" r="6" fill="#6366f1" stroke="#ffffff" stroke-width="2"><title>IDEB 2019: 4.2</title></circle>
+                <rect x="68" y="118" width="34" height="18" rx="4" fill="#6366f1"/>
+                <text x="85" y="131" text-anchor="middle" font-size="10" font-weight="800" fill="#ffffff">4.2</text>
+
+                <circle cx="205" cy="95" r="6" fill="#6366f1" stroke="#ffffff" stroke-width="2"><title>IDEB 2021: 4.5</title></circle>
+                <rect x="188" y="106" width="34" height="18" rx="4" fill="#6366f1"/>
+                <text x="205" y="119" text-anchor="middle" font-size="10" font-weight="800" fill="#ffffff">4.5</text>
+
+                <circle cx="325" cy="83" r="6" fill="#6366f1" stroke="#ffffff" stroke-width="2"><title>IDEB 2023: 4.8</title></circle>
+                <rect x="308" y="94" width="34" height="18" rx="4" fill="#6366f1"/>
+                <text x="325" y="107" text-anchor="middle" font-size="10" font-weight="800" fill="#ffffff">4.8</text>
+
+                <circle cx="445" cy="67" r="7" fill="#10b981" stroke="#ffffff" stroke-width="2.5"><title>IDEB 2025: 5.2 (Meta Atingida!)</title></circle>
+                <rect x="424" y="38" width="42" height="20" rx="4" fill="#10b981"/>
+                <text x="445" y="52" text-anchor="middle" font-size="11" font-weight="800" fill="#ffffff">5.2 ⭐</text>
+
+                <!-- X Axis Years Labels -->
+                <text x="85" y="185" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text-primary)">2019</text>
+                <text x="205" y="185" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text-primary)">2021</text>
+                <text x="325" y="185" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text-primary)">2023</text>
+                <text x="445" y="185" text-anchor="middle" font-size="12" font-weight="800" fill="var(--green-light)">2025</text>
+            </svg>
+            
+            <!-- Legend & Status -->
+            <div style="display: flex; justify-content: center; align-items: center; gap: 24px; margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--border-color); font-size: 0.78rem;">
+                <span style="display: flex; align-items: center; gap: 6px; color: #6366f1; font-weight: 700;">
+                    <span style="width: 14px; height: 4px; background: #6366f1; border-radius: 2px;"></span> IDEB Observado
+                </span>
+                <span style="display: flex; align-items: center; gap: 6px; color: #10b981; font-weight: 700;">
+                    <span style="width: 14px; height: 2px; border-top: 2px dashed #10b981;"></span> Meta Projetada (INEP)
+                </span>
+                <span style="display: flex; align-items: center; gap: 4px; color: var(--green-light); font-weight: 700;">
+                    ✅ Meta 2025 Atingida (5.2)
+                </span>
+            </div>
+        `;
+    }
+    window.renderDashboardIdebChart = renderDashboardIdebChart;
