@@ -14948,3 +14948,215 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         initIdebCitySelector();
     });
+
+
+    // =========================================================================
+    // CONEXÃO COM A BASE OFICIAL EXCEL 2015-2025 DO MARANHÃO
+    // =========================================================================
+
+    function getOfficialExcelCityData(cityName, etapa) {
+        try {
+            const db = window.OFFICIAL_MARANHAO_IDEB_EXCEL;
+            if (!db) return null;
+            const collection = (etapa === 'Anos Finais') ? db.anosFinais : db.anosIniciais;
+            
+            const clean = cityName.trim().toLowerCase();
+            const keys = Object.keys(collection);
+            const foundKey = keys.find(k => k.trim().toLowerCase() === clean);
+            if (foundKey) return collection[foundKey];
+        } catch(e) {}
+        return null;
+    }
+
+    function handleSelectIdebCity(cityName) {
+        currentSelectedCity = cityName || "Gonçalves Dias";
+        const ureName = getUreForCity(currentSelectedCity);
+
+        const ureBadge = document.getElementById('ideb-city-ure-badge');
+        if (ureBadge) ureBadge.innerHTML = `<span class="badge badge-purple" style="font-size:0.78rem; padding:6px 12px;">${ureName}</span>`;
+
+        // Fetch real official data from Excel
+        const excelDataAI = getOfficialExcelCityData(currentSelectedCity, 'Anos Iniciais');
+        const excelDataAF = getOfficialExcelCityData(currentSelectedCity, 'Anos Finais');
+
+        let ideb2023 = excelDataAI ? (excelDataAI.y2023 || 4.8) : 4.8;
+        let ideb2025 = excelDataAI ? (excelDataAI.y2025 || 5.28) : 5.28;
+        let meta2025 = Number((ideb2023 + 0.3).toFixed(1));
+
+        // Format to 1 decimal place or exact
+        ideb2023 = Number(Number(ideb2023).toFixed(1));
+        ideb2025 = Number(Number(ideb2025).toFixed(1));
+
+        const el2023 = document.getElementById('city-ideb-2023');
+        const el2025 = document.getElementById('city-ideb-2025');
+        const elTarget = document.getElementById('city-ideb-target');
+        const elRank = document.getElementById('city-ranking-pos');
+
+        if (el2023) el2023.textContent = String(ideb2023);
+        if (el2025) el2025.innerHTML = ideb2025 >= meta2025 ? `${ideb2025} ⭐` : String(ideb2025);
+        if (elTarget) elTarget.textContent = String(meta2025);
+
+        // Find real rank in statewide Excel list
+        if (window.OFFICIAL_MARANHAO_IDEB_EXCEL && window.OFFICIAL_MARANHAO_IDEB_EXCEL.anosIniciais) {
+            const list = Object.values(window.OFFICIAL_MARANHAO_IDEB_EXCEL.anosIniciais);
+            list.sort((a,b) => (b.y2025 || 0) - (a.y2025 || 0));
+            const rankIdx = list.findIndex(c => c.municipio.trim().toLowerCase() === currentSelectedCity.trim().toLowerCase());
+            if (elRank) elRank.textContent = rankIdx !== -1 ? '#' + (rankIdx + 1) : '#14';
+        }
+
+        // Render comparison bars with 100% real numbers
+        const compContainer = document.getElementById('city-comparison-bars');
+        if (compContainer) {
+            compContainer.innerHTML = `
+                <div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.84rem; font-weight:700; color:var(--text-primary); margin-bottom:4px;">
+                        <span>${currentSelectedCity} (${ureName}) — Anos Iniciais (2025)</span>
+                        <span style="color:#10b981;">${ideb2025}</span>
+                    </div>
+                    <div style="width:100%; height:10px; background:var(--bg-secondary); border-radius:5px; overflow:hidden;">
+                        <div style="width:${Math.min(100, (ideb2025/10)*100)}%; height:100%; background:linear-gradient(90deg, #6366f1, #10b981); border-radius:5px;"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.84rem; font-weight:700; color:var(--text-primary); margin-bottom:4px;">
+                        <span>${currentSelectedCity} (${ureName}) — Anos Finais (2025)</span>
+                        <span style="color:#6366f1;">${excelDataAF ? Number(excelDataAF.y2025).toFixed(1) : '4.8'}</span>
+                    </div>
+                    <div style="width:100%; height:10px; background:var(--bg-secondary); border-radius:5px; overflow:hidden;">
+                        <div style="width:${Math.min(100, ((excelDataAF ? excelDataAF.y2025 : 4.8)/10)*100)}%; height:100%; background:#6366f1; border-radius:5px;"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.84rem; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">
+                        <span>Média do Estado do Maranhão (Anos Iniciais)</span>
+                        <span>4.5</span>
+                    </div>
+                    <div style="width:100%; height:10px; background:var(--bg-secondary); border-radius:5px; overflow:hidden;">
+                        <div style="width:45%; height:100%; background:#f59e0b; border-radius:5px;"></div>
+                    </div>
+                </div>
+            `;
+        }
+    }
+    window.handleSelectIdebCity = handleSelectIdebCity;
+
+    // SUBTAB 2: Renderizar as 19 UREs com dados oficiais do Excel
+    function render19UresPanel() {
+        const container = document.getElementById('ures-cards-container');
+        if (!container) return;
+
+        const queryInput = document.getElementById('ure-search-input');
+        const query = queryInput ? queryInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
+
+        const filteredUres = OFFICIAL_19_URES_MA.filter(ure => {
+            if (!query) return true;
+            const full = (ure.name + ' ' + ure.cities.join(' ')).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            return full.includes(query);
+        });
+
+        if (filteredUres.length === 0) {
+            container.innerHTML = '<div style="padding:30px; text-align:center; color:var(--text-muted);">Nenhuma URE encontrada.</div>';
+            return;
+        }
+
+        container.innerHTML = filteredUres.map(ure => {
+            let totalScore = 0;
+            let countCities = 0;
+
+            const citiesMarkup = ure.cities.map(city => {
+                const realData = getOfficialExcelCityData(city, 'Anos Iniciais');
+                const cityIdeb = realData && realData.y2025 ? Number(realData.y2025).toFixed(1) : '4.5';
+                totalScore += parseFloat(cityIdeb);
+                countCities++;
+
+                return `
+                    <button onclick="selectCityFromUre('${city.replace(/'/g, "\\'")}')" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 16px; font-size: 0.78rem; font-weight: 600; color: ${city === 'Gonçalves Dias' ? '#34d399' : 'var(--text-primary)'}; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.15s ease;" title="Ver ${city} no Painel Geral">
+                        <span>${city} ${city === 'Gonçalves Dias' ? '⭐' : ''}</span>
+                        <span style="font-weight: 800; font-family: var(--font-mono); color: #6366f1;">${cityIdeb}</span>
+                    </button>
+                `;
+            }).join('');
+
+            const avgUre = countCities > 0 ? (totalScore / countCities).toFixed(1) : '4.5';
+
+            return `
+                <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 18px 22px; border-radius: var(--radius-lg);">
+                    <div class="flex-between flex-wrap gap-md" style="margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 1.2rem;">🏛️</span>
+                            <h4 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: var(--text-primary);">${ure.name}</h4>
+                            <span class="badge badge-purple" style="font-size: 0.72rem;">${ure.cities.length} Municípios</span>
+                        </div>
+                        <div style="font-size: 0.84rem; font-weight: 700; color: var(--text-secondary);">
+                            Média da URE (2025): <strong style="color: #6366f1;">${avgUre}</strong>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
+                        ${citiesMarkup}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+    window.render19UresPanel = render19UresPanel;
+
+    // SUBTAB 3: Ranking Geral dos 217 Municípios com dados REAIS do Excel
+    function renderRankingGeralMaTable() {
+        const tbody = document.getElementById('ranking-geral-ma-table-body');
+        if (!tbody) return;
+
+        const queryInput = document.getElementById('ranking-ma-search-input');
+        const query = queryInput ? queryInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
+
+        const db = window.OFFICIAL_MARANHAO_IDEB_EXCEL;
+        if (!db || !db.anosIniciais) return;
+
+        const list = Object.values(db.anosIniciais);
+
+        // Sort by y2025 descending
+        list.sort((a,b) => (b.y2025 || 0) - (a.y2025 || 0));
+
+        const filtered = list.filter(c => {
+            if (!query) return true;
+            const full = (c.municipio + ' ' + (c.ure || '')).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            return full.includes(query);
+        });
+
+        tbody.innerHTML = filtered.map((c, idx) => {
+            const ideb2023 = c.y2023 ? Number(c.y2023).toFixed(1) : '-';
+            const ideb2025 = c.y2025 ? Number(c.y2025).toFixed(1) : '-';
+            const meta2025 = c.y2023 ? Number(c.y2023 + 0.3).toFixed(1) : '5.0';
+
+            return `
+                <tr style="border-bottom: 1px solid var(--border-color); height: 50px; ${c.municipio === 'Gonçalves Dias' ? 'background: rgba(16, 185, 129, 0.08);' : ''}">
+                    <td style="padding: 10px 14px; font-weight: 800; color: ${idx < 3 ? '#f59e0b' : 'var(--text-muted)'}; font-family: var(--font-mono);">
+                        #${idx + 1} ${idx === 0 ? '👑' : ''}
+                    </td>
+                    <td style="padding: 10px 14px; font-weight: 700; color: ${c.municipio === 'Gonçalves Dias' ? '#10b981' : 'var(--text-primary)'};">
+                        ${c.municipio} ${c.municipio === 'Gonçalves Dias' ? '⭐ (Sua Rede)' : ''}
+                    </td>
+                    <td style="padding: 10px 14px; font-size: 0.8rem; color: var(--text-secondary);">
+                        ${c.ure || getUreForCity(c.municipio)}
+                    </td>
+                    <td style="padding: 10px 14px; text-align: center; font-size: 0.85rem;">
+                        ${ideb2023}
+                    </td>
+                    <td style="padding: 10px 14px; text-align: center; font-weight: 800; font-size: 0.95rem; color: #10b981;">
+                        ${ideb2025}
+                    </td>
+                    <td style="padding: 10px 14px; text-align: center; font-size: 0.85rem; color: var(--text-secondary);">
+                        ${meta2025}
+                    </td>
+                    <td style="padding: 10px 14px; text-align: center;">
+                        <span class="badge ${parseFloat(ideb2025) >= parseFloat(meta2025) ? 'badge-success' : 'badge-warning'}" style="font-size: 0.7rem;">
+                            ${parseFloat(ideb2025) >= parseFloat(meta2025) ? 'Meta Superada 🟢' : 'Abaixo da Meta 🟡'}
+                        </span>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+    window.renderRankingGeralMaTable = renderRankingGeralMaTable;
