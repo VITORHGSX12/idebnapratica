@@ -853,120 +853,71 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
         }
     }
 
+    
     function syncNormalizedTablesFromLoadedData() {
-        dbEscolas = [];
+        // ALWAYS keep the 9 official schools of Gonçalves Dias
+        dbEscolas = OFFICIAL_9_SCHOOLS.map(s => ({
+            id: s.id,
+            nome: s.nome,
+            codigo_inep: s.inep,
+            inep: s.inep,
+            zona: s.zone,
+            telefone: s.phone,
+            rede_id: "municipal",
+            diretor: "S/G (Aguardando Atribuição)"
+        }));
+        uniqueSchoolsList = dbEscolas.map(e => e.nome);
+
         dbTurmas = [];
         dbAlunos = [];
         dbAvaliacoes = [];
         dbQuestoes = [];
         dbResultadosAluno = [];
 
-        // 1. Escolas
-        const uniqueSchools = Array.from(new Set(loadedStudents.map(s => s.escola))).filter(Boolean).sort();
-        uniqueSchools.forEach((schoolName, idx) => {
-            let hash = 0;
-            for (let i = 0; i < schoolName.length; i++) {
-                hash += schoolName.charCodeAt(i);
-            }
-            const inepCode = 21000000 + (hash % 899999);
-            dbEscolas.push({
-                id: `esc_${idx + 1}`,
-                nome: schoolName,
-                rede_id: "municipal",
-                codigo_inep: inepCode
+        if (loadedStudents && loadedStudents.length > 0) {
+            // Populate classes from students if any exist
+            const uniqueClasses = [];
+            loadedStudents.forEach(s => {
+                const exists = uniqueClasses.some(c => c.schoolName === s.escola && c.gradeName === s.etapa);
+                if (!exists) {
+                    uniqueClasses.push({ schoolName: s.escola, gradeName: s.etapa });
+                }
             });
-        });
 
-        // 2. Turmas
-        const uniqueClasses = [];
-        loadedStudents.forEach(s => {
-            const exists = uniqueClasses.some(c => c.schoolName === s.escola && c.gradeName === s.etapa);
-            if (!exists) {
-                uniqueClasses.push({ schoolName: s.escola, gradeName: s.etapa });
-            }
-        });
-
-        uniqueClasses.forEach((cls, idx) => {
-            const schoolObj = dbEscolas.find(e => e.nome === cls.schoolName);
-            dbTurmas.push({
-                id: `tur_${idx + 1}`,
-                escola_id: schoolObj ? schoolObj.id : null,
-                nome: cls.gradeName,
-                turno: "Matutino",
-                ano_letivo: 2026
-            });
-        });
-
-        // 3. Alunos (with full property preservation)
-        loadedStudents.forEach((s, idx) => {
-            const schoolObj = dbEscolas.find(e => e.nome === s.escola);
-            const classObj = dbTurmas.find(t => t.escola_id === (schoolObj ? schoolObj.id : null) && t.nome === s.etapa);
-            dbAlunos.push({
-                id: `aln_${idx + 1}`,
-                turma_id: classObj ? classObj.id : null,
-                nome: s.nome,
-                matricula: s.matricula,
-                escola: s.escola,
-                etapa: s.etapa,
-                turma: s.turma || s.etapa,
-                turno: s.turno || 'Matutino',
-                sexo: s.sexo || 'M',
-                cor: s.cor || 'Parda',
-                nascimento: s.nascimento || '',
-                mae: s.mae || '',
-                pai: s.pai || '',
-                nee: s.nee || '',
-                avg_score: s.avg_score || (55 + ((idx * 7) % 40) + ((idx % 9) / 10))
-            });
-        });
-
-        // 4. Avaliacoes
-        activeEvaluations.forEach(ev => {
-            dbAvaliacoes.push({
-                id: ev.id,
-                nome: ev.titulo,
-                componente: ev.tipo.includes("Língua Portuguesa") || ev.titulo.includes("LP") ? "Português" : "Matemática",
-                data_aplicacao: ev.janela || "2026-08-10",
-                matriz_referencia: ev.etapa || "IDEB"
-            });
-        });
-
-        // 5. Questoes
-        const sourceQuestions = (rawQuestions && rawQuestions.length > 0) ? rawQuestions : (window.DEMO_QUESTIONS || []);
-        sourceQuestions.forEach(q => {
-            dbQuestoes.push({
-                id: q.id,
-                avaliacao_id: q.matriz === "IDEB" ? "eval-diag" : "sim-1",
-                descritor_bncc_id: q.codigo_bncc,
-                nivel_dificuldade: q.dificuldade
-            });
-        });
-
-        // 6. Resultados Aluno
-        dbAlunos.forEach(al => {
-            const matNum = parseInt(al.matricula) || 0;
-            dbAvaliacoes.forEach(av => {
-                const isLP = av.componente === "Português";
-                const testQuestions = dbQuestoes.filter(q => {
-                    const isQ_LP = q.descritor_bncc_id.includes("LP") || q.descritor_bncc_id.startsWith("EF05LP");
-                    return isLP ? isQ_LP : !isQ_LP;
-                }).slice(0, 5);
-
-                testQuestions.forEach((q, idx) => {
-                    const threshold = al.avg_score || 65;
-                    const randomVal = (matNum + idx * 17) % 100;
-                    const acertou = randomVal < threshold;
-                    dbResultadosAluno.push({
-                        id: `res_${dbResultadosAluno.length + 1}`,
-                        aluno_id: al.matricula,
-                        avaliacao_id: av.id,
-                        questao_id: q.id,
-                        acertou: acertou
-                    });
+            uniqueClasses.forEach((cls, idx) => {
+                const schoolObj = dbEscolas.find(e => e.nome === cls.schoolName);
+                dbTurmas.push({
+                    id: `tur_${idx + 1}`,
+                    escola_id: schoolObj ? schoolObj.id : null,
+                    nome: cls.gradeName,
+                    turno: "Matutino",
+                    ano_letivo: 2026
                 });
             });
-        });
+
+            loadedStudents.forEach((s, idx) => {
+                const schoolObj = dbEscolas.find(e => e.nome === s.escola);
+                const classObj = dbTurmas.find(t => t.escola_id === (schoolObj ? schoolObj.id : null) && t.nome === s.etapa);
+                dbAlunos.push({
+                    id: `aln_${idx + 1}`,
+                    turma_id: classObj ? classObj.id : null,
+                    nome: s.nome,
+                    matricula: s.matricula,
+                    escola: s.escola,
+                    etapa: s.etapa,
+                    turma: s.turma || s.etapa,
+                    pontuacao_lp: s.pontuacao_lp || 0,
+                    pontuacao_mat: s.pontuacao_mat || 0,
+                    nivel_lp: s.nivel_lp || 'Básico',
+                    nivel_mat: s.nivel_mat || 'Básico',
+                    nivel_global: s.nivel_global || 'Básico',
+                    status_risco: s.status_risco || 'Médio',
+                    freq: s.freq || 100
+                });
+            });
+        }
     }
+
 
     const systemPromptText = `Você é o Motor Diagnóstico Pedagógico Oficial do IDEB na Prática, especializado em analisar o desempenho de estudantes sob a ótica dos exames externos nacionais (SAEB / IDEB) e estaduais (SEAMA - Maranhão), bem como na Matriz BNCC de referência.
 
@@ -3162,6 +3113,20 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
     function renderDbSchools() {
         if (!dbSchoolsTableBody) return;
         dbSchoolsTableBody.innerHTML = '';
+
+        if (!uniqueSchoolsList || uniqueSchoolsList.length === 0) {
+            uniqueSchoolsList = [
+                'UI JOSE CORREA LIMA',
+                'UI EMILIO MURAD',
+                'UE VEREADOR LEONARDO FERREIRA LIMA',
+                'U I BASILIO ALVES',
+                'UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ',
+                'UE RAIMUNDO DOS REIS DA SILVA',
+                'UNIDADE INTEGRADA JOSE GONCALVES DIAS',
+                'UNIDADE ESCOLAR ANISIO GOMES',
+                'UE ANITA FURTADO'
+            ];
+        }
 
         const query = dbSchoolSearch ? dbSchoolSearch.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : '';
         const filteredSchools = uniqueSchoolsList.filter(s => {
@@ -11133,176 +11098,6 @@ if (document.readyState === 'loading') {
         safeCreateIcons();
     }
 
-
-    // ==========================================
-    // COMPARATIVO REGIONAL IDEB 2023 & 2025
-    // ==========================================
-
-    const URE_PRESIDENTE_DUTRA_DATA = [
-        { rank: 1, cidade: 'Presidente Dutra', ai2023: 5.1, ai2025: 5.4, af2023: 4.6, af2025: 4.8 },
-        { rank: 2, cidade: 'Santo Antônio dos Lopes', ai2023: 5.0, ai2025: 5.3, af2023: 4.5, af2025: 4.8 },
-        { rank: 3, cidade: 'Dom Pedro', ai2023: 4.9, ai2025: 5.3, af2023: 4.4, af2025: 4.7 },
-        { rank: 4, cidade: 'Gonçalves Dias', ai2023: 4.8, ai2025: 5.2, af2023: 4.2, af2025: 4.5, isDestaque: true },
-        { rank: 5, cidade: 'Graça Aranha', ai2023: 4.7, ai2025: 5.1, af2023: 4.1, af2025: 4.4 },
-        { rank: 6, cidade: 'Tuntum', ai2023: 4.7, ai2025: 5.0, af2023: 4.3, af2025: 4.6 },
-        { rank: 7, cidade: 'São Domingos do Maranhão', ai2023: 4.6, ai2025: 5.0, af2023: 4.0, af2025: 4.3 },
-        { rank: 8, cidade: 'Governador Eugênio Barros', ai2023: 4.5, ai2025: 4.9, af2023: 3.9, af2025: 4.3 },
-        { rank: 9, cidade: 'Capinzal do Norte', ai2023: 4.5, ai2025: 4.8, af2023: 4.0, af2025: 4.3 },
-        { rank: 10, cidade: 'São José dos Basílios', ai2023: 4.4, ai2025: 4.8, af2023: 3.9, af2025: 4.2 },
-        { rank: 11, cidade: 'Joselândia', ai2023: 4.4, ai2025: 4.7, af2023: 3.9, af2025: 4.2 },
-        { rank: 12, cidade: 'Senador Alexandre Costa', ai2023: 4.3, ai2025: 4.7, af2023: 3.8, af2025: 4.1 },
-        { rank: 13, cidade: 'Santa Filomena do Maranhão', ai2023: 4.2, ai2025: 4.6, af2023: 3.7, af2025: 4.0 }
-    ];
-
-    const REGIAO_CENTRO_MA_DATA = [
-        { rank: 1, cidade: 'Colinas', ai2023: 5.3, ai2025: 5.7, af2023: 4.8, af2025: 5.1 },
-        { rank: 2, cidade: 'São João dos Patos', ai2023: 5.2, ai2025: 5.5, af2023: 4.7, af2025: 5.0 },
-        { rank: 3, cidade: 'Presidente Dutra', ai2023: 5.1, ai2025: 5.4, af2023: 4.6, af2025: 4.8 },
-        { rank: 4, cidade: 'Barra do Corda', ai2023: 4.9, ai2025: 5.3, af2023: 4.4, af2025: 4.7 },
-        { rank: 5, cidade: 'Grajaú', ai2023: 4.7, ai2025: 5.1, af2023: 4.2, af2025: 4.5 },
-        { rank: 6, cidade: 'Gonçalves Dias', ai2023: 4.8, ai2025: 5.2, af2023: 4.2, af2025: 4.5, isDestaque: true },
-        { rank: 7, cidade: 'Passagem Franca', ai2023: 4.6, ai2025: 4.9, af2023: 4.0, af2025: 4.3 },
-        { rank: 8, cidade: 'Fortuna', ai2023: 4.5, ai2025: 4.8, af2023: 3.9, af2025: 4.2 },
-        { rank: 9, cidade: 'Jatobá', ai2023: 4.3, ai2025: 4.7, af2023: 3.8, af2025: 4.1 },
-        { rank: 10, cidade: 'Mirador', ai2023: 4.4, ai2025: 4.7, af2023: 3.9, af2025: 4.2 }
-    ];
-
-    const RANKING_GERAL_MA_DATA = [
-        { rank: 1, cidade: 'Santa Inês', ideb2023: 5.8, ideb2025: 6.2, evolucao: '+0.4', classif: 'Destaque Estadual' },
-        { rank: 2, cidade: 'Balsas', ideb2023: 5.6, ideb2025: 6.0, evolucao: '+0.4', classif: 'Avançado' },
-        { rank: 3, cidade: 'Imperatriz', ideb2023: 5.5, ideb2025: 5.9, evolucao: '+0.4', classif: 'Avançado' },
-        { rank: 4, cidade: 'Colinas', ideb2023: 5.3, ideb2025: 5.7, evolucao: '+0.4', classif: 'Consolidado' },
-        { rank: 5, cidade: 'São João dos Patos', ideb2023: 5.2, ideb2025: 5.5, evolucao: '+0.3', classif: 'Consolidado' },
-        { rank: 6, cidade: 'Presidente Dutra', ideb2023: 5.1, ideb2025: 5.4, evolucao: '+0.3', classif: 'Consolidado' },
-        { rank: 7, cidade: 'Gonçalves Dias', ideb2023: 4.8, ideb2025: 5.2, evolucao: '+0.4', classif: 'Evolução Acima da Média', isDestaque: true },
-        { rank: 8, cidade: 'São Luís (Capital)', ideb2023: 4.9, ideb2025: 5.2, evolucao: '+0.3', classif: 'Média da Capital' },
-        { rank: 9, cidade: 'Caxias', ideb2023: 4.8, ideb2025: 5.1, evolucao: '+0.3', classif: 'Em Crescimento' },
-        { rank: 10, cidade: 'Codó', ideb2023: 4.6, ideb2025: 4.9, evolucao: '+0.3', classif: 'Em Desenvolvimento' },
-        { rank: '-', cidade: '🏛️ Média do Estado do Maranhão', ideb2023: 4.4, ideb2025: 4.8, evolucao: '+0.4', classif: 'Referência Estadual', isMedia: true }
-    ];
-
-    function initIdebComparativo() {
-        // Preset Gonçalves Dias
-        selectedIdebCity = "Gonçalves Dias";
-        const cityInput = document.getElementById('ideb-city-search');
-        if (cityInput) cityInput.value = "Gonçalves Dias";
-
-        // Subtab Switcher
-        document.querySelectorAll('.ideb-regional-tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const targetTab = btn.getAttribute('data-tab');
-                document.querySelectorAll('.ideb-regional-tab-btn').forEach(b => {
-                    b.classList.remove('active');
-                    b.style.background = 'transparent';
-                    b.style.color = 'var(--text-secondary)';
-                    b.style.border = '1px solid var(--border-color)';
-                });
-                btn.classList.add('active');
-                btn.style.background = 'var(--purple-light)';
-                btn.style.color = '#ffffff';
-                btn.style.border = 'none';
-
-                document.querySelectorAll('.ideb-regional-tab-content').forEach(c => c.classList.add('hidden'));
-                document.getElementById(`tab-ideb-${targetTab}`)?.classList.remove('hidden');
-                
-                if (targetTab === 'ure-presidente-dutra') renderUrePresidenteDutraTable();
-                if (targetTab === 'regiao-centro-ma') renderRegiaoCentroTable();
-                if (targetTab === 'ranking-geral-ma') renderRankingGeralMaTable();
-            });
-        });
-
-        renderUrePresidenteDutraTable();
-        renderRegiaoCentroTable();
-        renderRankingGeralMaTable();
-        updateIdebComparativoView();
-    }
-
-    function renderUrePresidenteDutraTable() {
-        const tbody = document.getElementById('table-ure-presidente-dutra-body');
-        if (!tbody) return;
-
-        tbody.innerHTML = URE_PRESIDENTE_DUTRA_DATA.map(item => {
-            const isGd = item.isDestaque;
-            const diffAi = (item.ai2025 - item.ai2023).toFixed(1);
-            const diffAf = (item.af2025 - item.af2023).toFixed(1);
-            
-            return `
-                <tr style="border-bottom: 1px solid var(--border-color); height: 48px; ${isGd ? 'background: rgba(139, 92, 246, 0.12); font-weight: 700;' : ''}">
-                    <td style="padding: 10px 14px; font-family: var(--font-mono); ${isGd ? 'color: var(--purple-light); font-weight: 800;' : ''}">
-                        ${isGd ? '⭐ ' : ''}${item.rank}º
-                    </td>
-                    <td style="padding: 10px 14px; color: ${isGd ? 'var(--purple-light)' : 'var(--text-primary)'};">
-                        ${item.cidade} ${isGd ? '<span class="badge badge-purple" style="font-size:0.68rem; margin-left:6px;">Nosso Município</span>' : ''}
-                    </td>
-                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${item.ai2023.toFixed(1)}</td>
-                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--green-light);">${item.ai2025.toFixed(1)}</td>
-                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: var(--green-light);">+${diffAi}</td>
-                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${item.af2023.toFixed(1)}</td>
-                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--green-light);">${item.af2025.toFixed(1)}</td>
-                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: var(--green-light);">+${diffAf}</td>
-                </tr>
-            `;
-        }).join('');
-    }
-
-    function renderRegiaoCentroTable() {
-        const tbody = document.getElementById('table-regiao-centro-body');
-        if (!tbody) return;
-
-        tbody.innerHTML = REGIAO_CENTRO_MA_DATA.map(item => {
-            const isGd = item.isDestaque;
-            const diffAi = (item.ai2025 - item.ai2023).toFixed(1);
-            const diffAf = (item.af2025 - item.af2023).toFixed(1);
-
-            return `
-                <tr style="border-bottom: 1px solid var(--border-color); height: 48px; ${isGd ? 'background: rgba(139, 92, 246, 0.12); font-weight: 700;' : ''}">
-                    <td style="padding: 10px 14px; font-family: var(--font-mono); ${isGd ? 'color: var(--purple-light); font-weight: 800;' : ''}">
-                        ${isGd ? '⭐ ' : ''}${item.rank}º
-                    </td>
-                    <td style="padding: 10px 14px; color: ${isGd ? 'var(--purple-light)' : 'var(--text-primary)'};">
-                        ${item.cidade} ${isGd ? '<span class="badge badge-purple" style="font-size:0.68rem; margin-left:6px;">Nosso Município</span>' : ''}
-                    </td>
-                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${item.ai2023.toFixed(1)}</td>
-                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--green-light);">${item.ai2025.toFixed(1)}</td>
-                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: var(--green-light);">+${diffAi}</td>
-                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${item.af2023.toFixed(1)}</td>
-                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--green-light);">${item.af2025.toFixed(1)}</td>
-                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: var(--green-light);">+${diffAf}</td>
-                </tr>
-            `;
-        }).join('');
-    }
-
-    function renderRankingGeralMaTable() {
-        const tbody = document.getElementById('table-ranking-geral-ma-body');
-        if (!tbody) return;
-
-        tbody.innerHTML = RANKING_GERAL_MA_DATA.map(item => {
-            const isGd = item.isDestaque;
-            const isMedia = item.isMedia;
-
-            return `
-                <tr style="border-bottom: 1px solid var(--border-color); height: 48px; ${isGd ? 'background: rgba(139, 92, 246, 0.12); font-weight: 700;' : (isMedia ? 'background: var(--bg-tertiary); font-weight: 700;' : '')}">
-                    <td style="padding: 10px 14px; font-family: var(--font-mono); ${isGd ? 'color: var(--purple-light); font-weight: 800;' : ''}">
-                        ${isGd ? '⭐ ' : ''}${item.rank}
-                    </td>
-                    <td style="padding: 10px 14px; color: ${isGd ? 'var(--purple-light)' : (isMedia ? 'var(--text-primary)' : 'var(--text-primary)')};">
-                        ${item.cidade}
-                    </td>
-                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${item.ideb2023.toFixed(1)}</td>
-                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--green-light);">${item.ideb2025.toFixed(1)}</td>
-                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: var(--green-light);">${item.evolucao}</td>
-                    <td style="padding: 10px 14px; text-align: center;">
-                        <span class="badge ${isGd ? 'badge-purple' : (isMedia ? 'badge-info' : 'badge-outline')}" style="font-size:0.72rem;">
-                            ${item.classif}
-                        </span>
-                    </td>
-                </tr>
-            `;
-        }).join('');
-    }
-
-
     // ==========================================
     // CALENDÁRIO ANUAL DE HABILIDADES & ROTINA DOCENTE (2026)
     // ==========================================
@@ -11310,8 +11105,6 @@ if (document.readyState === 'loading') {
     let currentCalendarMonth = 2; // Fevereiro
     let activeCalendarDayItem = null;
 
-    // Base de Habilidades estruturadas por Mês e Dia Letivo (2026)
-    // Inicializam em 'pendente' (🔴 Vermelho) e mudam para 'trabalhada' (🟢 Verde) conforme o professor marca.
     const ANNUAL_SKILLS_CALENDAR_DATA = {};
 
     const MONTH_NAMES_PT = {
@@ -11359,13 +11152,6 @@ if (document.readyState === 'loading') {
         { code: 'D28 (MAT)', title: 'Cálculo de área e perímetro de figuras planas', comp: 'Matemática', metod: 'Medição prática do piso da sala e quadra da escola.' }
     ];
 
-    function getPoolByStage(stage) {
-        if (stage === '2º Ano') return DESCRIPTORS_POOL_2ANO;
-        if (stage === '9º Ano') return DESCRIPTORS_POOL_9ANO;
-        return DESCRIPTORS_POOL_5ANO;
-    }
-
-    // Initialize the Annual Calendar Days for all 2026 months
     function initAnnualSkillsCalendar() {
         for (let m = 2; m <= 12; m++) {
             ANNUAL_SKILLS_CALENDAR_DATA[m] = {};
@@ -11373,9 +11159,8 @@ if (document.readyState === 'loading') {
 
             for (let d = 1; d <= daysInMonth; d++) {
                 const dateObj = new Date(2026, m - 1, d);
-                const dayOfWeek = dateObj.getDay(); // 0 = Dom, 6 = Sab, 1 a 5 = Seg a Sex
+                const dayOfWeek = dateObj.getDay();
 
-                // Ignore weekends and July vacation
                 if (dayOfWeek >= 1 && dayOfWeek <= 5 && m !== 7) {
                     const pool5 = DESCRIPTORS_POOL_5ANO[(d + m) % DESCRIPTORS_POOL_5ANO.length];
                     const pool2 = DESCRIPTORS_POOL_2ANO[(d + m) % DESCRIPTORS_POOL_2ANO.length];
@@ -11386,39 +11171,16 @@ if (document.readyState === 'loading') {
                         dayOfWeek,
                         month: m,
                         isLetivo: true,
-                        // Stage skills mapped
                         skills: {
-                            '5º Ano': {
-                                code: pool5.code,
-                                title: pool5.title,
-                                comp: pool5.comp,
-                                metod: pool5.metod,
-                                status: 'pendente', // Start in RED
-                                obs: ''
-                            },
-                            '2º Ano': {
-                                code: pool2.code,
-                                title: pool2.title,
-                                comp: pool2.comp,
-                                metod: pool2.metod,
-                                status: 'pendente', // Start in RED
-                                obs: ''
-                            },
-                            '9º Ano': {
-                                code: pool9.code,
-                                title: pool9.title,
-                                comp: pool9.comp,
-                                metod: pool9.metod,
-                                status: 'pendente', // Start in RED
-                                obs: ''
-                            }
+                            '5º Ano': { code: pool5.code, title: pool5.title, comp: pool5.comp, metod: pool5.metod, status: 'pendente', obs: '' },
+                            '2º Ano': { code: pool2.code, title: pool2.title, comp: pool2.comp, metod: pool2.metod, status: 'pendente', obs: '' },
+                            '9º Ano': { code: pool9.code, title: pool9.title, comp: pool9.comp, metod: pool9.metod, status: 'pendente', obs: '' }
                         }
                     };
                 }
             }
         }
     }
-
     initAnnualSkillsCalendar();
 
     function renderSkillsSchedule() {
@@ -11431,9 +11193,7 @@ if (document.readyState === 'loading') {
 
         const stage = document.getElementById('cal-filter-stage')?.value || '5º Ano';
         const subject = document.getElementById('cal-filter-subject')?.value || 'all';
-        const school = document.getElementById('cal-filter-school')?.value || 'all';
 
-        // Update Month Label & Summary
         const monthLabel = document.getElementById('calendar-active-month-label');
         const monthTitleSummary = document.getElementById('cal-month-title-summary');
         const monthStatsText = document.getElementById('cal-month-stats-text');
@@ -11449,7 +11209,6 @@ if (document.readyState === 'loading') {
 
         grid.innerHTML = '';
 
-        // Handle July Recess
         if (currentCalendarMonth === 7) {
             grid.innerHTML = `
                 <div style="grid-column: 1 / -1; padding: 60px 20px; text-align: center; background: var(--bg-tertiary); border-radius: var(--radius-lg);">
@@ -11468,12 +11227,10 @@ if (document.readyState === 'loading') {
         let totalLetivos = 0;
         let totalWorked = 0;
 
-        // Iterate through all days 1 to daysInMonth and place them in 5 weekday columns
         for (let d = 1; d <= daysInMonth; d++) {
             const dateObj = new Date(2026, currentCalendarMonth - 1, d);
             const dayOfWeek = dateObj.getDay();
 
-            // Only render Monday to Friday
             if (dayOfWeek >= 1 && dayOfWeek <= 5) {
                 totalLetivos++;
                 const dayItem = monthData[d];
@@ -11496,7 +11253,6 @@ if (document.readyState === 'loading') {
                 card.style.justifyContent = 'space-between';
                 card.style.cursor = 'pointer';
                 card.style.transition = 'all 0.2s ease';
-                card.style.boxShadow = isWorked ? '0 2px 8px rgba(34,197,94,0.1)' : '0 2px 8px rgba(239,68,68,0.1)';
 
                 const dayNameShort = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][dayOfWeek];
 
@@ -11535,13 +11291,11 @@ if (document.readyState === 'loading') {
                     </div>
                 `;
 
-                // Click card to open modal
                 card.addEventListener('click', (e) => {
                     if (e.target.closest('.btn-quick-toggle-day')) return;
                     openCalendarDayDetailModal(d, stage);
                 });
 
-                // Quick toggle button
                 card.querySelector('.btn-quick-toggle-day')?.addEventListener('click', (e) => {
                     e.stopPropagation();
                     toggleCalendarDayStatus(d, stage);
@@ -11551,7 +11305,6 @@ if (document.readyState === 'loading') {
             }
         }
 
-        // Update stats
         const pctDone = totalLetivos > 0 ? ((totalWorked / totalLetivos) * 100).toFixed(1) : '0';
         if (monthStatsText) {
             monthStatsText.innerHTML = `<strong>${totalWorked}</strong> de <strong>${totalLetivos}</strong> habilidades trabalhadas (${pctDone}% de cumprimento)`;
@@ -11686,3 +11439,177 @@ if (document.readyState === 'loading') {
             setTimeout(() => window.print(), 300);
         });
     }
+
+    // ==========================================
+    // COMPARATIVO REGIONAL IDEB 2023 & 2025
+    // ==========================================
+
+    const URE_PRESIDENTE_DUTRA_DATA = [
+        { rank: 1, cidade: 'Presidente Dutra', ai2023: 5.1, ai2025: 5.4, af2023: 4.6, af2025: 4.8 },
+        { rank: 2, cidade: 'Santo Antônio dos Lopes', ai2023: 5.0, ai2025: 5.3, af2023: 4.5, af2025: 4.8 },
+        { rank: 3, cidade: 'Dom Pedro', ai2023: 4.9, ai2025: 5.3, af2023: 4.4, af2025: 4.7 },
+        { rank: 4, cidade: 'Gonçalves Dias', ai2023: 4.8, ai2025: 5.2, af2023: 4.2, af2025: 4.5, isDestaque: true },
+        { rank: 5, cidade: 'Graça Aranha', ai2023: 4.7, ai2025: 5.1, af2023: 4.1, af2025: 4.4 },
+        { rank: 6, cidade: 'Tuntum', ai2023: 4.7, ai2025: 5.0, af2023: 4.3, af2025: 4.6 },
+        { rank: 7, cidade: 'São Domingos do Maranhão', ai2023: 4.6, ai2025: 5.0, af2023: 4.0, af2025: 4.3 },
+        { rank: 8, cidade: 'Governador Eugênio Barros', ai2023: 4.5, ai2025: 4.9, af2023: 3.9, af2025: 4.3 },
+        { rank: 9, cidade: 'Capinzal do Norte', ai2023: 4.5, ai2025: 4.8, af2023: 4.0, af2025: 4.3 },
+        { rank: 10, cidade: 'São José dos Basílios', ai2023: 4.4, ai2025: 4.8, af2023: 3.9, af2025: 4.2 },
+        { rank: 11, cidade: 'Joselândia', ai2023: 4.4, ai2025: 4.7, af2023: 3.9, af2025: 4.2 },
+        { rank: 12, cidade: 'Senador Alexandre Costa', ai2023: 4.3, ai2025: 4.7, af2023: 3.8, af2025: 4.1 },
+        { rank: 13, cidade: 'Santa Filomena do Maranhão', ai2023: 4.2, ai2025: 4.6, af2023: 3.7, af2025: 4.0 }
+    ];
+
+    const REGIAO_CENTRO_MA_DATA = [
+        { rank: 1, cidade: 'Colinas', ai2023: 5.3, ai2025: 5.7, af2023: 4.8, af2025: 5.1 },
+        { rank: 2, cidade: 'São João dos Patos', ai2023: 5.2, ai2025: 5.5, af2023: 4.7, af2025: 5.0 },
+        { rank: 3, cidade: 'Presidente Dutra', ai2023: 5.1, ai2025: 5.4, af2023: 4.6, af2025: 4.8 },
+        { rank: 4, cidade: 'Barra do Corda', ai2023: 4.9, ai2025: 5.3, af2023: 4.4, af2025: 4.7 },
+        { rank: 5, cidade: 'Grajaú', ai2023: 4.7, ai2025: 5.1, af2023: 4.2, af2025: 4.5 },
+        { rank: 6, cidade: 'Gonçalves Dias', ai2023: 4.8, ai2025: 5.2, af2023: 4.2, af2025: 4.5, isDestaque: true },
+        { rank: 7, cidade: 'Passagem Franca', ai2023: 4.6, ai2025: 4.9, af2023: 4.0, af2025: 4.3 },
+        { rank: 8, cidade: 'Fortuna', ai2023: 4.5, ai2025: 4.8, af2023: 3.9, af2025: 4.2 },
+        { rank: 9, cidade: 'Jatobá', ai2023: 4.3, ai2025: 4.7, af2023: 3.8, af2025: 4.1 },
+        { rank: 10, cidade: 'Mirador', ai2023: 4.4, ai2025: 4.7, af2023: 3.9, af2025: 4.2 }
+    ];
+
+    const RANKING_GERAL_MA_DATA = [
+        { rank: 1, cidade: 'Santa Inês', ideb2023: 5.8, ideb2025: 6.2, evolucao: '+0.4', classif: 'Destaque Estadual' },
+        { rank: 2, cidade: 'Balsas', ideb2023: 5.6, ideb2025: 6.0, evolucao: '+0.4', classif: 'Avançado' },
+        { rank: 3, cidade: 'Imperatriz', ideb2023: 5.5, ideb2025: 5.9, evolucao: '+0.4', classif: 'Avançado' },
+        { rank: 4, cidade: 'Colinas', ideb2023: 5.3, ideb2025: 5.7, evolucao: '+0.4', classif: 'Consolidado' },
+        { rank: 5, cidade: 'São João dos Patos', ideb2023: 5.2, ideb2025: 5.5, evolucao: '+0.3', classif: 'Consolidado' },
+        { rank: 6, cidade: 'Presidente Dutra', ideb2023: 5.1, ideb2025: 5.4, evolucao: '+0.3', classif: 'Consolidado' },
+        { rank: 7, cidade: 'Gonçalves Dias', ideb2023: 4.8, ideb2025: 5.2, evolucao: '+0.4', classif: 'Evolução Acima da Média', isDestaque: true },
+        { rank: 8, cidade: 'São Luís (Capital)', ideb2023: 4.9, ideb2025: 5.2, evolucao: '+0.3', classif: 'Média da Capital' },
+        { rank: 9, cidade: 'Caxias', ideb2023: 4.8, ideb2025: 5.1, evolucao: '+0.3', classif: 'Em Crescimento' },
+        { rank: 10, cidade: 'Codó', ideb2023: 4.6, ideb2025: 4.9, evolucao: '+0.3', classif: 'Em Desenvolvimento' },
+        { rank: '-', cidade: '🏛️ Média do Estado do Maranhão', ideb2023: 4.4, ideb2025: 4.8, evolucao: '+0.4', classif: 'Referência Estadual', isMedia: true }
+    ];
+
+    function renderUrePresidenteDutraTable() {
+        const tbody = document.getElementById('table-ure-presidente-dutra-body');
+        if (!tbody) return;
+
+        tbody.innerHTML = URE_PRESIDENTE_DUTRA_DATA.map(item => {
+            const isGd = item.isDestaque;
+            const diffAi = (item.ai2025 - item.ai2023).toFixed(1);
+            const diffAf = (item.af2025 - item.af2023).toFixed(1);
+            
+            return `
+                <tr style="border-bottom: 1px solid var(--border-color); height: 48px; ${isGd ? 'background: rgba(139, 92, 246, 0.12); font-weight: 700;' : ''}">
+                    <td style="padding: 10px 14px; font-family: var(--font-mono); ${isGd ? 'color: var(--purple-light); font-weight: 800;' : ''}">
+                        ${isGd ? '⭐ ' : ''}${item.rank}º
+                    </td>
+                    <td style="padding: 10px 14px; color: ${isGd ? 'var(--purple-light)' : 'var(--text-primary)'};">
+                        ${item.cidade} ${isGd ? '<span class="badge badge-purple" style="font-size:0.68rem; margin-left:6px;">Nosso Município</span>' : ''}
+                    </td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${item.ai2023.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--green-light);">${item.ai2025.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: var(--green-light);">+${diffAi}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${item.af2023.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--green-light);">${item.af2025.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: var(--green-light);">+${diffAf}</td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function renderRegiaoCentroTable() {
+        const tbody = document.getElementById('table-regiao-centro-body');
+        if (!tbody) return;
+
+        tbody.innerHTML = REGIAO_CENTRO_MA_DATA.map(item => {
+            const isGd = item.isDestaque;
+            const diffAi = (item.ai2025 - item.ai2023).toFixed(1);
+            const diffAf = (item.af2025 - item.af2023).toFixed(1);
+
+            return `
+                <tr style="border-bottom: 1px solid var(--border-color); height: 48px; ${isGd ? 'background: rgba(139, 92, 246, 0.12); font-weight: 700;' : ''}">
+                    <td style="padding: 10px 14px; font-family: var(--font-mono); ${isGd ? 'color: var(--purple-light); font-weight: 800;' : ''}">
+                        ${isGd ? '⭐ ' : ''}${item.rank}º
+                    </td>
+                    <td style="padding: 10px 14px; color: ${isGd ? 'var(--purple-light)' : 'var(--text-primary)'};">
+                        ${item.cidade} ${isGd ? '<span class="badge badge-purple" style="font-size:0.68rem; margin-left:6px;">Nosso Município</span>' : ''}
+                    </td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${item.ai2023.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--green-light);">${item.ai2025.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: var(--green-light);">+${diffAi}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${item.af2023.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--green-light);">${item.af2025.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: var(--green-light);">+${diffAf}</td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function renderRankingGeralMaTable() {
+        const tbody = document.getElementById('table-ranking-geral-ma-body');
+        if (!tbody) return;
+
+        tbody.innerHTML = RANKING_GERAL_MA_DATA.map(item => {
+            const isGd = item.isDestaque;
+            const isMedia = item.isMedia;
+
+            return `
+                <tr style="border-bottom: 1px solid var(--border-color); height: 48px; ${isGd ? 'background: rgba(139, 92, 246, 0.12); font-weight: 700;' : (isMedia ? 'background: var(--bg-tertiary); font-weight: 700;' : '')}">
+                    <td style="padding: 10px 14px; font-family: var(--font-mono); ${isGd ? 'color: var(--purple-light); font-weight: 800;' : ''}">
+                        ${isGd ? '⭐ ' : ''}${item.rank}
+                    </td>
+                    <td style="padding: 10px 14px; color: ${isGd ? 'var(--purple-light)' : (isMedia ? 'var(--text-primary)' : 'var(--text-primary)')};">
+                        ${item.cidade}
+                    </td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${item.ideb2023.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--green-light);">${item.ideb2025.toFixed(1)}</td>
+                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: var(--green-light);">+${item.evolucao}</td>
+                    <td style="padding: 10px 14px; text-align: center;">
+                        <span class="badge ${isGd ? 'badge-purple' : (isMedia ? 'badge-info' : 'badge-outline')}" style="font-size:0.72rem;">
+                            ${item.classif}
+                        </span>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function initIdebComparativo() {
+        selectedIdebCity = "Gonçalves Dias";
+        const cityInput = document.getElementById('ideb-city-search');
+        if (cityInput) cityInput.value = "Gonçalves Dias";
+
+        renderUrePresidenteDutraTable();
+        renderRegiaoCentroTable();
+        renderRankingGeralMaTable();
+        updateIdebComparativoView();
+    }
+
+    // Direct event delegation on document for regional tab switching
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('.ideb-regional-tab-btn');
+        if (!btn) return;
+        
+        const targetTab = btn.getAttribute('data-tab');
+        if (!targetTab) return;
+
+        document.querySelectorAll('.ideb-regional-tab-btn').forEach(b => {
+            b.classList.remove('active');
+            b.style.background = 'transparent';
+            b.style.color = 'var(--text-secondary)';
+            b.style.border = '1px solid var(--border-color)';
+        });
+
+        btn.classList.add('active');
+        btn.style.background = 'var(--purple-light)';
+        btn.style.color = '#ffffff';
+        btn.style.border = 'none';
+
+        document.querySelectorAll('.ideb-regional-tab-content').forEach(c => c.classList.add('hidden'));
+        const activeContent = document.getElementById(`tab-ideb-${targetTab}`);
+        if (activeContent) activeContent.classList.remove('hidden');
+
+        if (targetTab === 'ure-presidente-dutra') renderUrePresidenteDutraTable();
+        if (targetTab === 'regiao-centro-ma') renderRegiaoCentroTable();
+        if (targetTab === 'ranking-geral-ma') renderRankingGeralMaTable();
+
+        safeCreateIcons();
+    });
