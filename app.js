@@ -16762,3 +16762,152 @@ window.showTab = window.switchTab;
     document.addEventListener('DOMContentLoaded', () => {
         updateSidebarUserProfileUI();
     });
+
+
+    // =========================================================================
+    // ROTEADOR E ISOLAMENTO RIGOROSO DE ROTAS NO LAYOUT PRINCIPAL
+    // =========================================================================
+
+    let isSchoolViewActive = false;
+
+    function switchTab(targetTab) {
+        const safeTarget = targetTab?.toString()?.trim() || 'dashboard';
+
+        const tabAliases = {
+            'criar-avaliacoes': 'sec-criar-avaliacoes',
+            'aplicacao-provas': 'sec-aplicacao-provas',
+            'questions': 'banco-questoes',
+            'ai-playground': 'relatorios-monitoramento'
+        };
+
+        const resolvedTab = tabAliases[safeTarget] ?? safeTarget;
+        console.log('[Router Architecture] Navigating to main route:', resolvedTab);
+
+        try {
+            try { localStorage?.setItem('lastActiveTab', resolvedTab); } catch(e) {}
+
+            // 1. Oculta RIGOROSAMENTE todas as seções de conteúdo do container principal <main>
+            const allSections = document.querySelectorAll('.tab-content');
+            allSections?.forEach(sec => {
+                sec.classList.remove('active');
+                sec.classList.add('hidden');
+                sec.style.display = 'none';
+            });
+
+            // 2. Oculta OBRIGATORIAMENTE a visão de detalhes da escola (#school-classes-table-view)
+            // Ela NUNCA pode ficar visível ao navegar para Área Administrativa, Dashboard, Alunos, etc.
+            const schoolDetailView = document.getElementById('school-classes-table-view');
+            if (schoolDetailView) {
+                schoolDetailView.classList.add('hidden');
+                schoolDetailView.style.display = 'none';
+            }
+
+            // 3. Se estiver navegando para Escolas da Rede (#escolas-panel)
+            const schoolsListContainer = document.getElementById('schools-list-container');
+            if (resolvedTab === 'escolas-panel') {
+                if (!isSchoolViewActive) {
+                    if (schoolsListContainer) {
+                        schoolsListContainer.classList.remove('hidden');
+                        schoolsListContainer.style.display = 'block';
+                    }
+                } else if (schoolDetailView) {
+                    schoolDetailView.classList.remove('hidden');
+                    schoolDetailView.style.display = 'block';
+                }
+            } else {
+                isSchoolViewActive = false;
+            }
+
+            // 4. Exibe EXCLUSIVAMENTE a seção da rota ativa no <main>
+            let targetEl = document.getElementById(resolvedTab) ?? document.getElementById(safeTarget);
+
+            if (targetEl) {
+                targetEl.classList.remove('hidden');
+                targetEl.classList.add('active');
+                targetEl.style.display = 'block';
+            } else {
+                console.warn('[Router Warning] Target route not found:', resolvedTab, '- redirecting to #dashboard');
+                const dashEl = document.getElementById('dashboard');
+                if (dashEl) {
+                    dashEl.classList.remove('hidden');
+                    dashEl.classList.add('active');
+                    dashEl.style.display = 'block';
+                }
+            }
+
+            // 5. Destaca visualmente o item ativo na Sidebar Principal (GESTÃO, AVALIAÇÃO, SISTEMA)
+            const sidebarMenuItems = document.querySelectorAll('.menu-item');
+            sidebarMenuItems?.forEach(item => {
+                const dt = item?.getAttribute('data-target');
+                if (dt === resolvedTab || dt === safeTarget || (tabAliases[dt] === resolvedTab)) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+
+            // 6. Dispara renderizadores específicos da rota selecionada
+            if (resolvedTab === 'escolas-panel' && typeof renderDbSchools === 'function' && !isSchoolViewActive) {
+                renderDbSchools();
+            } else if (resolvedTab === 'alunos-panel' && typeof renderDbStudents === 'function') {
+                renderDbStudents();
+            } else if (resolvedTab === 'metas-ideb' && typeof populateIdebGoalsTable === 'function') {
+                populateIdebGoalsTable();
+            } else if (resolvedTab === 'ideb-comparativo' && typeof initIdebCitySelector === 'function') {
+                initIdebCitySelector();
+            }
+
+            // Re-renderiza ícones do Lucide
+            if (window?.lucide?.createIcons) {
+                try { window.lucide.createIcons(); } catch(err) {}
+            }
+        } catch (err) {
+            console.error('[Router Architecture Error]', err);
+        }
+    }
+
+    // ABERTURA EXCLUSIVA DA TELA DE DETALHES DA ESCOLA (EscolaView / EscolaDetalhes)
+    function openSchoolClassesView(schoolName) {
+        const targetSchool = schoolName || 'UI JOSE CORREA LIMA';
+        const schoolsList = document.getElementById('schools-list-container');
+        const schoolView = document.getElementById('school-classes-table-view');
+
+        const nameEl = document.getElementById('workspace-school-name');
+        if (nameEl) nameEl.textContent = targetSchool;
+
+        isSchoolViewActive = true;
+
+        if (schoolsList) {
+            schoolsList.classList.add('hidden');
+            schoolsList.style.display = 'none';
+        }
+        if (schoolView) {
+            schoolView.classList.remove('hidden');
+            schoolView.style.display = 'block';
+        }
+
+        switchSchoolInnerTab('visao-geral');
+    }
+
+    // RETORNO PARA A LISTAGEM GERAL DE ESCOLAS
+    function backToSchoolsList() {
+        isSchoolViewActive = false;
+        const schoolsList = document.getElementById('schools-list-container');
+        const schoolView = document.getElementById('school-classes-table-view');
+
+        if (schoolView) {
+            schoolView.classList.add('hidden');
+            schoolView.style.display = 'none';
+        }
+        if (schoolsList) {
+            schoolsList.classList.remove('hidden');
+            schoolsList.style.display = 'block';
+        }
+        renderDbSchools();
+    }
+
+    window.switchTab = switchTab;
+    window.switchMainTab = switchTab;
+    window.showTab = switchTab;
+    window.openSchoolClassesView = openSchoolClassesView;
+    window.backToSchoolsList = backToSchoolsList;

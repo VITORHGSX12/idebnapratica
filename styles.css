@@ -4351,3 +4351,35 @@ body.collapsed-sidebar .sidebar-header .active-network-badge,
 body.collapsed-sidebar .sidebar-footer .user-info {
     display: none !important;
 }
+
+
+/* LAYOUT E NAVEGAÇÃO PRINCIPAL RESILIENTE */
+.sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 260px !important;
+    height: 100vh !important;
+    overflow-y: auto !important;
+    z-index: 100 !important;
+}
+
+.main-content {
+    margin-left: 260px !important;
+    min-height: 100vh !important;
+    overflow-y: auto !important;
+    background-color: var(--bg-primary) !important;
+    position: relative !important;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block !important;
+}
+
+.hidden {
+    display: none !important;
+}
