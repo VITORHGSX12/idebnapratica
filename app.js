@@ -12239,3 +12239,36 @@ if (document.readyState === 'loading') {
     window.render7ColCalendar = render7ColCalendar;
     window.renderSaebComparativeTable = renderSaebComparativeTable;
     window.initIdebComparativo = initIdebComparativo;
+
+
+    let rankingMaSortField = 'rank';
+    let rankingMaSortAsc = true;
+
+    function sortRankingMa(field) {
+        if (rankingMaSortField === field) {
+            rankingMaSortAsc = !rankingMaSortAsc;
+        } else {
+            rankingMaSortField = field;
+            rankingMaSortAsc = true;
+        }
+        renderRankingGeralMaTable();
+    }
+    window.sortRankingMa = sortRankingMa;
+    window.renderUrePresidenteDutraTable = renderUrePresidenteDutraTable;
+    window.renderRegiaoCentroTable = renderRegiaoCentroTable;
+    window.renderRankingGeralMaTable = renderRankingGeralMaTable;
+
+    // Search in Ranking MA input
+    document.addEventListener('DOMContentLoaded', () => {
+        const inputSearchRanking = document.getElementById('input-search-ranking-ma');
+        if (inputSearchRanking) {
+            inputSearchRanking.addEventListener('input', () => {
+                renderRankingGeralMaTable();
+            });
+            inputSearchRanking.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    renderRankingGeralMaTable();
+                }
+            });
+        }
+    });

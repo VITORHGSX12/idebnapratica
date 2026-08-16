@@ -155,6 +155,57 @@
     </script>
 
 
+
+    <script>
+        function switchIdebSubtab(targetTab) {
+            if (!targetTab) return;
+            try {
+                // Update tab buttons
+                document.querySelectorAll('.ideb-regional-tab-btn').forEach(function(btn) {
+                    if (btn.getAttribute('data-tab') === targetTab) {
+                        btn.classList.add('active');
+                        btn.style.background = '#6366f1';
+                        btn.style.color = '#ffffff';
+                        btn.style.border = 'none';
+                    } else {
+                        btn.classList.remove('active');
+                        btn.style.background = 'var(--bg-secondary)';
+                        btn.style.color = 'var(--text-secondary)';
+                        btn.style.border = '1px solid var(--border-color)';
+                    }
+                });
+
+                // Update tab contents
+                document.querySelectorAll('.ideb-regional-tab-content').forEach(function(content) {
+                    content.classList.add('hidden');
+                    content.style.display = 'none';
+                });
+
+                var activeEl = document.getElementById('tab-ideb-' + targetTab);
+                if (activeEl) {
+                    activeEl.classList.remove('hidden');
+                    activeEl.style.display = 'block';
+                }
+
+                // Call renderers
+                if (targetTab === 'ure-presidente-dutra' && typeof renderUrePresidenteDutraTable === 'function') {
+                    renderUrePresidenteDutraTable();
+                } else if (targetTab === 'regiao-centro-ma' && typeof renderRegiaoCentroTable === 'function') {
+                    renderRegiaoCentroTable();
+                } else if (targetTab === 'ranking-geral-ma' && typeof renderRankingGeralMaTable === 'function') {
+                    renderRankingGeralMaTable();
+                }
+
+                if (window.lucide && typeof lucide.createIcons === 'function') {
+                    try { lucide.createIcons(); } catch(err) {}
+                }
+            } catch (e) {
+                console.error('Error switching regional subtab:', e);
+            }
+        }
+        window.switchIdebSubtab = switchIdebSubtab;
+    </script>
+
 </head>
 <body>
     <!-- Login Screen Split-Screen -->
@@ -1165,16 +1216,16 @@
                     <!-- Subtabs de Navegação Regional: 1. Gonçalves Dias x BR/MA • 2. URE Presidente Dutra • 3. Região Centro • 4. Ranking Geral MA -->
                     <div class="card margin-bottom-lg" style="padding: 0; overflow: hidden; background: var(--bg-secondary); border: 1px solid var(--border-color);">
                         <div style="display: flex; gap: 4px; padding: 12px 18px; border-bottom: 1px solid var(--border-color); overflow-x: auto; background: var(--bg-tertiary);">
-                            <button class="ideb-regional-tab-btn active" data-tab="painel-principal" style="padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; background: var(--purple-light); color: #ffffff; border: none; cursor: pointer; white-space: nowrap;">
+                            <button class="ideb-regional-tab-btn active" onclick="switchIdebSubtab('painel-principal'); return false;" data-tab="painel-principal" style="padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; background: #6366f1; color: #ffffff; border: none; cursor: pointer; white-space: nowrap;">
                                 📊 Painel Geral de Gonçalves Dias
                             </button>
-                            <button class="ideb-regional-tab-btn" data-tab="ure-presidente-dutra" style="padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
+                            <button class="ideb-regional-tab-btn" onclick="switchIdebSubtab('ure-presidente-dutra'); return false;" data-tab="ure-presidente-dutra" style="padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
                                 🏛️ URE Presidente Dutra (2023 x 2025)
                             </button>
-                            <button class="ideb-regional-tab-btn" data-tab="regiao-centro-ma" style="padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
+                            <button class="ideb-regional-tab-btn" onclick="switchIdebSubtab('regiao-centro-ma'); return false;" data-tab="regiao-centro-ma" style="padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
                                 📍 Municípios da Região Centro (MA)
                             </button>
-                            <button class="ideb-regional-tab-btn" data-tab="ranking-geral-ma" style="padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
+                            <button class="ideb-regional-tab-btn" onclick="switchIdebSubtab('ranking-geral-ma'); return false;" data-tab="ranking-geral-ma" style="padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
                                 🏆 Ranking Geral do Maranhão (2023 x 2025)
                             </button>
                         </div>
@@ -1272,16 +1323,43 @@
                         </div>
                     </div>
 
+                    
                     <!-- ABA 2: URE PRESIDENTE DUTRA (2023 X 2025) -->
                     <div class="ideb-regional-tab-content hidden" id="tab-ideb-ure-presidente-dutra">
+                        <!-- Top KPI Cards for URE -->
+                        <div class="grid grid-3 margin-bottom-lg" style="gap: 16px;">
+                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 20px;">
+                                <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">IDEB Médio da URE (2023)</span>
+                                <h2 style="font-size: 2.75rem; font-weight: 800; color: var(--text-primary); margin: 8px 0;">4.6</h2>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;">Média consolidada dos 13 municípios</p>
+                            </div>
+
+                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 20px;">
+                                <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">IDEB Médio da URE (2025)</span>
+                                <h2 style="font-size: 2.75rem; font-weight: 800; color: var(--green-light); margin: 8px 0;">5.0</h2>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0; display: flex; align-items: center; gap: 4px;">
+                                    <i data-lucide="trending-up" style="width:14px; height:14px; color: var(--green-light);"></i> Crescimento de +0.4 na regional
+                                </p>
+                            </div>
+
+                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 20px;">
+                                <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">Destaque do Município</span>
+                                <div style="margin: 12px 0;">
+                                    <span class="badge badge-success" style="font-size: 1.1rem; font-weight: 800; padding: 6px 14px;">4º Lugar Geral (5.2)</span>
+                                </div>
+                                <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0;">Gonçalves Dias acima da média da URE</p>
+                            </div>
+                        </div>
+
+                        <!-- Table -->
                         <div class="card" style="padding: 20px; border: 1px solid var(--border-color); background: var(--bg-secondary);">
                             <div class="flex-between margin-bottom-md" style="align-items: center;">
                                 <div>
                                     <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0;">
-                                        Tabela Comparativa — URE Presidente Dutra (IDEB 2023 & 2025)
+                                        Ranking Oficial dos Municípios — URE Presidente Dutra
                                     </h3>
                                     <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">
-                                        Resultados consolidados dos 13 municípios que integram a Unidade Regional de Educação de Presidente Dutra.
+                                        Ciclos bienais do SAEB/IDEB com comparação Anos Iniciais e Finais.
                                     </p>
                                 </div>
                             </div>
@@ -1300,15 +1378,42 @@
                                         </tr>
                                     </thead>
                                     <tbody id="table-ure-presidente-dutra-body">
-                                        <!-- Injetado dinamicamente via JS -->
+                                        <!-- Injetado via JS -->
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
 
+
                     <!-- ABA 3: MUNICÍPIOS DA REGIÃO CENTRO (MA) -->
                     <div class="ideb-regional-tab-content hidden" id="tab-ideb-regiao-centro-ma">
+                        <!-- Top KPI Cards for Regiao Centro -->
+                        <div class="grid grid-3 margin-bottom-lg" style="gap: 16px;">
+                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 20px;">
+                                <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">IDEB Médio Região Centro (2023)</span>
+                                <h2 style="font-size: 2.75rem; font-weight: 800; color: var(--text-primary); margin: 8px 0;">4.8</h2>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;">Polo Central Maranhense</p>
+                            </div>
+
+                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 20px;">
+                                <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">IDEB Médio Região Centro (2025)</span>
+                                <h2 style="font-size: 2.75rem; font-weight: 800; color: var(--green-light); margin: 8px 0;">5.2</h2>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0; display: flex; align-items: center; gap: 4px;">
+                                    <i data-lucide="trending-up" style="width:14px; height:14px; color: var(--green-light);"></i> Evolução regional de +0.4
+                                </p>
+                            </div>
+
+                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 20px;">
+                                <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">Posicionamento Regional</span>
+                                <div style="margin: 12px 0;">
+                                    <span class="badge badge-purple" style="font-size: 1.1rem; font-weight: 800; padding: 6px 14px;">6º Lugar (Região Centro)</span>
+                                </div>
+                                <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0;">Gonçalves Dias entre os líderes do polo</p>
+                            </div>
+                        </div>
+
+                        <!-- Table -->
                         <div class="card" style="padding: 20px; border: 1px solid var(--border-color); background: var(--bg-secondary);">
                             <div class="flex-between margin-bottom-md" style="align-items: center;">
                                 <div>
@@ -1335,49 +1440,77 @@
                                         </tr>
                                     </thead>
                                     <tbody id="table-regiao-centro-body">
-                                        <!-- Injetado dinamicamente via JS -->
+                                        <!-- Injetado via JS -->
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
 
+
                     <!-- ABA 4: RANKING GERAL DO MARANHÃO (2023 & 2025) -->
                     <div class="ideb-regional-tab-content hidden" id="tab-ideb-ranking-geral-ma">
+                        <!-- Top KPI Cards for Ranking Estadual -->
+                        <div class="grid grid-3 margin-bottom-lg" style="gap: 16px;">
+                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 20px;">
+                                <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">Posição Estadual 2023</span>
+                                <h2 style="font-size: 2.75rem; font-weight: 800; color: var(--text-primary); margin: 8px 0;">12º</h2>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;">IDEB 4.8 (Anos Iniciais)</p>
+                            </div>
+
+                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 20px;">
+                                <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">Posição Estadual 2025</span>
+                                <h2 style="font-size: 2.75rem; font-weight: 800; color: var(--green-light); margin: 8px 0;">7º</h2>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0; display: flex; align-items: center; gap: 4px;">
+                                    <i data-lucide="trending-up" style="width:14px; height:14px; color: var(--green-light);"></i> Subiu +5 posições no estado
+                                </p>
+                            </div>
+
+                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 20px;">
+                                <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">Classificação Oficial</span>
+                                <div style="margin: 12px 0;">
+                                    <span class="badge badge-success" style="font-size: 1.1rem; font-weight: 800; padding: 6px 14px;">Evolução Acima da Média</span>
+                                </div>
+                                <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0;">Gonçalves Dias (5.2) vs Média MA (4.8)</p>
+                            </div>
+                        </div>
+
+                        <!-- Table with Search & Pagination -->
                         <div class="card" style="padding: 20px; border: 1px solid var(--border-color); background: var(--bg-secondary);">
-                            <div class="flex-between margin-bottom-md" style="align-items: center;">
+                            <div class="flex-between margin-bottom-md flex-wrap gap-md" style="align-items: center;">
                                 <div>
                                     <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0;">
                                         Ranking Geral dos Municípios do Maranhão (IDEB 2023 & 2025)
                                     </h3>
                                     <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">
-                                        Posicionamento estadual com destaque para Gonçalves Dias e as melhores práticas do Maranhão.
+                                        Pesquisa rápida por município. Pressione <strong>Enter</strong> para confirmar.
                                     </p>
+                                </div>
+                                <div style="min-width: 260px;">
+                                    <input type="text" id="input-search-ranking-ma" class="form-input-text" placeholder="Buscar município no ranking..." style="height: 36px; font-size: 0.82rem; width: 100%;">
                                 </div>
                             </div>
                             <div style="overflow-x: auto;">
                                 <table class="table-compact" style="width: 100%; border-collapse: collapse; text-align: left;">
                                     <thead>
-                                        <tr style="background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color); font-size: 0.74rem; color: var(--text-secondary); text-transform: uppercase;">
-                                            <th style="padding: 10px 14px;">Ranking MA</th>
-                                            <th style="padding: 10px 14px;">Município</th>
-                                            <th style="padding: 10px 14px; text-align: center;">IDEB 2023</th>
-                                            <th style="padding: 10px 14px; text-align: center;">IDEB 2025</th>
-                                            <th style="padding: 10px 14px; text-align: center; color: var(--green-light);">Evolução Geral</th>
+                                        <tr style="background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color); font-size: 0.74rem; color: var(--text-secondary); text-transform: uppercase; cursor: pointer;">
+                                            <th style="padding: 10px 14px;" onclick="sortRankingMa('rank')">Ranking MA ⇕</th>
+                                            <th style="padding: 10px 14px;" onclick="sortRankingMa('cidade')">Município ⇕</th>
+                                            <th style="padding: 10px 14px; text-align: center;" onclick="sortRankingMa('ideb2023')">IDEB 2023 ⇕</th>
+                                            <th style="padding: 10px 14px; text-align: center;" onclick="sortRankingMa('ideb2025')">IDEB 2025 ⇕</th>
+                                            <th style="padding: 10px 14px; text-align: center; color: var(--green-light);" onclick="sortRankingMa('evolucao')">Evolução Geral ⇕</th>
                                             <th style="padding: 10px 14px; text-align: center;">Classificação</th>
                                         </tr>
                                     </thead>
                                     <tbody id="table-ranking-geral-ma-body">
-                                        <!-- Injetado dinamicamente via JS -->
+                                        <!-- Injetado via JS -->
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
 
-                </section>
-                
-<!-- ==================== MATRIZ & DESCRITORES TAB ==================== -->
+                <!-- ==================== MATRIZ & DESCRITORES TAB ==================== -->
                 <section id="matriz-descritores" class="tab-content">
                     <div class="card card-full margin-bottom-lg">
                         <div class="card-header flex-between flex-wrap gap-md">
@@ -4226,6 +4359,6 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=f867f001"></script>
+    <script src="app.js?v=38475fb3"></script>
 </body>
 </html>
