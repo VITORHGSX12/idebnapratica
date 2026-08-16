@@ -1132,21 +1132,7 @@
                         </div>
                     </div>
 
-                    <!-- VIEW 2: VISÃO INTERNA DA ESCOLA (LAYOUT CONFORME SCREENSHOT DO USUÁRIO) -->
-                    <div id="school-classes-table-view" class="hidden">
-                        
-                        <!-- Header Superior da Escola (Exatamente conforme a imagem do usuário) -->
-                        <!-- Header Superior da Escola (Com Botão de Edição) -->
-                        <div class="card margin-bottom-md" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 16px 20px; border-radius: var(--radius-lg); color: #ffffff;">
-                            <div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
-                                <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
-                                    <button class="btn btn-icon" id="btn-back-from-classes-to-schools" style="width: 38px; height: 38px; border-radius: var(--radius-md); background: var(--border-color); border: 1px solid var(--bg-tertiary); color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Voltar para Lista de Escolas">
-                                        <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i>
-                                    </button>
-                                    
-                                    <div style="width: 44px; height: 44px; border-radius: 50%; background: #065f46; border: 2px solid #10b981; display: flex; align-items: center; justify-content: center; color: #34d399; flex-shrink: 0;">
-                                        <i data-lucide="landmark" style="width: 22px; height: 22px;"></i>
-                                    </div>
+                    
 
                                     <div>
                                         <h2 id="workspace-school-name" style="font-size: 1.35rem; font-weight: 800; color: var(--text-primary); margin: 0 0 4px 0; text-transform: uppercase; letter-spacing: -0.3px;">
@@ -1368,7 +1354,23 @@
                             </div>
                         </div>
                     </div>
-                </section>
+                
+<!-- VIEW 2: VISÃO INTERNA DA ESCOLA (LAYOUT CONFORME SCREENSHOT DO USUÁRIO) -->
+                    <div id="school-classes-table-view" class="hidden">
+                        
+                        <!-- Header Superior da Escola (Exatamente conforme a imagem do usuário) -->
+                        <!-- Header Superior da Escola (Com Botão de Edição) -->
+                        <div class="card margin-bottom-md" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 16px 20px; border-radius: var(--radius-lg); color: #ffffff;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
+                                <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+                                    <button class="btn btn-icon" id="btn-back-from-classes-to-schools" style="width: 38px; height: 38px; border-radius: var(--radius-md); background: var(--border-color); border: 1px solid var(--bg-tertiary); color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Voltar para Lista de Escolas">
+                                        <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i>
+                                    </button>
+                                    
+                                    <div style="width: 44px; height: 44px; border-radius: 50%; background: #065f46; border: 2px solid #10b981; display: flex; align-items: center; justify-content: center; color: #34d399; flex-shrink: 0;">
+                                        <i data-lucide="landmark" style="width: 22px; height: 22px;"></i>
+                                    </div>
+            </section>
 
                 <!-- ==================== ALUNOS PANEL TAB ==================== -->
                 <section id="alunos-panel" class="tab-content">
@@ -5450,7 +5452,7 @@
     <script src="ideb_publico_db.js"></script>
     <script src="ideb_maranhao_oficial_2015_2025.js"></script>
     <script src="escolas_maranhao_oficial_2015_2025.js"></script>
-    <script src="app.js?v=5187ecc1"></script>
+    <script src="app.js?v=66c8f0d3"></script>
 
     <!-- Modal Vincular Professor à Turma -->
     <div id="modal-assign-teacher" class="modal-overlay hidden">

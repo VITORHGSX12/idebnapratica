@@ -16150,3 +16150,17 @@ if (document.readyState === 'loading') {
         `;
     }
     window.renderSchoolOverviewTab = renderSchoolOverviewTab;
+
+
+    // GUARD: Garantir que a Visão Interna da Escola só fique visível no Módulo Escolas da Rede
+    const originalSwitchMainTab = window.switchMainTab;
+    window.switchMainTab = function(tabId) {
+        const schoolView = document.getElementById('school-classes-table-view');
+        if (schoolView && tabId !== 'escolas-panel') {
+            schoolView.classList.add('hidden');
+            schoolView.style.display = 'none';
+        }
+        if (typeof originalSwitchMainTab === 'function') {
+            originalSwitchMainTab(tabId);
+        }
+    };
