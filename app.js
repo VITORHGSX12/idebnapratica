@@ -16630,3 +16630,135 @@ window.showTab = window.switchTab;
     window.switchTab = switchTab;
     window.switchMainTab = switchTab;
     window.showTab = switchTab;
+
+
+    // =========================================================================
+    // PASSO 1: PROTEÇÃO RESILIENTE DA SIDEBAR PRINCIPAL (OPTIONAL CHAINING & GUARDS)
+    // =========================================================================
+
+    function safeGetUserProfile() {
+        try {
+            const raw = localStorage.getItem('gestao_usuario_logado') || sessionStorage.getItem('gestao_usuario_logado');
+            if (raw) {
+                const user = JSON.parse(raw);
+                return {
+                    nome: user?.nome ?? 'Gestor Rede',
+                    perfil: user?.perfil ?? 'Secretaria Exec.',
+                    escola: user?.escola ?? 'SEMED Gonçalves Dias',
+                    email: user?.email ?? 'semed@goncalvesdias.ma.gov.br'
+                };
+            }
+        } catch (err) {
+            console.warn('[Sidebar Guard] Non-critical user profile read fallback:', err);
+        }
+        return { nome: 'Gestor Rede', perfil: 'Secretaria Exec.', escola: 'SEMED Gonçalves Dias', email: 'semed@goncalvesdias.ma.gov.br' };
+    }
+
+    function updateSidebarUserProfileUI() {
+        const user = safeGetUserProfile();
+        const userNameEl = document.querySelector('.user-name');
+        const userRoleEl = document.querySelector('.user-role');
+        const userAvatarEl = document.querySelector('.user-profile .avatar');
+
+        if (userNameEl) userNameEl.textContent = user?.nome ?? 'Gestor Rede';
+        if (userRoleEl) userRoleEl.textContent = user?.perfil ?? 'Secretaria Exec.';
+        if (userAvatarEl && user?.nome) {
+            const initials = user.nome.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+            userAvatarEl.textContent = initials || 'AD';
+        }
+    }
+
+    // PASSO 1 ROUTER GUARD: switchTab with Optional Chaining & Zero Crash
+    function switchTab(targetTab) {
+        const safeTarget = targetTab?.toString()?.trim() || 'dashboard';
+
+        const tabAliases = {
+            'criar-avaliacoes': 'sec-criar-avaliacoes',
+            'aplicacao-provas': 'sec-aplicacao-provas',
+            'questions': 'banco-questoes',
+            'ai-playground': 'relatorios-monitoramento'
+        };
+
+        const resolvedTab = tabAliases[safeTarget] ?? safeTarget;
+
+        try {
+            try { localStorage?.setItem('lastActiveTab', resolvedTab); } catch(e) {}
+
+            // Hide all tab content sections safely
+            const allTabs = document.querySelectorAll('.tab-content');
+            allTabs?.forEach(tab => {
+                if (tab?.classList) {
+                    tab.classList.remove('active');
+                    tab.classList.add('hidden');
+                    tab.style.display = 'none';
+                }
+            });
+
+            // PASSO 2: Sub-sidebar da escola NUNCA renderiza no Dashboard ou fora de escolas-panel
+            const schoolView = document.getElementById('school-classes-table-view');
+            if (schoolView && resolvedTab !== 'escolas-panel') {
+                schoolView.classList.add('hidden');
+                schoolView.style.display = 'none';
+            }
+
+            const schoolsList = document.getElementById('schools-list-container');
+            if (schoolsList && resolvedTab === 'escolas-panel') {
+                schoolsList.classList.remove('hidden');
+                schoolsList.style.display = 'block';
+            }
+
+            // Target section display
+            let targetEl = document.getElementById(resolvedTab) ?? document.getElementById(safeTarget);
+
+            if (targetEl) {
+                targetEl.classList.remove('hidden');
+                targetEl.classList.add('active');
+                targetEl.style.display = 'block';
+            } else {
+                console.warn('[Router Warning] Target section missing, falling back to #dashboard:', resolvedTab);
+                const dashEl = document.getElementById('dashboard');
+                if (dashEl) {
+                    dashEl.classList.remove('hidden');
+                    dashEl.classList.add('active');
+                    dashEl.style.display = 'block';
+                }
+            }
+
+            // Sidebar Menu Items Active Highlight
+            const allMenuItems = document.querySelectorAll('.menu-item');
+            allMenuItems?.forEach(item => {
+                const dt = item?.getAttribute('data-target');
+                if (dt === resolvedTab || dt === safeTarget || (tabAliases[dt] === resolvedTab)) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+
+            // Trigger safe Tab Renderers
+            if (resolvedTab === 'escolas-panel' && typeof renderDbSchools === 'function') {
+                renderDbSchools();
+            } else if (resolvedTab === 'alunos-panel' && typeof renderDbStudents === 'function') {
+                renderDbStudents();
+            } else if (resolvedTab === 'metas-ideb' && typeof populateIdebGoalsTable === 'function') {
+                populateIdebGoalsTable();
+            } else if (resolvedTab === 'ideb-comparativo' && typeof initIdebCitySelector === 'function') {
+                initIdebCitySelector();
+            }
+
+            // Re-render Lucide icons safely
+            if (window?.lucide?.createIcons) {
+                try { window.lucide.createIcons(); } catch(err) {}
+            }
+        } catch (err) {
+            console.error('[Router Crash Prevented] Error switching tab:', err);
+        }
+    }
+
+    window.switchTab = switchTab;
+    window.switchMainTab = switchTab;
+    window.showTab = switchTab;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        updateSidebarUserProfileUI();
+    });
