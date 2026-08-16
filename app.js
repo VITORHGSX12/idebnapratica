@@ -1,4 +1,16 @@
 const initApp = () => {
+
+    // Auto-login & Session Recovery on Page Reload / F5
+    const isLogged = (localStorage.getItem('isLoggedIn') === 'true' || sessionStorage.getItem('isLoggedIn') === 'true');
+    var loginScreenEl = document.getElementById('login-screen');
+    if (isLogged && loginScreenEl) { loginScreenEl.style.display = 'none'; }
+    if (isLogged && loginScreen) {
+        loginScreen.style.display = 'none';
+        const savedEmail = localStorage.getItem('userEmail') || sessionStorage.getItem('userEmail') || 'semed@goncalvesdias.ma.gov.br';
+        const userEmailDisplay = document.getElementById('user-display-email');
+        if (userEmailDisplay) userEmailDisplay.textContent = savedEmail;
+    }
+
     // Global Error Listener for debugging client prototype
     window.addEventListener('error', function(e) {
         console.error('Captured exception:', e);
@@ -12039,3 +12051,102 @@ if (document.readyState === 'loading') {
         if (typeof setup7ColCalendarEvents === 'function') setup7ColCalendarEvents();
         if (typeof render7ColCalendar === 'function') render7ColCalendar();
     });
+
+
+    // ==========================================
+    // VINCULAÇÃO MASTER DE EVENTOS (SIDEBAR, VOLTAR, PLANOS, IA)
+    // ==========================================
+    function setupMasterFeatures() {
+        // 1. Sidebar Collapse
+        const sidebarToggle = document.getElementById('sidebar-collapse-toggle') || document.getElementById('btn-toggle-sidebar');
+        if (sidebarToggle) {
+            sidebarToggle.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                document.body.classList.toggle('collapsed-sidebar');
+                const isCollapsed = document.body.classList.contains('collapsed-sidebar');
+                localStorage.setItem('sidebar_collapsed', isCollapsed ? 'true' : 'false');
+            };
+            if (localStorage.getItem('sidebar_collapsed') === 'true') {
+                document.body.classList.add('collapsed-sidebar');
+            }
+        }
+
+        // 2. Global Back Button
+        const btnGlobalBack = document.getElementById('btn-global-header-back');
+        if (btnGlobalBack) {
+            btnGlobalBack.onclick = function(e) {
+                e.preventDefault();
+                const schoolClassesView = document.getElementById('school-classes-table-view');
+                const diaryView = document.getElementById('class-diary-view');
+                const userProfileView = document.getElementById('user-profile-view');
+
+                if (diaryView && !diaryView.classList.contains('hidden')) {
+                    diaryView.classList.add('hidden');
+                    if (schoolClassesView) schoolClassesView.classList.remove('hidden');
+                    return;
+                }
+
+                if (schoolClassesView && !schoolClassesView.classList.contains('hidden')) {
+                    schoolClassesView.classList.add('hidden');
+                    const overview = document.getElementById('schools-overview-container');
+                    if (overview) overview.classList.remove('hidden');
+                    return;
+                }
+
+                if (userProfileView && !userProfileView.classList.contains('hidden')) {
+                    userProfileView.classList.add('hidden');
+                    const usersList = document.getElementById('users-list-view');
+                    if (usersList) usersList.classList.remove('hidden');
+                    return;
+                }
+
+                window.navigateToTab('dashboard');
+            };
+        }
+
+        // 3. Manual PDE Modal Handling
+        const btnOpenPdeModal = document.getElementById('btn-create-pde-plan') || document.getElementById('btn-manual-pde-plan');
+        const modalPde = document.getElementById('modal-create-pde-manual');
+        const btnClosePde = document.getElementById('btn-close-pde-modal');
+        const btnCancelPde = document.getElementById('btn-cancel-pde-modal');
+        const formPde = document.getElementById('form-create-pde-manual');
+
+        if (btnOpenPdeModal && modalPde) {
+            btnOpenPdeModal.onclick = () => modalPde.classList.remove('hidden');
+        }
+        if (btnClosePde && modalPde) {
+            btnClosePde.onclick = () => modalPde.classList.add('hidden');
+        }
+        if (btnCancelPde && modalPde) {
+            btnCancelPde.onclick = () => modalPde.classList.add('hidden');
+        }
+        if (formPde && modalPde) {
+            formPde.onsubmit = function(e) {
+                e.preventDefault();
+                const escola = document.getElementById('pde-school-select').value;
+                const etapa = document.getElementById('pde-stage-select').value;
+                const meta = document.getElementById('pde-target-ideb').value;
+                const coord = document.getElementById('pde-coordinator').value;
+                const desc = document.getElementById('pde-descriptors').value;
+                const acoes = document.getElementById('pde-actions').value;
+
+                modalPde.classList.add('hidden');
+                showToast(`Plano de Desenvolvimento Escolar (PDE) de "${escola}" publicado com sucesso!`, 'check');
+                if (typeof renderRiskGoalsTable === 'function') renderRiskGoalsTable();
+            };
+        }
+
+        // 4. Initial rendering of Calendar & Regional
+        if (typeof render7ColCalendar === 'function') render7ColCalendar();
+        if (typeof setup7ColCalendarEvents === 'function') setup7ColCalendarEvents();
+        if (typeof initIdebComparativo === 'function') initIdebComparativo();
+        if (typeof renderDbSchools === 'function') renderDbSchools();
+    }
+
+    // Call master bindings on window ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupMasterFeatures);
+    } else {
+        setupMasterFeatures();
+    }

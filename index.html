@@ -293,6 +293,9 @@
             <!-- Top Navbar -->
             <header class="top-navbar">
                 <div class="navbar-left" style="display: flex; align-items: center; gap: 12px;">
+                    <button id="btn-global-header-back" class="btn btn-icon" style="width: 38px; height: 38px; border-radius: var(--radius-md); background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Voltar à seção anterior">
+                        <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i>
+                    </button>
                     <button class="btn-icon" id="mobile-menu-toggle" style="display:none; background: none; border: none; color: var(--text-primary); cursor: pointer; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: var(--radius-md);">
                         <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
                     </button>
@@ -926,7 +929,72 @@
                             </div>
                         </div>
                     </div>
-                </section>
+                
+    <!-- Modal de Criação Manual de Plano de Desenvolvimento Escolar (PDE) -->
+    <div id="modal-create-pde-manual" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 680px; width: 92%;">
+            <div class="modal-header flex-between" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                <div>
+                    <h3 style="margin:0; font-size:1.2rem;">Criar Plano de Intervenção Pedagógica (PDE)</h3>
+                    <p class="text-sm text-muted" style="margin:2px 0 0 0;">Ano Letivo 2026 • Gestão Pedagógica SEMED</p>
+                </div>
+                <button class="btn btn-icon" id="btn-close-pde-modal"><i data-lucide="x"></i></button>
+            </div>
+            <form id="form-create-pde-manual" class="modal-body" style="padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+                <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 12px;">
+                    <div class="form-group">
+                        <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 4px;">Unidade Escolar *</label>
+                        <select id="pde-school-select" class="form-select" required>
+                            <option value="UI JOSE CORREA LIMA">UI JOSE CORREA LIMA</option>
+                            <option value="UI EMILIO MURAD">UI EMILIO MURAD</option>
+                            <option value="UE VEREADOR LEONARDO FERREIRA LIMA">UE VEREADOR LEONARDO FERREIRA LIMA</option>
+                            <option value="U I BASILIO ALVES">U I BASILIO ALVES</option>
+                            <option value="UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ">UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ</option>
+                            <option value="UE RAIMUNDO DOS REIS DA SILVA">UE RAIMUNDO DOS REIS DA SILVA</option>
+                            <option value="UNIDADE INTEGRADA JOSE GONCALVES DIAS">UNIDADE INTEGRADA JOSE GONCALVES DIAS</option>
+                            <option value="UNIDADE ESCOLAR ANISIO GOMES">UNIDADE ESCOLAR ANISIO GOMES</option>
+                            <option value="UE ANITA FURTADO">UE ANITA FURTADO</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 4px;">Etapa / Ano *</label>
+                        <select id="pde-stage-select" class="form-select" required>
+                            <option value="5º Ano">5º Ano (Fundamental Menor)</option>
+                            <option value="2º Ano">2º Ano (Alfabetização)</option>
+                            <option value="9º Ano">9º Ano (Fundamental Maior)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="form-group">
+                        <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 4px;">Meta Numérica IDEB *</label>
+                        <input type="number" id="pde-target-ideb" class="form-input-text" step="0.1" value="5.6" required>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 4px;">Responsável / Coordenador *</label>
+                        <input type="text" id="pde-coordinator" class="form-input-text" value="Coordenação Pedagógica SEMED" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 4px;">Descritores Críticos Prioritários *</label>
+                    <input type="text" id="pde-descriptors" class="form-input-text" value="D01, D03, D04 (LP) e D13, D14, D19 (MAT)" required>
+                </div>
+
+                <div class="form-group">
+                    <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 4px;">Ações Pedagógicas e Metodologia Estruturada *</label>
+                    <textarea id="pde-actions" class="form-input-text" style="height: 80px; font-size: 0.82rem;" required>Oficinas semanais de fluência leitora e recomposição de aprendizagem matemática com material manipulativo.</textarea>
+                </div>
+
+                <div class="modal-footer flex-end" style="border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 8px; gap: 8px;">
+                    <button type="button" class="btn btn-outline" id="btn-cancel-pde-modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btn-submit-pde-modal">Salvar e Publicar Plano</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    </section>
 
                 <!-- ==================== COMPARATIVO REGIONAL TAB (PRESET GONÇALVES DIAS • URE PRESIDENTE DUTRA • CENTRO MA • RANKING 2023/2025) ==================== -->
                 <section id="ideb-comparativo" class="tab-content">
@@ -3976,6 +4044,6 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=4539bb84"></script>
+    <script src="app.js?v=8e272f7f"></script>
 </body>
 </html>
