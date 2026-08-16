@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>IDEB na Prática - Plataforma de Gestão e Avaliação Educacional</title>
-    <link rel="stylesheet" href="styles.css?v=6b5a6073">
+    <link rel="stylesheet" href="styles.css?v=46f6f213">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1217,716 +1217,249 @@
                     </div>
                 </section>
 
-                <!-- ==================== CRONOGRAMA DE HABILIDADES TAB ==================== -->
+                <!-- ==================== CRONOGRAMA ANUAL DE HABILIDADES & CALENDÁRIO LETIVO 2026 ==================== -->
                 <section id="cronograma-habilidades" class="tab-content">
-                    <div class="card card-full margin-bottom-lg">
-                        <div class="card-header flex-between flex-wrap gap-md">
+                    
+                    <!-- Header do Calendário -->
+                    <div class="card margin-bottom-lg" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(59, 130, 246, 0.05) 100%); border-left: 4px solid var(--purple);">
+                        <div class="flex-between flex-wrap gap-md" style="align-items: center;">
                             <div>
-                                <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(139, 92, 246, 0.1); color:var(--purple-light); padding:3px 10px; border-radius:12px; font-size:0.75rem; font-weight:700; margin-bottom:6px;">
-                                    <i data-lucide="calendar-check-2" style="width:12px; height:12px;"></i> PLANEJAMENTO OPERACIONAL DA REDE
+                                <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(139, 92, 246, 0.15); color:var(--purple-light); padding:3px 10px; border-radius:12px; font-size:0.72rem; font-weight:700; text-transform:uppercase; margin-bottom:6px;">
+                                    <i data-lucide="calendar-check" style="width:12px; height:12px;"></i>
+                                    Planejamento Letivo Anual • SEMED Gonçalves Dias
                                 </div>
-                                <h3 style="margin: 0; font-size: 1.35rem; font-weight: 700; color: var(--text-primary);">
-                                    Cronograma de Habilidades da Rede (40 Semanas)
+                                <h3 style="margin: 0; font-size: 1.35rem; font-weight: 800; color: var(--text-primary);">
+                                    Calendário Anual de Habilidades & Descritores SAEB (Ano Letivo 2026)
                                 </h3>
-                                <p class="card-subtitle" style="margin: 4px 0 0 0;">Planejamento, pactuação e acompanhamento semanal dos descritores SAEB/SEAMA (SEMED ↔ Docentes).</p>
+                                <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: var(--text-secondary);">
+                                    Roteiro diário de habilidades a trabalhar. Dias com habilidades pendentes aparecem em <strong style="color: #ef4444;">Vermelho</strong> e mudam para <strong style="color: #22c55e;">Verde</strong> conforme marcadas como trabalhadas pelo professor.
+                                </p>
                             </div>
-                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                <button class="btn btn-primary" id="btn-generate-schedule-ia" style="display: flex; align-items: center; gap: 6px;">
-                                    <i data-lucide="sparkles" style="width:16px; height:16px;"></i> Gerar conforme dados atuais (40 Semanas)
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button class="btn btn-outline btn-sm" id="btn-mark-all-month-done" style="display: flex; align-items: center; gap: 6px; font-size: 0.78rem;">
+                                    <i data-lucide="check-check"></i>
+                                    <span>Marcar Mês como Trabalhado</span>
                                 </button>
-                                <button class="btn btn-outline" id="btn-open-create-schedule-modal" style="display: flex; align-items: center; gap: 6px;">
-                                    <i data-lucide="plus-circle" style="width:16px; height:16px;"></i> + Nova Semana Manual
+                                <button class="btn btn-outline btn-sm" id="btn-export-calendar-pdf" style="display: flex; align-items: center; gap: 6px; font-size: 0.78rem;">
+                                    <i data-lucide="printer"></i>
+                                    <span>Imprimir Calendário Mensal</span>
                                 </button>
-                                <button class="btn btn-outline" id="btn-export-schedule" style="display: flex; align-items: center; gap: 6px;">
-                                    <i data-lucide="download" style="width:16px; height:16px;"></i> Exportar Agenda (PDF)
+                                <button class="btn btn-primary btn-sm" id="btn-open-add-skill-day-modal" style="display: flex; align-items: center; gap: 6px; font-size: 0.78rem;">
+                                    <i data-lucide="plus"></i>
+                                    <span>+ Atribuir Habilidade ao Dia</span>
                                 </button>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- KPI Summary of Skills Completion -->
-                        <div class="card-body" style="padding-bottom: 0;">
-                            <div class="school-kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
-                                <div class="school-kpi-card">
-                                    <div class="school-kpi-icon-wrap blue">
-                                        <i data-lucide="calendar" style="width:24px; height:24px;"></i>
-                                    </div>
-                                    <div>
-                                        <div class="school-kpi-label">SEMANAS PLANEJADAS</div>
-                                        <div class="school-kpi-value" id="schedule-kpi-weeks">40 Semanas</div>
-                                        <div class="school-kpi-sub">Ano Letivo 2026</div>
-                                    </div>
-                                </div>
-
-                                <div class="school-kpi-card">
-                                    <div class="school-kpi-icon-wrap green">
-                                        <i data-lucide="check-circle-2" style="width:24px; height:24px;"></i>
-                                    </div>
-                                    <div>
-                                        <div class="school-kpi-label">TAXA DE CUMPRIMENTO (REDE)</div>
-                                        <div class="school-kpi-value" id="schedule-kpi-compliance">88.4%</div>
-                                        <div class="school-kpi-sub" id="schedule-kpi-completed-sub">35 de 40 metas atingidas</div>
-                                    </div>
-                                </div>
-
-                                <div class="school-kpi-card">
-                                    <div class="school-kpi-icon-wrap amber">
-                                        <i data-lucide="layers" style="width:24px; height:24px;"></i>
-                                    </div>
-                                    <div>
-                                        <div class="school-kpi-label">HABILIDADES TRABALHADAS</div>
-                                        <div class="school-kpi-value" id="schedule-kpi-skills">48 Descritores</div>
-                                        <div class="school-kpi-sub">Língua Portuguesa & Matemática</div>
-                                    </div>
-                                </div>
-
-                                <div class="school-kpi-card">
-                                    <div class="school-kpi-icon-wrap purple">
-                                        <i data-lucide="target" style="width:24px; height:24px;"></i>
-                                    </div>
-                                    <div>
-                                        <div class="school-kpi-label">META IDEB VINCULADA</div>
-                                        <div class="school-kpi-value" id="schedule-kpi-target-ideb" style="color:var(--purple-light);">Meta 6.5</div>
-                                        <div class="school-kpi-sub">Pactuada em Metas & Plan.</div>
-                                    </div>
-                                </div>
-                            </div>
-                        <!-- CALENDÁRIO DIÁRIO DE HABILIDADES (SEGUNDA A SEXTA) -->
-                        <div class="card-body" style="padding-top: 14px; padding-bottom: 6px;">
-                            <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 20px;">
-                                <div class="flex-between flex-wrap gap-md" style="margin-bottom: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
-                                    <div style="display: flex; align-items: center; gap: 10px;">
-                                        <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(139, 92, 246, 0.15); color: var(--purple-light); display: flex; align-items: center; justify-content: center;">
-                                            <i data-lucide="calendar-days" style="width: 20px; height: 20px;"></i>
-                                        </div>
-                                        <div>
-                                            <h4 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: var(--text-primary);">Calendário Diário de Instrução Pedagógica (Segunda a Sexta)</h4>
-                                            <p style="margin: 2px 0 0 0; font-size: 0.8rem; color: var(--text-secondary);">Roteiro passo a passo do professor em sala de aula para a habilidade da semana.</p>
-                                        </div>
-                                    </div>
-                                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                                        <label for="calendar-week-select" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">Semana Selecionada:</label>
-                                        <select id="calendar-week-select" class="form-select" style="background: var(--bg-tertiary); font-size: 0.8rem; padding: 6px 12px; width: 170px;">
-                                            <!-- Preenchido via JS com as semanas 1 a 40 -->
-                                        </select>
-                                        <select id="calendar-stage-select" class="form-select" style="background: var(--bg-tertiary); font-size: 0.8rem; padding: 6px 12px; width: 140px;">
-                                            <option value="5º Ano" selected>5º Ano EF (SAEB)</option>
-                                            <option value="2º Ano">2º Ano EF (SEAMA)</option>
-                                            <option value="9º Ano">9º Ano EF (SAEB)</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <!-- 5 Days Grid -->
-                                <div id="calendar-daily-cards-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px;">
-                                    <!-- Injetado dinamicamente via renderDailyCalendar() -->
-                                </div>
-                            </div>
+                    <!-- Seletor de Meses (Fevereiro a Dezembro de 2026) -->
+                    <div class="card margin-bottom-md" style="padding: 12px 18px; background: var(--bg-secondary);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">
+                                📅 Selecione o Mês do Ano Letivo 2026:
+                            </span>
+                            <span id="calendar-active-month-label" style="font-size: 0.85rem; font-weight: 800; color: var(--purple-light);">
+                                Fevereiro / 2026
+                            </span>
                         </div>
-
-                        <!-- Filter Toolbar -->
-                        <div class="card-header border-top flex-between flex-wrap gap-md" style="background-color: var(--bg-tertiary); padding: 12px 24px;">
-                            <div style="display: flex; gap: 14px; flex-wrap: wrap; flex-grow: 1; align-items: center;">
-                                <div style="min-width: 180px;">
-                                    <select id="schedule-filter-stage" class="form-select" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 12px; width: 100%;">
-                                        <option value="all">Todas as Etapas (2º, 5º e 9º)</option>
-                                        <option value="2º Ano">2º Ano — Alfabetização (SEAMA)</option>
-                                        <option value="5º Ano">5º Ano — Anos Iniciais (SAEB)</option>
-                                        <option value="9º Ano">9º Ano — Anos Finais (SAEB)</option>
-                                    </select>
-                                </div>
-                                <div style="min-width: 180px;">
-                                    <select id="schedule-filter-status" class="form-select" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 12px; width: 100%;">
-                                        <option value="all">Todos os Status</option>
-                                        <option value="cumprido">Cumprido 🟢</option>
-                                        <option value="andamento">Em Andamento 🟡</option>
-                                        <option value="pendente">Pendente / Não Cumprido 🔴</option>
-                                    </select>
-                                </div>
-                            </div>
+                        <div style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px;" id="calendar-month-pills-container">
+                            <button class="calendar-month-pill active" data-month="2">Fev</button>
+                            <button class="calendar-month-pill" data-month="3">Mar</button>
+                            <button class="calendar-month-pill" data-month="4">Abr</button>
+                            <button class="calendar-month-pill" data-month="5">Mai</button>
+                            <button class="calendar-month-pill" data-month="6">Jun</button>
+                            <button class="calendar-month-pill" data-month="7">Jul (Recesso)</button>
+                            <button class="calendar-month-pill" data-month="8">Ago</button>
+                            <button class="calendar-month-pill" data-month="9">Set</button>
+                            <button class="calendar-month-pill" data-month="10">Out</button>
+                            <button class="calendar-month-pill" data-month="11">Nov</button>
+                            <button class="calendar-month-pill" data-month="12">Dez</button>
                         </div>
+                    </div>
 
-                        <!-- Schedule List Container -->
-                        <div class="card-body">
-                            <div id="skills-schedule-container" style="display: flex; flex-direction: column; gap: 14px;">
-                                <!-- Preenchido dinamicamente via JS -->
+                    <!-- Barra de Filtros: Etapa, Disciplina, Escola -->
+                    <div class="card margin-bottom-md" style="padding: 14px 18px;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) auto; gap: 12px; align-items: center;">
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 2px;">Etapa / Ano Escolar</label>
+                                <select id="cal-filter-stage" class="form-select" style="height: 36px; font-size: 0.8rem;">
+                                    <option value="5º Ano" selected>5º Ano (Fundamental Menor - SAEB)</option>
+                                    <option value="2º Ano">2º Ano (Alfabetização & Fluência - SEAMA)</option>
+                                    <option value="9º Ano">9º Ano (Fundamental Maior - SAEB)</option>
+                                </select>
                             </div>
-                        </div>
-
-                        <!-- RELATÓRIO DE MONITORAMENTO DE ROTINA POR ESCOLA (RODAPÉ) -->
-                        <div class="card-body border-top" style="padding-top: 24px;">
-                            <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
-                                <div class="flex-between flex-wrap gap-md" style="margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
-                                    <div>
-                                        <h4 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
-                                            <i data-lucide="clipboard-check" style="color: var(--green-light); width: 20px; height: 20px;"></i>
-                                            Relatório de Monitoramento da Rotina por Escola (SEMED)
-                                        </h4>
-                                        <p style="margin: 4px 0 0 0; font-size: 0.82rem; color: var(--text-secondary);">Acompanhamento em tempo real do cumprimento da rotina semanal de habilidades nas 9 escolas da rede.</p>
-                                    </div>
-                                    <button class="btn btn-outline" id="btn-export-school-monitoring" style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem;">
-                                        <i data-lucide="printer" style="width: 14px; height: 14px;"></i>
-                                        <span>Imprimir Relatório de Monitoramento</span>
-                                    </button>
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 2px;">Disciplina</label>
+                                <select id="cal-filter-subject" class="form-select" style="height: 36px; font-size: 0.8rem;">
+                                    <option value="all">Todas as Disciplinas</option>
+                                    <option value="Língua Portuguesa">Língua Portuguesa</option>
+                                    <option value="Matemática">Matemática</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 2px;">Unidade Escolar</label>
+                                <select id="cal-filter-school" class="form-select" style="height: 36px; font-size: 0.8rem;">
+                                    <option value="all">Todas as 9 Escolas da Rede</option>
+                                    <option value="UI JOSE CORREA LIMA">UI JOSE CORREA LIMA</option>
+                                    <option value="UI EMILIO MURAD">UI EMILIO MURAD</option>
+                                    <option value="UE VEREADOR LEONARDO FERREIRA LIMA">UE VEREADOR LEONARDO FERREIRA LIMA</option>
+                                    <option value="U I BASILIO ALVES">U I BASILIO ALVES</option>
+                                    <option value="UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ">UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ</option>
+                                    <option value="UE RAIMUNDO DOS REIS DA SILVA">UE RAIMUNDO DOS REIS DA SILVA</option>
+                                    <option value="UNIDADE INTEGRADA JOSE GONCALVES DIAS">UNIDADE INTEGRADA JOSE GONCALVES DIAS</option>
+                                    <option value="UNIDADE ESCOLAR ANISIO GOMES">UNIDADE ESCOLAR ANISIO GOMES</option>
+                                    <option value="UE ANITA FURTADO">UE ANITA FURTADO</option>
+                                </select>
+                            </div>
+                            <div style="display: flex; gap: 10px; align-items: center; padding-top: 14px;">
+                                <div style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem;">
+                                    <span style="width: 12px; height: 12px; border-radius: 3px; background: #ef4444; display: inline-block;"></span>
+                                    <span>Pendente / A Trabalhar</span>
                                 </div>
-
-                                <div style="overflow-x: auto;">
-                                    <table class="table-compact" style="width: 100%; border-collapse: collapse; text-align: left;">
-                                        <thead>
-                                            <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-secondary); height: 40px; background: var(--bg-tertiary);">
-                                                <th style="padding: 10px 14px;">Unidade Escolar</th>
-                                                <th style="padding: 10px 14px;">Direção / Gestor</th>
-                                                <th style="padding: 10px 14px; text-align: center;">Rotina Semanal</th>
-                                                <th style="padding: 10px 14px; text-align: center;">2º Ano</th>
-                                                <th style="padding: 10px 14px; text-align: center;">5º Ano</th>
-                                                <th style="padding: 10px 14px; text-align: center;">9º Ano</th>
-                                                <th style="padding: 10px 14px;">Supervisão Pedagógica SEMED</th>
-                                                <th style="padding: 10px 14px; text-align: center;">Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="school-routine-monitoring-table-body">
-                                            <!-- Preenchido dinamicamente com as 9 escolas -->
-                                        </tbody>
-                                    </table>
+                                <div style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem;">
+                                    <span style="width: 12px; height: 12px; border-radius: 3px; background: #22c55e; display: inline-block;"></span>
+                                    <span>Trabalhada em Aula</span>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Métricas do Mês Ativo -->
+                    <div class="card margin-bottom-md" style="padding: 14px 18px; background: var(--bg-tertiary);">
+                        <div class="flex-between flex-wrap gap-md" style="align-items: center;">
+                            <div>
+                                <h4 style="margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--text-primary);" id="cal-month-title-summary">
+                                    Progresso de Cumprimento — Fevereiro de 2026
+                                </h4>
+                                <span style="font-size: 0.78rem; color: var(--text-secondary);" id="cal-month-stats-text">
+                                    <strong>0</strong> de <strong>20</strong> habilidades trabalhadas (0.0% de cumprimento)
+                                </span>
+                            </div>
+                            <div style="min-width: 220px; flex-grow: 0.5;">
+                                <div style="height: 8px; background: var(--border-color); border-radius: 4px; overflow: hidden; display: flex;">
+                                    <div id="cal-progress-bar-done" style="width: 0%; background: #22c55e; transition: width 0.3s ease;"></div>
+                                    <div id="cal-progress-bar-pending" style="width: 100%; background: #ef4444; transition: width 0.3s ease;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- GRADE DO CALENDÁRIO MENSAL (SEGUNDA A SEXTA) -->
+                    <div class="card" style="padding: 18px; background: var(--bg-secondary); border: 1px solid var(--border-color);">
+                        <!-- Dias da Semana Header -->
+                        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; text-align: center; margin-bottom: 12px;">
+                            <div style="background: var(--bg-tertiary); padding: 8px; border-radius: var(--radius-sm); font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">SEGUNDA-FEIRA</div>
+                            <div style="background: var(--bg-tertiary); padding: 8px; border-radius: var(--radius-sm); font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">TERÇA-FEIRA</div>
+                            <div style="background: var(--bg-tertiary); padding: 8px; border-radius: var(--radius-sm); font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">QUARTA-FEIRA</div>
+                            <div style="background: var(--bg-tertiary); padding: 8px; border-radius: var(--radius-sm); font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">QUINTA-FEIRA</div>
+                            <div style="background: var(--bg-tertiary); padding: 8px; border-radius: var(--radius-sm); font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">SEXTA-FEIRA</div>
+                        </div>
+
+                        <!-- Grid de Dias do Mês -->
+                        <div id="annual-calendar-days-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
+                            <!-- Injetado dinamicamente via Javascript -->
+                        </div>
+                    </div>
+
                 </section>
 
-                <!-- ==================== APLICAÇÃO DE PROVAS TAB ==================== -->
-                <section id="aplicacao-provas" class="tab-content">
-                    <div class="card card-full margin-bottom-lg">
-                        <div class="card-header">
-                            <h3>Painel de Acompanhamento de Aplicação</h3>
-                            <p class="card-subtitle">Monitore a digitação de cartões-resposta, taxa de presença e consolidação de proficiência por escola.</p>
+                <!-- Modal Detalhe / Roteiro da Aula do Dia -->
+                <div id="modal-calendar-day-detail" class="modal-overlay hidden">
+                    <div class="modal-content" style="max-width: 600px; width: 92%;">
+                        <div class="modal-header flex-between" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                            <div>
+                                <h3 id="modal-cal-day-title" style="margin:0; font-size:1.15rem;">Planejamento do Dia</h3>
+                                <p class="text-sm text-muted" id="modal-cal-day-meta" style="margin:2px 0 0 0;">Ano Letivo 2026 • SEMED Gonçalves Dias</p>
+                            </div>
+                            <button class="btn btn-icon" id="btn-close-cal-day-modal"><i data-lucide="x"></i></button>
                         </div>
-                        <div class="card-body">
-                            <!-- Progress of Ongoing Assessments -->
-                            <div id="ongoing-assessments-list" style="display:flex; flex-direction:column; gap:16px;">
-                                <!-- Injetado via JS -->
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- ==================== CRIAR AVALIAÇÕES TAB ==================== -->
-                <section id="criar-avaliacoes" class="tab-content">
-                    <!-- Top Sub-Navigation for Avaliações Module -->
-                    <div class="card card-full margin-bottom-md" style="padding: 0; background-color: var(--bg-secondary);">
-                        <div style="display: flex; gap: 20px; padding: 16px 24px; border-bottom: 1px solid var(--border-color); overflow-x: auto;">
-                            <button class="eval-subtab-btn active" data-subtab="criar-evento-sub" style="background:none; border:none; color:var(--purple-light); font-weight:600; cursor:pointer; padding-bottom:8px; border-bottom: 2px solid var(--purple); font-size:0.95rem; white-space:nowrap; transition: var(--transition);">Criar Evento (Simulado)</button>
-                            <button class="eval-subtab-btn" data-subtab="lancar-notas-sub" style="background:none; border:none; color:var(--text-secondary); font-weight:500; cursor:pointer; padding-bottom:8px; font-size:0.95rem; white-space:nowrap; transition: var(--transition);">Lançar Notas (Simulado)</button>
-                            <button class="eval-subtab-btn" data-subtab="resultados-dash-sub" style="background:none; border:none; color:var(--text-secondary); font-weight:500; cursor:pointer; padding-bottom:8px; font-size:0.95rem; white-space:nowrap; transition: var(--transition);">Resultados & Dashboard</button>
-                            <button class="eval-subtab-btn" data-subtab="banco-habilidades-sub" style="background:none; border:none; color:var(--text-secondary); font-weight:500; cursor:pointer; padding-bottom:8px; font-size:0.95rem; white-space:nowrap; transition: var(--transition);">Banco de Habilidades</button>
-                        </div>
-                    </div>
-
-                    <!-- SUBTAB 1: Criar Evento -->
-                    <div class="eval-subtab-content" id="criar-evento-sub">
-                        <!-- Sub-menu: Eventos Criados / + Novo Evento -->
-                        <div style="display:flex; gap:12px; margin-bottom:20px;">
-                            <button class="btn btn-primary" id="btn-show-created-events"><i data-lucide="list"></i> Eventos Criados</button>
-                            <button class="btn btn-outline" id="btn-show-new-event-wizard"><i data-lucide="plus-circle"></i> + Novo Evento</button>
-                        </div>
-
-                        <!-- Panel: Eventos Criados List -->
-                        <div id="panel-created-events">
-                            <!-- Filters: Ativos, Rascunhos, Finalizados -->
-                            <div style="display:flex; gap:20px; margin-bottom:20px; border-bottom:1px solid var(--border-color); padding-bottom:10px; font-size:0.85rem;">
-                                <a href="#" class="event-filter-link active" data-filter="ativos" style="color:var(--green-light); font-weight:600; text-decoration:none;">Ativos (2)</a>
-                                <a href="#" class="event-filter-link" data-filter="rascunhos" style="color:var(--text-muted); text-decoration:none;">Rascunhos (0)</a>
-                                <a href="#" class="event-filter-link" data-filter="finalizados" style="color:var(--text-muted); text-decoration:none;">Finalizados (1)</a>
+                        <div class="modal-body" style="padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+                            <div style="background: var(--bg-tertiary); padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                                <span style="font-size: 0.72rem; color: var(--text-secondary); display: block;">Descritor / Habilidade Planejada:</span>
+                                <strong id="modal-cal-desc-code" style="font-size: 1rem; color: var(--purple-light); display: block; margin: 2px 0;">D03 — Inferir o sentido de uma palavra ou expressão</strong>
+                                <span id="modal-cal-desc-component" style="font-size: 0.78rem; color: var(--text-secondary);">Componente: Língua Portuguesa • 5º Ano EF</span>
                             </div>
 
-                            <!-- List of Events -->
-                            <div class="card card-full" style="padding:0;">
-                                <div class="card-body no-padding" style="overflow-x:auto;">
-                                    <table class="table-compact" style="width:100%; border-collapse: collapse; text-align: left;">
-                                        <thead>
-                                            <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-secondary); height: 40px;">
-                                                <th style="padding: 12px 16px;">Avaliação</th>
-                                                <th style="padding: 12px 16px;">Escola Alvo</th>
-                                                <th style="padding: 12px 16px;">Janela de Aplicação</th>
-                                                <th style="padding: 12px 16px;">Tipo</th>
-                                                <th style="padding: 12px 16px;">Etapa</th>
-                                                <th style="padding: 12px 16px; text-align:center;">Status do Gabarito</th>
-                                                <th style="padding: 12px 16px; text-align:center;">Ações</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="created-events-table-body">
-                                            <!-- Rendered dynamically by JS -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Panel: Novo Evento Wizard (Step-by-step) -->
-                        <div id="panel-new-event-wizard" class="hidden">
-                            <!-- Wizard Progress Header -->
-                            <div class="card card-full margin-bottom-md" style="background-color: var(--bg-secondary);">
-                                <div style="display:flex; justify-content:space-around; align-items:center; padding:16px; flex-wrap:wrap; gap:16px;">
-                                    <div class="wizard-step-indicator active" id="step-ind-1" style="display:flex; align-items:center; gap:8px; color:var(--purple-light); font-weight:600;">
-                                        <span style="width:28px; height:28px; border-radius:50%; background:var(--purple-glow); border:1.5px solid var(--purple); display:flex; align-items:center; justify-content:center;">1</span>
-                                        <span>Informações do Evento</span>
-                                    </div>
-                                    <div style="flex-grow:1; min-width: 40px; height:2px; background:var(--border-color); margin:0 12px;" id="step-line-1"></div>
-                                    <div class="wizard-step-indicator" id="step-ind-2" style="display:flex; align-items:center; gap:8px; color:var(--text-muted);">
-                                        <span style="width:28px; height:28px; border-radius:50%; background:var(--bg-tertiary); border:1px solid var(--border-color); display:flex; align-items:center; justify-content:center;">2</span>
-                                        <span>Seleção de Questões</span>
-                                    </div>
-                                    <div style="flex-grow:1; min-width: 40px; height:2px; background:var(--border-color); margin:0 12px;" id="step-line-2"></div>
-                                    <div class="wizard-step-indicator" id="step-ind-3" style="display:flex; align-items:center; gap:8px; color:var(--text-muted);">
-                                        <span style="width:28px; height:28px; border-radius:50%; background:var(--bg-tertiary); border:1px solid var(--border-color); display:flex; align-items:center; justify-content:center;">3</span>
-                                        <span>Revisar & Agendar</span>
-                                    </div>
+                            <div>
+                                <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                                    Roteiro Metodológico Sugerido (Passo a Passo em Sala):
+                                </label>
+                                <div id="modal-cal-metodologia" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 12px; border-radius: var(--radius-sm); font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5;">
+                                    Apresentação de pequenos textos narrativos do contexto local. Desafio em duplas para inferência do vocabulário pelo contexto antes da consulta ao dicionário.
                                 </div>
                             </div>
 
-                            <!-- Step 1: Info Form -->
-                            <div class="wizard-step-pane" id="step-pane-1">
-                                <div class="card" style="background-color: var(--bg-secondary);">
-                                    <div class="card-header">
-                                        <h3>1. Informações do Evento</h3>
-                                        <p class="card-subtitle">Defina o nome, data de realização, componentes curriculares e público-alvo da avaliação.</p>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="grid-2">
-                                            <div class="form-group">
-                                                <label for="wizard-title">Nome / Título do Evento *</label>
-                                                <input type="text" id="wizard-title" class="form-input-text" placeholder="Ex: Simulado SAEB 2026 - 1ª Onda">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="wizard-date">Data de Realização *</label>
-                                                <input type="date" id="wizard-date" class="form-input-text" value="2026-08-20">
-                                            </div>
-                                        </div>
-
-                                        <div class="grid-2 margin-top-md">
-                                            <div class="form-group">
-                                                <label for="wizard-subject">Componente Curricular *</label>
-                                                <select id="wizard-subject" class="form-select">
-                                                    <option value="Língua Portuguesa">Língua Portuguesa</option>
-                                                    <option value="Matemática">Matemática</option>
-                                                    <option value="Ambas as Disciplinas (Prova Mista)">Ambas as Disciplinas (Prova Mista)</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="wizard-num-questions">Quantidade de Questões *</label>
-                                                <input type="number" id="wizard-num-questions" class="form-input-text" value="10" min="2" max="40">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group margin-top-md">
-                                            <label>Etapa de Ensino Associada *</label>
-                                            <div style="display:flex; flex-wrap:wrap; gap:8px;" id="wizard-stage-chips">
-                                                <button class="stage-chip-btn" data-stage="2º Ano" style="padding:6px 12px; border-radius:20px; border:1px solid var(--border-color); background:var(--bg-tertiary); color:var(--text-secondary); cursor:pointer;">2º ANO</button>
-                                                <button class="stage-chip-btn active" data-stage="5º Ano" style="padding:6px 12px; border-radius:20px; border:1px solid var(--purple); background:var(--purple-glow); color:var(--purple-light); font-weight:600; cursor:pointer;">5º ANO</button>
-                                                <button class="stage-chip-btn" data-stage="9º Ano" style="padding:6px 12px; border-radius:20px; border:1px solid var(--border-color); background:var(--bg-tertiary); color:var(--text-secondary); cursor:pointer;">9º ANO</button>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group margin-top-md">
-                                            <label style="font-weight: 600; display: block; margin-bottom: 8px;">Escolas Participantes *</label>
-                                            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                                                <button type="button" class="btn btn-sm btn-outline" id="btn-select-all-wizard-schools" style="padding: 4px 8px; font-size: 0.75rem;">Selecionar Todas</button>
-                                                <button type="button" class="btn btn-sm btn-outline" id="btn-clear-all-wizard-schools" style="padding: 4px 8px; font-size: 0.75rem;">Limpar Seleção</button>
-                                            </div>
-                                            <div id="wizard-schools-checklist" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; max-height: 120px; overflow-y: auto; background: var(--bg-tertiary); padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
-                                                <!-- Populados dinamicamente via JS -->
-                                            </div>
-                                        </div>
-                                        <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
-                                            <button class="btn btn-primary" id="wizard-next-1">Avançar <i data-lucide="arrow-right"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="form-group">
+                                <label for="modal-cal-teacher-obs" style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                                    Registro de Observações Pedagógicas do Professor:
+                                </label>
+                                <textarea id="modal-cal-teacher-obs" class="form-input-text" style="height: 70px; font-size: 0.8rem; padding: 8px;" placeholder="Ex: Turma respondeu muito bem aos exemplos práticos. 80% dos alunos dominaram a inferência."></textarea>
                             </div>
 
-                            <!-- Step 2: Questões Select -->
-                            <div class="wizard-step-pane hidden" id="step-pane-2">
-                                <div class="card" style="background-color: var(--bg-secondary);">
-                                    <div class="card-header">
-                                        <h3>2. Seleção de Questões</h3>
-                                        <p class="card-subtitle">Selecione as questões do Banco de Itens que farão parte do simulado.</p>
-                                    </div>
-                                    <div class="card-body">
-                                        <!-- Questions checkboxes -->
-                                        <div style="max-height: 380px; overflow-y:auto; padding-right:8px; display: flex; flex-direction: column; gap: 12px;" id="wizard-questions-list">
-                                            <!-- Preenchido dinamicamente com questões filtradas pelo assunto escolhido -->
-                                        </div>
-
-                                        <div class="flex-between margin-top-lg border-top padding-top-md" style="margin-top: 24px; padding-top: 16px;">
-                                            <button class="btn btn-outline" id="wizard-prev-2"><i data-lucide="arrow-left"></i> Voltar</button>
-                                            <button class="btn btn-primary" id="wizard-next-2">Avançar <i data-lucide="arrow-right"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Step 3: Review and Schedule -->
-                            <div class="wizard-step-pane hidden" id="step-pane-3">
-                                <div class="card" style="background-color: var(--bg-secondary);">
-                                    <div class="card-header">
-                                        <h3>3. Revisar & Agendar Simulado</h3>
-                                        <p class="card-subtitle">Confirme os detalhes e agende o período de aplicação nas escolas.</p>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="card-outline" style="border:1px solid var(--border-color); padding:20px; border-radius:var(--radius-md); background:var(--bg-tertiary); margin-bottom:20px;">
-                                            <h4 id="wizard-review-title" style="color:var(--purple-light); font-size:1.1rem; margin-bottom: 8px;">Simulado de Teste</h4>
-                                            <p id="wizard-review-meta" class="text-sm text-muted">Data: 20/08/2026 | Componente: Matemática | Público: 5º Ano</p>
-                                            <p id="wizard-review-questions-count" class="text-sm margin-top-sm" style="font-weight:600; margin-top:10px;">Questões Selecionadas: <span class="text-green" style="color:var(--green-light);">0</span></p>
-                                        </div>
-
-                                        <div class="grid-2">
-                                            <div class="form-group">
-                                                <label for="wizard-start-date">Início da Janela de Aplicação</label>
-                                                <input type="date" id="wizard-start-date" class="form-input-text" value="2026-08-20">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="wizard-end-date">Término da Janela de Aplicação</label>
-                                                <input type="date" id="wizard-end-date" class="form-input-text" value="2026-08-26">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group margin-top-md">
-                                             <label>Turmas Participantes (Selecione quais turmas irão participar) *</label>
-                                             <div id="wizard-classes-checklist" style="display:flex; flex-direction:column; gap:6px; max-height:140px; overflow-y:auto; border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:10px; background:var(--bg-tertiary); margin-top:6px;">
-                                                 <!-- Preenchido via JS -->
-                                             </div>
-                                             <div style="margin-top:6px; font-size:0.75rem; display:flex; gap:12px;">
-                                                 <span id="btn-wizard-classes-select-all" style="color:var(--purple-light); cursor:pointer; font-weight:600;">Selecionar Todas</span>
-                                                 <span id="btn-wizard-classes-select-none" style="color:var(--text-muted); cursor:pointer; font-weight:600;">Limpar Seleção</span>
-                                             </div>
-                                         </div>
-
-                                        <div class="flex-between margin-top-lg border-top padding-top-md" style="margin-top: 24px; padding-top: 16px;">
-                                            <button class="btn btn-outline" id="wizard-prev-3"><i data-lucide="arrow-left"></i> Voltar</button>
-                                            <button class="btn btn-primary" id="wizard-finish-btn"><i data-lucide="check"></i> Publicar e Agendar Avaliação</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- SUBTAB 2: Lançar Notas -->
-                    <div class="eval-subtab-content hidden" id="lancar-notas-sub">
-                        <div class="card card-full" style="background-color: var(--bg-secondary);">
-                            <div class="card-header">
-                                <h3>Lançamento de Respostas / Notas dos Alunos</h3>
-                                <p class="card-subtitle">Insira o gabarito preenchido pelos alunos para calcular as notas e atualizar os diagnósticos pedagógicos de proficiência.</p>
-                            </div>
-                            <div class="card-body">
-                                <div class="grid-4" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:20px;">
-                                    <div class="form-group">
-                                        <label>Avaliação / Simulado</label>
-                                        <select id="score-eval-select" class="form-select">
-                                            <option value="eval-diag">Avaliação Diagnóstica 2026 - Rede Geral</option>
-                                            <option value="sim-1">1º Simulado Preparatório SAEB - 5º e 9º Ano</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Escola</label>
-                                        <select id="score-school-select" class="form-select">
-                                            <!-- Carregado via JS -->
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Turma / Etapa</label>
-                                        <select id="score-class-select" class="form-select">
-                                            <option value="all">Todas as Turmas</option>
-                                            <option value="2a">2º Ano A</option>
-                                            <option value="5a">5º Ano A</option>
-                                            <option value="9a">9º Ano A</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Componente Curricular</label>
-                                        <select id="score-subject-select" class="form-select">
-                                            <option value="lp">Língua Portuguesa</option>
-                                            <option value="mt">Matemática</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <!-- Students score table -->
-                                <div style="border-top: 1px solid var(--border-color); padding-top:20px;">
-                                    <div id="score-table-placeholder" style="text-align:center; padding:40px; color:var(--text-muted);">
-                                        <i data-lucide="school" style="width:48px; height:48px; margin-bottom:12px; opacity:0.5; display:inline-block;"></i>
-                                        <p>Por favor, selecione uma Escola e uma Turma para carregar a lista de chamada do simulado.</p>
-                                    </div>
-
-                                    <div id="score-table-content" class="hidden">
-                                        <div style="overflow-x: auto;">
-                                            <table class="table-compact" style="width: 100%; border-collapse: collapse; text-align: left;">
-                                                <thead>
-                                                    <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-secondary); height: 40px;">
-                                                        <th style="padding: 12px 16px;">Matrícula</th>
-                                                        <th style="padding: 12px 16px;">Nome do Aluno</th>
-                                                        <th style="padding: 12px 16px; text-align: center;">Respostas / Questões (Gabarito)</th>
-                                                        <th style="padding: 12px 16px; text-align: center;">Aproveitamento</th>
-                                                        <th style="padding: 12px 16px; text-align: center;">Ações</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="score-students-table-body">
-                                                    <!-- Gerado dinamicamente -->
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div class="flex-between margin-top-md border-top padding-top-md" style="margin-top: 20px; padding-top: 16px;">
-                                            <span style="font-size:0.8rem; color:var(--text-muted);">Clique nas células de resposta para editar as opções (A, B, C, D)</span>
-                                            <button class="btn btn-primary" id="btn-save-all-scores"><i data-lucide="save"></i> Salvar Lançamento de Notas</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- SUBTAB 3: Resultados & Dashboard -->
-                    <div class="eval-subtab-content hidden" id="resultados-dash-sub">
-                        <!-- Filters -->
-                        <div class="card card-full margin-bottom-md" style="background-color: var(--bg-secondary);">
-                            <div class="card-body">
-                                <div class="grid-4" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px;">
-                                    <div class="form-group">
-                                        <label>Simulado Selecionado</label>
-                                        <select class="form-select" id="dash-eval-select">
-                                            <option value="eval-diag">Avaliação Diagnóstica 2026 - Rede Geral</option>
-                                            <option value="sim-1">1º Simulado Preparatório SAEB - 5º e 9º Ano</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Escola</label>
-                                        <select class="form-select" id="dash-school-select">
-                                            <!-- Carregado via JS -->
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Turma</label>
-                                        <select class="form-select" id="dash-class-select">
-                                            <option value="all">Todas as Turmas</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Componente Curricular</label>
-                                        <select class="form-select" id="dash-subject-select">
-                                            <option value="all">Todos os Componentes</option>
-                                            <option value="lp">Língua Portuguesa</option>
-                                            <option value="mt">Matemática</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Dashboard Analytics -->
-                        <div class="grid-3-lg margin-bottom-lg" style="margin-bottom: 24px;">
-                            <div class="card" style="background-color: var(--bg-secondary);">
-                                <div class="card-header">
-                                    <h3>Adesão à Prova</h3>
-                                    <p class="card-subtitle">Porcentagem de alunos que realizaram o simulado.</p>
-                                </div>
-                                <div class="card-body text-center">
-                                    <strong style="font-size: 3rem; color: var(--purple-light);" id="results-adhesion-value">94.8%</strong>
-                                    <p class="text-sm text-muted" style="margin-top: 8px;" id="results-adhesion-sub">1.666 de 1.758 alunos avaliados</p>
-                                </div>
-                            </div>
-                            <div class="card" style="background-color: var(--bg-secondary);">
-                                <div class="card-header">
-                                    <h3>Proficiência Média</h3>
-                                    <p class="card-subtitle">Escore geral calculado da rede.</p>
-                                </div>
-                                <div class="card-body text-center">
-                                    <strong style="font-size: 3rem; color: var(--blue-light);" id="results-proficiency-value">248.6</strong>
-                                    <p class="text-sm text-muted" style="margin-top: 8px;" id="results-proficiency-sub">Nível 4 da escala de proficiência SAEB</p>
-                                </div>
-                            </div>
-                            <div class="card" style="background-color: var(--bg-secondary);">
-                                <div class="card-header">
-                                    <h3>Meta Pactuada</h3>
-                                    <p class="card-subtitle">Projeção para a rede.</p>
-                                </div>
-                                <div class="card-body text-center">
-                                    <strong style="font-size: 3rem; color: var(--green-light);" id="results-target-value">260.0</strong>
-                                    <p class="text-sm text-muted" style="margin-top: 8px;" id="results-target-sub">Desvio atual: -11.4 pontos</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Bottom row: Heatmap and Proficiência gauges -->
-                        <div class="grid-2 margin-top-lg" style="margin-top:24px; gap:20px;">
-                            <!-- Heatmap Card -->
-                            <div class="card" style="background-color: var(--bg-secondary);">
-                                <div class="card-header">
-                                    <h3>Desempenho por Descritor (Mapa de Calor)</h3>
-                                    <p class="card-subtitle">Taxa de acertos por descritor de habilidade na avaliação selecionada. Clique em um descritor para ver os detalhes pedagógicos.</p>
-                                </div>
-                                <div class="card-body">
-                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(65px, 1fr)); gap: 8px;" id="dashboard-heatmap-grid">
-                                        <!-- Preenchido via JS: vermelho, laranja, verde dependendo da proficiência -->
-                                    </div>
-                                    
-                                    <!-- Legenda -->
-                                    <div style="display:flex; justify-content:center; gap:24px; margin-top:20px; font-size:0.75rem;">
-                                        <div style="display:flex; align-items:center; gap:6px;">
-                                            <span style="width:12px; height:12px; border-radius:3px; background-color:rgba(239, 68, 68, 0.85); display:inline-block;"></span>
-                                            <span>Crítico (&lt; 50%)</span>
-                                        </div>
-                                        <div style="display:flex; align-items:center; gap:6px;">
-                                            <span style="width:12px; height:12px; border-radius:3px; background-color:rgba(245, 158, 11, 0.85); display:inline-block;"></span>
-                                            <span>Atenção (50% - 69%)</span>
-                                        </div>
-                                        <div style="display:flex; align-items:center; gap:6px;">
-                                            <span style="width:12px; height:12px; border-radius:3px; background-color:rgba(16, 185, 129, 0.85); display:inline-block;"></span>
-                                            <span>Adequado (&ge; 70%)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Proficiência Faixas Card -->
-                            <div class="card" style="background-color: var(--bg-secondary);">
-                                <div class="card-header">
-                                    <h3>Distribuição de Proficiência SAEB</h3>
-                                    <p class="card-subtitle">Classificação oficial dos estudantes da rede nas faixas de desempenho.</p>
-                                </div>
-                                <div class="card-body" style="display:flex; flex-direction:column; gap:16px;">
-                                    <div style="display:flex; flex-direction:column; gap:12px;">
-                                        <div>
-                                            <div class="flex-between text-xs text-muted" style="margin-bottom:4px;">
-                                                <span>Insuficiente (&lt; 175)</span>
-                                                <strong id="badge-pct-insuficiente">12.4%</strong>
-                                            </div>
-                                            <div class="progress-bar-container" style="height:12px; margin:0;">
-                                                <div class="progress-bar red" id="bar-pct-insuficiente" style="width: 12.4%;"></div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="flex-between text-xs text-muted" style="margin-bottom:4px;">
-                                                <span>Básico (175 - 225)</span>
-                                                <strong id="badge-pct-basico">34.6%</strong>
-                                            </div>
-                                            <div class="progress-bar-container" style="height:12px; margin:0;">
-                                                <div class="progress-bar orange" id="bar-pct-basico" style="width: 34.6%;"></div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="flex-between text-xs text-muted" style="margin-bottom:4px;">
-                                                <span>Adequado (225 - 275)</span>
-                                                <strong id="badge-pct-adequado">42.2%</strong>
-                                            </div>
-                                            <div class="progress-bar-container" style="height:12px; margin:0;">
-                                                <div class="progress-bar purple" id="bar-pct-adequado" style="width: 42.2%;"></div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="flex-between text-xs text-muted" style="margin-bottom:4px;">
-                                                <span>Avançado (&ge; 275)</span>
-                                                <strong id="badge-pct-avancado">10.8%</strong>
-                                            </div>
-                                            <div class="progress-bar-container" style="height:12px; margin:0;">
-                                                <div class="progress-bar green" id="bar-pct-avancado" style="width: 10.8%;"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Heatmap Detailed Drawer Panel -->
-                        <div class="card card-full margin-top-md hidden" id="heatmap-descriptor-detail-card" style="background-color: var(--bg-secondary); border-color: var(--purple-light); margin-top:20px;">
-                            <div class="card-header flex-between" style="align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                            <div style="padding: 12px; border-radius: var(--radius-sm); background: rgba(139, 92, 246, 0.05); border: 1px solid rgba(139, 92, 246, 0.2); display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <h3 id="detail-desc-code" style="color: var(--purple-light); margin:0;">Descritor Alvo</h3>
-                                    <p class="card-subtitle" id="detail-desc-desc" style="margin-top:4px;">Descrição pedagógica completa da habilidade avaliada.</p>
+                                    <strong style="font-size: 0.82rem; color: var(--text-primary); display: block;">Status de Execução da Habilidade:</strong>
+                                    <span id="modal-cal-status-label" style="font-size: 0.76rem; color: #ef4444; font-weight: 700;">🔴 Pendente / A Trabalhar</span>
                                 </div>
-                                <button class="btn btn-outline btn-sm" id="btn-close-descriptor-detail">Fechar Detalhe</button>
-                            </div>
-                            <div class="card-body">
-                                <div class="grid-2" style="gap:20px;">
-                                    <div>
-                                        <h4 style="margin: 0 0 10px 0;">Desempenho por Escola neste Descritor</h4>
-                                        <div style="display:flex; flex-direction:column; gap:8px; max-height: 200px; overflow-y:auto; padding-right:8px;" id="detail-descriptor-school-ranks">
-                                            <!-- Ranking dinâmico por escola gerado por JS -->
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h4 style="margin: 0 0 10px 0;">Sugestão de Intervenção Pedagógica</h4>
-                                        <p style="font-size:0.8rem; line-height:1.5; color:var(--text-secondary);" id="detail-descriptor-pedagogic-tip">Selecione uma habilidade para ver recomendações didáticas automáticas de correção de lacunas.</p>
-                                    </div>
-                                </div>
+                                <button class="btn btn-sm" id="btn-modal-toggle-day-status" style="background: #22c55e; color: #ffffff; font-weight: 700; border: none; padding: 6px 14px;">
+                                    Marcar como Trabalhada
+                                </button>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- SUBTAB 4: Banco de Habilidades -->
-                    <div class="eval-subtab-content hidden" id="banco-habilidades-sub">
-                        <div class="grid-3-lg" style="gap:24px;">
-                            <!-- Column 1: Cadastrar Descritor -->
-                            <div class="card" style="grid-column: span 1; background-color: var(--bg-secondary);">
-                                <div class="card-header">
-                                    <h3>Cadastrar Descritor / Habilidade</h3>
-                                    <p class="card-subtitle">Insira um novo descritor de proficiência SAEB/SEAMA no banco de dados.</p>
-                                </div>
-                                <div class="card-body">
-                                    <form id="form-create-descriptor" style="display:flex; flex-direction:column; gap:12px;">
-                                        <div class="form-group">
-                                            <label for="desc-code">Código Curricular *</label>
-                                            <input type="text" id="desc-code" class="form-input-text" placeholder="Ex: LP01 ou MT13" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="desc-stage">Etapa de Ensino Associada *</label>
-                                            <select id="desc-stage" class="form-select" required>
-                                                <option value="5º Ano EF">5º Ano EF</option>
-                                                <option value="9º Ano EF">9º Ano EF</option>
-                                                <option value="3º Ano EM">3º Ano EM</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="desc-text">Descrição Curricular Pedagógica *</label>
-                                            <textarea id="desc-text" class="form-input-text" rows="4" placeholder="Escreva a descrição detalhada do descritor pedagógico da BNCC..." required style="resize:none; font-family:var(--font-sans);"></textarea>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary btn-full margin-top-md" id="btn-save-descriptor">Salvar Descritor</button>
-                                    </form>
-                                </div>
-                            </div>
-
-                            <!-- Column 2 & 3: Banco de Descritores Ativos -->
-                            <div class="card" style="grid-column: span 2; background-color: var(--bg-secondary);">
-                                <div class="card-header flex-between flex-wrap gap-md">
-                                    <div>
-                                        <h3>Banco de Descritores Ativos</h3>
-                                        <p class="card-subtitle">Descritores cadastrados no sistema.</p>
-                                    </div>
-                                    <div style="display:flex; gap:8px;" id="descriptor-filter-buttons">
-                                        <button class="btn btn-primary btn-sm desc-filter-btn" data-filter="all">Todas</button>
-                                        <button class="btn btn-outline btn-sm desc-filter-btn" data-filter="Língua Portuguesa">Português</button>
-                                        <button class="btn btn-outline btn-sm desc-filter-btn" data-filter="Matemática">Matemática</button>
-                                    </div>
-                                </div>
-                                <div class="card-body no-padding" style="overflow:auto; max-height:480px;">
-                                    <table class="table-compact" style="width: 100%; border-collapse: collapse; text-align: left;">
-                                        <thead>
-                                            <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-secondary); height: 40px;">
-                                                <th style="padding: 12px 16px;">Código</th>
-                                                <th style="padding: 12px 16px;">Etapa</th>
-                                                <th style="padding: 12px 16px;">Descrição Curricular</th>
-                                                <th style="padding: 12px 16px; text-align: center;">Ações</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="active-descriptors-table-body">
-                                            <!-- Gerado dinamicamente -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                        <div class="modal-footer flex-end" style="border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 12px; gap: 8px;">
+                            <button class="btn btn-outline" id="btn-cancel-cal-day-modal">Fechar</button>
+                            <button class="btn btn-primary" id="btn-save-cal-day-modal">Salvar Registro</button>
                         </div>
                     </div>
-                </section>
+                </div>
 
-                <!-- ==================== GESTÃO PEDAGÓGICA TAB ==================== -->
+                <!-- Modal Adicionar / Personalizar Habilidade ao Dia -->
+                <div id="modal-add-skill-day" class="modal-overlay hidden">
+                    <div class="modal-content" style="max-width: 540px; width: 90%;">
+                        <div class="modal-header flex-between" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                            <h3 style="margin:0; font-size:1.15rem;">Atribuir Habilidade a um Dia</h3>
+                            <button class="btn btn-icon" id="btn-close-add-skill-day"><i data-lucide="x"></i></button>
+                        </div>
+                        <div class="modal-body" style="padding-top: 14px; display: flex; flex-direction: column; gap: 10px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div class="form-group">
+                                    <label style="font-size: 0.75rem; font-weight: 600; display: block; margin-bottom: 3px;">Mês *</label>
+                                    <select id="add-skill-month-select" class="form-select">
+                                        <option value="2">Fevereiro</option>
+                                        <option value="3">Março</option>
+                                        <option value="4">Abril</option>
+                                        <option value="5">Maio</option>
+                                        <option value="6">Junho</option>
+                                        <option value="8">Agosto</option>
+                                        <option value="9">Setembro</option>
+                                        <option value="10">Outubro</option>
+                                        <option value="11">Novembro</option>
+                                        <option value="12">Dezembro</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label style="font-size: 0.75rem; font-weight: 600; display: block; margin-bottom: 3px;">Dia do Mês *</label>
+                                    <input type="number" id="add-skill-day-number" class="form-input-text" min="1" max="31" value="15">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size: 0.75rem; font-weight: 600; display: block; margin-bottom: 3px;">Código do Descritor / Habilidade *</label>
+                                <input type="text" id="add-skill-code" class="form-input-text" placeholder="Ex: D03 — Inferir Sentido de Palavra">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size: 0.75rem; font-weight: 600; display: block; margin-bottom: 3px;">Metodologia / Atividade da Aula</label>
+                                <textarea id="add-skill-metodologia" class="form-input-text" style="height: 60px; font-size: 0.8rem;" placeholder="Descrição da atividade a ser realizada pelo professor..."></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer flex-end" style="border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 12px; gap: 8px;">
+                            <button class="btn btn-outline" id="btn-cancel-add-skill-day">Cancelar</button>
+                            <button class="btn btn-primary" id="btn-confirm-add-skill-day">Adicionar ao Calendário</button>
+                        </div>
+                    </div>
+                </div>
+
+                
+<!-- ==================== GESTÃO PEDAGÓGICA TAB ==================== -->
                 <section id="gestao-pedagogica" class="tab-content">
                     <div class="card card-full margin-bottom-md" style="padding: 0; background-color: var(--bg-secondary);">
                         <div style="display: flex; gap: 20px; padding: 16px 24px; border-bottom: 1px solid var(--border-color); overflow-x: auto;">
@@ -4572,6 +4105,6 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=784b21fd"></script>
+    <script src="app.js?v=1b273e8f"></script>
 </body>
 </html>

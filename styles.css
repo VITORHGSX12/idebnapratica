@@ -3964,3 +3964,38 @@ body.collapsed-sidebar .sidebar-footer .user-dropdown-menu {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* ==========================================================================
+   CALENDÁRIO ANUAL DE HABILIDADES (2026) STYLES
+   ========================================================================== */
+.calendar-month-pill {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+}
+
+.calendar-month-pill:hover {
+    background: rgba(139, 92, 246, 0.15);
+    color: var(--purple-light);
+    border-color: var(--purple);
+}
+
+.calendar-month-pill.active {
+    background: var(--purple);
+    color: #ffffff;
+    border-color: var(--purple);
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+}
+
+.calendar-day-box:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md) !important;
+}

@@ -11301,3 +11301,388 @@ if (document.readyState === 'loading') {
             `;
         }).join('');
     }
+
+
+    // ==========================================
+    // CALENDÁRIO ANUAL DE HABILIDADES & ROTINA DOCENTE (2026)
+    // ==========================================
+
+    let currentCalendarMonth = 2; // Fevereiro
+    let activeCalendarDayItem = null;
+
+    // Base de Habilidades estruturadas por Mês e Dia Letivo (2026)
+    // Inicializam em 'pendente' (🔴 Vermelho) e mudam para 'trabalhada' (🟢 Verde) conforme o professor marca.
+    const ANNUAL_SKILLS_CALENDAR_DATA = {};
+
+    const MONTH_NAMES_PT = {
+        2: 'Fevereiro',
+        3: 'Março',
+        4: 'Abril',
+        5: 'Maio',
+        6: 'Junho',
+        7: 'Julho (Recesso Escolar)',
+        8: 'Agosto',
+        9: 'Setembro',
+        10: 'Outubro',
+        11: 'Novembro',
+        12: 'Dezembro'
+    };
+
+    const DESCRIPTORS_POOL_5ANO = [
+        { code: 'D01 (LP)', title: 'Localizar informações explícitas no texto', comp: 'Língua Portuguesa', metod: 'Leitura compartilhada de notícias e localização de datas, nomes e locais.' },
+        { code: 'D03 (LP)', title: 'Inferir o sentido de uma palavra ou expressão', comp: 'Língua Portuguesa', metod: 'Atividade de dedução de vocabulário poético a partir do contexto.' },
+        { code: 'D04 (LP)', title: 'Inferir uma informação implícita em um texto', comp: 'Língua Portuguesa', metod: 'Interpretação de tirinhas e charges com pistas visuais e textuais.' },
+        { code: 'D06 (LP)', title: 'Identificar o tema ou assunto principal de um texto', comp: 'Língua Portuguesa', metod: 'Resumo oral e identificação da ideia central em fábulas e contos.' },
+        { code: 'D11 (LP)', title: 'Distinguir um fato da opinião relativa a esse fato', comp: 'Língua Portuguesa', metod: 'Análise comparativa entre notícias e comentários de leitores.' },
+        { code: 'D14 (LP)', title: 'Identificar o efeito de sentido da pontuação', comp: 'Língua Portuguesa', metod: 'Dramatização de diálogos pontuados com exclamações e reticências.' },
+        { code: 'D13 (MAT)', title: 'Resolver problemas com números naturais (adição/subtração)', comp: 'Matemática', metod: 'Resolução de situações-problema com dados do comércio local.' },
+        { code: 'D14 (MAT)', title: 'Resolver problemas de multiplicação e divisão', comp: 'Matemática', metod: 'Problemas de divisão em partes iguais e proporcionalidade.' },
+        { code: 'D19 (MAT)', title: 'Resolver problemas com números decimais e dinheiro', comp: 'Matemática', metod: 'Simulação de feira livre e cálculo de troco com notas e moedas.' },
+        { code: 'D28 (MAT)', title: 'Ler informações e dados em tabelas e gráficos', comp: 'Matemática', metod: 'Construção de gráficos de colunas com dados de frequência da turma.' }
+    ];
+
+    const DESCRIPTORS_POOL_2ANO = [
+        { code: 'D01 (LP)', title: 'Reconhecer letras do alfabeto', comp: 'Língua Portuguesa', metod: 'Jogo de bingo fonético e alfabeto ilustrado móvel.' },
+        { code: 'D02 (LP)', title: 'Identificar rimas e aliterações', comp: 'Língua Portuguesa', metod: 'Roda de cantigas e parlendas com palmas para marcar as rimas.' },
+        { code: 'D03 (LP)', title: 'Segmentar oralmente palavras em sílabas', comp: 'Língua Portuguesa', metod: 'Contagem de palmas para cada sílaba de palavras do cotidiano.' },
+        { code: 'D06 (LP)', title: 'Localizar informação explícita em bilhetes', comp: 'Língua Portuguesa', metod: 'Leitura de bilhetes escolares com caça às palavras-chave.' },
+        { code: 'D01 (MAT)', title: 'Contagem e comparação de quantidades até 100', comp: 'Matemática', metod: 'Agrupamentos com material dourado e tampinhas plásticas.' },
+        { code: 'D02 (MAT)', title: 'Problemas de adição e subtração até 100', comp: 'Matemática', metod: 'Histórias matemáticas com apoio de desenhos e reta numérica.' }
+    ];
+
+    const DESCRIPTORS_POOL_9ANO = [
+        { code: 'D01 (LP)', title: 'Localizar informações explícitas em artigos', comp: 'Língua Portuguesa', metod: 'Sublinhamento de teses e argumentos em editoriais de opinião.' },
+        { code: 'D03 (LP)', title: 'Inferir o sentido de palavras em contexto', comp: 'Língua Portuguesa', metod: 'Análise de figuras de linguagem em poemas e músicas maranhenses.' },
+        { code: 'D15 (LP)', title: 'Estabelecer relações lógico-discursivas', comp: 'Língua Portuguesa', metod: 'Identificação de conjunções de oposição, causa e conclusão.' },
+        { code: 'D16 (MAT)', title: 'Localização de números inteiros na reta', comp: 'Matemática', metod: 'Termômetro matemático e movimentação sobre a reta numérica.' },
+        { code: 'D19 (MAT)', title: 'Problemas envolvendo juros e porcentagem', comp: 'Matemática', metod: 'Cálculo de descontos e parcelamentos em compras comerciais.' },
+        { code: 'D28 (MAT)', title: 'Cálculo de área e perímetro de figuras planas', comp: 'Matemática', metod: 'Medição prática do piso da sala e quadra da escola.' }
+    ];
+
+    function getPoolByStage(stage) {
+        if (stage === '2º Ano') return DESCRIPTORS_POOL_2ANO;
+        if (stage === '9º Ano') return DESCRIPTORS_POOL_9ANO;
+        return DESCRIPTORS_POOL_5ANO;
+    }
+
+    // Initialize the Annual Calendar Days for all 2026 months
+    function initAnnualSkillsCalendar() {
+        for (let m = 2; m <= 12; m++) {
+            ANNUAL_SKILLS_CALENDAR_DATA[m] = {};
+            const daysInMonth = (m === 2) ? 28 : ((m === 4 || m === 6 || m === 9 || m === 11) ? 30 : 31);
+
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateObj = new Date(2026, m - 1, d);
+                const dayOfWeek = dateObj.getDay(); // 0 = Dom, 6 = Sab, 1 a 5 = Seg a Sex
+
+                // Ignore weekends and July vacation
+                if (dayOfWeek >= 1 && dayOfWeek <= 5 && m !== 7) {
+                    const pool5 = DESCRIPTORS_POOL_5ANO[(d + m) % DESCRIPTORS_POOL_5ANO.length];
+                    const pool2 = DESCRIPTORS_POOL_2ANO[(d + m) % DESCRIPTORS_POOL_2ANO.length];
+                    const pool9 = DESCRIPTORS_POOL_9ANO[(d + m) % DESCRIPTORS_POOL_9ANO.length];
+
+                    ANNUAL_SKILLS_CALENDAR_DATA[m][d] = {
+                        day: d,
+                        dayOfWeek,
+                        month: m,
+                        isLetivo: true,
+                        // Stage skills mapped
+                        skills: {
+                            '5º Ano': {
+                                code: pool5.code,
+                                title: pool5.title,
+                                comp: pool5.comp,
+                                metod: pool5.metod,
+                                status: 'pendente', // Start in RED
+                                obs: ''
+                            },
+                            '2º Ano': {
+                                code: pool2.code,
+                                title: pool2.title,
+                                comp: pool2.comp,
+                                metod: pool2.metod,
+                                status: 'pendente', // Start in RED
+                                obs: ''
+                            },
+                            '9º Ano': {
+                                code: pool9.code,
+                                title: pool9.title,
+                                comp: pool9.comp,
+                                metod: pool9.metod,
+                                status: 'pendente', // Start in RED
+                                obs: ''
+                            }
+                        }
+                    };
+                }
+            }
+        }
+    }
+
+    initAnnualSkillsCalendar();
+
+    function renderSkillsSchedule() {
+        renderAnnualCalendar();
+    }
+
+    function renderAnnualCalendar() {
+        const grid = document.getElementById('annual-calendar-days-grid');
+        if (!grid) return;
+
+        const stage = document.getElementById('cal-filter-stage')?.value || '5º Ano';
+        const subject = document.getElementById('cal-filter-subject')?.value || 'all';
+        const school = document.getElementById('cal-filter-school')?.value || 'all';
+
+        // Update Month Label & Summary
+        const monthLabel = document.getElementById('calendar-active-month-label');
+        const monthTitleSummary = document.getElementById('cal-month-title-summary');
+        const monthStatsText = document.getElementById('cal-month-stats-text');
+        const progressBarDone = document.getElementById('cal-progress-bar-done');
+        const progressBarPending = document.getElementById('cal-progress-bar-pending');
+
+        const monthName = MONTH_NAMES_PT[currentCalendarMonth];
+        if (monthLabel) monthLabel.textContent = `${monthName} / 2026`;
+        if (monthTitleSummary) monthTitleSummary.textContent = `Progresso de Cumprimento — ${monthName} de 2026 (${stage})`;
+
+        const monthData = ANNUAL_SKILLS_CALENDAR_DATA[currentCalendarMonth] || {};
+        const daysInMonth = (currentCalendarMonth === 2) ? 28 : ((currentCalendarMonth === 4 || currentCalendarMonth === 6 || currentCalendarMonth === 9 || currentCalendarMonth === 11) ? 30 : 31);
+
+        grid.innerHTML = '';
+
+        // Handle July Recess
+        if (currentCalendarMonth === 7) {
+            grid.innerHTML = `
+                <div style="grid-column: 1 / -1; padding: 60px 20px; text-align: center; background: var(--bg-tertiary); border-radius: var(--radius-lg);">
+                    <i data-lucide="sun" style="width: 48px; height: 48px; color: #f59e0b; margin-bottom: 12px; display: inline-block;"></i>
+                    <h3 style="margin: 0 0 6px 0; color: var(--text-primary);">Recesso Escolar de Meio de Ano (Férias)</h3>
+                    <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary);">Não há atividades letivas programadas para o mês de Julho.</p>
+                </div>
+            `;
+            if (monthStatsText) monthStatsText.textContent = 'Mês de Recesso Escolar';
+            if (progressBarDone) progressBarDone.style.width = '0%';
+            if (progressBarPending) progressBarPending.style.width = '0%';
+            safeCreateIcons();
+            return;
+        }
+
+        let totalLetivos = 0;
+        let totalWorked = 0;
+
+        // Iterate through all days 1 to daysInMonth and place them in 5 weekday columns
+        for (let d = 1; d <= daysInMonth; d++) {
+            const dateObj = new Date(2026, currentCalendarMonth - 1, d);
+            const dayOfWeek = dateObj.getDay();
+
+            // Only render Monday to Friday
+            if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+                totalLetivos++;
+                const dayItem = monthData[d];
+                const daySkill = dayItem ? dayItem.skills[stage] : null;
+
+                const isWorked = daySkill && daySkill.status === 'trabalhada';
+                if (isWorked) totalWorked++;
+
+                const matchSubject = !daySkill || subject === 'all' || daySkill.comp === subject;
+
+                const card = document.createElement('div');
+                card.className = 'calendar-day-box';
+                card.style.background = isWorked ? '#f0fdf4' : '#fef2f2';
+                card.style.border = `2px solid ${isWorked ? '#22c55e' : '#ef4444'}`;
+                card.style.borderRadius = 'var(--radius-md)';
+                card.style.padding = '12px';
+                card.style.minHeight = '115px';
+                card.style.display = 'flex';
+                card.style.flexDirection = 'column';
+                card.style.justifyContent = 'space-between';
+                card.style.cursor = 'pointer';
+                card.style.transition = 'all 0.2s ease';
+                card.style.boxShadow = isWorked ? '0 2px 8px rgba(34,197,94,0.1)' : '0 2px 8px rgba(239,68,68,0.1)';
+
+                const dayNameShort = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][dayOfWeek];
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex-between" style="align-items: center; margin-bottom: 6px;">
+                            <span style="font-size: 1.1rem; font-weight: 800; color: ${isWorked ? '#15803d' : '#b91c1c'}; font-family: var(--font-mono);">
+                                ${String(d).padStart(2, '0')}
+                            </span>
+                            <span style="font-size: 0.68rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">
+                                ${dayNameShort}
+                            </span>
+                        </div>
+
+                        ${daySkill && matchSubject ? `
+                            <div style="background: ${isWorked ? '#dcfce7' : '#fee2e2'}; border: 1px solid ${isWorked ? '#86efac' : '#fca5a5'}; border-radius: 4px; padding: 4px 6px; margin-bottom: 6px;">
+                                <strong style="font-size: 0.74rem; font-weight: 800; color: ${isWorked ? '#15803d' : '#dc2626'}; display: block;">
+                                    ${isWorked ? '🟢' : '🔴'} ${daySkill.code}
+                                </strong>
+                                <span style="font-size: 0.68rem; color: ${isWorked ? '#166534' : '#991b1b'}; display: block; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${daySkill.title}">
+                                    ${daySkill.title}
+                                </span>
+                            </div>
+                        ` : `
+                            <span style="font-size: 0.72rem; color: var(--text-muted);">Sem descritor</span>
+                        `}
+                    </div>
+
+                    <div class="flex-between" style="align-items: center; border-top: 1px dashed ${isWorked ? '#86efac' : '#fca5a5'}; padding-top: 6px; margin-top: 4px;">
+                        <span style="font-size: 0.68rem; font-weight: 700; color: ${isWorked ? '#15803d' : '#dc2626'};">
+                            ${isWorked ? 'Trabalhada' : 'Pendente'}
+                        </span>
+                        <button class="btn btn-sm btn-quick-toggle-day" data-day="${d}" style="padding: 2px 6px; font-size: 0.68rem; background: ${isWorked ? '#16a34a' : '#ef4444'}; color: #ffffff; border: none; border-radius: 3px; cursor: pointer;">
+                            ${isWorked ? '✓ Ok' : 'Marcar'}
+                        </button>
+                    </div>
+                `;
+
+                // Click card to open modal
+                card.addEventListener('click', (e) => {
+                    if (e.target.closest('.btn-quick-toggle-day')) return;
+                    openCalendarDayDetailModal(d, stage);
+                });
+
+                // Quick toggle button
+                card.querySelector('.btn-quick-toggle-day')?.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleCalendarDayStatus(d, stage);
+                });
+
+                grid.appendChild(card);
+            }
+        }
+
+        // Update stats
+        const pctDone = totalLetivos > 0 ? ((totalWorked / totalLetivos) * 100).toFixed(1) : '0';
+        if (monthStatsText) {
+            monthStatsText.innerHTML = `<strong>${totalWorked}</strong> de <strong>${totalLetivos}</strong> habilidades trabalhadas (${pctDone}% de cumprimento)`;
+        }
+        if (progressBarDone) progressBarDone.style.width = `${pctDone}%`;
+        if (progressBarPending) progressBarPending.style.width = `${100 - parseFloat(pctDone)}%`;
+
+        safeCreateIcons();
+    }
+
+    function toggleCalendarDayStatus(dayNumber, stage) {
+        const dayItem = ANNUAL_SKILLS_CALENDAR_DATA[currentCalendarMonth] && ANNUAL_SKILLS_CALENDAR_DATA[currentCalendarMonth][dayNumber];
+        if (!dayItem || !dayItem.skills[stage]) return;
+
+        const currentStatus = dayItem.skills[stage].status;
+        const newStatus = (currentStatus === 'trabalhada') ? 'pendente' : 'trabalhada';
+        dayItem.skills[stage].status = newStatus;
+
+        renderAnnualCalendar();
+        showToast(`Dia ${dayNumber} (${dayItem.skills[stage].code}) marcado como: ${newStatus === 'trabalhada' ? 'TRABALHADA EM AULA 🟢' : 'PENDENTE 🔴'}`, newStatus === 'trabalhada' ? 'check' : 'alert-circle');
+    }
+
+    function openCalendarDayDetailModal(dayNumber, stage) {
+        const dayItem = ANNUAL_SKILLS_CALENDAR_DATA[currentCalendarMonth] && ANNUAL_SKILLS_CALENDAR_DATA[currentCalendarMonth][dayNumber];
+        if (!dayItem || !dayItem.skills[stage]) return;
+
+        activeCalendarDayItem = { dayNumber, stage, item: dayItem };
+        const skill = dayItem.skills[stage];
+
+        const modal = document.getElementById('modal-calendar-day-detail');
+        const titleEl = document.getElementById('modal-cal-day-title');
+        const metaEl = document.getElementById('modal-cal-day-meta');
+        const descCodeEl = document.getElementById('modal-cal-desc-code');
+        const descCompEl = document.getElementById('modal-cal-desc-component');
+        const metodEl = document.getElementById('modal-cal-metodologia');
+        const obsEl = document.getElementById('modal-cal-teacher-obs');
+        const statusLabel = document.getElementById('modal-cal-status-label');
+        const toggleBtn = document.getElementById('btn-modal-toggle-day-status');
+
+        if (!modal) return;
+
+        const monthName = MONTH_NAMES_PT[currentCalendarMonth];
+        if (titleEl) titleEl.textContent = `Planejamento do Dia ${dayNumber} de ${monthName} (${stage})`;
+        if (metaEl) metaEl.textContent = `Ano Letivo 2026 • SEMED Gonçalves Dias • ${skill.comp}`;
+        if (descCodeEl) descCodeEl.textContent = `${skill.code} — ${skill.title}`;
+        if (descCompEl) descCompEl.textContent = `Componente: ${skill.comp} • Etapa: ${stage}`;
+        if (metodEl) metodEl.textContent = skill.metod;
+        if (obsEl) obsEl.value = skill.obs || '';
+
+        const isWorked = skill.status === 'trabalhada';
+        if (statusLabel) {
+            statusLabel.innerHTML = isWorked ? '<strong style="color:#22c55e;">🟢 Trabalhada em Aula</strong>' : '<strong style="color:#ef4444;">🔴 Pendente / A Trabalhar</strong>';
+        }
+        if (toggleBtn) {
+            toggleBtn.textContent = isWorked ? 'Desmarcar (Voltar para Pendente)' : 'Marcar como Trabalhada';
+            toggleBtn.style.background = isWorked ? '#ef4444' : '#22c55e';
+        }
+
+        modal.classList.remove('hidden');
+        safeCreateIcons();
+    }
+
+    // Modal Action Listeners
+    const modalCalDay = document.getElementById('modal-calendar-day-detail');
+    const btnCloseCalDay = document.getElementById('btn-close-cal-day-modal');
+    const btnCancelCalDay = document.getElementById('btn-cancel-cal-day-modal');
+    const btnSaveCalDay = document.getElementById('btn-save-cal-day-modal');
+    const btnToggleCalDayStatus = document.getElementById('btn-modal-toggle-day-status');
+
+    if (btnCloseCalDay && modalCalDay) {
+        btnCloseCalDay.addEventListener('click', () => modalCalDay.classList.add('hidden'));
+    }
+    if (btnCancelCalDay && modalCalDay) {
+        btnCancelCalDay.addEventListener('click', () => modalCalDay.classList.add('hidden'));
+    }
+    if (btnToggleCalDayStatus) {
+        btnToggleCalDayStatus.addEventListener('click', () => {
+            if (!activeCalendarDayItem) return;
+            const { dayNumber, stage, item } = activeCalendarDayItem;
+            const currentStatus = item.skills[stage].status;
+            item.skills[stage].status = (currentStatus === 'trabalhada') ? 'pendente' : 'trabalhada';
+            openCalendarDayDetailModal(dayNumber, stage);
+            renderAnnualCalendar();
+        });
+    }
+    if (btnSaveCalDay) {
+        btnSaveCalDay.addEventListener('click', () => {
+            if (!activeCalendarDayItem) return;
+            const { stage, item } = activeCalendarDayItem;
+            const obsVal = document.getElementById('modal-cal-teacher-obs')?.value.trim();
+            item.skills[stage].obs = obsVal || '';
+            modalCalDay?.classList.add('hidden');
+            showToast('Registro pedagógico do dia salvo com sucesso!', 'check');
+        });
+    }
+
+    // Month Pills Handlers
+    document.querySelectorAll('.calendar-month-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+            document.querySelectorAll('.calendar-month-pill').forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+            currentCalendarMonth = parseInt(pill.getAttribute('data-month'), 10);
+            renderAnnualCalendar();
+        });
+    });
+
+    // Filter Change Handlers
+    ['cal-filter-stage', 'cal-filter-subject', 'cal-filter-school'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', renderAnnualCalendar);
+    });
+
+    // Mark All Month as Done
+    const btnMarkAllMonthDone = document.getElementById('btn-mark-all-month-done');
+    if (btnMarkAllMonthDone) {
+        btnMarkAllMonthDone.addEventListener('click', () => {
+            const stage = document.getElementById('cal-filter-stage')?.value || '5º Ano';
+            const monthData = ANNUAL_SKILLS_CALENDAR_DATA[currentCalendarMonth] || {};
+            Object.values(monthData).forEach(dayItem => {
+                if (dayItem.skills[stage]) dayItem.skills[stage].status = 'trabalhada';
+            });
+            renderAnnualCalendar();
+            showToast(`Todas as habilidades de ${MONTH_NAMES_PT[currentCalendarMonth]} foram marcadas como TRABALHADAS 🟢!`, 'check');
+        });
+    }
+
+    // Export PDF Handler
+    const btnExportCalPdf = document.getElementById('btn-export-calendar-pdf');
+    if (btnExportCalPdf) {
+        btnExportCalPdf.addEventListener('click', () => {
+            showToast(`Gerando Calendário de Habilidades de ${MONTH_NAMES_PT[currentCalendarMonth]} para impressão...`, 'printer');
+            setTimeout(() => window.print(), 300);
+        });
+    }
