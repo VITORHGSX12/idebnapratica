@@ -16012,3 +16012,141 @@ if (document.readyState === 'loading') {
         updateIdebPeriodBadgeDynamic();
         initIdebCitySelector();
     });
+
+
+    // =========================================================================
+    // EDIÇÃO DE DADOS DA ESCOLA & DIREÇÃO VINCULADA E SUB-ABAS DA ESCOLA
+    // =========================================================================
+
+    const SCHOOLS_METADATA_STORE = {
+        'UI JOSE CORREA LIMA': { inep: '21128723', manager: 'Profa. Maria Helena Silva', phone: '(99) 98811-2233', address: 'Rua Getúlio Vargas, S/N - Centro', stage: 'Anos Iniciais e Anos Finais' },
+        'UI EMILIO MURAD': { inep: '21128744', manager: 'Prof. Carlos Alberto Santos', phone: '(99) 98822-3344', address: 'Av. Principal, 100 - Bairro Novo', stage: 'Anos Iniciais e Anos Finais' },
+        'UE VEREADOR LEONARDO FERREIRA LIMA': { inep: '21128755', manager: 'Profa. Ana Rita Lima', phone: '(99) 98833-4455', address: 'Rua da Paz, 45 - Vila Real', stage: 'Anos Iniciais' },
+        'U I BASILIO ALVES': { inep: '21128766', manager: 'Prof. Marcos Vinicius Costa', phone: '(99) 98844-5566', address: 'Povoado Algodão, S/N - Zona Rural', stage: 'Anos Iniciais e Anos Finais' }
+    };
+
+    function openEditSchoolModal() {
+        const schName = document.getElementById('workspace-school-name')?.textContent?.trim() || 'UI JOSE CORREA LIMA';
+        const schInepEl = document.getElementById('workspace-school-inep')?.textContent || 'INEP: 21128723';
+        const schManagerEl = document.getElementById('workspace-school-manager')?.textContent || 'Gestor: Profa. Maria Helena';
+
+        const meta = SCHOOLS_METADATA_STORE[schName] || {
+            inep: schInepEl.replace('INEP:', '').trim(),
+            manager: schManagerEl.replace('Gestor:', '').trim(),
+            phone: '(99) 98877-6655',
+            address: 'Gonçalves Dias - MA',
+            stage: 'Anos Iniciais e Anos Finais'
+        };
+
+        const nameInput = document.getElementById('edit-school-name');
+        const inepInput = document.getElementById('edit-school-inep');
+        const managerInput = document.getElementById('edit-school-manager-name');
+        const phoneInput = document.getElementById('edit-school-manager-phone');
+        const addressInput = document.getElementById('edit-school-address');
+        const stageInput = document.getElementById('edit-school-stage');
+
+        if (nameInput) nameInput.value = schName;
+        if (inepInput) inepInput.value = meta.inep;
+        if (managerInput) managerInput.value = meta.manager;
+        if (phoneInput) phoneInput.value = meta.phone || '';
+        if (addressInput) addressInput.value = meta.address || '';
+        if (stageInput) stageInput.value = meta.stage || 'Anos Iniciais e Anos Finais';
+
+        const modal = document.getElementById('modal-edit-school');
+        if (modal) modal.classList.remove('hidden');
+    }
+    window.openEditSchoolModal = openEditSchoolModal;
+
+    function handleSaveSchoolEdit(e) {
+        e.preventDefault();
+        const schName = document.getElementById('edit-school-name')?.value?.trim() || 'UI JOSE CORREA LIMA';
+        const inep = document.getElementById('edit-school-inep')?.value?.trim() || '21128723';
+        const manager = document.getElementById('edit-school-manager-name')?.value?.trim() || 'Profa. Maria Helena Silva';
+        const phone = document.getElementById('edit-school-manager-phone')?.value?.trim() || '';
+        const address = document.getElementById('edit-school-address')?.value?.trim() || '';
+        const stage = document.getElementById('edit-school-stage')?.value || 'Anos Iniciais e Anos Finais';
+
+        SCHOOLS_METADATA_STORE[schName] = { inep, manager, phone, address, stage };
+
+        // Update header UI immediately
+        const schNameEl = document.getElementById('workspace-school-name');
+        const schInepEl = document.getElementById('workspace-school-inep');
+        const schManagerEl = document.getElementById('workspace-school-manager');
+
+        if (schNameEl) schNameEl.textContent = schName;
+        if (schInepEl) schInepEl.textContent = `INEP: ${inep}`;
+        if (schManagerEl) schManagerEl.textContent = `Gestor: ${manager}`;
+
+        alert(`✅ Dados cadastrais da escola "${schName}" atualizados com sucesso!\n\nGestor(a) Vinculado(a): ${manager}\nINEP: ${inep}\nEndereço: ${address}`);
+
+        const modal = document.getElementById('modal-edit-school');
+        if (modal) modal.classList.add('hidden');
+    }
+    window.handleSaveSchoolEdit = handleSaveSchoolEdit;
+
+    // BIND CLICK LISTENERS ON SCHOOL NAV BUTTONS (Visão Geral, Professores, Turmas, Alunos)
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.school-nav-tab-btn');
+        if (btn) {
+            const tab = btn.getAttribute('data-tab');
+            if (tab) {
+                switchSchoolInnerTab(tab);
+            }
+        }
+    });
+
+    // RENDERIZADOR DA SUB-ABA VISÃO GERAL DA ESCOLA
+    function renderSchoolOverviewTab(schoolName) {
+        const container = document.getElementById('school-inner-tab-content-container');
+        if (!container) return;
+
+        const meta = SCHOOLS_METADATA_STORE[schoolName] || { manager: 'Profa. Maria Helena Silva', inep: '21128723' };
+
+        container.innerHTML = `
+            <div style="display:flex; flex-direction:column; gap:18px;">
+                <div class="card" style="background:var(--bg-tertiary); border:1px solid var(--border-color); padding:18px; border-radius:var(--radius-lg);">
+                    <div class="flex-between flex-wrap gap-md" style="margin-bottom:12px;">
+                        <div>
+                            <h3 style="margin:0; font-size:1.15rem; font-weight:800; color:var(--text-primary);">📊 Visão Geral Desempenho & Estrutura — ${schoolName}</h3>
+                            <p class="text-sm text-muted" style="margin:2px 0 0 0;">Síntese dos indicadores operacionais e pedagógicos da unidade escolar</p>
+                        </div>
+                        <span class="badge badge-purple" style="font-size:0.75rem;">${meta.manager}</span>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:14px;">
+                        <div style="background:var(--bg-secondary); padding:14px; border-radius:var(--radius-md); border:1px solid var(--border-color); text-align:center;">
+                            <span style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">TOTAL DE ESTUDANTES</span>
+                            <strong style="display:block; font-size:1.6rem; font-weight:800; color:var(--text-primary); margin-top:4px;">248</strong>
+                            <span style="font-size:0.68rem; color:var(--green-light);">100% Frequência Ativa</span>
+                        </div>
+                        <div style="background:var(--bg-secondary); padding:14px; border-radius:var(--radius-md); border:1px solid var(--border-color); text-align:center;">
+                            <span style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">TURMAS EM FUNCIONAMENTO</span>
+                            <strong style="display:block; font-size:1.6rem; font-weight:800; color:#6366f1; margin-top:4px;">8</strong>
+                            <span style="font-size:0.68rem; color:var(--text-secondary);">Ano Letivo 2026</span>
+                        </div>
+                        <div style="background:var(--bg-secondary); padding:14px; border-radius:var(--radius-md); border:1px solid var(--border-color); text-align:center;">
+                            <span style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">CORPO DOCENTE</span>
+                            <strong style="display:block; font-size:1.6rem; font-weight:800; color:#3b82f6; margin-top:4px;">14</strong>
+                            <span style="font-size:0.68rem; color:var(--text-secondary);">Professores Alocados</span>
+                        </div>
+                        <div style="background:rgba(16, 185, 129, 0.08); padding:14px; border-radius:var(--radius-md); border:1px solid #10b981; text-align:center;">
+                            <span style="font-size:0.72rem; color:#10b981; font-weight:700;">MÉDIA IDEB ESCOLAR</span>
+                            <strong style="display:block; font-size:1.6rem; font-weight:800; color:#10b981; margin-top:4px;">5.5 ⭐</strong>
+                            <span style="font-size:0.68rem; color:var(--green-light);">Meta Superada</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="background:var(--bg-tertiary); border:1px solid var(--border-color); padding:18px; border-radius:var(--radius-lg);">
+                    <h4 style="margin:0 0 10px 0; font-size:1.0rem; font-weight:800; color:var(--text-primary);">📍 Informações Cadastrais e Endereço</h4>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:0.84rem;">
+                        <div><strong>Direção / Gestão:</strong> ${meta.manager}</div>
+                        <div><strong>Código INEP:</strong> ${meta.inep}</div>
+                        <div><strong>Endereço:</strong> ${meta.address || 'Centro, Gonçalves Dias - MA'}</div>
+                        <div><strong>Etapas Atendidas:</strong> ${meta.stage || 'Anos Iniciais e Anos Finais'}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    window.renderSchoolOverviewTab = renderSchoolOverviewTab;
