@@ -1686,48 +1686,7 @@ tr:last-child td {
 
 /* Responsive fixes */
 @media (max-width: 1024px) {
-    /* Tablet/Laptop: default to slim/collapsed sidebar to optimize workspace */
-    body:not(.collapsed-sidebar) .sidebar {
-        width: 76px;
-    }
-    body:not(.collapsed-sidebar) .sidebar-header {
-        padding: 24px 10px;
-        justify-content: center;
-    }
-    body:not(.collapsed-sidebar) .sidebar-header .logo-text,
-    body:not(.collapsed-sidebar) .sidebar-header .active-network-badge {
-        display: none !important;
-    }
-    body:not(.collapsed-sidebar) .menu-group-header {
-        display: none !important;
-    }
-    body:not(.collapsed-sidebar) .menu-item {
-        justify-content: center;
-        padding: 12px;
-        gap: 0;
-    }
-    body:not(.collapsed-sidebar) .menu-item span,
-    body:not(.collapsed-sidebar) .menu-item .badge {
-        display: none !important;
-    }
-    body:not(.collapsed-sidebar) .sidebar-footer {
-        padding: 12px 10px;
-        justify-content: center;
-    }
-    body:not(.collapsed-sidebar) .sidebar-footer .user-profile {
-        justify-content: center;
-        padding: 6px;
-    }
-    body:not(.collapsed-sidebar) .sidebar-footer .user-info,
-    body:not(.collapsed-sidebar) .sidebar-footer svg.lucide-chevron-up,
-    body:not(.collapsed-sidebar) .sidebar-footer svg[class*="chevron-up"] {
-        display: none !important;
-    }
-    body:not(.collapsed-sidebar) .sidebar-footer .user-dropdown-menu {
-        left: 76px;
-        bottom: 12px;
-        width: 180px;
-    }
+    /* Tablet sidebar rules streamlined */
 
     .grid-3-lg {
         grid-template-columns: 1fr !important;
@@ -4283,4 +4242,15 @@ body.collapsed-sidebar .menu-item {
 body.collapsed-sidebar .menu-item span,
 body.collapsed-sidebar .menu-item .badge {
     display: none !important;
+}
+
+
+/* Pointer Events Safety for Navigation Items */
+.menu-item * {
+    pointer-events: none !important;
+}
+
+.menu-item {
+    pointer-events: auto !important;
+    cursor: pointer !important;
 }
