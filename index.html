@@ -160,22 +160,22 @@
         function switchIdebSubtab(targetTab) {
             if (!targetTab) return;
             try {
-                // Update tab buttons
                 document.querySelectorAll('.ideb-regional-tab-btn').forEach(function(btn) {
                     if (btn.getAttribute('data-tab') === targetTab) {
                         btn.classList.add('active');
                         btn.style.background = '#6366f1';
                         btn.style.color = '#ffffff';
                         btn.style.border = 'none';
+                        btn.style.fontWeight = '700';
                     } else {
                         btn.classList.remove('active');
                         btn.style.background = 'var(--bg-secondary)';
                         btn.style.color = 'var(--text-secondary)';
                         btn.style.border = '1px solid var(--border-color)';
+                        btn.style.fontWeight = '600';
                     }
                 });
 
-                // Update tab contents
                 document.querySelectorAll('.ideb-regional-tab-content').forEach(function(content) {
                     content.classList.add('hidden');
                     content.style.display = 'none';
@@ -187,17 +187,12 @@
                     activeEl.style.display = 'block';
                 }
 
-                // Call renderers
-                if (targetTab === 'ure-presidente-dutra' && typeof renderUrePresidenteDutraTable === 'function') {
-                    renderUrePresidenteDutraTable();
-                } else if (targetTab === 'regiao-centro-ma' && typeof renderRegiaoCentroTable === 'function') {
-                    renderRegiaoCentroTable();
+                if (targetTab === 'painel-principal' && typeof initIdebCitySelector === 'function') {
+                    initIdebCitySelector();
+                } else if (targetTab === 'painel-ures' && typeof render19UresPanel === 'function') {
+                    render19UresPanel();
                 } else if (targetTab === 'ranking-geral-ma' && typeof renderRankingGeralMaTable === 'function') {
                     renderRankingGeralMaTable();
-                }
-
-                if (window.lucide && typeof lucide.createIcons === 'function') {
-                    try { lucide.createIcons(); } catch(err) {}
                 }
             } catch (e) {
                 console.error('Error switching regional subtab:', e);
@@ -1640,112 +1635,132 @@
                     </div>
 
                     <!-- Subtabs de Navegação Regional: 1. Gonçalves Dias x BR/MA • 2. URE Presidente Dutra • 3. Região Centro • 4. Ranking Geral MA -->
+                    <!-- Subtabs de Navegação Regional: 1. Painel Geral (Com Seletor) • 2. Painel de UREs (As 19 UREs) • 3. Ranking Geral (217 Municípios) -->
                     <div class="card margin-bottom-lg" style="padding: 0; overflow: hidden; background: var(--bg-secondary); border: 1px solid var(--border-color);">
-                        <div style="display: flex; gap: 4px; padding: 12px 18px; border-bottom: 1px solid var(--border-color); overflow-x: auto; background: var(--bg-tertiary);">
-                            <button class="ideb-regional-tab-btn active" onclick="switchIdebSubtab('painel-principal'); return false;" data-tab="painel-principal" style="padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; background: #6366f1; color: #ffffff; border: none; cursor: pointer; white-space: nowrap;">
-                                📊 Painel Geral de Gonçalves Dias
+                        <div style="display: flex; gap: 6px; padding: 12px 18px; border-bottom: 1px solid var(--border-color); overflow-x: auto; background: var(--bg-tertiary);">
+                            <button class="ideb-regional-tab-btn active" onclick="switchIdebSubtab('painel-principal'); return false;" data-tab="painel-principal" style="padding: 8px 18px; border-radius: 20px; font-size: 0.82rem; font-weight: 700; background: #6366f1; color: #ffffff; border: none; cursor: pointer; white-space: nowrap;">
+                                📊 Painel Geral do Município
                             </button>
-                            <button class="ideb-regional-tab-btn" onclick="switchIdebSubtab('ure-presidente-dutra'); return false;" data-tab="ure-presidente-dutra" style="padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
-                                🏛️ URE Presidente Dutra (2023 x 2025)
+                            <button class="ideb-regional-tab-btn" onclick="switchIdebSubtab('painel-ures'); return false;" data-tab="painel-ures" style="padding: 8px 18px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
+                                🏛️ Painel das 19 UREs do Maranhão
                             </button>
-                            <button class="ideb-regional-tab-btn" onclick="switchIdebSubtab('regiao-centro-ma'); return false;" data-tab="regiao-centro-ma" style="padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
-                                📍 Municípios da Região Centro (MA)
+                            <button class="ideb-regional-tab-btn" onclick="switchIdebSubtab('ranking-geral-ma'); return false;" data-tab="ranking-geral-ma" style="padding: 8px 18px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
+                                🏆 Ranking Geral (217 Municípios MA)
                             </button>
-                            <button class="ideb-regional-tab-btn" onclick="switchIdebSubtab('ranking-geral-ma'); return false;" data-tab="ranking-geral-ma" style="padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
-                                🏆 Ranking Geral do Maranhão (2023 x 2025)
-                            </button>
+                        </div>
+
+                        <!-- SUBTAB 1: PAINEL GERAL DO MUNICÍPIO (Com Seletor Cidade Padrão Gonçalves Dias) -->
+                        <div id="tab-ideb-painel-principal" class="ideb-regional-tab-content" style="padding: 24px;">
+                            <!-- Header do Seletor de Município -->
+                            <div class="card margin-bottom-md" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 14px 18px; border-radius: var(--radius-md);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap;">
+                                    <div style="display: flex; align-items: center; gap: 10px; flex-grow: 1;">
+                                        <span style="font-size: 0.85rem; font-weight: 800; color: var(--text-primary); white-space: nowrap;">
+                                            📍 Município Selecionado:
+                                        </span>
+                                        <select id="ideb-city-selector" onchange="handleSelectIdebCity(this.value)" class="form-select" style="height: 38px; min-width: 260px; max-width: 400px; font-size: 0.88rem; font-weight: 700; color: #6366f1; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                                            <!-- Preenchido via JS com Gonçalves Dias pré-selecionado + 217 cidades -->
+                                        </select>
+                                    </div>
+                                    <div id="ideb-city-ure-badge">
+                                        <span class="badge badge-purple" style="font-size: 0.76rem; padding: 6px 12px;">URE Presidente Dutra</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Cards de Desempenho do Município Selecionado -->
+                            <div class="grid-4-lg margin-bottom-lg" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 24px;">
+                                <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); text-align: center;">
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">IDEB 2023 Observado</span>
+                                    <strong id="city-ideb-2023" style="font-size: 1.8rem; font-weight: 800; color: var(--text-primary);">4.8</strong>
+                                    <span style="font-size: 0.7rem; color: var(--text-secondary); display: block; margin-top: 2px;">Oficial INEP</span>
+                                </div>
+                                <div class="card" style="background: rgba(16, 185, 129, 0.08); border: 1px solid #10b981; padding: 16px; border-radius: var(--radius-md); text-align: center;">
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: #10b981; display: block; margin-bottom: 4px;">IDEB 2025 (Atual)</span>
+                                    <strong id="city-ideb-2025" style="font-size: 1.8rem; font-weight: 800; color: #10b981;">5.2 ⭐</strong>
+                                    <span style="font-size: 0.7rem; color: var(--green-light); font-weight: 700; display: block; margin-top: 2px;">Meta Superada</span>
+                                </div>
+                                <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); text-align: center;">
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Meta Pactuada 2025</span>
+                                    <strong id="city-ideb-target" style="font-size: 1.8rem; font-weight: 800; color: #6366f1;">5.0</strong>
+                                    <span style="font-size: 0.7rem; color: var(--text-secondary); display: block; margin-top: 2px;">MEC / INEP</span>
+                                </div>
+                                <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); text-align: center;">
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Posição no Ranking MA</span>
+                                    <strong id="city-ranking-pos" style="font-size: 1.8rem; font-weight: 800; color: #f59e0b;">#14</strong>
+                                    <span style="font-size: 0.7rem; color: var(--text-secondary); display: block; margin-top: 2px;">Dentre 217 cidades</span>
+                                </div>
+                            </div>
+
+                            <!-- Comparativo do Município Selecionado vs Maranhão vs Brasil -->
+                            <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 20px; border-radius: var(--radius-lg);">
+                                <h4 style="margin: 0 0 12px 0; font-size: 1.05rem; font-weight: 800; color: var(--text-primary);">
+                                    📊 Comparativo da Cidade x Média Estadual (MA) x Média Nacional (BR)
+                                </h4>
+                                <div style="display: flex; flex-direction: column; gap: 14px;" id="city-comparison-bars">
+                                    <!-- Preenchido dinamicamente via JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SUBTAB 2: PAINEL COM TODAS AS 19 UREs ORGANIZADAS -->
+                        <div id="tab-ideb-painel-ures" class="ideb-regional-tab-content hidden" style="padding: 24px;">
+                            <div class="flex-between flex-wrap gap-md" style="margin-bottom: 16px;">
+                                <div>
+                                    <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">
+                                        Unidades Regionais de Educação (19 UREs do Maranhão)
+                                    </h3>
+                                    <p class="text-sm text-muted" style="margin: 2px 0 0 0;">
+                                        Agrupamento oficial das 19 UREs com todos os seus municípios e índices de desempenho.
+                                    </p>
+                                </div>
+                                <div>
+                                    <input type="text" id="ure-search-input" oninput="filterUresList()" placeholder="Buscar URE ou Município..." style="height: 38px; width: 260px; padding: 0 12px; font-size: 0.82rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary);">
+                                </div>
+                            </div>
+
+                            <div id="ures-cards-container" style="display: flex; flex-direction: column; gap: 16px;">
+                                <!-- Preenchido dinamicamente via JS com as 19 UREs organizadas -->
+                            </div>
+                        </div>
+
+                        <!-- SUBTAB 3: RANKING GERAL DE TODOS OS 217 MUNICÍPIOS -->
+                        <div id="tab-ideb-ranking-geral-ma" class="ideb-regional-tab-content hidden" style="padding: 24px;">
+                            <div class="flex-between flex-wrap gap-md" style="margin-bottom: 16px;">
+                                <div>
+                                    <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">
+                                        Ranking Geral dos 217 Municípios do Maranhão
+                                    </h3>
+                                    <p class="text-sm text-muted" style="margin: 2px 0 0 0;">
+                                        Classificação oficial completa com base no IDEB 2025 (Anos Iniciais).
+                                    </p>
+                                </div>
+                                <div style="display: flex; gap: 10px;">
+                                    <input type="text" id="ranking-ma-search-input" oninput="filterRankingMaTable()" placeholder="Buscar município no Maranhão..." style="height: 38px; width: 260px; padding: 0 12px; font-size: 0.82rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary);">
+                                </div>
+                            </div>
+
+                            <div class="card" style="padding: 0; overflow-x: auto; border: 1px solid var(--border-color);">
+                                <table class="table-compact" style="width: 100%; border-collapse: collapse; text-align: left;">
+                                    <thead>
+                                        <tr style="background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; height: 42px;">
+                                            <th style="padding: 10px 14px; width: 60px;">POS</th>
+                                            <th style="padding: 10px 14px;">MUNICÍPIO</th>
+                                            <th style="padding: 10px 14px;">URE PERTENCENTE</th>
+                                            <th style="padding: 10px 14px; text-align: center;">IDEB 2023</th>
+                                            <th style="padding: 10px 14px; text-align: center;">IDEB 2025</th>
+                                            <th style="padding: 10px 14px; text-align: center;">META 2025</th>
+                                            <th style="padding: 10px 14px; text-align: center;">SITUAÇÃO</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ranking-geral-ma-table-body">
+                                        <!-- Preenchido dinamicamente via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- ABA 1: PAINEL PRINCIPAL GONÇALVES DIAS (PRESET) -->
-                    <div class="ideb-regional-tab-content active" id="tab-ideb-painel-principal">
-                        <!-- Filters Selector -->
-                        <div style="background-color: var(--bg-secondary); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; margin-bottom: 20px;">
-                            <div class="form-group" style="flex: 1; min-width: 160px; margin: 0;">
-                                <label for="ideb-state-select" style="font-size:0.75rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Estado (UF)</label>
-                                <select id="ideb-state-select" class="form-select" style="font-size:0.8rem; height: 38px; width: 100%;">
-                                    <option value="MA" selected>Maranhão (MA)</option>
-                                    <option value="BR">Brasil (Média Nacional)</option>
-                                    <option value="CE">Ceará (CE)</option>
-                                    <option value="PI">Piauí (PI)</option>
-                                </select>
-                            </div>
-                            <div class="form-group" style="flex: 1.5; min-width: 240px; margin: 0; position: relative;">
-                                <label for="ideb-city-search" style="font-size:0.75rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Município / Referência</label>
-                                <input type="text" id="ideb-city-search" class="form-control text-input" value="Gonçalves Dias" placeholder="Buscar município..." style="font-size:0.8rem; height: 38px; width: 100%; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 8px 12px; background: var(--bg-tertiary); color: var(--text-primary);" autocomplete="off">
-                                <div id="ideb-city-suggestions" class="hidden" style="position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); max-height: 200px; overflow-y: auto; z-index: 1000; box-shadow: var(--shadow-md);"></div>
-                            </div>
-                            <div class="form-group" style="flex: 1; min-width: 180px; margin: 0;">
-                                <label for="ideb-stage-select" style="font-size:0.75rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Etapa de Ensino</label>
-                                <select id="ideb-stage-select" class="form-select" style="font-size:0.8rem; height: 38px; width: 100%;">
-                                    <option value="Anos Iniciais" selected>Anos Iniciais (1º ao 5º ano)</option>
-                                    <option value="Anos Finais">Anos Finais (6º ao 9º ano)</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- KPI metrics grid -->
-                        <div class="grid grid-3 margin-bottom-lg" style="gap: 16px;">
-                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; padding: 20px;">
-                                <div>
-                                    <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">IDEB 2023 Observado</span>
-                                    <h2 id="ideb-kpi-observed" style="font-size: 2.75rem; font-weight: 800; color: var(--text-primary); margin: 8px 0;">4.8</h2>
-                                </div>
-                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0; display: flex; align-items: center; gap: 4px;">
-                                    <i data-lucide="check-circle" style="width:14px; height:14px; color: var(--green-light);"></i> Dado oficial publicado pelo INEP
-                                </p>
-                            </div>
-
-                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; padding: 20px;">
-                                <div>
-                                    <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">IDEB 2025 (Oficial / Atualizado)</span>
-                                    <h2 id="ideb-kpi-target" style="font-size: 2.75rem; font-weight: 800; color: var(--green-light); margin: 8px 0;">5.2</h2>
-                                </div>
-                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0; display: flex; align-items: center; gap: 4px;">
-                                    <i data-lucide="trending-up" style="width:14px; height:14px; color: var(--green-light);"></i> Crescimento de +0.4 pontos na rede
-                                </p>
-                            </div>
-
-                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; padding: 20px;">
-                                <div>
-                                    <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">Posição na URE Presidente Dutra</span>
-                                    <div style="margin: 12px 0;">
-                                        <span class="badge badge-success" style="font-size: 1.1rem; font-weight: 800; padding: 6px 14px;">3º Lugar (URE)</span>
-                                    </div>
-                                </div>
-                                <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0;">Entre os 13 municípios da regional</p>
-                            </div>
-                        </div>
-
-                        <!-- Chart and Projection Column Grid -->
-                        <div style="display: grid; grid-template-columns: 2fr 1.25fr; gap: 20px; margin-bottom: 24px; align-items: start;">
-                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 20px;">
-                                <div class="card-header" style="padding-bottom: 12px; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-                                    <h4 style="margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--text-primary);">Histórico de Evolução IDEB (2017 a 2025)</h4>
-                                </div>
-                                <div id="ideb-chart-container" style="width: 100%; display: flex; justify-content: center; align-items: center;">
-                                    <!-- Gráfico SVG injetado via JS -->
-                                </div>
-                            </div>
-
-                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 20px;">
-                                <div class="card-header" style="padding-bottom: 12px; margin-bottom: 14px; border-bottom: 1px solid var(--border-color);">
-                                    <h4 style="margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--text-primary);">Metas para o Próximo Ciclo (2026)</h4>
-                                </div>
-                                <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px;">
-                                    Com base no crescimento registrado de 2023 para 2025, a meta estipulada para Gonçalves Dias no ciclo 2026 é atingir <strong>5.6</strong> nos Anos Iniciais e <strong>4.9</strong> nos Anos Finais.
-                                </p>
-                                <div style="display: flex; flex-direction: column; gap: 8px;">
-                                    <div style="display: flex; justify-content: space-between; font-size: 0.78rem; border-bottom: 1px solid var(--border-color); padding-bottom: 6px;">
-                                        <span>Meta Anos Iniciais (5º Ano):</span>
-                                        <strong style="color: var(--green-light);">5.6</strong>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between; font-size: 0.78rem; border-bottom: 1px solid var(--border-color); padding-bottom: 6px;">
-                                        <span>Meta Anos Finais (9º Ano):</span>
-                                        <strong style="color: var(--purple-light);">4.9</strong>
-                                    </div>
-                                </div>
-                            </div>
+                    </div>
                         </div>
                     </div>
 
@@ -5308,7 +5323,7 @@
 
     <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
-    <script src="app.js?v=e929d3fb"></script>
+    <script src="app.js?v=2fc581b0"></script>
 
     <!-- Modal Vincular Professor à Turma -->
     <div id="modal-assign-teacher" class="modal-overlay hidden">
