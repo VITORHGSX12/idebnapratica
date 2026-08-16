@@ -2047,7 +2047,7 @@ DIRETRIZES DO DIAGNÓSTICO:
                         <div style="text-align:center; padding: 40px; color:var(--text-secondary);">
                             <i data-lucide="info" style="width:36px; height:36px; margin-bottom:8px; opacity:0.5; color:var(--red-light); display:inline-block;"></i>
                             <p style="font-size:0.95rem; font-weight:500;">Nenhum dado encontrado para os filtros selecionados.</p>
-                            <p style="font-size:0.8rem; margin-top:4px;">Carregue o banco demonstrativo ("Carregar Modelo" no topo) para rodar a simulação.</p>
+                            <p style="font-size:0.8rem; margin-top:4px;">Aguardando o registro dos simulados e diagnósticas de 2026.</p>
                         </div>
                     `;
                     aiReportGenerationStatus.classList.add('hidden');
