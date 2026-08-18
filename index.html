@@ -1518,7 +1518,7 @@
                         <div id="subview-matriz-saeb" class="matriz-subview" style="padding: 20px;">
                             <!-- Stage Selector Pill Tabs -->
                             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 18px;">
-                                <div style="display: flex; gap: 8px; overflow-x: auto;">
+                                <div style="display: flex; gap: 8px; overflow-x: auto; flex-wrap: wrap;">
                                     <button class="matriz-etapa-btn active" onclick="switchMatrizEtapa('5ano'); return false;" data-etapa="5ano" style="padding: 6px 14px; border-radius: 16px; font-size: 0.78rem; font-weight: 700; background: #6366f1; color: #fff; border: none; cursor: pointer;">
                                         🎒 Anos Iniciais (5º Ano)
                                     </button>
@@ -1527,6 +1527,12 @@
                                     </button>
                                     <button class="matriz-etapa-btn" onclick="switchMatrizEtapa('alfabetizacao'); return false;" data-etapa="alfabetizacao" style="padding: 6px 14px; border-radius: 16px; font-size: 0.78rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer;">
                                         🔤 Alfabetização (2º Ano)
+                                    </button>
+                                    <button class="matriz-etapa-btn" onclick="switchMatrizEtapa('em'); return false;" data-etapa="em" style="padding: 6px 14px; border-radius: 16px; font-size: 0.78rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer;">
+                                        🏛️ Ensino Médio (3ª Série)
+                                    </button>
+                                    <button class="matriz-etapa-btn" onclick="switchMatrizEtapa('oba'); return false;" data-etapa="oba" style="padding: 6px 14px; border-radius: 16px; font-size: 0.78rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer;">
+                                        🚀 OBA (Astronomia & Espaço)
                                     </button>
                                 </div>
                                 <input type="text" id="matriz-search-input" oninput="filterMatrizDescritores()" placeholder="Buscar descritor por código ou tema (ex: D1, fração)..." style="height:38px; min-width:280px; font-size:0.82rem; padding:0 12px; background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-md); color:var(--text-primary);">
