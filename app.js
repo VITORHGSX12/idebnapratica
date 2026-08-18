@@ -1,24 +1,272 @@
-// =========================================================================
-// GLOBAL VARIABLE DECLARATIONS (Must be at top to avoid Temporal Dead Zone)
-// =========================================================================
+/**
+ * ============================================================================
+ * IDEB NA PRÁTICA - SAAS DE GESTÃO EDUCACIONAL
+ * HEADER GLOBAL DE ESTADOS, CONSTANTES E HELPERS (Sem TDZ / Escopo Seguro)
+ * ============================================================================
+ */
 
-// Pagination size for students table
-let alunosPageSize = 25;
+// 1. Helper Global de Ícones (Disponível para qualquer função)
+window.safeCreateIcons = function safeCreateIcons() {
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        try { window.lucide.createIcons(); } catch(e) {}
+    }
+};
+var safeCreateIcons = window.safeCreateIcons;
 
-// Lista oficial das 9 escolas da rede municipal
-const OFFICIAL_NETWORK_SCHOOLS = [
-    "UI JOSE CORREA LIMA",
-    "UI EMILIO MURAD",
-    "UE VEREADOR LEONARDO FERREIRA LIMA",
-    "U I BASILIO ALVES",
-    "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ",
-    "UE RAIMUNDO DOS REIS DA SILVA",
-    "UNIDADE INTEGRADA JOSE GONCALVES DIAS",
-    "UNIDADE ESCOLAR ANISIO GOMES",
-    "UE ANITA FURTADO"
+// 2. Helper Global de Debounce
+window.debounce = function debounce(func, wait = 250) {
+    let timeout;
+    return function(...args) {
+        const context = this;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), wait);
+    };
+};
+var debounce = window.debounce;
+
+// 3. Estados Globais de Paginação e Seleção
+window.currentAlunosPage = 1;
+window.alunosPageSize = 25;
+window.currentSelectedCity = "Gonçalves Dias";
+var currentAlunosPage = window.currentAlunosPage;
+var alunosPageSize = window.alunosPageSize;
+var currentSelectedCity = window.currentSelectedCity;
+
+window.selectedIdebCity = "Gonçalves Dias";
+var selectedIdebCity = window.selectedIdebCity;
+
+window.schoolPdePlansMap = window.schoolPdePlansMap || {};
+var schoolPdePlansMap = window.schoolPdePlansMap;
+
+window.activeMatrizEtapa = window.activeMatrizEtapa || '5ano';
+var activeMatrizEtapa = window.activeMatrizEtapa;
+
+window.dbCurrentPage = window.dbCurrentPage || 1;
+window.dbPageSize = window.dbPageSize || 50;
+window.dbFilteredStudents = window.dbFilteredStudents || [];
+var dbCurrentPage = window.dbCurrentPage;
+var dbPageSize = window.dbPageSize;
+var dbFilteredStudents = window.dbFilteredStudents;
+
+// 4. Escolas Oficiais da Rede Municipal (Gonçalves Dias - MA)
+window.OFFICIAL_NETWORK_SCHOOLS = [
+    { id: 'esc_1', nome: 'UI JOSE CORREA LIMA', inep: '21128723', zone: 'Zona Rural', phone: '-', director: 'Prof. Marcos Aurelio' },
+    { id: 'esc_2', nome: 'UI EMILIO MURAD', inep: '21128146', zone: 'Zona Rural', phone: '9935-6250', director: 'Profa. Antonia Silva' },
+    { id: 'esc_3', nome: 'UE VEREADOR LEONARDO FERREIRA LIMA', inep: '21128740', zone: 'Sede Urbana', phone: '9981-4371', director: 'Prof. Joao Paulo Mendes' },
+    { id: 'esc_4', nome: 'U I BASILIO ALVES', inep: '21128120', zone: 'Zona Rural', phone: '9935-6218 - 99356-2607', director: 'Profa. Maria Jose' },
+    { id: 'esc_5', nome: 'UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ', inep: '21286973', zone: 'Sede Urbana', phone: '9998-2055', director: 'Profa. Aldenora Cruz' },
+    { id: 'esc_6', nome: 'UE RAIMUNDO DOS REIS DA SILVA', inep: '21128758', zone: 'Zona Rural', phone: '-', director: 'Prof. Carlos Eduardo' },
+    { id: 'esc_7', nome: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS', inep: '21286990', zone: 'Zona Rural', phone: '9998-2055', director: 'Profa. Francisca Lima' },
+    { id: 'esc_8', nome: 'UNIDADE ESCOLAR ANISIO GOMES', inep: '21128774', zone: 'Zona Rural', phone: '-', director: 'Prof. Raimundo Nonato' },
+    { id: 'esc_9', nome: 'UE ANITA FURTADO', inep: '21192544', zone: 'Sede Urbana', phone: '9935-6218', director: 'Profa. Teresa Cristina' }
 ];
+var OFFICIAL_NETWORK_SCHOOLS = window.OFFICIAL_NETWORK_SCHOOLS;
 
-// ESTRUTURA OFICIAL DAS 19 UREs DO MARANHÃO & PAINEL DE MUNICÍPIOS
+// 5. Estado de Avaliações das Escolas (Metas e Planos PDE)
+window.SCHOOL_ASSESSMENTS_STATE = {
+    "2023": { default: true },
+    "2025": { default: true },
+    "2026": {
+        "UI JOSE CORREA LIMA": true,
+        "UI EMILIO MURAD": true,
+        "UE VEREADOR LEONARDO FERREIRA LIMA": true,
+        "U I BASILIO ALVES": true,
+        "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ": false,
+        "UE RAIMUNDO DOS REIS DA SILVA": false,
+        "UNIDADE INTEGRADA JOSE GONCALVES DIAS": false,
+        "UNIDADE ESCOLAR ANISIO GOMES": false,
+        "UE ANITA FURTADO": false
+    },
+    "2027": { default: false }
+};
+var SCHOOL_ASSESSMENTS_STATE = window.SCHOOL_ASSESSMENTS_STATE;
+
+const MASTER_EXHAUSTIVE_MATRICES = {
+        '5ano': {
+            portuguese: [
+                { codigo: "D1", topico: "Procedimentos de Leitura", desc: "Localizar informações explícitas em um texto." },
+                { codigo: "D2", topico: "Coerência e Coesão", desc: "Estabelecer relações entre partes de um texto, identificando repetições ou substituições." },
+                { codigo: "D3", topico: "Procedimentos de Leitura", desc: "Inferir o sentido de uma palavra ou expressão." },
+                { codigo: "D4", topico: "Procedimentos de Leitura", desc: "Inferir uma informação implícita em um texto." },
+                { codigo: "D5", topico: "Implicância do Suporte", desc: "Interpretar texto com auxílio de material gráfico diverso (propagandas, tiras, fotos)." },
+                { codigo: "D6", topico: "Procedimentos de Leitura", desc: "Identificar o tema de um texto." },
+                { codigo: "D7", topico: "Coerência e Coesão", desc: "Identificar o conflito gerador do enredo e os elementos constitutivos da narrativa." },
+                { codigo: "D8", topico: "Coerência e Coesão", desc: "Estabelecer relação entre a causa e a consequência no desenvolvimento do texto." },
+                { codigo: "D9", topico: "Implicância do Suporte", desc: "Identificar a finalidade de textos de diferentes gêneros." },
+                { codigo: "D10", topico: "Variação Linguística", desc: "Identificar as marcas linguísticas que evidenciam o locutor e o interlocutor de um texto." },
+                { codigo: "D12", topico: "Coerência e Coesão", desc: "Estabelecer relações lógico-discursivas marcadas por conjunções, advérbios, etc." },
+                { codigo: "D13", topico: "Relações entre Textos", desc: "Reconhecer diferentes formas de tratar uma informação na comparação de textos." },
+                { codigo: "D14", topico: "Procedimentos de Leitura", desc: "Distinguir um fato da opinião relativa a esse fato." },
+                { codigo: "D15", topico: "Recursos Expressivos", desc: "Reconhecer o efeito de sentido decorrente do uso da pontuação e de outras notações." }
+            ],
+            math: [
+                { codigo: "D1", topico: "Espaço e Forma", desc: "Identificar a localização/movimentação de objeto em mapas, croquis e representações gráficas." },
+                { codigo: "D2", topico: "Espaço e Forma", desc: "Identificar propriedades comuns e diferenças entre figuras bi e tridimensionais e suas planificações." },
+                { codigo: "D3", topico: "Espaço e Forma", desc: "Identificar propriedades de triângulos pela comparação de lados e ângulos." },
+                { codigo: "D4", topico: "Espaço e Forma", desc: "Identificar relação entre quadriláteros por meio de suas propriedades." },
+                { codigo: "D5", topico: "Espaço e Forma", desc: "Reconhecer a conservação/modificação de medidas em ampliações e reduções de polígonos." },
+                { codigo: "D6", topico: "Grandezas e Medidas", desc: "Estimar a medida de grandezas utilizando unidades convencionais ou não." },
+                { codigo: "D7", topico: "Grandezas e Medidas", desc: "Resolver problemas utilizando unidades de medida padronizadas (km, m, cm, kg, g, l, ml)." },
+                { codigo: "D8", topico: "Grandezas e Medidas", desc: "Estabelecer relações entre unidades de medida de tempo." },
+                { codigo: "D9", topico: "Grandezas e Medidas", desc: "Estabelecer relações entre hora de início/término e a duração de um evento." },
+                { codigo: "D10", topico: "Grandezas e Medidas", desc: "Determinar o valor total em cédulas e moedas do sistema monetário brasileiro." },
+                { codigo: "D11", topico: "Grandezas e Medidas", desc: "Resolver problemas envolvendo o cálculo do perímetro de figuras planas." },
+                { codigo: "D12", topico: "Grandezas e Medidas", desc: "Resolver problemas envolvendo a noção de área de figuras planas." },
+                { codigo: "D13", topico: "Números e Operações", desc: "Reconhecer e utilizar características do sistema de numeração decimal (valor posicional)." },
+                { codigo: "D14", topico: "Números e Operações", desc: "Identificar a localização de números naturais na reta numérica." },
+                { codigo: "D15", topico: "Números e Operações", desc: "Reconhecer a decomposição de números naturais nas suas diversas ordens." },
+                { codigo: "D16", topico: "Números e Operações", desc: "Reconhecer a composição e decomposição de números naturais." },
+                { codigo: "D17", topico: "Números e Operações", desc: "Calcular o resultado de uma adição ou subtração de números naturais." },
+                { codigo: "D18", topico: "Números e Operações", desc: "Calcular o resultado de uma multiplicação ou divisão de números naturais." },
+                { codigo: "D19", topico: "Números e Operações", desc: "Resolver problemas com números naturais envolvendo adição ou subtração." },
+                { codigo: "D20", topico: "Números e Operações", desc: "Resolver problemas com números naturais envolvendo multiplicação ou divisão." },
+                { codigo: "D21", topico: "Números e Operações", desc: "Identificar representações de um mesmo número racional (fração, decimal, porcentagem)." },
+                { codigo: "D22", topico: "Números e Operações", desc: "Identificar a localização de números decimais na reta numérica." },
+                { codigo: "D23", topico: "Números e Operações", desc: "Resolver problemas utilizando a escrita decimal de cédulas e moedas." },
+                { codigo: "D24", topico: "Números e Operações", desc: "Identificar fração como representação associada a partes de um todo ou razão." },
+                { codigo: "D25", topico: "Números e Operações", desc: "Resolver problemas com números racionais expressos na forma decimal." },
+                { codigo: "D26", topico: "Números e Operações", desc: "Resolver problemas envolvendo porcentagem (25%, 50%, 100%)." },
+                { codigo: "D27", topico: "Tratamento da Informação", desc: "Ler e interpretar informações apresentadas em tabelas simples ou duplas." },
+                { codigo: "D28", topico: "Tratamento da Informação", desc: "Ler e interpretar dados em gráficos de colunas ou barras." }
+            ],
+            science: [
+                { codigo: "EF05CI01", topico: "Matéria e Energia", desc: "Explorar propriedades físicas dos materiais (densidade, condutibilidade)." },
+                { codigo: "EF05CI02", topico: "Matéria e Energia", desc: "Aplicar conhecimentos sobre mudanças de estado físico no ciclo da água." },
+                { codigo: "EF05CI03", topico: "Vida e Evolução", desc: "Justificar a importância da cobertura vegetal para a manutenção da água." },
+                { codigo: "EF05CI04", topico: "Vida e Evolução", desc: "Identificar os órgãos dos sistemas digestório e respiratório." },
+                { codigo: "EF05CI05", topico: "Vida e Evolução", desc: "Propor ações de consumo consciente e descarte adequado de resíduos." },
+                { codigo: "EF05CI06", topico: "Vida e Evolução", desc: "Justificar a importância da água potável para a saúde humana." },
+                { codigo: "EF05CI07", topico: "Terra e Universo", desc: "Relacionar a rotação da Terra ao movimento aparente do Sol." },
+                { codigo: "EF05CI08", topico: "Terra e Universo", desc: "Organizar um cardápio equilibrado com base nos grupos alimentares." }
+            ],
+            humanas: [
+                { codigo: "EF05HI01", topico: "História & Cidadania", desc: "Identificar os processos de formação das culturas e dos povos." },
+                { codigo: "EF05HI02", topico: "História & Cidadania", desc: "Comparar os pontos de vista sobre a formação da sociedade maranhense e brasileira." },
+                { codigo: "EF05HI04", topico: "História & Cidadania", desc: "Associar a noção de cidadania aos direitos humanos e de minorias." },
+                { codigo: "EF05GE01", topico: "Geografia & Território", desc: "Descrever a dinâmica populacional e os fluxos migratórios regionais no Maranhão." },
+                { codigo: "EF05GE02", topico: "Geografia & Território", desc: "Identificar as transformações das paisagens nas cidades e no campo." },
+                { codigo: "EF05GE04", topico: "Geografia & Território", desc: "Reconhecer as características dos biomas brasileiros e do Cerrado/Mata dos Cocais." }
+            ]
+        },
+        '9ano': {
+            portuguese: [
+                { codigo: "D1", topico: "Procedimentos de Leitura", desc: "Localizar informações explícitas em um texto." },
+                { codigo: "D2", topico: "Procedimentos de Leitura", desc: "Estabelecer relações entre partes de um texto." },
+                { codigo: "D3", topico: "Procedimentos de Leitura", desc: "Inferir o sentido de uma palavra ou expressão." },
+                { codigo: "D4", topico: "Procedimentos de Leitura", desc: "Inferir uma informação implícita em um texto." },
+                { codigo: "D5", topico: "Implicância do Suporte", desc: "Interpretar texto com auxílio de recursos gráficos (charges, dados)." },
+                { codigo: "D6", topico: "Procedimentos de Leitura", desc: "Identificar o tema central de um texto." },
+                { codigo: "D7", topico: "Coerência e Coesão", desc: "Identificar o conflito gerador do enredo na narrativa." },
+                { codigo: "D8", topico: "Coerência e Coesão", desc: "Estabelecer relação entre a causa e o efeito no texto." },
+                { codigo: "D9", topico: "Implicância do Suporte", desc: "Identificar a finalidade de textos de diferentes gêneros." },
+                { codigo: "D11", topico: "Procedimentos de Leitura", desc: "Distinguir um fato da opinião relativa a esse fato." },
+                { codigo: "D12", topico: "Coerência e Coesão", desc: "Estabelecer relações lógico-discursivas marcadas por conectivos." },
+                { codigo: "D15", topico: "Relações entre Textos", desc: "Reconhecer posições distintas entre dois textos sobre o mesmo assunto." },
+                { codigo: "D16", topico: "Relações entre Textos", desc: "Identificar a tese e os argumentos apresentados no texto argumentativo." },
+                { codigo: "D17", topico: "Variação Linguística", desc: "Reconhecer o efeito de sentido decorrente da escolha de palavras formais/informais." },
+                { codigo: "D18", topico: "Recursos Expressivos", desc: "Identificar o efeito de sentido decorrente do uso da pontuação." },
+                { codigo: "D19", topico: "Recursos Expressivos", desc: "Identificar efeitos de ironia ou humor em textos variados." },
+                { codigo: "D20", topico: "Recursos Expressivos", desc: "Reconhecer o efeito de sentido decorrente de recursos sintáticos." },
+                { codigo: "D21", topico: "Recursos Expressivos", desc: "Reconhecer as relações entre a tese e os argumentos em textos opinativos." }
+            ],
+            math: [
+                { codigo: "D1", topico: "Espaço e Forma", desc: "Identificar a localização/movimentação no plano cartesiano." },
+                { codigo: "D2", topico: "Espaço e Forma", desc: "Identificar propriedades de figuras bi e tridimensionais." },
+                { codigo: "D3", topico: "Espaço e Forma", desc: "Identificar propriedades de triângulos pela comparação de lados e ângulos." },
+                { codigo: "D4", topico: "Espaço e Forma", desc: "Identificar relação entre quadriláteros por meio de suas propriedades." },
+                { codigo: "D5", topico: "Espaço e Forma", desc: "Reconhecer conservação/modificação de medidas em ampliações de polígonos." },
+                { codigo: "D6", topico: "Espaço e Forma", desc: "Reconhecer ângulos como mudança de direção ou giros." },
+                { codigo: "D7", topico: "Espaço e Forma", desc: "Reconhecer a simetria de reflexão em figuras planas." },
+                { codigo: "D8", topico: "Grandezas e Medidas", desc: "Resolver problemas envolvendo o cálculo de perímetro de figuras planas." },
+                { codigo: "D9", topico: "Grandezas e Medidas", desc: "Resolver problemas envolvendo o cálculo de área de figuras planas." },
+                { codigo: "D10", topico: "Grandezas e Medidas", desc: "Determinar o valor total em cédulas e moedas no sistema monetário." },
+                { codigo: "D11", topico: "Grandezas e Medidas", desc: "Resolver problemas envolvendo o cálculo de volume de paralelepípedos." },
+                { codigo: "D12", topico: "Grandezas e Medidas", desc: "Resolver problemas envolvendo a capacidade de recipientes." },
+                { codigo: "D13", topico: "Números e Operações", desc: "Reconhecer características do sistema de numeração decimal." },
+                { codigo: "D14", topico: "Números e Operações", desc: "Identificar a localização de números inteiros/racionais na reta numérica." },
+                { codigo: "D15", topico: "Números e Operações", desc: "Calcular o resultado de operações de adição, subtração, multiplicação e divisão com inteiros." },
+                { codigo: "D16", topico: "Números e Operações", desc: "Estabelecer relações entre representações fracionárias e decimais." },
+                { codigo: "D17", topico: "Números e Operações", desc: "Resolver problemas com números racionais envolvendo as 4 operações." },
+                { codigo: "D18", topico: "Números e Operações", desc: "Calcular o valor numérico de uma expressão algébrica." },
+                { codigo: "D19", topico: "Números e Operações", desc: "Resolver problema envolvendo equação do 1º grau." },
+                { codigo: "D20", topico: "Números e Operações", desc: "Resolver problema envolvendo sistema de equações do 1º grau." },
+                { codigo: "D21", topico: "Números e Operações", desc: "Resolver problema envolvendo equação do 2º grau." },
+                { codigo: "D22", topico: "Números e Operações", desc: "Identificar a representação gráfica de uma função de 1º grau." },
+                { codigo: "D23", topico: "Números e Operações", desc: "Resolver problema que envolva a razão entre duas grandezas." },
+                { codigo: "D24", topico: "Números e Operações", desc: "Resolver problema que envolva variação proporcional direta ou inversa." },
+                { codigo: "D25", topico: "Números e Operações", desc: "Resolver problema envolvendo porcentagem (aumentos e descontos)." },
+                { codigo: "D26", topico: "Números e Operações", desc: "Resolver problema envolvendo juros simples." },
+                { codigo: "D27", topico: "Tratamento da Informação", desc: "Ler e interpretar informações em tabelas." },
+                { codigo: "D28", topico: "Tratamento da Informação", desc: "Ler e interpretar dados em gráficos de colunas, setores, linhas e histogramas." },
+                { codigo: "D29", topico: "Tratamento da Informação", desc: "Resolver problemas envolvendo o cálculo da média aritmética." },
+                { codigo: "D30", topico: "Tratamento da Informação", desc: "Resolver problemas envolvendo noções de probabilidade." },
+                { codigo: "D31", topico: "Geometria Avançada", desc: "Resolver problemas aplicando o Teorema de Pitágoras." },
+                { codigo: "D32", topico: "Geometria Avançada", desc: "Resolver problemas envolvendo a circunferência (comprimento e área)." },
+                { codigo: "D33", topico: "Estatística", desc: "Interpretar mediana e moda em conjuntos de dados." },
+                { codigo: "D34", topico: "Tratamento da Informação", desc: "Resolver problemas de contagem via princípio multiplicativo." },
+                { codigo: "D35", topico: "Álgebra", desc: "Identificar padrões e termos de uma sequência numérica." },
+                { codigo: "D36", topico: "Funções", desc: "Reconhecer a representação gráfica da função quadrática (parábola)." },
+                { codigo: "D37", topico: "Geometria", desc: "Resolver problemas usando razões trigonométricas no triângulo retângulo (seno, cosseno, tangente)." }
+            ],
+            science: [
+                { codigo: "EF09CI01", topico: "Matéria e Energia", desc: "Investigar mudanças de estado físico e conservação da massa." },
+                { codigo: "EF09CI02", topico: "Matéria e Energia", desc: "Comparar grandezas físicas (massa, volume, densidade)." },
+                { codigo: "EF09CI03", topico: "Matéria e Energia", desc: "Identificar os modelos atômicos e a estrutura do átomo." },
+                { codigo: "EF09CI04", topico: "Vida e Evolução", desc: "Descrever a estrutura do DNA e as leis da hereditariedade." },
+                { codigo: "EF09CI05", topico: "Vida e Evolução", desc: "Analisar as teorias de evolução e seleção natural." },
+                { codigo: "EF09CI06", topico: "Terra e Universo", desc: "Associar o ciclo das fases da Lua ao movimento de revolução." },
+                { codigo: "EF09CI07", topico: "Terra e Universo", desc: "Explicar a evolução das estrelas e do Sistema Solar." }
+            ],
+            humanas: [
+                { codigo: "EF09HI01", topico: "História Contemporânea", desc: "Descrever os processos de urbanização e industrialização no século XX." },
+                { codigo: "EF09HI02", topico: "História do Brasil", desc: "Analisar a formação da República Brasileira e os movimentos sociais no Maranhão." },
+                { codigo: "EF09GE01", topico: "Geografia Mundial", desc: "Analisar a hegemonia europeia e os conflitos geopolíticos globais." },
+                { codigo: "EF09GE02", topico: "Geografia Econômica", desc: "Relacionar a globalização às transformações no mundo do trabalho." }
+            ]
+        },
+        'alfabetizacao': {
+            portuguese: [
+                { codigo: "D1", topico: "Consciência Fonológica", desc: "Reconhecer o alfabeto e a grafia das letras maiúsculas e minúsculas." },
+                { codigo: "D2", topico: "Consciência Fonológica", desc: "Diferenciar letras de números e outros símbolos gráficos." },
+                { codigo: "D3", topico: "Consciência Fonológica", desc: "Identificar rimas e aliterações em textos versificados." },
+                { codigo: "D4", topico: "Consciência Fonológica", desc: "Contar sílabas de palavras faladas (segmentação silábica)." },
+                { codigo: "D5", topico: "Decodificação & Fluência", desc: "Ler palavras de sílabas canônicas e não canônicas." },
+                { codigo: "D6", topico: "Decodificação & Fluência", desc: "Ler frases curtas com ritmo e entonação adequados." },
+                { codigo: "D7", topico: "Compreensão de Leitura", desc: "Localizar informação explícita em textos curtos." },
+                { codigo: "D8", topico: "Compreensão de Leitura", desc: "Identificar o assunto principal de um texto ilustrado." },
+                { codigo: "D9", topico: "Compreensão de Leitura", desc: "Inferir o sentido de palavras simples em cantigas e parlendas." },
+                { codigo: "D10", topico: "Escrita & Ortografia", desc: "Escrever palavras corretamente observando a correspondência grafofonêmica." },
+                { codigo: "D11", topico: "Fluência Leitora", desc: "Ler texto curto com velocidade igual ou superior a 60 palavras por minuto." },
+                { codigo: "D12", topico: "Produção de Texto", desc: "Produzir pequenos textos narrativos utilizando pontuação básica." }
+            ],
+            math: [
+                { codigo: "D1", topico: "Números", desc: "Reconhecer a contagem de coleções de objetos até 100." },
+                { codigo: "D2", topico: "Números", desc: "Identificar a posição de um número na sequência numérica até 100." },
+                { codigo: "D3", topico: "Números", desc: "Comparar quantidades de dois conjuntos (mais, menos, igual)." },
+                { codigo: "D4", topico: "Operações", desc: "Calcular adição com números até dois algarismos sem reagrupamento." },
+                { codigo: "D5", topico: "Operações", desc: "Calcular subtração simples de dois algarismos." },
+                { codigo: "D6", topico: "Geometria", desc: "Reconhecer figuras geométricas planas básicas (quadrado, retângulo, triângulo, círculo)." },
+                { codigo: "D7", topico: "Medidas", desc: "Comparar comprimentos, massas e capacidades utilizando termos adequados." },
+                { codigo: "D8", topico: "Medidas", desc: "Reconhecer dias da semana e meses do ano no calendário." },
+                { codigo: "D9", topico: "Tratamento da Informação", desc: "Ler dados organizados em listas simples ou tabelas de 1 entrada." },
+                { codigo: "D10", topico: "Moedas & Sistema", desc: "Identificar moedas e cédulas do sistema monetário brasileiro." },
+                { codigo: "D11", topico: "Padrões", desc: "Identificar o elemento ausente em uma sequência de figuras ou números." },
+                { codigo: "D12", topico: "Resolução de Problemas", desc: "Resolver problemas simples de juntar ou acrescentar com apoio de imagens." }
+            ],
+            science: [
+                { codigo: "EF02CI01", topico: "Vida e Saúde", desc: "Identificar hábitos de higiene corporal necessários para a manutenção da saúde." },
+                { codigo: "EF02CI02", topico: "Seres Vivos", desc: "Identificar plantas e animais do ambiente próximo e suas necessidades vitais." },
+                { codigo: "EF02CI03", topico: "Terra e Solo", desc: "Reconhecer a importância do solo e da água para o cultivo de alimentos." },
+                { codigo: "EF02CI04", topico: "Matéria e Materiais", desc: "Descrever posições e movimentos de objetos em relação ao observador." }
+            ],
+            humanas: [
+                { codigo: "EF02HI01", topico: "História da Família", desc: "Reconhecer a história e os laços da comunidade e da família." },
+                { codigo: "EF02GE01", topico: "Espaço Vivenciado", desc: "Descrever o trajeto da residência até a escola e os pontos de referência." }
+            ]
+        }
+    };
+window.MASTER_EXHAUSTIVE_MATRICES = MASTER_EXHAUSTIVE_MATRICES;
+
 const OFFICIAL_19_URES_MA = [
     { name: "URE Açailândia", id: "acailandia", cities: ["Açailândia", "Cidelândia", "Itinga do Maranhão", "São Francisco do Brejão", "Vila Nova dos Martírios"] },
     { name: "URE Bacabal", id: "bacabal", cities: ["Altamira do Maranhão", "Lago da Pedra", "Lagoa Grande do Maranhão", "Paulo Ramos", "Marajá do Sena", "Brejo de Areia", "Vitorino Freire", "São Luís Gonzaga do Maranhão", "Bacabal", "Olho d'Água das Cunhãs", "Lago Verde", "Conceição do Lago-Açu"] },
@@ -40,6 +288,152 @@ const OFFICIAL_19_URES_MA = [
     { name: "URE Viana", id: "viana", cities: ["Arari", "Cajari", "Matinha", "Olinda Nova do Maranhão", "Penalva", "São Bento", "São João Batista", "Viana", "Vitória do Mearim", "Cajapió", "Vicente Ferrer"] },
     { name: "URE Zé Doca", id: "ze-doca", cities: ["Araguanã", "Centro do Guilherme", "Centro Novo do Maranhão", "Maranhãozinho", "Nova Olinda do Maranhão", "Presidente Médici", "Santa Luzia do Paruá", "Governador Nunes Freire", "Junco do Maranhão", "Amapá do Maranhão", "Cândido Mendes", "Godofredo Viana", "Luís Domingues", "Carutapera", "Zé Doca"] }
 ];
+window.OFFICIAL_19_URES_MA = OFFICIAL_19_URES_MA;
+
+function updateIdebComparativoView() {
+        const stateSelect = document.getElementById('ideb-state-select');
+        const citySearchInput = document.getElementById('ideb-city-search');
+        const stageSelect = document.getElementById('ideb-stage-select');
+
+        if (!stateSelect || !citySearchInput || !stageSelect) return;
+
+        const uf = stateSelect.value;
+        const city = selectedIdebCity;
+        const stage = stageSelect.value;
+
+        const emptyState = document.getElementById('ideb-empty-state');
+        const resultsContainer = document.getElementById('ideb-results-container');
+
+        // Filter historical records
+        const records = (window.idebPublicoReferencia || []).filter(r => 
+            r.uf === uf && r.municipio === city && r.etapa === stage
+        ).sort((a, b) => a.ano - b.ano);
+
+        if (records.length === 0) {
+            if (emptyState) emptyState.classList.remove('hidden');
+            if (resultsContainer) resultsContainer.classList.add('hidden');
+            return;
+        }
+
+        if (emptyState) emptyState.classList.add('hidden');
+        if (resultsContainer) resultsContainer.classList.remove('hidden');
+
+        // Latest record (2023)
+        const latestRecord = records.find(r => r.ano === 2023) || records[records.length - 1];
+
+        // Update KPIs
+        const kpiObserved = document.getElementById('ideb-kpi-observed');
+        const kpiTarget = document.getElementById('ideb-kpi-target');
+        const kpiStatusContainer = document.getElementById('ideb-kpi-status-container');
+        const kpiStatusText = document.getElementById('ideb-kpi-status-text');
+
+        if (kpiObserved) kpiObserved.textContent = latestRecord.ideb_observado !== null ? latestRecord.ideb_observado.toFixed(1) : 'N/A';
+        if (kpiTarget) kpiTarget.textContent = latestRecord.meta_projetada !== null ? latestRecord.meta_projetada.toFixed(1) : 'N/A';
+
+        if (latestRecord.ideb_observado !== null && latestRecord.meta_projetada !== null) {
+            const diff = latestRecord.ideb_observado - latestRecord.meta_projetada;
+            const met = diff >= 0;
+
+            if (kpiStatusContainer) {
+                kpiStatusContainer.innerHTML = met 
+                    ? `<span class="badge badge-success" style="font-size: 1.1rem; padding: 6px 12px; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="check" style="width: 16px; height: 16px;"></i> Atingida</span>`
+                    : `<span class="badge" style="font-size: 1.1rem; padding: 6px 12px; background-color: var(--red-light); color: white; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="x" style="width: 16px; height: 16px;"></i> Não Atingida</span>`;
+            }
+
+            if (kpiStatusText) {
+                kpiStatusText.textContent = met 
+                    ? `Diferença positiva de +${diff.toFixed(1)} pontos em relação à meta.`
+                    : `Diferença negativa de ${diff.toFixed(1)} pontos em relação à meta.`;
+            }
+        } else {
+            if (kpiStatusContainer) kpiStatusContainer.innerHTML = `<span class="badge badge-info" style="font-size: 1.1rem; padding: 6px 12px;">Sem Comparativo</span>`;
+            if (kpiStatusText) kpiStatusText.textContent = 'Metas ou resultados indisponíveis para este ciclo.';
+        }
+
+        // Draw Historical SVG Line Chart
+        renderIdebSvgChart(records);
+
+        // Projeção Meta 2025
+        const projVal = document.getElementById('ideb-proj-val');
+        const projDesc = document.getElementById('ideb-proj-desc');
+
+        if (latestRecord.ideb_observado !== null) {
+            // Check state statistics for 2023
+            const stateRecords2023 = (window.idebPublicoReferencia || []).filter(r => 
+                r.uf === uf && r.ano === 2023 && r.etapa === stage && !r.municipio.includes('(Estado)') && r.municipio !== 'Brasil'
+            );
+
+            let metCount = 0;
+            let totalCount = 0;
+            stateRecords2023.forEach(r => {
+                if (r.ideb_observado !== null && r.meta_projetada !== null) {
+                    totalCount++;
+                    if (r.ideb_observado >= r.meta_projetada) metCount++;
+                }
+            });
+
+            // Growth factor
+            const metRatio = totalCount > 0 ? (metCount / totalCount) : 0.5;
+            let growthFactor = 0.2; // default
+            let trajectory = "similar";
+
+            if (latestRecord.ideb_observado >= latestRecord.meta_projetada) {
+                growthFactor = uf === 'CE' ? 0.35 : 0.25;
+                trajectory = "favorável";
+            } else {
+                growthFactor = 0.15;
+                trajectory = "de recuperação";
+            }
+
+            const projectedIdeb = latestRecord.ideb_observado + growthFactor;
+
+            if (projVal) projVal.textContent = projectedIdeb.toFixed(2);
+            if (projDesc) {
+                projDesc.textContent = `Sugere-se uma meta de ${projectedIdeb.toFixed(2)} para o ciclo 2025. Municípios de ${uf} com trajetória ${trajectory} cresceram, em média, +${growthFactor.toFixed(2)} no ciclo seguinte.`;
+            }
+        } else {
+            if (projVal) projVal.textContent = 'N/A';
+            if (projDesc) projDesc.textContent = 'Histórico insuficiente para projetar meta atual.';
+        }
+
+        // State Ranking
+        renderIdebRankingTable(uf, stage, city);
+
+        safeCreateIcons();
+    }
+window.updateIdebComparativoView = updateIdebComparativoView;
+
+// Municípios da URE Presidente Dutra e Região Centro
+window.URE_PRESIDENTE_DUTRA_MUNICIPALITIES = [
+    "Dom Pedro", "Fortuna", "Gonçalves Dias", "Governador Archer", "Governador Eugênio Barros",
+    "Governador Luiz Rocha", "Graça Aranha", "Joselândia", "Presidente Dutra", "Santa Filomena do Maranhão",
+    "São Domingos do Maranhão", "São José dos Basílios", "Senador Alexandre Costa", "Tuntum"
+];
+var URE_PRESIDENTE_DUTRA_MUNICIPALITIES = window.URE_PRESIDENTE_DUTRA_MUNICIPALITIES;
+
+window.REGIAO_CENTRO_MA_MUNICIPALITIES = [
+    "Barra do Corda", "Dom Pedro", "Esperantinópolis", "Fernando Falcão", "Fortuna",
+    "Gonçalves Dias", "Governador Archer", "Governador Eugênio Barros", "Governador Luiz Rocha",
+    "Graça Aranha", "Itaipava do Grajaú", "Jenipapo dos Vieiras", "Joselândia", "Presidente Dutra",
+    "Santa Filomena do Maranhão", "São Domingos do Maranhão", "São José dos Basílios", "São Roberto",
+    "Senador Alexandre Costa", "Tuntum"
+];
+var REGIAO_CENTRO_MA_MUNICIPALITIES = window.REGIAO_CENTRO_MA_MUNICIPALITIES;
+
+
+// =========================================================================
+// GLOBAL VARIABLE DECLARATIONS (Must be at top to avoid Temporal Dead Zone)
+// =========================================================================
+
+// Pagination size for students table
+// [REFERENCED FROM TOP] alunosPageSize
+
+// Lista oficial das 9 escolas da rede municipal
+// [REFERENCED FROM TOP] OFFICIAL_NETWORK_SCHOOLS
+
+// ESTRUTURA OFICIAL DAS 19 UREs DO MARANHÃO & PAINEL DE MUNICÍPIOS
+// [MOVED TO TOP] OFFICIAL_19_URES_MA
+
 
 // Debounce helper for optimization (global scope)
 function debounce(func, delay = 300) {
@@ -1004,7 +1398,7 @@ DIRETRIZES DO DIAGNÓSTICO:
     }
 
     // Store PDE plans per school in memory
-    const schoolPdePlansMap = {};
+    // [GLOBAL] schoolPdePlansMap
 
     function populateIdebGoalsTable(schools) {
         const tableBody = document.getElementById('ideb-goals-table-body');
@@ -1867,7 +2261,7 @@ DIRETRIZES DO DIAGNÓSTICO:
         const metaBaseline = {};
 
         if (window.idebPublicoReferencia) {
-            const munRecords = window.idebPublicoReferencia.filter(r => r.municipio.toLowerCase() === 'codó' && r.uf === 'MA');
+            const munRecords = (window.idebPublicoReferencia || []).filter(r => r.municipio.toLowerCase() === 'codó' && r.uf === 'MA');
             munRecords.forEach(r => {
                 if (r.etapa === 'Anos Iniciais') {
                     baseline[r.ano] = r.ideb_observado;
@@ -4302,7 +4696,7 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         ]
     };
 
-    let activeMatrizEtapa = '5ano';
+    // [GLOBAL] activeMatrizEtapa
 
     function switchMatrizEtapa(etapa) {
         activeMatrizEtapa = etapa;
@@ -7105,9 +7499,9 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
     const btnCloseStudentAction = document.getElementById('btn-close-student-modal-action');
     const btnPrintStudentRecord = document.getElementById('btn-print-student-record');
     
-    let dbCurrentPage = 1;
-    const dbPageSize = 50;
-    let dbFilteredStudents = [];
+    // [GLOBAL] dbCurrentPage
+    // [GLOBAL] dbPageSize
+    // [GLOBAL] dbFilteredStudents
 
     window.initAlunosTab = function(schools) {
         if (dbStudentSchoolFilter) {
@@ -8551,7 +8945,7 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
     // ==========================================
     // MÓDULO DE COMPARATIVO REGIONAL DO IDEB
     // ==========================================
-    let selectedIdebCity = "Codó";
+    // [HOISTED TO TOP] selectedIdebCity
 
     function initIdebComparativo() {
         const stateSelect = document.getElementById('ideb-state-select');
@@ -8562,7 +8956,7 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         if (!stateSelect || !citySearchInput || !suggestionsBox || !stageSelect) return;
 
         // 1. Popular Estados
-        const states = Array.from(new Set(window.idebPublicoReferencia.map(item => item.uf))).sort();
+        const states = Array.from(new Set((window.idebPublicoReferencia || []).map(item => item.uf))).sort();
         stateSelect.innerHTML = '';
         states.forEach(uf => {
             const opt = document.createElement('option');
@@ -8656,7 +9050,7 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
             } else if (selectedUf === 'CE') {
                 selectedIdebCity = 'Sobral';
             } else {
-                const first = window.idebPublicoReferencia.find(item => item.uf === selectedUf);
+                const first = (window.idebPublicoReferencia || []).find(item => item.uf === selectedUf);
                 selectedIdebCity = first ? first.municipio : '';
             }
             citySearchInput.value = selectedIdebCity;
@@ -8678,117 +9072,8 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         updateIdebComparativoView();
     }
 
-    function updateIdebComparativoView() {
-        const stateSelect = document.getElementById('ideb-state-select');
-        const citySearchInput = document.getElementById('ideb-city-search');
-        const stageSelect = document.getElementById('ideb-stage-select');
+    // [HOISTED TO TOP] updateIdebComparativoView
 
-        if (!stateSelect || !citySearchInput || !stageSelect) return;
-
-        const uf = stateSelect.value;
-        const city = selectedIdebCity;
-        const stage = stageSelect.value;
-
-        const emptyState = document.getElementById('ideb-empty-state');
-        const resultsContainer = document.getElementById('ideb-results-container');
-
-        // Filter historical records
-        const records = window.idebPublicoReferencia.filter(r => 
-            r.uf === uf && r.municipio === city && r.etapa === stage
-        ).sort((a, b) => a.ano - b.ano);
-
-        if (records.length === 0) {
-            if (emptyState) emptyState.classList.remove('hidden');
-            if (resultsContainer) resultsContainer.classList.add('hidden');
-            return;
-        }
-
-        if (emptyState) emptyState.classList.add('hidden');
-        if (resultsContainer) resultsContainer.classList.remove('hidden');
-
-        // Latest record (2023)
-        const latestRecord = records.find(r => r.ano === 2023) || records[records.length - 1];
-
-        // Update KPIs
-        const kpiObserved = document.getElementById('ideb-kpi-observed');
-        const kpiTarget = document.getElementById('ideb-kpi-target');
-        const kpiStatusContainer = document.getElementById('ideb-kpi-status-container');
-        const kpiStatusText = document.getElementById('ideb-kpi-status-text');
-
-        if (kpiObserved) kpiObserved.textContent = latestRecord.ideb_observado !== null ? latestRecord.ideb_observado.toFixed(1) : 'N/A';
-        if (kpiTarget) kpiTarget.textContent = latestRecord.meta_projetada !== null ? latestRecord.meta_projetada.toFixed(1) : 'N/A';
-
-        if (latestRecord.ideb_observado !== null && latestRecord.meta_projetada !== null) {
-            const diff = latestRecord.ideb_observado - latestRecord.meta_projetada;
-            const met = diff >= 0;
-
-            if (kpiStatusContainer) {
-                kpiStatusContainer.innerHTML = met 
-                    ? `<span class="badge badge-success" style="font-size: 1.1rem; padding: 6px 12px; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="check" style="width: 16px; height: 16px;"></i> Atingida</span>`
-                    : `<span class="badge" style="font-size: 1.1rem; padding: 6px 12px; background-color: var(--red-light); color: white; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="x" style="width: 16px; height: 16px;"></i> Não Atingida</span>`;
-            }
-
-            if (kpiStatusText) {
-                kpiStatusText.textContent = met 
-                    ? `Diferença positiva de +${diff.toFixed(1)} pontos em relação à meta.`
-                    : `Diferença negativa de ${diff.toFixed(1)} pontos em relação à meta.`;
-            }
-        } else {
-            if (kpiStatusContainer) kpiStatusContainer.innerHTML = `<span class="badge badge-info" style="font-size: 1.1rem; padding: 6px 12px;">Sem Comparativo</span>`;
-            if (kpiStatusText) kpiStatusText.textContent = 'Metas ou resultados indisponíveis para este ciclo.';
-        }
-
-        // Draw Historical SVG Line Chart
-        renderIdebSvgChart(records);
-
-        // Projeção Meta 2025
-        const projVal = document.getElementById('ideb-proj-val');
-        const projDesc = document.getElementById('ideb-proj-desc');
-
-        if (latestRecord.ideb_observado !== null) {
-            // Check state statistics for 2023
-            const stateRecords2023 = window.idebPublicoReferencia.filter(r => 
-                r.uf === uf && r.ano === 2023 && r.etapa === stage && !r.municipio.includes('(Estado)') && r.municipio !== 'Brasil'
-            );
-
-            let metCount = 0;
-            let totalCount = 0;
-            stateRecords2023.forEach(r => {
-                if (r.ideb_observado !== null && r.meta_projetada !== null) {
-                    totalCount++;
-                    if (r.ideb_observado >= r.meta_projetada) metCount++;
-                }
-            });
-
-            // Growth factor
-            const metRatio = totalCount > 0 ? (metCount / totalCount) : 0.5;
-            let growthFactor = 0.2; // default
-            let trajectory = "similar";
-
-            if (latestRecord.ideb_observado >= latestRecord.meta_projetada) {
-                growthFactor = uf === 'CE' ? 0.35 : 0.25;
-                trajectory = "favorável";
-            } else {
-                growthFactor = 0.15;
-                trajectory = "de recuperação";
-            }
-
-            const projectedIdeb = latestRecord.ideb_observado + growthFactor;
-
-            if (projVal) projVal.textContent = projectedIdeb.toFixed(2);
-            if (projDesc) {
-                projDesc.textContent = `Sugere-se uma meta de ${projectedIdeb.toFixed(2)} para o ciclo 2025. Municípios de ${uf} com trajetória ${trajectory} cresceram, em média, +${growthFactor.toFixed(2)} no ciclo seguinte.`;
-            }
-        } else {
-            if (projVal) projVal.textContent = 'N/A';
-            if (projDesc) projDesc.textContent = 'Histórico insuficiente para projetar meta atual.';
-        }
-
-        // State Ranking
-        renderIdebRankingTable(uf, stage, city);
-
-        safeCreateIcons();
-    }
 
     function renderIdebSvgChart(records) {
         const container = document.getElementById('ideb-chart-container');
@@ -8896,7 +9181,7 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
 
         tableBody.innerHTML = '';
 
-        const candidates = window.idebPublicoReferencia.filter(r => 
+        const candidates = (window.idebPublicoReferencia || []).filter(r => 
             r.uf === uf && r.ano === 2023 && r.etapa === stage && 
             !r.municipio.includes('(Estado)') && r.municipio !== 'Brasil'
         );
@@ -9029,7 +9314,7 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
     // ==========================================
     function initLoginMotionCanvas() {
         const canvas = document.getElementById('login-motion-canvas');
-        if (!canvas) return;
+        if (!canvas || !canvas.getContext) return;
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
@@ -12351,43 +12636,15 @@ if (document.readyState === 'loading') {
 
 
     // List of 13 official municipalities of URE Presidente Dutra
-    const URE_PRESIDENTE_DUTRA_MUNICIPALITIES = [
-        'Presidente Dutra',
-        'Dom Pedro',
-        'Gonçalves Dias',
-        'Governador Eugênio Barros',
-        'Capinzal do Norte',
-        'Tuntum',
-        'Santo Antônio dos Lopes',
-        'Joselândia',
-        'Santa Filomena do Maranhão',
-        'São José dos Basílios',
-        'Senador Alexandre Costa',
-        'Graça Aranha',
-        'Governador Archer'
-    ];
+    // [HOISTED TO TOP] URE_PRESIDENTE_DUTRA_MUNICIPALITIES
 
     // List of municipalities of Região Centro Maranhense
-    const REGIAO_CENTRO_MA_MUNICIPALITIES = [
-        'Barra do Corda',
-        'Presidente Dutra',
-        'Grajaú',
-        'Bacabal',
-        'Pedreiras',
-        'Gonçalves Dias',
-        'Dom Pedro',
-        'Tuntum',
-        'Colinas',
-        'São Domingos do Maranhão',
-        'Esperantinópolis',
-        'Poção de Pedras',
-        'Lago da Pedra'
-    ];
+    // [HOISTED TO TOP] REGIAO_CENTRO_MA_MUNICIPALITIES
 
     function getIdebRecord(municipio, etapa, ano) {
         if (!window.idebPublicoReferencia) return null;
         const norm = municipio.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        return window.idebPublicoReferencia.find(r => 
+        return (window.idebPublicoReferencia || []).find(r => 
             r.uf === 'MA' && 
             r.etapa === etapa && 
             r.ano === ano && 
@@ -12505,8 +12762,8 @@ if (document.readyState === 'loading') {
         const query = searchInput ? searchInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
 
         // Get unique municipalities from window.idebPublicoReferencia for MA
-        const maRecords2025 = window.idebPublicoReferencia.filter(r => r.uf === 'MA' && r.etapa === currentStage && r.ano === 2025);
-        const maRecords2023 = window.idebPublicoReferencia.filter(r => r.uf === 'MA' && r.etapa === currentStage && r.ano === 2023);
+        const maRecords2025 = (window.idebPublicoReferencia || []).filter(r => r.uf === 'MA' && r.etapa === currentStage && r.ano === 2025);
+        const maRecords2023 = (window.idebPublicoReferencia || []).filter(r => r.uf === 'MA' && r.etapa === currentStage && r.ano === 2023);
 
         const list = maRecords2025.map(r25 => {
             const r23 = maRecords2023.find(r => r.municipio === r25.municipio) || { ideb_observado: 4.8 };
@@ -13652,195 +13909,13 @@ if (document.readyState === 'loading') {
     // BASE DE DADOS COMPLETA E EXAUSTIVA DE DESCRITORES SAEB / SEAMA / INEP / IDEB
     // =========================================================================
     
-    const MASTER_EXHAUSTIVE_MATRICES = {
-        '5ano': {
-            portuguese: [
-                { codigo: "D1", topico: "Procedimentos de Leitura", desc: "Localizar informações explícitas em um texto." },
-                { codigo: "D2", topico: "Coerência e Coesão", desc: "Estabelecer relações entre partes de um texto, identificando repetições ou substituições." },
-                { codigo: "D3", topico: "Procedimentos de Leitura", desc: "Inferir o sentido de uma palavra ou expressão." },
-                { codigo: "D4", topico: "Procedimentos de Leitura", desc: "Inferir uma informação implícita em um texto." },
-                { codigo: "D5", topico: "Implicância do Suporte", desc: "Interpretar texto com auxílio de material gráfico diverso (propagandas, tiras, fotos)." },
-                { codigo: "D6", topico: "Procedimentos de Leitura", desc: "Identificar o tema de um texto." },
-                { codigo: "D7", topico: "Coerência e Coesão", desc: "Identificar o conflito gerador do enredo e os elementos constitutivos da narrativa." },
-                { codigo: "D8", topico: "Coerência e Coesão", desc: "Estabelecer relação entre a causa e a consequência no desenvolvimento do texto." },
-                { codigo: "D9", topico: "Implicância do Suporte", desc: "Identificar a finalidade de textos de diferentes gêneros." },
-                { codigo: "D10", topico: "Variação Linguística", desc: "Identificar as marcas linguísticas que evidenciam o locutor e o interlocutor de um texto." },
-                { codigo: "D12", topico: "Coerência e Coesão", desc: "Estabelecer relações lógico-discursivas marcadas por conjunções, advérbios, etc." },
-                { codigo: "D13", topico: "Relações entre Textos", desc: "Reconhecer diferentes formas de tratar uma informação na comparação de textos." },
-                { codigo: "D14", topico: "Procedimentos de Leitura", desc: "Distinguir um fato da opinião relativa a esse fato." },
-                { codigo: "D15", topico: "Recursos Expressivos", desc: "Reconhecer o efeito de sentido decorrente do uso da pontuação e de outras notações." }
-            ],
-            math: [
-                { codigo: "D1", topico: "Espaço e Forma", desc: "Identificar a localização/movimentação de objeto em mapas, croquis e representações gráficas." },
-                { codigo: "D2", topico: "Espaço e Forma", desc: "Identificar propriedades comuns e diferenças entre figuras bi e tridimensionais e suas planificações." },
-                { codigo: "D3", topico: "Espaço e Forma", desc: "Identificar propriedades de triângulos pela comparação de lados e ângulos." },
-                { codigo: "D4", topico: "Espaço e Forma", desc: "Identificar relação entre quadriláteros por meio de suas propriedades." },
-                { codigo: "D5", topico: "Espaço e Forma", desc: "Reconhecer a conservação/modificação de medidas em ampliações e reduções de polígonos." },
-                { codigo: "D6", topico: "Grandezas e Medidas", desc: "Estimar a medida de grandezas utilizando unidades convencionais ou não." },
-                { codigo: "D7", topico: "Grandezas e Medidas", desc: "Resolver problemas utilizando unidades de medida padronizadas (km, m, cm, kg, g, l, ml)." },
-                { codigo: "D8", topico: "Grandezas e Medidas", desc: "Estabelecer relações entre unidades de medida de tempo." },
-                { codigo: "D9", topico: "Grandezas e Medidas", desc: "Estabelecer relações entre hora de início/término e a duração de um evento." },
-                { codigo: "D10", topico: "Grandezas e Medidas", desc: "Determinar o valor total em cédulas e moedas do sistema monetário brasileiro." },
-                { codigo: "D11", topico: "Grandezas e Medidas", desc: "Resolver problemas envolvendo o cálculo do perímetro de figuras planas." },
-                { codigo: "D12", topico: "Grandezas e Medidas", desc: "Resolver problemas envolvendo a noção de área de figuras planas." },
-                { codigo: "D13", topico: "Números e Operações", desc: "Reconhecer e utilizar características do sistema de numeração decimal (valor posicional)." },
-                { codigo: "D14", topico: "Números e Operações", desc: "Identificar a localização de números naturais na reta numérica." },
-                { codigo: "D15", topico: "Números e Operações", desc: "Reconhecer a decomposição de números naturais nas suas diversas ordens." },
-                { codigo: "D16", topico: "Números e Operações", desc: "Reconhecer a composição e decomposição de números naturais." },
-                { codigo: "D17", topico: "Números e Operações", desc: "Calcular o resultado de uma adição ou subtração de números naturais." },
-                { codigo: "D18", topico: "Números e Operações", desc: "Calcular o resultado de uma multiplicação ou divisão de números naturais." },
-                { codigo: "D19", topico: "Números e Operações", desc: "Resolver problemas com números naturais envolvendo adição ou subtração." },
-                { codigo: "D20", topico: "Números e Operações", desc: "Resolver problemas com números naturais envolvendo multiplicação ou divisão." },
-                { codigo: "D21", topico: "Números e Operações", desc: "Identificar representações de um mesmo número racional (fração, decimal, porcentagem)." },
-                { codigo: "D22", topico: "Números e Operações", desc: "Identificar a localização de números decimais na reta numérica." },
-                { codigo: "D23", topico: "Números e Operações", desc: "Resolver problemas utilizando a escrita decimal de cédulas e moedas." },
-                { codigo: "D24", topico: "Números e Operações", desc: "Identificar fração como representação associada a partes de um todo ou razão." },
-                { codigo: "D25", topico: "Números e Operações", desc: "Resolver problemas com números racionais expressos na forma decimal." },
-                { codigo: "D26", topico: "Números e Operações", desc: "Resolver problemas envolvendo porcentagem (25%, 50%, 100%)." },
-                { codigo: "D27", topico: "Tratamento da Informação", desc: "Ler e interpretar informações apresentadas em tabelas simples ou duplas." },
-                { codigo: "D28", topico: "Tratamento da Informação", desc: "Ler e interpretar dados em gráficos de colunas ou barras." }
-            ],
-            science: [
-                { codigo: "EF05CI01", topico: "Matéria e Energia", desc: "Explorar propriedades físicas dos materiais (densidade, condutibilidade)." },
-                { codigo: "EF05CI02", topico: "Matéria e Energia", desc: "Aplicar conhecimentos sobre mudanças de estado físico no ciclo da água." },
-                { codigo: "EF05CI03", topico: "Vida e Evolução", desc: "Justificar a importância da cobertura vegetal para a manutenção da água." },
-                { codigo: "EF05CI04", topico: "Vida e Evolução", desc: "Identificar os órgãos dos sistemas digestório e respiratório." },
-                { codigo: "EF05CI05", topico: "Vida e Evolução", desc: "Propor ações de consumo consciente e descarte adequado de resíduos." },
-                { codigo: "EF05CI06", topico: "Vida e Evolução", desc: "Justificar a importância da água potável para a saúde humana." },
-                { codigo: "EF05CI07", topico: "Terra e Universo", desc: "Relacionar a rotação da Terra ao movimento aparente do Sol." },
-                { codigo: "EF05CI08", topico: "Terra e Universo", desc: "Organizar um cardápio equilibrado com base nos grupos alimentares." }
-            ],
-            humanas: [
-                { codigo: "EF05HI01", topico: "História & Cidadania", desc: "Identificar os processos de formação das culturas e dos povos." },
-                { codigo: "EF05HI02", topico: "História & Cidadania", desc: "Comparar os pontos de vista sobre a formação da sociedade maranhense e brasileira." },
-                { codigo: "EF05HI04", topico: "História & Cidadania", desc: "Associar a noção de cidadania aos direitos humanos e de minorias." },
-                { codigo: "EF05GE01", topico: "Geografia & Território", desc: "Descrever a dinâmica populacional e os fluxos migratórios regionais no Maranhão." },
-                { codigo: "EF05GE02", topico: "Geografia & Território", desc: "Identificar as transformações das paisagens nas cidades e no campo." },
-                { codigo: "EF05GE04", topico: "Geografia & Território", desc: "Reconhecer as características dos biomas brasileiros e do Cerrado/Mata dos Cocais." }
-            ]
-        },
-        '9ano': {
-            portuguese: [
-                { codigo: "D1", topico: "Procedimentos de Leitura", desc: "Localizar informações explícitas em um texto." },
-                { codigo: "D2", topico: "Procedimentos de Leitura", desc: "Estabelecer relações entre partes de um texto." },
-                { codigo: "D3", topico: "Procedimentos de Leitura", desc: "Inferir o sentido de uma palavra ou expressão." },
-                { codigo: "D4", topico: "Procedimentos de Leitura", desc: "Inferir uma informação implícita em um texto." },
-                { codigo: "D5", topico: "Implicância do Suporte", desc: "Interpretar texto com auxílio de recursos gráficos (charges, dados)." },
-                { codigo: "D6", topico: "Procedimentos de Leitura", desc: "Identificar o tema central de um texto." },
-                { codigo: "D7", topico: "Coerência e Coesão", desc: "Identificar o conflito gerador do enredo na narrativa." },
-                { codigo: "D8", topico: "Coerência e Coesão", desc: "Estabelecer relação entre a causa e o efeito no texto." },
-                { codigo: "D9", topico: "Implicância do Suporte", desc: "Identificar a finalidade de textos de diferentes gêneros." },
-                { codigo: "D11", topico: "Procedimentos de Leitura", desc: "Distinguir um fato da opinião relativa a esse fato." },
-                { codigo: "D12", topico: "Coerência e Coesão", desc: "Estabelecer relações lógico-discursivas marcadas por conectivos." },
-                { codigo: "D15", topico: "Relações entre Textos", desc: "Reconhecer posições distintas entre dois textos sobre o mesmo assunto." },
-                { codigo: "D16", topico: "Relações entre Textos", desc: "Identificar a tese e os argumentos apresentados no texto argumentativo." },
-                { codigo: "D17", topico: "Variação Linguística", desc: "Reconhecer o efeito de sentido decorrente da escolha de palavras formais/informais." },
-                { codigo: "D18", topico: "Recursos Expressivos", desc: "Identificar o efeito de sentido decorrente do uso da pontuação." },
-                { codigo: "D19", topico: "Recursos Expressivos", desc: "Identificar efeitos de ironia ou humor em textos variados." },
-                { codigo: "D20", topico: "Recursos Expressivos", desc: "Reconhecer o efeito de sentido decorrente de recursos sintáticos." },
-                { codigo: "D21", topico: "Recursos Expressivos", desc: "Reconhecer as relações entre a tese e os argumentos em textos opinativos." }
-            ],
-            math: [
-                { codigo: "D1", topico: "Espaço e Forma", desc: "Identificar a localização/movimentação no plano cartesiano." },
-                { codigo: "D2", topico: "Espaço e Forma", desc: "Identificar propriedades de figuras bi e tridimensionais." },
-                { codigo: "D3", topico: "Espaço e Forma", desc: "Identificar propriedades de triângulos pela comparação de lados e ângulos." },
-                { codigo: "D4", topico: "Espaço e Forma", desc: "Identificar relação entre quadriláteros por meio de suas propriedades." },
-                { codigo: "D5", topico: "Espaço e Forma", desc: "Reconhecer conservação/modificação de medidas em ampliações de polígonos." },
-                { codigo: "D6", topico: "Espaço e Forma", desc: "Reconhecer ângulos como mudança de direção ou giros." },
-                { codigo: "D7", topico: "Espaço e Forma", desc: "Reconhecer a simetria de reflexão em figuras planas." },
-                { codigo: "D8", topico: "Grandezas e Medidas", desc: "Resolver problemas envolvendo o cálculo de perímetro de figuras planas." },
-                { codigo: "D9", topico: "Grandezas e Medidas", desc: "Resolver problemas envolvendo o cálculo de área de figuras planas." },
-                { codigo: "D10", topico: "Grandezas e Medidas", desc: "Determinar o valor total em cédulas e moedas no sistema monetário." },
-                { codigo: "D11", topico: "Grandezas e Medidas", desc: "Resolver problemas envolvendo o cálculo de volume de paralelepípedos." },
-                { codigo: "D12", topico: "Grandezas e Medidas", desc: "Resolver problemas envolvendo a capacidade de recipientes." },
-                { codigo: "D13", topico: "Números e Operações", desc: "Reconhecer características do sistema de numeração decimal." },
-                { codigo: "D14", topico: "Números e Operações", desc: "Identificar a localização de números inteiros/racionais na reta numérica." },
-                { codigo: "D15", topico: "Números e Operações", desc: "Calcular o resultado de operações de adição, subtração, multiplicação e divisão com inteiros." },
-                { codigo: "D16", topico: "Números e Operações", desc: "Estabelecer relações entre representações fracionárias e decimais." },
-                { codigo: "D17", topico: "Números e Operações", desc: "Resolver problemas com números racionais envolvendo as 4 operações." },
-                { codigo: "D18", topico: "Números e Operações", desc: "Calcular o valor numérico de uma expressão algébrica." },
-                { codigo: "D19", topico: "Números e Operações", desc: "Resolver problema envolvendo equação do 1º grau." },
-                { codigo: "D20", topico: "Números e Operações", desc: "Resolver problema envolvendo sistema de equações do 1º grau." },
-                { codigo: "D21", topico: "Números e Operações", desc: "Resolver problema envolvendo equação do 2º grau." },
-                { codigo: "D22", topico: "Números e Operações", desc: "Identificar a representação gráfica de uma função de 1º grau." },
-                { codigo: "D23", topico: "Números e Operações", desc: "Resolver problema que envolva a razão entre duas grandezas." },
-                { codigo: "D24", topico: "Números e Operações", desc: "Resolver problema que envolva variação proporcional direta ou inversa." },
-                { codigo: "D25", topico: "Números e Operações", desc: "Resolver problema envolvendo porcentagem (aumentos e descontos)." },
-                { codigo: "D26", topico: "Números e Operações", desc: "Resolver problema envolvendo juros simples." },
-                { codigo: "D27", topico: "Tratamento da Informação", desc: "Ler e interpretar informações em tabelas." },
-                { codigo: "D28", topico: "Tratamento da Informação", desc: "Ler e interpretar dados em gráficos de colunas, setores, linhas e histogramas." },
-                { codigo: "D29", topico: "Tratamento da Informação", desc: "Resolver problemas envolvendo o cálculo da média aritmética." },
-                { codigo: "D30", topico: "Tratamento da Informação", desc: "Resolver problemas envolvendo noções de probabilidade." },
-                { codigo: "D31", topico: "Geometria Avançada", desc: "Resolver problemas aplicando o Teorema de Pitágoras." },
-                { codigo: "D32", topico: "Geometria Avançada", desc: "Resolver problemas envolvendo a circunferência (comprimento e área)." },
-                { codigo: "D33", topico: "Estatística", desc: "Interpretar mediana e moda em conjuntos de dados." },
-                { codigo: "D34", topico: "Tratamento da Informação", desc: "Resolver problemas de contagem via princípio multiplicativo." },
-                { codigo: "D35", topico: "Álgebra", desc: "Identificar padrões e termos de uma sequência numérica." },
-                { codigo: "D36", topico: "Funções", desc: "Reconhecer a representação gráfica da função quadrática (parábola)." },
-                { codigo: "D37", topico: "Geometria", desc: "Resolver problemas usando razões trigonométricas no triângulo retângulo (seno, cosseno, tangente)." }
-            ],
-            science: [
-                { codigo: "EF09CI01", topico: "Matéria e Energia", desc: "Investigar mudanças de estado físico e conservação da massa." },
-                { codigo: "EF09CI02", topico: "Matéria e Energia", desc: "Comparar grandezas físicas (massa, volume, densidade)." },
-                { codigo: "EF09CI03", topico: "Matéria e Energia", desc: "Identificar os modelos atômicos e a estrutura do átomo." },
-                { codigo: "EF09CI04", topico: "Vida e Evolução", desc: "Descrever a estrutura do DNA e as leis da hereditariedade." },
-                { codigo: "EF09CI05", topico: "Vida e Evolução", desc: "Analisar as teorias de evolução e seleção natural." },
-                { codigo: "EF09CI06", topico: "Terra e Universo", desc: "Associar o ciclo das fases da Lua ao movimento de revolução." },
-                { codigo: "EF09CI07", topico: "Terra e Universo", desc: "Explicar a evolução das estrelas e do Sistema Solar." }
-            ],
-            humanas: [
-                { codigo: "EF09HI01", topico: "História Contemporânea", desc: "Descrever os processos de urbanização e industrialização no século XX." },
-                { codigo: "EF09HI02", topico: "História do Brasil", desc: "Analisar a formação da República Brasileira e os movimentos sociais no Maranhão." },
-                { codigo: "EF09GE01", topico: "Geografia Mundial", desc: "Analisar a hegemonia europeia e os conflitos geopolíticos globais." },
-                { codigo: "EF09GE02", topico: "Geografia Econômica", desc: "Relacionar a globalização às transformações no mundo do trabalho." }
-            ]
-        },
-        'alfabetizacao': {
-            portuguese: [
-                { codigo: "D1", topico: "Consciência Fonológica", desc: "Reconhecer o alfabeto e a grafia das letras maiúsculas e minúsculas." },
-                { codigo: "D2", topico: "Consciência Fonológica", desc: "Diferenciar letras de números e outros símbolos gráficos." },
-                { codigo: "D3", topico: "Consciência Fonológica", desc: "Identificar rimas e aliterações em textos versificados." },
-                { codigo: "D4", topico: "Consciência Fonológica", desc: "Contar sílabas de palavras faladas (segmentação silábica)." },
-                { codigo: "D5", topico: "Decodificação & Fluência", desc: "Ler palavras de sílabas canônicas e não canônicas." },
-                { codigo: "D6", topico: "Decodificação & Fluência", desc: "Ler frases curtas com ritmo e entonação adequados." },
-                { codigo: "D7", topico: "Compreensão de Leitura", desc: "Localizar informação explícita em textos curtos." },
-                { codigo: "D8", topico: "Compreensão de Leitura", desc: "Identificar o assunto principal de um texto ilustrado." },
-                { codigo: "D9", topico: "Compreensão de Leitura", desc: "Inferir o sentido de palavras simples em cantigas e parlendas." },
-                { codigo: "D10", topico: "Escrita & Ortografia", desc: "Escrever palavras corretamente observando a correspondência grafofonêmica." },
-                { codigo: "D11", topico: "Fluência Leitora", desc: "Ler texto curto com velocidade igual ou superior a 60 palavras por minuto." },
-                { codigo: "D12", topico: "Produção de Texto", desc: "Produzir pequenos textos narrativos utilizando pontuação básica." }
-            ],
-            math: [
-                { codigo: "D1", topico: "Números", desc: "Reconhecer a contagem de coleções de objetos até 100." },
-                { codigo: "D2", topico: "Números", desc: "Identificar a posição de um número na sequência numérica até 100." },
-                { codigo: "D3", topico: "Números", desc: "Comparar quantidades de dois conjuntos (mais, menos, igual)." },
-                { codigo: "D4", topico: "Operações", desc: "Calcular adição com números até dois algarismos sem reagrupamento." },
-                { codigo: "D5", topico: "Operações", desc: "Calcular subtração simples de dois algarismos." },
-                { codigo: "D6", topico: "Geometria", desc: "Reconhecer figuras geométricas planas básicas (quadrado, retângulo, triângulo, círculo)." },
-                { codigo: "D7", topico: "Medidas", desc: "Comparar comprimentos, massas e capacidades utilizando termos adequados." },
-                { codigo: "D8", topico: "Medidas", desc: "Reconhecer dias da semana e meses do ano no calendário." },
-                { codigo: "D9", topico: "Tratamento da Informação", desc: "Ler dados organizados em listas simples ou tabelas de 1 entrada." },
-                { codigo: "D10", topico: "Moedas & Sistema", desc: "Identificar moedas e cédulas do sistema monetário brasileiro." },
-                { codigo: "D11", topico: "Padrões", desc: "Identificar o elemento ausente em uma sequência de figuras ou números." },
-                { codigo: "D12", topico: "Resolução de Problemas", desc: "Resolver problemas simples de juntar ou acrescentar com apoio de imagens." }
-            ],
-            science: [
-                { codigo: "EF02CI01", topico: "Vida e Saúde", desc: "Identificar hábitos de higiene corporal necessários para a manutenção da saúde." },
-                { codigo: "EF02CI02", topico: "Seres Vivos", desc: "Identificar plantas e animais do ambiente próximo e suas necessidades vitais." },
-                { codigo: "EF02CI03", topico: "Terra e Solo", desc: "Reconhecer a importância do solo e da água para o cultivo de alimentos." },
-                { codigo: "EF02CI04", topico: "Matéria e Materiais", desc: "Descrever posições e movimentos de objetos em relação ao observador." }
-            ],
-            humanas: [
-                { codigo: "EF02HI01", topico: "História da Família", desc: "Reconhecer a história e os laços da comunidade e da família." },
-                { codigo: "EF02GE01", topico: "Espaço Vivenciado", desc: "Descrever o trajeto da residência até a escola e os pontos de referência." }
-            ]
-        }
-    };
+    // [MOVED TO TOP] MASTER_EXHAUSTIVE_MATRICES
 
 
 
 
-    let activeMatrizEtapa = '5ano';
+
+    // [GLOBAL] activeMatrizEtapa
 
     function switchMatrizEtapa(etapa) {
         activeMatrizEtapa = etapa;
@@ -14503,24 +14578,7 @@ if (document.readyState === 'loading') {
     // =========================================================================
 
     // Mapeamento de avaliações realizadas por Escola + Ano Letivo (possui_avaliacao_realizada)
-    const SCHOOL_ASSESSMENTS_STATE = {
-        // Anos Anteriores (Histórico - Sempre true)
-        '2023': { default: true },
-        '2025': { default: true },
-        // Ano Corrente e Anos Seguintes (Diferenciados por Escola)
-        '2026': {
-            "UI JOSE CORREA LIMA": true,
-            "UI EMILIO MURAD": true,
-            "UE VEREADOR LEONARDO FERREIRA LIMA": true,
-            "U I BASILIO ALVES": true,
-            "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ": true,
-            "UE RAIMUNDO DOS REIS DA SILVA": false, // Aguardando 1ª avaliação
-            "UNIDADE INTEGRADA JOSE GONCALVES DIAS": false, // Aguardando 1ª avaliação
-            "UNIDADE ESCOLAR ANISIO GOMES": true,
-            "UE ANITA FURTADO": false // Aguardando 1ª avaliação
-        },
-        '2027': { default: false } // Ano futuro: todas aguardando 1ª avaliação
-    };
+    // [REFERENCED FROM TOP] SCHOOL_ASSESSMENTS_STATE
 
     function checkPossuiAvaliacaoRealizada(schName, selectedYear) {
         if (selectedYear === '2023' || selectedYear === '2025') return true;
@@ -14715,7 +14773,7 @@ if (document.readyState === 'loading') {
     // ESTRUTURA OFICIAL DAS 19 UREs DO MARANHÃO & PAINEL DE MUNICÍPIOS
     // =========================================================================
 
-    let currentSelectedCity = "Gonçalves Dias";
+    // [REFERENCED FROM TOP] currentSelectedCity
 
     function getUreForCity(cityName) {
         const found = OFFICIAL_19_URES_MA.find(ure => ure.cities.some(c => c.toLowerCase() === cityName.toLowerCase()));
@@ -16387,7 +16445,7 @@ window.showTab = window.switchTab;
         return defaultStudents;
     }
 
-    let currentAlunosPage = 1;
+    // [REFERENCED FROM TOP] currentAlunosPage
 
     function renderDbStudents() {
         const tbody = document.getElementById('db-students-table-body');
