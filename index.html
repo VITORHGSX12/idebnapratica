@@ -168,50 +168,7 @@
 
 
 
-    <script>
-        function switchIdebSubtab(targetTab) {
-            if (!targetTab) return;
-            try {
-                document.querySelectorAll('.ideb-regional-tab-btn').forEach(function(btn) {
-                    if (btn.getAttribute('data-tab') === targetTab) {
-                        btn.classList.add('active');
-                        btn.style.background = '#6366f1';
-                        btn.style.color = '#ffffff';
-                        btn.style.border = 'none';
-                        btn.style.fontWeight = '700';
-                    } else {
-                        btn.classList.remove('active');
-                        btn.style.background = 'var(--bg-secondary)';
-                        btn.style.color = 'var(--text-secondary)';
-                        btn.style.border = '1px solid var(--border-color)';
-                        btn.style.fontWeight = '600';
-                    }
-                });
-
-                document.querySelectorAll('.ideb-regional-tab-content').forEach(function(content) {
-                    content.classList.add('hidden');
-                    content.style.display = 'none';
-                });
-
-                var activeEl = document.getElementById('tab-ideb-' + targetTab);
-                if (activeEl) {
-                    activeEl.classList.remove('hidden');
-                    activeEl.style.display = 'block';
-                }
-
-                if (targetTab === 'painel-principal' && typeof initIdebCitySelector === 'function') {
-                    initIdebCitySelector();
-                } else if (targetTab === 'painel-ures' && typeof render19UresPanel === 'function') {
-                    render19UresPanel();
-                } else if (targetTab === 'ranking-geral-ma' && typeof renderRankingGeralMaTable === 'function') {
-                    renderRankingGeralMaTable();
-                }
-            } catch (e) {
-                console.error('Error switching regional subtab:', e);
-            }
-        }
-        window.switchIdebSubtab = switchIdebSubtab;
-    </script>
+    
 
 </head>
 <body>
@@ -336,6 +293,7 @@
 
     <div class="app-container">
         <!-- Sidebar Navigation -->
+        <div id="mobile-sidebar-backdrop" class="mobile-sidebar-backdrop" onclick="toggleMobileSidebar();"></div>
         <aside class="sidebar">
             <!-- Sidebar Collapse Toggle Button -->
             <button id="sidebar-collapse-toggle" class="sidebar-collapse-toggle" onclick="toggleSidebarCollapse();" title="Recolher / Expandir Menu" aria-label="Recolher menu">
@@ -352,7 +310,7 @@
                         <h1>IDEB na Prática</h1>
                         <span>Gestão & Avaliação</span>
                     </div>
-                    <button class="btn-icon" id="mobile-menu-close" style="display:none; margin-left: auto; background: none; border: none; color: var(--text-primary); cursor: pointer; width: 32px; height: 32px; align-items: center; justify-content: center; border-radius: var(--radius-sm);">
+                    <button class="btn-icon" id="mobile-menu-close" onclick="toggleMobileSidebar();" style="display:none; margin-left: auto; background: none; border: none; color: var(--text-primary); cursor: pointer; width: 32px; height: 32px; align-items: center; justify-content: center; border-radius: var(--radius-sm);">
                         <i data-lucide="x" style="width: 20px; height: 20px;"></i>
                     </button>
                 </div>
@@ -363,7 +321,7 @@
                 </div>
             </div>
             
-            <nav class="sidebar-menu" style="overflow-y: auto; flex-grow: 1; padding: 16px 12px; display: flex; flex-direction: column; gap: 16px;">
+            <nav class="sidebar-menu" style="overflow-y: auto; flex-grow: 1; padding: 10px 8px; display: flex; flex-direction: column; gap: 8px;">
                 <!-- GESTÃO -->
                 <div class="menu-group">
                     <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Gestão</span>
@@ -494,7 +452,7 @@
                             <polyline points="12 19 5 12 12 5"></polyline>
                         </svg>
                     </button>
-                    <button class="btn-icon" id="mobile-menu-toggle" style="display:none; background: none; border: none; color: var(--text-primary); cursor: pointer; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: var(--radius-md);">
+                    <button class="btn-icon" id="mobile-menu-toggle" onclick="toggleMobileSidebar();" style="display:none; background: none; border: none; color: var(--text-primary); cursor: pointer; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: var(--radius-md);">
                         <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
                     </button>
                     <div>
@@ -939,209 +897,131 @@
                 </section>
 
                 <!-- ==================== METAS E PLANOS DE DESENVOLVIMENTO ESCOLAR (PDE) TAB ==================== -->
+                                <!-- ==================== METAS E PLANOS DE DESENVOLVIMENTO ESCOLAR (PDE) TAB ==================== -->
                 <section id="metas-ideb" class="tab-content">
-                    <div class="card card-full margin-bottom-lg">
-                        <div class="card-header flex-between flex-wrap gap-md">
+                    <div class="card card-full margin-bottom-lg" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
+                        <div class="card-header flex-between flex-wrap gap-md" style="padding-bottom: 16px; border-bottom: 1px solid var(--border-color);">
                             <div>
-                                <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(139, 92, 246, 0.1); color:var(--purple-light); padding:3px 10px; border-radius:12px; font-size:0.75rem; font-weight:700; margin-bottom:6px;">
+                                <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(99, 102, 241, 0.1); color:#6366f1; padding:3px 10px; border-radius:12px; font-size:0.75rem; font-weight:700; margin-bottom:6px;">
                                     <i data-lucide="target" style="width:12px; height:12px;"></i> PLANOS DE DESENVOLVIMENTO ESCOLAR (PDE)
                                 </div>
-                                <h3 style="margin: 0; font-size: 1.35rem; font-weight: 700; color: var(--text-primary);">Metas e Planos de Desenvolvimento Escolar</h3>
-                                <p class="card-subtitle" style="margin: 4px 0 0 0;">Mapeamento das escolas abaixo da meta pactuada e execução direta de Planos de Intervenção Pedagógica (PDE).</p>
+                                <h3 style="margin: 0; font-size: 1.35rem; font-weight: 800; color: var(--text-primary);">Metas e Planos de Desenvolvimento Escolar</h3>
+                                <p class="card-subtitle" style="margin: 4px 0 0 0;">Mapeamento das escolas da rede municipal de Gonçalves Dias, metas pactuadas e execução de Planos de Intervenção Pedagógica (PDE).</p>
                             </div>
-                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                <button class="btn btn-primary" id="btn-generate-all-pde-plans" style="display: flex; align-items: center; gap: 8px;">
-                                    <i data-lucide="sparkles"></i>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                                <button class="btn btn-primary" id="btn-generate-all-pde-plans" onclick="handleAutoGenerateAllPdePlans()" style="display: flex; align-items: center; gap: 8px; font-weight: 700; background: linear-gradient(135deg, #4f46e5, #6366f1); border: none;">
+                                    <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i>
                                     <span>Gerar conforme dados atuais (Escolas com Gap)</span>
                                 </button>
-                                <button class="btn btn-outline" id="btn-export-pde-report" style="display: flex; align-items: center; gap: 8px;">
-                                    <i data-lucide="download"></i>
+                                <button class="btn btn-outline" id="btn-export-pde-report" onclick="handleExportPdeReportPdf()" style="display: flex; align-items: center; gap: 8px; font-weight: 700;">
+                                    <i data-lucide="download" style="width: 16px; height: 16px;"></i>
                                     <span>Exportar Relatório PDE (PDF)</span>
                                 </button>
                             </div>
                         </div>
 
-                        <div class="card-body">
-
+                        <div class="card-body" style="padding: 20px;">
                             <!-- Toolbar de Filtros do Módulo Metas e Planos -->
-                            <div class="card margin-bottom-md" style="padding: 14px 18px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); margin-bottom: 20px;">
+                            <div class="card margin-bottom-md" style="padding: 14px 18px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); margin-bottom: 20px;">
                                 <div style="display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap;">
                                     <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
                                         <div>
                                             <label style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 2px;">ANO LETIVO</label>
-                                            <select id="pde-filter-year" onchange="populateIdebGoalsTable()" class="form-select" style="height: 36px; font-size: 0.82rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0 10px; font-weight: 700; color: #6366f1;">
+                                            <select id="pde-filter-year" onchange="populateIdebGoalsTable()" class="form-select" style="height: 36px; font-size: 0.82rem; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0 10px; font-weight: 700; color: #6366f1;">
                                                 <option value="2026" selected>Ano Letivo 2026 (Corrente)</option>
                                                 <option value="2027">Ano Letivo 2027 (Planejamento)</option>
-                                                <option value="2025">2025 (Histórico Homologado)</option>
-                                                <option value="2023">2023 (Histórico Inicial)</option>
+                                                <option value="2025">2025 (Homologado)</option>
                                             </select>
                                         </div>
 
                                         <div>
                                             <label style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 2px;">SITUAÇÃO DE RISCO</label>
-                                            <select id="pde-filter-status" onchange="populateIdebGoalsTable()" class="form-select" style="height: 36px; font-size: 0.82rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0 10px;">
-                                                <option value="all">Todas as Escolas da Rede</option>
+                                            <select id="pde-filter-status" onchange="populateIdebGoalsTable()" class="form-select" style="height: 36px; font-size: 0.82rem; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0 10px;">
+                                                <option value="all">Todas as Escolas da Rede (Gonçalves Dias)</option>
                                                 <option value="risk">Escolas com Risco (Alto / Médio)</option>
                                                 <option value="ok">Escolas com Meta Atingida 🟢</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 2px;">ETAPA AVALIADA</label>
+                                            <select id="pde-filter-stage" onchange="populateIdebGoalsTable()" class="form-select" style="height: 36px; font-size: 0.82rem; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0 10px;">
+                                                <option value="ai" selected>Anos Iniciais (5º Ano)</option>
+                                                <option value="af">Anos Finais (9º Ano)</option>
                                             </select>
                                         </div>
                                     </div>
 
                                     <div style="font-size: 0.78rem; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;">
-                                        <span class="badge badge-purple" style="font-size: 0.7rem;" id="pde-count-schools-badge">9 Escolas Mapeadas</span>
+                                        <span class="badge badge-purple" style="font-size: 0.72rem; padding: 6px 12px;" id="pde-count-schools-badge">14 Escolas Mapeadas</span>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- IDEB Summary indicators -->
-                            <div class="grid-3-lg margin-bottom-lg" style="margin-bottom: 24px;">
-                                <div style="background-color: var(--bg-secondary); border: 1px solid var(--border-color); padding: 18px; border-radius: var(--radius-lg); text-align: center;">
-                                    <span style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 8px;">IDEB Projetado (Rede)</span>
-                                    <strong id="metas-summary-ideb" style="font-size: 2.2rem; color: var(--purple-light);">5.4</strong>
-                                    <div class="text-sm margin-top-sm" style="color: var(--green-light);"><i data-lucide="trending-up" style="width:14px; height:14px; display:inline-block; vertical-align:middle;"></i> +0.3 vs IDEB 2023</div>
+                            <div class="grid-3-lg margin-bottom-lg" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 24px;">
+                                <div style="background-color: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 18px; border-radius: var(--radius-lg); text-align: center;">
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">IDEB Médio da Rede (Gonçalves Dias)</span>
+                                    <strong id="metas-summary-ideb" style="font-size: 2rem; font-weight: 800; color: #6366f1; font-family: var(--font-mono);">5.2</strong>
+                                    <div class="text-sm margin-top-sm" id="metas-summary-ideb-diff" style="color: #10b981; font-weight: 700; font-size: 0.75rem; margin-top: 4px;">
+                                        <i data-lucide="trending-up" style="width:14px; height:14px; display:inline-block; vertical-align:middle;"></i> +0.3 vs IDEB 2023
+                                    </div>
                                 </div>
-                                <div style="background-color: var(--bg-secondary); border: 1px solid var(--border-color); padding: 18px; border-radius: var(--radius-lg); text-align: center;">
-                                    <span style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 8px;">Taxa Média de Rendimento (Aprovação)</span>
-                                    <strong id="metas-summary-rendimento" style="font-size: 2.2rem; color: var(--blue-light);">96.8%</strong>
-                                    <div class="text-sm margin-top-sm" style="color: var(--text-secondary);">Meta pactuada de fluxo: 97.5%</div>
+                                <div style="background-color: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 18px; border-radius: var(--radius-lg); text-align: center;">
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Taxa Média de Rendimento (Aprovação)</span>
+                                    <strong id="metas-summary-rendimento" style="font-size: 2rem; font-weight: 800; color: #3b82f6; font-family: var(--font-mono);">96.8%</strong>
+                                    <div class="text-sm margin-top-sm" style="color: var(--text-secondary); font-size: 0.75rem; margin-top: 4px;">Meta pactuada de fluxo: 97.5%</div>
                                 </div>
-                                <div style="background-color: var(--bg-secondary); border: 1px solid var(--border-color); padding: 18px; border-radius: var(--radius-lg); text-align: center;">
-                                    <span style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 8px;">Média Padronizada de Proficiência (N)</span>
-                                    <strong id="metas-summary-proficiencia" style="font-size: 2.2rem; color: var(--green-light);">5.58</strong>
-                                    <div class="text-sm margin-top-sm" style="color: var(--text-secondary);">Mapeada sobre 1.758 alunos</div>
+                                <div style="background-color: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 18px; border-radius: var(--radius-lg); text-align: center;">
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Média Padronizada de Proficiência (SAEB)</span>
+                                    <strong id="metas-summary-proficiencia" style="font-size: 2rem; font-weight: 800; color: #10b981; font-family: var(--font-mono);">5.58</strong>
+                                    <div class="text-sm margin-top-sm" style="color: var(--text-secondary); font-size: 0.75rem; margin-top: 4px;">Mapeada sobre os alunos da rede</div>
                                 </div>
                             </div>
 
-                            <!-- Filter Toolbar -->
-                            <div class="card-header border-top flex-between flex-wrap gap-md" style="background-color: var(--bg-tertiary); padding: 12px 18px; border-radius: var(--radius-md); margin-bottom: 16px;">
-                                <div style="display: flex; gap: 14px; flex-wrap: wrap; align-items: center; flex-grow: 1;">
-                                    <div style="min-width: 240px;">
-                                        <select id="pde-filter-status" class="form-select" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 12px; width: 100%;">
-                                            <option value="all">Todas as Escolas (12 Unidades da Rede)</option>
-                                            <option value="risk">Escolas em Risco / Abaixo da Meta (Alerta Vermelho/Laranja)</option>
-                                            <option value="ok">Escolas com Meta Atingida (Verde)</option>
-                                        </select>
-                                    </div>
-                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
-                                        <i data-lucide="info" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 4px; color: var(--purple-light);"></i>
-                                        Ordenadas por maior desvio/gap (escolas mais críticas no topo para intervenção prioritária).
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Unified Actionable PDE Table -->
-                            <div style="overflow-x: auto;">
+                            <!-- Tabela Unificada de Metas e PDE das Escolas de Gonçalves Dias -->
+                            <div class="card" style="padding: 0; overflow-x: auto; border: 1px solid var(--border-color);">
                                 <table class="table-compact" style="width: 100%; border-collapse: collapse; text-align: left;">
                                     <thead>
-                                        <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-secondary); height: 42px; background: var(--bg-tertiary);">
+                                        <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-secondary); height: 44px; background: var(--bg-tertiary); font-size: 0.75rem; text-transform: uppercase;">
                                             <th style="padding: 12px 16px;">Unidade Escolar</th>
-                                            <th style="padding: 12px 16px; text-align: center;">IDEB 2023 (INEP)</th>
-                                            <th style="padding: 12px 16px; text-align: center;">Projeção Atual</th>
-                                            <th style="padding: 12px 16px; text-align: center;">Média de Proficiência (SAEB)</th>
-                                            <th style="padding: 12px 16px; text-align: center;">Desvio / Gap</th>
-                                            <th style="padding: 12px 16px; text-align: center;">Nível de Risco</th>
-                                            <th style="padding: 12px 16px; text-align: center;">Plano de Intervenção (PDE)</th>
+                                            <th style="padding: 12px 16px; text-align: center; width: 110px;">IDEB 2023</th>
+                                            <th style="padding: 12px 16px; text-align: center; width: 140px;">Meta Projetada</th>
+                                            <th style="padding: 12px 16px; text-align: center; width: 130px;">Proficiência (N)</th>
+                                            <th style="padding: 12px 16px; text-align: center; width: 100px;">Desvio / Gap</th>
+                                            <th style="padding: 12px 16px; text-align: center; width: 130px;">Nível de Risco</th>
+                                            <th style="padding: 12px 16px; text-align: center; width: 220px;">Plano de Intervenção (PDE)</th>
+                                            <th style="padding: 12px 16px; text-align: center; width: 120px;">Ação</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="ideb-goals-table-body">
-                                        <!-- Injetado dinamicamente via JS ordenado por desvio com botões de ação -->
+                                    <tbody id="goals-table-body">
+                                        <!-- Injetado via populateIdebGoalsTable() -->
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
-                
-    <!-- Modal de Criação Manual de Plano de Desenvolvimento Escolar (PDE) -->
-    <!-- Modal de Criação / Edição de Plano de Desenvolvimento Escolar (PDE) -->
-    <div id="modal-create-pde-manual" class="modal-overlay hidden">
-        <div class="modal-content" style="max-width: 680px; width: 92%; border-radius: var(--radius-lg); background: var(--bg-secondary); border: 1px solid var(--border-color);">
-            <div class="modal-header flex-between" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
-                <div>
-                    <h3 style="margin:0; font-size:1.2rem; font-weight:800; color:var(--text-primary);">Plano de Intervenção Pedagógica (PDE)</h3>
-                    <p class="text-sm text-muted" style="margin:2px 0 0 0;" id="pde-modal-subtitle">Ações de Melhoria e Estratégia para Elevação do IDEB</p>
-                </div>
-                <button class="btn btn-icon" onclick="closeModal('modal-create-pde-manual'); return false;"><i data-lucide="x"></i></button>
-            </div>
-            <form id="form-create-pde-manual" onsubmit="handleSavePdePlan(event)" style="padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
-                <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 12px;">
-                    <div class="form-group">
-                        <label style="font-size: 0.78rem; font-weight: 700; color:var(--text-secondary); display: block; margin-bottom: 4px;">Unidade Escolar *</label>
-                        <select id="pde-school-select" class="form-select" required style="width:100%; height:38px; background:var(--bg-tertiary);">
-                            <option value="UI JOSE CORREA LIMA">UI JOSE CORREA LIMA</option>
-                            <option value="UI EMILIO MURAD">UI EMILIO MURAD</option>
-                            <option value="UE VEREADOR LEONARDO FERREIRA LIMA">UE VEREADOR LEONARDO FERREIRA LIMA</option>
-                            <option value="U I BASILIO ALVES">U I BASILIO ALVES</option>
-                            <option value="UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ">UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ</option>
-                            <option value="UE RAIMUNDO DOS REIS DA SILVA">UE RAIMUNDO DOS REIS DA SILVA</option>
-                            <option value="UNIDADE INTEGRADA JOSE GONCALVES DIAS">UNIDADE INTEGRADA JOSE GONCALVES DIAS</option>
-                            <option value="UNIDADE ESCOLAR ANISIO GOMES">UNIDADE ESCOLAR ANISIO GOMES</option>
-                            <option value="UE ANITA FURTADO">UE ANITA FURTADO</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label style="font-size: 0.78rem; font-weight: 700; color:var(--text-secondary); display: block; margin-bottom: 4px;">Foco / Indicador Crítico *</label>
-                        <select id="pde-indicator-select" class="form-select" style="width:100%; height:38px; background:var(--bg-tertiary);">
-                            <option value="Fluência Leitora (D1 - D6)">Fluência Leitora & Leitura (D1 - D6)</option>
-                            <option value="Cálculo e Resolução (D17 - D20)">Cálculo & Problemas (D17 - D20)</option>
-                            <option value="Frequência e Combate à Evasão">Frequência Escolar & Evasão</option>
-                            <option value="Reforço de Descritores Críticos SAEB">Reforço de Descritores Críticos SAEB</option>
-                        </select>
-                    </div>
-                </div>
+                </section>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                    <div class="form-group">
-                        <label style="font-size: 0.78rem; font-weight: 700; color:var(--text-secondary); display: block; margin-bottom: 4px;">Responsável da Ação *</label>
-                        <input type="text" id="pde-responsible-input" class="form-input-text" required placeholder="Ex: Profa. Coordenadora Maria Helena" style="width:100%; height:38px;">
-                    </div>
-                    <div class="form-group">
-                        <label style="font-size: 0.78rem; font-weight: 700; color:var(--text-secondary); display: block; margin-bottom: 4px;">Prazo de Conclusão / Ciclo *</label>
-                        <input type="date" id="pde-deadline-input" class="form-input-text" required style="width:100%; height:38px; background:var(--bg-tertiary);">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label style="font-size: 0.78rem; font-weight: 700; color:var(--text-secondary); display: block; margin-bottom: 4px;">Estratégia Pedagógica / Ação de Intervenção *</label>
-                    <textarea id="pde-strategy-text" class="form-input-text" rows="3" required placeholder="Descreva a intervenção (ex: Oficina semanal de recomposição em matemática, plantões de leitura e monitoramento quinzenal)..." style="width:100%; font-size:0.82rem; padding:8px 10px;"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label style="font-size: 0.78rem; font-weight: 700; color:var(--text-secondary); display: block; margin-bottom: 4px;">Status de Acompanhamento *</label>
-                    <select id="pde-status-select" class="form-select" style="width:100%; height:38px; background:var(--bg-tertiary);">
-                        <option value="Em Execução" selected>🟡 Em Execução</option>
-                        <option value="Em Planejamento">🔵 Em Planejamento</option>
-                        <option value="Concluído com Sucesso">🟢 Concluído com Sucesso</option>
-                    </select>
-                </div>
-
-                <div class="modal-footer flex-end" style="gap: 8px; margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 12px;">
-                    <button type="button" class="btn btn-outline" onclick="closeModal('modal-create-pde-manual')">Cancelar</button>
-                    <button type="submit" class="btn btn-primary" style="font-weight:700;">Salvar Plano de Ação (PDE)</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    </section>
-
-                <!-- ==================== COMPARATIVO REGIONAL TAB (PRESET GONÇALVES DIAS • URE PRESIDENTE DUTRA • CENTRO MA • RANKING 2023/2025) ==================== -->
+<!-- ==================== COMPARATIVO REGIONAL TAB (OFICIAL INEP 2015-2025) ==================== -->
                 <section id="ideb-comparativo" class="tab-content">
                     <!-- Banner de Destaque Oficial Gonçalves Dias - MA -->
                     <div class="card margin-bottom-lg" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%); border-radius: var(--radius-lg); padding: 24px 28px; color: #ffffff; box-shadow: 0 10px 25px -5px rgba(49, 46, 129, 0.3);">
                         <div class="flex-between flex-wrap gap-md" style="align-items: center;">
                             <div>
                                 <div id="ideb-period-badge" style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); padding: 4px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.2);">
-    <i data-lucide="award" style="width: 13px; height: 13px;"></i>
-    <span id="ideb-period-badge-text">Dados Oficiais INEP • Ciclos 2015 a 2025</span>
-</div>
+                                    <i data-lucide="award" style="width: 13px; height: 13px;"></i>
+                                    <span id="ideb-period-badge-text">Dados Oficiais INEP • Ciclos 2015 a 2025</span>
+                                </div>
                                 <h2 style="font-size: 1.7rem; font-weight: 800; margin: 0 0 6px 0; color: #ffffff;">
                                     Comparativo Regional do IDEB — Gonçalves Dias (MA)
                                 </h2>
                                 <p style="font-size: 0.85rem; color: rgba(255,255,255,0.85); margin: 0; line-height: 1.45;">
-                                    Acompanhamento estratégico dos resultados e evolução do IDEB no município, na <strong>URE de Presidente Dutra</strong>, na <strong>Região Centro</strong> e no <strong>Ranking Geral do Maranhão</strong>.
+                                    Acompanhamento estratégico dos resultados e evolução histórica do IDEB no município, nas <strong>19 UREs do Maranhão</strong>, no <strong>Ranking Estadual (217 Municípios)</strong> e nas <strong>4.798 Escolas</strong>.
                                 </p>
                             </div>
                             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                <button class="btn btn-primary" id="btn-export-ideb-regional-pdf" style="background: #ffffff; color: #312e81; font-weight: 700; border: none; display: flex; align-items: center; gap: 6px; font-size: 0.82rem;">
+                                <button class="btn btn-primary" id="btn-export-ideb-regional-pdf" onclick="window.print();" style="background: #ffffff; color: #312e81; font-weight: 700; border: none; display: flex; align-items: center; gap: 6px; font-size: 0.82rem;">
                                     <i data-lucide="printer" style="width: 15px; height: 15px;"></i>
                                     <span>Exportar Relatório Regional</span>
                                 </button>
@@ -1149,8 +1029,6 @@
                         </div>
                     </div>
 
-                    <!-- Subtabs de Navegação Regional: 1. Gonçalves Dias x BR/MA • 2. URE Presidente Dutra • 3. Região Centro • 4. Ranking Geral MA -->
-                    <!-- Subtabs de Navegação Regional: 1. Painel Geral (Com Seletor) • 2. Painel de UREs (As 19 UREs) • 3. Ranking Geral (217 Municípios) -->
                     <!-- Subtabs de Navegação Regional: 1. Painel Geral • 2. Painel 19 UREs • 3. Ranking 217 Municípios • 4. Ranking por Escolas -->
                     <div class="card margin-bottom-lg" style="padding: 0; overflow: hidden; background: var(--bg-secondary); border: 1px solid var(--border-color);">
                         <div style="display: flex; gap: 6px; padding: 12px 18px; border-bottom: 1px solid var(--border-color); overflow-x: auto; background: var(--bg-tertiary);">
@@ -1168,93 +1046,97 @@
                             </button>
                         </div>
 
-                        <!-- SUBTAB 1: PAINEL GERAL DO MUNICÍPIO (Com Seletor Cidade Padrão Gonçalves Dias) -->
                         <!-- SUBTAB 1: PAINEL GERAL DO MUNICÍPIO -->
                         <div id="tab-ideb-painel-principal" class="ideb-regional-tab-content" style="padding: 24px;">
-                            <!-- Header do Seletor de Município -->
-                            <div class="card margin-bottom-md" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 14px 18px; border-radius: var(--radius-md);">
-                                <div style="display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap;">
-                                    <div style="display: flex; align-items: center; gap: 10px; flex-grow: 1;">
-                                        <label for="ideb-city-selector" style="font-size: 0.85rem; font-weight: 800; color: var(--text-primary); white-space: nowrap;">
-                                            📍 Município Selecionado:
-                                        </label>
-                                        <select id="ideb-city-selector" onchange="handleSelectIdebCity(this.value)" class="form-select" style="height: 38px; min-width: 260px; max-width: 400px; font-size: 0.88rem; font-weight: 700; color: #6366f1; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
-                                            <option value="">Selecione um município</option>
-                                            <option value="Gonçalves Dias" selected>Gonçalves Dias ⭐ (Sua Rede)</option>
-                                        </select>
-                                    </div>
+                            <!-- Header com Filtros: Município, Ciclo / Ano do IDEB, e Etapa -->
+                            <div class="ideb-control-bar">
+                                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; flex-grow: 1;">
+                                    <label for="ideb-city-selector" style="font-size: 0.85rem; font-weight: 800; color: var(--text-primary); white-space: nowrap;">
+                                        📍 Município:
+                                    </label>
+                                    <select id="ideb-city-selector" onchange="handleSelectIdebCity(this.value)" class="form-select" style="height: 38px; min-width: 220px; max-width: 320px; font-size: 0.88rem; font-weight: 700; color: #6366f1; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                                        <option value="">Selecione um município</option>
+                                        <option value="Gonçalves Dias" selected>Gonçalves Dias ⭐ (Sua Rede)</option>
+                                    </select>
                                     <div id="ideb-city-ure-badge">
                                         <span class="badge badge-purple" style="font-size: 0.76rem; padding: 6px 12px;">URE Presidente Dutra</span>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Cards de Desempenho do Município Selecionado (BUG 5 FIX: Totalmente Dinâmicos) -->
-                            <div class="grid-4-lg margin-bottom-lg" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 24px;">
-                                <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); text-align: center;">
-                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">IDEB 2023 Observado</span>
-                                    <strong id="city-ideb-2023" style="font-size: 1.8rem; font-weight: 800; color: var(--text-primary);">—</strong>
-                                    <span style="font-size: 0.7rem; color: var(--text-secondary); display: block; margin-top: 2px;">Ciclo Anterior</span>
-                                </div>
-                                <div class="card" style="background: rgba(16, 185, 129, 0.08); border: 1px solid #10b981; padding: 16px; border-radius: var(--radius-md); text-align: center;">
-                                    <span style="font-size: 0.75rem; font-weight: 700; color: #10b981; display: block; margin-bottom: 4px;">IDEB 2025 (Mais Recente)</span>
-                                    <strong id="city-ideb-2025" style="font-size: 1.8rem; font-weight: 800; color: #10b981;">—</strong>
-                                    <span id="city-ideb-2025-sub" style="font-size: 0.7rem; color: var(--green-light); font-weight: 700; display: block; margin-top: 2px;">Divulgação Oficial</span>
-                                </div>
-                                <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); text-align: center;">
-                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Meta Pactuada 2025</span>
-                                    <strong id="city-ideb-target" style="font-size: 1.8rem; font-weight: 800; color: #6366f1;">—</strong>
-                                    <span style="font-size: 0.7rem; color: var(--text-secondary); display: block; margin-top: 2px;">MEC / INEP</span>
-                                </div>
-                                <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); text-align: center;">
-                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Posição no Ranking MA</span>
-                                    <strong id="city-ranking-pos" style="font-size: 1.8rem; font-weight: 800; color: #f59e0b;">—</strong>
-                                    <span style="font-size: 0.7rem; color: var(--text-secondary); display: block; margin-top: 2px;">Dentre 217 municípios</span>
-                                </div>
-                            </div>
+                                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                                    <!-- Toggle de Etapa -->
+                                    <div class="ideb-stage-toggle-wrap">
+                                        <button class="ideb-stage-btn active" id="btn-painel-city-stage-ai" onclick="switchGlobalIdebStage('Anos Iniciais'); return false;">5º Ano (Iniciais)</button>
+                                        <button class="ideb-stage-btn" id="btn-painel-city-stage-af" onclick="switchGlobalIdebStage('Anos Finais'); return false;">9º Ano (Finais)</button>
+                                    </div>
 
-                            <!-- BUG 6 FIX: Comparativo do Município Selecionado vs URE vs Maranhão vs Brasil -->
-                            <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 20px; border-radius: var(--radius-lg);">
-                                <h4 style="margin: 0 0 14px 0; font-size: 1.05rem; font-weight: 800; color: var(--text-primary);">
-                                    📊 Comparativo da Cidade x Média da URE x Média Estadual (MA) x Média Nacional (BR)
-                                </h4>
-                                <div style="display: flex; flex-direction: column; gap: 14px;" id="city-comparison-bars">
-                                    <div style="text-align:center; padding:16px; color:var(--text-muted);">
-                                        Selecione um município no campo acima para visualizar o comparativo gráfico.
+                                    <!-- Seletor Dinâmico de Ano / Ciclo (2015 - 2025) -->
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Ciclo:</span>
+                                        <div class="ideb-year-selector-wrap" id="painel-city-year-selector">
+                                            <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2015)" data-year="2015">2015</button>
+                                            <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2017)" data-year="2017">2017</button>
+                                            <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2019)" data-year="2019">2019</button>
+                                            <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2021)" data-year="2021">2021</button>
+                                            <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2023)" data-year="2023">2023</button>
+                                            <button class="ideb-year-pill-btn active" onclick="switchGlobalIdebYear(2025)" data-year="2025">2025 ★</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-</div>
 
-                            <!-- Cards de Desempenho do Município Selecionado -->
+                            <!-- Cards de Desempenho Dinâmicos para o Ano Selecionado -->
                             <div class="grid-4-lg margin-bottom-lg" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 24px;">
-                                <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); text-align: center;">
-                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">IDEB 2023 Observado</span>
-                                    <strong id="city-ideb-2023" style="font-size: 1.8rem; font-weight: 800; color: var(--text-primary);">4.8</strong>
-                                    <span style="font-size: 0.7rem; color: var(--text-secondary); display: block; margin-top: 2px;">Oficial INEP</span>
+                                <div class="card" style="background: rgba(99, 102, 241, 0.06); border: 1px solid rgba(99, 102, 241, 0.3); padding: 16px; border-radius: var(--radius-md); text-align: center;">
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: #6366f1; display: block; margin-bottom: 4px;" id="city-card-label-current">IDEB 2025 Observado</span>
+                                    <strong id="city-ideb-current" style="font-size: 2rem; font-weight: 800; color: #6366f1; font-family: var(--font-mono);">—</strong>
+                                    <span id="city-ideb-current-sub" style="font-size: 0.72rem; color: var(--text-secondary); display: block; margin-top: 2px;">Ciclo Oficial Selecionado</span>
                                 </div>
-                                <div class="card" style="background: rgba(16, 185, 129, 0.08); border: 1px solid #10b981; padding: 16px; border-radius: var(--radius-md); text-align: center;">
-                                    <span style="font-size: 0.75rem; font-weight: 700; color: #10b981; display: block; margin-bottom: 4px;">IDEB 2025 (Atual)</span>
-                                    <strong id="city-ideb-2025" style="font-size: 1.8rem; font-weight: 800; color: #10b981;">5.2 ⭐</strong>
-                                    <span style="font-size: 0.7rem; color: var(--green-light); font-weight: 700; display: block; margin-top: 2px;">Meta Superada</span>
-                                </div>
+
                                 <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); text-align: center;">
-                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Meta Pactuada 2025</span>
-                                    <strong id="city-ideb-target" style="font-size: 1.8rem; font-weight: 800; color: #6366f1;">5.0</strong>
-                                    <span style="font-size: 0.7rem; color: var(--text-secondary); display: block; margin-top: 2px;">MEC / INEP</span>
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;" id="city-card-label-prev">Ciclo Anterior (2023)</span>
+                                    <strong id="city-ideb-prev" style="font-size: 1.8rem; font-weight: 800; color: var(--text-primary); font-family: var(--font-mono);">—</strong>
+                                    <div id="city-ideb-diff" style="margin-top: 4px; font-size: 0.75rem; font-weight: 800;">—</div>
                                 </div>
+
                                 <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); text-align: center;">
-                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">Posição no Ranking MA</span>
-                                    <strong id="city-ranking-pos" style="font-size: 1.8rem; font-weight: 800; color: #f59e0b;">#14</strong>
-                                    <span style="font-size: 0.7rem; color: var(--text-secondary); display: block; margin-top: 2px;">Dentre 217 cidades</span>
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;" id="city-card-label-target">Meta Projetada (INEP)</span>
+                                    <strong id="city-ideb-target" style="font-size: 1.8rem; font-weight: 800; color: #10b981; font-family: var(--font-mono);">—</strong>
+                                    <span id="city-ideb-status-badge" style="font-size: 0.72rem; color: var(--text-secondary); display: block; margin-top: 2px;">MEC / INEP</span>
+                                </div>
+
+                                <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); text-align: center;">
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;" id="city-card-label-ranking">Posição no Ranking MA</span>
+                                    <strong id="city-ranking-pos" style="font-size: 1.8rem; font-weight: 800; color: #f59e0b; font-family: var(--font-mono);">—</strong>
+                                    <span style="font-size: 0.72rem; color: var(--text-secondary); display: block; margin-top: 2px;">Dentre 217 municípios</span>
                                 </div>
                             </div>
 
-                            <!-- Comparativo do Município Selecionado vs Maranhão vs Brasil -->
+                            <!-- Linha do Tempo Histórica do Município (2015 a 2025) -->
+                            <div class="card margin-bottom-lg" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 20px; border-radius: var(--radius-lg); margin-bottom: 24px;">
+                                <div class="flex-between flex-wrap gap-md" style="margin-bottom: 14px;">
+                                    <div>
+                                        <h4 style="margin: 0; font-size: 1.05rem; font-weight: 800; color: var(--text-primary);" id="city-timeline-title">
+                                            📈 Série Histórica Oficial do Município (Ciclos 2015 a 2025)
+                                        </h4>
+                                        <p class="text-sm text-muted" style="margin: 2px 0 0 0;">
+                                            Clique em qualquer ciclo para selecioná-lo no painel analítico.
+                                        </p>
+                                    </div>
+                                    <div id="city-timeline-badge-network">
+                                        <span class="badge badge-purple" style="font-size: 0.72rem;">Rede Municipal • Todos os Ciclos</span>
+                                    </div>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;" id="city-timeline-cycles-grid">
+                                    <!-- Preenchido via JS com os 6 ciclos -->
+                                </div>
+                            </div>
+
+                            <!-- Comparativo da Cidade x Média da URE x Média MA x Média BR no Ano Selecionado -->
                             <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 20px; border-radius: var(--radius-lg);">
-                                <h4 style="margin: 0 0 12px 0; font-size: 1.05rem; font-weight: 800; color: var(--text-primary);">
-                                    📊 Comparativo da Cidade x Média Estadual (MA) x Média Nacional (BR)
+                                <h4 style="margin: 0 0 14px 0; font-size: 1.05rem; font-weight: 800; color: var(--text-primary);" id="city-comp-bars-title">
+                                    📊 Comparativo do Município x Média da URE x Média Estadual (MA) x Média Nacional (BR)
                                 </h4>
                                 <div style="display: flex; flex-direction: column; gap: 14px;" id="city-comparison-bars">
                                     <!-- Preenchido dinamicamente via JS -->
@@ -1262,54 +1144,123 @@
                             </div>
                         </div>
 
-                        <!-- SUBTAB 2: PAINEL COM TODAS AS 19 UREs ORGANIZADAS -->
+                        <!-- SUBTAB 2: PAINEL COM AS 19 UREs ORGANIZADAS -->
                         <div id="tab-ideb-painel-ures" class="ideb-regional-tab-content hidden" style="padding: 24px;">
-                            <div class="flex-between flex-wrap gap-md" style="margin-bottom: 16px;">
+                            <!-- Header de Controles da Subtab das UREs -->
+                            <div class="ideb-control-bar">
                                 <div>
                                     <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">
                                         Unidades Regionais de Educação (19 UREs do Maranhão)
                                     </h3>
-                                    <p class="text-sm text-muted" style="margin: 2px 0 0 0;">
-                                        Agrupamento oficial das 19 UREs com todos os seus municípios e índices de desempenho.
+                                    <p class="text-sm text-muted" style="margin: 2px 0 0 0;" id="ures-panel-subtitle">
+                                        Desempenho e agrupamento oficial de todos os 217 municípios distribuídos pelas 19 regionais.
                                     </p>
                                 </div>
-                                <div>
-                                    <input type="text" id="ure-search-input" oninput="filterUresList()" placeholder="Buscar URE ou Município..." style="height: 38px; width: 260px; padding: 0 12px; font-size: 0.82rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary);">
+
+                                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                                    <!-- Toggle de Etapa -->
+                                    <div class="ideb-stage-toggle-wrap">
+                                        <button class="ideb-stage-btn active" id="btn-ures-stage-ai" onclick="switchGlobalIdebStage('Anos Iniciais'); return false;">5º Ano (Iniciais)</button>
+                                        <button class="ideb-stage-btn" id="btn-ures-stage-af" onclick="switchGlobalIdebStage('Anos Finais'); return false;">9º Ano (Finais)</button>
+                                    </div>
+
+                                    <!-- Seletor de Ano -->
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Ciclo:</span>
+                                        <div class="ideb-year-selector-wrap" id="ures-year-selector">
+                                            <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2015)" data-year="2015">2015</button>
+                                            <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2017)" data-year="2017">2017</button>
+                                            <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2019)" data-year="2019">2019</button>
+                                            <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2021)" data-year="2021">2021</button>
+                                            <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2023)" data-year="2023">2023</button>
+                                            <button class="ideb-year-pill-btn active" onclick="switchGlobalIdebYear(2025)" data-year="2025">2025 ★</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Filtros de Busca e Ordenação -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap;">
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <input type="text" id="ure-search-input" oninput="render19UresPanel()" placeholder="Buscar URE ou Município..." style="height: 38px; width: 280px; padding: 0 12px; font-size: 0.82rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary);">
+                                    <button class="btn btn-outline btn-sm" onclick="toggleUreSortOrder(); return false;" id="btn-ure-sort-toggle" style="height: 38px; font-size: 0.78rem; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                                        <span>↕️ Alternar Ordenação</span>
+                                    </button>
+                                </div>
+
+                                <!-- Mini KPIs das UREs -->
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 6px 14px; border-radius: var(--radius-md); font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">
+                                        Média Geral MA: <strong id="ures-kpi-state-avg" style="color: #6366f1;">4.8</strong>
+                                    </div>
+                                    <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid #10b981; padding: 6px 14px; border-radius: var(--radius-md); font-size: 0.78rem; font-weight: 700; color: #10b981;">
+                                        🏆 URE Líder: <strong id="ures-kpi-top-ure">URE Balsas (5.6)</strong>
+                                    </div>
                                 </div>
                             </div>
 
                             <div id="ures-cards-container" style="display: flex; flex-direction: column; gap: 16px;">
-                                <!-- Preenchido dinamicamente via JS com as 19 UREs organizadas -->
+                                <!-- Preenchido dinamicamente via JS com as 19 UREs organizadas e chips do ano selecionado -->
                             </div>
                         </div>
 
                         <!-- SUBTAB 3: RANKING GERAL DE TODOS OS 217 MUNICÍPIOS -->
                         <div id="tab-ideb-ranking-geral-ma" class="ideb-regional-tab-content hidden" style="padding: 24px;">
-                            <div class="flex-between flex-wrap gap-md" style="margin-bottom: 16px;">
+                            <!-- Header de Controles do Ranking de Municípios -->
+                            <div class="ideb-control-bar">
                                 <div>
                                     <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">
                                         Ranking Geral dos 217 Municípios do Maranhão
                                     </h3>
-                                    <p class="text-sm text-muted" style="margin: 2px 0 0 0;">
-                                        Classificação oficial completa com base no IDEB 2025 (Anos Iniciais).
+                                    <p class="text-sm text-muted" style="margin: 2px 0 0 0;" id="ranking-ma-subtitle">
+                                        Classificação oficial com base no ciclo selecionado com cálculo de evolução.
                                     </p>
                                 </div>
-                                <div style="display: flex; gap: 10px;">
-                                    <input type="text" id="ranking-ma-search-input" oninput="filterRankingMaTable()" placeholder="Buscar município no Maranhão..." style="height: 38px; width: 260px; padding: 0 12px; font-size: 0.82rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary);">
+
+                                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                                    <!-- Toggle de Etapa -->
+                                    <div class="ideb-stage-toggle-wrap">
+                                        <button class="ideb-stage-btn active" id="btn-ranking-stage-ai" onclick="switchGlobalIdebStage('Anos Iniciais'); return false;">5º Ano (Iniciais)</button>
+                                        <button class="ideb-stage-btn" id="btn-ranking-stage-af" onclick="switchGlobalIdebStage('Anos Finais'); return false;">9º Ano (Finais)</button>
+                                    </div>
+
+                                    <!-- Seletor de Ano -->
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Ano Base:</span>
+                                        <div class="ideb-year-selector-wrap" id="ranking-year-selector">
+                                            <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2015)" data-year="2015">2015</button>
+                                            <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2017)" data-year="2017">2017</button>
+                                            <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2019)" data-year="2019">2019</button>
+                                            <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2021)" data-year="2021">2021</button>
+                                            <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2023)" data-year="2023">2023</button>
+                                            <button class="ideb-year-pill-btn active" onclick="switchGlobalIdebYear(2025)" data-year="2025">2025 ★</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Filtro por URE e Busca Rápida -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
+                                <div style="display: flex; gap: 10px; align-items: center; flex-grow: 1;">
+                                    <select id="ranking-ma-ure-filter" onchange="renderRankingGeralMaTable()" class="form-select" style="height: 38px; min-width: 220px; max-width: 300px; font-size: 0.82rem; font-weight: 700; color: var(--text-primary); background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                                        <option value="all">Todas as 19 UREs do Maranhão</option>
+                                    </select>
+                                    <input type="text" id="ranking-ma-search-input" oninput="renderRankingGeralMaTable()" placeholder="Buscar município no Maranhão..." style="height: 38px; width: 260px; padding: 0 12px; font-size: 0.82rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary);">
                                 </div>
                             </div>
 
                             <div class="card" style="padding: 0; overflow-x: auto; border: 1px solid var(--border-color);">
                                 <table class="table-compact" style="width: 100%; border-collapse: collapse; text-align: left;">
                                     <thead>
-                                        <tr style="background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; height: 42px;">
-                                            <th style="padding: 10px 14px; width: 60px;">POS</th>
+                                        <tr id="ranking-geral-table-header" style="background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; height: 44px;">
+                                            <th style="padding: 10px 14px; width: 65px;">POS</th>
                                             <th style="padding: 10px 14px;">MUNICÍPIO</th>
                                             <th style="padding: 10px 14px;">URE PERTENCENTE</th>
-                                            <th style="padding: 10px 14px; text-align: center;">IDEB 2023</th>
-                                            <th style="padding: 10px 14px; text-align: center;">IDEB 2025</th>
-                                            <th style="padding: 10px 14px; text-align: center;">META 2025</th>
+                                            <th style="padding: 10px 14px; text-align: center;" id="th-ranking-prev">CICLO ANTERIOR</th>
+                                            <th style="padding: 10px 14px; text-align: center;" id="th-ranking-curr">IDEB 2025</th>
+                                            <th style="padding: 10px 14px; text-align: center;">EVOLUÇÃO</th>
                                             <th style="padding: 10px 14px; text-align: center;">SITUAÇÃO</th>
+                                            <th style="padding: 10px 14px; text-align: center;">SÉRIE HISTÓRICA</th>
                                         </tr>
                                     </thead>
                                     <tbody id="ranking-geral-ma-table-body">
@@ -1317,26 +1268,39 @@
                                     </tbody>
                                 </table>
                             </div>
-<!-- SUBTAB 4: RANKING POR ESCOLAS (MARANHÃO) -->
+                        </div>
+
+                        <!-- SUBTAB 4: RANKING POR ESCOLAS (MARANHÃO) -->
                         <div id="tab-ideb-ranking-escolas-ma" class="ideb-regional-tab-content hidden" style="padding: 24px;">
-                            <div class="flex-between flex-wrap gap-md" style="margin-bottom: 16px;">
+                            <!-- Header de Controles do Ranking de Escolas -->
+                            <div class="ideb-control-bar">
                                 <div>
                                     <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">
                                         🏫 Ranking Geral de Escolas do Maranhão
                                     </h3>
-                                    <p class="text-sm text-muted" style="margin: 2px 0 0 0;">
-                                        Classificação das unidades escolares por desempenho no IDEB com filtros por município e etapa.
+                                    <p class="text-sm text-muted" style="margin: 2px 0 0 0;" id="ranking-escolas-subtitle">
+                                        Classificação oficial das unidades escolares por desempenho no IDEB com série histórica completa.
                                     </p>
                                 </div>
-                                <div style="display: flex; gap: 10px; align-items: center;">
-                                    <!-- Toggle Etapa Anos Iniciais / Anos Finais -->
-                                    <div style="display: flex; background: var(--bg-tertiary); padding: 3px; border-radius: 20px; border: 1px solid var(--border-color);">
-                                        <button class="school-stage-toggle active" id="btn-toggle-escolas-ai" onclick="switchSchoolRankingStage('Anos Iniciais'); return false;" style="padding: 4px 12px; border-radius: 16px; font-size: 0.76rem; font-weight: 700; background: #6366f1; color: #fff; border: none; cursor: pointer;">
-                                            5º Ano (Anos Iniciais)
-                                        </button>
-                                        <button class="school-stage-toggle" id="btn-toggle-escolas-af" onclick="switchSchoolRankingStage('Anos Finais'); return false;" style="padding: 4px 12px; border-radius: 16px; font-size: 0.76rem; font-weight: 600; background: transparent; color: var(--text-secondary); border: none; cursor: pointer;">
-                                            9º Ano (Anos Finais)
-                                        </button>
+
+                                <div style="display: align-items: center; gap: 12px; flex-wrap: wrap; display: flex;">
+                                    <!-- Toggle de Etapa -->
+                                    <div class="ideb-stage-toggle-wrap">
+                                        <button class="ideb-stage-btn active" id="btn-toggle-escolas-ai" onclick="switchGlobalIdebStage('Anos Iniciais'); return false;">5º Ano (Iniciais)</button>
+                                        <button class="ideb-stage-btn" id="btn-toggle-escolas-af" onclick="switchGlobalIdebStage('Anos Finais'); return false;">9º Ano (Finais)</button>
+                                    </div>
+
+                                    <!-- Seletor de Ano -->
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Ciclo:</span>
+                                        <div class="ideb-year-selector-wrap" id="escolas-year-selector">
+                                            <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2015)" data-year="2015">2015</button>
+                                            <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2017)" data-year="2017">2017</button>
+                                            <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2019)" data-year="2019">2019</button>
+                                            <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2021)" data-year="2021">2021</button>
+                                            <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2023)" data-year="2023">2023</button>
+                                            <button class="ideb-year-pill-btn active" onclick="switchGlobalIdebYear(2025)" data-year="2025">2025 ★</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1351,10 +1315,15 @@
                                         <select id="ranking-escolas-city-select" onchange="filterSchoolRankingTable()" class="form-select" style="height: 38px; min-width: 240px; max-width: 380px; font-size: 0.85rem; font-weight: 700; color: #6366f1; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
                                             <option value="all">Todos os Municípios do Maranhão</option>
                                             <option value="Gonçalves Dias" selected>Gonçalves Dias ⭐ (Sua Rede)</option>
-                                            <!-- Preenchido via JS com 217 cidades -->
                                         </select>
                                     </div>
-                                    <div>
+                                    <div style="display: flex; gap: 8px;">
+                                        <select id="ranking-escolas-rede-select" onchange="filterSchoolRankingTable()" class="form-select" style="height: 38px; font-size: 0.82rem; font-weight: 600; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                                            <option value="all">Todas as Redes</option>
+                                            <option value="Municipal">Apenas Municipal</option>
+                                            <option value="Estadual">Apenas Estadual</option>
+                                            <option value="Federal">Apenas Federal</option>
+                                        </select>
                                         <input type="text" id="ranking-escolas-search-input" oninput="filterSchoolRankingTable()" placeholder="Buscar escola por nome..." style="height: 38px; width: 240px; padding: 0 12px; font-size: 0.82rem; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary);">
                                     </div>
                                 </div>
@@ -1375,8 +1344,8 @@
                                             <th style="padding: 10px 14px;">UNIDADE ESCOLAR</th>
                                             <th style="padding: 10px 14px;">MUNICÍPIO / URE</th>
                                             <th style="padding: 10px 14px; width: 100px;">REDE</th>
-                                            <th style="padding: 10px 14px; text-align: center; width: 110px;">IDEB 2023</th>
-                                            <th style="padding: 10px 14px; text-align: center; width: 130px;">IDEB 2025</th>
+                                            <th style="padding: 10px 14px; text-align: center; width: 110px;" id="th-escolas-prev">CICLO ANTERIOR</th>
+                                            <th style="padding: 10px 14px; text-align: center; width: 130px;" id="th-escolas-curr">IDEB 2025</th>
                                             <th style="padding: 10px 14px; text-align: center; width: 100px;">AÇÃO</th>
                                         </tr>
                                     </thead>
@@ -1386,230 +1355,52 @@
                                 </table>
                             </div>
                         </div>
-                        </div>
-                    </div>
-                    </div>
-                        </div>
-                    </div>
-
-                    
-                    <!-- ABA 2: URE PRESIDENTE DUTRA (2023 X 2025) -->
-                    <div class="ideb-regional-tab-content hidden" id="tab-ideb-ure-presidente-dutra">
-                        <!-- Top KPI Cards for URE -->
-                        <div class="grid grid-3 margin-bottom-lg" style="gap: 16px;">
-                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 20px;">
-                                <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">IDEB Médio da URE (2023)</span>
-                                <h2 style="font-size: 2.75rem; font-weight: 800; color: var(--text-primary); margin: 8px 0;">4.6</h2>
-                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;">Média consolidada dos 13 municípios</p>
-                            </div>
-
-                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 20px;">
-                                <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">IDEB Médio da URE (2025)</span>
-                                <h2 style="font-size: 2.75rem; font-weight: 800; color: var(--green-light); margin: 8px 0;">5.0</h2>
-                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0; display: flex; align-items: center; gap: 4px;">
-                                    <i data-lucide="trending-up" style="width:14px; height:14px; color: var(--green-light);"></i> Crescimento de +0.4 na regional
-                                </p>
-                            </div>
-
-                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 20px;">
-                                <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">Destaque do Município</span>
-                                <div style="margin: 12px 0;">
-                                    <span class="badge badge-success" style="font-size: 1.1rem; font-weight: 800; padding: 6px 14px;">4º Lugar Geral (5.2)</span>
-                                </div>
-                                <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0;">Gonçalves Dias acima da média da URE</p>
-                            </div>
-                        </div>
-
-                        <!-- Table -->
-                        <div class="card" style="padding: 20px; border: 1px solid var(--border-color); background: var(--bg-secondary);">
-                            <div class="flex-between margin-bottom-md" style="align-items: center;">
-                                <div>
-                                    <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0;">
-                                        Ranking Oficial dos Municípios — URE Presidente Dutra
-                                    </h3>
-                                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">
-                                        Ciclos bienais do SAEB/IDEB com comparação Anos Iniciais e Finais.
-                                    </p>
-                                </div>
-                            </div>
-                            <div style="overflow-x: auto;">
-                                <table class="table-compact" style="width: 100%; border-collapse: collapse; text-align: left;">
-                                    <thead>
-                                        <tr style="background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color); font-size: 0.74rem; color: var(--text-secondary); text-transform: uppercase;">
-                                            <th style="padding: 10px 14px;">Posição</th>
-                                            <th style="padding: 10px 14px;">Município</th>
-                                            <th style="padding: 10px 14px; text-align: center;">IDEB 2023 (AI)</th>
-                                            <th style="padding: 10px 14px; text-align: center;">IDEB 2025 (AI)</th>
-                                            <th style="padding: 10px 14px; text-align: center; color: var(--green-light);">Evolução (AI)</th>
-                                            <th style="padding: 10px 14px; text-align: center;">IDEB 2023 (AF)</th>
-                                            <th style="padding: 10px 14px; text-align: center;">IDEB 2025 (AF)</th>
-                                            <th style="padding: 10px 14px; text-align: center; color: var(--green-light);">Evolução (AF)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="table-ure-presidente-dutra-body">
-                                        <!-- Injetado via JS -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <!-- ABA 3: MUNICÍPIOS DA REGIÃO CENTRO (MA) -->
-                    <div class="ideb-regional-tab-content hidden" id="tab-ideb-regiao-centro-ma">
-                        <!-- Top KPI Cards for Regiao Centro -->
-                        <div class="grid grid-3 margin-bottom-lg" style="gap: 16px;">
-                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 20px;">
-                                <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">IDEB Médio Região Centro (2023)</span>
-                                <h2 style="font-size: 2.75rem; font-weight: 800; color: var(--text-primary); margin: 8px 0;">4.8</h2>
-                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;">Polo Central Maranhense</p>
-                            </div>
-
-                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 20px;">
-                                <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">IDEB Médio Região Centro (2025)</span>
-                                <h2 style="font-size: 2.75rem; font-weight: 800; color: var(--green-light); margin: 8px 0;">5.2</h2>
-                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0; display: flex; align-items: center; gap: 4px;">
-                                    <i data-lucide="trending-up" style="width:14px; height:14px; color: var(--green-light);"></i> Evolução regional de +0.4
-                                </p>
-                            </div>
-
-                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 20px;">
-                                <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">Posicionamento Regional</span>
-                                <div style="margin: 12px 0;">
-                                    <span class="badge badge-purple" style="font-size: 1.1rem; font-weight: 800; padding: 6px 14px;">6º Lugar (Região Centro)</span>
-                                </div>
-                                <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0;">Gonçalves Dias entre os líderes do polo</p>
-                            </div>
-                        </div>
-
-                        <!-- Table -->
-                        <div class="card" style="padding: 20px; border: 1px solid var(--border-color); background: var(--bg-secondary);">
-                            <div class="flex-between margin-bottom-md" style="align-items: center;">
-                                <div>
-                                    <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0;">
-                                        Tabela — Municípios da Região Centro Maranhense (IDEB 2023 & 2025)
-                                    </h3>
-                                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">
-                                        Comparativo de desempenho educacional das redes municipais do Centro do Maranhão.
-                                    </p>
-                                </div>
-                            </div>
-                            <div style="overflow-x: auto;">
-                                <table class="table-compact" style="width: 100%; border-collapse: collapse; text-align: left;">
-                                    <thead>
-                                        <tr style="background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color); font-size: 0.74rem; color: var(--text-secondary); text-transform: uppercase;">
-                                            <th style="padding: 10px 14px;">Posição</th>
-                                            <th style="padding: 10px 14px;">Município</th>
-                                            <th style="padding: 10px 14px; text-align: center;">IDEB 2023 (AI)</th>
-                                            <th style="padding: 10px 14px; text-align: center;">IDEB 2025 (AI)</th>
-                                            <th style="padding: 10px 14px; text-align: center; color: var(--green-light);">Evolução (AI)</th>
-                                            <th style="padding: 10px 14px; text-align: center;">IDEB 2023 (AF)</th>
-                                            <th style="padding: 10px 14px; text-align: center;">IDEB 2025 (AF)</th>
-                                            <th style="padding: 10px 14px; text-align: center; color: var(--green-light);">Evolução (AF)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="table-regiao-centro-body">
-                                        <!-- Injetado via JS -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <!-- ABA 4: RANKING GERAL DO MARANHÃO (2023 & 2025) -->
-                    <div class="ideb-regional-tab-content hidden" id="tab-ideb-ranking-geral-ma">
-                        <!-- Top KPI Cards for Ranking Estadual -->
-                        <div class="grid grid-3 margin-bottom-lg" style="gap: 16px;">
-                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 20px;">
-                                <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">Posição Estadual 2023</span>
-                                <h2 style="font-size: 2.75rem; font-weight: 800; color: var(--text-primary); margin: 8px 0;">12º</h2>
-                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;">IDEB 4.8 (Anos Iniciais)</p>
-                            </div>
-
-                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 20px;">
-                                <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">Posição Estadual 2025</span>
-                                <h2 style="font-size: 2.75rem; font-weight: 800; color: var(--green-light); margin: 8px 0;">7º</h2>
-                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0; display: flex; align-items: center; gap: 4px;">
-                                    <i data-lucide="trending-up" style="width:14px; height:14px; color: var(--green-light);"></i> Subiu +5 posições no estado
-                                </p>
-                            </div>
-
-                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 20px;">
-                                <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">Classificação Oficial</span>
-                                <div style="margin: 12px 0;">
-                                    <span class="badge badge-success" style="font-size: 1.1rem; font-weight: 800; padding: 6px 14px;">Evolução Acima da Média</span>
-                                </div>
-                                <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0;">Gonçalves Dias (5.2) vs Média MA (4.8)</p>
-                            </div>
-                        </div>
-
-                        <!-- Table with Search & Pagination -->
-                        <div class="card" style="padding: 20px; border: 1px solid var(--border-color); background: var(--bg-secondary);">
-                            <div class="flex-between margin-bottom-md flex-wrap gap-md" style="align-items: center;">
-                                <div>
-                                    <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0;">
-                                        Ranking Geral dos Municípios do Maranhão (IDEB 2023 & 2025)
-                                    </h3>
-                                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">
-                                        Pesquisa rápida por município. Pressione <strong>Enter</strong> para confirmar.
-                                    </p>
-                                </div>
-                                <div style="min-width: 260px;">
-                                    <input type="text" id="input-search-ranking-ma" class="form-input-text" placeholder="Buscar município no ranking..." style="height: 36px; font-size: 0.82rem; width: 100%;">
-                                </div>
-                            </div>
-                            <div style="overflow-x: auto;">
-                                <table class="table-compact" style="width: 100%; border-collapse: collapse; text-align: left;">
-                                    <thead>
-                                        <tr style="background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color); font-size: 0.74rem; color: var(--text-secondary); text-transform: uppercase; cursor: pointer;">
-                                            <th style="padding: 10px 14px;" onclick="sortRankingMa('rank')">Ranking MA ⇕</th>
-                                            <th style="padding: 10px 14px;" onclick="sortRankingMa('cidade')">Município ⇕</th>
-                                            <th style="padding: 10px 14px; text-align: center;" onclick="sortRankingMa('ideb2023')">IDEB 2023 ⇕</th>
-                                            <th style="padding: 10px 14px; text-align: center;" onclick="sortRankingMa('ideb2025')">IDEB 2025 ⇕</th>
-                                            <th style="padding: 10px 14px; text-align: center; color: var(--green-light);" onclick="sortRankingMa('evolucao')">Evolução Geral ⇕</th>
-                                            <th style="padding: 10px 14px; text-align: center;">Classificação</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="table-ranking-geral-ma-body">
-                                        <!-- Injetado via JS -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
                     </div>
                 </section>
 
+
+                <!-- ==================== MATRIZ & DESCRITORES TAB ==================== -->
                 <!-- ==================== MATRIZ & DESCRITORES TAB ==================== -->
                 <section id="matriz-descritores" class="tab-content">
                     <div class="card card-full margin-bottom-lg" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
                         <div class="card-header flex-between flex-wrap gap-md" style="padding-bottom: 16px; border-bottom: 1px solid var(--border-color);">
                             <div>
                                 <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(99, 102, 241, 0.1); color:#6366f1; padding:4px 10px; border-radius:16px; font-size:0.75rem; font-weight:700; margin-bottom:6px;">
-                                    📚 MATRIZES DE REFERÊNCIA SAEB & BNCC 2026
+                                    📚 MATRIZES SAEB, SEAMA & HABILIDADES DA BNCC
                                 </div>
-                                <h3 style="margin:0; font-size:1.35rem; font-weight:800; color:var(--text-primary);">Matrizes de Referência & Descritores</h3>
-                                <p class="card-subtitle" style="margin:4px 0 0 0;">Descritores de habilidades cognitivas estruturados por componentes do SAEB (Língua Portuguesa, Matemática, Ciências da Natureza e Humanas).</p>
-                            </div>
-                            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-                                <input type="text" id="matriz-search-input" oninput="filterMatrizDescritores()" placeholder="Buscar por código ou tema (ex: D1, fração, inferir)..." style="height:38px; min-width:280px; font-size:0.82rem; padding:0 12px; background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-md); color:var(--text-primary);">
+                                <h3 style="margin:0; font-size:1.35rem; font-weight:800; color:var(--text-primary);">Matrizes de Referência & Habilidades da BNCC</h3>
+                                <p class="card-subtitle" style="margin:4px 0 0 0;">Navegação estruturada por descritores cognitivos de avaliações externas e catálogo completo de habilidades da BNCC por componente curricular.</p>
                             </div>
                         </div>
 
-                        <!-- Stage Selector Pill Tabs -->
-                        <div style="display: flex; gap: 8px; padding: 14px 20px; border-bottom: 1px solid var(--border-color); background: var(--bg-tertiary); overflow-x: auto;">
-                            <button class="matriz-etapa-btn active" onclick="switchMatrizEtapa('5ano'); return false;" data-etapa="5ano" style="padding: 6px 14px; border-radius: 16px; font-size: 0.78rem; font-weight: 700; background: #6366f1; color: #fff; border: none; cursor: pointer;">
-                                🎒 Anos Iniciais (5º Ano)
+                        <!-- Sub-Navegação: 1. Matrizes SAEB/SEAMA • 2. Explorador da BNCC -->
+                        <div style="display: flex; gap: 8px; padding: 12px 20px; border-bottom: 1px solid var(--border-color); background: var(--bg-tertiary); overflow-x: auto;">
+                            <button class="matriz-main-tab-btn active" id="btn-matriz-tab-saeb" onclick="switchMatrizMainTab('saeb'); return false;" style="padding: 8px 16px; border-radius: 20px; font-size: 0.82rem; font-weight: 700; background: #6366f1; color: #ffffff; border: none; cursor: pointer;">
+                                📊 Matrizes de Referência SAEB / SEAMA
                             </button>
-                            <button class="matriz-etapa-btn" onclick="switchMatrizEtapa('9ano'); return false;" data-etapa="9ano" style="padding: 6px 14px; border-radius: 16px; font-size: 0.78rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer;">
-                                🎓 Anos Finais (9º Ano)
-                            </button>
-                            <button class="matriz-etapa-btn" onclick="switchMatrizEtapa('alfabetizacao'); return false;" data-etapa="alfabetizacao" style="padding: 6px 14px; border-radius: 16px; font-size: 0.78rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer;">
-                                🔤 Alfabetização (2º Ano)
+                            <button class="matriz-main-tab-btn" id="btn-matriz-tab-bncc" onclick="switchMatrizMainTab('bncc'); return false;" style="padding: 8px 16px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer;">
+                                📖 Explorador de Habilidades da BNCC (Por Disciplina)
                             </button>
                         </div>
 
-                        <div class="card-body" style="padding: 20px;">
+                        <!-- SUB-VIEW 1: MATRIZES SAEB / SEAMA -->
+                        <div id="subview-matriz-saeb" class="matriz-subview" style="padding: 20px;">
+                            <!-- Stage Selector Pill Tabs -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 18px;">
+                                <div style="display: flex; gap: 8px; overflow-x: auto;">
+                                    <button class="matriz-etapa-btn active" onclick="switchMatrizEtapa('5ano'); return false;" data-etapa="5ano" style="padding: 6px 14px; border-radius: 16px; font-size: 0.78rem; font-weight: 700; background: #6366f1; color: #fff; border: none; cursor: pointer;">
+                                        🎒 Anos Iniciais (5º Ano)
+                                    </button>
+                                    <button class="matriz-etapa-btn" onclick="switchMatrizEtapa('9ano'); return false;" data-etapa="9ano" style="padding: 6px 14px; border-radius: 16px; font-size: 0.78rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer;">
+                                        🎓 Anos Finais (9º Ano)
+                                    </button>
+                                    <button class="matriz-etapa-btn" onclick="switchMatrizEtapa('alfabetizacao'); return false;" data-etapa="alfabetizacao" style="padding: 6px 14px; border-radius: 16px; font-size: 0.78rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer;">
+                                        🔤 Alfabetização (2º Ano)
+                                    </button>
+                                </div>
+                                <input type="text" id="matriz-search-input" oninput="filterMatrizDescritores()" placeholder="Buscar descritor por código ou tema (ex: D1, fração)..." style="height:38px; min-width:280px; font-size:0.82rem; padding:0 12px; background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-md); color:var(--text-primary);">
+                            </div>
+
                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
                                 <!-- Língua Portuguesa -->
                                 <div class="card-outline" style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; background-color: var(--bg-secondary); display: flex; flex-direction: column;">
@@ -1667,12 +1458,81 @@
                                     </div>
                                 </div>
                             </div>
-                            </div>
                         </div>
+
+                        <!-- SUB-VIEW 2: EXPLORADOR DE HABILIDADES DA BNCC (POR DISCIPLINA) -->
+                        <div id="subview-matriz-bncc" class="matriz-subview hidden" style="padding: 20px; display: none;">
+                            <!-- Header de Filtros da BNCC -->
+                            <div class="card margin-bottom-md" style="padding: 16px 20px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); margin-bottom: 20px;">
+                                <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+                                    <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; flex-grow: 1;">
+                                        <!-- Seletor 1: Disciplina -->
+                                        <div>
+                                            <label style="font-size: 0.74rem; font-weight: 800; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                                                1º SELECIONE A DISCIPLINA / COMPONENTE:
+                                            </label>
+                                            <select id="bncc-subject-select" onchange="renderBnccSkillsTable()" class="form-select" style="height: 40px; min-width: 240px; font-size: 0.88rem; font-weight: 700; color: #6366f1; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                                                <option value="Língua Portuguesa" selected>📖 Língua Portuguesa</option>
+                                                <option value="Matemática">📐 Matemática</option>
+                                                <option value="Ciências da Natureza">🌱 Ciências da Natureza</option>
+                                                <option value="História">🏛️ História</option>
+                                                <option value="Geografia">🌍 Geografia</option>
+                                                <option value="Arte">🎨 Arte</option>
+                                                <option value="Educação Física">⚽ Educação Física</option>
+                                                <option value="Língua Inglesa">🇬🇧 Língua Inglesa</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Seletor 2: Ano / Etapa -->
+                                        <div>
+                                            <label style="font-size: 0.74rem; font-weight: 800; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                                                2º SELECIONE O ANO / ETAPA:
+                                            </label>
+                                            <select id="bncc-stage-select" onchange="renderBnccSkillsTable()" class="form-select" style="height: 40px; min-width: 180px; font-size: 0.85rem; font-weight: 600; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                                                <option value="all" selected>Todos os Anos (1º ao 9º)</option>
+                                                <option value="1º Ano">1º Ano EF</option>
+                                                <option value="2º Ano">2º Ano EF (Alfabetização)</option>
+                                                <option value="3º Ano">3º Ano EF</option>
+                                                <option value="4º Ano">4º Ano EF</option>
+                                                <option value="5º Ano">5º Ano EF (SAEB)</option>
+                                                <option value="6º Ano">6º Ano EF</option>
+                                                <option value="7º Ano">7º Ano EF</option>
+                                                <option value="8º Ano">8º Ano EF</option>
+                                                <option value="9º Ano">9º Ano EF (SAEB)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Campo de Busca Rápida -->
+                                    <div style="min-width: 260px;">
+                                        <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">
+                                            BUSCAR HABILIDADE:
+                                        </label>
+                                        <input type="text" id="bncc-search-input" oninput="renderBnccSkillsTable()" placeholder="Buscar por código (ex: EF05LP01) ou texto..." style="height: 40px; width: 100%; font-size: 0.85rem; padding: 0 12px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tabela de Habilidades da BNCC -->
+                            <div class="card" style="padding: 0; overflow-x: auto; border: 1px solid var(--border-color);">
+                                <table class="table-compact" style="width: 100%; border-collapse: collapse; text-align: left;">
+                                    <thead>
+                                        <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-secondary); height: 44px; background: var(--bg-tertiary); font-size: 0.75rem; text-transform: uppercase;">
+                                            <th style="padding: 12px 16px; width: 120px;">CÓDIGO BNCC</th>
+                                            <th style="padding: 12px 16px; width: 110px;">ANO / ETAPA</th>
+                                            <th style="padding: 12px 16px; width: 220px;">UNIDADE / OBJETO</th>
+                                            <th style="padding: 12px 16px;">DESCRIÇÃO DA HABILIDADE</th>
+                                            <th style="padding: 12px 16px; text-align: center; width: 130px;">COMPLEXIDADE</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="bncc-skills-table-body">
+                                        <!-- Injetado via renderBnccSkillsTable() -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </section>
-
 
                 <!-- ==================== CRIAR AVALIAÇÕES TAB (RESTORED ORIGINAL) ==================== -->
 <section id="sec-criar-avaliacoes" class="tab-content">
@@ -4900,12 +4760,6 @@
         </div>
     </div>
 
-    <script src="alunos_db.js"></script>
-    <script src="ideb_publico_db.js"></script>
-    <script src="ideb_maranhao_oficial_2015_2025.js"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js"></script>
-    <script src="app.js?v=fa535716"></script>
-
     <!-- Modal Vincular Professor à Turma -->
     <div id="modal-assign-teacher" class="modal-overlay hidden">
         <div class="modal-content" style="max-width: 480px; width: 90%;">
@@ -5142,555 +4996,283 @@
         </div>
     </div>
 
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>IDEB na Prática - Plataforma de Gestão e Avaliação Educacional</title>
-    <link rel="stylesheet" href="styles.css?v=121ccf7c">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Mermaid.js for ERD -->
-    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-    <!-- Marked.js for Markdown render in AI response -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/dist/marked.min.js"></script>
-    <!-- MathJax for LaTeX Equations rendering -->
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-    <!-- Global Immediate UI Handlers -->
-    <script>
-        function toggleSidebarCollapse() {
-            document.body.classList.toggle('collapsed-sidebar');
-            var isCollapsed = document.body.classList.contains('collapsed-sidebar');
-            localStorage.setItem('sidebar_collapsed', isCollapsed ? 'true' : 'false');
-            var svg = document.getElementById('sidebar-toggle-svg');
-            if (svg) {
-                svg.style.transform = isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)';
-            }
-        }
-
-        function handleGlobalBackNavigation() {
-            // [REMOVED GHOST REF]
-            var diaryView = document.getElementById('class-diary-view');
-            var userProfileView = document.getElementById('user-profile-view');
-
-            if (diaryView && !diaryView.classList.contains('hidden')) {
-                diaryView.classList.add('hidden');
-                if (schoolClassesView) schoolClassesView.classList.remove('hidden');
-                return;
-            }
-
-            if (schoolClassesView && !schoolClassesView.classList.contains('hidden')) {
-                schoolClassesView.classList.add('hidden');
-                var overview = document.getElementById('schools-overview-container');
-                if (overview) overview.classList.remove('hidden');
-                return;
-            }
-
-            if (userProfileView && !userProfileView.classList.contains('hidden')) {
-                userProfileView.classList.add('hidden');
-                var usersList = document.getElementById('users-list-view');
-                if (usersList) usersList.classList.remove('hidden');
-                return;
-            }
-
-            if (typeof window.navigateToTab === 'function') {
-                window.navigateToTab('dashboard');
-            }
-        }
-
-        // Restore sidebar state immediately before render
-        if (localStorage.getItem('sidebar_collapsed') === 'true') {
-            document.documentElement.classList.add('collapsed-sidebar');
-            window.addEventListener('DOMContentLoaded', function() {
-                document.body.classList.add('collapsed-sidebar');
-                var svg = document.getElementById('sidebar-toggle-svg');
-                if (svg) svg.style.transform = 'rotate(180deg)';
-            });
-        }
-    </script>
-
-
-    <script>
-        // Universal Click Handler for Menu Items
-        document.addEventListener('click', function(e) {
-            var item = e.target.closest('.menu-item');
-            if (item) {
-                e.preventDefault();
-                e.stopPropagation();
-                var targetTab = item.getAttribute('data-target');
-                if (targetTab && typeof window.navigateToTab === 'function') {
-                    window.navigateToTab(targetTab);
-                }
-            }
-        });
-    </script>
-
-
-    
-    <!-- Global Standalone Tab Switcher -->
-    <script>
-        function switchTab(targetTab) {
-            if (!targetTab) return;
-            console.log('Navigating to tab:', targetTab);
-            try {
-                // Alias map for backwards compatibility
-                if (targetTab === 'criar-avaliacoes') targetTab = 'sec-criar-avaliacoes';
-                if (targetTab === 'aplicacao-provas') targetTab = 'sec-aplicacao-provas';
-                if (targetTab === 'questions') targetTab = 'banco-questoes';
-                if (targetTab === 'ai-playground') targetTab = 'relatorios-monitoramento';
-
-                localStorage.setItem('lastActiveTab', targetTab);
-                
-                // Hide all main tab contents
-                var allTabs = document.querySelectorAll('.tab-content');
-                for (var i = 0; i < allTabs.length; i++) {
-                    allTabs[i].classList.remove('active');
-                    allTabs[i].classList.add('hidden');
-                    allTabs[i].style.display = 'none';
-                }
-
-                // If navigating away from escuelas-panel, hide inner school view
-                // [REMOVED GHOST REF]
-                var schoolsList = document.getElementById('schools-list-container');
-                if (schoolsList && targetTab === 'escolas-panel') {
-                    schoolsList.classList.remove('hidden');
-                    schoolsList.style.display = 'block';
-                }
-                
-                // Show target tab
-                var targetEl = document.getElementById(targetTab);
-                if (targetEl) {
-                    targetEl.classList.remove('hidden');
-                    targetEl.classList.add('active');
-                    targetEl.style.display = 'block';
-                } else {
-                    console.warn('Target section element not found for tab ID:', targetTab);
-                }
-
-                // Update active states on all sidebar menu items
-                var allItems = document.querySelectorAll('.menu-item');
-                for (var j = 0; j < allItems.length; j++) {
-                    var dt = allItems[j].getAttribute('data-target');
-                    if (dt === targetTab || (dt === 'sec-criar-avaliacoes' && targetTab === 'criar-avaliacoes')) {
-                        allItems[j].classList.add('active');
-                    } else {
-                        allItems[j].classList.remove('active');
-                    }
-                }
-
-                // Trigger tab specific renderers
-                if (targetTab === 'escolas-panel' && typeof renderDbSchools === 'function') {
-                    renderDbSchools();
-                } else if (targetTab === 'alunos-panel' && typeof renderDbStudents === 'function') {
-                    renderDbStudents();
-                } else if (targetTab === 'metas-ideb' && typeof populateIdebGoalsTable === 'function') {
-                    populateIdebGoalsTable();
-                } else if (targetTab === 'ideb-comparativo' && typeof initIdebCitySelector === 'function') {
-                    initIdebCitySelector();
-                }
-
-                if (window.lucide && typeof lucide.createIcons === 'function') {
-                    try { lucide.createIcons(); } catch(err) {}
-                }
-            } catch (e) {
-                console.error('Error switching tab:', e);
-            }
-        }
-        window.switchTab = switchTab;
-        window.switchMainTab = switchTab;
-        window.showTab = switchTab;
-    </script>
-
-
-
-    <script>
-        function switchIdebSubtab(targetTab) {
-            if (!targetTab) return;
-            try {
-                document.querySelectorAll('.ideb-regional-tab-btn').forEach(function(btn) {
-                    if (btn.getAttribute('data-tab') === targetTab) {
-                        btn.classList.add('active');
-                        btn.style.background = '#6366f1';
-                        btn.style.color = '#ffffff';
-                        btn.style.border = 'none';
-                        btn.style.fontWeight = '700';
-                    } else {
-                        btn.classList.remove('active');
-                        btn.style.background = 'var(--bg-secondary)';
-                        btn.style.color = 'var(--text-secondary)';
-                        btn.style.border = '1px solid var(--border-color)';
-                        btn.style.fontWeight = '600';
-                    }
-                });
-
-                document.querySelectorAll('.ideb-regional-tab-content').forEach(function(content) {
-                    content.classList.add('hidden');
-                    content.style.display = 'none';
-                });
-
-                var activeEl = document.getElementById('tab-ideb-' + targetTab);
-                if (activeEl) {
-                    activeEl.classList.remove('hidden');
-                    activeEl.style.display = 'block';
-                }
-
-                if (targetTab === 'painel-principal' && typeof initIdebCitySelector === 'function') {
-                    initIdebCitySelector();
-                } else if (targetTab === 'painel-ures' && typeof render19UresPanel === 'function') {
-                    render19UresPanel();
-                } else if (targetTab === 'ranking-geral-ma' && typeof renderRankingGeralMaTable === 'function') {
-                    renderRankingGeralMaTable();
-                }
-            } catch (e) {
-                console.error('Error switching regional subtab:', e);
-            }
-        }
-        window.switchIdebSubtab = switchIdebSubtab;
-    </script>
-
-</head>
-<body>
-    <!-- Login Screen Split-Screen -->
-    <!-- Login Screen Split-Screen -->
-    <div id="login-screen" class="login-screen">
-        <div class="login-split-container">
-            <!-- Left Panel (Institutional Storytelling & Cinematic Motion Canvas) -->
-            <div class="login-left-panel">
-                <div class="login-left-content">
-                    <div class="login-logo-row">
-                        <div class="login-logo-icon">
-                            <i data-lucide="graduation-cap"></i>
-                        </div>
-                        <div class="login-logo-text">
-                            <h2>IDEB na Prática</h2>
-                            <span>Gestão & Avaliação SaaS</span>
-                        </div>
-                    </div>
-                    
-                    <div class="login-headline-container">
-                        <h1 id="rotating-headline" class="login-headline">Cada décimo do IDEB planejado e conquistado.</h1>
-                    </div>
-
-                    <!-- Cinematic Video Animation Canvas Card -->
-                    <div class="login-motion-card">
-                        <div class="login-motion-header">
-                            <div style="display:flex; align-items:center; gap:8px;">
-                                <span class="pulse-dot"></span>
-                                <span class="login-motion-tag">Evolução do IDEB (Escala 0 a 10)</span>
-                            </div>
-                            <span class="badge badge-success" id="login-card-target-badge" style="background:#2563eb; color:#ffffff; font-weight:700;">Meta Pactuada 2025 • 6.5</span>
-                        </div>
-                        <div class="login-canvas-wrapper" id="login-canvas-container">
-                            <canvas id="login-motion-canvas" width="480" height="200"></canvas>
-                        </div>
-                        <div class="login-motion-caption">
-                            <span id="login-card-caption-text">Série Histórica INEP (2019-2023) • Meta Pactuada pela Rede 2025</span>
-                        </div>
-                    </div>
-
-                    <!-- Seal of official data -->
-                    <div class="login-official-badge">
-                        <i data-lucide="shield-check" style="width: 15px; height: 15px; color: #2563eb;"></i>
-                        <span>Dados oficiais INEP/SAEB (2019-2023) com metas municipais pactuadas</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Panel (Exact Match to Reference Image) -->
-            <div class="login-right-panel">
-                <div class="login-form-container">
-                    <div class="login-form-header">
-                        <h2>Bem-vindo de volta</h2>
-                        <p class="text-muted">Insira suas credenciais para acessar o sistema.</p>
-                    </div>
-
-                    <form id="login-form" class="login-form-body" onsubmit="return false;">
-                        <!-- Input Email -->
-                        <div class="login-input-group">
-                            <i data-lucide="mail" class="login-input-icon"></i>
-                            <input type="email" id="login-email" class="login-input-field" placeholder="E-mail corporativo" required autocomplete="email" value="semed@goncalvesdias.ma.gov.br">
-                        </div>
-
-                        <!-- Input Senha -->
-                        <div class="login-input-group">
-                            <i data-lucide="lock" class="login-input-icon"></i>
-                            <input type="password" id="login-password" class="login-input-field" placeholder="Sua senha" required autocomplete="current-password" value="admin">
-                            <button type="button" id="btn-toggle-login-password" class="login-password-toggle" title="Mostrar/ocultar senha">
-                                <i data-lucide="eye" style="width: 18px; height: 18px;"></i>
-                            </button>
-                        </div>
-
-                        <!-- Options Row: Lembrar-me & Esqueci a senha -->
-                        <div class="login-options-row">
-                            <label class="login-checkbox-label">
-                                <input type="checkbox" id="login-remember-me" checked>
-                                <span>Lembrar-me</span>
-                            </label>
-                            <a href="#" id="link-forgot-password" class="login-forgot-link">Esqueci a senha</a>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <button type="submit" id="btn-login-submit" class="btn-login-primary">
-                            <span>Entrar no Sistema</span>
-                            <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
-                        </button>
-                    </form>
-
-                    <!-- Divider: Ambiente de Testes -->
-                    <div class="login-divider">
-                        <span>AMBIENTE DE TESTES</span>
-                    </div>
-
-                    <!-- Quick Role Selection Grid (2x2) -->
-                    <div class="test-accounts-grid">
-                        <div class="test-account-card" data-email="professor@goncalvesdias.ma.gov.br" data-pass="123" data-role="Professor">
-                            <span class="test-role-title">PROFESSOR</span>
-                            <span class="test-role-email">professor@goncalvesdias.ma.gov.br</span>
-                        </div>
-                        <div class="test-account-card" data-email="diretor@goncalvesdias.ma.gov.br" data-pass="123" data-role="Diretor Escola">
-                            <span class="test-role-title">DIRETOR</span>
-                            <span class="test-role-email">diretor@goncalvesdias.ma.gov.br</span>
-                        </div>
-                        <div class="test-account-card" data-email="admin@goncalvesdias.ma.gov.br" data-pass="admin" data-role="Master Admin">
-                            <span class="test-role-title">ADMIN</span>
-                            <span class="test-role-email">admin@goncalvesdias.ma.gov.br</span>
-                        </div>
-                        <div class="test-account-card active" data-email="semed@goncalvesdias.ma.gov.br" data-pass="admin" data-role="Gestor da Rede">
-                            <span class="test-role-title">SEMED</span>
-                            <span class="test-role-email">semed@goncalvesdias.ma.gov.br</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="login-footer">
-                    <span>© 2026 IDEB na Prática. Sistema de Gestão & Avaliação SaaS.</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="app-container">
-        <!-- Sidebar Navigation -->
-        <aside class="sidebar">
-            <!-- Sidebar Collapse Toggle Button -->
-            <button id="sidebar-collapse-toggle" class="sidebar-collapse-toggle" onclick="toggleSidebarCollapse();" title="Recolher / Expandir Menu" aria-label="Recolher menu">
-                <svg id="sidebar-toggle-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.3s ease; color: var(--text-primary);">
-                    <path d="M15 18l-6-6 6-6"/>
-                </svg>
-            </button>
-            <div class="sidebar-header" style="padding: 20px 24px; border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column;">
-                <div class="logo-row" style="display: flex; align-items: center; gap: 12px; width: 100%;">
-                    <div class="logo-icon">
-                        <i data-lucide="graduation-cap"></i>
-                    </div>
-                    <div class="logo-text">
-                        <h1>IDEB na Prática</h1>
-                        <span>Gestão & Avaliação</span>
-                    </div>
-                    <button class="btn-icon" id="mobile-menu-close" style="display:none; margin-left: auto; background: none; border: none; color: var(--text-primary); cursor: pointer; width: 32px; height: 32px; align-items: center; justify-content: center; border-radius: var(--radius-sm);">
-                        <i data-lucide="x" style="width: 20px; height: 20px;"></i>
-                    </button>
-                </div>
-                <!-- Badge de contexto ativo da rede -->
-                <div class="active-network-badge" style="margin-top: 12px; padding: 6px 12px; border-radius: var(--radius-sm); background: var(--bg-tertiary); border: 1px solid var(--border-color); font-size: 0.7rem; color: var(--purple-light); font-weight: 600; display: flex; align-items: center; gap: 6px;">
-                    <i data-lucide="globe" style="width: 12px; height: 12px;"></i>
-                    <span id="sidebar-active-network-label" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;">Todas as Redes (Multitenant)</span>
-                </div>
-            </div>
-            
-            <nav class="sidebar-menu" style="overflow-y: auto; flex-grow: 1; padding: 16px 12px; display: flex; flex-direction: column; gap: 16px;">
-                <!-- GESTÃO -->
-                <div class="menu-group">
-                    <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Gestão</span>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <a href="javascript:void(0)" onclick="switchTab('dashboard'); return false;" class="menu-item active" data-target="dashboard" data-tooltip="Monitoramento Geral">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-                            <span>Monitoramento Geral</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('escolas-panel'); return false;" class="menu-item" data-target="escolas-panel" data-tooltip="Escolas da Rede">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 8-4 8 4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="M18 5v17"/><path d="M6 5v17"/></svg>
-                            <span>Escolas da Rede</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('alunos-panel'); return false;" class="menu-item" data-target="alunos-panel" data-tooltip="Alunos & Cadastros">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                            <span>Alunos & Cadastros</span>
-                            <span class="badge badge-info" id="badge-count-students" style="margin-left: auto; font-size: 0.65rem; padding: 2px 6px;">1.7k</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- AVALIAÇÃO -->
-                <div class="menu-group">
-                    <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Avaliação</span>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <a href="javascript:void(0)" onclick="switchTab('metas-ideb'); return false;" class="menu-item" data-target="metas-ideb" data-tooltip="Metas e Planos de Desenvolvimento Escolar">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                            <span>Metas e Planos (PDE)</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('ideb-comparativo'); return false;" class="menu-item" data-target="ideb-comparativo" data-tooltip="Comparativo Regional (INEP)">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-                            <span>Comparativo Regional</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('matriz-descritores'); return false;" class="menu-item" data-target="matriz-descritores" data-tooltip="Matriz & Descritores">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
-                            <span>Matriz & Descritores</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('cronograma-habilidades'); return false;" class="menu-item" data-target="cronograma-habilidades" data-tooltip="Cronograma de Habilidades">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>
-                            <span>Cronograma de Habilidades</span>
-                            <span class="badge badge-success" style="margin-left: auto; font-size: 0.65rem; padding: 2px 6px;">Semanal</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('sec-criar-avaliacoes'); return false;" class="menu-item" data-target="sec-criar-avaliacoes" data-tooltip="Criar Avaliações">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M12 14v4"/><path d="M10 16h4"/></svg>
-                            <span>Criar Avaliações</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('sec-aplicacao-provas'); return false;" class="menu-item" data-target="sec-aplicacao-provas" data-tooltip="Aplicação de Provas">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
-                            <span>Aplicação de Provas</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('banco-questoes'); return false;" class="menu-item" data-target="banco-questoes" data-tooltip="Banco de Questões">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><circle cx="10" cy="13" r="1"/><path d="M9.1 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3"/></svg>
-                            <span>Banco de Questões</span>
-                            <span class="badge badge-purple" id="badge-count-questions" style="margin-left: auto; font-size: 0.65rem; padding: 2px 6px;">12</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('relatorios-monitoramento'); return false;" class="menu-item" data-target="relatorios-monitoramento" data-tooltip="Relatórios & Monitoramento">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
-                            <span>Relatórios & Monitoramento</span>
-                        </a>
-
-                        <a href="javascript:void(0)" onclick="switchTab('gestao-pedagogica'); return false;" class="menu-item" data-target="gestao-pedagogica" data-tooltip="Gestão Pedagógica">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M12 18v4"/><path d="M8 22h8"/></svg>
-                            <span>Gestão Pedagógica</span>
-                        </a>
-
-                        <a href="javascript:void(0)" onclick="switchTab('biblioteca-recursos'); return false;" class="menu-item" data-target="biblioteca-recursos" data-tooltip="Biblioteca Pedagógica & Impressão">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-                            <span>Biblioteca Pedagógica</span>
-                            <span class="badge badge-purple" style="margin-left: auto; font-size: 0.65rem; padding: 2px 6px;">A4 / Provas</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- SISTEMA -->
-                <div class="menu-group">
-                    <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Sistema</span>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <a href="javascript:void(0)" onclick="switchTab('doc-tecnica'); return false;" class="menu-item" data-target="doc-tecnica" data-tooltip="Documentação Técnica">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
-                            <span>Documentação Técnica</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('admin-panel'); return false;" class="menu-item" data-target="admin-panel" data-tooltip="Área Administrativa">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
-                            <span>Área Administrativa</span>
-                        </a>
-                    </div>
-                </div>
-            </nav>
-
-            <div class="sidebar-footer" style="position: relative; padding: 12px; border-top: 1px solid var(--border-color); background-color: rgba(0,0,0,0.15);">
-                <div class="user-profile" id="user-menu-btn" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 8px 12px; border-radius: var(--radius-md); transition: var(--transition);">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <div class="avatar" style="background-color: var(--purple); color: white; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.8rem;">AD</div>
-                        <div class="user-info" style="display: flex; flex-direction: column; text-align: left;">
-                            <span class="user-name" style="font-size: 0.8rem; font-weight: 600; color: var(--text-primary);">Gestor Rede</span>
-                            <span class="user-role" style="font-size: 0.65rem; color: var(--text-muted);">Secretaria Exec.</span>
-                        </div>
-                    </div>
-                    <i data-lucide="chevron-up" style="width: 14px; height: 14px; color: var(--text-secondary);"></i>
-                </div>
-                
-                <!-- Dropdown Menu -->
-                <div class="user-dropdown-menu hidden" id="user-profile-dropdown" style="position: absolute; bottom: 65px; left: 12px; right: 12px; background-color: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: var(--shadow); z-index: 110; display: flex; flex-direction: column; padding: 6px; gap: 2px;">
-                    <a href="#" class="dropdown-item" id="menu-switch-network" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--text-primary); transition: var(--transition);" onclick="const sel = document.getElementById('tenant-selector'); if(sel){ sel.focus(); sel.click(); }; return false;">
-                        <i data-lucide="globe" style="width: 14px; height: 14px; color: var(--purple-light);"></i> Alterar Rede
-                    </a>
-                    <a href="#" class="dropdown-item" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--text-primary); transition: var(--transition);" onclick="alert('Funcionalidade simulada!'); return false;">
-                        <i data-lucide="user" style="width: 14px; height: 14px; color: var(--blue-light);"></i> Minha Conta
-                    </a>
-                    <a href="#" class="dropdown-item" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--text-primary); transition: var(--transition);" onclick="alert('Configurações em modo sandbox.'); return false;">
-                        <i data-lucide="sliders" style="width: 14px; height: 14px; color: var(--orange-light);"></i> Configurações
-                    </a>
-                    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 4px 0;">
-                    <a href="#" class="dropdown-item" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--red-light); transition: var(--transition);" onclick="sessionStorage.clear(); location.reload(); return false;">
-                        <i data-lucide="log-out" style="width: 14px; height: 14px;"></i> Sair
-                    </a>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Main Content Area -->
-        <main class="main-content">
-            <!-- Top Navbar -->
-            <header class="top-navbar">
-                <div class="navbar-left" style="display: flex; align-items: center; gap: 12px;">
-                    <button id="btn-global-header-back" class="btn btn-icon" onclick="handleGlobalBackNavigation();" style="width: 38px; height: 38px; border-radius: var(--radius-md); background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Voltar à seção anterior" aria-label="Voltar">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="19" y1="12" x2="5" y2="12"></line>
-                            <polyline points="12 19 5 12 12 5"></polyline>
-                        </svg>
-                    </button>
-                    <button class="btn-icon" id="mobile-menu-toggle" style="display:none; background: none; border: none; color: var(--text-primary); cursor: pointer; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: var(--radius-md);">
-                        <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
-                    </button>
-                    <div>
-                        <h2 id="page-title">Dashboard & Métricas</h2>
-                        <p id="page-subtitle" class="text-muted">Visão geral do desempenho pedagógico e estatísticas operacionais da rede.</p>
-                    </div>
-                </div>
-                <div class="navbar-right" style="display: flex; align-items: center; gap: 8px;">
-                    <!-- Cloud Connection Status Indicator (Hidden as requested) -->
-                    <div id="cloud-sync-indicator" style="display: none !important;">
-                        <span id="cloud-sync-dot"></span>
-                        <span id="cloud-sync-text"></span>
-                    </div>
-
-                    <!-- Notification Button & Dropdown -->
-                    <div style="position: relative;">
-                        <button class="btn btn-icon" id="notification-btn" title="Notificações e Alertas" style="position: relative; width: 38px; height: 38px;">
-                            <i data-lucide="bell"></i>
-                            <span class="badge badge-danger" id="notification-badge" style="position: absolute; top: -3px; right: -3px; font-size: 0.55rem; padding: 2px 5px; border-radius: 50%;">3</span>
-                        </button>
-                        <!-- Dropdown de Notificações -->
-                        <div class="user-dropdown-menu hidden" id="notifications-dropdown" style="position: absolute; top: 46px; right: 0; width: 320px; background-color: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: var(--shadow); z-index: 120; display: flex; flex-direction: column; padding: 12px; gap: 8px;">
-                            <div class="flex-between" style="border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-                                <strong style="font-size: 0.8rem; color: var(--text-primary);">Notificações e Alertas</strong>
-                                <span style="font-size: 0.65rem; color: var(--purple-light); cursor: pointer;" id="btn-clear-notifications">Limpar todos</span>
-                            </div>
-                            <div style="display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto; padding-right: 4px;" id="notifications-list">
-                                <!-- Notificações injetadas via JS -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Theme Toggle -->
-                    <button class="btn btn-icon" id="theme-toggle" title="Alternar Tema" style="width: 38px; height: 38px;">
-                        <i data-lucide="moon"></i>
-                    </button>
-                </div>
-            </header>
-
-            <div class="content-body">
-                <!-- ==================== DASHBOARD TAB ==================== -->
-                
-</section>
-
-                </div>
-            </main>
-        </div>
-    </div>
-
     <!-- Scripts da Aplicação -->
     <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="alunos_db.js"></script>
     <script src="ideb_publico_db.js"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js"></script>
     <script src="app.js?v=fa535716"></script>
+
+    <!-- Modal Completo de Novo Aluno (Prevenções e Campos Obrigatórios) -->
+    <div id="modal-create-student-complete" class="modal-overlay hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 999; display: none; align-items: center; justify-content: center; padding: 16px;">
+        <div class="modal-content" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); padding: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--border-color); background: var(--bg-tertiary);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(37, 99, 235, 0.15); color: #2563eb; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="user-plus" style="width: 20px; height: 20px;"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">Novo Cadastro de Aluno</h3>
+                        <p class="text-sm text-muted" style="margin: 2px 0 0 0;">Ficha cadastral completa com validação de dados da rede de Gonçalves Dias.</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-icon" onclick="closeCreateStudentModal(); return false;" style="background: none; border: none; cursor: pointer; color: var(--text-muted); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+                </button>
+            </div>
+
+            <form id="form-create-student-complete" onsubmit="handleSaveNewStudent(event); return false;" style="padding: 24px; display: flex; flex-direction: column; gap: 18px;">
+                <!-- Nome Completo -->
+                <div>
+                    <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 6px;">
+                        Nome Completo do Aluno <span style="color: #ef4444;">*</span>
+                    </label>
+                    <input type="text" id="student-new-name" class="form-input-text" required placeholder="Ex: Lucas Gabriel da Silva" style="width: 100%; height: 40px; font-size: 0.88rem; padding: 0 12px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                    <span id="student-name-error" style="font-size: 0.72rem; color: #ef4444; display: none; margin-top: 4px;">Informe o nome completo (nome e sobrenome).</span>
+                </div>
+
+                <!-- Grid: Data de Nascimento & CPF -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                    <div>
+                        <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 6px;">
+                            Data de Nascimento <span style="color: #ef4444;">*</span>
+                        </label>
+                        <input type="date" id="student-new-nascimento" class="form-input-text" required style="width: 100%; height: 40px; font-size: 0.85rem; padding: 0 12px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 6px;">
+                            CPF do Aluno <span style="color: #ef4444;">*</span>
+                        </label>
+                        <input type="text" id="student-new-cpf" class="form-input-text" required placeholder="000.000.000-00" maxlength="14" oninput="maskCpfInput(this)" style="width: 100%; height: 40px; font-size: 0.88rem; padding: 0 12px; font-family: var(--font-mono); background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                    </div>
+                </div>
+
+                <!-- Grid: Filiação (Mãe e Pai) -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                    <div>
+                        <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 6px;">
+                            Nome da Mãe / Responsável Legal <span style="color: #ef4444;">*</span>
+                        </label>
+                        <input type="text" id="student-new-mae" class="form-input-text" required placeholder="Ex: Maria das Graças Silva" style="width: 100%; height: 40px; font-size: 0.85rem; padding: 0 12px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 6px;">
+                            Nome do Pai
+                        </label>
+                        <input type="text" id="student-new-pai" class="form-input-text" placeholder="Nome do pai ou 'Não declarado'" style="width: 100%; height: 40px; font-size: 0.85rem; padding: 0 12px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                    </div>
+                </div>
+
+                <!-- Escola Vinculada -->
+                <div>
+                    <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 6px;">
+                        Unidade Escolar de Lotação <span style="color: #ef4444;">*</span>
+                    </label>
+                    <select id="student-new-escola" class="form-select" required style="width: 100%; height: 40px; font-size: 0.88rem; font-weight: 600; padding: 0 12px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                        <option value="">Selecione a Unidade Escolar de Gonçalves Dias...</option>
+                        <option value="UI JOSE CORREA LIMA">UI JOSE CORREA LIMA</option>
+                        <option value="UI EMILIO MURAD">UI EMILIO MURAD</option>
+                        <option value="U I BASILIO ALVES">U I BASILIO ALVES</option>
+                        <option value="UNIDADE INTEGRADA ALDENORA ARAUJO CRUZ">UNIDADE INTEGRADA ALDENORA ARAUJO CRUZ</option>
+                        <option value="UNIDADE INTEGRADA JOSE GONCALVES DIAS">UNIDADE INTEGRADA JOSE GONCALVES DIAS</option>
+                        <option value="UNIDADE ESCOLAR ANISIO GOMES">UNIDADE ESCOLAR ANISIO GOMES</option>
+                        <option value="UI ANTONIO GONCALVES DIAS">UI ANTONIO GONCALVES DIAS</option>
+                        <option value="UE ANITA FURTADO">UE ANITA FURTADO</option>
+                        <option value="UE VEREADOR LEONARDO FERREIRA LIMA">UE VEREADOR LEONARDO FERREIRA LIMA</option>
+                        <option value="UE RAIMUNDO DOS REIS DA SILVA">UE RAIMUNDO DOS REIS DA SILVA</option>
+                        <option value="UE PREFEITA ROSITA SOUSA DIAS">UE PREFEITA ROSITA SOUSA DIAS</option>
+                        <option value="U I ROSA FRANCISCA DE MELO">U I ROSA FRANCISCA DE MELO</option>
+                        <option value="CENTRO EDUCACIONAL SEMENTES DO AMANHA">CENTRO EDUCACIONAL SEMENTES DO AMANHA</option>
+                        <option value="CENTRO DE ENSINO SULAMITA LUCIO DO NASCIMENTO">CENTRO DE ENSINO SULAMITA LUCIO DO NASCIMENTO</option>
+                    </select>
+                </div>
+
+                <!-- Grid: Etapa & Turma & Turno -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+                    <div>
+                        <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 6px;">
+                            Etapa / Série <span style="color: #ef4444;">*</span>
+                        </label>
+                        <select id="student-new-etapa" class="form-select" required style="width: 100%; height: 40px; font-size: 0.85rem; padding: 0 10px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                            <option value="2º Ano">2º Ano EF (Alfabetização)</option>
+                            <option value="3º Ano">3º Ano EF</option>
+                            <option value="4º Ano">4º Ano EF</option>
+                            <option value="5º Ano" selected>5º Ano EF (SAEB)</option>
+                            <option value="6º Ano">6º Ano EF</option>
+                            <option value="7º Ano">7º Ano EF</option>
+                            <option value="8º Ano">8º Ano EF</option>
+                            <option value="9º Ano">9º Ano EF (SAEB)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 6px;">
+                            Turma <span style="color: #ef4444;">*</span>
+                        </label>
+                        <select id="student-new-turma" class="form-select" required style="width: 100%; height: 40px; font-size: 0.85rem; padding: 0 10px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                            <option value="Turma A" selected>Turma A</option>
+                            <option value="Turma B">Turma B</option>
+                            <option value="Turma C">Turma C</option>
+                            <option value="Turma D">Turma D</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 6px;">
+                            Turno
+                        </label>
+                        <select id="student-new-turno" class="form-select" style="width: 100%; height: 40px; font-size: 0.85rem; padding: 0 10px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                            <option value="Matutino" selected>Matutino</option>
+                            <option value="Vespertino">Vespertino</option>
+                            <option value="Integral">Integral</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Acessibilidade / NEE -->
+                <div>
+                    <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 6px;">
+                        Necessidades Educacionais Especiais (NEE / Acessibilidade)
+                    </label>
+                    <select id="student-new-nee" class="form-select" style="width: 100%; height: 40px; font-size: 0.85rem; padding: 0 12px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                        <option value="">Sem NEE (Aluno Regular)</option>
+                        <option value="Autismo (TEA)">Autismo (TEA)</option>
+                        <option value="Baixa Visão">Baixa Visão</option>
+                        <option value="Deficiência Auditiva">Deficiência Auditiva</option>
+                        <option value="Deficiência Física / Mobilidade Reduzida">Deficiência Física / Mobilidade Reduzida</option>
+                        <option value="TDAH / Altas Habilidades">TDAH / Altas Habilidades</option>
+                    </select>
+                </div>
+
+                <!-- Modal Footer -->
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+                    <button type="button" class="btn btn-outline" onclick="closeCreateStudentModal(); return false;" style="height: 40px; padding: 0 18px;">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary" style="height: 40px; padding: 0 24px; font-weight: 700; background: #2563eb; border-color: #2563eb; display: flex; align-items: center; gap: 8px;">
+                        <i data-lucide="check" style="width: 16px; height: 16px;"></i>
+                        <span>Cadastrar e Matricular Aluno</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Modal Completo de Gestão de PDE (Manual, IA, e PDF) -->
+    <div id="modal-pde-manager" class="modal-overlay hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 999; display: none; align-items: center; justify-content: center; padding: 16px;">
+        <div class="modal-content" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); padding: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--border-color); background: var(--bg-tertiary);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(99, 102, 241, 0.15); color: #6366f1; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="file-edit" style="width: 20px; height: 20px;"></i>
+                    </div>
+                    <div>
+                        <h3 id="pde-modal-school-title" style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">Plano de Desenvolvimento Escolar (PDE)</h3>
+                        <p id="pde-modal-school-meta" class="text-sm text-muted" style="margin: 2px 0 0 0;">Definição de intervenção pedagógica e recomposição de aprendizagem.</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-icon" onclick="closePdeManagerModal(); return false;" style="background: none; border: none; cursor: pointer; color: var(--text-muted); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+                </button>
+            </div>
+
+            <form id="form-pde-manager" onsubmit="handleSavePdeManagerForm(event); return false;" style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+                <input type="hidden" id="pde-manager-school-id">
+
+                <!-- Abas de Modo: Manual, IA Automatizada, Base PDF -->
+                <div style="display: flex; gap: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                    <button type="button" class="btn btn-outline btn-sm active" id="btn-pde-mode-manual" onclick="switchPdeModalMode('manual')" style="font-weight: 700;">
+                        ✍️ Preenchimento Manual
+                    </button>
+                    <button type="button" class="btn btn-outline btn-sm" id="btn-pde-mode-ai" onclick="switchPdeModalMode('ai')" style="font-weight: 700;">
+                        🤖 Sugestão Inteligente (IA)
+                    </button>
+                    <button type="button" class="btn btn-outline btn-sm" id="btn-pde-mode-pdf" onclick="switchPdeModalMode('pdf')" style="font-weight: 700;">
+                        📄 Base / Arquivo PDF
+                    </button>
+                </div>
+
+                <!-- Grid: Foco do Indicador & Meta IDEB -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                    <div>
+                        <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 6px;">
+                            Eixo Prioritário de Intervenção <span style="color: #ef4444;">*</span>
+                        </label>
+                        <select id="pde-manager-indicator" class="form-select" required style="width: 100%; height: 40px; font-size: 0.85rem; padding: 0 10px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                            <option value="Recomposição de Fluência Leitora (D1 a D6)">Recomposição de Fluência Leitora (D1 a D6)</option>
+                            <option value="Operações & Resolução de Problemas (D13 a D28)">Operações & Resolução de Problemas (D13 a D28)</option>
+                            <option value="Interpretação e Inferência Textual (D3, D4, D6)">Interpretação e Inferência Textual (D3, D4, D6)</option>
+                            <option value="Geometria e Espaço & Forma (D1 a D11)">Geometria e Espaço & Forma (D1 a D11)</option>
+                            <option value="Fluxo Escolar e Redução de Abandono">Fluxo Escolar e Redução de Abandono</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 6px;">
+                            Meta Projetada Pactuada (IDEB) <span style="color: #ef4444;">*</span>
+                        </label>
+                        <input type="number" step="0.1" min="1.0" max="10.0" id="pde-manager-target-score" class="form-input-text" required placeholder="Ex: 5.6" style="width: 100%; height: 40px; font-size: 0.95rem; font-weight: 800; padding: 0 12px; font-family: var(--font-mono); background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: #6366f1;">
+                    </div>
+                </div>
+
+                <!-- Grid: Responsável & Prazo -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                    <div>
+                        <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 6px;">
+                            Coordenador / Responsável Legal <span style="color: #ef4444;">*</span>
+                        </label>
+                        <input type="text" id="pde-manager-responsible" class="form-input-text" required placeholder="Ex: Coordenador Pedagógico / Direção" style="width: 100%; height: 40px; font-size: 0.85rem; padding: 0 12px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 6px;">
+                            Prazo de Conclusão das Ações <span style="color: #ef4444;">*</span>
+                        </label>
+                        <input type="date" id="pde-manager-deadline" class="form-input-text" required style="width: 100%; height: 40px; font-size: 0.85rem; padding: 0 12px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                    </div>
+                </div>
+
+                <!-- Painel Condicional para Modo PDF -->
+                <div id="pde-panel-pdf-upload" style="display: none; background: rgba(99, 102, 241, 0.06); border: 1px dashed #6366f1; border-radius: var(--radius-md); padding: 14px; text-align: center;">
+                    <i data-lucide="file-text" style="width: 28px; height: 28px; color: #6366f1; margin-bottom: 6px;"></i>
+                    <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">Vincular Arquivo PDF de Base do PDE</div>
+                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 2px 0 10px 0;">Selecione um arquivo PDF de diretrizes da escola ou plano de ação homologado.</p>
+                    <input type="file" id="pde-manager-file-pdf" accept=".pdf" class="form-input-text" style="font-size: 0.78rem;">
+                </div>
+
+                <!-- Ações de Intervenção Pedagógica (Textarea) -->
+                <div>
+                    <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 6px;">
+                        Detalhamento das Ações e Estratégias Pedagógicas <span style="color: #ef4444;">*</span>
+                    </label>
+                    <textarea id="pde-manager-actions" class="form-input-text" rows="4" required placeholder="Descreva as intervenções (ex: 1. Aulões quinzenais de recomposição; 2. Monitoramento de fluência leitora com rubricas semanais; 3. Plantões pedagógicos para alunos abaixo do nível adequado)..." style="width: 100%; font-size: 0.85rem; padding: 10px 12px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);"></textarea>
+                </div>
+
+                <!-- Status de Execução -->
+                <div>
+                    <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 6px;">
+                        Status do Plano de Desenvolvimento
+                    </label>
+                    <select id="pde-manager-status" class="form-select" style="width: 100%; height: 40px; font-size: 0.85rem; padding: 0 10px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                        <option value="Em Execução" selected>🟡 Em Execução (Ações em Andamento)</option>
+                        <option value="Em Planejamento">🔵 Em Planejamento (Aguardando Aprovação)</option>
+                        <option value="Concluído com Sucesso">🟢 Concluído com Sucesso (Meta Alcançada)</option>
+                    </select>
+                </div>
+
+                <!-- Footer do Modal -->
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+                    <button type="button" class="btn btn-outline" onclick="closePdeManagerModal(); return false;" style="height: 40px; padding: 0 18px;">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary" style="height: 40px; padding: 0 24px; font-weight: 700; background: #6366f1; border-color: #6366f1; display: flex; align-items: center; gap: 8px;">
+                        <i data-lucide="check-circle" style="width: 16px; height: 16px;"></i>
+                        <span>Salvar Plano de Intervenção (PDE)</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </body>
 </html>
