@@ -16046,3 +16046,294 @@ if (document.readyState === 'loading') {
     window.switchMainTab = switchTab;
     window.showTab = switchTab;
     window.navigateToTab = switchTab;
+
+
+// =========================================================================
+// GESTÃO ESPECÍFICA DA ESCOLA (VISÃO INTERNA: VISÃO GERAL, PROFESSORES, TURMAS, ALUNOS)
+// =========================================================================
+
+window.currentSelectedSchoolDetail = "UI BASILIO ALVES";
+
+window.openSchoolDetailView = function openSchoolDetailView(schoolName, inep, zone, phone, director) {
+    window.currentSelectedSchoolDetail = schoolName || "UI BASILIO ALVES";
+    
+    const overview = document.getElementById('schools-overview-container');
+    const detail = document.getElementById('school-detail-view');
+    
+    if (overview) {
+        overview.classList.add('hidden');
+        overview.style.display = 'none';
+    }
+    
+    if (detail) {
+        detail.classList.remove('hidden');
+        detail.style.display = 'block';
+    }
+    
+    const nameEl = document.getElementById('school-detail-name');
+    const badgeEl = document.getElementById('school-detail-badge');
+    const metaEl = document.getElementById('school-detail-meta');
+    
+    if (nameEl) nameEl.textContent = window.currentSelectedSchoolDetail;
+    if (badgeEl) badgeEl.textContent = zone || 'Rede Municipal';
+    if (metaEl) metaEl.textContent = `INEP: ${inep || '21128120'} • Direção: ${director || 'Gestão Escolar'} • Fone: ${phone || '-'}`;
+    
+    switchSchoolInnerTab('turmas');
+    safeCreateIcons();
+};
+
+window.backToSchoolsList = function backToSchoolsList() {
+    const overview = document.getElementById('schools-overview-container');
+    const detail = document.getElementById('school-detail-view');
+    
+    if (detail) {
+        detail.classList.add('hidden');
+        detail.style.display = 'none';
+    }
+    
+    if (overview) {
+        overview.classList.remove('hidden');
+        overview.style.display = 'block';
+    }
+    
+    if (typeof renderDbSchools === 'function') renderDbSchools();
+    safeCreateIcons();
+};
+
+window.switchSchoolInnerTab = function switchSchoolInnerTab(tabName) {
+    const btns = document.querySelectorAll('.school-nav-tab-btn');
+    btns.forEach(btn => {
+        const dt = btn.getAttribute('data-tab');
+        if (dt === tabName) {
+            btn.classList.add('active');
+            btn.style.color = '#10b981';
+            btn.style.background = 'rgba(16, 185, 129, 0.12)';
+            btn.style.border = '1px solid rgba(16, 185, 129, 0.25)';
+            btn.style.fontWeight = '700';
+        } else {
+            btn.classList.remove('active');
+            btn.style.color = 'var(--text-secondary)';
+            btn.style.background = 'transparent';
+            btn.style.border = 'none';
+            btn.style.fontWeight = '600';
+        }
+    });
+
+    const container = document.getElementById('school-inner-tab-content-container');
+    if (!container) return;
+
+    const school = window.currentSelectedSchoolDetail || "UI BASILIO ALVES";
+
+    if (tabName === 'professores') {
+        container.innerHTML = `
+            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
+                <div class="flex-between flex-wrap gap-md" style="margin-bottom: 16px;">
+                    <div>
+                        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0;">Professores da Escola</h3>
+                        <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">Corpo docente vinculado a ${school}</p>
+                    </div>
+                    <button class="btn btn-primary" style="display:flex; align-items:center; gap:6px; font-size:0.82rem;">
+                        <i data-lucide="plus" style="width:15px; height:15px;"></i> Vincular Professor
+                    </button>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <div style="padding: 12px 16px; background: var(--bg-tertiary); border-radius: var(--radius-md); display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="font-weight:700; color:var(--text-primary);">Profa. Ana Carolina Lima</div>
+                            <div style="font-size:0.78rem; color:var(--text-secondary);">Língua Portuguesa • 5º Ano A, 5º Ano B</div>
+                        </div>
+                        <span style="font-size:0.75rem; background:#dcfce7; color:#166534; padding:3px 8px; border-radius:10px; font-weight:700;">Ativo</span>
+                    </div>
+                    <div style="padding: 12px 16px; background: var(--bg-tertiary); border-radius: var(--radius-md); display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="font-weight:700; color:var(--text-primary);">Prof. Carlos Silva</div>
+                            <div style="font-size:0.78rem; color:var(--text-secondary);">Matemática • 5º Ano A, 9º Ano A</div>
+                        </div>
+                        <span style="font-size:0.75rem; background:#dcfce7; color:#166534; padding:3px 8px; border-radius:10px; font-weight:700;">Ativo</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (tabName === 'alunos') {
+        container.innerHTML = `
+            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
+                <div class="flex-between flex-wrap gap-md" style="margin-bottom: 16px;">
+                    <div>
+                        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0;">Estudantes Matriculados</h3>
+                        <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">Alunos frequentes em ${school}</p>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" placeholder="Buscar aluno..." style="padding:6px 12px; border-radius:var(--radius-md); border:1px solid var(--border-color); background:var(--bg-tertiary); font-size:0.82rem; color:var(--text-primary);">
+                    </div>
+                </div>
+                <div style="padding:16px; background:var(--bg-tertiary); border-radius:var(--radius-md); text-align:center; color:var(--text-secondary); font-size:0.88rem;">
+                    Exibindo alunos cadastrados nesta unidade escolar. Para listagem geral de 1.758 alunos da rede, acesse a aba "Alunos & Cadastros".
+                </div>
+            </div>
+        `;
+    } else if (tabName === 'visao-geral') {
+        container.innerHTML = `
+            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
+                <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0 0 16px 0;">Indicadores da Escola: ${school}</h3>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:14px; margin-bottom:20px;">
+                    <div style="padding:14px; background:var(--bg-tertiary); border-radius:var(--radius-md); text-align:center;">
+                        <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:700;">IDEB 2023</div>
+                        <div style="font-size:1.4rem; font-weight:800; color:#3b82f6; margin:4px 0;">4.8</div>
+                        <div style="font-size:0.72rem; color:#10b981;">Meta Superada</div>
+                    </div>
+                    <div style="padding:14px; background:var(--bg-tertiary); border-radius:var(--radius-md); text-align:center;">
+                        <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:700;">PROJEÇÃO 2026</div>
+                        <div style="font-size:1.4rem; font-weight:800; color:#8b5cf6; margin:4px 0;">5.2</div>
+                        <div style="font-size:0.72rem; color:var(--text-secondary);">Meta Pactuada</div>
+                    </div>
+                    <div style="padding:14px; background:var(--bg-tertiary); border-radius:var(--radius-md); text-align:center;">
+                        <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:700;">TURMAS ATIVAS</div>
+                        <div style="font-size:1.4rem; font-weight:800; color:#10b981; margin:4px 0;">8</div>
+                        <div style="font-size:0.72rem; color:var(--text-secondary);">Anos Iniciais e Finais</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else {
+        // Turmas (IMAGEM 2)
+        container.innerHTML = `
+            <div>
+                <!-- Top Actions Bar -->
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 16px; flex-wrap: wrap;">
+                    <div style="position: relative; flex-grow: 1; max-width: 450px;">
+                        <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted);"></i>
+                        <input type="text" placeholder="Buscar por nome..." style="width: 100%; padding: 8px 14px 8px 38px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); font-size: 0.85rem;">
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <button class="btn btn-outline" style="display: flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 600; padding: 8px 14px; background: var(--bg-secondary);">
+                            <i data-lucide="file-text" style="width: 15px; height: 15px;"></i> Relatórios
+                        </button>
+                        <button class="btn btn-primary" style="display: flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 700; padding: 8px 16px;">
+                            <i data-lucide="plus" style="width: 15px; height: 15px;"></i> + Add Turma
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3 Metric Cards (IMAGEM 2) -->
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;">
+                    <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; text-align: center;">
+                        <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(59, 130, 246, 0.12); color: #3b82f6; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto;">
+                            <i data-lucide="layout-grid" style="width: 18px; height: 18px;"></i>
+                        </div>
+                        <div style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary); margin-bottom: 2px;">6</div>
+                        <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">TOTAL DE TURMAS</div>
+                    </div>
+
+                    <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; text-align: center;">
+                        <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(139, 92, 246, 0.12); color: #8b5cf6; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto;">
+                            <i data-lucide="calendar" style="width: 18px; height: 18px;"></i>
+                        </div>
+                        <div style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary); margin-bottom: 2px;">6</div>
+                        <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">TURMAS 2026</div>
+                    </div>
+
+                    <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; text-align: center;">
+                        <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(16, 185, 129, 0.12); color: #10b981; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto;">
+                            <i data-lucide="check-circle" style="width: 18px; height: 18px;"></i>
+                        </div>
+                        <div style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary); margin-bottom: 2px;">6</div>
+                        <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">TURMAS ATIVAS</div>
+                    </div>
+                </div>
+
+                <!-- Tabela de Turmas da Escola (IMAGEM 2) -->
+                <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 0; overflow: hidden;">
+                    <div class="table-responsive">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.86rem;">
+                            <thead style="background: var(--bg-tertiary); color: var(--text-secondary); font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">
+                                <tr>
+                                    <th style="padding: 12px 20px;">TURMA</th>
+                                    <th style="padding: 12px 16px;">ESCOLA</th>
+                                    <th style="padding: 12px 16px;">TURNO</th>
+                                    <th style="padding: 12px 16px; text-align: center;">STATUS</th>
+                                    <th style="padding: 12px 20px; text-align: center;">AÇÕES</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid var(--border-color);">
+                                    <td style="padding: 14px 20px; font-weight: 700; color: var(--text-primary);">5º ANO "A"</td>
+                                    <td style="padding: 14px 16px; color: var(--text-secondary);">${school}</td>
+                                    <td style="padding: 14px 16px; color: var(--text-secondary);">Matutino</td>
+                                    <td style="padding: 14px 16px; text-align: center;"><span style="background:#dcfce7; color:#166534; font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:12px;">Ativa</span></td>
+                                    <td style="padding: 14px 20px; text-align: center;">
+                                        <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 10px;">Ver Diário</button>
+                                    </td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--border-color);">
+                                    <td style="padding: 14px 20px; font-weight: 700; color: var(--text-primary);">5º ANO "B"</td>
+                                    <td style="padding: 14px 16px; color: var(--text-secondary);">${school}</td>
+                                    <td style="padding: 14px 16px; color: var(--text-secondary);">Vespertino</td>
+                                    <td style="padding: 14px 16px; text-align: center;"><span style="background:#dcfce7; color:#166534; font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:12px;">Ativa</span></td>
+                                    <td style="padding: 14px 20px; text-align: center;">
+                                        <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 10px;">Ver Diário</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 14px 20px; font-weight: 700; color: var(--text-primary);">9º ANO "A"</td>
+                                    <td style="padding: 14px 16px; color: var(--text-secondary);">${school}</td>
+                                    <td style="padding: 14px 16px; color: var(--text-secondary);">Matutino</td>
+                                    <td style="padding: 14px 16px; text-align: center;"><span style="background:#dcfce7; color:#166534; font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:12px;">Ativa</span></td>
+                                    <td style="padding: 14px 20px; text-align: center;">
+                                        <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 10px;">Ver Diário</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    safeCreateIcons();
+};
+
+// Modificar renderDbSchools para ter o botão 'Ver Escola' acionando openSchoolDetailView
+window.renderDbSchools = function renderDbSchools() {
+    const tbody = document.getElementById('db-schools-table-body');
+    if (!tbody) return;
+
+    const schools = window.OFFICIAL_NETWORK_SCHOOLS || [];
+    const searchVal = ((document.getElementById('db-school-search') || {}).value || '').toLowerCase().trim();
+
+    const filtered = schools.filter(s => {
+        if (!searchVal) return true;
+        return (s.nome || '').toLowerCase().includes(searchVal) ||
+               (s.inep || '').includes(searchVal) ||
+               (s.director || '').toLowerCase().includes(searchVal);
+    });
+
+    if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="padding:24px; text-align:center; color:var(--text-muted);">Nenhuma escola encontrada com os filtros atuais.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = filtered.map(s => {
+        return `
+            <tr style="border-bottom: 1px solid var(--border-color); transition: background 0.15s;">
+                <td style="padding: 14px 20px;">
+                    <div style="font-weight: 700; color: var(--text-primary);">${s.nome}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Rede Municipal • Gonçalves Dias</div>
+                </td>
+                <td style="padding: 14px 16px; font-family: monospace; font-weight: 600; color: #6366f1;">${s.inep}</td>
+                <td style="padding: 14px 16px;">
+                    <span style="font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 10px; background: ${s.zone === 'Sede Urbana' ? 'rgba(59, 130, 246, 0.12)' : 'rgba(16, 185, 129, 0.12)'}; color: ${s.zone === 'Sede Urbana' ? '#3b82f6' : '#10b981'};">${s.zone}</span>
+                </td>
+                <td style="padding: 14px 16px; color: var(--text-primary); font-weight: 500;">${s.director}</td>
+                <td style="padding: 14px 16px; color: var(--text-secondary);">${s.phone || '-'}</td>
+                <td style="padding: 14px 20px; text-align: center;">
+                    <button onclick="openSchoolDetailView('${s.nome.replace(/'/g, "\\'")}', '${s.inep}', '${s.zone}', '${s.phone}', '${s.director.replace(/'/g, "\\'")}')" class="btn btn-outline" style="font-size: 0.78rem; font-weight: 700; padding: 5px 12px; display: inline-flex; align-items: center; gap: 5px; color: #6366f1; border-color: rgba(99, 102, 241, 0.3);">
+                        <i data-lucide="eye" style="width: 14px; height: 14px;"></i> Ver Escola
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+
+    safeCreateIcons();
+};

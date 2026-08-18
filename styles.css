@@ -4420,3 +4420,43 @@ body.collapsed-sidebar .sidebar-footer .user-info {
 .hidden {
     display: none !important;
 }
+
+
+/* ==========================================================================
+   ELIMINAÇÃO ABSOLUTA DE ESPAÇO EM BRANCO NO TOPO E ISOLAMENTO DE ROTAS
+   ========================================================================== */
+html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+}
+
+.main-content {
+    margin-left: 260px !important;
+    min-height: 100vh !important;
+    padding: 20px 28px !important;
+    background-color: var(--bg-primary) !important;
+    position: relative !important;
+    box-sizing: border-box !important;
+}
+
+.content-body {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+.tab-content {
+    display: none !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+.tab-content.active {
+    display: block !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+.hidden {
+    display: none !important;
+}
