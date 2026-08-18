@@ -2068,119 +2068,324 @@
                 </section>
 
                 <!-- ==================== CRONOGRAMA ANUAL DE HABILIDADES (LAYOUT SCREENSHOT 2026) ==================== -->
+                                <!-- ==================== CRONOGRAMA & PLANEJAMENTO ESCOLAR ==================== -->
                 <section id="cronograma-habilidades" class="tab-content">
-                    
-                    <!-- Card do Calendário Oficial (Visual Idêntico ao Screenshot) -->
-                    <div class="card margin-bottom-lg" style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-sm);">
+                    <div class="card card-full margin-bottom-lg" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 0; overflow: hidden;">
                         
-                        <!-- Topo do Calendário: Título "Mês de 2026" + Controles < [mês v] > -->
-                        <div class="flex-between flex-wrap gap-md" style="align-items: center; margin-bottom: 24px;">
+                        <!-- Top Header com Título, Seletor de Visão e Botão Principal de Agendamento -->
+                        <div style="padding: 20px 24px; border-bottom: 1px solid var(--border-color); background: var(--bg-primary); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
                             <div>
-                                <h2 id="cal-month-year-heading" style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin: 0;">
-                                    Agosto de 2026
+                                <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(99, 102, 241, 0.1); color:#6366f1; padding:3px 10px; border-radius:12px; font-size:0.75rem; font-weight:700; margin-bottom:6px;">
+                                    <i data-lucide="calendar-check" style="width:13px; height:13px;"></i> AGENDA & ROTINA PEDAGÓGICA
+                                </div>
+                                <h2 style="margin: 0; font-size: 1.4rem; font-weight: 800; color: var(--text-primary);">
+                                    Cronograma e Planejamento Escolar
                                 </h2>
-                                <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 4px 0 0 0;">
-                                    Planejamento diário de habilidades da rede. Bolinhas <span style="color:#ef4444; font-weight:700;">● Vermelhas</span> = Pendentes, <span style="color:#22c55e; font-weight:700;">● Verdes</span> = Trabalhadas.
+                                <p style="margin: 4px 0 0 0; font-size: 0.82rem; color: var(--text-secondary);">
+                                    Planeje aulas, vincule habilidades curriculares da BNCC e faça o acompanhamento diário com facilidade.
                                 </p>
                             </div>
 
+                            <!-- Botões de Ação e Segmented Control de Visão -->
+                            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                                <!-- Segmented Control: [ Visão Mensal | Visão Semanal ] -->
+                                <div class="schedule-view-switcher" style="display: inline-flex; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 30px; padding: 3px;">
+                                    <button type="button" id="btn-view-monthly" onclick="switchScheduleMainView('monthly'); return false;" class="schedule-tab-btn active" style="display: flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: 24px; font-size: 0.82rem; font-weight: 700; border: none; cursor: pointer; transition: all 0.2s ease;">
+                                        <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
+                                        <span>Visão Mensal</span>
+                                    </button>
+                                    <button type="button" id="btn-view-weekly" onclick="switchScheduleMainView('weekly'); return false;" class="schedule-tab-btn" style="display: flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: 24px; font-size: 0.82rem; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s ease; background: transparent; color: var(--text-secondary);">
+                                        <i data-lucide="layout-grid" style="width: 14px; height: 14px;"></i>
+                                        <span>Visão Semanal (Grade)</span>
+                                    </button>
+                                </div>
+
+                                <!-- CTA Principal: + Novo Planejamento / Agendar Aula -->
+                                <button type="button" class="btn btn-primary" onclick="openSchedulePlannerDrawer(); return false;" style="display: flex; align-items: center; gap: 8px; font-weight: 700; padding: 9px 18px; border-radius: var(--radius-md); background: linear-gradient(135deg, #4f46e5, #6366f1); border: none; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);">
+                                    <i data-lucide="plus-circle" style="width: 16px; height: 16px;"></i>
+                                    <span>+ Novo Planejamento / Agendar Aula</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Barra Superior de Filtros e Navegação Temporal -->
+                        <div style="padding: 14px 24px; background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+                            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; flex: 1;">
+                                <!-- Filtro Etapa / Ano -->
+                                <div>
+                                    <label style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 2px;">ETAPA / ANO</label>
+                                    <select id="cal-filter-stage-v2" onchange="renderActiveScheduleView();" class="form-select" style="height: 36px; font-size: 0.82rem; padding: 0 10px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-weight: 600;">
+                                        <option value="2º Ano" selected>2º Ano (Alfabetização - SEAMA)</option>
+                                        <option value="5º Ano">5º Ano (Anos Iniciais - SAEB)</option>
+                                        <option value="9º Ano">9º Ano (Anos Finais - SAEB)</option>
+                                        <option value="all">Todas as Etapas</option>
+                                    </select>
+                                </div>
+
+                                <!-- Filtro Disciplina -->
+                                <div>
+                                    <label style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 2px;">DISCIPLINA</label>
+                                    <select id="cal-filter-subject-v2" onchange="renderActiveScheduleView();" class="form-select" style="height: 36px; font-size: 0.82rem; padding: 0 10px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-weight: 600;">
+                                        <option value="all" selected>Todas as Disciplinas</option>
+                                        <option value="Língua Portuguesa">📖 Língua Portuguesa</option>
+                                        <option value="Matemática">📐 Matemática</option>
+                                        <option value="Ciências da Natureza">🌱 Ciências da Natureza</option>
+                                        <option value="História">🏛️ História</option>
+                                        <option value="Geografia">🌍 Geografia</option>
+                                    </select>
+                                </div>
+
+                                <!-- Filtro Escola / Turma -->
+                                <div style="min-width: 220px;">
+                                    <label style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 2px;">ESCOLA & TURMA</label>
+                                    <select id="cal-filter-school-v2" onchange="renderActiveScheduleView();" class="form-select" style="height: 36px; width: 100%; font-size: 0.82rem; padding: 0 10px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-weight: 600;">
+                                        <option value="all" selected>Todas as Escolas de Gonçalves Dias</option>
+                                        <option value="UI JOSE CORREA LIMA">UI JOSE CORREA LIMA (2º Ano A)</option>
+                                        <option value="U I BASILIO ALVES">U I BASILIO ALVES (2º Ano A)</option>
+                                        <option value="UNIDADE INTEGRADA JOSE GONCALVES DIAS">UNIDADE INTEGRADA JOSE GONCALVES DIAS</option>
+                                        <option value="UI EMILIO MURAD">UI EMILIO MURAD</option>
+                                        <option value="UNIDADE INTEGRADA ALDENORA ARAUJO CRUZ">UNIDADE INTEGRADA ALDENORA ARAUJO CRUZ</option>
+                                        <option value="UE ANITA FURTADO">UE ANITA FURTADO</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Navegação de Período (Mês / Semana) -->
                             <div style="display: flex; align-items: center; gap: 8px;">
-                                <!-- Botão Anterior < -->
-                                <button id="btn-cal-prev-month" class="btn btn-icon" style="width: 36px; height: 36px; border-radius: var(--radius-md); background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); cursor: pointer;" title="Mês Anterior">
+                                <button type="button" id="btn-schedule-prev-period" onclick="navigateSchedulePeriod(-1); return false;" class="btn btn-icon" style="width: 36px; height: 36px; border-radius: var(--radius-md); background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); cursor: pointer;" title="Período Anterior">
                                     <i data-lucide="chevron-left" style="width: 18px; height: 18px;"></i>
                                 </button>
 
-                                <!-- Dropdown Mês -->
-                                <select id="cal-month-dropdown-select" class="form-select" style="height: 36px; font-size: 0.85rem; font-weight: 600; padding: 4px 28px 4px 12px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); text-transform: lowercase;">
-                                    <option value="2">fevereiro</option>
-                                    <option value="3">março</option>
-                                    <option value="4">abril</option>
-                                    <option value="5">maio</option>
-                                    <option value="6">junho</option>
-                                    <option value="7">julho</option>
-                                    <option value="8" selected>agosto</option>
-                                    <option value="9">setembro</option>
-                                    <option value="10">outubro</option>
-                                    <option value="11">novembro</option>
-                                    <option value="12">dezembro</option>
-                                </select>
+                                <div id="schedule-period-display" style="font-weight: 800; font-size: 0.95rem; color: var(--text-primary); min-width: 160px; text-align: center; background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 7px 14px; border-radius: var(--radius-md);">
+                                    Agosto de 2026
+                                </div>
 
-                                <!-- Botão Próximo > -->
-                                <button id="btn-cal-next-month" class="btn btn-icon" style="width: 36px; height: 36px; border-radius: var(--radius-md); background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); cursor: pointer;" title="Próximo Mês">
+                                <button type="button" id="btn-schedule-next-period" onclick="navigateSchedulePeriod(1); return false;" class="btn btn-icon" style="width: 36px; height: 36px; border-radius: var(--radius-md); background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); cursor: pointer;" title="Próximo Período">
                                     <i data-lucide="chevron-right" style="width: 18px; height: 18px;"></i>
                                 </button>
-                            </div>
-                        </div>
 
-                        <!-- Filtros de Etapa, Disciplina e Escola -->
-                        <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 16px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 14px; align-items: center;">
-                            <div style="flex: 1; min-width: 160px;">
-                                <label style="font-size: 0.72rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 2px;">ETAPA / ANO</label>
-                                <select id="cal-filter-stage-v2" class="form-select" style="height: 34px; font-size: 0.8rem; width: 100%;">
-                                    <option value="5º Ano" selected>5º Ano (Anos Iniciais - SAEB)</option>
-                                    <option value="2º Ano">2º Ano (Alfabetização - SEAMA)</option>
-                                    <option value="9º Ano">9º Ano (Anos Finais - SAEB)</option>
-                                </select>
-                            </div>
-                            <div style="flex: 1; min-width: 160px;">
-                                <label style="font-size: 0.72rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 2px;">DISCIPLINA</label>
-                                <select id="cal-filter-subject-v2" class="form-select" style="height: 34px; font-size: 0.8rem; width: 100%;">
-                                    <option value="all">Todas as Disciplinas</option>
-                                    <option value="Língua Portuguesa">Língua Portuguesa</option>
-                                    <option value="Matemática">Matemática</option>
-                                </select>
-                            </div>
-                            <div style="flex: 1.5; min-width: 200px;">
-                                <label style="font-size: 0.72rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 2px;">ESCOLA</label>
-                                <select id="cal-filter-school-v2" class="form-select" style="height: 34px; font-size: 0.8rem; width: 100%;">
-                                    <option value="all">Todas as 9 Escolas da Rede</option>
-                                    <option value="UI JOSE CORREA LIMA">UI JOSE CORREA LIMA</option>
-                                    <option value="UI EMILIO MURAD">UI EMILIO MURAD</option>
-                                    <option value="UE VEREADOR LEONARDO FERREIRA LIMA">UE VEREADOR LEONARDO FERREIRA LIMA</option>
-                                    <option value="U I BASILIO ALVES">U I BASILIO ALVES</option>
-                                    <option value="UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ">UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ</option>
-                                    <option value="UE RAIMUNDO DOS REIS DA SILVA">UE RAIMUNDO DOS REIS DA SILVA</option>
-                                    <option value="UNIDADE INTEGRADA JOSE GONCALVES DIAS">UNIDADE INTEGRADA JOSE GONCALVES DIAS</option>
-                                    <option value="UNIDADE ESCOLAR ANISIO GOMES">UNIDADE ESCOLAR ANISIO GOMES</option>
-                                    <option value="UE ANITA FURTADO">UE ANITA FURTADO</option>
-                                </select>
-                            </div>
-                            <div style="display: flex; gap: 8px; align-items: flex-end; padding-top: 14px;">
-                                <button class="btn btn-outline btn-sm" id="btn-cal-mark-month-done" style="font-size: 0.75rem; height: 34px;">
-                                    <i data-lucide="check-check" style="width: 14px; height: 14px;"></i> Marcar Mês
-                                </button>
-                                <button class="btn btn-primary btn-sm" id="btn-cal-print-month" style="font-size: 0.75rem; height: 34px;">
-                                    <i data-lucide="printer" style="width: 14px; height: 14px;"></i> Imprimir
+                                <button type="button" onclick="handlePrintScheduleReport(); return false;" class="btn btn-outline btn-sm" style="height: 36px; font-weight: 600; margin-left: 6px;" title="Imprimir Planejamento">
+                                    <i data-lucide="printer" style="width: 15px; height: 15px;"></i> Imprimir
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Grade 7x6 do Calendário Clássico (Exatamente como o screenshot) -->
-                        <div class="calendar-monthly-grid-container" style="border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; background: var(--bg-primary);">
-                            
-                            <!-- Cabeçalho dos 7 Dias da Semana -->
-                            <div style="display: grid; grid-template-columns: repeat(7, 1fr); border-bottom: 1px solid var(--border-color); background: var(--bg-secondary);">
-                                <div class="cal-header-day-cell">DOM</div>
-                                <div class="cal-header-day-cell">SEG</div>
-                                <div class="cal-header-day-cell">TER</div>
-                                <div class="cal-header-day-cell">QUA</div>
-                                <div class="cal-header-day-cell">QUI</div>
-                                <div class="cal-header-day-cell">SEX</div>
-                                <div class="cal-header-day-cell">SÁB</div>
+                        <!-- ==================== SUB-VIEW 1: VISÃO MENSAL REDESENHADA ==================== -->
+                        <div id="schedule-view-monthly" class="schedule-view-container" style="padding: 20px;">
+                            <!-- Legenda Visual Rápida -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; font-size: 0.78rem;">
+                                <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+                                    <span style="display: inline-flex; align-items: center; gap: 6px; color: var(--text-secondary);">
+                                        <span style="display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: #10b981;"></span>
+                                        <strong>Verde:</strong> Aula Concluída / Habilidade Trabalhada
+                                    </span>
+                                    <span style="display: inline-flex; align-items: center; gap: 6px; color: var(--text-secondary);">
+                                        <span style="display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: #f97316;"></span>
+                                        <strong>Laranja:</strong> Aula Planejada / Pendente
+                                    </span>
+                                    <span style="color: var(--text-muted);">
+                                        💡 <em>Passe o mouse para ver detalhes da aula ou clique no <strong>+</strong> para agendar.</em>
+                                    </span>
+                                </div>
+                                <div id="monthly-stats-summary" style="font-weight: 700; color: #6366f1;">
+                                    Carregando dados...
+                                </div>
                             </div>
 
-                            <!-- Grade de Células dos Dias -->
-                            <div id="calendar-7col-cells-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); background: var(--border-color); gap: 1px;">
-                                <!-- Injetado dinamicamente via Javascript -->
+                            <!-- Grade 7 Colunas do Mês com Tags -->
+                            <div class="calendar-monthly-grid-container" style="border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; background: var(--bg-primary);">
+                                <!-- Cabeçalho dos 7 Dias -->
+                                <div style="display: grid; grid-template-columns: repeat(7, 1fr); border-bottom: 1px solid var(--border-color); background: var(--bg-secondary);">
+                                    <div class="cal-header-day-cell">DOM</div>
+                                    <div class="cal-header-day-cell">SEG</div>
+                                    <div class="cal-header-day-cell">TER</div>
+                                    <div class="cal-header-day-cell">QUA</div>
+                                    <div class="cal-header-day-cell">QUI</div>
+                                    <div class="cal-header-day-cell">SEX</div>
+                                    <div class="cal-header-day-cell">SÁB</div>
+                                </div>
+
+                                <!-- Células dos Dias (Populadas com Tags) -->
+                                <div id="calendar-monthly-cells-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); background: var(--border-color); gap: 1px;">
+                                    <!-- Injetado dinamicamente via renderScheduleMonthlyView() -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ==================== SUB-VIEW 2: VISÃO SEMANAL (GRADE COM DRAG & DROP) ==================== -->
+                        <div id="schedule-view-weekly" class="schedule-view-container" style="padding: 20px; display: none;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+                                <div style="font-size: 0.85rem; color: var(--text-secondary);">
+                                    🖐️ <strong>Dica de Produtividade:</strong> Você pode <strong>arrastar e soltar (Drag & Drop)</strong> os cards de aula para reorganizar horários e dias da semana.
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button type="button" class="btn btn-outline btn-sm" onclick="handleAutoGenerateWeeklySchedule(); return false;" style="font-weight: 700; color: #6366f1; border-color: #6366f1;">
+                                        ✨ Sugerir Grade BNCC Automática
+                                    </button>
+                                </div>
                             </div>
 
+                            <!-- Grade Semanal (5 Colunas de Dias: Seg a Sex) -->
+                            <div class="weekly-timetable-container" style="border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow-x: auto; background: var(--bg-primary);">
+                                <div id="weekly-timetable-grid" style="min-width: 840px;">
+                                    <!-- Injetado dinamicamente via renderScheduleWeeklyView() -->
+                                </div>
+                            </div>
                         </div>
 
                     </div>
-
                 </section>
-                
-<!-- ==================== GESTÃO PEDAGÓGICA TAB ==================== -->
+
+                <!-- ==================== DRAWER LATERAL: NOVO PLANEJAMENTO / AGENDAR AULA ==================== -->
+                <div id="drawer-schedule-planner" class="drawer-overlay" style="display: none;">
+                    <div class="drawer-backdrop" onclick="closeSchedulePlannerDrawer();"></div>
+                    <div class="drawer-panel" style="position: fixed; top: 0; right: 0; bottom: 0; width: 100%; max-width: 520px; background: var(--bg-secondary); border-left: 1px solid var(--border-color); z-index: 1000; box-shadow: -8px 0 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+                        
+                        <!-- Header do Drawer -->
+                        <div style="padding: 20px 24px; border-bottom: 1px solid var(--border-color); background: var(--bg-primary); display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(99, 102, 241, 0.15); color: #6366f1; display: flex; align-items: center; justify-content: center;">
+                                    <i data-lucide="edit-3" style="width: 18px; height: 18px;"></i>
+                                </div>
+                                <div>
+                                    <h3 id="drawer-planner-title" style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">
+                                        Novo Planejamento de Aula
+                                    </h3>
+                                    <p style="margin: 2px 0 0 0; font-size: 0.75rem; color: var(--text-muted);">
+                                        Vincule habilidades e defina a metodologia da aula
+                                    </p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="closeSchedulePlannerDrawer(); return false;" class="btn-icon" style="background: none; border: none; color: var(--text-muted); cursor: pointer; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+                            </button>
+                        </div>
+
+                        <!-- Formulário do Drawer -->
+                        <form id="form-schedule-planner" onsubmit="handleSaveScheduleLesson(event); return false;" style="padding: 24px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 16px;">
+                            <input type="hidden" id="planner-lesson-id">
+
+                            <!-- Linha 1: Data da Aula e Horário/Slot -->
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                <div>
+                                    <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                                        Data da Aula <span style="color: #ef4444;">*</span>
+                                    </label>
+                                    <input type="date" id="planner-lesson-date" required class="form-input-text" style="width: 100%; height: 38px; font-size: 0.85rem; padding: 0 10px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                                </div>
+                                <div>
+                                    <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                                        Horário / Aula <span style="color: #ef4444;">*</span>
+                                    </label>
+                                    <select id="planner-lesson-slot" required class="form-select" style="width: 100%; height: 38px; font-size: 0.82rem; padding: 0 10px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                                        <option value="slot_1">1ª Aula (07:30 - 08:20)</option>
+                                        <option value="slot_2">2ª Aula (08:20 - 09:10)</option>
+                                        <option value="slot_3">3ª Aula (09:20 - 10:10)</option>
+                                        <option value="slot_4">4ª Aula (10:10 - 11:00)</option>
+                                        <option value="slot_5">5ª Aula (11:00 - 11:50)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Linha 2: Disciplina e Turma -->
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                <div>
+                                    <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                                        Componente Curricular <span style="color: #ef4444;">*</span>
+                                    </label>
+                                    <select id="planner-lesson-subject" onchange="updatePlannerSkillDropdown();" required class="form-select" style="width: 100%; height: 38px; font-size: 0.82rem; padding: 0 10px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                                        <option value="Língua Portuguesa" selected>📖 Língua Portuguesa</option>
+                                        <option value="Matemática">📐 Matemática</option>
+                                        <option value="Ciências da Natureza">🌱 Ciências da Natureza</option>
+                                        <option value="História">🏛️ História</option>
+                                        <option value="Geografia">🌍 Geografia</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                                        Turma Principal <span style="color: #ef4444;">*</span>
+                                    </label>
+                                    <select id="planner-lesson-turma" required class="form-select" style="width: 100%; height: 38px; font-size: 0.82rem; padding: 0 10px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                                        <option value="2º Ano A" selected>2º Ano A (Matutino)</option>
+                                        <option value="2º Ano B">2º Ano B (Vespertino)</option>
+                                        <option value="5º Ano A">5º Ano A (Matutino)</option>
+                                        <option value="5º Ano B">5º Ano B (Vespertino)</option>
+                                        <option value="9º Ano A">9º Ano A (Matutino)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Linha 3: Seleção de Habilidade da BNCC (com autocomplete / dropdown dinâmico) -->
+                            <div>
+                                <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                                    Habilidade da BNCC / Matriz <span style="color: #ef4444;">*</span>
+                                </label>
+                                <select id="planner-lesson-skill" onchange="autoFillPlannerFromSkill();" required class="form-select" style="width: 100%; height: 40px; font-size: 0.82rem; padding: 0 10px; font-weight: 700; color: #6366f1; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                                    <!-- Injetado dinamicamente via updatePlannerSkillDropdown() -->
+                                </select>
+                            </div>
+
+                            <!-- Linha 4: Objeto de Conhecimento / Conteúdo Programático -->
+                            <div>
+                                <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                                    Objeto de Conhecimento / Conteúdo da Aula <span style="color: #ef4444;">*</span>
+                                </label>
+                                <input type="text" id="planner-lesson-content" required placeholder="Ex: Segmentação de Palavras e Rimas em Cantigas" class="form-input-text" style="width: 100%; height: 38px; font-size: 0.85rem; padding: 0 10px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                            </div>
+
+                            <!-- Linha 5: Metodologia e Atividades do Dia -->
+                            <div>
+                                <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                                    Metodologia e Atividades Práticas <span style="color: #ef4444;">*</span>
+                                </label>
+                                <textarea id="planner-lesson-methodology" rows="3" required placeholder="Descreva os passos da aula (Ex: 1. Acolhida e leitura deleite; 2. Atividade prática em duplas com fichas; 3. Registro no caderno e fechamento coletivo)..." class="form-input-text" style="width: 100%; font-size: 0.85rem; padding: 8px 10px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);"></textarea>
+                            </div>
+
+                            <!-- Linha 6: Status Inicial da Aula -->
+                            <div>
+                                <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                                    Status da Aula
+                                </label>
+                                <select id="planner-lesson-status" class="form-select" style="width: 100%; height: 38px; font-size: 0.82rem; padding: 0 10px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                                    <option value="planejada" selected>⏳ Planejada (Aguardando Execução)</option>
+                                    <option value="concluida">✅ Concluída / Trabalhada</option>
+                                    <option value="em_andamento">🟡 Em Andamento</option>
+                                </select>
+                            </div>
+
+                            <!-- Linha 7: Recurso de Replicação para Outras Turmas -->
+                            <div style="background: rgba(99, 102, 241, 0.05); border: 1px dashed #6366f1; border-radius: var(--radius-md); padding: 12px 14px;">
+                                <div style="font-size: 0.78rem; font-weight: 800; color: #6366f1; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                                    <i data-lucide="copy" style="width: 13px; height: 13px;"></i> Replicar este plano para outras turmas:
+                                </div>
+                                <div style="display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px;">
+                                    <label style="font-size: 0.78rem; color: var(--text-primary); display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                        <input type="checkbox" id="rep-turma-2b" value="2º Ano B" style="accent-color: #6366f1;"> 2º Ano B
+                                    </label>
+                                    <label style="font-size: 0.78rem; color: var(--text-primary); display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                        <input type="checkbox" id="rep-turma-2c" value="2º Ano C" style="accent-color: #6366f1;"> 2º Ano C
+                                    </label>
+                                    <label style="font-size: 0.78rem; color: var(--text-primary); display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                        <input type="checkbox" id="rep-turma-5b" value="5º Ano B" style="accent-color: #6366f1;"> 5º Ano B
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Footer com Ações -->
+                            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; padding-top: 14px; border-top: 1px solid var(--border-color);">
+                                <button type="button" onclick="closeSchedulePlannerDrawer(); return false;" class="btn btn-outline" style="height: 38px; padding: 0 16px;">
+                                    Cancelar
+                                </button>
+                                <button type="submit" class="btn btn-primary" style="height: 38px; padding: 0 20px; font-weight: 700; background: #6366f1; border-color: #6366f1; display: flex; align-items: center; gap: 6px;">
+                                    <i data-lucide="check-circle" style="width: 15px; height: 15px;"></i>
+                                    <span>Salvar e Agendar</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ==================== GESTÃO PEDAGÓGICA TAB ==================== -->
                 <section id="gestao-pedagogica" class="tab-content">
                     <div class="card card-full margin-bottom-md" style="padding: 0; background-color: var(--bg-secondary);">
                         <div style="display: flex; gap: 20px; padding: 16px 24px; border-bottom: 1px solid var(--border-color); overflow-x: auto;">

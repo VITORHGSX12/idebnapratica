@@ -4803,3 +4803,208 @@ html, body {
         font-size: 0.78rem !important;
     }
 }
+
+
+/* =========================================================================
+   CRONOGRAMA & PLANEJAMENTO ESCOLAR REDESIGN
+   ========================================================================= */
+
+/* Segmented Control Switcher */
+.schedule-tab-btn.active {
+    background: #6366f1 !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);
+}
+
+/* Monthly Calendar Cells */
+.cal-day-cell {
+    background: var(--bg-secondary);
+    min-height: 110px;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 6px;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+}
+
+.cal-day-cell:hover {
+    background: var(--bg-tertiary);
+}
+
+.cal-day-cell.other-month {
+    background: rgba(0, 0, 0, 0.02);
+    opacity: 0.45;
+}
+
+.cal-day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cal-day-number {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.cal-day-number.active-today {
+    background: #6366f1;
+    color: #ffffff;
+}
+
+.btn-cal-add-lesson {
+    opacity: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+    color: #6366f1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 800;
+    transition: all 0.2s ease;
+}
+
+.cal-day-cell:hover .btn-cal-add-lesson {
+    opacity: 1;
+}
+
+.btn-cal-add-lesson:hover {
+    background: #6366f1;
+    color: #fff;
+    border-color: #6366f1;
+    transform: scale(1.1);
+}
+
+/* Tag / Chip de Habilidade no Calendário */
+.cal-lesson-tag {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 3px 6px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    line-height: 1.2;
+    border: 1px solid transparent;
+}
+
+.cal-lesson-tag:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.cal-lesson-tag.tag-concluida {
+    background: #dcfce7;
+    color: #15803d;
+    border-color: #86efac;
+}
+
+.cal-lesson-tag.tag-planejada {
+    background: #ffedd5;
+    color: #c2410c;
+    border-color: #fed7aa;
+}
+
+.cal-lesson-tag.tag-em-andamento {
+    background: #dbeafe;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+}
+
+/* Weekly Timetable */
+.weekly-day-column {
+    flex: 1;
+    min-width: 150px;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.weekly-day-header {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-tertiary);
+}
+
+.weekly-slot-box {
+    min-height: 100px;
+    padding: 8px;
+    border-bottom: 1px dashed var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: background 0.2s ease;
+}
+
+.weekly-slot-box.drag-over {
+    background: rgba(99, 102, 241, 0.12) !important;
+    border: 2px dashed #6366f1 !important;
+}
+
+/* Weekly Lesson Card */
+.weekly-lesson-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid #6366f1;
+    border-radius: var(--radius-sm);
+    padding: 10px;
+    cursor: grab;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+.weekly-lesson-card:active {
+    cursor: grabbing;
+}
+
+.weekly-lesson-card.status-concluida {
+    border-left-color: #10b981;
+    background: rgba(16, 185, 129, 0.03);
+}
+
+.weekly-lesson-card.status-planejada {
+    border-left-color: #f97316;
+}
+
+.weekly-lesson-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
+/* Slide in Drawer Animation */
+@keyframes slideInRight {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+.drawer-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+}
+
+.drawer-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(3px);
+}

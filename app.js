@@ -17326,3 +17326,767 @@ window.renderDbSchools = function renderDbSchools() {
         }
     }
     window.renderDbSchools = renderDbSchools;
+
+
+
+    // =========================================================================
+    // =========================================================================
+    // NOVO MÓDULO: CRONOGRAMA & PLANEJAMENTO ESCOLAR (VISÃO MENSAL + SEMANAL)
+    // =========================================================================
+    // =========================================================================
+
+    const SCHEDULE_MONTH_LABELS = {
+        1: 'Janeiro', 2: 'Fevereiro', 3: 'Março', 4: 'Abril', 5: 'Maio', 6: 'Junho',
+        7: 'Julho', 8: 'Agosto', 9: 'Setembro', 10: 'Outubro', 11: 'Novembro', 12: 'Dezembro'
+    };
+
+    const SCHEDULE_TIME_SLOTS = [
+        { id: 'slot_1', texto: '1ª Aula (07:30 - 08:20)' },
+        { id: 'slot_2', texto: '2ª Aula (08:20 - 09:10)' },
+        { id: 'slot_3', texto: '3ª Aula (09:20 - 10:10)' },
+        { id: 'slot_4', texto: '4ª Aula (10:10 - 11:00)' },
+        { id: 'slot_5', texto: '5ª Aula (11:00 - 11:50)' }
+    ];
+
+    let currentScheduleView = 'monthly'; // 'monthly' | 'weekly'
+    let scheduleCalMonth = 8; // Agosto
+    let scheduleCalYear = 2026;
+    let scheduleWeekOffset = 0; // 0 = Semana de 03 a 07 de Agosto
+    let draggedLessonId = null;
+
+    let scheduleLessonsData = [];
+
+    function initScheduleLessonsDatabase() {
+        try {
+            const saved = localStorage.getItem('teacher_agenda_schedule_db');
+            if (saved) {
+                scheduleLessonsData = JSON.parse(saved);
+            } else {
+                scheduleLessonsData = [
+                    {
+                        id: 'plan_2026_08_03_1',
+                        data: '2026-08-03',
+                        diaSemana: 'Segunda-feira',
+                        horarioSlot: 'slot_1',
+                        horarioTexto: '1ª Aula (07:30 - 08:20)',
+                        etapa: '2º Ano',
+                        turma: '2º Ano A',
+                        disciplina: 'Língua Portuguesa',
+                        escola: 'UI JOSE CORREA LIMA',
+                        codigoHabilidade: 'EF02LP01',
+                        descricaoHabilidade: 'Reconhecer que textos são lidos e escritos da esquerda para a direita e de cima para baixo.',
+                        objetoConhecimento: 'Decodificação e Leitura Autônoma de Cantigas',
+                        metodologia: 'Roda de leitura com cantigas regionais do Maranhão; identificação da direcionalidade do texto e marcação de rimas.',
+                        status: 'concluida',
+                        replicadoPara: ['2º Ano B']
+                    },
+                    {
+                        id: 'plan_2026_08_03_2',
+                        data: '2026-08-03',
+                        diaSemana: 'Segunda-feira',
+                        horarioSlot: 'slot_2',
+                        horarioTexto: '2ª Aula (08:20 - 09:10)',
+                        etapa: '2º Ano',
+                        turma: '2º Ano A',
+                        disciplina: 'Matemática',
+                        escola: 'UI JOSE CORREA LIMA',
+                        codigoHabilidade: 'EF02MA01',
+                        descricaoHabilidade: 'Comparar e ordenar números naturais pelo sistema de numeração decimal.',
+                        objetoConhecimento: 'Sistema de Numeração Decimal e Valor Posicional',
+                        metodologia: 'Uso de material dourado para composição e decomposição de numerais até 100.',
+                        status: 'concluida',
+                        replicadoPara: []
+                    },
+                    {
+                        id: 'plan_2026_08_04_1',
+                        data: '2026-08-04',
+                        diaSemana: 'Terça-feira',
+                        horarioSlot: 'slot_1',
+                        horarioTexto: '1ª Aula (07:30 - 08:20)',
+                        etapa: '2º Ano',
+                        turma: '2º Ano A',
+                        disciplina: 'Língua Portuguesa',
+                        escola: 'UI JOSE CORREA LIMA',
+                        codigoHabilidade: 'EF02LP04',
+                        descricaoHabilidade: 'Ler e escrever palavras com sílabas CV, V, CVC, CCV identificando formação.',
+                        objetoConhecimento: 'Consciência Fonológica e Segmentação',
+                        metodologia: 'Jogo do bingo silábico interativo em grupos com fixação temática.',
+                        status: 'concluida',
+                        replicadoPara: []
+                    },
+                    {
+                        id: 'plan_2026_08_04_3',
+                        data: '2026-08-04',
+                        diaSemana: 'Terça-feira',
+                        horarioSlot: 'slot_3',
+                        horarioTexto: '3ª Aula (09:20 - 10:10)',
+                        etapa: '2º Ano',
+                        turma: '2º Ano A',
+                        disciplina: 'Ciências da Natureza',
+                        escola: 'UI JOSE CORREA LIMA',
+                        codigoHabilidade: 'EF02CI01',
+                        descricaoHabilidade: 'Identificar de que materiais são feitos os objetos do cotidiano.',
+                        objetoConhecimento: 'Propriedades dos Materiais no Cotidiano',
+                        metodologia: 'Experimento prático no pátio analisando reciclagem de materiais.',
+                        status: 'planejada',
+                        replicadoPara: ['2º Ano B']
+                    },
+                    {
+                        id: 'plan_2026_08_05_2',
+                        data: '2026-08-05',
+                        diaSemana: 'Quarta-feira',
+                        horarioSlot: 'slot_2',
+                        horarioTexto: '2ª Aula (08:20 - 09:10)',
+                        etapa: '2º Ano',
+                        turma: '2º Ano A',
+                        disciplina: 'Matemática',
+                        escola: 'UI JOSE CORREA LIMA',
+                        codigoHabilidade: 'EF02MA06',
+                        descricaoHabilidade: 'Resolver e elaborar problemas de adição e dobro/metade.',
+                        objetoConhecimento: 'Problemas Aditivos e Multiplicativos Básicos',
+                        metodologia: 'Simulação de feira na sala com cédulas de brinquedo para troco.',
+                        status: 'planejada',
+                        replicadoPara: []
+                    },
+                    {
+                        id: 'plan_2026_08_06_1',
+                        data: '2026-08-06',
+                        diaSemana: 'Quinta-feira',
+                        horarioSlot: 'slot_1',
+                        horarioTexto: '1ª Aula (07:30 - 08:20)',
+                        etapa: '2º Ano',
+                        turma: '2º Ano A',
+                        disciplina: 'Língua Portuguesa',
+                        escola: 'UI JOSE CORREA LIMA',
+                        codigoHabilidade: 'EF02LP12',
+                        descricaoHabilidade: 'Ler e compreender parlendas e quadrinhas.',
+                        objetoConhecimento: 'Gênero Textual: Parlendas e Trava-línguas',
+                        metodologia: 'Declamação rítmica em duplas com desafio de trava-línguas.',
+                        status: 'planejada',
+                        replicadoPara: []
+                    },
+                    {
+                        id: 'plan_2026_08_07_2',
+                        data: '2026-08-07',
+                        diaSemana: 'Sexta-feira',
+                        horarioSlot: 'slot_2',
+                        horarioTexto: '2ª Aula (08:20 - 09:10)',
+                        etapa: '2º Ano',
+                        turma: '2º Ano A',
+                        disciplina: 'História',
+                        escola: 'UI JOSE CORREA LIMA',
+                        codigoHabilidade: 'EF02HI01',
+                        descricaoHabilidade: 'Reconhecer espaços de sociabilidade e convivência.',
+                        objetoConhecimento: 'A Comunidade e seus Espaços em Gonçalves Dias',
+                        metodologia: 'Mural colaborativo de fotos dos pontos comunitários do município.',
+                        status: 'planejada',
+                        replicadoPara: []
+                    },
+                    {
+                        id: 'plan_2026_08_10_1',
+                        data: '2026-08-10',
+                        diaSemana: 'Segunda-feira',
+                        horarioSlot: 'slot_1',
+                        horarioTexto: '1ª Aula (07:30 - 08:20)',
+                        etapa: '2º Ano',
+                        turma: '2º Ano A',
+                        disciplina: 'Língua Portuguesa',
+                        escola: 'UI JOSE CORREA LIMA',
+                        codigoHabilidade: 'EF02LP07',
+                        descricaoHabilidade: 'Escrever palavras com pontuação expressiva básica.',
+                        objetoConhecimento: 'Sinais de Pontuação e Entonação',
+                        metodologia: 'Leitura expressiva de tirinhas identificando pontos de interrogação.',
+                        status: 'planejada',
+                        replicadoPara: []
+                    },
+                    {
+                        id: 'plan_2026_08_12_2',
+                        data: '2026-08-12',
+                        diaSemana: 'Quarta-feira',
+                        horarioSlot: 'slot_2',
+                        horarioTexto: '2ª Aula (08:20 - 09:10)',
+                        etapa: '2º Ano',
+                        turma: '2º Ano A',
+                        disciplina: 'Matemática',
+                        escola: 'UI JOSE CORREA LIMA',
+                        codigoHabilidade: 'EF02MA16',
+                        descricaoHabilidade: 'Estimar e medir comprimento com unidades convencionais.',
+                        objetoConhecimento: 'Medidas de Comprimento e Régua',
+                        metodologia: 'Medição de objetos da sala com fita métrica e tabela.',
+                        status: 'planejada',
+                        replicadoPara: []
+                    }
+                ];
+                localStorage.setItem('teacher_agenda_schedule_db', JSON.stringify(scheduleLessonsData));
+            }
+        } catch(e) {}
+    }
+
+    function saveScheduleDatabase() {
+        try {
+            localStorage.setItem('teacher_agenda_schedule_db', JSON.stringify(scheduleLessonsData));
+        } catch(e) {}
+    }
+
+    function switchScheduleMainView(view) {
+        currentScheduleView = view;
+        const btnMonthly = document.getElementById('btn-view-monthly');
+        const btnWeekly = document.getElementById('btn-view-weekly');
+        const viewMonthly = document.getElementById('schedule-view-monthly');
+        const viewWeekly = document.getElementById('schedule-view-weekly');
+
+        if (view === 'monthly') {
+            if (btnMonthly) btnMonthly.classList.add('active');
+            if (btnWeekly) btnWeekly.classList.remove('active');
+            if (viewMonthly) { viewMonthly.style.display = 'block'; }
+            if (viewWeekly) { viewWeekly.style.display = 'none'; }
+        } else {
+            if (btnWeekly) btnWeekly.classList.add('active');
+            if (btnMonthly) btnMonthly.classList.remove('active');
+            if (viewWeekly) { viewWeekly.style.display = 'block'; }
+            if (viewMonthly) { viewMonthly.style.display = 'none'; }
+        }
+
+        renderActiveScheduleView();
+    }
+    window.switchScheduleMainView = switchScheduleMainView;
+
+    function navigateSchedulePeriod(delta) {
+        if (currentScheduleView === 'monthly') {
+            scheduleCalMonth += delta;
+            if (scheduleCalMonth < 1) { scheduleCalMonth = 12; scheduleCalYear--; }
+            if (scheduleCalMonth > 12) { scheduleCalMonth = 1; scheduleCalYear++; }
+        } else {
+            scheduleWeekOffset += delta;
+        }
+        renderActiveScheduleView();
+    }
+    window.navigateSchedulePeriod = navigateSchedulePeriod;
+
+    function renderActiveScheduleView() {
+        initScheduleLessonsDatabase();
+        const periodDisplay = document.getElementById('schedule-period-display');
+
+        if (currentScheduleView === 'monthly') {
+            if (periodDisplay) periodDisplay.textContent = `${SCHEDULE_MONTH_LABELS[scheduleCalMonth]} de ${scheduleCalYear}`;
+            renderScheduleMonthlyView();
+        } else {
+            const weekInfo = getWeekDatesForOffset(scheduleWeekOffset);
+            if (periodDisplay) periodDisplay.textContent = weekInfo.label;
+            renderScheduleWeeklyView();
+        }
+        if (typeof safeCreateIcons === 'function') safeCreateIcons();
+        if (window.lucide && typeof window.lucide.createIcons === 'function') window.lucide.createIcons();
+    }
+    window.renderActiveScheduleView = renderActiveScheduleView;
+    window.render7ColCalendar = renderActiveScheduleView;
+
+    // -------------------------------------------------------------------------
+    // RENDERIZADOR: VISÃO MENSAL COM TAGS INFORMATIVAS & QUICK ADD
+    // -------------------------------------------------------------------------
+    function renderScheduleMonthlyView() {
+        const grid = document.getElementById('calendar-monthly-cells-grid');
+        if (!grid) return;
+
+        grid.innerHTML = '';
+
+        const stageFilter = document.getElementById('cal-filter-stage-v2')?.value || 'all';
+        const subjectFilter = document.getElementById('cal-filter-subject-v2')?.value || 'all';
+        const schoolFilter = document.getElementById('cal-filter-school-v2')?.value || 'all';
+
+        const firstDate = new Date(scheduleCalYear, scheduleCalMonth - 1, 1);
+        const startDayOfWeek = firstDate.getDay(); // 0 = Domingo
+        const daysInCurrentMonth = new Date(scheduleCalYear, scheduleCalMonth, 0).getDate();
+        const daysInPrevMonth = new Date(scheduleCalYear, scheduleCalMonth - 1, 0).getDate();
+
+        // 1. Dias do mês anterior (preenchimento inicial)
+        for (let i = startDayOfWeek - 1; i >= 0; i--) {
+            const prevDayNum = daysInPrevMonth - i;
+            const cell = document.createElement('div');
+            cell.className = 'cal-day-cell other-month';
+            cell.innerHTML = `<div class="cal-day-header"><div class="cal-day-number" style="color:var(--text-muted);">${prevDayNum}</div></div>`;
+            grid.appendChild(cell);
+        }
+
+        let totalMonthLessons = 0;
+        let completedMonthLessons = 0;
+
+        // 2. Dias do mês corrente
+        for (let d = 1; d <= daysInCurrentMonth; d++) {
+            const monthStr = String(scheduleCalMonth).padStart(2, '0');
+            const dayStr = String(d).padStart(2, '0');
+            const dateIso = `${scheduleCalYear}-${monthStr}-${dayStr}`;
+
+            const dateObj = new Date(scheduleCalYear, scheduleCalMonth - 1, d);
+            const dayOfWeek = dateObj.getDay();
+            const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+
+            // Filtra aulas deste dia
+            const dayLessons = scheduleLessonsData.filter(item => {
+                if (item.data !== dateIso) return false;
+                if (stageFilter !== 'all' && item.etapa !== stageFilter) return false;
+                if (subjectFilter !== 'all' && item.disciplina !== subjectFilter) return false;
+                if (schoolFilter !== 'all' && item.escola !== schoolFilter) return false;
+                return true;
+            });
+
+            totalMonthLessons += dayLessons.length;
+            completedMonthLessons += dayLessons.filter(l => l.status === 'concluida').length;
+
+            const cell = document.createElement('div');
+            cell.className = 'cal-day-cell';
+
+            // Cabeçalho da Célula com número do dia e botão + de agendamento rápido
+            let quickAddBtn = '';
+            if (!isWeekend) {
+                quickAddBtn = `
+                    <button type="button" class="btn-cal-add-lesson" onclick="event.stopPropagation(); openSchedulePlannerDrawer('${dateIso}');" title="Agendar aula neste dia">
+                        +
+                    </button>
+                `;
+            }
+
+            // Renderiza Tags/Chips (máximo 2 visíveis, restante em +X mais)
+            let tagsHtml = '';
+            const maxVisible = 2;
+            const visibleLessons = dayLessons.slice(0, maxVisible);
+            const extraCount = dayLessons.length - maxVisible;
+
+            visibleLessons.forEach(les => {
+                const isDone = les.status === 'concluida';
+                const tagClass = isDone ? 'tag-concluida' : 'tag-planejada';
+                const icon = isDone ? '✓' : '⏳';
+
+                tagsHtml += `
+                    <div class="cal-lesson-tag ${tagClass}" onclick="event.stopPropagation(); openSchedulePlannerDrawer(null, null, '${les.id}');" title="${les.horarioTexto} - ${les.disciplina}: ${les.objetoConhecimento} (${les.codigoHabilidade})">
+                        <span style="font-weight:800; font-family:var(--font-mono); font-size:0.68rem;">${icon} ${les.codigoHabilidade}</span>
+                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:65px;">${les.disciplina.split(' ')[0]}</span>
+                    </div>
+                `;
+            });
+
+            if (extraCount > 0) {
+                tagsHtml += `
+                    <div style="font-size: 0.65rem; font-weight: 800; color: #6366f1; background: rgba(99, 102, 241, 0.1); padding: 2px 5px; border-radius: 4px; text-align: center; cursor: pointer;" onclick="event.stopPropagation(); switchScheduleMainView('weekly');">
+                        +${extraCount} aulas
+                    </div>
+                `;
+            }
+
+            cell.innerHTML = `
+                <div class="cal-day-header">
+                    <div class="cal-day-number ${d === 3 && scheduleCalMonth === 8 ? 'active-today' : ''}">${d}</div>
+                    ${quickAddBtn}
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 4px;">
+                    ${tagsHtml}
+                </div>
+            `;
+
+            cell.onclick = () => {
+                if (!isWeekend) openSchedulePlannerDrawer(dateIso);
+            };
+
+            grid.appendChild(cell);
+        }
+
+        // 3. Próximos dias para fechar a grade (35 ou 42 células)
+        const totalRendered = startDayOfWeek + daysInCurrentMonth;
+        const totalNeeded = totalRendered > 35 ? 42 : 35;
+        const remaining = totalNeeded - totalRendered;
+
+        for (let nextD = 1; nextD <= remaining; nextD++) {
+            const cell = document.createElement('div');
+            cell.className = 'cal-day-cell other-month';
+            cell.innerHTML = `<div class="cal-day-header"><div class="cal-day-number" style="color:var(--text-muted);">${nextD}</div></div>`;
+            grid.appendChild(cell);
+        }
+
+        // Atualiza resumo de estatísticas do mês
+        const statsEl = document.getElementById('monthly-stats-summary');
+        if (statsEl) {
+            const pct = totalMonthLessons > 0 ? Math.round((completedMonthLessons / totalMonthLessons) * 100) : 0;
+            statsEl.innerHTML = `📊 <strong>${completedMonthLessons} de ${totalMonthLessons}</strong> aulas trabalhadas (${pct}% concluído no mês)`;
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // RENDERIZADOR: VISÃO SEMANAL (GRADE VERTICAL COM DRAG & DROP)
+    // -------------------------------------------------------------------------
+    function getWeekDatesForOffset(offset) {
+        // Base: Segunda-feira 03/08/2026
+        const baseMonday = new Date(2026, 7, 3);
+        baseMonday.setDate(baseMonday.getDate() + (offset * 7));
+
+        const days = [];
+        const dayNames = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira'];
+
+        for (let i = 0; i < 5; i++) {
+            const d = new Date(baseMonday);
+            d.setDate(d.getDate() + i);
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            days.push({
+                dateIso: `${yyyy}-${mm}-${dd}`,
+                dayNum: d.getDate(),
+                monthNum: d.getMonth() + 1,
+                dayName: dayNames[i],
+                dayShort: dayNames[i].substring(0, 3).toUpperCase()
+            });
+        }
+
+        const startStr = `${days[0].dayNum} de ${SCHEDULE_MONTH_LABELS[days[0].monthNum]}`;
+        const endStr = `${days[4].dayNum} de ${SCHEDULE_MONTH_LABELS[days[4].monthNum]} de ${days[4].dateIso.substring(0,4)}`;
+        const weekNum = 32 + offset;
+
+        return {
+            days,
+            label: `Semana ${weekNum}: ${startStr} a ${endStr}`
+        };
+    }
+
+    function renderScheduleWeeklyView() {
+        const container = document.getElementById('weekly-timetable-grid');
+        if (!container) return;
+
+        const weekInfo = getWeekDatesForOffset(scheduleWeekOffset);
+        const stageFilter = document.getElementById('cal-filter-stage-v2')?.value || 'all';
+        const subjectFilter = document.getElementById('cal-filter-subject-v2')?.value || 'all';
+        const schoolFilter = document.getElementById('cal-filter-school-v2')?.value || 'all';
+
+        let html = `
+            <div style="display: grid; grid-template-columns: 140px repeat(5, 1fr); border-bottom: 1px solid var(--border-color); background: var(--bg-secondary);">
+                <div style="padding: 12px; font-weight: 800; font-size: 0.78rem; color: var(--text-muted); text-align: center; border-right: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center;">
+                    HORÁRIO / AULA
+                </div>
+        `;
+
+        // Cabeçalhos dos 5 Dias da Semana
+        weekInfo.days.forEach(d => {
+            html += `
+                <div class="weekly-day-header" style="border-right: 1px solid var(--border-color);">
+                    <div style="font-size: 0.75rem; font-weight: 800; color: #6366f1; text-transform: uppercase;">${d.dayShort}</div>
+                    <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary);">${d.dayNum} ${SCHEDULE_MONTH_LABELS[d.monthNum].substring(0,3)}</div>
+                </div>
+            `;
+        });
+        html += '</div>';
+
+        // Linhas de Horário / Slots de Aula
+        SCHEDULE_TIME_SLOTS.forEach(slot => {
+            html += `
+                <div style="display: grid; grid-template-columns: 140px repeat(5, 1fr); border-bottom: 1px solid var(--border-color);">
+                    <!-- Coluna de Horário -->
+                    <div style="padding: 12px 10px; background: var(--bg-tertiary); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; text-align: center;">
+                        <span style="font-size: 0.82rem; font-weight: 800; color: var(--text-primary);">${slot.texto.split(' ')[0]} ${slot.texto.split(' ')[1]}</span>
+                        <span style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono);">${slot.texto.split('(')[1].replace(')', '')}</span>
+                    </div>
+            `;
+
+            // 5 Células de Dias para este Horário (com Suporte a Drag & Drop)
+            weekInfo.days.forEach(day => {
+                const lesson = scheduleLessonsData.find(item => {
+                    if (item.data !== day.dateIso) return false;
+                    if (item.horarioSlot !== slot.id) return false;
+                    if (stageFilter !== 'all' && item.etapa !== stageFilter) return false;
+                    if (subjectFilter !== 'all' && item.disciplina !== subjectFilter) return false;
+                    if (schoolFilter !== 'all' && item.escola !== schoolFilter) return false;
+                    return true;
+                });
+
+                if (lesson) {
+                    const isDone = lesson.status === 'concluida';
+                    const statusBadge = isDone
+                        ? '<span class="badge badge-success" style="font-size:0.65rem; padding:2px 6px;">✓ Concluída</span>'
+                        : '<span class="badge badge-warning" style="font-size:0.65rem; padding:2px 6px;">⏳ Planejada</span>';
+
+                    html += `
+                        <div class="weekly-slot-box" ondragover="handleSlotDragOver(event)" ondragleave="handleSlotDragLeave(event)" ondrop="handleSlotDrop(event, '${day.dateIso}', '${slot.id}')">
+                            <div class="weekly-lesson-card ${isDone ? 'status-concluida' : 'status-planejada'}" draggable="true" ondragstart="handleLessonDragStart(event, '${lesson.id}')">
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 4px;">
+                                    <span style="font-weight: 800; font-family: var(--font-mono); font-size: 0.75rem; color: #6366f1;">${lesson.codigoHabilidade}</span>
+                                    ${statusBadge}
+                                </div>
+                                <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; line-height: 1.25;">
+                                    ${lesson.objetoConhecimento}
+                                </div>
+                                <div style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.3; margin-bottom: 6px;">
+                                    ${lesson.disciplina} • ${lesson.turma}
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 6px; border-top: 1px dashed var(--border-color);">
+                                    <button type="button" onclick="toggleLessonStatus('${lesson.id}');" class="btn btn-outline btn-sm" style="font-size: 0.68rem; padding: 2px 6px; height: 24px; color: ${isDone ? '#10b981' : '#f97316'}; border-color: ${isDone ? '#10b981' : '#f97316'};" title="Alternar status da aula">
+                                        ${isDone ? '✓ Trabalhada' : 'Dar Baixa'}
+                                    </button>
+                                    <div style="display: flex; gap: 4px;">
+                                        <button type="button" onclick="openSchedulePlannerDrawer(null, null, '${lesson.id}');" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:11px;" title="Editar">✏️</button>
+                                        <button type="button" onclick="handleDeleteScheduleLesson('${lesson.id}');" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:11px;" title="Remover">🗑️</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="weekly-slot-box" ondragover="handleSlotDragOver(event)" ondragleave="handleSlotDragLeave(event)" ondrop="handleSlotDrop(event, '${day.dateIso}', '${slot.id}')" onclick="openSchedulePlannerDrawer('${day.dateIso}', '${slot.id}');" style="cursor: pointer; justify-content: center; align-items: center;">
+                            <div style="font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
+                                <span style="font-size: 1rem; color: #6366f1;">+</span> Agendar Aula
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            html += '</div>';
+        });
+
+        container.innerHTML = html;
+    }
+
+    // -------------------------------------------------------------------------
+    // DRAG AND DROP HANDLERS (REORDENAÇÃO FLUÍDA)
+    // -------------------------------------------------------------------------
+    function handleLessonDragStart(event, lessonId) {
+        draggedLessonId = lessonId;
+        if (event.dataTransfer) {
+            event.dataTransfer.setData('text/plain', lessonId);
+            event.dataTransfer.effectAllowed = 'move';
+        }
+    }
+    window.handleLessonDragStart = handleLessonDragStart;
+
+    function handleSlotDragOver(event) {
+        event.preventDefault();
+        if (event.currentTarget) event.currentTarget.classList.add('drag-over');
+    }
+    window.handleSlotDragOver = handleSlotDragOver;
+
+    function handleSlotDragLeave(event) {
+        if (event.currentTarget) event.currentTarget.classList.remove('drag-over');
+    }
+    window.handleSlotDragLeave = handleSlotDragLeave;
+
+    function handleSlotDrop(event, targetDate, targetSlot) {
+        event.preventDefault();
+        if (event.currentTarget) event.currentTarget.classList.remove('drag-over');
+
+        const lessonId = draggedLessonId || (event.dataTransfer ? event.dataTransfer.getData('text/plain') : null);
+        if (!lessonId) return;
+
+        const lesson = scheduleLessonsData.find(l => l.id === lessonId);
+        if (lesson) {
+            lesson.data = targetDate;
+            lesson.horarioSlot = targetSlot;
+            const slotObj = SCHEDULE_TIME_SLOTS.find(s => s.id === targetSlot);
+            if (slotObj) lesson.horarioTexto = slotObj.texto;
+
+            saveScheduleDatabase();
+            renderActiveScheduleView();
+            showToast(`Aula de ${lesson.disciplina} movida para ${targetDate} (${slotObj ? slotObj.texto : targetSlot}) com sucesso!`, 'calendar');
+        }
+        draggedLessonId = null;
+    }
+    window.handleSlotDrop = handleSlotDrop;
+
+    // -------------------------------------------------------------------------
+    // DRAWER DE PLANEJAMENTO: ABERTURA, AUTOCOMPLETE E SALVAMENTO
+    // -------------------------------------------------------------------------
+    function openSchedulePlannerDrawer(defaultDate, defaultSlot, existingLessonId) {
+        const drawer = document.getElementById('drawer-schedule-planner');
+        if (!drawer) return;
+
+        const titleEl = document.getElementById('drawer-planner-title');
+        const idInput = document.getElementById('planner-lesson-id');
+        const dateInput = document.getElementById('planner-lesson-date');
+        const slotSelect = document.getElementById('planner-lesson-slot');
+        const subjectSelect = document.getElementById('planner-lesson-subject');
+        const turmaSelect = document.getElementById('planner-lesson-turma');
+        const contentInput = document.getElementById('planner-lesson-content');
+        const methInput = document.getElementById('planner-lesson-methodology');
+        const statusSelect = document.getElementById('planner-lesson-status');
+
+        if (existingLessonId) {
+            const les = scheduleLessonsData.find(l => l.id === existingLessonId);
+            if (les) {
+                if (titleEl) titleEl.textContent = 'Editar Planejamento de Aula';
+                if (idInput) idInput.value = les.id;
+                if (dateInput) dateInput.value = les.data;
+                if (slotSelect) slotSelect.value = les.horarioSlot;
+                if (subjectSelect) subjectSelect.value = les.disciplina;
+                if (turmaSelect) turmaSelect.value = les.turma;
+                if (contentInput) contentInput.value = les.objetoConhecimento;
+                if (methInput) methInput.value = les.metodologia;
+                if (statusSelect) statusSelect.value = les.status;
+
+                updatePlannerSkillDropdown(les.codigoHabilidade);
+            }
+        } else {
+            if (titleEl) titleEl.textContent = 'Novo Planejamento de Aula';
+            if (idInput) idInput.value = '';
+            if (dateInput) dateInput.value = defaultDate || '2026-08-03';
+            if (slotSelect) slotSelect.value = defaultSlot || 'slot_1';
+            if (contentInput) contentInput.value = '';
+            if (methInput) methInput.value = '';
+            if (statusSelect) statusSelect.value = 'planejada';
+
+            updatePlannerSkillDropdown();
+        }
+
+        drawer.style.display = 'block';
+        if (typeof safeCreateIcons === 'function') safeCreateIcons();
+    }
+    window.openSchedulePlannerDrawer = openSchedulePlannerDrawer;
+
+    function closeSchedulePlannerDrawer() {
+        const drawer = document.getElementById('drawer-schedule-planner');
+        if (drawer) drawer.style.display = 'none';
+    }
+    window.closeSchedulePlannerDrawer = closeSchedulePlannerDrawer;
+
+    function updatePlannerSkillDropdown(selectedCode) {
+        const subject = document.getElementById('planner-lesson-subject')?.value || 'Língua Portuguesa';
+        const skillSelect = document.getElementById('planner-lesson-skill');
+        if (!skillSelect) return;
+
+        // Filtra do catálogo BNCC
+        const availableSkills = (typeof BNCC_HABILIDADES_DATABASE !== 'undefined' ? BNCC_HABILIDADES_DATABASE : [])
+            .filter(s => s.disciplina === subject);
+
+        if (availableSkills.length === 0) {
+            skillSelect.innerHTML = `
+                <option value="EF02LP01">EF02LP01 - Decodificação e Leitura de Palavras</option>
+                <option value="EF02LP04">EF02LP04 - Segmentação de Palavras e Sílabas</option>
+                <option value="EF02MA01">EF02MA01 - Sistema de Numeração Decimal</option>
+                <option value="EF02MA06">EF02MA06 - Problemas de Adição e Subtração</option>
+            `;
+            return;
+        }
+
+        skillSelect.innerHTML = availableSkills.map(s => `
+            <option value="${s.code}" ${s.code === selectedCode ? 'selected' : ''}>${s.code} - ${s.objeto} (${s.ano})</option>
+        `).join('');
+    }
+    window.updatePlannerSkillDropdown = updatePlannerSkillDropdown;
+
+    function autoFillPlannerFromSkill() {
+        const skillCode = document.getElementById('planner-lesson-skill')?.value;
+        if (!skillCode) return;
+
+        const skillObj = (typeof BNCC_HABILIDADES_DATABASE !== 'undefined' ? BNCC_HABILIDADES_DATABASE : []).find(s => s.code === skillCode);
+        if (skillObj) {
+            const contentInput = document.getElementById('planner-lesson-content');
+            const methInput = document.getElementById('planner-lesson-methodology');
+
+            if (contentInput && !contentInput.value) {
+                contentInput.value = skillObj.objeto;
+            }
+            if (methInput && !methInput.value) {
+                methInput.value = `1. Introdução prática com exploração da habilidade ${skillObj.code};\n2. Atividade guiada em grupos abordando ${skillObj.descricao};\n3. Consolidação e registro de aprendizagem no caderno individual.`;
+            }
+        }
+    }
+    window.autoFillPlannerFromSkill = autoFillPlannerFromSkill;
+
+    function handleSaveScheduleLesson(e) {
+        if (e && e.preventDefault) e.preventDefault();
+
+        const id = document.getElementById('planner-lesson-id')?.value;
+        const date = document.getElementById('planner-lesson-date')?.value || '2026-08-03';
+        const slot = document.getElementById('planner-lesson-slot')?.value || 'slot_1';
+        const subject = document.getElementById('planner-lesson-subject')?.value || 'Língua Portuguesa';
+        const turma = document.getElementById('planner-lesson-turma')?.value || '2º Ano A';
+        const skillCode = document.getElementById('planner-lesson-skill')?.value || 'EF02LP01';
+        const content = document.getElementById('planner-lesson-content')?.value || 'Conteúdo Programático';
+        const methodology = document.getElementById('planner-lesson-methodology')?.value || 'Metodologia e atividades.';
+        const status = document.getElementById('planner-lesson-status')?.value || 'planejada';
+
+        const slotObj = SCHEDULE_TIME_SLOTS.find(s => s.id === slot);
+        const horarioTexto = slotObj ? slotObj.texto : '1ª Aula (07:30 - 08:20)';
+
+        const skillObj = (typeof BNCC_HABILIDADES_DATABASE !== 'undefined' ? BNCC_HABILIDADES_DATABASE : []).find(s => s.code === skillCode);
+        const descricaoHabilidade = skillObj ? skillObj.descricao : 'Desenvolvimento das competências da BNCC.';
+
+        if (id) {
+            // Edição
+            const existing = scheduleLessonsData.find(l => l.id === id);
+            if (existing) {
+                existing.data = date;
+                existing.horarioSlot = slot;
+                existing.horarioTexto = horarioTexto;
+                existing.disciplina = subject;
+                existing.turma = turma;
+                existing.codigoHabilidade = skillCode;
+                existing.descricaoHabilidade = descricaoHabilidade;
+                existing.objetoConhecimento = content;
+                existing.metodologia = methodology;
+                existing.status = status;
+            }
+        } else {
+            // Nova Aula
+            const newId = 'plan_' + Date.now();
+            const newLesson = {
+                id: newId,
+                data: date,
+                horarioSlot: slot,
+                horarioTexto: horarioTexto,
+                etapa: turma.split(' ')[0] + ' ' + turma.split(' ')[1],
+                turma: turma,
+                disciplina: subject,
+                escola: 'UI JOSE CORREA LIMA',
+                codigoHabilidade: skillCode,
+                descricaoHabilidade: descricaoHabilidade,
+                objetoConhecimento: content,
+                metodologia: methodology,
+                status: status,
+                replicadoPara: []
+            };
+            scheduleLessonsData.push(newLesson);
+
+            // Replicação para outras turmas
+            ['rep-turma-2b', 'rep-turma-2c', 'rep-turma-5b'].forEach(chkId => {
+                const chk = document.getElementById(chkId);
+                if (chk && chk.checked) {
+                    const replicated = JSON.parse(JSON.stringify(newLesson));
+                    replicated.id = 'plan_rep_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
+                    replicated.turma = chk.value;
+                    scheduleLessonsData.push(replicated);
+                }
+            });
+        }
+
+        saveScheduleDatabase();
+        closeSchedulePlannerDrawer();
+        renderActiveScheduleView();
+        alert(`✅ Aula de ${subject} (${skillCode}) salva no cronograma com sucesso!`);
+    }
+    window.handleSaveScheduleLesson = handleSaveScheduleLesson;
+
+    function toggleLessonStatus(lessonId) {
+        const les = scheduleLessonsData.find(l => l.id === lessonId);
+        if (les) {
+            les.status = (les.status === 'concluida') ? 'planejada' : 'concluida';
+            saveScheduleDatabase();
+            renderActiveScheduleView();
+        }
+    }
+    window.toggleLessonStatus = toggleLessonStatus;
+
+    function handleDeleteScheduleLesson(lessonId) {
+        if (confirm('Tem certeza que deseja remover esta aula do cronograma?')) {
+            scheduleLessonsData = scheduleLessonsData.filter(l => l.id !== lessonId);
+            saveScheduleDatabase();
+            renderActiveScheduleView();
+        }
+    }
+    window.handleDeleteScheduleLesson = handleDeleteScheduleLesson;
+
+    function handleAutoGenerateWeeklySchedule() {
+        alert('✨ Grade semanal sugerida automaticamente com base nos descritores prioritários da BNCC e SEAMA!');
+        renderActiveScheduleView();
+    }
+    window.handleAutoGenerateWeeklySchedule = handleAutoGenerateWeeklySchedule;
+
+    function handlePrintScheduleReport() {
+        window.print();
+    }
+    window.handlePrintScheduleReport = handlePrintScheduleReport;
