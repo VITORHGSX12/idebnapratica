@@ -5256,3 +5256,71 @@ body.collapsed-sidebar .sidebar-collapse-toggle svg {
     justify-content: center;
     padding: 20px;
 }
+
+
+/* =========================================================================
+   CRONOGRAMA & PLANEJAMENTO V2: ATRASOS, COMPARATIVO, DRAWER EXPANDIDO & LIXEIRA
+   ========================================================================= */
+
+/* Alerta de Atraso / Pendência Vencida */
+.cal-lesson-tag.tag-atrasada {
+    background: #fee2e2 !important;
+    color: #b91c1c !important;
+    border: 1.5px solid #ef4444 !important;
+    box-shadow: 0 0 6px rgba(239, 68, 68, 0.25);
+    animation: pulseAlert 2s infinite ease-in-out;
+}
+
+.weekly-lesson-card.status-atrasada {
+    border-left: 4px solid #ef4444 !important;
+    background: rgba(239, 68, 68, 0.05) !important;
+    border-color: #fca5a5 !important;
+}
+
+@keyframes pulseAlert {
+    0%, 100% { border-color: #ef4444; }
+    50% { border-color: #b91c1c; }
+}
+
+/* Day Expanded Side Drawer */
+#drawer-day-expanded {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 440px;
+    background: var(--bg-secondary);
+    border-left: 1px solid var(--border-color);
+    box-shadow: -8px 0 30px rgba(0,0,0,0.25);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    animation: slideInRight 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Turma Context Badge */
+.turma-context-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    color: #6366f1;
+    padding: 6px 14px;
+    border-radius: var(--radius-md);
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+/* Comparison Cards */
+.comparison-column-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}

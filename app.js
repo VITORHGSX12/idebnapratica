@@ -19424,3 +19424,1089 @@ window.renderDbSchools = function renderDbSchools() {
         renderReferenceMatrix();
     }
     window.filterMatrizDescritores = filterMatrizDescritores;
+
+
+
+    // =========================================================================
+    // =========================================================================
+    // CRONOGRAMA & PLANEJAMENTO ESCOLAR V2 (ROTINAS POR TURMA, ATRASOS, COMPARATIVO)
+    // =========================================================================
+    // =========================================================================
+
+    const SCHEDULE_STORAGE_KEY = 'teacher_schedule_lessons_db';
+    const SCHEDULE_TRASH_STORAGE_KEY = 'teacher_schedule_trash_db';
+
+    // Seed inicial de aulas separadas por turma
+    let DEFAULT_SCHEDULE_LESSONS_V2 = [
+        // UI JOSE CORREA LIMA — 2º Ano A (Matutino)
+        {
+            id: 'les_2a_01',
+            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano A',
+            escola: 'UI JOSE CORREA LIMA',
+            turma: '2º Ano A',
+            etapa: '2º Ano',
+            disciplina: 'Língua Portuguesa',
+            habilidadeCode: 'EF02LP01',
+            habilidadeDesc: 'Expressar-se em situações de intercâmbio oral com clareza e ritmo.',
+            date: '2026-08-04',
+            time: '07:30 - 08:20',
+            status: 'trabalhada',
+            methodology: 'Roda de leitura e cantigas populares maranhenses.',
+            criadoPor: 'Profa. Silvana Ferreira (Regente)',
+            createdAt: '2026-08-01T08:00:00Z'
+        },
+        {
+            id: 'les_2a_02',
+            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano A',
+            escola: 'UI JOSE CORREA LIMA',
+            turma: '2º Ano A',
+            etapa: '2º Ano',
+            disciplina: 'Matemática',
+            habilidadeCode: 'EF02MA01',
+            habilidadeDesc: 'Comparar e ordenar números naturais até a ordem de centenas.',
+            date: '2026-08-05',
+            time: '08:20 - 09:10',
+            status: 'trabalhada',
+            methodology: 'Uso de material dourado e reta numérica desenhada no pátio.',
+            criadoPor: 'Profa. Silvana Ferreira (Regente)',
+            createdAt: '2026-08-01T08:00:00Z'
+        },
+        {
+            id: 'les_2a_03',
+            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano A',
+            escola: 'UI JOSE CORREA LIMA',
+            turma: '2º Ano A',
+            etapa: '2º Ano',
+            disciplina: 'Língua Portuguesa',
+            habilidadeCode: 'EF02LP04',
+            habilidadeDesc: 'Ler e escrever corretamente palavras com sílabas CV, V, CVC, CCV.',
+            date: '2026-08-10',
+            time: '07:30 - 08:20',
+            status: 'trabalhada',
+            methodology: 'Ditado interativo e caça-palavras de parlendas.',
+            criadoPor: 'Profa. Silvana Ferreira (Regente)',
+            createdAt: '2026-08-01T08:00:00Z'
+        },
+        {
+            id: 'les_2a_04',
+            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano A',
+            escola: 'UI JOSE CORREA LIMA',
+            turma: '2º Ano A',
+            etapa: '2º Ano',
+            disciplina: 'Matemática',
+            habilidadeCode: 'EF02MA06',
+            habilidadeDesc: 'Resolver e elaborar problemas de adição e subtração com suporte de imagens.',
+            date: '2026-08-12',
+            time: '09:25 - 10:15',
+            status: 'planejada', // Atrasada pois date < 18/08
+            methodology: 'Mercadinho pedagógico com cédulas e moedas simuladas.',
+            criadoPor: 'Profa. Silvana Ferreira (Regente)',
+            createdAt: '2026-08-01T08:00:00Z'
+        },
+        {
+            id: 'les_2a_05',
+            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano A',
+            escola: 'UI JOSE CORREA LIMA',
+            turma: '2º Ano A',
+            etapa: '2º Ano',
+            disciplina: 'Ciências da Natureza',
+            habilidadeCode: 'EF02CI01',
+            habilidadeDesc: 'Identificar de que materiais são feitos os objetos do cotidiano.',
+            date: '2026-08-14',
+            time: '10:15 - 11:05',
+            status: 'planejada', // Atrasada pois date < 18/08
+            methodology: 'Laboratório de investigação de materiais recicláveis.',
+            criadoPor: 'Profa. Silvana Ferreira (Regente)',
+            createdAt: '2026-08-01T08:00:00Z'
+        },
+        {
+            id: 'les_2a_06',
+            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano A',
+            escola: 'UI JOSE CORREA LIMA',
+            turma: '2º Ano A',
+            etapa: '2º Ano',
+            disciplina: 'Língua Portuguesa',
+            habilidadeCode: 'EF02LP07',
+            habilidadeDesc: 'Escrever palavras e pequenos textos observando a pontuação final.',
+            date: '2026-08-19',
+            time: '07:30 - 08:20',
+            status: 'planejada', // Futura
+            methodology: 'Produção coletiva de bilhete escolar.',
+            criadoPor: 'Profa. Silvana Ferreira (Regente)',
+            createdAt: '2026-08-01T08:00:00Z'
+        },
+        {
+            id: 'les_2a_07',
+            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano A',
+            escola: 'UI JOSE CORREA LIMA',
+            turma: '2º Ano A',
+            etapa: '2º Ano',
+            disciplina: 'Matemática',
+            habilidadeCode: 'EF02MA16',
+            habilidadeDesc: 'Estimar, medir e comparar comprimentos de lados de salas e objetos.',
+            date: '2026-08-21',
+            time: '08:20 - 09:10',
+            status: 'planejada', // Futura
+            methodology: 'Medição com fita métrica e passos no pátio.',
+            criadoPor: 'Profa. Silvana Ferreira (Regente)',
+            createdAt: '2026-08-01T08:00:00Z'
+        },
+
+        // UI JOSE CORREA LIMA — 2º Ano B (Vespertino)
+        {
+            id: 'les_2b_01',
+            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano B',
+            escola: 'UI JOSE CORREA LIMA',
+            turma: '2º Ano B',
+            etapa: '2º Ano',
+            disciplina: 'Língua Portuguesa',
+            habilidadeCode: 'EF02LP01',
+            habilidadeDesc: 'Expressar-se em situações de intercâmbio oral com clareza.',
+            date: '2026-08-04',
+            time: '13:30 - 14:20',
+            status: 'trabalhada',
+            methodology: 'Contação de histórias e roda de conversa.',
+            criadoPor: 'Prof. Marcos Andrade',
+            createdAt: '2026-08-01T08:00:00Z'
+        },
+        {
+            id: 'les_2b_02',
+            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano B',
+            escola: 'UI JOSE CORREA LIMA',
+            turma: '2º Ano B',
+            etapa: '2º Ano',
+            disciplina: 'Matemática',
+            habilidadeCode: 'EF02MA01',
+            habilidadeDesc: 'Comparar e ordenar números naturais até centenas.',
+            date: '2026-08-06',
+            time: '14:20 - 15:10',
+            status: 'trabalhada',
+            methodology: 'Jogos de tabuleiro numérico.',
+            criadoPor: 'Prof. Marcos Andrade',
+            createdAt: '2026-08-01T08:00:00Z'
+        },
+        {
+            id: 'les_2b_03',
+            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano B',
+            escola: 'UI JOSE CORREA LIMA',
+            turma: '2º Ano B',
+            etapa: '2º Ano',
+            disciplina: 'Língua Portuguesa',
+            habilidadeCode: 'EF02LP04',
+            habilidadeDesc: 'Ler e escrever palavras com sílabas canônicas.',
+            date: '2026-08-11',
+            time: '13:30 - 14:20',
+            status: 'planejada', // Atrasada
+            methodology: 'Cartões ilustrados.',
+            criadoPor: 'Prof. Marcos Andrade',
+            createdAt: '2026-08-01T08:00:00Z'
+        },
+
+        // UNIDADE INTEGRADA JOSE GONCALVES DIAS — 5º Ano A
+        {
+            id: 'les_5a_01',
+            turmaContext: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS — 5º Ano A',
+            escola: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS',
+            turma: '5º Ano A',
+            etapa: '5º Ano',
+            disciplina: 'Língua Portuguesa',
+            habilidadeCode: 'D1',
+            habilidadeDesc: 'Localizar informações explícitas em um texto.',
+            date: '2026-08-05',
+            time: '07:30 - 08:20',
+            status: 'trabalhada',
+            methodology: 'Leitura comentada de crônicas de autores maranhenses.',
+            criadoPor: 'Profa. Claudia Mendes',
+            createdAt: '2026-08-01T08:00:00Z'
+        },
+        {
+            id: 'les_5a_02',
+            turmaContext: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS — 5º Ano A',
+            escola: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS',
+            turma: '5º Ano A',
+            etapa: '5º Ano',
+            disciplina: 'Matemática',
+            habilidadeCode: 'D13',
+            habilidadeDesc: 'Resolver problemas envolvendo o cálculo de área de figuras planas.',
+            date: '2026-08-07',
+            time: '08:20 - 09:10',
+            status: 'trabalhada',
+            methodology: 'Malha quadriculada e tangram.',
+            criadoPor: 'Profa. Claudia Mendes',
+            createdAt: '2026-08-01T08:00:00Z'
+        }
+    ];
+
+    function getScheduleLessonsDb() {
+        try {
+            const raw = localStorage.getItem(SCHEDULE_STORAGE_KEY);
+            if (raw) return JSON.parse(raw);
+        } catch(e) {}
+        return DEFAULT_SCHEDULE_LESSONS_V2;
+    }
+
+    function saveScheduleLessonsDb(lessons) {
+        try {
+            localStorage.setItem(SCHEDULE_STORAGE_KEY, JSON.stringify(lessons));
+        } catch(e) {}
+    }
+
+    function getScheduleTrashDb() {
+        try {
+            const raw = localStorage.getItem(SCHEDULE_TRASH_STORAGE_KEY);
+            if (raw) return JSON.parse(raw);
+        } catch(e) {}
+        return [];
+    }
+
+    function saveScheduleTrashDb(trash) {
+        try {
+            localStorage.setItem(SCHEDULE_TRASH_STORAGE_KEY, JSON.stringify(trash));
+        } catch(e) {}
+        updateTrashBadgeCount();
+    }
+
+    function updateTrashBadgeCount() {
+        const trash = getScheduleTrashDb();
+        const badge = document.getElementById('trash-count-badge');
+        if (badge) {
+            badge.textContent = `Lixeira (${trash.length})`;
+        }
+    }
+    window.updateTrashBadgeCount = updateTrashBadgeCount;
+
+    // =========================================================================
+    // CONTEXTO DE TURMA ATIVA & NAVEGAÇÃO
+    // =========================================================================
+
+    let currentTurmaContext = 'UI JOSE CORREA LIMA — 2º Ano A';
+    let currentScheduleMainView = 'monthly'; // 'monthly' | 'weekly' | 'comparison'
+
+    function handleTurmaContextChange() {
+        const select = document.getElementById('cal-filter-turma-context');
+        if (select) {
+            currentTurmaContext = select.value;
+        }
+        
+        // Atualizar labels no topo
+        const contextLabel = document.getElementById('schedule-active-context-label');
+        if (contextLabel) contextLabel.textContent = currentTurmaContext;
+
+        const teacherLabel = document.getElementById('schedule-active-teacher-label');
+        if (teacherLabel) {
+            if (currentTurmaContext.includes('2º Ano A')) {
+                teacherLabel.textContent = '• Responsável: Profa. Silvana Ferreira (Regente)';
+            } else if (currentTurmaContext.includes('2º Ano B')) {
+                teacherLabel.textContent = '• Responsável: Prof. Marcos Andrade (Regente)';
+            } else {
+                teacherLabel.textContent = '• Responsável: Coordenação Pedagógica / Regente';
+            }
+        }
+
+        renderActiveScheduleView();
+    }
+    window.handleTurmaContextChange = handleTurmaContextChange;
+
+    function switchScheduleMainView(view) {
+        currentScheduleMainView = view;
+        
+        const btnMonthly = document.getElementById('btn-view-monthly');
+        const btnWeekly = document.getElementById('btn-view-weekly');
+        const btnComp = document.getElementById('btn-view-comparison');
+
+        const viewMonthly = document.getElementById('schedule-view-monthly');
+        const viewWeekly = document.getElementById('schedule-view-weekly');
+        const viewComp = document.getElementById('schedule-view-comparison');
+
+        [btnMonthly, btnWeekly, btnComp].forEach(btn => {
+            if (!btn) return;
+            btn.classList.remove('active');
+            btn.style.background = 'transparent';
+            btn.style.color = 'var(--text-secondary)';
+            btn.style.fontWeight = '600';
+        });
+
+        const activeBtn = view === 'monthly' ? btnMonthly : (view === 'weekly' ? btnWeekly : btnComp);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+            activeBtn.style.background = '#6366f1';
+            activeBtn.style.color = '#ffffff';
+            activeBtn.style.fontWeight = '700';
+        }
+
+        if (viewMonthly) viewMonthly.style.display = view === 'monthly' ? 'block' : 'none';
+        if (viewWeekly) viewWeekly.style.display = view === 'weekly' ? 'block' : 'none';
+        if (viewComp) viewComp.style.display = view === 'comparison' ? 'block' : 'none';
+
+        renderActiveScheduleView();
+    }
+    window.switchScheduleMainView = switchScheduleMainView;
+
+    function renderActiveScheduleView() {
+        if (currentScheduleMainView === 'monthly') {
+            renderScheduleMonthlyCalendar();
+        } else if (currentScheduleMainView === 'weekly') {
+            renderScheduleWeeklyTimetable();
+        } else if (currentScheduleMainView === 'comparison') {
+            renderScheduleComparisonView();
+        }
+        updateTrashBadgeCount();
+    }
+    window.renderActiveScheduleView = renderActiveScheduleView;
+
+    // =========================================================================
+    // VISÃO MENSAL REDESENHADA (COM ALERTA DE ATRASO, DRAG & DROP E EXPANSOR)
+    // =========================================================================
+
+    function renderScheduleMonthlyCalendar() {
+        const grid = document.getElementById('calendar-monthly-cells-grid');
+        const accordion = document.getElementById('calendar-monthly-accordion-mobile');
+        const statsEl = document.getElementById('monthly-stats-summary');
+        if (!grid) return;
+
+        const allLessons = getScheduleLessonsDb();
+        const subjectFilter = document.getElementById('cal-filter-subject-v2')?.value || 'all';
+
+        // Filtrar pela turma de contexto ativa
+        const turmaLessons = allLessons.filter(l => {
+            if (l.turmaContext !== currentTurmaContext) return false;
+            if (subjectFilter !== 'all' && l.disciplina !== subjectFilter) return false;
+            return true;
+        });
+
+        const todayStr = '2026-08-18'; // Data de referência do sistema
+
+        // Totalizadores
+        const total = turmaLessons.length;
+        const trabalhadas = turmaLessons.filter(l => l.status === 'trabalhada').length;
+        const atrasadas = turmaLessons.filter(l => l.status === 'planejada' && l.date < todayStr).length;
+        const planejadasFuturas = turmaLessons.filter(l => l.status === 'planejada' && l.date >= todayStr).length;
+        const pct = total > 0 ? Math.round((trabalhadas / total) * 100) : 0;
+
+        if (statsEl) {
+            statsEl.innerHTML = `
+                <span>${trabalhadas} de ${total} aulas trabalhadas (${pct}%)</span>
+                ${atrasadas > 0 ? `<span style="color: #ef4444; margin-left: 10px;">• ⚠️ ${atrasadas} em atraso</span>` : ''}
+            `;
+        }
+
+        // Montar dias de Agosto de 2026 (1 a 31)
+        grid.innerHTML = '';
+        if (accordion) accordion.innerHTML = '';
+
+        // Offset de início (Agosto de 2026 começa no Sábado, dia da semana 6)
+        const startDayOfWeek = 6; // Sábado
+        for (let i = 0; i < startDayOfWeek; i++) {
+            const emptyCell = document.createElement('div');
+            emptyCell.className = 'cal-day-cell cal-day-empty';
+            emptyCell.style.background = 'var(--bg-tertiary)';
+            emptyCell.style.minHeight = '110px';
+            emptyCell.style.opacity = '0.4';
+            grid.appendChild(emptyCell);
+        }
+
+        for (let d = 1; d <= 31; d++) {
+            const dayNumStr = String(d).padStart(2, '0');
+            const dateIso = `2026-08-${dayNumStr}`;
+            const dayLessons = turmaLessons.filter(l => l.date === dateIso);
+            const isToday = dateIso === todayStr;
+
+            // Desktop Cell
+            const cell = document.createElement('div');
+            cell.className = `cal-day-cell ${isToday ? 'cal-day-today' : ''}`;
+            cell.style.minHeight = '115px';
+            cell.style.background = isToday ? 'rgba(99, 102, 241, 0.05)' : 'var(--bg-primary)';
+            cell.style.padding = '8px';
+            cell.style.display = 'flex';
+            cell.style.flexDirection = 'column';
+            cell.style.gap = '4px';
+            cell.style.position = 'relative';
+
+            // Drag & Drop Target
+            cell.ondragover = (e) => { e.preventDefault(); cell.style.background = 'rgba(99, 102, 241, 0.15)'; };
+            cell.ondragleave = () => { cell.style.background = isToday ? 'rgba(99, 102, 241, 0.05)' : 'var(--bg-primary)'; };
+            cell.ondrop = (e) => {
+                e.preventDefault();
+                cell.style.background = isToday ? 'rgba(99, 102, 241, 0.05)' : 'var(--bg-primary)';
+                const lessonId = e.dataTransfer.getData('text/plain');
+                if (lessonId) handleLessonDropToDate(lessonId, dateIso);
+            };
+
+            // Day Header
+            const headerDiv = document.createElement('div');
+            headerDiv.style.display = 'flex';
+            headerDiv.style.justifyContent = 'space-between';
+            headerDiv.style.alignItems = 'center';
+            headerDiv.style.marginBottom = '2px';
+
+            const daySpan = document.createElement('span');
+            daySpan.style.fontWeight = isToday ? '800' : '700';
+            daySpan.style.fontSize = '0.85rem';
+            daySpan.style.color = isToday ? '#6366f1' : 'var(--text-primary)';
+            daySpan.textContent = d;
+            headerDiv.appendChild(daySpan);
+
+            // Botão Expandir Dia / Ver Todas
+            if (dayLessons.length > 0) {
+                const expandBtn = document.createElement('button');
+                expandBtn.type = 'button';
+                expandBtn.title = `Ver ${dayLessons.length} aulas do dia ${dayNumStr}/08`;
+                expandBtn.style.background = 'rgba(99,102,241,0.1)';
+                expandBtn.style.border = 'none';
+                expandBtn.style.color = '#6366f1';
+                expandBtn.style.fontSize = '0.68rem';
+                expandBtn.style.fontWeight = '700';
+                expandBtn.style.borderRadius = '4px';
+                expandBtn.style.padding = '1px 5px';
+                expandBtn.style.cursor = 'pointer';
+                expandBtn.textContent = `${dayLessons.length} aulas 👁️`;
+                expandBtn.onclick = (e) => { e.stopPropagation(); openDayExpandedDrawer(dateIso); };
+                headerDiv.appendChild(expandBtn);
+            }
+
+            cell.appendChild(headerDiv);
+
+            // Renderizar até 2 chips diretamente na célula
+            const displayLessons = dayLessons.slice(0, 2);
+            displayLessons.forEach(les => {
+                const isAtrasada = les.status === 'planejada' && les.date < todayStr;
+                const tag = document.createElement('div');
+                tag.draggable = true;
+                tag.ondragstart = (e) => { e.dataTransfer.setData('text/plain', les.id); };
+                tag.className = `cal-lesson-tag ${les.status === 'trabalhada' ? 'tag-trabalhada' : (isAtrasada ? 'tag-atrasada' : 'tag-planejada')}`;
+                tag.style.fontSize = '0.72rem';
+                tag.style.padding = '4px 6px';
+                tag.style.borderRadius = '4px';
+                tag.style.cursor = 'grab';
+                tag.style.marginBottom = '2px';
+                tag.style.display = 'flex';
+                tag.style.justifyContent = 'space-between';
+                tag.style.alignItems = 'center';
+                tag.onclick = () => openDayExpandedDrawer(dateIso);
+
+                tag.innerHTML = `
+                    <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700;">
+                        ${isAtrasada ? '⚠️ ' : (les.status === 'trabalhada' ? '✓ ' : '⏳ ')}${les.habilidadeCode || les.disciplina}
+                    </div>
+                `;
+                cell.appendChild(tag);
+            });
+
+            if (dayLessons.length > 2) {
+                const moreBtn = document.createElement('div');
+                moreBtn.style.fontSize = '0.7rem';
+                moreBtn.style.color = '#6366f1';
+                moreBtn.style.fontWeight = '700';
+                moreBtn.style.cursor = 'pointer';
+                moreBtn.style.textAlign = 'center';
+                moreBtn.style.marginTop = '2px';
+                moreBtn.textContent = `+${dayLessons.length - 2} aulas (ver todas)`;
+                moreBtn.onclick = () => openDayExpandedDrawer(dateIso);
+                cell.appendChild(moreBtn);
+            }
+
+            grid.appendChild(cell);
+        }
+    }
+    window.renderScheduleMonthlyCalendar = renderScheduleMonthlyCalendar;
+
+    // =========================================================================
+    // VISÃO SEMANAL TIMETABLE (DRAG & DROP)
+    // =========================================================================
+
+    function renderScheduleWeeklyTimetable() {
+        const container = document.getElementById('weekly-timetable-grid');
+        if (!container) return;
+
+        const allLessons = getScheduleLessonsDb();
+        const turmaLessons = allLessons.filter(l => l.turmaContext === currentTurmaContext);
+        const todayStr = '2026-08-18';
+
+        const daysOfWeek = [
+            { label: 'Segunda-feira', dateIso: '2026-08-17', short: 'SEG 17/08' },
+            { label: 'Terça-feira', dateIso: '2026-08-18', short: 'TER 18/08 (Hoje)' },
+            { label: 'Quarta-feira', dateIso: '2026-08-19', short: 'QUA 19/08' },
+            { label: 'Quinta-feira', dateIso: '2026-08-20', short: 'QUI 20/08' },
+            { label: 'Sexta-feira', dateIso: '2026-08-21', short: 'SEX 21/08' }
+        ];
+
+        let html = `
+            <div style="display: grid; grid-template-columns: 100px repeat(5, 1fr); border-bottom: 1px solid var(--border-color); background: var(--bg-secondary); font-weight: 700; font-size: 0.8rem; text-align: center;">
+                <div style="padding: 12px; border-right: 1px solid var(--border-color); color: var(--text-muted);">HORÁRIO</div>
+                ${daysOfWeek.map(d => `<div style="padding: 12px; border-right: 1px solid var(--border-color); color: ${d.dateIso === todayStr ? '#6366f1' : 'var(--text-primary)'};">${d.short}</div>`).join('')}
+            </div>
+        `;
+
+        const timeSlots = [
+            '07:30 - 08:20',
+            '08:20 - 09:10',
+            '09:25 - 10:15',
+            '10:15 - 11:05'
+        ];
+
+        timeSlots.forEach(slot => {
+            html += `
+                <div style="display: grid; grid-template-columns: 100px repeat(5, 1fr); border-bottom: 1px solid var(--border-color); min-height: 85px;">
+                    <div style="padding: 10px; border-right: 1px solid var(--border-color); font-size: 0.75rem; font-weight: 700; color: var(--text-muted); background: var(--bg-tertiary); display: flex; align-items: center; justify-content: center;">
+                        ${slot}
+                    </div>
+                    ${daysOfWeek.map(d => {
+                        const slotLessons = turmaLessons.filter(l => l.date === d.dateIso && l.time === slot);
+                        return `
+                            <div class="weekly-slot-cell" style="padding: 6px; border-right: 1px solid var(--border-color); background: var(--bg-primary); display: flex; flex-direction: column; gap: 4px;"
+                                 ondragover="event.preventDefault(); this.style.background='rgba(99,102,241,0.1)';"
+                                 ondragleave="this.style.background='var(--bg-primary)';"
+                                 ondrop="event.preventDefault(); this.style.background='var(--bg-primary)'; const lid = event.dataTransfer.getData('text/plain'); if(lid) handleLessonDropToSlot(lid, '${d.dateIso}', '${slot}');">
+                                ${slotLessons.map(les => {
+                                    const isAtrasada = les.status === 'planejada' && les.date < todayStr;
+                                    return `
+                                        <div draggable="true" ondragstart="event.dataTransfer.setData('text/plain', '${les.id}');"
+                                             class="weekly-lesson-card ${les.status === 'trabalhada' ? 'status-trabalhada' : (isAtrasada ? 'status-atrasada' : 'status-planejada')}"
+                                             style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-secondary); font-size: 0.75rem; cursor: grab; box-shadow: 0 1px 3px rgba(0,0,0,0.05);"
+                                             onclick="openDayExpandedDrawer('${les.date}');">
+                                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                                                <strong style="color: #6366f1;">${les.habilidadeCode}</strong>
+                                                <span class="badge ${les.status === 'trabalhada' ? 'badge-success' : (isAtrasada ? 'badge-danger' : 'badge-warning')}" style="font-size: 0.65rem;">
+                                                    ${isAtrasada ? '⚠️ Atrasada' : (les.status === 'trabalhada' ? 'Trabalhada' : 'Planejada')}
+                                                </span>
+                                            </div>
+                                            <div style="font-weight: 600; color: var(--text-primary); font-size: 0.72rem; line-height: 1.3;">${les.disciplina}</div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+    }
+    window.renderScheduleWeeklyTimetable = renderScheduleWeeklyTimetable;
+
+    // =========================================================================
+    // VISÃO COMPARATIVO LADO A LADO ENTRE TURMAS
+    // =========================================================================
+
+    function renderScheduleComparisonView() {
+        const container = document.getElementById('schedule-comparison-cards-container');
+        const sel1 = document.getElementById('compare-turma-select-1');
+        const sel2 = document.getElementById('compare-turma-select-2');
+        if (!container || !sel1 || !sel2) return;
+
+        const turma1 = sel1.value;
+        const turma2 = sel2.value;
+
+        const allLessons = getScheduleLessonsDb();
+        const lessons1 = allLessons.filter(l => l.turmaContext === turma1);
+        const lessons2 = allLessons.filter(l => l.turmaContext === turma2);
+
+        function buildColumnHtml(turmaName, lessons, accentColor) {
+            const total = lessons.length;
+            const trab = lessons.filter(l => l.status === 'trabalhada').length;
+            const atras = lessons.filter(l => l.status === 'planejada' && l.date < '2026-08-18').length;
+            const pct = total > 0 ? Math.round((trab / total) * 100) : 0;
+
+            const lpTrab = lessons.filter(l => l.disciplina === 'Língua Portuguesa' && l.status === 'trabalhada').length;
+            const mtTrab = lessons.filter(l => l.disciplina === 'Matemática' && l.status === 'trabalhada').length;
+            const ciTrab = lessons.filter(l => l.disciplina.includes('Ciências') && l.status === 'trabalhada').length;
+
+            return `
+                <div class="comparison-column-card">
+                    <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                        <span style="font-size: 0.72rem; font-weight: 800; color: ${accentColor}; text-transform: uppercase;">TURMA ANALISADA</span>
+                        <h4 style="margin: 2px 0 0 0; font-size: 1.1rem; font-weight: 800; color: var(--text-primary);">${turmaName}</h4>
+                    </div>
+
+                    <!-- Métricas Principais -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center;">
+                        <div style="padding: 10px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border-color);">
+                            <div style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted);">COBERTURA</div>
+                            <div style="font-size: 1.3rem; font-weight: 800; color: ${accentColor};">${pct}%</div>
+                        </div>
+                        <div style="padding: 10px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border-color);">
+                            <div style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted);">TRABALHADAS</div>
+                            <div style="font-size: 1.3rem; font-weight: 800; color: #10b981;">${trab}/${total}</div>
+                        </div>
+                        <div style="padding: 10px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border-color);">
+                            <div style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted);">ATRASOS</div>
+                            <div style="font-size: 1.3rem; font-weight: 800; color: ${atras > 0 ? '#ef4444' : '#10b981'};">${atras}</div>
+                        </div>
+                    </div>
+
+                    <!-- Progresso por Componente Curricular -->
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">Progresso por Disciplina:</div>
+                        
+                        <div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.72rem; font-weight: 600; margin-bottom: 2px;">
+                                <span>📖 Língua Portuguesa</span>
+                                <strong>${lpTrab} aulas trabalhadas</strong>
+                            </div>
+                            <div class="progress-bar-container" style="height: 8px; margin: 0;">
+                                <div class="progress-bar purple" style="width: ${total > 0 ? (lpTrab / total) * 100 : 0}%;"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.72rem; font-weight: 600; margin-bottom: 2px;">
+                                <span>📐 Matemática</span>
+                                <strong>${mtTrab} aulas trabalhadas</strong>
+                            </div>
+                            <div class="progress-bar-container" style="height: 8px; margin: 0;">
+                                <div class="progress-bar blue" style="width: ${total > 0 ? (mtTrab / total) * 100 : 0}%;"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.72rem; font-weight: 600; margin-bottom: 2px;">
+                                <span>🌱 Ciências da Natureza</span>
+                                <strong>${ciTrab} aulas trabalhadas</strong>
+                            </div>
+                            <div class="progress-bar-container" style="height: 8px; margin: 0;">
+                                <div class="progress-bar green" style="width: ${total > 0 ? (ciTrab / total) * 100 : 0}%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lista de Habilidades Agendadas -->
+                    <div style="flex: 1; border-top: 1px solid var(--border-color); padding-top: 10px;">
+                        <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px;">Habilidades Trabalhadas e Lacunas:</div>
+                        <div style="display: flex; flex-direction: column; gap: 6px; max-height: 220px; overflow-y: auto;">
+                            ${lessons.map(l => `
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.75rem;">
+                                    <div>
+                                        <strong style="color: #6366f1;">${l.habilidadeCode}</strong> - ${l.disciplina}
+                                        <div style="font-size: 0.68rem; color: var(--text-muted);">Data: ${l.date.split('-').reverse().join('/')}</div>
+                                    </div>
+                                    <span class="badge ${l.status === 'trabalhada' ? 'badge-success' : 'badge-warning'}">${l.status}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        container.innerHTML = buildColumnHtml(turma1, lessons1, '#6366f1') + buildColumnHtml(turma2, lessons2, '#10b981');
+    }
+    window.renderScheduleComparisonView = renderScheduleComparisonView;
+
+    // =========================================================================
+    // VISUALIZAÇÃO EXPANDIDA DO DIA (DRAWER LATERAL)
+    // =========================================================================
+
+    let activeExpandedDate = '2026-08-04';
+
+    function openDayExpandedDrawer(dateIso) {
+        activeExpandedDate = dateIso;
+        const overlay = document.getElementById('drawer-day-expanded-overlay');
+        const title = document.getElementById('drawer-day-title');
+        const subtitle = document.getElementById('drawer-day-subtitle');
+        const list = document.getElementById('drawer-day-lessons-list');
+        const addBtn = document.getElementById('btn-drawer-add-lesson-to-day');
+
+        if (!overlay || !list) return;
+
+        const formattedDate = dateIso.split('-').reverse().join('/');
+        if (title) title.textContent = `Aulas do Dia: ${formattedDate}`;
+        if (subtitle) subtitle.textContent = currentTurmaContext;
+
+        const allLessons = getScheduleLessonsDb();
+        const dayLessons = allLessons.filter(l => l.turmaContext === currentTurmaContext && l.date === dateIso);
+        const todayStr = '2026-08-18';
+
+        list.innerHTML = '';
+
+        if (dayLessons.length === 0) {
+            list.innerHTML = `
+                <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">📅</div>
+                    <p style="font-size: 0.85rem; margin: 0;">Nenhuma aula agendada para esta turma neste dia.</p>
+                </div>
+            `;
+        } else {
+            dayLessons.forEach(les => {
+                const isAtrasada = les.status === 'planejada' && les.date < todayStr;
+                const card = document.createElement('div');
+                card.style.background = 'var(--bg-primary)';
+                card.style.border = isAtrasada ? '1.5px solid #ef4444' : '1px solid var(--border-color)';
+                card.style.borderRadius = 'var(--radius-md)';
+                card.style.padding = '14px';
+                card.style.display = 'flex';
+                card.style.flexDirection = 'column';
+                card.style.gap = '8px';
+
+                card.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-weight: 800; font-size: 0.88rem; color: #6366f1;">${les.habilidadeCode}</span>
+                        <span class="badge ${les.status === 'trabalhada' ? 'badge-success' : (isAtrasada ? 'badge-danger' : 'badge-warning')}">
+                            ${isAtrasada ? '⚠️ Atrasada / Pendente' : (les.status === 'trabalhada' ? 'Trabalhada' : 'Planejada')}
+                        </span>
+                    </div>
+                    <div style="font-weight: 700; font-size: 0.85rem; color: var(--text-primary);">${les.disciplina} • ${les.time || 'Horário Padrão'}</div>
+                    <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0; line-height: 1.4;">${les.habilidadeDesc}</p>
+                    ${les.methodology ? `<div style="font-size: 0.72rem; color: var(--text-muted); background: var(--bg-tertiary); padding: 6px 8px; border-radius: 4px;"><strong>Metodologia:</strong> ${les.methodology}</div>` : ''}
+                    <div style="font-size: 0.7rem; color: var(--text-muted);">Responsável: ${les.criadoPor || 'Docente Regente'}</div>
+                    
+                    <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 6px; border-top: 1px solid var(--border-color); padding-top: 8px;">
+                        <button type="button" onclick="toggleLessonWorkStatus('${les.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem; font-weight: 700; color: ${les.status === 'trabalhada' ? '#f59e0b' : '#10b981'}; border-color: ${les.status === 'trabalhada' ? '#f59e0b' : '#10b981'};">
+                            ${les.status === 'trabalhada' ? 'Marcar como Planejada' : '✓ Concluir / Trabalhada'}
+                        </button>
+                        <button type="button" onclick="openDuplicateLessonModal('${les.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem;" title="Duplicar para outra turma">
+                            📋 Duplicar
+                        </button>
+                        <button type="button" onclick="handleDeleteLessonWithTrash('${les.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem; color: #ef4444; border-color: #fca5a5;" title="Excluir aula">
+                            🗑️
+                        </button>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        if (addBtn) {
+            addBtn.onclick = () => {
+                closeDayExpandedDrawer();
+                openSchedulePlannerDrawer(dateIso);
+            };
+        }
+
+        overlay.style.display = 'block';
+    }
+    window.openDayExpandedDrawer = openDayExpandedDrawer;
+
+    function closeDayExpandedDrawer() {
+        const overlay = document.getElementById('drawer-day-expanded-overlay');
+        if (overlay) overlay.style.display = 'none';
+    }
+    window.closeDayExpandedDrawer = closeDayExpandedDrawer;
+
+    // =========================================================================
+    // MODAL: PROGRESSO DETALHADO POR DISCIPLINA & BNCC
+    // =========================================================================
+
+    function openDetailedProgressModal() {
+        const modal = document.getElementById('modal-detailed-progress');
+        const turmaLabel = document.getElementById('modal-progress-turma-label');
+        const body = document.getElementById('modal-detailed-progress-body');
+        if (!modal || !body) return;
+
+        if (turmaLabel) turmaLabel.textContent = currentTurmaContext;
+
+        const allLessons = getScheduleLessonsDb();
+        const turmaLessons = allLessons.filter(l => l.turmaContext === currentTurmaContext);
+
+        const disciplines = ['Língua Portuguesa', 'Matemática', 'Ciências da Natureza'];
+        
+        let html = '';
+        disciplines.forEach(disc => {
+            const discLessons = turmaLessons.filter(l => l.disciplina.includes(disc) || disc.includes(l.disciplina));
+            const total = discLessons.length;
+            const trab = discLessons.filter(l => l.status === 'trabalhada').length;
+            const pct = total > 0 ? Math.round((trab / total) * 100) : 0;
+            const lacunas = discLessons.filter(l => l.status === 'planejada').map(l => l.habilidadeCode);
+
+            html += `
+                <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <strong style="font-size: 0.95rem; color: var(--text-primary);">${disc}</strong>
+                        <span style="font-weight: 800; font-size: 0.9rem; color: #6366f1;">${trab} de ${total} aulas (${pct}%)</span>
+                    </div>
+                    <div class="progress-bar-container" style="height: 10px; margin-bottom: 10px;">
+                        <div class="progress-bar purple" style="width: ${pct}%;"></div>
+                    </div>
+                    ${lacunas.length > 0 ? `
+                        <div style="font-size: 0.78rem; color: var(--text-secondary);">
+                            <strong>Habilidades Pendentes (Lacunas):</strong>
+                            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px;">
+                                ${lacunas.map(lac => `<span style="background: #fee2e2; color: #b91c1c; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 0.72rem;">${lac}</span>`).join('')}
+                            </div>
+                        </div>
+                    ` : `<div style="font-size: 0.78rem; color: #10b981; font-weight: 700;">✓ Todas as habilidades planejadas foram consolidadas!</div>`}
+                </div>
+            `;
+        });
+
+        body.innerHTML = html;
+        modal.style.display = 'flex';
+        modal.classList.remove('hidden');
+    }
+    window.openDetailedProgressModal = openDetailedProgressModal;
+
+    function closeDetailedProgressModal() {
+        const modal = document.getElementById('modal-detailed-progress');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+        }
+    }
+    window.closeDetailedProgressModal = closeDetailedProgressModal;
+
+    // =========================================================================
+    // BUSCA RÁPIDA DE HABILIDADE BNCC
+    // =========================================================================
+
+    function handleScheduleSkillSearch() {
+        const input = document.getElementById('schedule-skill-search-input');
+        const results = document.getElementById('schedule-skill-search-results');
+        if (!input || !results) return;
+
+        const query = input.value.trim().toLowerCase();
+        if (!query) {
+            results.style.display = 'none';
+            return;
+        }
+
+        const allLessons = getScheduleLessonsDb();
+        const matches = allLessons.filter(l => {
+            if (l.turmaContext !== currentTurmaContext) return false;
+            const str = (l.habilidadeCode + ' ' + l.habilidadeDesc + ' ' + l.disciplina).toLowerCase();
+            return str.includes(query);
+        });
+
+        if (matches.length === 0) {
+            results.innerHTML = '<div style="padding: 12px; font-size: 0.8rem; color: var(--text-muted); text-align: center;">Nenhuma aula agendada com esta habilidade.</div>';
+        } else {
+            results.innerHTML = matches.map(m => `
+                <div style="padding: 10px 14px; border-bottom: 1px solid var(--border-color); cursor: pointer; font-size: 0.8rem;"
+                     onclick="openDayExpandedDrawer('${m.date}'); document.getElementById('schedule-skill-search-results').style.display='none';">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <strong style="color: #6366f1;">${m.habilidadeCode}</strong>
+                        <span style="font-size: 0.72rem; color: var(--text-muted);">Data: ${m.date.split('-').reverse().join('/')}</span>
+                    </div>
+                    <div style="color: var(--text-primary); font-size: 0.75rem; margin-top: 2px;">${m.disciplina} - ${m.habilidadeDesc.slice(0, 65)}...</div>
+                </div>
+            `).join('');
+        }
+        results.style.display = 'block';
+    }
+    window.handleScheduleSkillSearch = handleScheduleSkillSearch;
+
+    // =========================================================================
+    // DUPLICAÇÃO DE ROTINAS PARA OUTRA TURMA
+    // =========================================================================
+
+    function openDuplicateLessonModal(lessonId) {
+        const modal = document.getElementById('modal-duplicate-lesson');
+        const inputId = document.getElementById('duplicate-source-lesson-id');
+        const info = document.getElementById('duplicate-lesson-info');
+        if (!modal || !inputId) return;
+
+        const allLessons = getScheduleLessonsDb();
+        const lesson = allLessons.find(l => l.id === lessonId);
+        if (!lesson) return;
+
+        inputId.value = lessonId;
+        if (info) {
+            info.innerHTML = `
+                <div><strong>${lesson.habilidadeCode}</strong> - ${lesson.disciplina}</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">Origem: ${lesson.turmaContext} • Data: ${lesson.date.split('-').reverse().join('/')}</div>
+            `;
+        }
+
+        modal.style.display = 'flex';
+        modal.classList.remove('hidden');
+    }
+    window.openDuplicateLessonModal = openDuplicateLessonModal;
+
+    function closeDuplicateLessonModal() {
+        const modal = document.getElementById('modal-duplicate-lesson');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+        }
+    }
+    window.closeDuplicateLessonModal = closeDuplicateLessonModal;
+
+    function handleConfirmDuplicateLesson() {
+        const inputId = document.getElementById('duplicate-source-lesson-id');
+        const selectTarget = document.getElementById('duplicate-target-turma-select');
+        if (!inputId || !selectTarget) return;
+
+        const sourceId = inputId.value;
+        const targetTurma = selectTarget.value;
+
+        const allLessons = getScheduleLessonsDb();
+        const source = allLessons.find(l => l.id === sourceId);
+        if (!source) return;
+
+        const newLesson = {
+            ...source,
+            id: 'les_' + Date.now(),
+            turmaContext: targetTurma,
+            turma: targetTurma.split('—')[1]?.trim() || 'Turma Paralela',
+            escola: targetTurma.split('—')[0]?.trim() || source.escola,
+            status: 'planejada',
+            criadoPor: 'Profa. Silvana Ferreira (Duplicado de ' + source.turmaContext + ')',
+            createdAt: new Date().toISOString()
+        };
+
+        allLessons.push(newLesson);
+        saveScheduleLessonsDb(allLessons);
+        closeDuplicateLessonModal();
+        closeDayExpandedDrawer();
+        renderActiveScheduleView();
+        if (typeof window.showToast === 'function') {
+            window.showToast(`Plano duplicado com sucesso para "${targetTurma}"!`, 'success');
+        }
+    }
+    window.handleConfirmDuplicateLesson = handleConfirmDuplicateLesson;
+
+    // =========================================================================
+    // EXCLUSÃO SEGURA & LIXEIRA PEDAGÓGICA (30 DIAS)
+    // =========================================================================
+
+    function handleDeleteLessonWithTrash(lessonId) {
+        if (!confirm('Deseja mover este plano de aula para a Lixeira? Ele ficará salvo por até 30 dias para recuperação.')) return;
+
+        const allLessons = getScheduleLessonsDb();
+        const lesson = allLessons.find(l => l.id === lessonId);
+        if (!lesson) return;
+
+        const trash = getScheduleTrashDb();
+        trash.push({
+            ...lesson,
+            deletedAt: new Date().toISOString(),
+            expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+        });
+        saveScheduleTrashDb(trash);
+
+        const updated = allLessons.filter(l => l.id !== lessonId);
+        saveScheduleLessonsDb(updated);
+
+        closeDayExpandedDrawer();
+        renderActiveScheduleView();
+        if (typeof window.showToast === 'function') {
+            window.showToast('Aula movida para a Lixeira temporária com sucesso!', 'info');
+        }
+    }
+    window.handleDeleteLessonWithTrash = handleDeleteLessonWithTrash;
+
+    function openScheduleTrashModal() {
+        const modal = document.getElementById('modal-schedule-trash');
+        const list = document.getElementById('schedule-trash-items-list');
+        if (!modal || !list) return;
+
+        const trash = getScheduleTrashDb();
+        list.innerHTML = '';
+
+        if (trash.length === 0) {
+            list.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.85rem;">A lixeira está vazia. Nenhuma aula excluída recentemente.</div>';
+        } else {
+            trash.forEach(item => {
+                const row = document.createElement('div');
+                row.style.display = 'flex';
+                row.style.justifyContent = 'space-between';
+                row.style.alignItems = 'center';
+                row.style.padding = '12px 14px';
+                row.style.background = 'var(--bg-primary)';
+                row.style.border = '1px solid var(--border-color)';
+                row.style.borderRadius = 'var(--radius-sm)';
+
+                row.innerHTML = `
+                    <div>
+                        <strong style="color: #6366f1;">${item.habilidadeCode}</strong> - ${item.disciplina}
+                        <div style="font-size: 0.72rem; color: var(--text-muted);">${item.turmaContext} • Excluído em: ${new Date(item.deletedAt).toLocaleDateString('pt-BR')}</div>
+                    </div>
+                    <button type="button" onclick="handleRestoreTrashLesson('${item.id}');" class="btn btn-outline btn-sm" style="color: #10b981; border-color: #10b981; font-weight: 700; font-size: 0.75rem;">
+                        Restaurar Aula
+                    </button>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        modal.style.display = 'flex';
+        modal.classList.remove('hidden');
+    }
+    window.openScheduleTrashModal = openScheduleTrashModal;
+
+    function closeScheduleTrashModal() {
+        const modal = document.getElementById('modal-schedule-trash');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+        }
+    }
+    window.closeScheduleTrashModal = closeScheduleTrashModal;
+
+    function handleRestoreTrashLesson(lessonId) {
+        const trash = getScheduleTrashDb();
+        const item = trash.find(t => t.id === lessonId);
+        if (!item) return;
+
+        const allLessons = getScheduleLessonsDb();
+        allLessons.push(item);
+        saveScheduleLessonsDb(allLessons);
+
+        const updatedTrash = trash.filter(t => t.id !== lessonId);
+        saveScheduleTrashDb(updatedTrash);
+
+        openScheduleTrashModal();
+        renderActiveScheduleView();
+        if (typeof window.showToast === 'function') {
+            window.showToast('Aula restaurada para o cronograma com sucesso!', 'success');
+        }
+    }
+    window.handleRestoreTrashLesson = handleRestoreTrashLesson;
+
+    function handleEmptyScheduleTrash() {
+        if (!confirm('Tem certeza de que deseja esvaziar permanentemente toda a lixeira?')) return;
+        saveScheduleTrashDb([]);
+        openScheduleTrashModal();
+        if (typeof window.showToast === 'function') {
+            window.showToast('Lixeira esvaziada com sucesso!', 'info');
+        }
+    }
+    window.handleEmptyScheduleTrash = handleEmptyScheduleTrash;
+
+    // =========================================================================
+    // REAGENDAMENTO RÁPIDO VIA DRAG & DROP & STATUS TOGGLE
+    // =========================================================================
+
+    function handleLessonDropToDate(lessonId, targetDateIso) {
+        const allLessons = getScheduleLessonsDb();
+        const lesson = allLessons.find(l => l.id === lessonId);
+        if (!lesson) return;
+
+        const oldDate = lesson.date;
+        lesson.date = targetDateIso;
+        saveScheduleLessonsDb(allLessons);
+        renderActiveScheduleView();
+        if (typeof window.showToast === 'function') {
+            window.showToast(`Aula reagendada de ${oldDate.split('-').reverse().join('/')} para ${targetDateIso.split('-').reverse().join('/')}!`, 'success');
+        }
+    }
+    window.handleLessonDropToDate = handleLessonDropToDate;
+
+    function handleLessonDropToSlot(lessonId, targetDateIso, targetTime) {
+        const allLessons = getScheduleLessonsDb();
+        const lesson = allLessons.find(l => l.id === lessonId);
+        if (!lesson) return;
+
+        lesson.date = targetDateIso;
+        lesson.time = targetTime;
+        saveScheduleLessonsDb(allLessons);
+        renderActiveScheduleView();
+        if (typeof window.showToast === 'function') {
+            window.showToast(`Aula reagendada para ${targetDateIso.split('-').reverse().join('/')} às ${targetTime}!`, 'success');
+        }
+    }
+    window.handleLessonDropToSlot = handleLessonDropToSlot;
+
+    function toggleLessonWorkStatus(lessonId) {
+        const allLessons = getScheduleLessonsDb();
+        const lesson = allLessons.find(l => l.id === lessonId);
+        if (!lesson) return;
+
+        lesson.status = lesson.status === 'trabalhada' ? 'planejada' : 'trabalhada';
+        saveScheduleLessonsDb(allLessons);
+        openDayExpandedDrawer(lesson.date);
+        renderActiveScheduleView();
+        if (typeof window.showToast === 'function') {
+            window.showToast(`Status da aula alterado para "${lesson.status}"!`, 'info');
+        }
+    }
+    window.toggleLessonWorkStatus = toggleLessonWorkStatus;
