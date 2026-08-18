@@ -2171,20 +2171,17 @@
                         </div>
 
                         <!-- ==================== SUB-VIEW 1: VISÃO MENSAL REDESENHADA ==================== -->
-                        <div id="schedule-view-monthly" class="schedule-view-container" style="padding: 20px;">
+                        <div id="schedule-view-monthly" class="schedule-view-container" style="padding: 16px;">
                             <!-- Legenda Visual Rápida -->
                             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; font-size: 0.78rem;">
-                                <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+                                <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
                                     <span style="display: inline-flex; align-items: center; gap: 6px; color: var(--text-secondary);">
                                         <span style="display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: #10b981;"></span>
-                                        <strong>Verde:</strong> Aula Concluída / Habilidade Trabalhada
+                                        <strong>Verde:</strong> Trabalhada
                                     </span>
                                     <span style="display: inline-flex; align-items: center; gap: 6px; color: var(--text-secondary);">
                                         <span style="display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: #f97316;"></span>
-                                        <strong>Laranja:</strong> Aula Planejada / Pendente
-                                    </span>
-                                    <span style="color: var(--text-muted);">
-                                        💡 <em>Passe o mouse para ver detalhes da aula ou clique no <strong>+</strong> para agendar.</em>
+                                        <strong>Laranja:</strong> Planejada
                                     </span>
                                 </div>
                                 <div id="monthly-stats-summary" style="font-weight: 700; color: #6366f1;">
@@ -2192,9 +2189,8 @@
                                 </div>
                             </div>
 
-                            <!-- Grade 7 Colunas do Mês com Tags -->
-                            <div class="calendar-monthly-grid-container" style="border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; background: var(--bg-primary);">
-                                <!-- Cabeçalho dos 7 Dias -->
+                            <!-- Grade 7 Colunas para Desktop (>= 768px) -->
+                            <div class="schedule-monthly-desktop-grid calendar-monthly-grid-container" style="border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; background: var(--bg-primary);">
                                 <div style="display: grid; grid-template-columns: repeat(7, 1fr); border-bottom: 1px solid var(--border-color); background: var(--bg-secondary);">
                                     <div class="cal-header-day-cell">DOM</div>
                                     <div class="cal-header-day-cell">SEG</div>
@@ -2204,11 +2200,14 @@
                                     <div class="cal-header-day-cell">SEX</div>
                                     <div class="cal-header-day-cell">SÁB</div>
                                 </div>
-
-                                <!-- Células dos Dias (Populadas com Tags) -->
                                 <div id="calendar-monthly-cells-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); background: var(--border-color); gap: 1px;">
-                                    <!-- Injetado dinamicamente via renderScheduleMonthlyView() -->
+                                    <!-- Injetado dinamicamente via JS -->
                                 </div>
+                            </div>
+
+                            <!-- Lista Sanfonada (Accordion) para Mobile (< 768px) -->
+                            <div id="calendar-monthly-accordion-mobile" class="schedule-monthly-accordion-mobile">
+                                <!-- Injetado dinamicamente via renderScheduleMonthlyMobileAccordion() -->
                             </div>
                         </div>
 
@@ -5479,5 +5478,6 @@
         </div>
     </div>
 
+<div id="toast-floating-container" class="toast-floating-container"></div>
 </body>
 </html>

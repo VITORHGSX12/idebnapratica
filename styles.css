@@ -5008,3 +5008,171 @@ html, body {
     background: rgba(0, 0, 0, 0.55);
     backdrop-filter: blur(3px);
 }
+
+
+/* =========================================================================
+   GLOBAL CONTAINER CONTAINMENT & OVERFLOW PREVENTION
+   ========================================================================= */
+html, body {
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.app-container {
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    min-height: 100vh;
+    display: flex;
+    position: relative;
+}
+
+.main-content {
+    flex: 1 1 auto;
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding-bottom: 96px; /* Padding for mobile bottom navigation */
+}
+
+@media (min-width: 768px) {
+    .main-content {
+        padding-bottom: 32px;
+    }
+}
+
+.top-navbar {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    flex-shrink: 0;
+    z-index: 90;
+    box-sizing: border-box;
+}
+
+.navbar-left, .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Toast Container Floating Notification */
+.toast-floating-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 360px;
+    pointer-events: none;
+}
+
+.toast-item {
+    pointer-events: auto;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid #6366f1;
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    color: var(--text-primary);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: toastSlideIn 0.3s ease-out;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.toast-item.toast-success { border-left-color: #10b981; }
+.toast-item.toast-danger { border-left-color: #ef4444; }
+.toast-item.toast-warning { border-left-color: #f59e0b; }
+
+@keyframes toastSlideIn {
+    from { opacity: 0; transform: translateY(-16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile Accordion vs Desktop Grid for Monthly Schedule */
+.schedule-monthly-accordion-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.schedule-week-accordion-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.schedule-week-accordion-header {
+    padding: 12px 16px;
+    background: var(--bg-tertiary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: var(--text-primary);
+}
+
+.schedule-week-accordion-body {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.schedule-day-mobile-row {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+@media (min-width: 768px) {
+    .schedule-monthly-accordion-mobile {
+        display: none !important;
+    }
+    .schedule-monthly-desktop-grid {
+        display: block !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .schedule-monthly-accordion-mobile {
+        display: flex !important;
+    }
+    .schedule-monthly-desktop-grid {
+        display: none !important;
+    }
+}
