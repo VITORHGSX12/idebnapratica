@@ -692,6 +692,93 @@ app.use((req, res, next) => {
 });
 
 // Serve Static Frontend Assets with anti-cache headers
+
+// =============================================================================
+// ROTAS DE INTELIGÊNCIA ARTIFICIAL: GERADOR DE QUESTÕES COM GEMINI 3.7 & EMBEDDINGS
+// =============================================================================
+
+const geminiQuestionService = require('./services/ai/geminiQuestionService');
+
+app.post('/api/ia/gerar-questao', async (req, res) => {
+    try {
+        const {
+            stage = '5º Ano',
+            subject = 'Língua Portuguesa',
+            descriptorCode = 'D03',
+            difficulty = 'Médio',
+            matrix = 'SAEB',
+            apiKey = process.env.GEMINI_API_KEY,
+            customModel = process.env.GEMINI_MODEL || 'gemini-3.7-flash'
+        } = req.body;
+
+        // Obter questões existentes do banco de dados local ou postgres
+        let existingQuestions = [];
+        try {
+            if (fs.existsSync(path.join(__dirname, 'local_db_state.json'))) {
+                const stateData = JSON.parse(fs.readFileSync(path.join(__dirname, 'local_db_state.json'), 'utf8'));
+                existingQuestions = stateData.dbQuestoes || [];
+            }
+        } catch(e) {}
+
+        const generatedQuestion = await geminiQuestionService.generateEducationalQuestion({
+            stage,
+            subject,
+            descriptorCode,
+            difficulty,
+            matrix,
+            existingQuestionsDb: existingQuestions,
+            apiKey,
+            customModel
+        });
+
+        res.json({
+            success: true,
+            question: generatedQuestion
+        });
+    } catch (err) {
+        console.error('[API IA Geração Error]:', err);
+        res.status(500).json({
+            success: false,
+            error: err.message || 'Erro ao gerar questão com a API do Gemini.'
+        });
+    }
+});
+
+app.post('/api/ia/embeddings/migrar', async (req, res) => {
+    try {
+        const { apiKey = process.env.GEMINI_API_KEY } = req.body;
+        const localDbPath = path.join(__dirname, 'local_db_state.json');
+        if (!fs.existsSync(localDbPath)) {
+            return res.json({ success: true, migrated: 0, message: 'Nenhum banco local encontrado.' });
+        }
+
+        const stateData = JSON.parse(fs.readFileSync(localDbPath, 'utf8'));
+        const questions = stateData.dbQuestoes || [];
+        let count = 0;
+
+        for (const q of questions) {
+            if (!q.embedding || !Array.isArray(q.embedding)) {
+                q.embedding = await geminiQuestionService.generateEmbedding(q.enunciado, apiKey);
+                count++;
+            }
+        }
+
+        fs.writeFileSync(localDbPath, JSON.stringify(stateData, null, 2), 'utf8');
+        res.json({
+            success: true,
+            migrated: count,
+            total: questions.length,
+            message: `Migração concluída com sucesso! ${count} questões receberam embeddings.`
+        });
+    } catch (err) {
+        console.error('[API IA Migração Error]:', err);
+        res.status(500).json({
+            success: false,
+            error: err.message || 'Erro ao migrar embeddings.'
+        });
+    }
+});
+
 app.use(express.static(__dirname, {
     setHeaders: (res, path) => {
         res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
