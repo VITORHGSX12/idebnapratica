@@ -4383,3 +4383,40 @@ body.collapsed-sidebar .sidebar-footer .user-info {
 .hidden {
     display: none !important;
 }
+
+
+/* ==========================================================================
+   LAYOUT PADRONIZADO E SEM ESPAÇO EM BRANCO NO TOPO (PARTE 4)
+   ========================================================================== */
+.sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 260px !important;
+    height: 100vh !important;
+    overflow-y: auto !important;
+    z-index: 100 !important;
+}
+
+.main-content {
+    margin-left: 260px !important;
+    min-height: 100vh !important;
+    padding: 24px 32px !important;
+    background-color: var(--bg-primary) !important;
+    position: relative !important;
+    box-sizing: border-box !important;
+}
+
+.tab-content {
+    display: none;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+.tab-content.active {
+    display: block !important;
+}
+
+.hidden {
+    display: none !important;
+}
