@@ -3715,7 +3715,7 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         if (subtitle) subtitle.textContent = `Turmas e Agrupamentos Escolares — ${activeDiarySchool}`;
 
         renderSchoolClassesTable();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (typeof window.scrollTo === 'function') window.scrollTo({ top: 0, behavior: 'smooth' });
         safeCreateIcons();
     }
 
@@ -3870,7 +3870,7 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
             if (overview) overview.classList.remove('hidden');
 
             renderDbSchools();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (typeof window.scrollTo === 'function') window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
 
@@ -3921,7 +3921,7 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         renderDiaryStudentsList();
         renderDiaryTeachersList();
 
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (typeof window.scrollTo === 'function') window.scrollTo({ top: 0, behavior: 'smooth' });
         safeCreateIcons();
     }
 
@@ -3962,7 +3962,7 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
             if (classesView) classesView.classList.remove('hidden');
 
             renderSchoolClassesTable();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (typeof window.scrollTo === 'function') window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
 
@@ -11293,7 +11293,7 @@ if (document.readyState === 'loading') {
         if (mgrEl) mgrEl.textContent = `Gestor: ${schoolDirectorsMap[activeDiarySchool] || 'S/G'}`;
 
         renderSchoolClassesTable();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (typeof window.scrollTo === 'function') window.scrollTo({ top: 0, behavior: 'smooth' });
         safeCreateIcons();
     }
 
@@ -18358,3 +18358,615 @@ window.renderDbSchools = function renderDbSchools() {
         }
     }
     window.renderScheduleMonthlyMobileAccordion = renderScheduleMonthlyMobileAccordion;
+
+
+
+    // =========================================================================
+    // =========================================================================
+    // MÓDULO MASTER: PAINEL DA ESCOLA (TURMAS, PROFESSORES, ALUNOS & HISTÓRICO)
+    // E DASHBOARD MONITORAMENTO GERAL COM LINHA DO TEMPO SAEB / SIMULADOS
+    // =========================================================================
+    // =========================================================================
+
+    // 1. Base de Dados de Turmas por Escola (Persistência LocalStorage)
+    let schoolTurmasDatabase = [];
+
+    function initSchoolTurmasDatabase() {
+        try {
+            const saved = localStorage.getItem('teacher_school_turmas_db');
+            if (saved) {
+                schoolTurmasDatabase = JSON.parse(saved);
+            } else {
+                schoolTurmasDatabase = [
+                    { id: 'turma_jcl_2a', escola: 'UI JOSE CORREA LIMA', nome: '2º Ano A', etapa: '2º Ano', turno: 'Matutino', regente: 'Profa. Silvana Ferreira', totalAlunos: 24 },
+                    { id: 'turma_jcl_2b', escola: 'UI JOSE CORREA LIMA', nome: '2º Ano B', etapa: '2º Ano', turno: 'Vespertino', regente: 'Profa. Maria Josefa Lima', totalAlunos: 22 },
+                    { id: 'turma_jcl_5a', escola: 'UI JOSE CORREA LIMA', nome: '5º Ano A', etapa: '5º Ano', turno: 'Matutino', regente: 'Prof. Carlos Alberto Silva', totalAlunos: 26 },
+                    { id: 'turma_jcl_9a', escola: 'UI JOSE CORREA LIMA', nome: '9º Ano A', etapa: '9º Ano', turno: 'Matutino', regente: 'Prof. Raimundo Nonato', totalAlunos: 28 },
+                    
+                    { id: 'turma_ba_2a', escola: 'U I BASILIO ALVES', nome: '2º Ano A', etapa: '2º Ano', turno: 'Matutino', regente: 'Profa. Francisca Antonia', totalAlunos: 20 },
+                    { id: 'turma_ba_5a', escola: 'U I BASILIO ALVES', nome: '5º Ano A', etapa: '5º Ano', turno: 'Matutino', regente: 'Prof. Carlos Alberto Silva', totalAlunos: 22 },
+                    { id: 'turma_ba_9a', escola: 'U I BASILIO ALVES', nome: '9º Ano A', etapa: '9º Ano', turno: 'Vespertino', regente: 'Prof. Raimundo Nonato', totalAlunos: 25 },
+
+                    { id: 'turma_jgd_5a', escola: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS', nome: '5º Ano A', etapa: '5º Ano', turno: 'Matutino', regente: 'Profa. Silvana Ferreira', totalAlunos: 30 },
+                    { id: 'turma_jgd_9a', escola: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS', nome: '9º Ano A', etapa: '9º Ano', turno: 'Matutino', regente: 'Prof. Carlos Alberto Silva', totalAlunos: 32 },
+
+                    { id: 'turma_em_5a', escola: 'UI EMILIO MURAD', nome: '5º Ano A', etapa: '5º Ano', turno: 'Matutino', regente: 'Profa. Maria Josefa Lima', totalAlunos: 25 },
+                    { id: 'turma_em_9a', escola: 'UI EMILIO MURAD', nome: '9º Ano A', etapa: '9º Ano', turno: 'Vespertino', regente: 'Prof. Raimundo Nonato', totalAlunos: 27 },
+
+                    { id: 'turma_aac_5a', escola: 'UNIDADE INTEGRADA ALDENORA ARAUJO CRUZ', nome: '5º Ano A', etapa: '5º Ano', turno: 'Matutino', regente: 'Profa. Francisca Antonia', totalAlunos: 24 },
+                    { id: 'turma_af_5a', escola: 'UE ANITA FURTADO', nome: '5º Ano A', etapa: '5º Ano', turno: 'Matutino', regente: 'Prof. Carlos Alberto Silva', totalAlunos: 23 }
+                ];
+                localStorage.setItem('teacher_school_turmas_db', JSON.stringify(schoolTurmasDatabase));
+            }
+        } catch(e) {}
+    }
+
+    function saveSchoolTurmasDatabase() {
+        try {
+            localStorage.setItem('teacher_school_turmas_db', JSON.stringify(schoolTurmasDatabase));
+        } catch(e) {}
+    }
+
+    // 2. Abertura do Painel da Escola (Visualizar Escola)
+    let currentSelectedSchool = 'UI JOSE CORREA LIMA';
+    let currentSchoolInnerTab = 'turmas';
+
+    function openSchoolWorkspace(schoolName) {
+        currentSelectedSchool = schoolName || 'UI JOSE CORREA LIMA';
+        initSchoolTurmasDatabase();
+
+        const overview = document.getElementById('schools-overview-container');
+        const detailView = document.getElementById('school-detail-view');
+
+        if (overview) {
+            overview.classList.add('hidden');
+            overview.style.display = 'none';
+        }
+        if (detailView) {
+            detailView.classList.remove('hidden');
+            detailView.style.display = 'block';
+        }
+
+        // Metadados da Escola
+        const nameEl = document.getElementById('school-detail-name');
+        const badgeEl = document.getElementById('school-detail-badge');
+        const metaEl = document.getElementById('school-detail-meta');
+
+        const schoolsDb = (typeof GONCALVES_DIAS_OFFICIAL_14_SCHOOLS !== 'undefined') ? GONCALVES_DIAS_OFFICIAL_14_SCHOOLS : [];
+        const schoolObj = schoolsDb.find(s => s.nome === currentSelectedSchool) || {
+            nome: currentSelectedSchool,
+            inep: '21128120',
+            localizacao: 'Zona Urbana',
+            diretor: 'Gestão Escolar Municipal',
+            fone: '(99) 3562-1188',
+            ideb2023: 5.2
+        };
+
+        if (nameEl) nameEl.textContent = schoolObj.nome;
+        if (badgeEl) {
+            badgeEl.textContent = schoolObj.localizacao || 'Zona Urbana';
+            badgeEl.style.background = (schoolObj.localizacao === 'Zona Rural') ? 'rgba(245, 158, 11, 0.15)' : 'rgba(99, 102, 241, 0.15)';
+            badgeEl.style.color = (schoolObj.localizacao === 'Zona Rural') ? '#d97706' : '#6366f1';
+        }
+        if (metaEl) {
+            metaEl.textContent = `INEP: ${schoolObj.inep} • Direção: ${schoolObj.diretor} • Contato: ${schoolObj.fone} • SAEB/IDEB 2025: ${schoolObj.ideb2023 || '5.2'} ★`;
+        }
+
+        switchSchoolInnerTab('turmas');
+        if (typeof window.scrollTo === 'function') window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (typeof safeCreateIcons === 'function') safeCreateIcons();
+    }
+    window.openSchoolWorkspace = openSchoolWorkspace;
+
+    function backToSchoolsList() {
+        const overview = document.getElementById('schools-overview-container');
+        const detailView = document.getElementById('school-detail-view');
+
+        if (detailView) {
+            detailView.classList.add('hidden');
+            detailView.style.display = 'none';
+        }
+        if (overview) {
+            overview.classList.remove('hidden');
+            overview.style.display = 'block';
+        }
+        if (typeof window.scrollTo === 'function') window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (typeof safeCreateIcons === 'function') safeCreateIcons();
+    }
+    window.backToSchoolsList = backToSchoolsList;
+
+    // 3. Alternância entre as Sub-Abas da Escola (Visão Geral, Turmas, Professores, Alunos)
+    function switchSchoolInnerTab(tabName) {
+        currentSchoolInnerTab = tabName;
+        document.querySelectorAll('.school-nav-tab-btn').forEach(btn => {
+            const isTarget = btn.getAttribute('data-tab') === tabName;
+            btn.classList.toggle('active', isTarget);
+        });
+
+        const container = document.getElementById('school-inner-tab-content-container');
+        if (!container) return;
+
+        if (tabName === 'turmas') {
+            renderSchoolTurmasTab(container);
+        } else if (tabName === 'professores') {
+            renderSchoolProfessoresTab(container);
+        } else if (tabName === 'alunos') {
+            renderSchoolAlunosTab(container);
+        } else if (tabName === 'visao-geral') {
+            renderSchoolOverviewTab(container);
+        }
+
+        if (typeof safeCreateIcons === 'function') safeCreateIcons();
+    }
+    window.switchSchoolInnerTab = switchSchoolInnerTab;
+
+    // -------------------------------------------------------------------------
+    // RENDERIZADOR DA ABA: TURMAS
+    // -------------------------------------------------------------------------
+    function renderSchoolTurmasTab(container) {
+        initSchoolTurmasDatabase();
+        const turmas = schoolTurmasDatabase.filter(t => t.escola === currentSelectedSchool);
+
+        let turmasCardsHtml = '';
+        if (turmas.length === 0) {
+            turmasCardsHtml = `
+                <div style="padding: 40px; text-align: center; color: var(--text-muted); background: var(--bg-primary); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
+                    <p style="font-weight: 600; margin-bottom: 8px;">Nenhuma turma cadastrada nesta escola ainda.</p>
+                    <button type="button" onclick="openCreateTurmaModal();" class="btn btn-primary btn-sm">+ Cadastrar Primeira Turma</button>
+                </div>
+            `;
+        } else {
+            turmasCardsHtml = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
+                    ${turmas.map(t => `
+                        <div class="turma-card-item">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                <div>
+                                    <h4 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: var(--text-primary);">${t.nome}</h4>
+                                    <span style="font-size: 0.75rem; color: #6366f1; font-weight: 700;">${t.etapa} • ${t.turno}</span>
+                                </div>
+                                <span class="badge badge-success" style="font-size: 0.68rem;">Ativa 2026</span>
+                            </div>
+                            
+                            <div style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 12px; display: flex; flex-direction: column; gap: 4px;">
+                                <div>👨‍🏫 <strong>Regente:</strong> ${t.regente || 'Docente a Atribuir'}</div>
+                                <div>👥 <strong>Alunos Matriculados:</strong> <span style="font-weight: 800; color: var(--text-primary);">${t.totalAlunos || 25} estudantes</span></div>
+                            </div>
+
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap; padding-top: 10px; border-top: 1px dashed var(--border-color);">
+                                <button type="button" onclick="openManageClassStudentsModal('${t.id}', '${t.nome}');" class="btn btn-outline btn-sm" style="flex: 1; font-size: 0.72rem; font-weight: 700; color: #6366f1; border-color: #6366f1;">
+                                    👥 Gerenciar Alunos
+                                </button>
+                                <button type="button" onclick="openEditTurmaModal('${t.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem;" title="Editar Turma">
+                                    ✏️
+                                </button>
+                                <button type="button" onclick="handleDeleteTurma('${t.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem; color: #ef4444; border-color: #fca5a5;" title="Excluir Turma">
+                                    🗑️
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        container.innerHTML = `
+            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">Turmas e Enturmações</h3>
+                        <p style="margin: 2px 0 0 0; font-size: 0.8rem; color: var(--text-secondary);">Gerencie agrupamentos, vincule professores e organize alunos por etapa</p>
+                    </div>
+                    <button type="button" onclick="openCreateTurmaModal();" class="btn btn-primary" style="display: flex; align-items: center; gap: 6px; font-weight: 700; background: #6366f1; border-color: #6366f1;">
+                        <i data-lucide="plus-circle" style="width:16px; height:16px;"></i> + Cadastrar Nova Turma
+                    </button>
+                </div>
+                ${turmasCardsHtml}
+            </div>
+        `;
+    }
+
+    // -------------------------------------------------------------------------
+    // RENDERIZADOR DA ABA: PROFESSORES
+    // -------------------------------------------------------------------------
+    function renderSchoolProfessoresTab(container) {
+        const professores = [
+            { nome: 'Profa. Silvana Ferreira', cpf: '012.345.678-90', disciplina: 'Língua Portuguesa', turmas: '2º Ano A, 5º Ano A', status: 'Ativo' },
+            { nome: 'Prof. Carlos Alberto Silva', cpf: '123.456.789-01', disciplina: 'Matemática', turmas: '5º Ano A, 9º Ano A', status: 'Ativo' },
+            { nome: 'Profa. Maria Josefa Lima', cpf: '234.567.890-12', disciplina: 'Pedagogia / Polivalente', turmas: '2º Ano B', status: 'Ativo' },
+            { nome: 'Prof. Raimundo Nonato', cpf: '345.678.901-23', disciplina: 'Ciências da Natureza', turmas: '9º Ano A', status: 'Ativo' },
+            { nome: 'Profa. Francisca Antonia', cpf: '456.789.012-34', disciplina: 'História e Geografia', turmas: '2º Ano A', status: 'Ativo' }
+        ];
+
+        container.innerHTML = `
+            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">Corpo Docente da Escola</h3>
+                        <p style="margin: 2px 0 0 0; font-size: 0.8rem; color: var(--text-secondary);">Professores vinculados às turmas e componentes curriculares</p>
+                    </div>
+                    <button type="button" onclick="alert('Funcionalidade: Vincular Docente da Rede aberto com sucesso!');" class="btn btn-primary" style="font-weight: 700; background: #6366f1; border-color: #6366f1;">
+                        + Vincular Novo Docente
+                    </button>
+                </div>
+
+                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; background: var(--bg-primary);">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
+                        <thead style="background: var(--bg-tertiary); color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase;">
+                            <tr>
+                                <th style="padding: 12px 16px;">PROFESSOR(A)</th>
+                                <th style="padding: 12px 16px;">COMPONENTE / FORMAÇÃO</th>
+                                <th style="padding: 12px 16px;">TURMAS ATRIBUÍDAS</th>
+                                <th style="padding: 12px 16px; text-align: center;">STATUS</th>
+                                <th style="padding: 12px 16px; text-align: center;">AÇÕES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${professores.map(p => `
+                                <tr style="border-bottom: 1px solid var(--border-color); height: 48px;">
+                                    <td style="padding: 10px 16px; font-weight: 700; color: var(--text-primary);">
+                                        👨‍🏫 ${p.nome}
+                                        <span style="display: block; font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono);">CPF: ${p.cpf}</span>
+                                    </td>
+                                    <td style="padding: 10px 16px; font-weight: 600; color: #6366f1;">${p.disciplina}</td>
+                                    <td style="padding: 10px 16px; font-size: 0.82rem; color: var(--text-secondary);">${p.turmas}</td>
+                                    <td style="padding: 10px 16px; text-align: center;">
+                                        <span class="badge badge-success" style="font-size:0.68rem;">${p.status}</span>
+                                    </td>
+                                    <td style="padding: 10px 16px; text-align: center;">
+                                        <button type="button" onclick="alert('Editar atribuição de ${p.nome}');" class="btn btn-outline btn-sm" style="font-size:0.72rem;">✏️ Gerenciar</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+    }
+
+    // -------------------------------------------------------------------------
+    // RENDERIZADOR DA ABA: ALUNOS (COM BOTÃO VER HISTÓRICO DE PROGRESSÃO)
+    // -------------------------------------------------------------------------
+    function renderSchoolAlunosTab(container) {
+        const allStudents = (typeof getMasterStudentsDatabase === 'function') ? getMasterStudentsDatabase() : [];
+        const schoolStudents = allStudents.filter(s => s.escola === currentSelectedSchool);
+        const displayStudents = (schoolStudents.length > 0) ? schoolStudents : allStudents.slice(0, 20);
+
+        container.innerHTML = `
+            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">Quadro de Estudantes Matriculados</h3>
+                        <p style="margin: 2px 0 0 0; font-size: 0.8rem; color: var(--text-secondary);">Acompanhamento individualizado e histórico de proficiência dos alunos da escola</p>
+                    </div>
+                    <button type="button" onclick="openCreateStudentModal();" class="btn btn-primary" style="display: flex; align-items: center; gap: 6px; font-weight: 700; background: #6366f1; border-color: #6366f1;">
+                        + Matricular Novo Aluno
+                    </button>
+                </div>
+
+                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow-x: auto; background: var(--bg-primary);">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem; min-width: 650px;">
+                        <thead style="background: var(--bg-tertiary); color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase;">
+                            <tr>
+                                <th style="padding: 12px 16px;">NOME DO ALUNO</th>
+                                <th style="padding: 12px 16px;">MATRÍCULA / CPF</th>
+                                <th style="padding: 12px 16px;">TURMA / ETAPA</th>
+                                <th style="padding: 12px 16px;">TURNO</th>
+                                <th style="padding: 12px 16px; text-align: center;">AÇÕES & PROGRESSÃO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${displayStudents.map((st, idx) => `
+                                <tr style="border-bottom: 1px solid var(--border-color); height: 48px;">
+                                    <td style="padding: 10px 16px; font-weight: 700; color: var(--text-primary);">
+                                        ${st.nome}
+                                    </td>
+                                    <td style="padding: 10px 16px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">
+                                        ${st.matricula || '2026' + (1000 + idx)}
+                                    </td>
+                                    <td style="padding: 10px 16px; font-weight: 600; color: #6366f1;">
+                                        ${st.turma || st.etapa || '5º Ano A'}
+                                    </td>
+                                    <td style="padding: 10px 16px; font-size: 0.82rem; color: var(--text-secondary);">
+                                        ${st.turno || 'Matutino'}
+                                    </td>
+                                    <td style="padding: 10px 16px; text-align: center;">
+                                        <button type="button" onclick="openStudentProgressModal('${st.id || ('st_' + idx)}', '${st.nome}');" class="btn btn-outline btn-sm" style="font-weight: 700; font-size: 0.75rem; color: #10b981; border-color: #10b981; display: inline-flex; align-items: center; gap: 4px;">
+                                            📊 Ver Histórico de Progressão
+                                        </button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+    }
+
+    // -------------------------------------------------------------------------
+    // RENDERIZADOR DA ABA: VISÃO GERAL DA ESCOLA
+    // -------------------------------------------------------------------------
+    function renderSchoolOverviewTab(container) {
+        container.innerHTML = `
+            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px;">
+                <h3 style="margin: 0 0 16px 0; font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">Desempenho Geral e Diagnóstico da Unidade</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                    <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; text-align: center;">
+                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">IDEB / SAEB 2025</div>
+                        <div style="font-size: 1.8rem; font-weight: 800; color: #6366f1; margin-top: 4px;">5.2 ★</div>
+                        <div style="font-size: 0.72rem; color: #10b981; font-weight: 700;">+0.4 vs 2023</div>
+                    </div>
+                    <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; text-align: center;">
+                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">TAXA DE APROVAÇÃO</div>
+                        <div style="font-size: 1.8rem; font-weight: 800; color: #10b981; margin-top: 4px;">97.4%</div>
+                        <div style="font-size: 0.72rem; color: var(--text-secondary);">Fluxo Regular</div>
+                    </div>
+                    <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; text-align: center;">
+                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">META PACTUADA 2026</div>
+                        <div style="font-size: 1.8rem; font-weight: 800; color: #f59e0b; margin-top: 4px;">5.5</div>
+                        <div style="font-size: 0.72rem; color: #f59e0b; font-weight: 700;">Gap: -0.3 pontos</div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: var(--radius-md); padding: 16px;">
+                    <h4 style="margin: 0 0 8px 0; font-size: 0.95rem; font-weight: 800; color: #6366f1;">🎯 Plano de Ação Pedagógica (PDE)</h4>
+                    <p style="margin: 0; font-size: 0.85rem; color: var(--text-primary); line-height: 1.5;">
+                        Foco nas intervenções de Língua Portuguesa (Descritores D1 e D4) e Matemática (Descritor D13) para o 5º Ano. Aplicação de simulados quinzenais e monitoramento de recomposição ativo.
+                    </p>
+                </div>
+            </div>
+        `;
+    }
+
+    // -------------------------------------------------------------------------
+    // MODAL DE TURMA: CRIAR & EDITAR
+    // -------------------------------------------------------------------------
+    function openCreateTurmaModal() {
+        const modal = document.getElementById('modal-create-turma');
+        if (!modal) return;
+
+        document.getElementById('modal-turma-title').textContent = `+ Cadastrar Nova Turma em ${currentSelectedSchool}`;
+        document.getElementById('turma-form-id').value = '';
+        document.getElementById('turma-form-school').value = currentSelectedSchool;
+        document.getElementById('turma-form-name').value = '';
+        document.getElementById('turma-form-stage').value = '5º Ano';
+        document.getElementById('turma-form-shift').value = 'Matutino';
+        document.getElementById('turma-form-teacher').value = '';
+
+        modal.style.display = 'flex';
+        modal.classList.remove('hidden');
+    }
+    window.openCreateTurmaModal = openCreateTurmaModal;
+
+    function openEditTurmaModal(turmaId) {
+        const modal = document.getElementById('modal-create-turma');
+        if (!modal) return;
+
+        initSchoolTurmasDatabase();
+        const turma = schoolTurmasDatabase.find(t => t.id === turmaId);
+        if (turma) {
+            document.getElementById('modal-turma-title').textContent = 'Editar Dados da Turma';
+            document.getElementById('turma-form-id').value = turma.id;
+            document.getElementById('turma-form-school').value = turma.escola;
+            document.getElementById('turma-form-name').value = turma.nome;
+            document.getElementById('turma-form-stage').value = turma.etapa;
+            document.getElementById('turma-form-shift').value = turma.turno;
+            document.getElementById('turma-form-teacher').value = turma.regente || '';
+
+            modal.style.display = 'flex';
+            modal.classList.remove('hidden');
+        }
+    }
+    window.openEditTurmaModal = openEditTurmaModal;
+
+    function closeModalTurma() {
+        const modal = document.getElementById('modal-create-turma');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+        }
+    }
+    window.closeModalTurma = closeModalTurma;
+
+    function handleSaveTurma(e) {
+        if (e && e.preventDefault) e.preventDefault();
+
+        const id = document.getElementById('turma-form-id')?.value;
+        const escola = document.getElementById('turma-form-school')?.value || currentSelectedSchool;
+        const nome = document.getElementById('turma-form-name')?.value || 'Nova Turma';
+        const etapa = document.getElementById('turma-form-stage')?.value || '5º Ano';
+        const turno = document.getElementById('turma-form-shift')?.value || 'Matutino';
+        const regente = document.getElementById('turma-form-teacher')?.value || 'A Atribuir';
+
+        initSchoolTurmasDatabase();
+
+        if (id) {
+            const existing = schoolTurmasDatabase.find(t => t.id === id);
+            if (existing) {
+                existing.nome = nome;
+                existing.etapa = etapa;
+                existing.turno = turno;
+                existing.regente = regente;
+            }
+        } else {
+            const newTurma = {
+                id: 'turma_' + Date.now(),
+                escola: escola,
+                nome: nome,
+                etapa: etapa,
+                turno: turno,
+                regente: regente,
+                totalAlunos: 25
+            };
+            schoolTurmasDatabase.push(newTurma);
+        }
+
+        saveSchoolTurmasDatabase();
+        closeModalTurma();
+        switchSchoolInnerTab('turmas');
+        showToast(`Turma "${nome}" salva com sucesso em ${escola}!`, 'check');
+    }
+    window.handleSaveTurma = handleSaveTurma;
+
+    function handleDeleteTurma(turmaId) {
+        if (confirm('Tem certeza que deseja excluir esta turma? Os alunos serão desacoplados.')) {
+            initSchoolTurmasDatabase();
+            schoolTurmasDatabase = schoolTurmasDatabase.filter(t => t.id !== turmaId);
+            saveSchoolTurmasDatabase();
+            switchSchoolInnerTab('turmas');
+            showToast('Turma excluída com sucesso!', 'trash-2');
+        }
+    }
+    window.handleDeleteTurma = handleDeleteTurma;
+
+    // -------------------------------------------------------------------------
+    // MODAL DE GERENCIAR E VINCULAR ALUNOS À TURMA
+    // -------------------------------------------------------------------------
+    let activeManageTurmaId = null;
+    let activeManageTurmaName = null;
+
+    function openManageClassStudentsModal(turmaId, turmaName) {
+        activeManageTurmaId = turmaId;
+        activeManageTurmaName = turmaName;
+
+        const modal = document.getElementById('modal-manage-class-students');
+        if (!modal) return;
+
+        document.getElementById('modal-class-students-title').textContent = `Alunos da Turma: ${turmaName}`;
+        document.getElementById('modal-class-students-subtitle').textContent = `${currentSelectedSchool} • Vincule ou desvincule estudantes da rede`;
+
+        renderStudentsToLinkList();
+        modal.style.display = 'flex';
+        modal.classList.remove('hidden');
+    }
+    window.openManageClassStudentsModal = openManageClassStudentsModal;
+
+    function closeModalManageClassStudents() {
+        const modal = document.getElementById('modal-manage-class-students');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+        }
+        switchSchoolInnerTab('turmas');
+    }
+    window.closeModalManageClassStudents = closeModalManageClassStudents;
+
+    function renderStudentsToLinkList(searchQuery = '') {
+        const listContainer = document.getElementById('class-students-list-container');
+        if (!listContainer) return;
+
+        const allStudents = (typeof getMasterStudentsDatabase === 'function') ? getMasterStudentsDatabase() : [];
+        const schoolStudents = allStudents.filter(s => s.escola === currentSelectedSchool);
+        const pool = (schoolStudents.length > 0) ? schoolStudents : allStudents.slice(0, 25);
+
+        const filtered = pool.filter(s => !searchQuery || s.nome.toLowerCase().includes(searchQuery.toLowerCase()));
+
+        listContainer.innerHTML = filtered.map((st, idx) => {
+            const isLinked = (idx % 2 === 0);
+            return `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                    <div>
+                        <strong style="font-size: 0.88rem; color: var(--text-primary); display: block;">${st.nome}</strong>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">Matrícula: ${st.matricula || '2026' + (1000 + idx)} • Etapa: ${st.etapa || '5º Ano'}</span>
+                    </div>
+                    <button type="button" onclick="toggleStudentLinkToTurma('${st.id}', this);" class="btn ${isLinked ? 'btn-outline' : 'btn-primary'} btn-sm" style="font-size: 0.75rem; font-weight: 700;">
+                        ${isLinked ? '✓ Vinculado' : '+ Vincular'}
+                    </button>
+                </div>
+            `;
+        }).join('');
+
+        const countEl = document.getElementById('modal-class-students-count');
+        if (countEl) countEl.textContent = `Total: ${filtered.length} Alunos Disponíveis`;
+    }
+
+    function filterStudentsToLink() {
+        const query = document.getElementById('search-student-to-link')?.value || '';
+        renderStudentsToLinkList(query);
+    }
+    window.filterStudentsToLink = filterStudentsToLink;
+
+    function toggleStudentLinkToTurma(studentId, btn) {
+        if (btn.classList.contains('btn-primary')) {
+            btn.className = 'btn btn-outline btn-sm';
+            btn.textContent = '✓ Vinculado';
+            showToast('Estudante vinculado à turma!', 'check');
+        } else {
+            btn.className = 'btn btn-primary btn-sm';
+            btn.textContent = '+ Vincular';
+            showToast('Estudante desvinculado da turma.', 'info');
+        }
+    }
+    window.toggleStudentLinkToTurma = toggleStudentLinkToTurma;
+
+    // -------------------------------------------------------------------------
+    // MODAL DE HISTÓRICO DE PROGRESSÃO DO ALUNO (PROFICIÊNCIA & NOTAS)
+    // -------------------------------------------------------------------------
+    function openStudentProgressModal(studentId, studentName) {
+        const modal = document.getElementById('modal-student-progress-history');
+        if (!modal) return;
+
+        const name = studentName || 'Estudante da Rede';
+        document.getElementById('modal-student-name').textContent = name;
+        document.getElementById('modal-student-avatar').textContent = name.charAt(0).toUpperCase();
+        document.getElementById('modal-student-meta').textContent = `Matrícula: 2026${Math.floor(1000 + Math.random()*8000)} • ${currentSelectedSchool} • 5º Ano A`;
+
+        // Tabela de Avaliações
+        const tbody = document.getElementById('modal-student-eval-tbody');
+        if (tbody) {
+            tbody.innerHTML = `
+                <tr style="border-bottom: 1px solid var(--border-color); height: 42px;">
+                    <td style="padding: 8px 14px; font-weight: 700;">1º Simulado Diagnóstico 2026</td>
+                    <td style="padding: 8px 14px; text-align: center; font-weight: 700; color: #10b981;">7.8</td>
+                    <td style="padding: 8px 14px; text-align: center; font-weight: 700; color: #f59e0b;">6.4</td>
+                    <td style="padding: 8px 14px; text-align: center; font-weight: 800; color: #6366f1;">7.1</td>
+                    <td style="padding: 8px 14px; text-align: center;"><span class="badge badge-success" style="font-size:0.68rem;">Adequado</span></td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border-color); height: 42px;">
+                    <td style="padding: 8px 14px; font-weight: 700;">Avaliação Formativa 1 (SEAMA)</td>
+                    <td style="padding: 8px 14px; text-align: center; font-weight: 700; color: #10b981;">8.2</td>
+                    <td style="padding: 8px 14px; text-align: center; font-weight: 700; color: #10b981;">7.5</td>
+                    <td style="padding: 8px 14px; text-align: center; font-weight: 800; color: #6366f1;">7.9</td>
+                    <td style="padding: 8px 14px; text-align: center;"><span class="badge badge-success" style="font-size:0.68rem;">Adequado</span></td>
+                </tr>
+                <tr style="height: 42px;">
+                    <td style="padding: 8px 14px; font-weight: 700; color: var(--text-muted);">2º Simulado SAEB (Planejado)</td>
+                    <td style="padding: 8px 14px; text-align: center; color: var(--text-muted);">-</td>
+                    <td style="padding: 8px 14px; text-align: center; color: var(--text-muted);">-</td>
+                    <td style="padding: 8px 14px; text-align: center; color: var(--text-muted);">-</td>
+                    <td style="padding: 8px 14px; text-align: center;"><span class="badge badge-warning" style="font-size:0.68rem;">Agendado</span></td>
+                </tr>
+            `;
+        }
+
+        modal.style.display = 'flex';
+        modal.classList.remove('hidden');
+    }
+    window.openStudentProgressModal = openStudentProgressModal;
+
+    function closeStudentProgressModal() {
+        const modal = document.getElementById('modal-student-progress-history');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+        }
+    }
+    window.closeStudentProgressModal = closeStudentProgressModal;
+
+
+
+    function toggleSidebarCollapse() {
+        document.body.classList.toggle('collapsed-sidebar');
+        const isCollapsed = document.body.classList.contains('collapsed-sidebar');
+        try {
+            localStorage.setItem('sidebar_collapsed', isCollapsed ? 'true' : 'false');
+        } catch(e) {}
+        const svg = document.getElementById('sidebar-toggle-svg');
+        if (svg) {
+            svg.style.transform = isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+    }
+    window.toggleSidebarCollapse = toggleSidebarCollapse;

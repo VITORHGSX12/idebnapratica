@@ -5176,3 +5176,83 @@ html, body {
         display: none !important;
     }
 }
+
+
+/* =========================================================================
+   SIDEBAR COLLAPSE BUTTON FIX - ELEGANT, VISIBLE & UNCRUSHED
+   ========================================================================= */
+.sidebar {
+    overflow: visible !important;
+}
+
+.sidebar-header {
+    overflow: visible !important;
+    position: relative;
+}
+
+.sidebar-collapse-toggle {
+    position: absolute !important;
+    right: -14px !important;
+    top: 22px !important;
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 50% !important;
+    background-color: var(--bg-secondary) !important;
+    border: 1.5px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+    z-index: 1000 !important;
+    transition: all 0.2s ease !important;
+}
+
+.sidebar-collapse-toggle:hover {
+    background-color: #6366f1 !important;
+    border-color: #6366f1 !important;
+    color: #ffffff !important;
+    transform: scale(1.1) !important;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4) !important;
+}
+
+body.collapsed-sidebar .sidebar-collapse-toggle svg {
+    transform: rotate(180deg);
+}
+
+/* School Detail Workspace Subtabs & Cards */
+.school-nav-tab-btn.active {
+    background: rgba(99, 102, 241, 0.12) !important;
+    color: #6366f1 !important;
+    border: 1px solid rgba(99, 102, 241, 0.3) !important;
+    font-weight: 700 !important;
+}
+
+.turma-card-item {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
+.turma-card-item:hover {
+    border-color: #6366f1;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+/* Student Progress History Modal */
+#modal-student-progress-history {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
