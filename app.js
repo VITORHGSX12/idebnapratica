@@ -400,6 +400,649 @@ function updateIdebComparativoView() {
         renderIdebRankingTable(uf, stage, city);
 
         safeCreateIcons();
+
+    // ==========================================
+    // LOGIN SCREEN ROTATING HEADLINES & CANVAS
+    // ==========================================
+    const loginHeadlines = [
+        "Cada décimo do IDEB planejado e conquistado.",
+        "Diagnóstico por descritor em tempo real.",
+        "Acompanhamento individual de cada estudante.",
+        "Simulados com matriz SAEB e SEAMA integrados.",
+        "Inteligência pedagógica guiando a gestão municipal."
+    ];
+    let headlineIndex = 0;
+
+    function rotateLoginHeadlines() {
+        const headlineEl = document.getElementById('rotating-headline');
+        if (!headlineEl) return;
+        setInterval(() => {
+            headlineEl.classList.add('fade');
+            setTimeout(() => {
+                headlineIndex = (headlineIndex + 1) % loginHeadlines.length;
+                headlineEl.textContent = loginHeadlines[headlineIndex];
+                headlineEl.classList.remove('fade');
+            }, 500);
+        }, 5000);
+    }
+
+    // ==========================================
+    // UNIFIED NETWORK IDEB PERFORMANCE CONFIG
+    // ==========================================
+    const NETWORK_IDEB_PERFORMANCE_CONFIG = {
+        indicatorTitle: "Evolução do IDEB (Escala 0 a 10)",
+        targetBadge: "Meta Pactuada 2025 • 6.5",
+        targetLineAnnotation: "Meta Local Pactuada: 6.5",
+        caption: "Série Histórica INEP (2019-2023) • Meta Pactuada pela Rede 2025",
+        seal: "Dados oficiais INEP/SAEB (2019-2023) com metas municipais pactuadas",
+        chartPoints: [
+            { year: "2019", val: "4.8", x: 55, y: 135, isOfficial: true },
+            { year: "2021", val: "5.1", x: 165, y: 118, isOfficial: true },
+            { year: "2023", val: "5.8", x: 275, y: 88, isOfficial: true },
+            { year: "2025 (Meta)", val: "6.5", x: 395, y: 48, isTarget: true }
+        ]
+    };
+
+    // ==========================================
+    // CINEMATIC MOTION CANVAS ENGINE
+    // ==========================================
+    function initLoginMotionCanvas() {
+        const canvas = document.getElementById('login-motion-canvas');
+        if (!canvas || !canvas.getContext) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        // Synchronize DOM elements with unified config
+        const targetBadgeEl = document.getElementById('login-card-target-badge');
+        const captionEl = document.getElementById('login-card-caption-text');
+        if (targetBadgeEl) targetBadgeEl.textContent = NETWORK_IDEB_PERFORMANCE_CONFIG.targetBadge;
+        if (captionEl) captionEl.textContent = NETWORK_IDEB_PERFORMANCE_CONFIG.caption;
+
+        let width = canvas.clientWidth || 480;
+        let height = canvas.clientHeight || 195;
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.scale(dpr, dpr);
+
+        const LOOP_DURATION = 9500; // 9.5 seconds total fluid loop
+        let startTime = null;
+
+        // Ambient floating particles (clean blue/sky tones)
+        const particles = Array.from({ length: 22 }, () => ({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            radius: Math.random() * 1.6 + 0.8,
+            vx: (Math.random() - 0.5) * 0.25,
+            vy: (Math.random() - 0.5) * 0.25,
+            alpha: Math.random() * 0.4 + 0.15
+        }));
+
+        // 7 Educational Nodes with minimal icons & positions
+        const eduNodes = [
+            { label: "Escola", icon: "school", x: 55, y: 40, color: "#2563eb" },
+            { label: "Alunos", icon: "users", x: 155, y: 32, color: "#7c3aed" },
+            { label: "Professor", icon: "user-check", x: 425, y: 55, color: "#059669" },
+            { label: "Livro", icon: "book", x: 75, y: 160, color: "#d97706" },
+            { label: "Gráfico", icon: "bar-chart", x: 195, y: 160, color: "#0284c7" },
+            { label: "Meta", icon: "target", x: 310, y: 160, color: "#e11d48" },
+            { label: "Avaliação", icon: "check-circle", x: 425, y: 140, color: "#4f46e5" }
+        ];
+
+        // Chart Points from Single Source of Truth
+        const chartPoints = NETWORK_IDEB_PERFORMANCE_CONFIG.chartPoints;
+
+        function drawIcon(type, x, y, size, color) {
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.lineWidth = 1.6;
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+
+            if (type === "school") {
+                ctx.beginPath();
+                ctx.moveTo(x - size, y);
+                ctx.lineTo(x, y - size);
+                ctx.lineTo(x + size, y);
+                ctx.closePath();
+                ctx.stroke();
+                ctx.strokeRect(x - size * 0.7, y, size * 1.4, size * 0.9);
+            } else if (type === "users") {
+                ctx.beginPath();
+                ctx.arc(x, y - size * 0.4, size * 0.45, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(x, y + size * 0.7, size * 0.7, Math.PI, Math.PI * 2);
+                ctx.stroke();
+            } else if (type === "user-check") {
+                ctx.beginPath();
+                ctx.arc(x - size * 0.2, y - size * 0.3, size * 0.45, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x + size * 0.3, y + size * 0.1);
+                ctx.lineTo(x + size * 0.5, y + size * 0.4);
+                ctx.lineTo(x + size * 0.9, y - size * 0.2);
+                ctx.stroke();
+            } else if (type === "book") {
+                ctx.beginPath();
+                ctx.moveTo(x, y - size * 0.6);
+                ctx.lineTo(x, y + size * 0.6);
+                ctx.moveTo(x, y - size * 0.6);
+                ctx.bezierCurveTo(x - size * 0.5, y - size * 0.9, x - size, y - size * 0.5, x - size, y - size * 0.2);
+                ctx.lineTo(x - size, y + size * 0.6);
+                ctx.moveTo(x, y - size * 0.6);
+                ctx.bezierCurveTo(x + size * 0.5, y - size * 0.9, x + size, y - size * 0.5, x + size, y - size * 0.2);
+                ctx.lineTo(x + size, y + size * 0.6);
+                ctx.stroke();
+            } else if (type === "bar-chart") {
+                ctx.beginPath();
+                ctx.rect(x - size * 0.8, y + size * 0.1, size * 0.4, size * 0.7);
+                ctx.rect(x - size * 0.2, y - size * 0.3, size * 0.4, size * 1.1);
+                ctx.rect(x + size * 0.4, y - size * 0.7, size * 0.4, size * 1.5);
+                ctx.fill();
+            } else if (type === "target") {
+                ctx.beginPath();
+                ctx.arc(x, y, size * 0.8, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(x, y, size * 0.35, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (type === "check-circle") {
+                ctx.beginPath();
+                ctx.arc(x, y, size * 0.8, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x - size * 0.4, y);
+                ctx.lineTo(x - size * 0.1, y + size * 0.35);
+                ctx.lineTo(x + size * 0.45, y - size * 0.3);
+                ctx.stroke();
+            }
+            ctx.restore();
+        }
+
+        function render(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const elapsed = (timestamp - startTime) % LOOP_DURATION;
+            const progress = elapsed / LOOP_DURATION;
+
+            // Recalculate dimensions dynamically
+            width = canvas.clientWidth || 480;
+            height = canvas.clientHeight || 195;
+            if (canvas.width !== width * dpr || canvas.height !== height * dpr) {
+                canvas.width = width * dpr;
+                canvas.height = height * dpr;
+                ctx.scale(dpr, dpr);
+            }
+
+            // Clear with crisp transparent / subtle deep navy gradient
+            ctx.clearRect(0, 0, width, height);
+
+            // 1. Ambient Floating Micro-Particles
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0) p.x = width;
+                if (p.x > width) p.x = 0;
+                if (p.y < 0) p.y = height;
+                if (p.y > height) p.y = 0;
+
+                ctx.save();
+                ctx.fillStyle = "rgba(147, 197, 253, " + p.alpha + ")";
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            });
+
+            // 2. High-Tech Grid & Scale lines
+            ctx.save();
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.04)";
+            ctx.lineWidth = 1;
+            for (let y = 30; y < height - 20; y += 35) {
+                ctx.beginPath();
+                ctx.moveTo(35, y);
+                ctx.lineTo(width - 25, y);
+                ctx.stroke();
+            }
+            ctx.restore();
+
+            // 3. Official Target Horizon Dashed Line (Meta 6.5)
+            const targetY = 48;
+            ctx.save();
+            ctx.setLineDash([4, 4]);
+            ctx.strokeStyle = "rgba(5, 150, 105, 0.4)";
+            ctx.lineWidth = 1.4;
+            ctx.beginPath();
+            ctx.moveTo(40, targetY);
+            ctx.lineTo(width - 30, targetY);
+            ctx.stroke();
+            ctx.restore();
+
+            // 4. Smooth IDEB Trajectory Curve (CENA 2: 1.8s -> 5.5s)
+            const graphProgress = Math.min(1, Math.max(0, (elapsed - 1400) / 3600));
+
+            if (graphProgress > 0) {
+                const totalPoints = chartPoints.length;
+                const activeIndex = (totalPoints - 1) * graphProgress;
+                const baseIndex = Math.floor(activeIndex);
+                const segmentProgress = activeIndex - baseIndex;
+
+                // Gradient Area Fill under trajectory
+                ctx.save();
+                const grad = ctx.createLinearGradient(0, 30, 0, height);
+                grad.addColorStop(0, "rgba(37, 99, 235, 0.28)");
+                grad.addColorStop(0.7, "rgba(37, 99, 235, 0.05)");
+                grad.addColorStop(1, "rgba(37, 99, 235, 0.0)");
+
+                ctx.beginPath();
+                ctx.moveTo(chartPoints[0].x, height - 16);
+                ctx.lineTo(chartPoints[0].x, chartPoints[0].y);
+
+                for (let i = 1; i <= baseIndex; i++) {
+                    ctx.lineTo(chartPoints[i].x, chartPoints[i].y);
+                }
+                if (baseIndex < totalPoints - 1) {
+                    const nextX = chartPoints[baseIndex].x + (chartPoints[baseIndex + 1].x - chartPoints[baseIndex].x) * segmentProgress;
+                    const nextY = chartPoints[baseIndex].y + (chartPoints[baseIndex + 1].y - chartPoints[baseIndex].y) * segmentProgress;
+                    ctx.lineTo(nextX, nextY);
+                    ctx.lineTo(nextX, height - 16);
+                } else {
+                    ctx.lineTo(chartPoints[totalPoints - 1].x, height - 16);
+                }
+                ctx.closePath();
+                ctx.fillStyle = grad;
+                ctx.fill();
+                ctx.restore();
+
+                // Draw Glowing Royal Blue Progress Line
+                ctx.save();
+                ctx.strokeStyle = "#2563eb";
+                ctx.lineWidth = 3.2;
+                ctx.lineCap = "round";
+                ctx.lineJoin = "round";
+                ctx.shadowColor = "rgba(37, 99, 235, 0.4)";
+                ctx.shadowBlur = 10;
+
+                ctx.beginPath();
+                ctx.moveTo(chartPoints[0].x, chartPoints[0].y);
+                for (let i = 1; i <= baseIndex; i++) {
+                    ctx.lineTo(chartPoints[i].x, chartPoints[i].y);
+                }
+                if (baseIndex < totalPoints - 1) {
+                    const curX = chartPoints[baseIndex].x + (chartPoints[baseIndex + 1].x - chartPoints[baseIndex].x) * segmentProgress;
+                    const curY = chartPoints[baseIndex].y + (chartPoints[baseIndex + 1].y - chartPoints[baseIndex].y) * segmentProgress;
+                    ctx.lineTo(curX, curY);
+                }
+                ctx.stroke();
+                ctx.restore();
+
+                // Draw Points & Labels
+                for (let i = 0; i <= baseIndex; i++) {
+                    const pt = chartPoints[i];
+                    const pointAlpha = Math.min(1, (graphProgress - (i / (totalPoints - 1))) * 4);
+
+                    if (pointAlpha > 0) {
+                        const isTarget = pt.isTarget;
+
+                        // Point Circle
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.arc(pt.x, pt.y, isTarget ? 5.5 : 4.5, 0, Math.PI * 2);
+                        ctx.fillStyle = "#ffffff";
+                        ctx.strokeStyle = isTarget ? "#059669" : "#2563eb";
+                        ctx.lineWidth = 2.5;
+                        ctx.shadowColor = "rgba(37, 99, 235, 0.35)";
+                        ctx.shadowBlur = 8;
+                        ctx.fill();
+                        ctx.stroke();
+
+                        // Ripple pulse on Target point
+                        if (isTarget) {
+                            const pulseR = 5 + (elapsed % 1400) / 90;
+                            const pulseOp = 1 - (elapsed % 1400) / 1400;
+                            ctx.beginPath();
+                            ctx.arc(pt.x, pt.y, pulseR, 0, Math.PI * 2);
+                            ctx.strokeStyle = "rgba(5, 150, 105, " + pulseOp + ")";
+                            ctx.lineWidth = 1.5;
+                            ctx.stroke();
+                        }
+
+                        // Year Label
+                        ctx.fillStyle = "#64748b";
+                        ctx.font = "600 " + (isTarget ? "8.5px" : "8px") + " 'Plus Jakarta Sans', sans-serif";
+                        ctx.textAlign = "center";
+                        ctx.fillText(pt.year, pt.x, height - 4);
+
+                        // Value Pill / Tag
+                        ctx.fillStyle = isTarget ? "#059669" : "#1e293b";
+                        ctx.font = "bold " + (isTarget ? "11px" : "9.5px") + " 'Plus Jakarta Sans', sans-serif";
+                        ctx.fillText(pt.val, pt.x, pt.y - 8);
+                        ctx.restore();
+                    }
+                }
+            }
+
+            // 5. Connecting Mesh Beams (CENA 3: 5.6s -> 8.2s)
+            const meshProgress = Math.min(1, Math.max(0, (elapsed - 5600) / 2400));
+            if (meshProgress > 0) {
+                ctx.save();
+                ctx.lineWidth = 1.2;
+
+                eduNodes.forEach((node, idx) => {
+                    const originPt = chartPoints[idx % chartPoints.length];
+                    const laserProgress = Math.min(1, meshProgress * 1.3);
+
+                    const targetX = originPt.x + (node.x - originPt.x) * laserProgress;
+                    const targetY = originPt.y + (node.y - originPt.y) * laserProgress;
+
+                    // Beam line
+                    const beamGrad = ctx.createLinearGradient(originPt.x, originPt.y, node.x, node.y);
+                    beamGrad.addColorStop(0, "rgba(37, 99, 235, 0.45)");
+                    beamGrad.addColorStop(1, "rgba(59, 130, 246, 0.15)");
+
+                    ctx.strokeStyle = beamGrad;
+                    ctx.beginPath();
+                    ctx.moveTo(originPt.x, originPt.y);
+                    ctx.lineTo(targetX, targetY);
+                    ctx.stroke();
+
+                    // Energy spark traveling
+                    const sparkT = (elapsed * 0.002 + idx * 0.2) % 1;
+                    const sparkX = originPt.x + (node.x - originPt.x) * sparkT;
+                    const sparkY = originPt.y + (node.y - originPt.y) * sparkT;
+
+                    ctx.beginPath();
+                    ctx.arc(sparkX, sparkY, 2.2, 0, Math.PI * 2);
+                    ctx.fillStyle = "#2563eb";
+                    ctx.shadowColor = "#3b82f6";
+                    ctx.shadowBlur = 6;
+                    ctx.fill();
+                });
+                ctx.restore();
+            }
+
+            // 6. Educational Minimalist Nodes (Clean White Cards Floating)
+            const nodeAlpha = Math.min(1, Math.max(0, (elapsed - 400) / 1400));
+            if (nodeAlpha > 0) {
+                eduNodes.forEach((node, idx) => {
+                    const floatOffset = Math.sin((elapsed * 0.002) + idx) * 3;
+                    const curY = node.y + floatOffset;
+
+                    ctx.save();
+                    ctx.globalAlpha = nodeAlpha * (progress > 0.92 ? (1 - (progress - 0.92) / 0.08) : 1);
+
+                    // Node Card Circle
+                    ctx.fillStyle = "#ffffff";
+                    ctx.strokeStyle = "rgba(226, 232, 240, 0.9)";
+                    ctx.lineWidth = 1.5;
+                    ctx.shadowColor = "rgba(37, 99, 235, 0.08)";
+                    ctx.shadowBlur = 8;
+                    ctx.beginPath();
+                    ctx.arc(node.x, curY, 12, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+
+                    // Icon
+                    drawIcon(node.icon, node.x, curY, 5.5, node.color);
+
+                    // Label
+                    ctx.fillStyle = "#1e293b";
+                    ctx.font = "700 7.5px 'Plus Jakarta Sans', sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText(node.label, node.x, curY + 17);
+
+                    ctx.restore();
+                });
+            }
+
+            // 7. Luminous Blue Brand Sweep Transition (Seamless Loop)
+            if (elapsed > 8200) {
+                const sweepProgress = (elapsed - 8200) / 1300;
+                const sweepX = width * sweepProgress;
+
+                ctx.save();
+                const sweepGrad = ctx.createLinearGradient(sweepX - 70, 0, sweepX + 70, 0);
+                sweepGrad.addColorStop(0, "rgba(255, 255, 255, 0)");
+                sweepGrad.addColorStop(0.5, "rgba(37, 99, 235, 0.12)");
+                sweepGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
+
+                ctx.fillStyle = sweepGrad;
+                ctx.fillRect(0, 0, width, height);
+                ctx.restore();
+            }
+
+            requestAnimationFrame(render);
+        }
+
+        requestAnimationFrame(render);
+    }
+
+    // Toggle Password Visibility
+    const btnTogglePassword = document.getElementById('btn-toggle-login-password');
+    const loginPassword = document.getElementById('login-password');
+    if (btnTogglePassword && loginPassword) {
+        btnTogglePassword.addEventListener('click', () => {
+            const isPassword = loginPassword.getAttribute('type') === 'password';
+            loginPassword.setAttribute('type', isPassword ? 'text' : 'password');
+            btnTogglePassword.innerHTML = isPassword 
+                ? '<i data-lucide="eye-off" style="width: 18px; height: 18px;"></i>' 
+                : '<i data-lucide="eye" style="width: 18px; height: 18px;"></i>';
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        });
+    }
+
+    // Quick Test Accounts Cards Handlers
+    const testCards = document.querySelectorAll('.test-account-card');
+    const loginEmailInput = document.getElementById('login-email');
+    if (testCards && loginEmailInput) {
+        testCards.forEach(card => {
+            card.addEventListener('click', () => {
+                testCards.forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+
+                const email = card.getAttribute('data-email');
+                const pass = card.getAttribute('data-pass') || '123';
+                const role = card.getAttribute('data-role') || 'Gestor da Rede';
+
+                loginEmailInput.value = email;
+                if (loginPassword) loginPassword.value = pass;
+
+                showToast("Perfil " + (card.querySelector('.test-role-title')?.textContent || '') + " selecionado (" + email + ")", 'check');
+            });
+        });
+    }
+
+    // Forgot password placeholder
+    const linkForgotPassword = document.getElementById('link-forgot-password');
+    if (linkForgotPassword) {
+        linkForgotPassword.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('Para redefinir sua senha institucional, entre em contato com a equipe de TI da SEMED Gonçalves Dias - MA (admin@goncalvesdias.ma.gov.br).');
+        });
+    }
+
+    // Login Form Submit Handlers & Role-Based Dashboard Routing
+    const loginForm = document.getElementById('login-form');
+    const loginScreen = document.getElementById('login-screen');
+    const btnLoginSubmit = document.getElementById('btn-login-submit');
+
+    if (loginForm && loginScreen && btnLoginSubmit) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const emailInput = document.getElementById('login-email').value.trim().toLowerCase();
+            const passInput = document.getElementById('login-password')?.value || '123';
+
+            let detectedRole = 'Gestor da Rede';
+            let targetTab = 'dashboard';
+            let assignedSchool = '';
+            let assignedTurma = '';
+
+            if (emailInput.startsWith('prof') || emailInput.includes('professor')) {
+                detectedRole = 'Professor';
+                targetTab = 'alunos-panel';
+                assignedSchool = 'U.E. BENTA VILANOVA';
+                assignedTurma = '2º Ano';
+            } else if (emailInput.startsWith('diret') || emailInput.includes('diretor') || emailInput.includes('escola') || emailInput.includes('cora')) {
+                detectedRole = 'Diretor Escola';
+                targetTab = 'escolas-panel';
+                assignedSchool = 'U.E. BENTA VILANOVA';
+            } else if (emailInput.startsWith('admin') || emailInput.startsWith('dpo')) {
+                detectedRole = 'Master Admin';
+                targetTab = 'dashboard';
+            } else if (emailInput.startsWith('semed') || emailInput.startsWith('gestor') || emailInput.includes('semed')) {
+                detectedRole = 'Gestor da Rede';
+                targetTab = 'dashboard';
+            }
+
+            // Loading status feedback
+            btnLoginSubmit.disabled = true;
+            const btnSpan = btnLoginSubmit.querySelector('span');
+            const originalText = btnSpan ? btnSpan.textContent : '';
+            if (btnSpan) btnSpan.textContent = 'Autenticando...';
+
+            sessionStorage.setItem('isLoggedIn', 'true');
+            sessionStorage.setItem('activeTenant', 'default');
+            sessionStorage.setItem('userEmail', emailInput);
+            sessionStorage.setItem('userRole', detectedRole);
+            sessionStorage.setItem('userEscola', assignedSchool);
+            sessionStorage.setItem('userTurma', assignedTurma);
+
+            try {
+                if (typeof loadDatabaseState === 'function') await loadDatabaseState();
+            } catch (err) {
+                console.warn('[IDEB Engine] Warning in loadDatabaseState:', err);
+            }
+
+            try {
+                updateMenuVisibilityByRole();
+            } catch (err) {
+                console.warn('[IDEB Engine] Warning in updateMenuVisibilityByRole:', err);
+            }
+
+            // Direct Navigation to the Role's Panel
+            try {
+                if (window.navigateToTab) {
+                    window.navigateToTab(targetTab);
+                }
+            } catch (err) {
+                console.warn('[IDEB Engine] Warning in navigateToTab:', err);
+            }
+
+            // Apply role-specific filters
+            try {
+                if (detectedRole === 'Diretor Escola') {
+                    const dbSchoolSearch = document.getElementById('db-school-search');
+                    if (dbSchoolSearch) {
+                        dbSchoolSearch.value = 'Benta Vilanova';
+                        if (typeof renderDbSchools === 'function') renderDbSchools();
+                    }
+                } else if (detectedRole === 'Professor') {
+                    const dbStudentSchoolFilter = document.getElementById('db-student-school-filter');
+                    if (dbStudentSchoolFilter) {
+                        dbStudentSchoolFilter.value = 'U.E. BENTA VILANOVA';
+                        if (typeof applyDbFilters === 'function') applyDbFilters();
+                    }
+                } else if (detectedRole === 'Professor AEE') {
+                    const dbStudentNeeFilter = document.getElementById('db-student-nee-filter');
+                    if (dbStudentNeeFilter) {
+                        dbStudentNeeFilter.value = 'sim';
+                        if (typeof applyDbFilters === 'function') applyDbFilters();
+                    }
+                }
+            } catch (err) {
+                console.warn('[IDEB Engine] Filter warning:', err);
+            }
+
+            // Smooth Fade-out animation
+            loginScreen.classList.add('fade-out');
+            showToast("Bem-vindo ao IDEB na Prática! Painel " + detectedRole + " carregado.", 'check');
+            window.scrollTo(0, 0);
+
+            setTimeout(() => {
+                loginScreen.style.display = 'none';
+                safeCreateIcons();
+            }, 500);
+        });
+    }
+
+    function updateMenuVisibilityByRole() {
+        const userRole = sessionStorage.getItem('userRole') || 'Master Admin';
+        const userEscola = sessionStorage.getItem('userEscola') || 'U.E. BENTA VILANOVA';
+        const userTurma = sessionStorage.getItem('userTurma') || '2º Ano';
+
+        const activeNetworkLabel = document.getElementById('sidebar-active-network-label');
+        const userProfileName = document.querySelector('.user-profile .user-name');
+        const userProfileRole = document.querySelector('.user-profile .user-role');
+        const userProfileAvatar = document.querySelector('.user-profile .avatar');
+
+        const allMenuItems = document.querySelectorAll('.menu-item');
+        allMenuItems.forEach(item => { item.style.display = 'flex'; });
+
+        if (userRole === 'Professor' || userRole === 'Professor AEE') {
+            const allowedTabs = ['alunos-panel', 'biblioteca-recursos', 'cronograma-habilidades', 'aplicacao-provas', 'matriz-descritores', 'questions'];
+            allMenuItems.forEach(item => {
+                const target = item.getAttribute('data-target');
+                item.style.display = allowedTabs.includes(target) ? 'flex' : 'none';
+            });
+            const alunosMenu = document.querySelector('.menu-item[data-target="alunos-panel"] span');
+            if (alunosMenu) alunosMenu.textContent = 'Minha Turma & Alunos';
+            const provasMenu = document.querySelector('.menu-item[data-target="aplicacao-provas"] span');
+            if (provasMenu) provasMenu.textContent = 'Lançamento de Gabaritos';
+
+            if (activeNetworkLabel) activeNetworkLabel.textContent = userEscola + " (" + userTurma + ")";
+            if (userProfileName) userProfileName.textContent = 'Prof. Docente';
+            if (userProfileRole) userProfileRole.textContent = userEscola + " • " + userTurma;
+            if (userProfileAvatar) {
+                userProfileAvatar.textContent = 'PR';
+                userProfileAvatar.style.backgroundColor = '#2563eb';
+            }
+        } else if (userRole === 'Diretor Escola') {
+            const allowedTabs = ['escolas-panel', 'alunos-panel', 'metas-ideb', 'cronograma-habilidades', 'aplicacao-provas', 'gestao-pedagogica', 'ai-playground', 'biblioteca-recursos'];
+            allMenuItems.forEach(item => {
+                const target = item.getAttribute('data-target');
+                item.style.display = allowedTabs.includes(target) ? 'flex' : 'none';
+            });
+            const escolasMenu = document.querySelector('.menu-item[data-target="escolas-panel"] span');
+            if (escolasMenu) escolasMenu.textContent = 'Minha Escola & Turmas';
+            const alunosMenu = document.querySelector('.menu-item[data-target="alunos-panel"] span');
+            if (alunosMenu) alunosMenu.textContent = 'Alunos da Escola';
+
+            if (activeNetworkLabel) activeNetworkLabel.textContent = userEscola + " (Direção)";
+            if (userProfileName) userProfileName.textContent = 'Diretora Maria';
+            if (userProfileRole) userProfileRole.textContent = "Direção • " + userEscola;
+            if (userProfileAvatar) {
+                userProfileAvatar.textContent = 'DE';
+                userProfileAvatar.style.backgroundColor = '#059669';
+            }
+        } else if (userRole === 'Master Admin') {
+            allMenuItems.forEach(item => { item.style.display = 'flex'; });
+            if (activeNetworkLabel) activeNetworkLabel.textContent = 'Administração TI / DPO';
+            if (userProfileName) userProfileName.textContent = 'Administrador TI';
+            if (userProfileRole) userProfileRole.textContent = 'DPO & Infraestrutura';
+            if (userProfileAvatar) {
+                userProfileAvatar.textContent = 'AD';
+                userProfileAvatar.style.backgroundColor = '#e11d48';
+            }
+        } else {
+            const allowedTabs = ['dashboard', 'escolas-panel', 'alunos-panel', 'metas-ideb', 'ideb-comparativo', 'matriz-descritores', 'cronograma-habilidades', 'criar-avaliacoes', 'aplicacao-provas', 'questions', 'ai-playground', 'gestao-pedagogica', 'biblioteca-recursos'];
+            allMenuItems.forEach(item => {
+                const target = item.getAttribute('data-target');
+                item.style.display = (target === 'doc-tecnica' || target === 'admin-panel') ? 'none' : 'flex';
+            });
+            if (activeNetworkLabel) activeNetworkLabel.textContent = 'SEMED Gonçalves Dias - MA';
+            if (userProfileName) userProfileName.textContent = 'Secretaria de Educação';
+        }
+    }
+    window.updateMenuVisibilityByRole = updateMenuVisibilityByRole;
+
+    // Start Login Screen Canvas & Headlines
+    rotateLoginHeadlines();
+    initLoginMotionCanvas();
+
 function updateIdebComparativoView() {
         const stateSelect = document.getElementById('ideb-state-select');
         const citySearchInput = document.getElementById('ideb-city-search');
