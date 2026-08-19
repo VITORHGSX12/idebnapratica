@@ -81,7 +81,7 @@ window.SCHOOL_ASSESSMENTS_STATE = {
 };
 var SCHOOL_ASSESSMENTS_STATE = window.SCHOOL_ASSESSMENTS_STATE;
 
-const MASTER_EXHAUSTIVE_MATRICES = {
+var MASTER_EXHAUSTIVE_MATRICES = window.MASTER_EXHAUSTIVE_MATRICES = window.MASTER_EXHAUSTIVE_MATRICES || {
         '5ano': {
             portuguese: [
                 { codigo: "D1", topico: "Procedimentos de Leitura", desc: "Localizar informações explícitas em um texto." },
@@ -267,7 +267,7 @@ const MASTER_EXHAUSTIVE_MATRICES = {
     };
 window.MASTER_EXHAUSTIVE_MATRICES = MASTER_EXHAUSTIVE_MATRICES;
 
-const OFFICIAL_19_URES_MA = [
+var OFFICIAL_19_URES_MA = window.OFFICIAL_19_URES_MA = window.OFFICIAL_19_URES_MA || [
     { name: "URE Açailândia", id: "acailandia", cities: ["Açailândia", "Cidelândia", "Itinga do Maranhão", "São Francisco do Brejão", "Vila Nova dos Martírios"] },
     { name: "URE Bacabal", id: "bacabal", cities: ["Altamira do Maranhão", "Lago da Pedra", "Lagoa Grande do Maranhão", "Paulo Ramos", "Marajá do Sena", "Brejo de Areia", "Vitorino Freire", "São Luís Gonzaga do Maranhão", "Bacabal", "Olho d'Água das Cunhãs", "Lago Verde", "Conceição do Lago-Açu"] },
     { name: "URE Balsas", id: "balsas", cities: ["Alto Parnaíba", "Balsas", "Carolina", "Feira Nova do Maranhão", "Riachão", "Tasso Fragoso", "Fortaleza dos Nogueiras", "Nova Colinas", "São Raimundo das Mangabeiras", "Loreto", "Sambaíba"] },
@@ -400,6 +400,37 @@ function updateIdebComparativoView() {
         renderIdebRankingTable(uf, stage, city);
 
         safeCreateIcons();
+    }
+    window.updateIdebComparativoView = updateIdebComparativoView;
+
+// Municípios da URE Presidente Dutra e Região Centro
+window.URE_PRESIDENTE_DUTRA_MUNICIPALITIES = [
+    "Dom Pedro", "Fortuna", "Gonçalves Dias", "Governador Archer", "Governador Eugênio Barros",
+    "Governador Luiz Rocha", "Graça Aranha", "Joselândia", "Presidente Dutra", "Santa Filomena do Maranhão",
+    "São Domingos do Maranhão", "São José dos Basílios", "Senador Alexandre Costa", "Tuntum"
+];
+var URE_PRESIDENTE_DUTRA_MUNICIPALITIES = window.URE_PRESIDENTE_DUTRA_MUNICIPALITIES;
+
+window.REGIAO_CENTRO_MA_MUNICIPALITIES = [
+    "Barra do Corda", "Dom Pedro", "Esperantinópolis", "Fernando Falcão", "Fortuna",
+"Gonçalves Dias", "Governador Archer", "Governador Eugênio Barros", "Governador Luiz Rocha",
+    "Graça Aranha", "Itaipava do Grajaú", "Jenipapo dos Vieiras", "Joselândia", "Presidente Dutra",
+    "Santa Filomena do Maranhão", "São Domingos do Maranhão", "São José dos Basílios", "São Roberto",
+    "Senador Alexandre Costa", "Tuntum"
+];
+window.REGIAO_CENTRO_MA_MUNICIPALITIES = REGIAO_CENTRO_MA_MUNICIPALITIES;
+var REGIAO_CENTRO_MA_MUNICIPALITIES = window.REGIAO_CENTRO_MA_MUNICIPALITIES;
+
+// Debounce helper for optimization (global scope)
+function debounce(func, delay = 300) {
+    let timer;
+    return function(...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => func.apply(this, args), delay);
+    };
+}
+
+const initApp = () => {
 
     // ==========================================
     // LOGIN SCREEN & CINEMATIC MOTION ENGINE
@@ -1013,37 +1044,6 @@ function updateIdebComparativoView() {
     rotateLoginHeadlines();
     initLoginMotionCanvas();
 
-    }
-window.updateIdebComparativoView = updateIdebComparativoView;
-
-// Municípios da URE Presidente Dutra e Região Centro
-window.URE_PRESIDENTE_DUTRA_MUNICIPALITIES = [
-    "Dom Pedro", "Fortuna", "Gonçalves Dias", "Governador Archer", "Governador Eugênio Barros",
-    "Governador Luiz Rocha", "Graça Aranha", "Joselândia", "Presidente Dutra", "Santa Filomena do Maranhão",
-    "São Domingos do Maranhão", "São José dos Basílios", "Senador Alexandre Costa", "Tuntum"
-];
-var URE_PRESIDENTE_DUTRA_MUNICIPALITIES = window.URE_PRESIDENTE_DUTRA_MUNICIPALITIES;
-
-window.REGIAO_CENTRO_MA_MUNICIPALITIES = [
-    "Barra do Corda", "Dom Pedro", "Esperantinópolis", "Fernando Falcão", "Fortuna",
-"Gonçalves Dias", "Governador Archer", "Governador Eugênio Barros", "Governador Luiz Rocha",
-    "Graça Aranha", "Itaipava do Grajaú", "Jenipapo dos Vieiras", "Joselândia", "Presidente Dutra",
-    "Santa Filomena do Maranhão", "São Domingos do Maranhão", "São José dos Basílios", "São Roberto",
-    "Senador Alexandre Costa", "Tuntum"
-];
-window.REGIAO_CENTRO_MA_MUNICIPALITIES = REGIAO_CENTRO_MA_MUNICIPALITIES;
-var REGIAO_CENTRO_MA_MUNICIPALITIES = window.REGIAO_CENTRO_MA_MUNICIPALITIES;
-
-// Debounce helper for optimization (global scope)
-function debounce(func, delay = 300) {
-    let timer;
-    return function(...args) {
-        clearTimeout(timer);
-        timer = setTimeout(() => func.apply(this, args), delay);
-    };
-}
-
-const initApp = () => {
 
     // Auto-login & Session Recovery on Page Reload / F5
     const isLogged = (localStorage.getItem('isLoggedIn') === 'true' || sessionStorage.getItem('isLoggedIn') === 'true');
@@ -9837,508 +9837,6 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
             }
         });
     });
-
-    // ==========================================
-    // LÓGICA DE CONTROLE DA TELA DE LOGIN & MOTION
-    // ==========================================
-    const loginHeadlines = [
-        "Cada décimo do IDEB planejado e conquistado.",
-        "Do diagnóstico ao plano de ação, em uma só plataforma.",
-        "Inteligência pedagógica guiando a gestão municipal."
-    ];
-    let headlineIndex = 0;
-
-    function rotateLoginHeadlines() {
-        const headlineEl = document.getElementById('rotating-headline');
-        if (!headlineEl) return;
-        setInterval(() => {
-            headlineEl.classList.add('fade');
-            setTimeout(() => {
-                headlineIndex = (headlineIndex + 1) % loginHeadlines.length;
-                headlineEl.textContent = loginHeadlines[headlineIndex];
-                headlineEl.classList.remove('fade');
-            }, 500);
-        }, 5000);
-    }
-
-    // ==========================================
-    // CINEMATIC MOTION CANVAS ENGINE (8-10s Loop)
-    // ==========================================
-    // UNIFIED NETWORK IDEB PERFORMANCE CONFIG (SINGLE SOURCE OF TRUTH)
-    // ==========================================
-    const NETWORK_IDEB_PERFORMANCE_CONFIG = {
-        indicatorTitle: "Evolução do IDEB (Escala 0 a 10)",
-        targetBadge: "Meta Pactuada 2025 • 6.5",
-        targetLineAnnotation: "Meta Local Pactuada: 6.5",
-        caption: "Série Histórica INEP (2019-2023) • Meta Pactuada pela Rede 2025",
-        seal: "Dados oficiais INEP/SAEB (2019-2023) com metas municipais pactuadas",
-        chartPoints: [
-            { year: "2019", val: "4.8", x: 55, y: 135, isOfficial: true },
-            { year: "2021", val: "5.1", x: 165, y: 118, isOfficial: true },
-            { year: "2023", val: "5.8", x: 275, y: 88, isOfficial: true },
-            { year: "2025 (Meta)", val: "6.5", x: 395, y: 48, isTarget: true }
-        ]
-    };
-
-    // ==========================================
-    // CINEMATIC MOTION CANVAS ENGINE (Clean White/Blue & Meta Pactuada 2025)
-    // ==========================================
-    function initLoginMotionCanvas() {
-        const canvas = document.getElementById('login-motion-canvas');
-        if (!canvas || !canvas.getContext) return;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-
-        // Configuração de exibição das credenciais de teste (false = Produção)
-        const SHOW_TEST_CREDENTIALS = false;
-        const testCredsContainer = document.getElementById('login-test-credentials-container');
-        if (testCredsContainer) {
-            testCredsContainer.style.display = SHOW_TEST_CREDENTIALS ? 'block' : 'none';
-        }
-
-        // Synchronize DOM elements with unified config
-        const targetBadgeEl = document.getElementById('login-card-target-badge');
-        const captionEl = document.getElementById('login-card-caption-text');
-        if (targetBadgeEl && typeof NETWORK_IDEB_PERFORMANCE_CONFIG !== 'undefined') targetBadgeEl.textContent = NETWORK_IDEB_PERFORMANCE_CONFIG.targetBadge;
-        if (captionEl && typeof NETWORK_IDEB_PERFORMANCE_CONFIG !== 'undefined') captionEl.textContent = NETWORK_IDEB_PERFORMANCE_CONFIG.caption;
-
-        let width = canvas.clientWidth || 480;
-        let height = canvas.clientHeight || 195;
-        const dpr = window.devicePixelRatio || 1;
-        canvas.width = width * dpr;
-        canvas.height = height * dpr;
-        ctx.scale(dpr, dpr);
-
-        const LOOP_DURATION = 9500; // 9.5 seconds total fluid loop
-        let startTime = null;
-
-        // Ambient floating particles (clean blue/sky tones)
-        const particles = Array.from({ length: 18 }, () => ({
-            x: Math.random() * width,
-            y: Math.random() * height,
-            radius: Math.random() * 1.5 + 0.8,
-            vx: (Math.random() - 0.5) * 0.2,
-            vy: (Math.random() - 0.5) * 0.2,
-            alpha: Math.random() * 0.35 + 0.1
-        }));
-
-        // Chart Points from Single Source of Truth
-        const chartPoints = (typeof NETWORK_IDEB_PERFORMANCE_CONFIG !== 'undefined' && NETWORK_IDEB_PERFORMANCE_CONFIG.chartPoints) ? NETWORK_IDEB_PERFORMANCE_CONFIG.chartPoints : [
-            { year: "2019", val: "4.8", x: 45, y: 125, isTarget: false },
-            { year: "2021", val: "5.1", x: 155, y: 105, isTarget: false },
-            { year: "2023", val: "5.4", x: 275, y: 85, isTarget: false },
-            { year: "Meta 2025", val: "6.5", x: 415, y: 45, isTarget: true }
-        ];
-
-        function render(timestamp) {
-            if (!startTime) startTime = timestamp;
-            const elapsed = (timestamp - startTime) % LOOP_DURATION;
-            const progress = elapsed / LOOP_DURATION;
-
-            ctx.clearRect(0, 0, width, height);
-
-            // 1. Subtle Clean Light Blue Grid Lines
-            ctx.strokeStyle = "rgba(37, 99, 235, 0.07)";
-            ctx.lineWidth = 1;
-            for (let y = 25; y < height; y += 32) {
-                ctx.beginPath();
-                ctx.moveTo(10, y);
-                ctx.lineTo(width - 10, y);
-                ctx.stroke();
-            }
-
-            // 2. Ambient Floating Particles (Soft Blue)
-            particles.forEach(p => {
-                p.x += p.vx;
-                p.y += p.vy;
-                if (p.x < 0) p.x = width;
-                if (p.x > width) p.x = 0;
-                if (p.y < 0) p.y = height;
-                if (p.y > height) p.y = 0;
-
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = "rgba(37, 99, 235, " + p.alpha + ")";
-                ctx.fill();
-            });
-
-            // 3. Projected Target Dashed Line (Meta Local Pactuada: 6.5)
-            const metaLineAlpha = Math.min(1, Math.max(0, (elapsed - 1000) / 1000));
-            if (metaLineAlpha > 0) {
-                ctx.save();
-                ctx.setLineDash([5, 4]);
-                ctx.strokeStyle = "rgba(37, 99, 235, " + (metaLineAlpha * 0.45) + ")";
-                ctx.lineWidth = 1.5;
-                ctx.beginPath();
-                ctx.moveTo(chartPoints[0].x, chartPoints[chartPoints.length - 1].y + 25);
-                ctx.lineTo(chartPoints[chartPoints.length - 1].x, chartPoints[chartPoints.length - 1].y);
-                ctx.stroke();
-
-                ctx.fillStyle = "rgba(37, 99, 235, " + (metaLineAlpha * 0.95) + ")";
-                ctx.font = "bold 9px 'Plus Jakarta Sans', sans-serif";
-                ctx.textAlign = "right";
-                ctx.fillText("Meta Pactuada 2025 · 6.5", chartPoints[chartPoints.length - 1].x + 10, chartPoints[chartPoints.length - 1].y - 18);
-                ctx.restore();
-            }
-
-            // 4. Progressive Line Graph Evolution (2019 -> 2021 -> 2023 -> 2025 Meta)
-            const graphProgress = Math.min(1, Math.max(0, (elapsed - 1400) / 3800));
-            const totalPoints = chartPoints.length;
-            const currentPointIndex = graphProgress * (totalPoints - 1);
-            const baseIndex = Math.floor(currentPointIndex);
-            const segmentProgress = currentPointIndex - baseIndex;
-
-            if (graphProgress > 0) {
-                // Gradient Fill Under Curve
-                ctx.save();
-                const grad = ctx.createLinearGradient(0, 0, 0, height);
-                grad.addColorStop(0, "rgba(37, 99, 235, 0.20)");
-                grad.addColorStop(1, "rgba(37, 99, 235, 0.00)");
-
-                ctx.beginPath();
-                ctx.moveTo(chartPoints[0].x, height - 16);
-                ctx.lineTo(chartPoints[0].x, chartPoints[0].y);
-
-                for (let i = 1; i <= baseIndex; i++) {
-                    ctx.lineTo(chartPoints[i].x, chartPoints[i].y);
-                }
-                if (baseIndex < totalPoints - 1) {
-                    const nextX = chartPoints[baseIndex].x + (chartPoints[baseIndex + 1].x - chartPoints[baseIndex].x) * segmentProgress;
-                    const nextY = chartPoints[baseIndex].y + (chartPoints[baseIndex + 1].y - chartPoints[baseIndex].y) * segmentProgress;
-                    ctx.lineTo(nextX, nextY);
-                    ctx.lineTo(nextX, height - 16);
-                } else {
-                    ctx.lineTo(chartPoints[totalPoints - 1].x, height - 16);
-                }
-                ctx.closePath();
-                ctx.fillStyle = grad;
-                ctx.fill();
-                ctx.restore();
-
-                // Draw Glowing Royal Blue Progress Line
-                ctx.save();
-                ctx.strokeStyle = "#2563eb";
-                ctx.lineWidth = 3.2;
-                ctx.lineCap = "round";
-                ctx.lineJoin = "round";
-                ctx.shadowColor = "rgba(37, 99, 235, 0.45)";
-                ctx.shadowBlur = 10;
-
-                ctx.beginPath();
-                ctx.moveTo(chartPoints[0].x, chartPoints[0].y);
-                for (let i = 1; i <= baseIndex; i++) {
-                    ctx.lineTo(chartPoints[i].x, chartPoints[i].y);
-                }
-                if (baseIndex < totalPoints - 1) {
-                    const curX = chartPoints[baseIndex].x + (chartPoints[baseIndex + 1].x - chartPoints[baseIndex].x) * segmentProgress;
-                    const curY = chartPoints[baseIndex].y + (chartPoints[baseIndex + 1].y - chartPoints[baseIndex].y) * segmentProgress;
-                    ctx.lineTo(curX, curY);
-                }
-                ctx.stroke();
-                ctx.restore();
-
-                // Draw Points & Labels
-                for (let i = 0; i <= baseIndex; i++) {
-                    const pt = chartPoints[i];
-                    const pointAlpha = Math.min(1, (graphProgress - (i / (totalPoints - 1))) * 4);
-
-                    if (pointAlpha > 0) {
-                        const isTarget = pt.isTarget;
-
-                        // Point Circle
-                        ctx.save();
-                        ctx.beginPath();
-                        ctx.arc(pt.x, pt.y, isTarget ? 5.5 : 4.5, 0, Math.PI * 2);
-                        ctx.fillStyle = "#ffffff";
-                        ctx.strokeStyle = isTarget ? "#059669" : "#2563eb";
-                        ctx.lineWidth = 2.5;
-                        ctx.shadowColor = "rgba(37, 99, 235, 0.35)";
-                        ctx.shadowBlur = 8;
-                        ctx.fill();
-                        ctx.stroke();
-
-                        // Ripple pulse on Target point
-                        if (isTarget) {
-                            const pulseR = 5 + (elapsed % 1400) / 90;
-                            const pulseOp = 1 - (elapsed % 1400) / 1400;
-                            ctx.beginPath();
-                            ctx.arc(pt.x, pt.y, pulseR, 0, Math.PI * 2);
-                            ctx.strokeStyle = "rgba(5, 150, 105, " + pulseOp + ")";
-                            ctx.lineWidth = 1.5;
-                            ctx.stroke();
-                        }
-
-                        // Year Label
-                        ctx.fillStyle = "#64748b";
-                        ctx.font = "600 " + (isTarget ? "8.5px" : "8px") + " 'Plus Jakarta Sans', sans-serif";
-                        ctx.textAlign = "center";
-                        ctx.fillText(pt.year, pt.x, height - 4);
-
-                        // Value Pill / Tag
-                        ctx.fillStyle = isTarget ? "#059669" : "#1e293b";
-                        ctx.font = "bold " + (isTarget ? "11px" : "9.5px") + " 'Plus Jakarta Sans', sans-serif";
-                        ctx.fillText(pt.val, pt.x, pt.y - 8);
-                        ctx.restore();
-                    }
-                }
-            }
-
-            requestAnimationFrame(render);
-        }
-
-        requestAnimationFrame(render);
-    }
-
-    // Toggle Password Visibility
-    const btnTogglePassword = document.getElementById('btn-toggle-login-password');
-    const loginPassword = document.getElementById('login-password');
-    if (btnTogglePassword && loginPassword) {
-        btnTogglePassword.addEventListener('click', () => {
-            const isPass = loginPassword.type === 'password';
-            loginPassword.type = isPass ? 'text' : 'password';
-            const icon = btnTogglePassword.querySelector('i') || btnTogglePassword.querySelector('svg');
-            if (icon && window.lucide) {
-                icon.setAttribute('data-lucide', isPass ? 'eye-off' : 'eye');
-                lucide.createIcons({ attrs: { class: 'lucide' } });
-            }
-        });
-    }
-
-    // Quick Test Accounts Cards Handlers
-    const testCards = document.querySelectorAll('.test-account-card');
-    const loginEmailInput = document.getElementById('login-email');
-    if (testCards && loginEmailInput) {
-        testCards.forEach(card => {
-            card.addEventListener('click', () => {
-                testCards.forEach(c => c.classList.remove('active'));
-                card.classList.add('active');
-
-                const email = card.getAttribute('data-email');
-                const pass = card.getAttribute('data-pass') || '123';
-                const role = card.getAttribute('data-role') || 'Gestor da Rede';
-
-                loginEmailInput.value = email;
-                if (loginPassword) loginPassword.value = pass;
-
-                showToast(`Perfil ${card.querySelector('.test-role-title')?.textContent} selecionado (${email})`, 'check');
-            });
-        });
-    }
-
-    // Forgot password placeholder
-    const linkForgotPassword = document.getElementById('link-forgot-password');
-    if (linkForgotPassword) {
-        linkForgotPassword.addEventListener('click', (e) => {
-            e.preventDefault();
-            alert('Para redefinir sua senha institucional, entre em contato com a equipe de TI da SEMED Gonçalves Dias - MA (admin@goncalvesdias.ma.gov.br).');
-        });
-    }
-
-    // Login Form Submit Handlers & Role-Based Dashboard Routing
-    const loginForm = document.getElementById('login-form');
-    const loginScreen = document.getElementById('login-screen');
-    const btnLoginSubmit = document.getElementById('btn-login-submit');
-
-    if (loginForm && loginScreen && btnLoginSubmit) {
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const emailInput = document.getElementById('login-email').value.trim().toLowerCase();
-            const passInput = document.getElementById('login-password')?.value || '123';
-
-            let detectedRole = 'Gestor da Rede';
-            let targetTab = 'dashboard';
-            let assignedSchool = '';
-            let assignedTurma = '';
-
-            if (emailInput.startsWith('prof') || emailInput.includes('professor')) {
-                detectedRole = 'Professor';
-                targetTab = 'alunos-panel';
-                assignedSchool = 'U.E. BENTA VILANOVA';
-                assignedTurma = '2º Ano';
-            } else if (emailInput.startsWith('diret') || emailInput.includes('diretor') || emailInput.includes('escola') || emailInput.includes('cora')) {
-                detectedRole = 'Diretor Escola';
-                targetTab = 'escolas-panel';
-                assignedSchool = 'U.E. BENTA VILANOVA';
-            } else if (emailInput.startsWith('admin') || emailInput.startsWith('dpo')) {
-                detectedRole = 'Master Admin';
-                targetTab = 'dashboard';
-            } else if (emailInput.startsWith('semed') || emailInput.startsWith('gestor') || emailInput.includes('semed')) {
-                detectedRole = 'Gestor da Rede';
-                targetTab = 'dashboard';
-            }
-
-            // Loading status feedback
-            btnLoginSubmit.disabled = true;
-            const btnSpan = btnLoginSubmit.querySelector('span');
-            const originalText = btnSpan ? btnSpan.textContent : '';
-            if (btnSpan) btnSpan.textContent = 'Autenticando...';
-
-            sessionStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('isLoggedIn', 'true');
-            sessionStorage.setItem('activeTenant', 'default');
-            sessionStorage.setItem('userEmail', emailInput || 'semed@goncalvesdias.ma.gov.br');
-            localStorage.setItem('userEmail', emailInput || 'semed@goncalvesdias.ma.gov.br');
-            sessionStorage.setItem('userRole', detectedRole);
-            sessionStorage.setItem('userEscola', assignedSchool || 'U.E. BENTA VILANOVA');
-            sessionStorage.setItem('userTurma', assignedTurma || '2º Ano');
-
-            try {
-                await loadDatabaseState();
-            } catch (err) {
-                console.warn('[IDEB Engine] Warning in loadDatabaseState:', err);
-            }
-
-            try {
-                updateMenuVisibilityByRole();
-            } catch (err) {
-                console.warn('[IDEB Engine] Warning in updateMenuVisibilityByRole:', err);
-            }
-
-            // Direct Navigation to the Role's Panel
-            try {
-                if (window.navigateToTab) {
-                    window.navigateToTab(targetTab);
-                }
-            } catch (err) {
-                console.warn('[IDEB Engine] Warning in navigateToTab:', err);
-            }
-
-            // Apply role-specific filters
-            try {
-                if (detectedRole === 'Diretor Escola') {
-                    const dbSchoolSearch = document.getElementById('db-school-search');
-                    if (dbSchoolSearch) {
-                        dbSchoolSearch.value = 'Benta Vilanova';
-                        if (typeof renderDbSchools === 'function') renderDbSchools();
-                    }
-                } else if (detectedRole === 'Professor') {
-                    const dbStudentSchoolFilter = document.getElementById('db-student-school-filter');
-                    if (dbStudentSchoolFilter) {
-                        dbStudentSchoolFilter.value = 'U.E. BENTA VILANOVA';
-                        if (typeof applyDbFilters === 'function') applyDbFilters();
-                    }
-                } else if (detectedRole === 'Professor AEE') {
-                    const dbStudentNeeFilter = document.getElementById('db-student-nee-filter');
-                    if (dbStudentNeeFilter) {
-                        dbStudentNeeFilter.value = 'sim';
-                        if (typeof applyDbFilters === 'function') applyDbFilters();
-                    }
-                }
-            } catch (err) {
-                console.warn('[IDEB Engine] Filter warning:', err);
-            }
-
-            // Smooth Fade-out animation
-            loginScreen.classList.add('fade-out');
-            showToast(`Bem-vindo ao IDEB na Prática! Painel ${detectedRole} carregado.`, 'check');
-            window.scrollTo(0, 0);
-
-            setTimeout(() => {
-                loginScreen.style.display = 'none';
-                if (window.lucide) {
-                    lucide.createIcons({ attrs: { class: 'lucide' } });
-                }
-            }, 500);
-        });
-    }
-
-    function updateMenuVisibilityByRole() {
-        const userRole = sessionStorage.getItem('userRole') || 'Master Admin';
-        const userEscola = sessionStorage.getItem('userEscola') || 'U.E. BENTA VILANOVA';
-        const userTurma = sessionStorage.getItem('userTurma') || '2º Ano';
-
-        const activeNetworkLabel = document.getElementById('sidebar-active-network-label');
-        const userProfileName = document.querySelector('.user-profile .user-name');
-        const userProfileRole = document.querySelector('.user-profile .user-role');
-        const userProfileAvatar = document.querySelector('.user-profile .avatar');
-
-        // All Sidebar Menu Items
-        const allMenuItems = document.querySelectorAll('.menu-item');
-        allMenuItems.forEach(item => { item.style.display = 'flex'; });
-
-        // Hide specific groups/items based on Role Hierarchy
-        if (userRole === 'Professor' || userRole === 'Professor AEE') {
-            // Visible for Professor: Alunos, Biblioteca, Cronograma, Aplicação de Provas, Matriz, Questões
-            const allowedTabs = ['alunos-panel', 'biblioteca-recursos', 'cronograma-habilidades', 'aplicacao-provas', 'matriz-descritores', 'questions'];
-            allMenuItems.forEach(item => {
-                const target = item.getAttribute('data-target');
-                item.style.display = allowedTabs.includes(target) ? 'flex' : 'none';
-            });
-
-            // Adjust labels for Professor
-            const alunosMenu = document.querySelector('.menu-item[data-target="alunos-panel"] span');
-            if (alunosMenu) alunosMenu.textContent = 'Minha Turma & Alunos';
-            const provasMenu = document.querySelector('.menu-item[data-target="aplicacao-provas"] span');
-            if (provasMenu) provasMenu.textContent = 'Lançamento de Gabaritos';
-
-            // Sidebar User Card
-            if (activeNetworkLabel) activeNetworkLabel.textContent = `${userEscola} (${userTurma})`;
-            if (userProfileName) userProfileName.textContent = 'Prof. Docente';
-            if (userProfileRole) userProfileRole.textContent = `${userEscola} • ${userTurma}`;
-            if (userProfileAvatar) {
-                userProfileAvatar.textContent = 'PR';
-                userProfileAvatar.style.backgroundColor = '#2563eb';
-            }
-
-        } else if (userRole === 'Diretor Escola') {
-            // Visible for Diretor: Escolas, Alunos, Metas, Cronograma, Aplicação, Gestão Pedagógica, Relatórios, Biblioteca
-            const allowedTabs = ['escolas-panel', 'alunos-panel', 'metas-ideb', 'cronograma-habilidades', 'aplicacao-provas', 'gestao-pedagogica', 'ai-playground', 'biblioteca-recursos'];
-            allMenuItems.forEach(item => {
-                const target = item.getAttribute('data-target');
-                item.style.display = allowedTabs.includes(target) ? 'flex' : 'none';
-            });
-
-            // Adjust labels for Diretor
-            const escolasMenu = document.querySelector('.menu-item[data-target="escolas-panel"] span');
-            if (escolasMenu) escolasMenu.textContent = 'Minha Escola & Turmas';
-            const alunosMenu = document.querySelector('.menu-item[data-target="alunos-panel"] span');
-            if (alunosMenu) alunosMenu.textContent = 'Alunos da Escola';
-
-            // Sidebar User Card
-            if (activeNetworkLabel) activeNetworkLabel.textContent = `${userEscola} (Direção)`;
-            if (userProfileName) userProfileName.textContent = 'Diretora Maria';
-            if (userProfileRole) userProfileRole.textContent = `Direção • ${userEscola}`;
-            if (userProfileAvatar) {
-                userProfileAvatar.textContent = 'DE';
-                userProfileAvatar.style.backgroundColor = '#059669';
-            }
-
-        } else if (userRole === 'Master Admin') {
-            // Visible for Admin: All modules including Governance & TI
-            allMenuItems.forEach(item => { item.style.display = 'flex'; });
-
-            // Sidebar User Card
-            if (activeNetworkLabel) activeNetworkLabel.textContent = 'Administração TI / DPO';
-            if (userProfileName) userProfileName.textContent = 'Administrador TI';
-            if (userProfileRole) userProfileRole.textContent = 'DPO & Infraestrutura';
-            if (userProfileAvatar) {
-                userProfileAvatar.textContent = 'AD';
-                userProfileAvatar.style.backgroundColor = '#e11d48';
-            }
-
-        } else {
-            // SEMED (Gestor da Rede)
-            const allowedTabs = ['dashboard', 'escolas-panel', 'alunos-panel', 'metas-ideb', 'ideb-comparativo', 'matriz-descritores', 'cronograma-habilidades', 'criar-avaliacoes', 'aplicacao-provas', 'questions', 'ai-playground', 'gestao-pedagogica', 'biblioteca-recursos'];
-            allMenuItems.forEach(item => {
-                const target = item.getAttribute('data-target');
-                item.style.display = (target === 'doc-tecnica' || target === 'admin-panel') ? 'none' : 'flex';
-            });
-
-            // Sidebar User Card
-            if (activeNetworkLabel) activeNetworkLabel.textContent = 'SEMED Gonçalves Dias - MA';
-            if (userProfileName) userProfileName.textContent = 'Secretaria de Educação';
-            if (userProfileRole) userProfileRole.textContent = 'Gestão Executiva SEMED';
-            if (userProfileAvatar) {
-                userProfileAvatar.textContent = 'SM';
-                userProfileAvatar.style.backgroundColor = '#9333ea';
-            }
-        }
-
-        if (window.lucide) {
-            lucide.createIcons({ attrs: { class: 'lucide' } });
-        }
-    }
 
     // ==========================================
     // BIBLIOTECA PEDAGÓGICA & GERADOR DE PROVAS
