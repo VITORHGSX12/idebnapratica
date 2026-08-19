@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>IDEB na Prática - Plataforma de Gestão e Avaliação Educacional</title>
-    <link rel="stylesheet" href="styles.css?v=121ccf7c">
+    <link rel="stylesheet" href="styles.css?v=msze05ro">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -6020,5 +6020,25 @@
                     </div>
                 </div>
 
+<!-- Script de Limpeza de Cache de Service Workers Antigos -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for (let registration of registrations) {
+                    registration.unregister();
+                }
+            });
+        }
+    </script>
+
+    <!-- Bases de Dados Oficiais da Plataforma -->
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=msze05ro"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=msze05ro"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=msze05ro"></script>
+    <script src="ideb_publico_db.js?v=msze05ro"></script>
+    <script src="alunos_db.js?v=msze05ro"></script>
+
+    <!-- Aplicação Principal -->
+    <script src="app.js?v=msze05ro"></script>
 </body>
 </html>
