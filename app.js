@@ -3658,135 +3658,6 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
     let activeWorkspaceSchool = 'UI JOSE CORREA LIMA';
     let activeWorkspaceClass = null;
 
-    function renderDbSchools() {
-        const tbody = document.getElementById('db-schools-table-body');
-        if (!tbody) {
-            console.warn('db-schools-table-body not found yet');
-            return;
-        }
-        tbody.innerHTML = '';
-
-        const officialSchools = [
-            { name: 'UI JOSE CORREA LIMA', inep: '21128723', zone: 'Zona Rural', director: 'Prof. Marcos Aurelio' },
-            { name: 'UI EMILIO MURAD', inep: '21128146', zone: 'Zona Rural', director: 'Profa. Antonia Silva' },
-            { name: 'UE VEREADOR LEONARDO FERREIRA LIMA', inep: '21128740', zone: 'Sede Urbana', director: 'Prof. Joao Paulo Mendes' },
-            { name: 'U I BASILIO ALVES', inep: '21128120', zone: 'Zona Rural', director: 'Profa. Maria Jose' },
-            { name: 'UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ', inep: '21286973', zone: 'Sede Urbana', director: 'Profa. Aldenora Cruz' },
-            { name: 'UE RAIMUNDO DOS REIS DA SILVA', inep: '21128758', zone: 'Zona Rural', director: 'Prof. Carlos Eduardo' },
-            { name: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS', inep: '21286990', zone: 'Zona Rural', director: 'Profa. Francisca Lima' },
-            { name: 'UNIDADE ESCOLAR ANISIO GOMES', inep: '21128774', zone: 'Zona Rural', director: 'Prof. Raimundo Nonato' },
-            { name: 'UE ANITA FURTADO', inep: '21192544', zone: 'Sede Urbana', director: 'Profa. Teresa Cristina' }
-        ];
-
-        const searchInput = document.getElementById('db-school-search');
-        const query = searchInput ? searchInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
-
-        const filtered = officialSchools.filter(s => {
-            const normName = s.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            return normName.includes(query) || s.inep.includes(query);
-        });
-
-        // Update KPIs
-        const kpiTotal = document.getElementById('kpi-total-schools');
-        const kpiUrban = document.getElementById('kpi-urban-schools');
-        const kpiRural = document.getElementById('kpi-rural-schools');
-        if (kpiTotal) kpiTotal.textContent = '9 Unidades';
-        if (kpiUrban) kpiUrban.textContent = '3 Unidades';
-        if (kpiRural) kpiRural.textContent = '6 Unidades';
-
-        if (filtered.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="padding: 30px; text-align: center; color: var(--text-muted);">Nenhuma escola encontrada com este termo de busca.</td></tr>';
-            return;
-        }
-
-        tbody.innerHTML = filtered.map(sch => {
-            const isUrban = sch.zone.includes('Urbana');
-            return `
-                <tr style="border-bottom: 1px solid var(--border-color); height: 64px; transition: background-color 0.15s ease;">
-                    <td style="padding: 12px 20px;">
-                        <div style="display: flex; align-items: center; gap: 14px;">
-                            <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(99, 102, 241, 0.1); color: #6366f1; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 8-4 8 4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="M18 5v17"/><path d="M6 5v17"/></svg>
-                            </div>
-                            <div>
-                                <div style="font-weight: 700; color: var(--text-primary); font-size: 0.88rem;">${sch.name}</div>
-                                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">
-                                    ${isUrban ? '🏫 Sede Urbana' : '🌾 Zona Rural'} • Gonçalves Dias (MA)
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                    <td style="padding: 12px 16px; font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">
-                        ${sch.inep}
-                    </td>
-                    <td style="padding: 12px 16px;">
-                        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color);">
-                            👤 ${sch.director}
-                        </span>
-                    </td>
-                    <td style="padding: 12px 16px; text-align: center;">
-                        <span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; background: rgba(34, 197, 94, 0.12); color: #16a34a;">
-                            ● ATIVA
-                        </span>
-                    </td>
-                    <td style="padding: 12px 20px; text-align: center;">
-                        <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-                            <button onclick="openSchoolWorkspace('${sch.name}')" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-primary); padding: 6px 14px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.15s ease;">
-                                VER ESCOLA →
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `;
-        }).join('');
-    }
-    window.renderDbSchools = renderDbSchools;
-
-
-
-    // [PURGED GHOST FUNCTION] openEditSchoolModal
-
-    const formEditSchool = document.getElementById('form-edit-school');
-    if (formEditSchool) {
-        formEditSchool.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const oldName = document.getElementById('edit-school-id').value;
-            const newName = document.getElementById('edit-school-name').value.trim();
-            const inep = document.getElementById('edit-school-inep').value.trim();
-            const zone = document.getElementById('edit-school-zone').value;
-            const phone = document.getElementById('edit-school-phone').value.trim() || '-';
-            const director = document.getElementById('edit-school-director').value.trim();
-            
-            if (oldName !== newName) {
-                const idx = uniqueSchoolsList.indexOf(oldName);
-                if (idx !== -1) uniqueSchoolsList[idx] = newName;
-                loadedStudents.forEach(s => {
-                    if (s.escola === oldName) s.escola = newName;
-                });
-                delete schoolZonesMap[oldName];
-                delete schoolDirectorsMap[oldName];
-            }
-            
-            schoolZonesMap[newName] = {
-                zone: zone === 'Urbana' ? 'Sede Urbana' : 'Zona Rural',
-                address: `${zone === 'Urbana' ? 'CENTRO' : 'ZONA RURAL'} - CEP: 65775-000`,
-                inep,
-                phone
-            };
-            const isFem = director.startsWith('Profª') || director.startsWith('Profa') || director.includes('da ') || director.includes('Maria') || director.includes('Antonia');
-            schoolDirectorsMap[newName] = `${director} (Diretor${isFem ? 'a' : ''})`;
-            
-            document.getElementById('modal-edit-school')?.classList.add('hidden');
-            renderDbSchools();
-            showToast(`Dados cadastrais da escola "${newName}" atualizados!`, 'check');
-        });
-    }
-
-    const btnCloseEditSchool = document.getElementById('btn-close-edit-school-modal');
-    const btnCancelEditSchool = document.getElementById('btn-cancel-edit-school');
-    if (btnCloseEditSchool) btnCloseEditSchool.addEventListener('click', () => document.getElementById('modal-edit-school')?.classList.add('hidden'));
-    if (btnCancelEditSchool) btnCancelEditSchool.addEventListener('click', () => document.getElementById('modal-edit-school')?.classList.add('hidden'));
-
     // ==========================================
     // TURMAS LIST VIEW & DIÁRIO DA TURMA
     // ==========================================
@@ -20354,12 +20225,14 @@ window.renderDbSchools = function renderDbSchools() {
         }
         return officialSchoolsDatabase;
     }
+    window.getOfficialSchoolsState = getOfficialSchoolsState;
 
     function saveOfficialSchoolsState() {
         try {
             localStorage.setItem('gd_official_schools_data', JSON.stringify(officialSchoolsDatabase));
         } catch(e) {}
     }
+    window.saveOfficialSchoolsState = saveOfficialSchoolsState;
 
     // -------------------------------------------------------------------------
     // 1. RENDERIZADOR OFICIAL DA TABELA DE ESCOLAS DA REDE
