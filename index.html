@@ -3541,7 +3541,7 @@
                 <section id="biblioteca-recursos" class="tab-content">
                     <!-- Hero Header estilo Vitrine MEC Livros -->
                     <div class="mec-library-hero" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%); border-radius: var(--radius-lg); padding: 28px 32px; color: #fff; margin-bottom: 24px; position: relative; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(49, 46, 129, 0.3);">
-                        <div style="position: relative; z-index: 2; max-width: 720px;">
+                        <div style="position: relative; z-index: 2; max-width: 760px;">
                             <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); padding: 4px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.2);">
                                 <i data-lucide="book-open" style="width: 13px; height: 13px;"></i>
                                 Acervo Digital Oficial • SEMED Gonçalves Dias - MA
@@ -3552,12 +3552,15 @@
                             <p style="font-size: 0.9rem; color: rgba(255, 255, 255, 0.85); margin: 0 0 18px 0; line-height: 1.5;">
                                 Acesso livre aos cadernos de simulados impressos padrão SAEB/SEAMA, matrizes curriculares comentadas, guias do professor e sequências didáticas para sala de aula.
                             </p>
-                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                <button class="btn btn-primary" id="btn-bib-print-direct" style="background: #ffffff; color: #312e81; font-weight: 700; border: none; padding: 10px 18px; display: flex; align-items: center; gap: 8px;">
-                                    <i data-lucide="printer" style="width:16px; height:16px;"></i>
-                                    <span>Gerar Caderno A4 Completo</span>
-                                </button>
-                                <button class="btn btn-outline" id="btn-bib-upload-new" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: #ffffff; font-weight: 600; padding: 10px 18px; display: flex; align-items: center; gap: 8px;">
+                            <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+                                <div>
+                                    <button class="btn btn-primary" id="btn-bib-print-direct" onclick="openCombinedCadernoModal();" style="background: #ffffff; color: #312e81; font-weight: 700; border: none; padding: 10px 18px; display: flex; align-items: center; gap: 8px;">
+                                        <i data-lucide="printer" style="width:16px; height:16px;"></i>
+                                        <span>Gerar Caderno A4 Completo</span>
+                                    </button>
+                                    <span style="display: block; font-size: 0.72rem; color: rgba(255,255,255,0.8); margin-top: 4px;">Combine vários simulados filtrados em um único caderno para impressão</span>
+                                </div>
+                                <button class="btn btn-outline" id="btn-bib-upload-new" onclick="alert('Funcionalidade: Upload e Catalogação de Novo Material Aberta!');" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: #ffffff; font-weight: 600; padding: 10px 18px; display: flex; align-items: center; gap: 8px;">
                                     <i data-lucide="upload-cloud" style="width:16px; height:16px;"></i>
                                     <span>Adicionar Livro / Material</span>
                                 </button>
@@ -3566,31 +3569,31 @@
                     </div>
 
                     <!-- Category Pills & Filter Bar (Estilo MEC Livros) -->
-                    <div class="card margin-bottom-lg" style="padding: 16px 20px;">
-                        <!-- Category Pills -->
+                    <div class="card margin-bottom-md" style="padding: 16px 20px;">
+                        <!-- Category Pills com Contadores Dinâmicos -->
                         <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 14px; border-bottom: 1px solid var(--border-color);">
-                            <button class="bib-category-pill active" data-cat="all" style="padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; background: var(--purple-light); color: #ffffff; border: none; cursor: pointer; white-space: nowrap;">
-                                📚 Todos os Materiais (<span id="count-bib-all">12</span>)
+                            <button class="bib-category-pill active" data-cat="all" onclick="handleCategoryPillClick(this, 'all');" style="padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; background: #6366f1; color: #ffffff; border: none; cursor: pointer; white-space: nowrap;">
+                                📚 Todos os Materiais (<span id="count-bib-all">0</span>)
                             </button>
-                            <button class="bib-category-pill" data-cat="Simulados" style="padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 500; background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
-                                📝 Simulados Oficiais SAEB (A4)
+                            <button class="bib-category-pill" data-cat="Simulados" onclick="handleCategoryPillClick(this, 'Simulados');" style="padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 500; background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
+                                📝 Simulados Oficiais SAEB (<span id="count-bib-simulados">0</span>)
                             </button>
-                            <button class="bib-category-pill" data-cat="Reforco" style="padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 500; background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
-                                📖 Cadernos de Reforço & Fluência
+                            <button class="bib-category-pill" data-cat="Reforco" onclick="handleCategoryPillClick(this, 'Reforco');" style="padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 500; background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
+                                🎯 Cadernos de Reforço & Fluência (<span id="count-bib-reforco">0</span>)
                             </button>
-                            <button class="bib-category-pill" data-cat="Matrizes" style="padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 500; background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
-                                🎯 Matrizes & Descritores BNCC
+                            <button class="bib-category-pill" data-cat="Matrizes" onclick="handleCategoryPillClick(this, 'Matrizes');" style="padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 500; background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
+                                📊 Matrizes & Descritores BNCC (<span id="count-bib-matrizes">0</span>)
                             </button>
-                            <button class="bib-category-pill" data-cat="Guias" style="padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 500; background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
-                                🎓 Guias Pedagógicos do Professor
+                            <button class="bib-category-pill" data-cat="Guias" onclick="handleCategoryPillClick(this, 'Guias');" style="padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 500; background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer; white-space: nowrap;">
+                                📖 Guias Pedagógicos do Professor (<span id="count-bib-guias">0</span>)
                             </button>
                         </div>
 
                         <!-- Secondary Filters -->
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) 1.5fr; gap: 12px; align-items: center;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) 1.5fr; gap: 12px; align-items: flex-end;">
                             <div>
                                 <label style="font-size: 0.72rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 2px;">Etapa / Ano Escolar</label>
-                                <select id="filter-bib-etapa" class="form-select" style="height: 38px; font-size: 0.82rem;">
+                                <select id="filter-bib-etapa" onchange="renderPedagogicLibrary();" class="form-select" style="height: 38px; font-size: 0.82rem;">
                                     <option value="all">Todas as Etapas</option>
                                     <option value="2º Ano">2º Ano (Alfabetização / SEAMA)</option>
                                     <option value="5º Ano">5º Ano (Anos Iniciais / SAEB)</option>
@@ -3600,20 +3603,50 @@
                             </div>
                             <div>
                                 <label style="font-size: 0.72rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 2px;">Disciplina</label>
-                                <select id="filter-bib-componente" class="form-select" style="height: 38px; font-size: 0.82rem;">
+                                <select id="filter-bib-componente" onchange="renderPedagogicLibrary();" class="form-select" style="height: 38px; font-size: 0.82rem;">
                                     <option value="all">Todas as Disciplinas</option>
                                     <option value="Língua Portuguesa">Língua Portuguesa (Leitura)</option>
                                     <option value="Matemática">Matemática (Resolução de Problemas)</option>
                                     <option value="Integrado">Multidisciplinar / Geral</option>
                                 </select>
                             </div>
-                            <div>
+                            <div style="position: relative;">
                                 <label style="font-size: 0.72rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 2px;">Pesquisar no Acervo</label>
                                 <div style="position: relative;">
-                                    <input type="text" id="search-bib-input" class="form-input-text" placeholder="Buscar por título, descritor, autor..." style="height: 38px; font-size: 0.82rem; padding-left: 36px;">
+                                    <input type="text" id="search-bib-input" oninput="handleLibrarySearchInput(this);" class="form-input-text" placeholder="Buscar por título, descritor (D01, D13), autor..." style="height: 38px; font-size: 0.82rem; padding-left: 36px; width: 100%;">
                                     <i data-lucide="search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--text-muted);"></i>
                                 </div>
+                                <div id="bib-search-suggestions" class="bib-search-suggestions-box hidden" style="display: none;"></div>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Linha de Destaques: Adicionados Recentemente / Mais Acessados -->
+                    <div id="bib-spotlight-container" class="margin-bottom-md" style="display: flex; flex-direction: column; gap: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
+                                <span>✨</span> Mais Acessados & Recentes da SEMED
+                            </span>
+                            <span style="font-size: 0.72rem; color: var(--text-muted);">Atualização contínua Gonçalves Dias</span>
+                        </div>
+                        <div id="bib-spotlight-cards-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+                            <!-- Injetado dinamicamente -->
+                        </div>
+                    </div>
+
+                    <!-- Contador de Resultados Ativos & Legenda de Cores -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; padding: 8px 12px; background: var(--bg-secondary); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                        <div style="display: flex; align-items: center; gap: 10px; font-size: 0.8rem; color: var(--text-secondary);">
+                            <span id="bib-results-counter-text">Exibindo <strong>0 de 0</strong> materiais</span>
+                            <button type="button" id="btn-bib-clear-filters" onclick="clearLibraryFilters();" class="btn btn-outline btn-xs hidden" style="display: none; font-size: 0.7rem; padding: 2px 8px; border-color: #fca5a5; color: #ef4444;">
+                                ✕ Limpar filtros
+                            </button>
+                        </div>
+                        <div style="display: flex; gap: 14px; font-size: 0.72rem; font-weight: 600; color: var(--text-muted); flex-wrap: wrap;">
+                            <span style="color: #3b82f6;">● Simulado Oficial</span>
+                            <span style="color: #f59e0b;">● Intervenção & Reforço</span>
+                            <span style="color: #8b5cf6;">● Matriz Curricular</span>
+                            <span style="color: #10b981;">● Guia do Professor</span>
                         </div>
                     </div>
 
@@ -5828,6 +5861,33 @@
                         </div>
                         <div style="padding: 14px 24px; border-top: 1px solid var(--border-color); background: var(--bg-primary); display: flex; justify-content: flex-end;">
                             <button type="button" onclick="closeStudentProficiencyCalcModal();" class="btn btn-primary btn-sm" style="padding: 0 18px;">Fechar</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- ==================== MODAL: GERAR CADERNO A4 COMBINADO ==================== -->
+                <div id="modal-combine-caderno-a4" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 20px;">
+                    <div class="modal-container card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 740px; padding: 0; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-height: 88vh; display: flex; flex-direction: column;">
+                        <div style="padding: 18px 24px; border-bottom: 1px solid var(--border-color); background: var(--bg-primary); display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">Montar Caderno A4 Combinado</h3>
+                                <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">Selecione os simulados filtrados para gerar um caderno único de aplicação com gabarito ao final</p>
+                            </div>
+                            <button type="button" onclick="closeCombinedCadernoModal();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);">✕</button>
+                        </div>
+                        <div id="modal-combine-simulados-list" style="padding: 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 10px;">
+                            <!-- Injetado dinamicamente -->
+                        </div>
+                        <div style="padding: 14px 24px; border-top: 1px solid var(--border-color); background: var(--bg-primary); display: flex; justify-content: space-between; align-items: center;">
+                            <span id="modal-combine-selected-count" style="font-size: 0.8rem; font-weight: 700; color: #6366f1;">0 simulados selecionados</span>
+                            <div style="display: flex; gap: 8px;">
+                                <button type="button" onclick="closeCombinedCadernoModal();" class="btn btn-outline btn-sm">Cancelar</button>
+                                <button type="button" onclick="executeGenerateCombinedA4Booklet();" class="btn btn-primary btn-sm" style="font-weight: 700; background: #6366f1; border-color: #6366f1; display: flex; align-items: center; gap: 6px;">
+                                    <i data-lucide="printer" style="width: 14px; height: 14px;"></i>
+                                    <span>Gerar PDF Combinado</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

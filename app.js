@@ -21181,3 +21181,614 @@ window.renderDbSchools = function renderDbSchools() {
         window.print();
     }
     window.handlePrintDiagnosticoReport = handlePrintDiagnosticoReport;
+
+
+
+    // =========================================================================
+    // =========================================================================
+    // BIBLIOTECA PEDAGÓGICA 2.0: CONTADORES DINÂMICOS, AND FILTERS, AUTOCOMPLETE & A4 COMBINADO
+    // =========================================================================
+    // =========================================================================
+
+    const PEDAGOGIC_LIBRARY_DATABASE = [
+        {
+            id: 'BOOK_01',
+            titulo: 'Caderno de Simulado Oficial SAEB • 5º Ano EF',
+            subtitulo: 'Língua Portuguesa (Leitura) & Matemática (Problemas)',
+            etapa: '5º Ano',
+            componente: 'Integrado',
+            categoria: 'Simulados',
+            tipo: 'Simulado',
+            descritores: ['D01', 'D03', 'D04', 'D13', 'D14', 'D28'],
+            formato: 'Caderno A4 com Gabarito',
+            paginas: 28,
+            ano: 2026,
+            versao: 'v2.4 (2026)',
+            data_publicacao: 'Fev/2026',
+            viewsCount: 412,
+            downloadsCount: 198,
+            corTema: '#3b82f6',
+            capaBadge: 'Simulado Oficial',
+            descricao: 'Caderno completo de 44 itens padrão SAEB/INEP diagramado para aplicação em sala de aula, com folha de respostas e gabarito desmembrável.'
+        },
+        {
+            id: 'BOOK_02',
+            titulo: 'Caderno de Fluência Leitora & Alfabetização • 2º Ano EF',
+            subtitulo: 'Avaliação Diagnóstica SEAMA / Compromisso Criança Alfabetizada',
+            etapa: '2º Ano',
+            componente: 'Língua Portuguesa',
+            categoria: 'Reforco',
+            tipo: 'Reforco',
+            descritores: ['EF02LP01', 'EF02LP04', 'EF02LP08'],
+            formato: 'Guia de Aplicação & Fichas',
+            paginas: 20,
+            ano: 2026,
+            versao: 'v1.8 (2026)',
+            data_publicacao: 'Jan/2026',
+            viewsCount: 385,
+            downloadsCount: 142,
+            corTema: '#f59e0b',
+            capaBadge: 'Fluência & Leitura',
+            descricao: 'Conjunto de textos curtos, parlendas e itens de consciência fonológica para monitoramento individual da leitura no 2º ano.'
+        },
+        {
+            id: 'BOOK_03',
+            titulo: 'Caderno de Simulado Prova Brasil • 9º Ano EF',
+            subtitulo: 'Língua Portuguesa & Matemática (Anos Finais)',
+            etapa: '9º Ano',
+            componente: 'Integrado',
+            categoria: 'Simulados',
+            tipo: 'Simulado',
+            descritores: ['D01', 'D05', 'D07', 'D16', 'D19', 'D35'],
+            formato: 'Caderno A4 com Gabarito',
+            paginas: 36,
+            ano: 2026,
+            versao: 'v2.1 (2026)',
+            data_publicacao: 'Fev/2026',
+            viewsCount: 320,
+            downloadsCount: 165,
+            corTema: '#3b82f6',
+            capaBadge: 'Simulado Oficial',
+            descricao: '52 questões calibradas nos descritores críticos do 9º ano, incluindo álgebra, geometria e interpretação de gêneros diversos.'
+        },
+        {
+            id: 'BOOK_04',
+            titulo: 'Guia de Intervenção Pedagógica & Nivelamento (SEMED)',
+            subtitulo: 'Orientações Práticas para Gestores e Professores de Gonçalves Dias',
+            etapa: 'Docente',
+            componente: 'Integrado',
+            categoria: 'Guias',
+            tipo: 'Guia',
+            descritores: ['D01', 'D03', 'D13', 'D28'],
+            formato: 'Manual do Professor',
+            paginas: 44,
+            ano: 2026,
+            versao: 'v3.0 (Oficial)',
+            data_publicacao: 'Jan/2026',
+            viewsCount: 295,
+            downloadsCount: 110,
+            corTema: '#10b981',
+            capaBadge: 'Guia do Professor',
+            descricao: 'Sequências didáticas ativas para recuperação de descritores críticos com rotinas semanais estruturadas e oficinas em grupo.'
+        },
+        {
+            id: 'BOOK_05',
+            titulo: 'Matriz Curricular de Descritores Comentada • SAEB 2026',
+            subtitulo: 'Escala de Proficiência, Habilidades BNCC e Exemplos de Itens',
+            etapa: 'Docente',
+            componente: 'Integrado',
+            categoria: 'Matrizes',
+            tipo: 'Matriz',
+            descritores: ['Todos os Descritores SAEB/SEAMA'],
+            formato: 'Documento Técnico PDF',
+            paginas: 52,
+            ano: 2026,
+            versao: 'v1.5 (2026)',
+            data_publicacao: 'Fev/2026',
+            viewsCount: 260,
+            downloadsCount: 95,
+            corTema: '#8b5cf6',
+            capaBadge: 'Matriz Oficial',
+            descricao: 'Detalhamento técnico de todos os níveis de proficiência (0 a 5) do SAEB e correspondência com as matrizes BNCC e SEAMA.'
+        },
+        {
+            id: 'BOOK_06',
+            titulo: 'Oficinas de Cálculo Mental & Resolução de Problemas',
+            subtitulo: 'Caderno de Atividades Práticas para 4º e 5º Anos',
+            etapa: '5º Ano',
+            componente: 'Matemática',
+            categoria: 'Reforco',
+            tipo: 'Reforco',
+            descritores: ['D13', 'D14', 'D16', 'D20'],
+            formato: 'Caderno de Atividades',
+            paginas: 24,
+            ano: 2026,
+            versao: 'v2.0 (2026)',
+            data_publicacao: 'Mar/2026',
+            viewsCount: 310,
+            downloadsCount: 130,
+            corTema: '#f59e0b',
+            capaBadge: 'Matemática Prática',
+            descricao: 'Jogos matemáticos, desafios relâmpago e situações cotidianas contextualizadas na realidade de Gonçalves Dias.'
+        },
+        {
+            id: 'BOOK_07',
+            titulo: 'Simulado Diagnóstico 5º Ano • Língua Portuguesa (Foco D1, D3, D4)',
+            subtitulo: 'Caderno Específico de Inferência e Informações Explícitas',
+            etapa: '5º Ano',
+            componente: 'Língua Portuguesa',
+            categoria: 'Simulados',
+            tipo: 'Simulado',
+            descritores: ['D01', 'D03', 'D04', 'D06'],
+            formato: 'Caderno A4 com Gabarito',
+            paginas: 16,
+            ano: 2026,
+            versao: 'v1.2 (2026)',
+            data_publicacao: 'Mar/2026',
+            viewsCount: 275,
+            downloadsCount: 118,
+            corTema: '#3b82f6',
+            capaBadge: 'Simulado Língua Portuguesa',
+            descricao: 'Avaliação direcionada aos descritores de maior defasagem apurados no 1º Simulado Diagnóstico da rede municipal.'
+        },
+        {
+            id: 'BOOK_08',
+            titulo: 'Simulado Diagnóstico 5º Ano • Matemática (Foco D13, D26, D28)',
+            subtitulo: 'Caderno Específico de Geometria, Espaço & Forma e Operações',
+            etapa: '5º Ano',
+            componente: 'Matemática',
+            categoria: 'Simulados',
+            tipo: 'Simulado',
+            descritores: ['D13', 'D19', 'D26', 'D28'],
+            formato: 'Caderno A4 com Gabarito',
+            paginas: 18,
+            ano: 2026,
+            versao: 'v1.2 (2026)',
+            data_publicacao: 'Mar/2026',
+            viewsCount: 290,
+            downloadsCount: 125,
+            corTema: '#3b82f6',
+            capaBadge: 'Simulado Matemática',
+            descricao: '20 itens calibrados de resolução de problemas cotidianos com frações, áreas, perímetros e gráficos.'
+        }
+    ];
+
+    let currentActiveCategory = 'all';
+    let searchDebounceTimer = null;
+
+    // -------------------------------------------------------------------------
+    // 1. ATUALIZAR CONTADORES DINÂMICOS DAS ABAS DE CATEGORIA
+    // -------------------------------------------------------------------------
+    function updateCategoryPillCounters() {
+        const total = PEDAGOGIC_LIBRARY_DATABASE.length;
+        const totalSimulados = PEDAGOGIC_LIBRARY_DATABASE.filter(b => b.categoria === 'Simulados').length;
+        const totalReforco = PEDAGOGIC_LIBRARY_DATABASE.filter(b => b.categoria === 'Reforco').length;
+        const totalMatrizes = PEDAGOGIC_LIBRARY_DATABASE.filter(b => b.categoria === 'Matrizes').length;
+        const totalGuias = PEDAGOGIC_LIBRARY_DATABASE.filter(b => b.categoria === 'Guias').length;
+
+        const countAll = document.getElementById('count-bib-all');
+        const countSim = document.getElementById('count-bib-simulados');
+        const countRef = document.getElementById('count-bib-reforco');
+        const countMat = document.getElementById('count-bib-matrizes');
+        const countGui = document.getElementById('count-bib-guias');
+
+        if (countAll) countAll.textContent = String(total);
+        if (countSim) countSim.textContent = String(totalSimulados);
+        if (countRef) countRef.textContent = String(totalReforco);
+        if (countMat) countMat.textContent = String(totalMatrizes);
+        if (countGui) countGui.textContent = String(totalGuias);
+    }
+
+    // -------------------------------------------------------------------------
+    // 2. SELEÇÃO DE CATEGORIA (PILLS)
+    // -------------------------------------------------------------------------
+    function handleCategoryPillClick(btn, cat) {
+        currentActiveCategory = cat;
+        document.querySelectorAll('.bib-category-pill').forEach(b => {
+            b.classList.remove('active');
+            b.style.background = 'var(--bg-tertiary)';
+            b.style.color = 'var(--text-secondary)';
+            b.style.border = '1px solid var(--border-color)';
+            b.style.fontWeight = '500';
+        });
+
+        btn.classList.add('active');
+        btn.style.background = '#6366f1';
+        btn.style.color = '#ffffff';
+        btn.style.border = 'none';
+        btn.style.fontWeight = '700';
+
+        renderPedagogicLibrary();
+    }
+    window.handleCategoryPillClick = handleCategoryPillClick;
+
+    // -------------------------------------------------------------------------
+    // 3. AUTOCOMPLETE DE BUSCA COM DEBOUNCE (300ms)
+    // -------------------------------------------------------------------------
+    function handleLibrarySearchInput(input) {
+        clearTimeout(searchDebounceTimer);
+        const query = (input.value || '').trim().toLowerCase();
+        const suggestionsBox = document.getElementById('bib-search-suggestions');
+
+        if (query.length < 2) {
+            if (suggestionsBox) {
+                suggestionsBox.innerHTML = '';
+                suggestionsBox.style.display = 'none';
+                suggestionsBox.classList.add('hidden');
+            }
+            renderPedagogicLibrary();
+            return;
+        }
+
+        searchDebounceTimer = setTimeout(() => {
+            // Filtrar sugestões
+            const matches = PEDAGOGIC_LIBRARY_DATABASE.filter(b => {
+                const inTitle = b.titulo.toLowerCase().includes(query);
+                const inSub = b.subtitulo.toLowerCase().includes(query);
+                const inDesc = b.descritores.some(d => d.toLowerCase().includes(query));
+                return inTitle || inSub || inDesc;
+            }).slice(0, 5);
+
+            if (suggestionsBox) {
+                if (matches.length > 0) {
+                    suggestionsBox.innerHTML = matches.map(m => `
+                        <div class="bib-suggestion-item" onclick="applySuggestionSearch('${m.titulo.replace(/'/g, "\\\'")}');">
+                            <div>
+                                <strong>${m.titulo}</strong>
+                                <span style="display:block; font-size:0.7rem; color:var(--text-muted);">${m.etapa} • ${m.componente} • ${m.categoria}</span>
+                            </div>
+                            <span class="badge badge-purple" style="font-size:0.65rem;">${m.formato}</span>
+                        </div>
+                    `).join('');
+                    suggestionsBox.style.display = 'block';
+                    suggestionsBox.classList.remove('hidden');
+                } else {
+                    suggestionsBox.style.display = 'none';
+                    suggestionsBox.classList.add('hidden');
+                }
+            }
+
+            renderPedagogicLibrary();
+        }, 300);
+    }
+    window.handleLibrarySearchInput = handleLibrarySearchInput;
+
+    function applySuggestionSearch(term) {
+        const input = document.getElementById('search-bib-input');
+        const suggestionsBox = document.getElementById('bib-search-suggestions');
+        if (input) input.value = term;
+        if (suggestionsBox) {
+            suggestionsBox.style.display = 'none';
+            suggestionsBox.classList.add('hidden');
+        }
+        renderPedagogicLibrary();
+    }
+    window.applySuggestionSearch = applySuggestionSearch;
+
+    // -------------------------------------------------------------------------
+    // 4. RENDERIZADOR PRINCIPAL DA BIBLIOTECA (COM AND FILTERS & CONTADOR)
+    // -------------------------------------------------------------------------
+    function renderPedagogicLibrary() {
+        updateCategoryPillCounters();
+        renderSpotlightSection();
+
+        const grid = document.getElementById('bib-materials-grid');
+        if (!grid) return;
+
+        const etapaFilter = document.getElementById('filter-bib-etapa')?.value || 'all';
+        const compFilter = document.getElementById('filter-bib-componente')?.value || 'all';
+        const searchVal = document.getElementById('search-bib-input')?.value?.toLowerCase().trim() || '';
+
+        // Filtro Combinado (AND Lógico)
+        const filtered = PEDAGOGIC_LIBRARY_DATABASE.filter(b => {
+            const matchCat = currentActiveCategory === 'all' || b.categoria === currentActiveCategory;
+            const matchEtapa = etapaFilter === 'all' || b.etapa === etapaFilter || b.etapa === 'Docente';
+            const matchComp = compFilter === 'all' || b.componente === compFilter || b.componente === 'Integrado' || b.componente === 'Multidisciplinar';
+            const matchSearch = !searchVal || 
+                b.titulo.toLowerCase().includes(searchVal) || 
+                b.subtitulo.toLowerCase().includes(searchVal) ||
+                b.descricao.toLowerCase().includes(searchVal) ||
+                b.descritores.some(d => d.toLowerCase().includes(searchVal));
+
+            return matchCat && matchEtapa && matchComp && matchSearch;
+        });
+
+        // Atualizar Contador de Resultados & Botão Limpar Filtros
+        const counterText = document.getElementById('bib-results-counter-text');
+        const clearBtn = document.getElementById('btn-bib-clear-filters');
+        if (counterText) {
+            counterText.innerHTML = `Exibindo <strong>${filtered.length} de ${PEDAGOGIC_LIBRARY_DATABASE.length}</strong> materiais`;
+        }
+
+        const isFiltered = currentActiveCategory !== 'all' || etapaFilter !== 'all' || compFilter !== 'all' || searchVal !== '';
+        if (clearBtn) {
+            clearBtn.style.display = isFiltered ? 'inline-flex' : 'none';
+            if (isFiltered) clearBtn.classList.remove('hidden'); else clearBtn.classList.add('hidden');
+        }
+
+        if (filtered.length === 0) {
+            grid.innerHTML = `
+                <div style="grid-column: 1 / -1; padding: 48px 20px; text-align: center; color: var(--text-muted); background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px dashed var(--border-color);">
+                    <div style="font-size: 2.2rem; margin-bottom: 8px;">📚</div>
+                    <h4 style="margin: 0 0 4px 0; color: var(--text-primary); font-size: 1.05rem; font-weight: 700;">Nenhum material didático encontrado</h4>
+                    <p style="margin: 0 0 14px 0; font-size: 0.82rem;">Tente ajustar a etapa, disciplina ou termo de pesquisa para encontrar o item desejado.</p>
+                    <button type="button" onclick="clearLibraryFilters();" class="btn btn-primary btn-sm" style="font-weight: 700;">Limpar Filtros e Ver Todos</button>
+                </div>
+            `;
+            if (typeof safeCreateIcons === 'function') safeCreateIcons();
+            return;
+        }
+
+        // Renderizar Cards com Diferenciação Visual
+        grid.innerHTML = filtered.map(book => {
+            const isSimulado = book.tipo === 'Simulado';
+            const isMatriz = book.tipo === 'Matriz';
+            const isGuia = book.tipo === 'Guia';
+            const isReforco = book.tipo === 'Reforco';
+
+            let typeClass = 'bib-type-simulado';
+            let iconName = 'file-check-2';
+            if (isReforco) { typeClass = 'bib-type-reforco'; iconName = 'target'; }
+            else if (isMatriz) { typeClass = 'bib-type-matriz'; iconName = 'layers'; }
+            else if (isGuia) { typeClass = 'bib-type-guia'; iconName = 'book-open'; }
+
+            return `
+                <div class="mec-book-card ${typeClass}" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                    <!-- Capa do Material -->
+                    <div style="background: linear-gradient(135deg, ${book.corTema} 0%, rgba(30, 27, 75, 0.95) 100%); padding: 18px; color: #ffffff; position: relative; min-height: 135px; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div class="flex-between" style="align-items: flex-start;">
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <div style="width: 28px; height: 28px; border-radius: 6px; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center;">
+                                    <i data-lucide="${iconName}" style="width: 15px; height: 15px; color: #ffffff;"></i>
+                                </div>
+                                <span style="font-size: 0.68rem; font-weight: 800; text-transform: uppercase; background: rgba(255,255,255,0.2); backdrop-filter: blur(4px); padding: 3px 8px; border-radius: 12px;">
+                                    ${book.capaBadge}
+                                </span>
+                            </div>
+                            <span style="font-size: 0.7rem; opacity: 0.9; font-family: var(--font-mono); font-weight: 700;">
+                                ${book.formato}
+                            </span>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <h4 style="margin: 0; font-size: 1.02rem; font-weight: 800; line-height: 1.3; color: #ffffff; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                                ${book.titulo}
+                            </h4>
+                            <span style="font-size: 0.72rem; color: rgba(255,255,255,0.85); display: block; margin-top: 3px;">
+                                ${book.subtitulo}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Detalhes e Ações -->
+                    <div style="padding: 14px 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.7rem; color: var(--text-muted);">
+                                <span>📅 Atualizado em: <strong>${book.data_publicacao}</strong></span>
+                                <span style="font-family: var(--font-mono); font-weight: 600;">${book.versao}</span>
+                            </div>
+
+                            <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px;">
+                                <span class="badge badge-purple" style="font-size: 0.68rem;">${book.etapa}</span>
+                                <span class="badge badge-outline" style="font-size: 0.68rem;">${book.componente}</span>
+                                <span class="badge badge-outline" style="font-size: 0.68rem;">${book.paginas} pág.</span>
+                                <span class="badge badge-success" style="font-size: 0.68rem;">👁️ ${book.viewsCount} acessos</span>
+                            </div>
+
+                            <p style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.45; margin: 0 0 12px 0;">
+                                ${book.descricao}
+                            </p>
+                        </div>
+
+                        <!-- Botões de Ação por Tipo de Material -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-top: 1px solid var(--border-color); padding-top: 10px;">
+                            ${isSimulado ? `
+                                <button type="button" onclick="trackAndPrintExam('${book.id}');" class="btn btn-primary btn-sm" style="font-size: 0.72rem; font-weight: 700; background: #3b82f6; border-color: #3b82f6; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                    <i data-lucide="printer" style="width: 13px; height: 13px;"></i> Imprimir A4
+                                </button>
+                                <button type="button" onclick="trackAndViewBook('${book.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                    <i data-lucide="eye" style="width: 13px; height: 13px;"></i> Visualizar
+                                </button>
+                            ` : `
+                                <button type="button" onclick="trackAndDownloadBookPdf('${book.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem; display: flex; align-items: center; justify-content: center; gap: 4px; color: #10b981; border-color: #a7f3d0;">
+                                    <i data-lucide="download" style="width: 13px; height: 13px;"></i> Baixar PDF
+                                </button>
+                                <button type="button" onclick="trackAndViewBook('${book.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                    <i data-lucide="book-open" style="width: 13px; height: 13px;"></i> Ler Online
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        if (typeof safeCreateIcons === 'function') safeCreateIcons();
+    }
+    window.renderPedagogicLibrary = renderPedagogicLibrary;
+
+    // -------------------------------------------------------------------------
+    // 5. SEÇÃO DE DESTAQUE: MAIS ACESSADOS & RECENTES
+    // -------------------------------------------------------------------------
+    function renderSpotlightSection() {
+        const row = document.getElementById('bib-spotlight-cards-row');
+        if (!row) return;
+
+        // Top 4 Mais Acessados
+        const top4 = [...PEDAGOGIC_LIBRARY_DATABASE].sort((a, b) => b.viewsCount - a.viewsCount).slice(0, 4);
+
+        row.innerHTML = top4.map(item => `
+            <div class="bib-spotlight-card" onclick="trackAndViewBook('${item.id}');">
+                <div style="width: 36px; height: 36px; border-radius: 8px; background: ${item.corTema}; color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <i data-lucide="${item.tipo === 'Simulado' ? 'file-check-2' : (item.tipo === 'Matriz' ? 'layers' : 'book-open')}" style="width: 18px; height: 18px;"></i>
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                    <strong style="font-size: 0.78rem; color: var(--text-primary); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.titulo}</strong>
+                    <span style="font-size: 0.68rem; color: var(--text-muted); display: block;">${item.etapa} • 👁️ ${item.viewsCount} downloads</span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // -------------------------------------------------------------------------
+    // 6. RASTREAMENTO DE ACESSOS E AÇÕES
+    // -------------------------------------------------------------------------
+    function trackAndViewBook(bookId) {
+        const book = PEDAGOGIC_LIBRARY_DATABASE.find(b => b.id === bookId);
+        if (book) {
+            book.viewsCount++;
+            if (typeof generateA4PrintableExam === 'function') {
+                generateA4PrintableExam(book);
+            } else {
+                alert(`📖 Visualizando material: ${book.titulo} (${book.versao})`);
+            }
+            renderSpotlightSection();
+        }
+    }
+    window.trackAndViewBook = trackAndViewBook;
+
+    function trackAndPrintExam(bookId) {
+        const book = PEDAGOGIC_LIBRARY_DATABASE.find(b => b.id === bookId);
+        if (book) {
+            book.viewsCount++;
+            book.downloadsCount++;
+            if (typeof generateA4PrintableExam === 'function') {
+                generateA4PrintableExam(book);
+            } else {
+                window.print();
+            }
+            renderSpotlightSection();
+        }
+    }
+    window.trackAndPrintExam = trackAndPrintExam;
+
+    function trackAndDownloadBookPdf(bookId) {
+        const book = PEDAGOGIC_LIBRARY_DATABASE.find(b => b.id === bookId);
+        if (book) {
+            book.viewsCount++;
+            book.downloadsCount++;
+            if (typeof showToast === 'function') {
+                showToast(`Iniciando download em PDF de "${book.titulo}"...`, 'check');
+            } else {
+                alert(`📥 Baixando PDF oficial: ${book.titulo}`);
+            }
+            renderSpotlightSection();
+        }
+    }
+    window.trackAndDownloadBookPdf = trackAndDownloadBookPdf;
+
+    function clearLibraryFilters() {
+        currentActiveCategory = 'all';
+        const input = document.getElementById('search-bib-input');
+        const etapa = document.getElementById('filter-bib-etapa');
+        const comp = document.getElementById('filter-bib-componente');
+        const suggestionsBox = document.getElementById('bib-search-suggestions');
+
+        if (input) input.value = '';
+        if (etapa) etapa.value = 'all';
+        if (comp) comp.value = 'all';
+        if (suggestionsBox) suggestionsBox.style.display = 'none';
+
+        document.querySelectorAll('.bib-category-pill').forEach(b => {
+            const isAll = b.getAttribute('data-cat') === 'all';
+            if (isAll) {
+                b.classList.add('active');
+                b.style.background = '#6366f1';
+                b.style.color = '#ffffff';
+                b.style.border = 'none';
+                b.style.fontWeight = '700';
+            } else {
+                b.classList.remove('active');
+                b.style.background = 'var(--bg-tertiary)';
+                b.style.color = 'var(--text-secondary)';
+                b.style.border = '1px solid var(--border-color)';
+                b.style.fontWeight = '500';
+            }
+        });
+
+        renderPedagogicLibrary();
+    }
+    window.clearLibraryFilters = clearLibraryFilters;
+
+    // -------------------------------------------------------------------------
+    // 7. MODAL E MOTOR: GERAR CADERNO A4 COMBINADO
+    // -------------------------------------------------------------------------
+    function openCombinedCadernoModal() {
+        const modal = document.getElementById('modal-combine-caderno-a4');
+        const listContainer = document.getElementById('modal-combine-simulados-list');
+        const countText = document.getElementById('modal-combine-selected-count');
+        if (!modal || !listContainer) return;
+
+        // Buscar todos os simulados da base
+        const simulados = PEDAGOGIC_LIBRARY_DATABASE.filter(b => b.categoria === 'Simulados');
+
+        listContainer.innerHTML = simulados.map((sim, idx) => `
+            <label style="display: flex; align-items: flex-start; gap: 12px; padding: 12px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); cursor: pointer;">
+                <input type="checkbox" class="chk-combine-simulado" data-id="${sim.id}" onchange="updateCombinedSimuladoSelectionCount();" checked style="width: 18px; height: 18px; margin-top: 2px; accent-color: #6366f1;">
+                <div style="flex: 1;">
+                    <strong style="font-size: 0.88rem; color: var(--text-primary); display: block;">${sim.titulo}</strong>
+                    <span style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin: 2px 0;">${sim.subtitulo}</span>
+                    <div style="display: flex; gap: 6px; margin-top: 4px;">
+                        <span class="badge badge-purple" style="font-size: 0.65rem;">${sim.etapa}</span>
+                        <span class="badge badge-outline" style="font-size: 0.65rem;">${sim.paginas} páginas</span>
+                        <span class="badge badge-success" style="font-size: 0.65rem;">${sim.formato}</span>
+                    </div>
+                </div>
+            </label>
+        `).join('');
+
+        updateCombinedSimuladoSelectionCount();
+        modal.style.display = 'flex';
+        modal.classList.remove('hidden');
+    }
+    window.openCombinedCadernoModal = openCombinedCadernoModal;
+
+    function closeCombinedCadernoModal() {
+        const modal = document.getElementById('modal-combine-caderno-a4');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+        }
+    }
+    window.closeCombinedCadernoModal = closeCombinedCadernoModal;
+
+    function updateCombinedSimuladoSelectionCount() {
+        const checked = document.querySelectorAll('.chk-combine-simulado:checked');
+        const countText = document.getElementById('modal-combine-selected-count');
+        if (countText) {
+            countText.textContent = `${checked.length} simulados selecionados para o caderno`;
+        }
+    }
+    window.updateCombinedSimuladoSelectionCount = updateCombinedSimuladoSelectionCount;
+
+    function executeGenerateCombinedA4Booklet() {
+        const checked = Array.from(document.querySelectorAll('.chk-combine-simulado:checked')).map(c => c.getAttribute('data-id'));
+        if (checked.length === 0) {
+            alert('Por favor, selecione pelo menos 1 simulado para gerar o caderno.');
+            return;
+        }
+
+        const selectedBooks = PEDAGOGIC_LIBRARY_DATABASE.filter(b => checked.includes(b.id));
+        closeCombinedCadernoModal();
+
+        if (typeof showToast === 'function') {
+            showToast(`Gerando Caderno A4 Unificado com ${selectedBooks.length} simulados e gabaritos ao final...`, 'sparkles');
+        }
+
+        setTimeout(() => {
+            // Abrir visualizador A4 do caderno combinado
+            const combinedObj = {
+                titulo: `Caderno Unificado de Simulados SAEB/SEAMA (${selectedBooks.length} Provas)`,
+                componente: 'Multidisciplinar Integrado',
+                etapa: '5º e 9º Anos',
+                formato: 'Caderno A4 Completo com Folha de Respostas Unificada',
+                descricao: `Compilado oficial de ${selectedBooks.map(s => s.titulo).join(', ')}. Gabaritos agrupados ao final do caderno.`
+            };
+
+            if (typeof generateA4PrintableExam === 'function') {
+                generateA4PrintableExam(combinedObj);
+            } else {
+                window.print();
+            }
+        }, 400);
+    }
+    window.executeGenerateCombinedA4Booklet = executeGenerateCombinedA4Booklet;
