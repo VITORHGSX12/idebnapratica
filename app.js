@@ -423,49 +423,137 @@
         const container = document.getElementById('dashboard-metric-cards-container');
         if (!container) return;
 
-        // 1. IDEB Oficial do Município (Base Oficial INEP / Gonçalves Dias)
+        const userRole = sessionStorage.getItem('userRole') || 'Master Admin';
+        const userEscola = sessionStorage.getItem('userEscola') || 'UI JOSE CORREA LIMA';
+        const userTurma = sessionStorage.getItem('userTurma') || '5º Ano A';
+        const isDirector = userRole === 'Diretor Escola';
+        const isTeacher = userRole === 'Professor' || userRole === 'Professor AEE';
+
+        // 1. VISÃO DO DIRETOR ESCOLAR (Escopo: Gestão Executiva da Unidade)
+        if (isDirector) {
+            container.innerHTML = `
+                <!-- Card 1: IDEB Projetado vs Meta -->
+                <div class="metric-card" style="border: 1px solid var(--border-color); background: var(--bg-secondary);">
+                    <div class="metric-header">
+                        <span class="metric-title">IDEB Projetado vs. Meta</span>
+                        <div class="metric-icon purple"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 3 18 18"/><path d="m13 3 8 8-4 4-8-8Z"/></svg></div>
+                    </div>
+                    <div class="metric-value" style="color: var(--green-light); font-weight: 800; font-size: 2.2rem;">5.4 ★</div>
+                    <div class="metric-footer">
+                        <span class="trend" style="color: #f59e0b; font-weight: 700; font-size: 0.8rem;">Gap: -0.4</span>
+                        <span class="trend-label" style="margin-left: auto;">Meta 2026: <strong>5.8</strong></span>
+                    </div>
+                </div>
+
+                <!-- Card 2: Proficiência Média (LP / MAT) -->
+                <div class="metric-card" style="border: 1px solid var(--border-color); background: var(--bg-secondary);">
+                    <div class="metric-header">
+                        <span class="metric-title">Proficiência Média (LP / MAT)</span>
+                        <div class="metric-icon blue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+                    </div>
+                    <div class="metric-value" style="color: var(--text-primary); font-weight: 800; font-size: 2.2rem;">231.3 pts</div>
+                    <div class="metric-footer">
+                        <span class="trend-label" style="font-size: 0.78rem;">LP: <strong>224.5</strong> • MAT: <strong>238.1</strong></span>
+                    </div>
+                </div>
+
+                <!-- Card 3: Taxa de Domínio de Descritores (%) -->
+                <div class="metric-card" style="border: 1px solid var(--border-color); background: var(--bg-secondary);">
+                    <div class="metric-header">
+                        <span class="metric-title">Taxa de Domínio de Descritores</span>
+                        <div class="metric-icon green"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+                    </div>
+                    <div class="metric-value" style="color: #10b981; font-weight: 800; font-size: 2.2rem;">64.8%</div>
+                    <div class="metric-footer">
+                        <span class="trend-label">Média global de acertos em itens SAEB</span>
+                    </div>
+                </div>
+
+                <!-- Card 4: Índice de Cobertura de Simulados -->
+                <div class="metric-card" style="border: 1px solid var(--border-color); background: var(--bg-secondary);">
+                    <div class="metric-header">
+                        <span class="metric-title">Cobertura de Simulados</span>
+                        <div class="metric-icon red"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="m9 16 2 2 4-4"/></svg></div>
+                    </div>
+                    <div class="metric-value" style="font-size: 2.2rem; font-weight: 800; color: #6366f1; margin: 4px 0;">92.4%</div>
+                    <div class="metric-footer">
+                        <span class="trend-label">226 de 245 estudantes avaliados</span>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        // 2. VISÃO DO PROFESSOR (Escopo: Diagnóstico Pedagógico de Sala de Aula)
+        if (isTeacher) {
+            container.innerHTML = `
+                <!-- Card 1: Média de Acerto da Turma (%) -->
+                <div class="metric-card" style="border: 1px solid var(--border-color); background: var(--bg-secondary);">
+                    <div class="metric-header">
+                        <span class="metric-title">Média de Acerto da Turma</span>
+                        <div class="metric-icon blue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+                    </div>
+                    <div class="metric-value" style="color: #3b82f6; font-weight: 800; font-size: 2.2rem;">68.2%</div>
+                    <div class="metric-footer">
+                        <span class="trend-label">${userTurma} • Disciplinas Ativas</span>
+                    </div>
+                </div>
+
+                <!-- Card 2: Proficiência Média da Turma -->
+                <div class="metric-card" style="border: 1px solid var(--border-color); background: var(--bg-secondary);">
+                    <div class="metric-header">
+                        <span class="metric-title">Proficiência da Turma</span>
+                        <div class="metric-icon purple"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+                    </div>
+                    <div class="metric-value" style="color: var(--text-primary); font-weight: 800; font-size: 2.2rem;">231.4 pts</div>
+                    <div class="metric-footer">
+                        <span class="trend-label">Escala SAEB Agregada</span>
+                    </div>
+                </div>
+
+                <!-- Card 3: Habilidades Críticas (Alerts) -->
+                <div class="metric-card" style="border: 1px solid var(--border-color); background: var(--bg-secondary);">
+                    <div class="metric-header">
+                        <span class="metric-title">Habilidades Críticas (&lt;50%)</span>
+                        <div class="metric-icon red"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+                    </div>
+                    <div class="metric-value" style="color: #ef4444; font-weight: 800; font-size: 2.2rem;">4 Descritores</div>
+                    <div class="metric-footer">
+                        <span class="trend" style="color: #ef4444; font-weight: 700; font-size: 0.8rem;">Recomposição Imediata</span>
+                    </div>
+                </div>
+
+                <!-- Card 4: Alunos Prioritários -->
+                <div class="metric-card" style="border: 1px solid var(--border-color); background: var(--bg-secondary);">
+                    <div class="metric-header">
+                        <span class="metric-title">Alunos Prioritários</span>
+                        <div class="metric-icon green"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                    </div>
+                    <div class="metric-value" style="color: #f59e0b; font-weight: 800; font-size: 2.2rem;">6 Estudantes</div>
+                    <div class="metric-footer">
+                        <span class="trend-label">Intervenção pedagógica focal</span>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        // 3. VISÃO DA SEMED / MASTER ADMIN (Monitoramento Global da Rede)
         const idebVal = '5.2 ★';
         const idebTrend = '+0.4 vs 2023';
         const idebMeta = 'Meta 2026: 5.5';
-
-        // 2. Proficiência SAEB (Base Oficial INEP / LP & MAT Gonçalves Dias)
         const profVal = '224.8 pts';
         const profSub = 'LP: <strong>226.4</strong> • MAT: <strong>223.2</strong>';
-
-        // 3. Taxa de Aprovação (Fluxo Censo Escolar)
         const fluxoVal = '96.8%';
         const fluxoSub = 'Censo Escolar / Gonçalves Dias';
 
-        // 4. Evolução dos Simulados (da base real getStoredEvents)
-        let simuladoVal = 'N/A';
-        let simuladoSub = '<span style="color:var(--text-muted);">Nenhum simulado aplicado ainda</span>';
+        let simuladoVal = '5.4 pts';
+        let simuladoSub = '<span style="color:var(--green-light); font-weight:700;">Simulado SAEB 1º Semestre</span>';
         let simuladoBtn = `
             <button onclick="switchTab('sec-criar-avaliacoes')" style="background: rgba(99, 102, 241, 0.12); color: #6366f1; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
-                + Aplicar 1º Simulado
+                Ver Resultados →
             </button>
         `;
-
-        const events = typeof getStoredEvents === 'function' ? getStoredEvents() : [];
-        const finishedEvents = events.filter(e => e.status === 'finalizados' || e.mediaScore);
-        if (finishedEvents.length > 0) {
-            const lastSim = finishedEvents[0];
-            simuladoVal = `${lastSim.mediaScore || '5.4'} pts`;
-            simuladoSub = `<span style="color:var(--green-light); font-weight:700;">${lastSim.nome || lastSim.titulo}</span>`;
-            simuladoBtn = `
-                <button onclick="switchTab('sec-criar-avaliacoes')" style="background: rgba(99, 102, 241, 0.12); color: #6366f1; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
-                    Ver Resultados →
-                </button>
-            `;
-        } else if (events.length > 0) {
-            const activeSim = events[0];
-            simuladoVal = 'Em Andamento';
-            simuladoSub = `<span style="color:var(--purple-light); font-weight:600;">${activeSim.nome || activeSim.titulo}</span>`;
-            simuladoBtn = `
-                <button onclick="switchTab('sec-criar-avaliacoes')" style="background: rgba(99, 102, 241, 0.12); color: #6366f1; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
-                    Lançar Respostas →
-                </button>
-            `;
-        }
 
         container.innerHTML = `
             <div class="metric-card" style="border: 1px solid var(--border-color); background: var(--bg-secondary);">
@@ -507,7 +595,7 @@
                     <span class="metric-title">Evolução dos Simulados</span>
                     <div class="metric-icon red"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="m9 16 2 2 4-4"/></svg></div>
                 </div>
-                <div class="metric-value" style="font-size: ${simuladoVal === 'N/A' || simuladoVal === 'Em Andamento' ? '1.5rem' : '2rem'}; font-weight: 800; color: #6366f1; margin: 4px 0;">${simuladoVal}</div>
+                <div class="metric-value" style="font-size: 2rem; font-weight: 800; color: #6366f1; margin: 4px 0;">${simuladoVal}</div>
                 <div class="metric-footer" style="margin-top: 4px; display:flex; justify-content:space-between; align-items:center;">
                     <div style="font-size:0.75rem;">${simuladoSub}</div>
                     ${simuladoBtn}
@@ -1714,6 +1802,7 @@ CREATE TABLE respostas_aluno (
 );
 
 -- 18. Histórico de Diagnósticos por IA (Cache de relatórios estruturados)
+-- 18. Histórico de Diagnósticos por IA (Cache de relatórios estruturados)
 CREATE TABLE diagnosticos_ia (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     matricula_id UUID NOT NULL REFERENCES matriculas(id) ON DELETE CASCADE,
@@ -1722,6 +1811,62 @@ CREATE TABLE diagnosticos_ia (
     prompt_usado TEXT,
     data_geracao TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+-- ============================================================================
+-- ARQUITETURA DE SEGURANÇA (RBAC) & VIEWS ANALÍTICAS DE DIAGNÓSTICO
+-- ============================================================================
+
+-- 1. TABELA DE CONTROLE DE PAPÉIS E ESCOPO (RBAC)
+CREATE TABLE IF NOT EXISTS usuarios_perfis (
+    id SERIAL PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    role VARCHAR(30) NOT NULL CHECK (role IN ('DIRETOR', 'PROFESSOR', 'SEMED', 'ADMIN')),
+    escola_id INT REFERENCES escolas(id),
+    professor_id INT,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. VIEW ANALÍTICA PARA A VISÃO DO DIRETOR ESCOLAR (AGREGAÇÃO POR ESCOLA)
+CREATE OR REPLACE VIEW vw_dashboard_diretor_analitico AS
+SELECT 
+    e.id AS escola_id,
+    e.nome AS escola_nome,
+    COUNT(DISTINCT t.id) AS total_turmas,
+    COUNT(DISTINCT a.id) AS total_alunos_avaliados,
+    COALESCE(ROUND(AVG(av.nota_ideb_projetada)::numeric, 2), 0.00) AS ideb_projetado,
+    COALESCE(ROUND(AVG(av.proficiencia_lp)::numeric, 1), 0.0) AS proficiencia_lp,
+    COALESCE(ROUND(AVG(av.proficiencia_mat)::numeric, 1), 0.0) AS proficiencia_mat,
+    COALESCE(ROUND((COUNT(CASE WHEN resp.correta = TRUE THEN 1 END) * 100.0) / NULLIF(COUNT(resp.id), 0)::numeric, 1), 0.0) AS taxa_acerto_global
+FROM escolas e
+LEFT JOIN turmas t ON t.escola_id = e.id
+LEFT JOIN alunos a ON a.turma_id = t.id
+LEFT JOIN avaliacoes_alunos av ON av.aluno_id = a.id
+LEFT JOIN respostas_itens resp ON resp.aluno_id = a.id
+GROUP BY e.id, e.nome;
+
+-- 3. VIEW ANALÍTICA PARA A VISÃO DO PROFESSOR (POR TURMA E DESCRITOR BNCC/SAEB)
+CREATE OR REPLACE VIEW vw_dashboard_professor_descritores AS
+SELECT 
+    tp.professor_id,
+    t.id AS turma_id,
+    t.nome AS turma_nome,
+    d.id AS descritor_id,
+    d.codigo AS descritor_codigo,
+    d.descricao AS descritor_enunciado,
+    d.disciplina,
+    COUNT(resp.id) AS total_respostas,
+    ROUND((COUNT(CASE WHEN resp.correta = TRUE THEN 1 END) * 100.0) / NULLIF(COUNT(resp.id), 0)::numeric, 1) AS pct_acerto_habilidade,
+    CASE 
+        WHEN (COUNT(CASE WHEN resp.correta = TRUE THEN 1 END) * 100.0) / NULLIF(COUNT(resp.id), 0) < 50 THEN 'CRITICO'
+        WHEN (COUNT(CASE WHEN resp.correta = TRUE THEN 1 END) * 100.0) / NULLIF(COUNT(resp.id), 0) BETWEEN 50 AND 70 THEN 'ATENCAO'
+        ELSE 'ADEQUADO'
+    END AS status_recomposicao
+FROM turmas_professores tp
+INNER JOIN turmas t ON t.id = tp.turma_id
+INNER JOIN alunos a ON a.turma_id = t.id
+INNER JOIN respostas_itens resp ON resp.aluno_id = a.id
+INNER JOIN descritores d ON d.id = resp.descritor_id AND d.disciplina_id = tp.disciplina_id
+GROUP BY tp.professor_id, t.id, t.nome, d.id, d.codigo, d.descricao, d.disciplina;
 
 -- Índices Recomendados para Otimização
 CREATE INDEX idx_matriculas_turma ON matriculas(turma_id);
@@ -10395,46 +10540,56 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
 
         // Hide specific groups/items based on Role Hierarchy
         if (userRole === 'Professor' || userRole === 'Professor AEE') {
-            // Visible for Professor: Alunos, Biblioteca, Cronograma, Aplicação de Provas, Matriz, Questões
-            const allowedTabs = ['alunos-panel', 'biblioteca-recursos', 'cronograma-habilidades', 'aplicacao-provas', 'matriz-descritores', 'questions'];
+            // Visible for Professor: [Dashboard] Painel da Turma, [Individual] Diagnóstico por Aluno, [Pedagógico] Habilidades a Recompor, [Relatórios] Desempenho em Simulados
+            const allowedTabs = ['dashboard', 'alunos-panel', 'matriz-descritores', 'aplicacao-provas'];
             allMenuItems.forEach(item => {
                 const target = item.getAttribute('data-target');
                 item.style.display = allowedTabs.includes(target) ? 'flex' : 'none';
             });
 
             // Adjust labels for Professor
+            const dashMenu = document.querySelector('.menu-item[data-target="dashboard"] span');
+            if (dashMenu) dashMenu.textContent = 'Painel da Turma';
             const alunosMenu = document.querySelector('.menu-item[data-target="alunos-panel"] span');
-            if (alunosMenu) alunosMenu.textContent = 'Minha Turma & Alunos';
+            if (alunosMenu) alunosMenu.textContent = 'Diagnóstico por Aluno';
+            const matrizMenu = document.querySelector('.menu-item[data-target="matriz-descritores"] span');
+            if (matrizMenu) matrizMenu.textContent = 'Habilidades a Recompor';
             const provasMenu = document.querySelector('.menu-item[data-target="aplicacao-provas"] span');
-            if (provasMenu) provasMenu.textContent = 'Lançamento de Gabaritos';
+            if (provasMenu) provasMenu.textContent = 'Desempenho em Simulados';
 
             // Sidebar User Card
-            if (activeNetworkLabel) activeNetworkLabel.textContent = `${userEscola} (${userTurma})`;
-            if (userProfileName) userProfileName.textContent = 'Prof. Docente';
-            if (userProfileRole) userProfileRole.textContent = `${userEscola} • ${userTurma}`;
+            if (activeNetworkLabel) activeNetworkLabel.textContent = `👨‍🏫 ${userTurma} • ${userEscola}`;
+            if (userProfileName) userProfileName.textContent = 'Prof. Carlos Eduardo';
+            if (userProfileRole) userProfileRole.textContent = `Visão de Docente • ${userTurma}`;
             if (userProfileAvatar) {
                 userProfileAvatar.textContent = 'PR';
                 userProfileAvatar.style.backgroundColor = '#2563eb';
             }
 
         } else if (userRole === 'Diretor Escola') {
-            // Visible for Diretor: Escolas, Alunos, Metas, Cronograma, Aplicação, Gestão Pedagógica, Relatórios, Biblioteca
-            const allowedTabs = ['escolas-panel', 'alunos-panel', 'metas-ideb', 'cronograma-habilidades', 'aplicacao-provas', 'gestao-pedagogica', 'ai-playground', 'biblioteca-recursos'];
+            // Visible for Diretor: [Dashboard] Monitoramento da Escola, [Analytics] Desempenho por Turma, [Trends] Evolução dos Simulados, [Pedagógico] Matriz de Descritores, [Planejamento] Metas PDE
+            const allowedTabs = ['dashboard', 'escolas-panel', 'relatorios-monitoramento', 'matriz-descritores', 'metas-ideb'];
             allMenuItems.forEach(item => {
                 const target = item.getAttribute('data-target');
                 item.style.display = allowedTabs.includes(target) ? 'flex' : 'none';
             });
 
             // Adjust labels for Diretor
+            const dashMenu = document.querySelector('.menu-item[data-target="dashboard"] span');
+            if (dashMenu) dashMenu.textContent = 'Monitoramento da Escola';
             const escolasMenu = document.querySelector('.menu-item[data-target="escolas-panel"] span');
-            if (escolasMenu) escolasMenu.textContent = 'Minha Escola & Turmas';
-            const alunosMenu = document.querySelector('.menu-item[data-target="alunos-panel"] span');
-            if (alunosMenu) alunosMenu.textContent = 'Alunos da Escola';
+            if (escolasMenu) escolasMenu.textContent = 'Desempenho por Turma';
+            const relMenu = document.querySelector('.menu-item[data-target="relatorios-monitoramento"] span');
+            if (relMenu) relMenu.textContent = 'Evolução dos Simulados';
+            const matrizMenu = document.querySelector('.menu-item[data-target="matriz-descritores"] span');
+            if (matrizMenu) matrizMenu.textContent = 'Matriz de Descritores (BNCC)';
+            const metasMenu = document.querySelector('.menu-item[data-target="metas-ideb"] span');
+            if (metasMenu) metasMenu.textContent = 'Acompanhamento de Metas (PDE)';
 
             // Sidebar User Card
-            if (activeNetworkLabel) activeNetworkLabel.textContent = `${userEscola} (Direção)`;
-            if (userProfileName) userProfileName.textContent = 'Diretora Maria';
-            if (userProfileRole) userProfileRole.textContent = `Direção • ${userEscola}`;
+            if (activeNetworkLabel) activeNetworkLabel.textContent = `🏫 ${userEscola} (INEP 21128723)`;
+            if (userProfileName) userProfileName.textContent = 'Profa. Antonia Silva';
+            if (userProfileRole) userProfileRole.textContent = `Visão de Direção • ${userEscola}`;
             if (userProfileAvatar) {
                 userProfileAvatar.textContent = 'DE';
                 userProfileAvatar.style.backgroundColor = '#059669';
@@ -10443,6 +10598,20 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         } else if (userRole === 'Master Admin') {
             // Visible for Admin: All modules including Governance & TI
             allMenuItems.forEach(item => { item.style.display = 'flex'; });
+
+            // Restore Standard Labels
+            const dashMenu = document.querySelector('.menu-item[data-target="dashboard"] span');
+            if (dashMenu) dashMenu.textContent = 'Painel Executivo';
+            const escolasMenu = document.querySelector('.menu-item[data-target="escolas-panel"] span');
+            if (escolasMenu) escolasMenu.textContent = 'Escolas da Rede';
+            const alunosMenu = document.querySelector('.menu-item[data-target="alunos-panel"] span');
+            if (alunosMenu) alunosMenu.textContent = 'Estudantes & Turmas';
+            const matrizMenu = document.querySelector('.menu-item[data-target="matriz-descritores"] span');
+            if (matrizMenu) matrizMenu.textContent = 'Matriz de Descritores';
+            const provasMenu = document.querySelector('.menu-item[data-target="aplicacao-provas"] span');
+            if (provasMenu) provasMenu.textContent = 'Aplicação de Provas';
+            const metasMenu = document.querySelector('.menu-item[data-target="metas-ideb"] span');
+            if (metasMenu) metasMenu.textContent = 'Metas Municipais';
 
             // Sidebar User Card
             if (activeNetworkLabel) activeNetworkLabel.textContent = 'Administração TI / DPO';
@@ -10460,6 +10629,20 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
                 const target = item.getAttribute('data-target');
                 item.style.display = (target === 'doc-tecnica' || target === 'admin-panel') ? 'none' : 'flex';
             });
+
+            // Restore Standard Labels
+            const dashMenu = document.querySelector('.menu-item[data-target="dashboard"] span');
+            if (dashMenu) dashMenu.textContent = 'Painel Executivo';
+            const escolasMenu = document.querySelector('.menu-item[data-target="escolas-panel"] span');
+            if (escolasMenu) escolasMenu.textContent = 'Escolas da Rede';
+            const alunosMenu = document.querySelector('.menu-item[data-target="alunos-panel"] span');
+            if (alunosMenu) alunosMenu.textContent = 'Estudantes & Turmas';
+            const matrizMenu = document.querySelector('.menu-item[data-target="matriz-descritores"] span');
+            if (matrizMenu) matrizMenu.textContent = 'Matriz de Descritores';
+            const provasMenu = document.querySelector('.menu-item[data-target="aplicacao-provas"] span');
+            if (provasMenu) provasMenu.textContent = 'Aplicação de Provas';
+            const metasMenu = document.querySelector('.menu-item[data-target="metas-ideb"] span');
+            if (metasMenu) metasMenu.textContent = 'Metas Municipais';
 
             // Sidebar User Card
             if (activeNetworkLabel) activeNetworkLabel.textContent = 'SEMED Gonçalves Dias - MA';
