@@ -50,6 +50,207 @@
     window.getCurrentUserProfile = getCurrentUserProfile;
 
     // =========================================================================
+    // GESTÃO CENTRAL DE MENUS DA SIDEBAR POR PAPEL (DIRETOR, PROFESSOR, SEMED, ADMIN)
+    // =========================================================================
+    function renderFullNetworkSidebar(sidebarMenu, currentTab, isAdmin) {
+        sidebarMenu.innerHTML = `
+            <!-- GESTÃO -->
+            <div class="menu-group">
+                <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Gestão</span>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <a href="javascript:void(0)" onclick="switchTab('dashboard'); return false;" class="menu-item ${currentTab === 'dashboard' ? 'active' : ''}" data-target="dashboard">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                        <span>Painel Executivo</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('escolas-panel'); return false;" class="menu-item ${currentTab === 'escolas-panel' ? 'active' : ''}" data-target="escolas-panel">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 8-4 8 4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="M18 5v17"/><path d="M6 5v17"/></svg>
+                        <span>Escolas da Rede</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('alunos-panel'); return false;" class="menu-item ${currentTab === 'alunos-panel' ? 'active' : ''}" data-target="alunos-panel">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        <span>Estudantes & Turmas</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- AVALIAÇÃO -->
+            <div class="menu-group">
+                <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Avaliação & Metas</span>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <a href="javascript:void(0)" onclick="switchTab('metas-ideb'); return false;" class="menu-item ${currentTab === 'metas-ideb' ? 'active' : ''}" data-target="metas-ideb">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                        <span>Metas Municipais (PDE)</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('ideb-comparativo'); return false;" class="menu-item ${currentTab === 'ideb-comparativo' ? 'active' : ''}" data-target="ideb-comparativo">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                        <span>Comparativo Regional</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('matriz-descritores'); return false;" class="menu-item ${currentTab === 'matriz-descritores' ? 'active' : ''}" data-target="matriz-descritores">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
+                        <span>Matriz & Descritores</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('cronograma-habilidades'); return false;" class="menu-item ${currentTab === 'cronograma-habilidades' ? 'active' : ''}" data-target="cronograma-habilidades">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>
+                        <span>Cronograma de Habilidades</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('sec-criar-avaliacoes'); return false;" class="menu-item ${currentTab === 'sec-criar-avaliacoes' ? 'active' : ''}" data-target="sec-criar-avaliacoes">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M12 14v4"/><path d="M10 16h4"/></svg>
+                        <span>Criar Avaliações</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('sec-aplicacao-provas'); return false;" class="menu-item ${currentTab === 'sec-aplicacao-provas' ? 'active' : ''}" data-target="sec-aplicacao-provas">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
+                        <span>Aplicação de Provas</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('banco-questoes'); return false;" class="menu-item ${currentTab === 'banco-questoes' ? 'active' : ''}" data-target="banco-questoes">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><circle cx="10" cy="13" r="1"/><path d="M9.1 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3"/></svg>
+                        <span>Banco de Questões</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('relatorios-monitoramento'); return false;" class="menu-item ${currentTab === 'relatorios-monitoramento' ? 'active' : ''}" data-target="relatorios-monitoramento">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+                        <span>Relatórios & Monitoramento</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('biblioteca-recursos'); return false;" class="menu-item ${currentTab === 'biblioteca-recursos' ? 'active' : ''}" data-target="biblioteca-recursos">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                        <span>Biblioteca Pedagógica</span>
+                    </a>
+                </div>
+            </div>
+
+            ${isAdmin ? `
+            <!-- SISTEMA -->
+            <div class="menu-group">
+                <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Sistema</span>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <a href="javascript:void(0)" onclick="switchTab('doc-tecnica'); return false;" class="menu-item ${currentTab === 'doc-tecnica' ? 'active' : ''}" data-target="doc-tecnica">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <span>Documentação Técnica</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('admin-panel'); return false;" class="menu-item ${currentTab === 'admin-panel' ? 'active' : ''}" data-target="admin-panel">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+                        <span>Área Administrativa</span>
+                    </a>
+                </div>
+            </div>` : ''}
+        `;
+    }
+
+    function updateMenuVisibilityByRole() {
+        const userRole = sessionStorage.getItem('userRole') || 'Master Admin';
+        const userEscola = sessionStorage.getItem('userEscola') || 'UI JOSE CORREA LIMA';
+        const userTurma = sessionStorage.getItem('userTurma') || '5º Ano A';
+
+        const activeNetworkLabel = document.getElementById('sidebar-active-network-label');
+        const userProfileName = document.querySelector('.user-profile .user-name');
+        const userProfileRole = document.querySelector('.user-profile .user-role');
+        const userProfileAvatar = document.querySelector('.user-profile .avatar');
+        const sidebarMenu = document.querySelector('.sidebar-menu');
+
+        if (!sidebarMenu) return;
+
+        const currentTab = localStorage.getItem('lastActiveTab') || 'dashboard';
+
+        // 1. VISÃO EXCLUSIVA DO PROFESSOR (Apenas as 4 Funções Permitidas)
+        if (userRole === 'Professor' || userRole === 'Professor AEE') {
+            if (activeNetworkLabel) activeNetworkLabel.textContent = `👨‍🏫 ${userTurma} • ${userEscola}`;
+            if (userProfileName) userProfileName.textContent = 'Prof. Carlos Eduardo';
+            if (userProfileRole) userProfileRole.textContent = `Visão de Docente • ${userTurma}`;
+            if (userProfileAvatar) {
+                userProfileAvatar.textContent = 'PR';
+                userProfileAvatar.style.backgroundColor = '#2563eb';
+            }
+
+            sidebarMenu.innerHTML = `
+                <div class="menu-group">
+                    <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Diagnóstico Pedagógico</span>
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <a href="javascript:void(0)" onclick="switchTab('dashboard'); return false;" class="menu-item ${currentTab === 'dashboard' ? 'active' : ''}" data-target="dashboard">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                            <span>Painel da Turma</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="switchTab('alunos-panel'); return false;" class="menu-item ${currentTab === 'alunos-panel' ? 'active' : ''}" data-target="alunos-panel">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            <span>Diagnóstico por Aluno</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="switchTab('matriz-descritores'); return false;" class="menu-item ${currentTab === 'matriz-descritores' ? 'active' : ''}" data-target="matriz-descritores">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
+                            <span>Habilidades a Recompor</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="switchTab('sec-aplicacao-provas'); return false;" class="menu-item ${currentTab === 'sec-aplicacao-provas' || currentTab === 'aplicacao-provas' ? 'active' : ''}" data-target="aplicacao-provas">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
+                            <span>Desempenho em Simulados</span>
+                        </a>
+                    </div>
+                </div>
+            `;
+        } 
+        // 2. VISÃO EXCLUSIVA DO DIRETOR ESCOLAR (Apenas as 5 Funções Permitidas)
+        else if (userRole === 'Diretor Escola') {
+            if (activeNetworkLabel) activeNetworkLabel.textContent = `🏫 ${userEscola} (INEP 21128723)`;
+            if (userProfileName) userProfileName.textContent = 'Profa. Antonia Silva';
+            if (userProfileRole) userProfileRole.textContent = `Visão de Direção • ${userEscola}`;
+            if (userProfileAvatar) {
+                userProfileAvatar.textContent = 'DE';
+                userProfileAvatar.style.backgroundColor = '#059669';
+            }
+
+            sidebarMenu.innerHTML = `
+                <div class="menu-group">
+                    <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Gestão da Unidade Escolar</span>
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <a href="javascript:void(0)" onclick="switchTab('dashboard'); return false;" class="menu-item ${currentTab === 'dashboard' ? 'active' : ''}" data-target="dashboard">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                            <span>Monitoramento da Escola</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="switchTab('escolas-panel'); return false;" class="menu-item ${currentTab === 'escolas-panel' ? 'active' : ''}" data-target="escolas-panel">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 8-4 8 4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="M18 5v17"/><path d="M6 5v17"/></svg>
+                            <span>Desempenho por Turma</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="switchTab('relatorios-monitoramento'); return false;" class="menu-item ${currentTab === 'relatorios-monitoramento' ? 'active' : ''}" data-target="relatorios-monitoramento">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+                            <span>Evolução dos Simulados</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="switchTab('matriz-descritores'); return false;" class="menu-item ${currentTab === 'matriz-descritores' ? 'active' : ''}" data-target="matriz-descritores">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
+                            <span>Matriz de Descritores (BNCC)</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="switchTab('metas-ideb'); return false;" class="menu-item ${currentTab === 'metas-ideb' ? 'active' : ''}" data-target="metas-ideb">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                            <span>Acompanhamento de Metas (PDE)</span>
+                        </a>
+                    </div>
+                </div>
+            `;
+        } 
+        // 3. MASTER ADMIN (Governança & TI)
+        else if (userRole === 'Master Admin') {
+            if (activeNetworkLabel) activeNetworkLabel.textContent = '⚙️ Administração TI / DPO';
+            if (userProfileName) userProfileName.textContent = 'Administrador TI';
+            if (userProfileRole) userProfileRole.textContent = 'DPO & Infraestrutura';
+            if (userProfileAvatar) {
+                userProfileAvatar.textContent = 'AD';
+                userProfileAvatar.style.backgroundColor = '#e11d48';
+            }
+            renderFullNetworkSidebar(sidebarMenu, currentTab, true);
+        } 
+        // 4. SEMED (Gestor da Rede Municipal)
+        else {
+            if (activeNetworkLabel) activeNetworkLabel.textContent = '🏛️ SEMED Gonçalves Dias - MA';
+            if (userProfileName) userProfileName.textContent = 'Secretaria de Educação';
+            if (userProfileRole) userProfileRole.textContent = 'Gestão Executiva SEMED';
+            if (userProfileAvatar) {
+                userProfileAvatar.textContent = 'SM';
+                userProfileAvatar.style.backgroundColor = '#9333ea';
+            }
+            renderFullNetworkSidebar(sidebarMenu, currentTab, false);
+        }
+
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+            try { window.lucide.createIcons({ attrs: { class: 'lucide' } }); } catch(e) {}
+        }
+    }
+    window.updateMenuVisibilityByRole = updateMenuVisibilityByRole;
+
+    // =========================================================================
     // EXECUÇÃO CENTRAL E GLOBAL DE AUTENTICAÇÃO DO SISTEMA
     // =========================================================================
     function executeSystemLogin(explicitEmail, explicitPass) {
@@ -72,7 +273,7 @@
 
         if (emailInput.startsWith('prof') || emailInput.includes('professor')) {
             detectedRole = 'Professor';
-            targetTab = 'alunos-panel';
+            targetTab = 'dashboard';
             assignedSchool = 'UI JOSE CORREA LIMA';
             assignedTurma = '5º Ano A';
             profileName = 'Prof. Carlos Eduardo';
@@ -80,7 +281,7 @@
             profileAvatar = '👨‍🏫';
         } else if (emailInput.startsWith('diret') || emailInput.includes('diretor') || emailInput.includes('escola') || emailInput.includes('cora')) {
             detectedRole = 'Diretor Escola';
-            targetTab = 'escolas-panel';
+            targetTab = 'dashboard';
             assignedSchool = 'UI JOSE CORREA LIMA';
             assignedTurma = 'Todas as Turmas';
             profileName = 'Profa. Antonia Silva';
@@ -136,9 +337,10 @@
         }
 
         try {
-            if (typeof updateMenuVisibilityByRole === 'function') updateMenuVisibilityByRole();
+            updateMenuVisibilityByRole();
             if (typeof updateUserHeaderUI === 'function') updateUserHeaderUI();
             if (typeof renderDashboardWelcomeBanner === 'function') renderDashboardWelcomeBanner();
+            if (typeof renderDashboardMetricCards === 'function') renderDashboardMetricCards();
             if (typeof renderDbSchools === 'function') renderDbSchools();
             if (typeof renderDbStudents === 'function') renderDbStudents();
         } catch (err) {
@@ -10524,40 +10726,105 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         });
     }
 
+    function renderFullNetworkSidebar(sidebarMenu, currentTab, isAdmin) {
+        sidebarMenu.innerHTML = `
+            <!-- GESTÃO -->
+            <div class="menu-group">
+                <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Gestão</span>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <a href="javascript:void(0)" onclick="switchTab('dashboard'); return false;" class="menu-item ${currentTab === 'dashboard' ? 'active' : ''}" data-target="dashboard">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                        <span>Painel Executivo</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('escolas-panel'); return false;" class="menu-item ${currentTab === 'escolas-panel' ? 'active' : ''}" data-target="escolas-panel">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 8-4 8 4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="M18 5v17"/><path d="M6 5v17"/></svg>
+                        <span>Escolas da Rede</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('alunos-panel'); return false;" class="menu-item ${currentTab === 'alunos-panel' ? 'active' : ''}" data-target="alunos-panel">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        <span>Estudantes & Turmas</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- AVALIAÇÃO -->
+            <div class="menu-group">
+                <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Avaliação & Metas</span>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <a href="javascript:void(0)" onclick="switchTab('metas-ideb'); return false;" class="menu-item ${currentTab === 'metas-ideb' ? 'active' : ''}" data-target="metas-ideb">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                        <span>Metas Municipais (PDE)</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('ideb-comparativo'); return false;" class="menu-item ${currentTab === 'ideb-comparativo' ? 'active' : ''}" data-target="ideb-comparativo">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                        <span>Comparativo Regional</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('matriz-descritores'); return false;" class="menu-item ${currentTab === 'matriz-descritores' ? 'active' : ''}" data-target="matriz-descritores">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
+                        <span>Matriz & Descritores</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('cronograma-habilidades'); return false;" class="menu-item ${currentTab === 'cronograma-habilidades' ? 'active' : ''}" data-target="cronograma-habilidades">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>
+                        <span>Cronograma de Habilidades</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('sec-criar-avaliacoes'); return false;" class="menu-item ${currentTab === 'sec-criar-avaliacoes' ? 'active' : ''}" data-target="sec-criar-avaliacoes">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M12 14v4"/><path d="M10 16h4"/></svg>
+                        <span>Criar Avaliações</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('sec-aplicacao-provas'); return false;" class="menu-item ${currentTab === 'sec-aplicacao-provas' ? 'active' : ''}" data-target="sec-aplicacao-provas">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
+                        <span>Aplicação de Provas</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('banco-questoes'); return false;" class="menu-item ${currentTab === 'banco-questoes' ? 'active' : ''}" data-target="banco-questoes">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><circle cx="10" cy="13" r="1"/><path d="M9.1 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3"/></svg>
+                        <span>Banco de Questões</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('relatorios-monitoramento'); return false;" class="menu-item ${currentTab === 'relatorios-monitoramento' ? 'active' : ''}" data-target="relatorios-monitoramento">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+                        <span>Relatórios & Monitoramento</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('biblioteca-recursos'); return false;" class="menu-item ${currentTab === 'biblioteca-recursos' ? 'active' : ''}" data-target="biblioteca-recursos">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                        <span>Biblioteca Pedagógica</span>
+                    </a>
+                </div>
+            </div>
+
+            ${isAdmin ? `
+            <!-- SISTEMA -->
+            <div class="menu-group">
+                <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Sistema</span>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <a href="javascript:void(0)" onclick="switchTab('doc-tecnica'); return false;" class="menu-item ${currentTab === 'doc-tecnica' ? 'active' : ''}" data-target="doc-tecnica">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <span>Documentação Técnica</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('admin-panel'); return false;" class="menu-item ${currentTab === 'admin-panel' ? 'active' : ''}" data-target="admin-panel">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+                        <span>Área Administrativa</span>
+                    </a>
+                </div>
+            </div>` : ''}
+        `;
+    }
+
     function updateMenuVisibilityByRole() {
         const userRole = sessionStorage.getItem('userRole') || 'Master Admin';
-        const userEscola = sessionStorage.getItem('userEscola') || 'U.E. BENTA VILANOVA';
-        const userTurma = sessionStorage.getItem('userTurma') || '2º Ano';
+        const userEscola = sessionStorage.getItem('userEscola') || 'UI JOSE CORREA LIMA';
+        const userTurma = sessionStorage.getItem('userTurma') || '5º Ano A';
 
         const activeNetworkLabel = document.getElementById('sidebar-active-network-label');
         const userProfileName = document.querySelector('.user-profile .user-name');
         const userProfileRole = document.querySelector('.user-profile .user-role');
         const userProfileAvatar = document.querySelector('.user-profile .avatar');
+        const sidebarMenu = document.querySelector('.sidebar-menu');
 
-        // All Sidebar Menu Items
-        const allMenuItems = document.querySelectorAll('.menu-item');
-        allMenuItems.forEach(item => { item.style.display = 'flex'; });
+        if (!sidebarMenu) return;
 
-        // Hide specific groups/items based on Role Hierarchy
+        const currentTab = localStorage.getItem('lastActiveTab') || 'dashboard';
+
+        // 1. VISÃO EXCLUSIVA DO PROFESSOR (4 Funções Estritas da Especificação)
         if (userRole === 'Professor' || userRole === 'Professor AEE') {
-            // Visible for Professor: [Dashboard] Painel da Turma, [Individual] Diagnóstico por Aluno, [Pedagógico] Habilidades a Recompor, [Relatórios] Desempenho em Simulados
-            const allowedTabs = ['dashboard', 'alunos-panel', 'matriz-descritores', 'aplicacao-provas'];
-            allMenuItems.forEach(item => {
-                const target = item.getAttribute('data-target');
-                item.style.display = allowedTabs.includes(target) ? 'flex' : 'none';
-            });
-
-            // Adjust labels for Professor
-            const dashMenu = document.querySelector('.menu-item[data-target="dashboard"] span');
-            if (dashMenu) dashMenu.textContent = 'Painel da Turma';
-            const alunosMenu = document.querySelector('.menu-item[data-target="alunos-panel"] span');
-            if (alunosMenu) alunosMenu.textContent = 'Diagnóstico por Aluno';
-            const matrizMenu = document.querySelector('.menu-item[data-target="matriz-descritores"] span');
-            if (matrizMenu) matrizMenu.textContent = 'Habilidades a Recompor';
-            const provasMenu = document.querySelector('.menu-item[data-target="aplicacao-provas"] span');
-            if (provasMenu) provasMenu.textContent = 'Desempenho em Simulados';
-
-            // Sidebar User Card
             if (activeNetworkLabel) activeNetworkLabel.textContent = `👨‍🏫 ${userTurma} • ${userEscola}`;
             if (userProfileName) userProfileName.textContent = 'Prof. Carlos Eduardo';
             if (userProfileRole) userProfileRole.textContent = `Visão de Docente • ${userTurma}`;
@@ -10566,27 +10833,32 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
                 userProfileAvatar.style.backgroundColor = '#2563eb';
             }
 
-        } else if (userRole === 'Diretor Escola') {
-            // Visible for Diretor: [Dashboard] Monitoramento da Escola, [Analytics] Desempenho por Turma, [Trends] Evolução dos Simulados, [Pedagógico] Matriz de Descritores, [Planejamento] Metas PDE
-            const allowedTabs = ['dashboard', 'escolas-panel', 'relatorios-monitoramento', 'matriz-descritores', 'metas-ideb'];
-            allMenuItems.forEach(item => {
-                const target = item.getAttribute('data-target');
-                item.style.display = allowedTabs.includes(target) ? 'flex' : 'none';
-            });
-
-            // Adjust labels for Diretor
-            const dashMenu = document.querySelector('.menu-item[data-target="dashboard"] span');
-            if (dashMenu) dashMenu.textContent = 'Monitoramento da Escola';
-            const escolasMenu = document.querySelector('.menu-item[data-target="escolas-panel"] span');
-            if (escolasMenu) escolasMenu.textContent = 'Desempenho por Turma';
-            const relMenu = document.querySelector('.menu-item[data-target="relatorios-monitoramento"] span');
-            if (relMenu) relMenu.textContent = 'Evolução dos Simulados';
-            const matrizMenu = document.querySelector('.menu-item[data-target="matriz-descritores"] span');
-            if (matrizMenu) matrizMenu.textContent = 'Matriz de Descritores (BNCC)';
-            const metasMenu = document.querySelector('.menu-item[data-target="metas-ideb"] span');
-            if (metasMenu) metasMenu.textContent = 'Acompanhamento de Metas (PDE)';
-
-            // Sidebar User Card
+            sidebarMenu.innerHTML = `
+                <div class="menu-group">
+                    <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Diagnóstico Pedagógico</span>
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <a href="javascript:void(0)" onclick="switchTab('dashboard'); return false;" class="menu-item ${currentTab === 'dashboard' ? 'active' : ''}" data-target="dashboard">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                            <span>Painel da Turma</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="switchTab('alunos-panel'); return false;" class="menu-item ${currentTab === 'alunos-panel' ? 'active' : ''}" data-target="alunos-panel">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            <span>Diagnóstico por Aluno</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="switchTab('matriz-descritores'); return false;" class="menu-item ${currentTab === 'matriz-descritores' ? 'active' : ''}" data-target="matriz-descritores">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
+                            <span>Habilidades a Recompor</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="switchTab('sec-aplicacao-provas'); return false;" class="menu-item ${currentTab === 'sec-aplicacao-provas' || currentTab === 'aplicacao-provas' ? 'active' : ''}" data-target="aplicacao-provas">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
+                            <span>Desempenho em Simulados</span>
+                        </a>
+                    </div>
+                </div>
+            `;
+        } 
+        // 2. VISÃO EXCLUSIVA DO DIRETOR ESCOLAR (5 Funções Estritas da Especificação)
+        else if (userRole === 'Diretor Escola') {
             if (activeNetworkLabel) activeNetworkLabel.textContent = `🏫 ${userEscola} (INEP 21128723)`;
             if (userProfileName) userProfileName.textContent = 'Profa. Antonia Silva';
             if (userProfileRole) userProfileRole.textContent = `Visão de Direção • ${userEscola}`;
@@ -10595,67 +10867,59 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
                 userProfileAvatar.style.backgroundColor = '#059669';
             }
 
-        } else if (userRole === 'Master Admin') {
-            // Visible for Admin: All modules including Governance & TI
-            allMenuItems.forEach(item => { item.style.display = 'flex'; });
-
-            // Restore Standard Labels
-            const dashMenu = document.querySelector('.menu-item[data-target="dashboard"] span');
-            if (dashMenu) dashMenu.textContent = 'Painel Executivo';
-            const escolasMenu = document.querySelector('.menu-item[data-target="escolas-panel"] span');
-            if (escolasMenu) escolasMenu.textContent = 'Escolas da Rede';
-            const alunosMenu = document.querySelector('.menu-item[data-target="alunos-panel"] span');
-            if (alunosMenu) alunosMenu.textContent = 'Estudantes & Turmas';
-            const matrizMenu = document.querySelector('.menu-item[data-target="matriz-descritores"] span');
-            if (matrizMenu) matrizMenu.textContent = 'Matriz de Descritores';
-            const provasMenu = document.querySelector('.menu-item[data-target="aplicacao-provas"] span');
-            if (provasMenu) provasMenu.textContent = 'Aplicação de Provas';
-            const metasMenu = document.querySelector('.menu-item[data-target="metas-ideb"] span');
-            if (metasMenu) metasMenu.textContent = 'Metas Municipais';
-
-            // Sidebar User Card
-            if (activeNetworkLabel) activeNetworkLabel.textContent = 'Administração TI / DPO';
+            sidebarMenu.innerHTML = `
+                <div class="menu-group">
+                    <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Gestão da Unidade Escolar</span>
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <a href="javascript:void(0)" onclick="switchTab('dashboard'); return false;" class="menu-item ${currentTab === 'dashboard' ? 'active' : ''}" data-target="dashboard">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                            <span>Monitoramento da Escola</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="switchTab('escolas-panel'); return false;" class="menu-item ${currentTab === 'escolas-panel' ? 'active' : ''}" data-target="escolas-panel">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 8-4 8 4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="M18 5v17"/><path d="M6 5v17"/></svg>
+                            <span>Desempenho por Turma</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="switchTab('relatorios-monitoramento'); return false;" class="menu-item ${currentTab === 'relatorios-monitoramento' ? 'active' : ''}" data-target="relatorios-monitoramento">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+                            <span>Evolução dos Simulados</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="switchTab('matriz-descritores'); return false;" class="menu-item ${currentTab === 'matriz-descritores' ? 'active' : ''}" data-target="matriz-descritores">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
+                            <span>Matriz de Descritores (BNCC)</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="switchTab('metas-ideb'); return false;" class="menu-item ${currentTab === 'metas-ideb' ? 'active' : ''}" data-target="metas-ideb">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                            <span>Acompanhamento de Metas (PDE)</span>
+                        </a>
+                    </div>
+                </div>
+            `;
+        } 
+        // 3. MASTER ADMIN (Governança & TI)
+        else if (userRole === 'Master Admin') {
+            if (activeNetworkLabel) activeNetworkLabel.textContent = '⚙️ Administração TI / DPO';
             if (userProfileName) userProfileName.textContent = 'Administrador TI';
             if (userProfileRole) userProfileRole.textContent = 'DPO & Infraestrutura';
             if (userProfileAvatar) {
                 userProfileAvatar.textContent = 'AD';
                 userProfileAvatar.style.backgroundColor = '#e11d48';
             }
-
-        } else {
-            // SEMED (Gestor da Rede)
-            const allowedTabs = ['dashboard', 'escolas-panel', 'alunos-panel', 'metas-ideb', 'ideb-comparativo', 'matriz-descritores', 'cronograma-habilidades', 'criar-avaliacoes', 'aplicacao-provas', 'questions', 'ai-playground', 'gestao-pedagogica', 'biblioteca-recursos'];
-            allMenuItems.forEach(item => {
-                const target = item.getAttribute('data-target');
-                item.style.display = (target === 'doc-tecnica' || target === 'admin-panel') ? 'none' : 'flex';
-            });
-
-            // Restore Standard Labels
-            const dashMenu = document.querySelector('.menu-item[data-target="dashboard"] span');
-            if (dashMenu) dashMenu.textContent = 'Painel Executivo';
-            const escolasMenu = document.querySelector('.menu-item[data-target="escolas-panel"] span');
-            if (escolasMenu) escolasMenu.textContent = 'Escolas da Rede';
-            const alunosMenu = document.querySelector('.menu-item[data-target="alunos-panel"] span');
-            if (alunosMenu) alunosMenu.textContent = 'Estudantes & Turmas';
-            const matrizMenu = document.querySelector('.menu-item[data-target="matriz-descritores"] span');
-            if (matrizMenu) matrizMenu.textContent = 'Matriz de Descritores';
-            const provasMenu = document.querySelector('.menu-item[data-target="aplicacao-provas"] span');
-            if (provasMenu) provasMenu.textContent = 'Aplicação de Provas';
-            const metasMenu = document.querySelector('.menu-item[data-target="metas-ideb"] span');
-            if (metasMenu) metasMenu.textContent = 'Metas Municipais';
-
-            // Sidebar User Card
-            if (activeNetworkLabel) activeNetworkLabel.textContent = 'SEMED Gonçalves Dias - MA';
+            renderFullNetworkSidebar(sidebarMenu, currentTab, true);
+        } 
+        // 4. SEMED (Gestor da Rede Municipal)
+        else {
+            if (activeNetworkLabel) activeNetworkLabel.textContent = '🏛️ SEMED Gonçalves Dias - MA';
             if (userProfileName) userProfileName.textContent = 'Secretaria de Educação';
             if (userProfileRole) userProfileRole.textContent = 'Gestão Executiva SEMED';
             if (userProfileAvatar) {
                 userProfileAvatar.textContent = 'SM';
                 userProfileAvatar.style.backgroundColor = '#9333ea';
             }
+            renderFullNetworkSidebar(sidebarMenu, currentTab, false);
         }
 
-        if (window.lucide) {
-            lucide.createIcons({ attrs: { class: 'lucide' } });
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+            try { window.lucide.createIcons({ attrs: { class: 'lucide' } }); } catch(e) {}
         }
     }
     window.updateMenuVisibilityByRole = updateMenuVisibilityByRole;
