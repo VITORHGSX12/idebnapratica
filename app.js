@@ -16998,50 +16998,7 @@ function closeStudentProficiencyCalcModal() {
 }
 window.closeStudentProficiencyCalcModal = closeStudentProficiencyCalcModal;
 
-// Modificar renderDbSchools para ter o botão 'Ver Escola' acionando openSchoolDetailView
-window.renderDbSchools = function renderDbSchools() {
-    const tbody = document.getElementById('db-schools-table-body');
-    if (!tbody) return;
 
-    const schools = window.OFFICIAL_NETWORK_SCHOOLS || [];
-    const searchVal = ((document.getElementById('db-school-search') || {}).value || '').toLowerCase().trim();
-
-    const filtered = schools.filter(s => {
-        if (!searchVal) return true;
-        return (s.nome || '').toLowerCase().includes(searchVal) ||
-               (s.inep || '').includes(searchVal) ||
-               (s.director || '').toLowerCase().includes(searchVal);
-    });
-
-    if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="padding:24px; text-align:center; color:var(--text-muted);">Nenhuma escola encontrada com os filtros atuais.</td></tr>';
-        return;
-    }
-
-    tbody.innerHTML = filtered.map(s => {
-        return `
-            <tr style="border-bottom: 1px solid var(--border-color); transition: background 0.15s;">
-                <td style="padding: 14px 20px;">
-                    <div style="font-weight: 700; color: var(--text-primary);">${s.nome}</div>
-                    <div style="font-size: 0.75rem; color: var(--text-muted);">Rede Municipal • Gonçalves Dias</div>
-                </td>
-                <td style="padding: 14px 16px; font-family: monospace; font-weight: 600; color: #6366f1;">${s.inep}</td>
-                <td style="padding: 14px 16px;">
-                    <span style="font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 10px; background: ${s.zone === 'Sede Urbana' ? 'rgba(59, 130, 246, 0.12)' : 'rgba(16, 185, 129, 0.12)'}; color: ${s.zone === 'Sede Urbana' ? '#3b82f6' : '#10b981'};">${s.zone}</span>
-                </td>
-                <td style="padding: 14px 16px; color: var(--text-primary); font-weight: 500;">${s.director}</td>
-                <td style="padding: 14px 16px; color: var(--text-secondary);">${s.phone || '-'}</td>
-                <td style="padding: 14px 20px; text-align: center;">
-                    <button onclick="openSchoolDetailView('${s.nome.replace(/'/g, "\\'")}', '${s.inep}', '${s.zone}', '${s.phone}', '${s.director.replace(/'/g, "\\'")}')" class="btn btn-outline" style="font-size: 0.78rem; font-weight: 700; padding: 5px 12px; display: inline-flex; align-items: center; gap: 5px; color: #6366f1; border-color: rgba(99, 102, 241, 0.3);">
-                        <i data-lucide="eye" style="width: 14px; height: 14px;"></i> Ver Escola
-                    </button>
-                </td>
-            </tr>
-        `;
-    }).join('');
-
-    safeCreateIcons();
-};
 
 
 
