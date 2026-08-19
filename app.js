@@ -998,10 +998,9 @@ function initApp() {
 
         // Trigger specific actions when switching tabs
         if (targetTab === 'dashboard') {
+            if (typeof renderDashboardComplete === 'function') renderDashboardComplete();
             if (typeof recalculateNetworkStats === 'function') recalculateNetworkStats();
             if (typeof renderHeatmapGrid === 'function') renderHeatmapGrid();
-            if (typeof renderRiskGoalsTable === 'function') renderRiskGoalsTable();
-            if (typeof renderDashboardPriorityDescriptors === 'function') renderDashboardPriorityDescriptors();
         } else if (targetTab === 'doc-tecnica') {
             if (typeof renderMermaidDiagram === 'function') renderMermaidDiagram();
         } else if (targetTab === 'cronograma-habilidades') {
@@ -1017,9 +1016,6 @@ function initApp() {
             if (typeof renderDbStudents === 'function') renderDbStudents();
         } else if (targetTab === 'escolas-panel') {
             if (typeof renderDbSchools === 'function') renderDbSchools();
-        if (typeof renderDashboardComplete === 'function') renderDashboardComplete();
-    if (typeof renderDashboardPriorityDescriptors === "function") renderDashboardPriorityDescriptors();
-    if (typeof renderDashboardSchoolsRanking === "function") renderDashboardSchoolsRanking();
         } else if (targetTab === 'biblioteca-recursos') {
             if (typeof renderPedagogicLibrary === 'function') renderPedagogicLibrary();
         } else if (targetTab === 'criar-avaliacoes') {
