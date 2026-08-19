@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <link rel="stylesheet" href="styles.css?v=7ca4607f7c_mt03l86s">
+    <link rel="stylesheet" href="styles.css?v=b736584764_mt03t57u">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -467,12 +467,18 @@
                         <p id="page-subtitle" class="text-muted">Visão geral do desempenho pedagógico e estatísticas operacionais da rede.</p>
                     </div>
                 </div>
-                <div class="navbar-right" style="display: flex; align-items: center; gap: 8px;">
+                <div class="navbar-right" style="display: flex; align-items: center; gap: 10px;">
                     <!-- Cloud Connection Status Indicator (Hidden as requested) -->
                     <div id="cloud-sync-indicator" style="display: none !important;">
                         <span id="cloud-sync-dot"></span>
                         <span id="cloud-sync-text"></span>
                     </div>
+
+                    <!-- Botão de Perfil do Usuário no Topo -->
+                    <button type="button" class="header-user-btn" id="btn-header-user-profile" onclick="openUserProfileModal();" title="Ver e Editar Meu Perfil">
+                        <div class="header-user-avatar" id="header-user-avatar">🧑‍💼</div>
+                        <span class="header-user-name" id="header-user-name">Gestor da Rede</span>
+                    </button>
 
                     <!-- Notification Button & Dropdown -->
                     <div style="position: relative;">
@@ -495,6 +501,11 @@
                     <!-- Theme Toggle -->
                     <button class="btn btn-icon" id="theme-toggle" title="Alternar Tema" style="width: 38px; height: 38px;">
                         <i data-lucide="moon"></i>
+                    </button>
+
+                    <!-- Botão Deslogar / Sair -->
+                    <button type="button" class="btn btn-icon" id="btn-header-logout" onclick="handleSystemLogout();" title="Deslogar do Sistema" style="width: 38px; height: 38px; color: #ef4444; border-color: rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.08);">
+                        <i data-lucide="log-out" style="width: 17px; height: 17px;"></i>
                     </button>
                 </div>
             </header>
@@ -540,7 +551,12 @@
                         </div>
                     </div>
 
-                                        <div id="dashboard-main-content">
+                    <div id="dashboard-main-content">
+                        <!-- BANNER EM DESTAQUE: BOAS-VINDAS PERSONALIZADA AO USUÁRIO -->
+                        <div id="dashboard-welcome-banner" class="dashboard-welcome-banner">
+                            <!-- Injetado dinamicamente via renderDashboardWelcomeBanner() -->
+                        </div>
+
                         <!-- Metric Cards Grid (Dynamic) -->
                         <div class="metrics-grid" id="dashboard-metric-cards-container">
                             <!-- Injetado dinamicamente via renderDashboardMetricCards() -->
@@ -6036,7 +6052,113 @@
         </div>
     </div>
 
-<!-- Script de Limpeza de Cache de Service Workers Antigos -->
+    <!-- =========================================================================
+         MODAL DE GERENCIAMENTO E EDIÇÃO DE PERFIL DO USUÁRIO
+         ========================================================================= -->
+    <div id="modal-user-profile" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(6px); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
+        <div class="modal-card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 520px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35); overflow: hidden; animation: modalFadeIn 0.2s ease-out;">
+            <!-- Header do Modal -->
+            <div style="padding: 20px 24px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(139, 92, 246, 0.04) 100%);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(99, 102, 241, 0.15); color: #6366f1; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                        👤
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">Meu Perfil de Usuário</h3>
+                        <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">Personalize seu nome, cargo e foto de exibição no sistema.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeUserProfileModal();" class="btn-icon" style="background: none; border: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer; padding: 4px;" title="Fechar">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Corpo do Modal / Formulário -->
+            <form id="form-user-profile" onsubmit="handleSaveUserProfile(event);" style="padding: 24px; display: flex; flex-direction: column; gap: 18px;">
+                <!-- Seção 1: Escolha do Avatar / Foto -->
+                <div>
+                    <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+                        Avatar / Foto de Perfil
+                    </label>
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <div id="profile-avatar-preview" style="width: 64px; height: 64px; border-radius: 18px; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; border: 3px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35); flex-shrink: 0; overflow: hidden;">
+                            🧑‍💼
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px;">Selecione um ícone rápido ou insira uma URL de foto:</div>
+                            <div class="avatar-selector-grid" id="avatar-emojis-container">
+                                <button type="button" class="avatar-option-btn active" data-icon="🧑‍💼" onclick="selectProfileAvatar('🧑‍💼', this)">🧑‍💼</button>
+                                <button type="button" class="avatar-option-btn" data-icon="👩‍💼" onclick="selectProfileAvatar('👩‍💼', this)">👩‍💼</button>
+                                <button type="button" class="avatar-option-btn" data-icon="👨‍🏫" onclick="selectProfileAvatar('👨‍🏫', this)">👨‍🏫</button>
+                                <button type="button" class="avatar-option-btn" data-icon="👩‍🏫" onclick="selectProfileAvatar('👩‍🏫', this)">👩‍🏫</button>
+                                <button type="button" class="avatar-option-btn" data-icon="👨‍💻" onclick="selectProfileAvatar('👨‍💻', this)">👨‍💻</button>
+                                <button type="button" class="avatar-option-btn" data-icon="🏛️" onclick="selectProfileAvatar('🏛️', this)">🏛️</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campo Opcional: URL da Foto Personalizada -->
+                <div>
+                    <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">
+                        Foto Personalizada (URL da Imagem) <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 500;">(Opcional)</span>
+                    </label>
+                    <input type="url" id="profile-input-photo-url" class="form-input-text" placeholder="https://exemplo.com/sua-foto.jpg" style="width: 100%; font-size: 0.84rem; padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary);" oninput="previewProfilePhotoUrl(this.value)">
+                </div>
+
+                <!-- Campo: Nome Completo -->
+                <div>
+                    <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">
+                        Nome de Exibição / Usuário <span style="color: #ef4444;">*</span>
+                    </label>
+                    <input type="text" id="profile-input-name" class="form-input-text" required placeholder="Ex: Maria Eduarda Silva" style="width: 100%; font-size: 0.9rem; font-weight: 600; padding: 9px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary);">
+                    <span id="err-profile-name" style="display: none; color: #ef4444; font-size: 0.72rem; margin-top: 3px;">Informe seu nome de usuário.</span>
+                </div>
+
+                <!-- Campo: Cargo / Função -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">
+                            Cargo / Função
+                        </label>
+                        <select id="profile-input-role" class="form-select" style="width: 100%; font-size: 0.84rem; padding: 8px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); font-weight: 600;">
+                            <option value="Gestor(a) da Rede">Gestor(a) da Rede</option>
+                            <option value="Secretário(a) de Educação">Secretário(a) de Educação</option>
+                            <option value="Diretor(a) Escolar">Diretor(a) Escolar</option>
+                            <option value="Coordenador(a) Pedagógico(a)">Coordenador(a) Pedagógico(a)</option>
+                            <option value="Professor(a)">Professor(a)</option>
+                            <option value="Administrador(a) do Sistema">Administrador(a) do Sistema</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">
+                            E-mail Institucional
+                        </label>
+                        <input type="email" id="profile-input-email" class="form-input-text" placeholder="semed@goncalvesdias.ma.gov.br" style="width: 100%; font-size: 0.84rem; padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary);">
+                    </div>
+                </div>
+
+                <!-- Footer do Modal -->
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 10px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+                    <button type="button" onclick="handleSystemLogout();" class="btn btn-outline" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.06); font-size: 0.8rem; font-weight: 700; padding: 0 14px; height: 38px; display: inline-flex; align-items: center; gap: 6px;">
+                        <span>🚪 Deslogar</span>
+                    </button>
+
+                    <div style="display: flex; gap: 8px;">
+                        <button type="button" onclick="closeUserProfileModal();" class="btn btn-outline" style="padding: 0 16px; height: 38px; font-weight: 600; font-size: 0.82rem;">
+                            Cancelar
+                        </button>
+                        <button type="submit" id="btn-save-user-profile" class="btn btn-primary" style="padding: 0 20px; height: 38px; font-weight: 700; font-size: 0.84rem; background: linear-gradient(135deg, #4f46e5, #6366f1); border: none; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35); display: flex; align-items: center; gap: 6px;">
+                            <span>Salvar Alterações</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script de Limpeza de Cache de Service Workers Antigos -->
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.getRegistrations().then(function(registrations) {
@@ -6053,13 +6175,13 @@
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=mt03l86s"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=mt03l86s"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=mt03l86s"></script>
-    <script src="ideb_publico_db.js?v=mt03l86s"></script>
-    <script src="alunos_db.js?v=mt03l86s"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=mt03t57u"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=mt03t57u"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=mt03t57u"></script>
+    <script src="ideb_publico_db.js?v=mt03t57u"></script>
+    <script src="alunos_db.js?v=mt03t57u"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=93057c0398_mt03l86s"></script>
+    <script src="app.js?v=664cc340fa_mt03t57u"></script>
 </body>
 </html>
