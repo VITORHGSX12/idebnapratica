@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <link rel="stylesheet" href="styles.css?v=7ca4607f7c_mt019qq5">
+    <link rel="stylesheet" href="styles.css?v=7ca4607f7c_mt023snk">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -734,7 +734,7 @@
                                                 <th style="padding: 12px 16px; text-align: center;">AÇÃO</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody id="dashboard-schools-ranking-body">
                                             <tr style="border-bottom: 1px solid var(--border-color); height: 48px;">
                                                 <td style="padding: 10px 16px; font-weight: 700; color: var(--text-primary);">UNIDADE INTEGRADA JOSE GONCALVES DIAS</td>
                                                 <td style="padding: 10px 16px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">21045233</td>
@@ -5700,6 +5700,62 @@
         </div>
     </div>
 
+    <!-- ==================== MODAL: VINCULAR / EDITAR PROFESSOR NA ESCOLA ==================== -->
+    <div id="modal-create-teacher" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 20px;">
+        <div class="modal-container card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 520px; padding: 0; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+            <div style="padding: 18px 24px; border-bottom: 1px solid var(--border-color); background: var(--bg-primary); display: flex; justify-content: space-between; align-items: center;">
+                <h3 id="modal-teacher-title" style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">+ Vincular Professor à Escola</h3>
+                <button type="button" onclick="closeModalTeacher();" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">✕</button>
+            </div>
+            <form id="form-teacher" onsubmit="handleSaveTeacher(event);" style="padding: 24px; display: flex; flex-direction: column; gap: 14px;">
+                <input type="hidden" id="teacher-form-id">
+                <input type="hidden" id="teacher-form-school">
+
+                <div>
+                    <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">Nome Completo do Docente *</label>
+                    <input type="text" id="teacher-form-name" required placeholder="Ex: Profa. Silvana Ferreira" class="form-input-text" style="width: 100%; height: 38px; padding: 0 10px;">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">Componente Curricular *</label>
+                        <select id="teacher-form-subject" required class="form-select" style="width: 100%; height: 38px;">
+                            <option value="Língua Portuguesa" selected>Língua Portuguesa</option>
+                            <option value="Matemática">Matemática</option>
+                            <option value="Polivalente (Anos Iniciais)">Polivalente (Anos Iniciais)</option>
+                            <option value="Ciências da Natureza">Ciências da Natureza</option>
+                            <option value="História & Geografia">História & Geografia</option>
+                            <option value="Educação Física / Artes">Educação Física / Artes</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">Situação Funcional *</label>
+                        <select id="teacher-form-status" required class="form-select" style="width: 100%; height: 38px;">
+                            <option value="Ativo" selected>Ativo / Em Regência</option>
+                            <option value="Licença">Licença Médica / Prêmio</option>
+                            <option value="Readaptado">Readaptado / Apoio</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">Turmas de Atuação na Escola</label>
+                    <input type="text" id="teacher-form-classes" placeholder="Ex: 2º Ano A, 5º Ano A" class="form-input-text" style="width: 100%; height: 38px; padding: 0 10px;">
+                </div>
+
+                <div>
+                    <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">Telefone / WhatsApp de Contato</label>
+                    <input type="text" id="teacher-form-phone" placeholder="(99) 99999-9999" class="form-input-text" style="width: 100%; height: 38px; padding: 0 10px;">
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; padding-top: 14px; border-top: 1px solid var(--border-color);">
+                    <button type="button" onclick="closeModalTeacher();" class="btn btn-outline" style="height: 38px; padding: 0 16px;">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" style="height: 38px; padding: 0 20px; font-weight: 700; background: #6366f1; border-color: #6366f1;">Salvar Professor</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- ==================== MODAL: GERENCIAR E VINCULAR ALUNOS À TURMA ==================== -->
     <div id="modal-manage-class-students" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 20px;">
         <div class="modal-container card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 680px; padding: 0; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-height: 90vh; display: flex; flex-direction: column;">
@@ -6184,13 +6240,13 @@
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=mt019qq5"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=mt019qq5"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=mt019qq5"></script>
-    <script src="ideb_publico_db.js?v=mt019qq5"></script>
-    <script src="alunos_db.js?v=mt019qq5"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=mt023snk"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=mt023snk"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=mt023snk"></script>
+    <script src="ideb_publico_db.js?v=mt023snk"></script>
+    <script src="alunos_db.js?v=mt023snk"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=2d0adfe60b_mt019qq5"></script>
+    <script src="app.js?v=0e520ebd10_mt023snk"></script>
 </body>
 </html>

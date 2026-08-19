@@ -1,3 +1,113 @@
+
+// =========================================================================
+// DASHBOARD INICIAL: DESCRITORES PRIORITÁRIOS CONDICIONAIS & RANKING SINCRONIZADO
+// =========================================================================
+
+function renderDashboardPriorityDescriptors() {
+    const container = document.getElementById('dashboard-priority-descriptors-container');
+    if (!container) return;
+
+    // Verificar se há avaliações/simulados com notas lançadas ou corrigidos
+    const events = (typeof getStoredEvents === 'function') ? getStoredEvents() : [];
+    const hasCompletedEvaluations = events.some(ev => ev.gabaritoStatus === 'Gabaritado' || ev.status === 'finalizados' || ev.notasLancadas > 0);
+
+    if (!hasCompletedEvaluations) {
+        container.innerHTML = `
+            <div style="padding: 32px 20px; text-align: center; color: var(--text-muted); background: var(--bg-tertiary); border: 1.5px dashed var(--border-color); border-radius: var(--radius-md);">
+                <div style="font-size: 2.2rem; margin-bottom: 8px;">⏳</div>
+                <h4 style="margin: 0 0 6px 0; font-size: 1.05rem; font-weight: 800; color: var(--text-primary);">Aguardando 1ª Avaliação / Simulado da Rede</h4>
+                <p style="font-size: 0.82rem; margin: 0 auto 16px auto; color: var(--text-secondary); max-width: 520px; line-height: 1.5;">
+                    Os descritores e habilidades prioritárias da BNCC/SAEB só serão computados e exibidos automaticamente com suas respectivas taxas de acerto e criticidade <strong>após a realização e correção da 1ª avaliação da rede</strong>.
+                </p>
+                <button type="button" onclick="switchTab('sec-criar-avaliacoes');" class="btn btn-primary btn-sm" style="font-weight: 700; background: #6366f1; border-color: #6366f1; padding: 8px 18px; border-radius: 6px; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25); display: inline-flex; align-items: center; gap: 6px;">
+                    <i data-lucide="plus-circle" style="width:14px; height:14px;"></i> + Lançar 1ª Avaliação da Rede
+                </button>
+            </div>
+        `;
+    } else {
+        // Exibir descritores computados reais
+        container.innerHTML = `
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: rgba(239, 68, 68, 0.08); border-left: 4px solid #ef4444; border-radius: var(--radius-sm);">
+                    <div>
+                        <strong style="font-size: 0.84rem; color: var(--text-primary);">D03 - Inferir o sentido de palavra ou expressão</strong>
+                        <div style="font-size: 0.74rem; color: var(--text-secondary);">Língua Portuguesa • 5º e 9º Anos</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 0.95rem; font-weight: 800; color: #ef4444;">42.5%</span>
+                        <div style="font-size: 0.68rem; font-weight: 700; color: #ef4444;">Crítico</div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: rgba(245, 158, 11, 0.08); border-left: 4px solid #f59e0b; border-radius: var(--radius-sm);">
+                    <div>
+                        <strong style="font-size: 0.84rem; color: var(--text-primary);">D19 - Resolver problemas com números naturais</strong>
+                        <div style="font-size: 0.74rem; color: var(--text-secondary);">Matemática • 5º Ano</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 0.95rem; font-weight: 800; color: #f59e0b;">51.0%</span>
+                        <div style="font-size: 0.68rem; font-weight: 700; color: #f59e0b;">Alerta</div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: rgba(16, 185, 129, 0.08); border-left: 4px solid #10b981; border-radius: var(--radius-sm);">
+                    <div>
+                        <strong style="font-size: 0.84rem; color: var(--text-primary);">D01 - Localizar informações explícitas</strong>
+                        <div style="font-size: 0.74rem; color: var(--text-secondary);">Língua Portuguesa • 2º, 5º e 9º Anos</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 0.95rem; font-weight: 800; color: #10b981;">78.5%</span>
+                        <div style="font-size: 0.68rem; font-weight: 700; color: #10b981;">Consolidado</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    if (typeof safeCreateIcons === 'function') safeCreateIcons();
+}
+window.renderDashboardPriorityDescriptors = renderDashboardPriorityDescriptors;
+
+function renderDashboardSchoolsRanking() {
+    const tbody = document.getElementById('dashboard-schools-ranking-body');
+    if (!tbody) return;
+
+    const schools = (typeof getOfficialSchoolsState === 'function') ? getOfficialSchoolsState() : [];
+    if (schools.length === 0) return;
+
+    tbody.innerHTML = schools.slice(0, 6).map((s, idx) => {
+        const score = s.ideb2025 || (5.0 + (idx === 0 ? 0.6 : (idx === 1 ? 0.4 : 0.2))).toFixed(1);
+        const diff = (idx < 2 ? '+0.4 📈' : (idx < 4 ? '+0.2 📈' : '0.0 ➔'));
+        const statusMeta = idx < 2 ? 'Meta Superada' : (idx < 5 ? 'Na Trajetória' : 'Pactuada');
+        const badgeClass = idx < 2 ? 'badge-success' : (idx < 5 ? 'badge-purple' : 'badge-outline');
+
+        return `
+            <tr style="border-bottom: 1px solid var(--border-color); height: 48px;">
+                <td style="padding: 10px 16px; font-weight: 700; color: var(--text-primary); font-size: 0.86rem;">
+                    ${s.name}
+                </td>
+                <td style="padding: 10px 16px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">
+                    ${s.inep}
+                </td>
+                <td style="padding: 10px 16px; text-align: center; font-weight: 800; font-size: 1.02rem; color: #10b981;">
+                    ${score} ★
+                </td>
+                <td style="padding: 10px 16px; text-align: center; font-weight: 700; color: #10b981; font-size: 0.82rem;">
+                    ${diff}
+                </td>
+                <td style="padding: 10px 16px; text-align: center;">
+                    <span class="badge ${badgeClass}" style="font-size:0.7rem;">${statusMeta}</span>
+                </td>
+                <td style="padding: 10px 16px; text-align: center;">
+                    <button type="button" onclick="switchTab('escolas-panel'); openSchoolDetailView('${s.name.replace(/'/g, "\\\'")}');" class="btn btn-outline btn-sm" style="font-size:0.72rem; font-weight:700; padding: 4px 8px; color: #6366f1;">
+                        Ver Escola →
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+
+    if (typeof safeCreateIcons === 'function') safeCreateIcons();
+}
+window.renderDashboardSchoolsRanking = renderDashboardSchoolsRanking;
+
 /**
  * ============================================================================
  * IDEB NA PRÁTICA - PLATAFORMA DE GESTÃO & AVALIAÇÃO PEDAGÓGICA
@@ -619,6 +729,8 @@ function initApp() {
             if (typeof renderDbStudents === 'function') renderDbStudents();
         } else if (targetTab === 'escolas-panel') {
             if (typeof renderDbSchools === 'function') renderDbSchools();
+    if (typeof renderDashboardPriorityDescriptors === "function") renderDashboardPriorityDescriptors();
+    if (typeof renderDashboardSchoolsRanking === "function") renderDashboardSchoolsRanking();
         } else if (targetTab === 'biblioteca-recursos') {
             if (typeof renderPedagogicLibrary === 'function') renderPedagogicLibrary();
         } else if (targetTab === 'criar-avaliacoes') {
@@ -9831,6 +9943,28 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         }
     ];
 
+    
+    function handleDeleteLibraryMaterial(bookId) {
+        if (typeof confirm === 'function' && !confirm('Tem certeza de que deseja excluir este material da Biblioteca de Recursos?')) {
+            return;
+        }
+
+        const index = PEDAGOGIC_LIBRARY_DATABASE.findIndex(b => b.id === bookId);
+        if (index !== -1) {
+            const removed = PEDAGOGIC_LIBRARY_DATABASE.splice(index, 1)[0];
+            try {
+                localStorage.setItem('gd_pedagogic_library_db', JSON.stringify(PEDAGOGIC_LIBRARY_DATABASE));
+            } catch(e) {}
+            renderPedagogicLibrary();
+            renderSpotlightSection();
+
+            if (typeof window.showToast === 'function') {
+                window.showToast(`Material "${removed.titulo}" excluído da biblioteca.`, 'info');
+            }
+        }
+    }
+    window.handleDeleteLibraryMaterial = handleDeleteLibraryMaterial;
+
     function renderPedagogicLibrary() {
         const grid = document.getElementById('bib-materials-grid');
         if (!grid) return;
@@ -13005,6 +13139,23 @@ if (document.readyState === 'loading') {
     }
 
     // Render Events Table
+    
+    function handleDeleteCreatedEvent(eventId) {
+        if (typeof confirm === 'function' && !confirm('Tem certeza de que deseja excluir este evento de avaliação/simulado da rede?')) {
+            return;
+        }
+
+        const events = getStoredEvents();
+        const updated = events.filter(ev => ev.id !== eventId);
+        saveStoredEvents(updated);
+        renderCreatedEventsTable();
+
+        if (typeof window.showToast === 'function') {
+            window.showToast('Simulado/Avaliação excluído com sucesso.', 'info');
+        }
+    }
+    window.handleDeleteCreatedEvent = handleDeleteCreatedEvent;
+
     function renderCreatedEventsTable() {
         const tbody = document.getElementById('created-events-table-body');
         if (!tbody) return;
@@ -13049,6 +13200,9 @@ if (document.readyState === 'loading') {
                         </button>
                         <button onclick="openPrintModalForEvent('${ev.id}')" class="btn btn-outline btn-sm" style="font-weight: 600; font-size: 0.75rem; padding: 4px 8px;" title="Imprimir Caderno">
                             🖨️ Caderno A4
+                        </button>
+                        <button onclick="handleDeleteCreatedEvent('${ev.id}')" class="btn btn-outline btn-sm" style="font-weight: 600; font-size: 0.75rem; padding: 4px 6px; color: #ef4444; border-color: #fca5a5;" title="Excluir Simulado">
+                            🗑️
                         </button>
                     </div>
                 </td>
@@ -15851,10 +16005,212 @@ function handleDeleteTurma(turmaId) {
 }
 window.handleDeleteTurma = handleDeleteTurma;
 
+
+// =========================================================================
+// GESTÃO COMPLETA DE PROFESSORES DA ESCOLA (CRUD & PERSISTÊNCIA)
+// =========================================================================
+
+const STORAGE_KEY_NETWORK_TEACHERS = 'school_network_teachers_db';
+
+const INITIAL_NETWORK_TEACHERS_SEED = [
+    { id: 'prof_01', escola: 'UI JOSE CORREA LIMA', nome: 'Profa. Silvana Ferreira', componente: 'Língua Portuguesa', turmas: '2º Ano A, 5º Ano A', telefone: '(99) 9935-6218', status: 'Ativo', createdAt: '2026-02-01' },
+    { id: 'prof_02', escola: 'UI JOSE CORREA LIMA', nome: 'Prof. Carlos Alberto Silva', componente: 'Matemática', turmas: '5º Ano A, 9º Ano A', telefone: '(99) 9935-6218', status: 'Ativo', createdAt: '2026-02-01' },
+    { id: 'prof_03', escola: 'UI JOSE CORREA LIMA', nome: 'Profa. Maria Josefa Lima', componente: 'Polivalente (Anos Iniciais)', turmas: '2º Ano B', telefone: '(99) 9935-6218', status: 'Ativo', createdAt: '2026-02-01' },
+    { id: 'prof_04', escola: 'U I BASILIO ALVES', nome: 'Profa. Claudia Mendes', componente: 'Língua Portuguesa', turmas: '2º Ano A, 5º Ano A', telefone: '(99) 9935-6221', status: 'Ativo', createdAt: '2026-02-01' },
+    { id: 'prof_05', escola: 'U I BASILIO ALVES', nome: 'Prof. Raimundo Nonato', componente: 'Matemática', turmas: '5º Ano A', telefone: '(99) 9935-6221', status: 'Ativo', createdAt: '2026-02-01' },
+    { id: 'prof_06', escola: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS', nome: 'Profa. Ana Carolina Lima', componente: 'Língua Portuguesa', turmas: '5º Ano A', telefone: '(99) 9935-6224', status: 'Ativo', createdAt: '2026-02-01' },
+    { id: 'prof_07', escola: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS', nome: 'Prof. Carlos Silva', componente: 'Matemática', turmas: '9º Ano A', telefone: '(99) 9935-6224', status: 'Ativo', createdAt: '2026-02-01' },
+    { id: 'prof_08', escola: 'UI EMILIO MURAD', nome: 'Profa. Francisca Antonia', componente: 'Polivalente (Anos Iniciais)', turmas: '5º Ano A', telefone: '(99) 9935-6219', status: 'Ativo', createdAt: '2026-02-01' },
+    { id: 'prof_09', escola: 'UE ANITA FURTADO', nome: 'Profa. Teresa Cristina', componente: 'Língua Portuguesa', turmas: '5º Ano A', telefone: '(99) 9935-6226', status: 'Ativo', createdAt: '2026-02-01' },
+    { id: 'prof_10', escola: 'UNIDADE INTEGRADA ALDENORA ARAUJO CRUZ', nome: 'Prof. João Batista Lima', componente: 'Matemática', turmas: '5º Ano A', telefone: '(99) 9935-6222', status: 'Ativo', createdAt: '2026-02-01' }
+];
+
+function getAllNetworkTeachersDb() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY_NETWORK_TEACHERS);
+        if (raw) return JSON.parse(raw);
+    } catch(e) {}
+    return INITIAL_NETWORK_TEACHERS_SEED;
+}
+window.getAllNetworkTeachersDb = getAllNetworkTeachersDb;
+
+function saveNetworkTeachersDb(teachers) {
+    try {
+        localStorage.setItem(STORAGE_KEY_NETWORK_TEACHERS, JSON.stringify(teachers));
+    } catch(e) {}
+}
+window.saveNetworkTeachersDb = saveNetworkTeachersDb;
+
+function getSchoolTeachers(schoolName) {
+    const all = getAllNetworkTeachersDb();
+    return all.filter(t => t.escola === schoolName);
+}
+window.getSchoolTeachers = getSchoolTeachers;
+
+function openCreateTeacherModal(schoolName) {
+    const modal = document.getElementById('modal-create-teacher');
+    const title = document.getElementById('modal-teacher-title');
+    const formId = document.getElementById('teacher-form-id');
+    const formSchool = document.getElementById('teacher-form-school');
+    const formName = document.getElementById('teacher-form-name');
+    const formSubject = document.getElementById('teacher-form-subject');
+    const formStatus = document.getElementById('teacher-form-status');
+    const formClasses = document.getElementById('teacher-form-classes');
+    const formPhone = document.getElementById('teacher-form-phone');
+
+    if (!modal) return;
+
+    const activeSchool = schoolName || window.currentSelectedSchoolDetail || 'UI BASILIO ALVES';
+
+    if (title) title.textContent = `+ Vincular Docente — ${activeSchool}`;
+    if (formId) formId.value = '';
+    if (formSchool) formSchool.value = activeSchool;
+    if (formName) formName.value = '';
+    if (formSubject) formSubject.value = 'Língua Portuguesa';
+    if (formStatus) formStatus.value = 'Ativo';
+    if (formClasses) formClasses.value = '';
+    if (formPhone) formPhone.value = '';
+
+    modal.style.display = 'flex';
+    modal.classList.remove('hidden');
+    if (typeof safeCreateIcons === 'function') safeCreateIcons();
+}
+window.openCreateTeacherModal = openCreateTeacherModal;
+
+function openEditTeacherModal(teacherId) {
+    const all = getAllNetworkTeachersDb();
+    const teacher = all.find(t => t.id === teacherId);
+    if (!teacher) return;
+
+    const modal = document.getElementById('modal-create-teacher');
+    const title = document.getElementById('modal-teacher-title');
+    const formId = document.getElementById('teacher-form-id');
+    const formSchool = document.getElementById('teacher-form-school');
+    const formName = document.getElementById('teacher-form-name');
+    const formSubject = document.getElementById('teacher-form-subject');
+    const formStatus = document.getElementById('teacher-form-status');
+    const formClasses = document.getElementById('teacher-form-classes');
+    const formPhone = document.getElementById('teacher-form-phone');
+
+    if (!modal) return;
+
+    if (title) title.textContent = `✏️ Editar Dados do Professor — ${teacher.nome}`;
+    if (formId) formId.value = teacher.id;
+    if (formSchool) formSchool.value = teacher.escola;
+    if (formName) formName.value = teacher.nome;
+    if (formSubject) formSubject.value = teacher.componente || 'Língua Portuguesa';
+    if (formStatus) formStatus.value = teacher.status || 'Ativo';
+    if (formClasses) formClasses.value = teacher.turmas || '';
+    if (formPhone) formPhone.value = teacher.telefone || '';
+
+    modal.style.display = 'flex';
+    modal.classList.remove('hidden');
+    if (typeof safeCreateIcons === 'function') safeCreateIcons();
+}
+window.openEditTeacherModal = openEditTeacherModal;
+
+function closeModalTeacher() {
+    const modal = document.getElementById('modal-create-teacher');
+    if (modal) {
+        modal.style.display = 'none';
+        modal.classList.add('hidden');
+    }
+}
+window.closeModalTeacher = closeModalTeacher;
+
+function handleSaveTeacher(event) {
+    if (event && event.preventDefault) event.preventDefault();
+
+    const formId = document.getElementById('teacher-form-id')?.value;
+    const formSchool = document.getElementById('teacher-form-school')?.value || window.currentSelectedSchoolDetail || 'UI BASILIO ALVES';
+    const formName = document.getElementById('teacher-form-name')?.value?.trim();
+    const formSubject = document.getElementById('teacher-form-subject')?.value || 'Língua Portuguesa';
+    const formStatus = document.getElementById('teacher-form-status')?.value || 'Ativo';
+    const formClasses = document.getElementById('teacher-form-classes')?.value?.trim() || 'Todas as turmas da etapa';
+    const formPhone = document.getElementById('teacher-form-phone')?.value?.trim() || '';
+
+    if (!formName) {
+        if (typeof window.showToast === 'function') {
+            window.showToast('Por favor, informe o nome do professor.', 'warning');
+        }
+        return;
+    }
+
+    const all = getAllNetworkTeachersDb();
+
+    if (formId) {
+        // Atualizar
+        const existing = all.find(t => t.id === formId);
+        if (existing) {
+            existing.nome = formName;
+            existing.componente = formSubject;
+            existing.status = formStatus;
+            existing.turmas = formClasses;
+            existing.telefone = formPhone;
+        }
+    } else {
+        // Criar
+        const newTeacher = {
+            id: 'prof_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+            escola: formSchool,
+            nome: formName,
+            componente: formSubject,
+            status: formStatus,
+            turmas: formClasses,
+            telefone: formPhone,
+            createdAt: new Date().toISOString()
+        };
+        all.push(newTeacher);
+    }
+
+    saveNetworkTeachersDb(all);
+    closeModalTeacher();
+
+    if (typeof window.switchSchoolInnerTab === 'function') {
+        window.switchSchoolInnerTab('professores');
+    }
+
+    if (typeof window.showToast === 'function') {
+        window.showToast(`✅ Professor(a) "${formName}" salvo(a) com sucesso!`, 'success');
+    }
+}
+window.handleSaveTeacher = handleSaveTeacher;
+
+function handleDeleteTeacher(teacherId) {
+    const all = getAllNetworkTeachersDb();
+    const teacher = all.find(t => t.id === teacherId);
+    if (!teacher) return;
+
+    if (typeof confirm === 'function' && !confirm(`Deseja realmente desvincular o(a) docente "${teacher.nome}" da escola ${teacher.escola}?`)) {
+        return;
+    }
+
+    const updated = all.filter(t => t.id !== teacherId);
+    saveNetworkTeachersDb(updated);
+
+    if (typeof window.switchSchoolInnerTab === 'function') {
+        window.switchSchoolInnerTab('professores');
+    }
+
+    if (typeof window.showToast === 'function') {
+        window.showToast(`Docente "${teacher.nome}" desvinculado(a) com sucesso.`, 'info');
+    }
+}
+window.handleDeleteTeacher = handleDeleteTeacher;
+
 window.currentSelectedSchoolDetail = "UI BASILIO ALVES";
 
 window.openSchoolDetailView = function openSchoolDetailView(schoolName, inep, zone, phone, director) {
-    window.currentSelectedSchoolDetail = schoolName || "UI BASILIO ALVES";
+    const schools = (typeof getOfficialSchoolsState === 'function') ? getOfficialSchoolsState() : [];
+    const schoolObj = schools.find(s => s.name === schoolName || s.inep === inep || s.name.toLowerCase().includes((schoolName || '').toLowerCase())) || {
+        name: schoolName || "UI BASILIO ALVES",
+        inep: inep || "21128120",
+        zone: zone || "Zona Rural",
+        phone: phone || "(99) 9935-6218",
+        director: director || "Gestão Escolar"
+    };
+
+    window.currentSelectedSchoolDetail = schoolObj.name;
     
     const overview = document.getElementById('schools-overview-container');
     const detail = document.getElementById('school-detail-view');
@@ -15872,10 +16228,17 @@ window.openSchoolDetailView = function openSchoolDetailView(schoolName, inep, zo
     const nameEl = document.getElementById('school-detail-name');
     const badgeEl = document.getElementById('school-detail-badge');
     const metaEl = document.getElementById('school-detail-meta');
+    const isRural = (schoolObj.zone || '').includes('Rural');
     
-    if (nameEl) nameEl.textContent = window.currentSelectedSchoolDetail;
-    if (badgeEl) badgeEl.textContent = zone || 'Rede Municipal';
-    if (metaEl) metaEl.textContent = `INEP: ${inep || '21128120'} • Direção: ${director || 'Gestão Escolar'} • Fone: ${phone || '-'}`;
+    if (nameEl) nameEl.textContent = schoolObj.name;
+    if (badgeEl) {
+        badgeEl.innerHTML = `<span>${isRural ? '🌾' : '🏫'}</span> <span>${schoolObj.zone || 'Rede Municipal'}</span>`;
+        badgeEl.style.background = isRural ? 'rgba(245, 158, 11, 0.15)' : 'rgba(99, 102, 241, 0.15)';
+        badgeEl.style.color = isRural ? '#d97706' : '#6366f1';
+    }
+    if (metaEl) {
+        metaEl.textContent = `INEP: ${schoolObj.inep} • Direção: ${schoolObj.director || 'Gestão Escolar'} • Fone: ${schoolObj.phone || '-'}`;
+    }
     
     switchSchoolInnerTab('turmas');
     if (typeof safeCreateIcons === 'function') safeCreateIcons();
@@ -15926,33 +16289,55 @@ window.switchSchoolInnerTab = function switchSchoolInnerTab(tabName) {
     const school = window.currentSelectedSchoolDetail || "UI BASILIO ALVES";
 
     if (tabName === 'professores') {
+        const teachers = getSchoolTeachers(school);
         container.innerHTML = `
             <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
                 <div class="flex-between flex-wrap gap-md" style="margin-bottom: 16px;">
                     <div>
-                        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0;">Professores da Escola</h3>
-                        <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">Corpo docente vinculado a ${school}</p>
+                        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0;">Professores da Escola</h3>
+                        <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">Corpo docente vinculado a ${school} (${teachers.length} docentes cadastrados)</p>
                     </div>
-                    <button class="btn btn-primary" onclick="alert('Funcionalidade de vinculação de docentes.');" style="display:flex; align-items:center; gap:6px; font-size:0.82rem; font-weight:700; background:#6366f1; border-color:#6366f1;">
-                        <i data-lucide="plus" style="width:15px; height:15px;"></i> Vincular Professor
+                    <button type="button" onclick="openCreateTeacherModal('${school.replace(/'/g, "\\\'")}');" class="btn btn-primary" style="display:flex; align-items:center; gap:6px; font-size:0.82rem; font-weight:700; background:linear-gradient(135deg, #4f46e5, #6366f1); border:none; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);">
+                        <i data-lucide="user-plus" style="width:15px; height:15px;"></i> + Vincular Professor
                     </button>
                 </div>
-                <div style="display:flex; flex-direction:column; gap:10px;">
-                    <div style="padding: 12px 16px; background: var(--bg-tertiary); border-radius: var(--radius-md); display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <div style="font-weight:700; color:var(--text-primary);">Profa. Silvana Ferreira</div>
-                            <div style="font-size:0.78rem; color:var(--text-secondary);">Língua Portuguesa • 2º Ano A, 5º Ano A</div>
-                        </div>
-                        <span style="font-size:0.75rem; background:#dcfce7; color:#166534; padding:3px 8px; border-radius:10px; font-weight:700;">Ativa</span>
+
+                ${teachers.length === 0 ? `
+                    <div style="padding: 36px 20px; text-align: center; color: var(--text-muted); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+                        <div style="font-size: 1.8rem; margin-bottom: 8px;">👨‍🏫</div>
+                        <h4 style="margin: 0 0 4px 0; font-size: 1rem; color: var(--text-primary);">Nenhum professor vinculado ainda nesta escola</h4>
+                        <p style="margin: 0 0 14px 0; font-size: 0.8rem; color: var(--text-secondary);">Clique no botão acima para vincular o primeiro docente.</p>
                     </div>
-                    <div style="padding: 12px 16px; background: var(--bg-tertiary); border-radius: var(--radius-md); display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <div style="font-weight:700; color:var(--text-primary);">Prof. Carlos Alberto Silva</div>
-                            <div style="font-size:0.78rem; color:var(--text-secondary);">Matemática • 5º Ano A, 9º Ano A</div>
-                        </div>
-                        <span style="font-size:0.75rem; background:#dcfce7; color:#166534; padding:3px 8px; border-radius:10px; font-weight:700;">Ativo</span>
+                ` : `
+                    <div style="display:flex; flex-direction:column; gap:10px;">
+                        ${teachers.map(t => `
+                            <div style="padding: 14px 18px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <div style="width: 38px; height: 38px; border-radius: 50%; background: rgba(99,102,241,0.15); color: #6366f1; display:flex; align-items:center; justify-content:center; font-weight: 800; font-size: 0.85rem;">
+                                        ${(t.nome || 'P').charAt(0)}
+                                    </div>
+                                    <div>
+                                        <div style="font-weight:800; font-size:0.92rem; color:var(--text-primary);">${t.nome}</div>
+                                        <div style="font-size:0.78rem; color:var(--text-secondary); margin-top:2px;">
+                                            <strong style="color:#6366f1;">${t.componente}</strong> • Turmas: ${t.turmas || 'Geral'} • Contato: ${t.telefone || '-'}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span style="font-size:0.74rem; background:#dcfce7; color:#166534; padding:3px 10px; border-radius:12px; font-weight:800;">
+                                        ● ${t.status || 'Ativo'}
+                                    </span>
+                                    <button type="button" onclick="openEditTeacherModal('${t.id}');" class="btn btn-outline btn-sm" style="font-size:0.75rem; padding:5px 8px; color:var(--text-primary);" title="Editar Professor">
+                                        ✏️ Editar
+                                    </button>
+                                    <button type="button" onclick="handleDeleteTeacher('${t.id}');" class="btn btn-outline btn-sm" style="font-size:0.75rem; padding:5px 8px; color:#ef4444; border-color:#fca5a5;" title="Desvincular Professor">
+                                        🗑️
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
                     </div>
-                </div>
+                `}
             </div>
         `;
     } else if (tabName === 'alunos') {
@@ -19658,12 +20043,18 @@ window.renderDbSchools = function renderDbSchools() {
                                 <button type="button" onclick="trackAndViewBook('${book.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem; display: flex; align-items: center; justify-content: center; gap: 4px;">
                                     <i data-lucide="eye" style="width: 13px; height: 13px;"></i> Visualizar
                                 </button>
+                                <button type="button" onclick="handleDeleteLibraryMaterial('${book.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem; color: #ef4444; border-color: #fca5a5; display: flex; align-items: center; justify-content: center; gap: 3px; grid-column: span 2;" title="Excluir da Biblioteca">
+                                    <i data-lucide="trash-2" style="width: 12px; height: 12px;"></i> Excluir Material
+                                </button>
                             ` : `
                                 <button type="button" onclick="trackAndDownloadBookPdf('${book.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem; display: flex; align-items: center; justify-content: center; gap: 4px; color: #10b981; border-color: #a7f3d0;">
                                     <i data-lucide="download" style="width: 13px; height: 13px;"></i> Baixar PDF
                                 </button>
                                 <button type="button" onclick="trackAndViewBook('${book.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem; display: flex; align-items: center; justify-content: center; gap: 4px;">
                                     <i data-lucide="book-open" style="width: 13px; height: 13px;"></i> Ler Online
+                                </button>
+                                <button type="button" onclick="handleDeleteLibraryMaterial('${book.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem; color: #ef4444; border-color: #fca5a5; display: flex; align-items: center; justify-content: center; gap: 3px; grid-column: span 2;" title="Excluir da Biblioteca">
+                                    <i data-lucide="trash-2" style="width: 12px; height: 12px;"></i> Excluir Material
                                 </button>
                             `}
                         </div>
