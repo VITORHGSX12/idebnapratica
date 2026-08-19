@@ -16399,3078 +16399,216 @@ window.renderDbSchools = function renderDbSchools() {
     // -------------------------------------------------------------------------
 
     // Base de Habilidades da BNCC estruturada por Disciplina e Ano
-    const BNCC_HABILIDADES_DATABASE = [
-        // Língua Portuguesa
-        { code: 'EF01LP01', disciplina: 'Língua Portuguesa', ano: '1º Ano', objeto: 'Decodificação / Leitura de Palavras', descricao: 'Reconhecer que textos são lidos e escritos da esquerda para a direita e de cima para baixo da página.', nivel: 'Básico' },
-        { code: 'EF01LP02', disciplina: 'Língua Portuguesa', ano: '1º Ano', objeto: 'Formação do Leitor / Consciência Fonológica', descricao: 'Escrever, espontaneamente ou por ditado, palavras e frases de forma alfabética – usando letras que representem fonemas.', nivel: 'Básico' },
-        { code: 'EF02LP01', disciplina: 'Língua Portuguesa', ano: '2º Ano', objeto: 'Segmentação de palavras e classificação', descricao: 'Utilizar, ao produzir o texto, grafia correta de palavras com correspondências regulares contextuais.', nivel: 'Intermediário' },
-        { code: 'EF02LP04', disciplina: 'Língua Portuguesa', ano: '2º Ano', objeto: 'Pontuação e entonação', descricao: 'Ler e escrever corretamente palavras com sílabas CV, V, CVC, CCV, identificando que cada sílaba varia na formação.', nivel: 'Básico' },
-        { code: 'EF03LP05', disciplina: 'Língua Portuguesa', ano: '3º Ano', objeto: 'Compreensão em Leitura', descricao: 'Identificar a ideia central do texto, demonstrando compreensão global em textos informativos e narrativos.', nivel: 'Intermediário' },
-        { code: 'EF04LP06', disciplina: 'Língua Portuguesa', ano: '4º Ano', objeto: 'Inferência e contexto', descricao: 'Identificar em textos e usar na produção textual a concordância entre artigo, substantivo e adjetivo.', nivel: 'Intermediário' },
-        { code: 'EF05LP01', disciplina: 'Língua Portuguesa', ano: '5º Ano', objeto: 'Compreensão de Efeitos de Sentido', descricao: 'Inferir o sentido de palavras ou expressões desconhecidas em textos de diferentes gêneros textuais.', nivel: 'Avançado' },
-        { code: 'EF05LP02', disciplina: 'Língua Portuguesa', ano: '5º Ano', objeto: 'Localização de Informação Explícita', descricao: 'Identificar a ideia central do texto, localizando informações explícitas e implícitas fundamentais.', nivel: 'Intermediário' },
-        { code: 'EF05LP03', disciplina: 'Língua Portuguesa', ano: '5º Ano', objeto: 'Interpretação e Inferência de Fatos', descricao: 'Diferenciar fatos de opiniões em textos argumentativos e notícias jornalísticas.', nivel: 'Avançado' },
-        { code: 'EF06LP01', disciplina: 'Língua Portuguesa', ano: '6º Ano', objeto: 'Coesão e Coerência Textual', descricao: 'Reconhecer a impossibilidade de uma neutralidade absoluta no relato de fatos e posicionamentos.', nivel: 'Intermediário' },
-        { code: 'EF07LP02', disciplina: 'Língua Portuguesa', ano: '7º Ano', objeto: 'Relações Lógico-Discursivas', descricao: 'Analisar a estrutura e funcionamento de hipertextos e links em ambientes digitais de aprendizagem.', nivel: 'Avançado' },
-        { code: 'EF08LP04', disciplina: 'Língua Portuguesa', ano: '8º Ano', objeto: 'Argumentação e Persuasão', descricao: 'Utilizar, ao produzir texto, conhecimentos linguísticos e gramaticais sobre figuras de linguagem e regência.', nivel: 'Avançado' },
-        { code: 'EF09LP01', disciplina: 'Língua Portuguesa', ano: '9º Ano', objeto: 'Análise Crítica e Hermenêutica', descricao: 'Analisar o fenômeno da disseminação de notícias falsas nas redes sociais e desenvolver checagem de fontes.', nivel: 'Avançado' },
+    
+    // =========================================================================
+    // CATÁLOGO DE HABILIDADES BNCC & DESCRITORES SAEB / SEAMA (1º ao 9º Ano)
+    // =========================================================================
+    var BNCC_HABILIDADES_DATABASE = window.BNCC_HABILIDADES_DATABASE = window.BNCC_HABILIDADES_DATABASE || [
+        // Língua Portuguesa - 1º e 2º Anos (Alfabetização)
+        { code: 'EF01LP01', disciplina: 'Língua Portuguesa', ano: '1º Ano', objeto: 'Decodificação de Palavras', descricao: 'Reconhecer que textos são lidos e escritos da esquerda para a direita e de cima para baixo.' },
+        { code: 'EF01LP02', disciplina: 'Língua Portuguesa', ano: '1º Ano', objeto: 'Consciência Fonológica', descricao: 'Escrever, espontaneamente ou por ditado, palavras e frases de forma alfabética.' },
+        { code: 'EF02LP01', disciplina: 'Língua Portuguesa', ano: '2º Ano', objeto: 'Decodificação e Fluência', descricao: 'Utilizar, ao produzir o texto, grafia correta para palavras conhecidas e correspondências fonema-grafema.' },
+        { code: 'EF02LP04', disciplina: 'Língua Portuguesa', ano: '2º Ano', objeto: 'Segmentação de Palavras', descricao: 'Ler e escrever corretamente palavras com sílabas CV, V, CVC, CCV, identificando que toda sílaba tem uma vogal.' },
+        { code: 'EF02LP07', disciplina: 'Língua Portuguesa', ano: '2º Ano', objeto: 'Pontuação e Entonação', descricao: 'Escrever palavras, frases e textos curtos nas formas imprensa e cursiva com pontuação básica.' },
+        { code: 'EF02LP12', disciplina: 'Língua Portuguesa', ano: '2º Ano', objeto: 'Compreensão em Leitura', descricao: 'Ler e compreender com certa autonomia cantigas, letras de canção, poemas e textos da tradição oral.' },
+        { code: 'EF02LP26', disciplina: 'Língua Portuguesa', ano: '2º Ano', objeto: 'Escrita Compartilhada', descricao: 'Ler e compreender narrativas de ficção (contos, fábulas, lendas) identificando elementos da narrativa.' },
 
-        // Matemática
-        { code: 'EF01MA01', disciplina: 'Matemática', ano: '1º Ano', objeto: 'Contagem e Quantificação', descricao: 'Utilizar números naturais como indicador de quantidade ou de ordem em diferentes situações cotidianas.', nivel: 'Básico' },
-        { code: 'EF02MA01', disciplina: 'Matemática', ano: '2º Ano', objeto: 'Sistema de Numeração Decimal', descricao: 'Comparar e ordenar números naturais pela compreensão de características do sistema de numeração decimal.', nivel: 'Básico' },
-        { code: 'EF03MA03', disciplina: 'Matemática', ano: '3º Ano', objeto: 'Adição e Subtração com Reagrupamento', descricao: 'Construir e utilizar fatos básicos da adição e multiplicação para o cálculo mental ou escrito.', nivel: 'Intermediário' },
-        { code: 'EF04MA04', disciplina: 'Matemática', ano: '4º Ano', objeto: 'Multiplicação e Divisão', descricao: 'Utilizar as relações entre adição e subtração, bem como entre multiplicação e divisão, para resolver problemas.', nivel: 'Intermediário' },
-        { code: 'EF05MA01', disciplina: 'Matemática', ano: '5º Ano', objeto: 'Números Racionais e Decimais', descricao: 'Ler, escrever e ordenar números racionais na forma decimal com compreensão das principais regras do sistema.', nivel: 'Avançado' },
-        { code: 'EF05MA07', disciplina: 'Matemática', ano: '5º Ano', objeto: 'Frações e Porcentagens', descricao: 'Resolver e elaborar problemas de adição e subtração com números naturais e com números racionais, expressos na forma decimal.', nivel: 'Avançado' },
-        { code: 'EF05MA16', disciplina: 'Matemática', ano: '5º Ano', objeto: 'Grandezas e Medidas (Área e Perímetro)', descricao: 'Associar figuras espaciais a suas planificações e analisar perímetros e áreas de polígonos.', nivel: 'Intermediário' },
-        { code: 'EF06MA08', disciplina: 'Matemática', ano: '6º Ano', objeto: 'Operações com Frações', descricao: 'Reconhecer que os números racionais positivos podem ser expressos nas formas fracionária e decimal.', nivel: 'Intermediário' },
-        { code: 'EF07MA02', disciplina: 'Matemática', ano: '7º Ano', objeto: 'Números Inteiros (Positivos e Negativos)', descricao: 'Resolver e elaborar problemas com números inteiros, envolvendo as operações fundamentais.', nivel: 'Avançado' },
-        { code: 'EF08MA06', disciplina: 'Matemática', ano: '8º Ano', objeto: 'Álgebra e Equações de 1º Grau', descricao: 'Resolver e elaborar problemas que possam ser representados por equações polinomiais de 1º grau.', nivel: 'Avançado' },
-        { code: 'EF09MA06', disciplina: 'Matemática', ano: '9º Ano', objeto: 'Equações de 2º Grau e Teorema de Pitágoras', descricao: 'Compreender as funções como relações de dependência unívoca entre duas variáveis e aplicar relações métricas no triângulo retângulo.', nivel: 'Avançado' },
+        // Língua Portuguesa - 3º ao 5º Anos
+        { code: 'EF03LP01', disciplina: 'Língua Portuguesa', ano: '3º Ano', objeto: 'Ortografia e Fonologia', descricao: 'Ler e escrever palavras com correspondências regulares contextuais entre grafemas e fonemas.' },
+        { code: 'EF03LP08', disciplina: 'Língua Portuguesa', ano: '3º Ano', objeto: 'Morfologia e Concordância', descricao: 'Identificar e diferenciar substantivos e verbos e suas funções na oração.' },
+        { code: 'EF04LP05', disciplina: 'Língua Portuguesa', ano: '4º Ano', objeto: 'Acentuação Gráfica', descricao: 'Identificar a função na leitura e usar na escrita ponto final, de interrogação, de exclamação e dois-pontos.' },
+        { code: 'EF05LP01', disciplina: 'Língua Portuguesa', ano: '5º Ano', objeto: 'Estrutura do Texto e Coesão', descricao: 'Grafar palavras utilizando regras de correspondência fonema-grafema e regras ortográficas.' },
+        { code: 'EF05LP04', disciplina: 'Língua Portuguesa', ano: '5º Ano', objeto: 'Pontuação Expressiva', descricao: 'Diferenciar na leitura e na escrita o uso de aspas, reticências, parênteses e travessão.' },
+        { code: 'EF05LP15', disciplina: 'Língua Portuguesa', ano: '5º Ano', objeto: 'Leitura de Textos Argumentativos', descricao: 'Ler e compreender notícias, reportagens, cartas de leitor e artigos de opinião identificando a tese.' },
+        { code: 'EF05LP26', disciplina: 'Língua Portuguesa', ano: '5º Ano', objeto: 'Inferência e Localização', descricao: 'Utilizar conhecimentos linguísticos e gramaticais para inferir informações e localizar dados explícitos.' },
 
-        // Ciências da Natureza
-        { code: 'EF01CI01', disciplina: 'Ciências da Natureza', ano: '1º Ano', objeto: 'Corpo Humano e Sentidos', descricao: 'Comparar características físicas entre os colegas, reconhecendo a diversidade e a importância da valorização.', nivel: 'Básico' },
-        { code: 'EF03CI04', disciplina: 'Ciências da Natureza', ano: '3º Ano', objeto: 'Animais e Ecossistemas', descricao: 'Identificar características sobre o modo de vida dos animais mais comuns no ambiente próximo.', nivel: 'Intermediário' },
-        { code: 'EF05CI02', disciplina: 'Ciências da Natureza', ano: '5º Ano', objeto: 'Propriedades Físicas dos Materiais', descricao: 'Aplicar os conhecimentos sobre as mudanças de estado físico da água para explicar o ciclo hidrológico.', nivel: 'Avançado' },
-        { code: 'EF05CI04', disciplina: 'Ciências da Natureza', ano: '5º Ano', objeto: 'Sistema Digestório e Respiratório', descricao: 'Identificar os principais órgãos dos sistemas do corpo humano e justificar a importância da nutrição.', nivel: 'Intermediário' },
-        { code: 'EF09CI03', disciplina: 'Ciências da Natureza', ano: '9º Ano', objeto: 'Genética e Hereditariedade', descricao: 'Explicar a estrutura do DNA e relacioná-la à transmissão das características hereditárias dos seres vivos.', nivel: 'Avançado' },
+        // Língua Portuguesa - 6º ao 9º Anos
+        { code: 'EF67LP08', disciplina: 'Língua Portuguesa', ano: '6º/7º Ano', objeto: 'Fato vs Opinião', descricao: 'Identificar o conflito gerador do enredo e distinguir fatos de opiniões em textos argumentativos.' },
+        { code: 'EF69LP03', disciplina: 'Língua Portuguesa', ano: '6º ao 9º Ano', objeto: 'Estratégia de Leitura', descricao: 'Identificar em notícias o fato central, suas causas e consequências, bem como opiniões relativas.' },
+        { code: 'EF09LP04', disciplina: 'Língua Portuguesa', ano: '9º Ano', objeto: 'Coesão Referencial e Sequencial', descricao: 'Estabelecer relações entre partes do texto, identificando repetições ou substituições de termos.' },
+        { code: 'EF09LP11', disciplina: 'Língua Portuguesa', ano: '9º Ano', objeto: 'Figuras de Linguagem', descricao: 'Inferir efeitos de sentido decorrentes do uso de recursos estilísticos, pontuação e figuras de linguagem.' },
 
-        // História
-        { code: 'EF01HI01', disciplina: 'História', ano: '1º Ano', objeto: 'Identidade e Família', descricao: 'Identificar aspectos do seu crescimento por meio do registro das lembranças particulares ou de lembranças dos membros de sua família.', nivel: 'Básico' },
-        { code: 'EF05HI01', disciplina: 'História', ano: '5º Ano', objeto: 'Cidadania e Povos Formadores', descricao: 'Identificar os processos de formação das culturas e dos povos, relacionando-os com o espaço geográfico ocupado.', nivel: 'Intermediário' },
-        { code: 'EF09HI02', disciplina: 'História', ano: '9º Ano', objeto: 'República e Cidadania no Brasil', descricao: 'Caracterizar e compreender os fatores que levaram à Proclamação da República e à consolidação da Constituição.', nivel: 'Avançado' },
+        // Matemática - 1º e 2º Anos
+        { code: 'EF01MA01', disciplina: 'Matemática', ano: '1º Ano', objeto: 'Contagem e Quantificação', descricao: 'Utilizar números naturais como indicador de quantidade ou de ordem em diferentes situações cotidianas.' },
+        { code: 'EF02MA01', disciplina: 'Matemática', ano: '2º Ano', objeto: 'Sistema de Numeração Decimal', descricao: 'Comparar e ordenar números naturais até a ordem de centenas pela compreensão do valor posicional.' },
+        { code: 'EF02MA05', disciplina: 'Matemática', ano: '2º Ano', objeto: 'Cálculo Mental e Estimativa', descricao: 'Construir fatos básicos da adição e subtração e utilizá-los no cálculo mental ou escrito.' },
+        { code: 'EF02MA06', disciplina: 'Matemática', ano: '2º Ano', objeto: 'Problemas de Adição e Subtração', descricao: 'Resolver e elaborar problemas de adição e de subtração, envolvendo números de até três ordens.' },
+        { code: 'EF02MA14', disciplina: 'Matemática', ano: '2º Ano', objeto: 'Geometria Espacial e Plana', descricao: 'Reconhecer, nomear e comparar figuras geométricas espaciais (cubo, bloco retangular, pirâmide, esfera, cilindro).' },
+        { code: 'EF02MA19', disciplina: 'Matemática', ano: '2º Ano', objeto: 'Medidas de Tempo', descricao: 'Medir a duração de um intervalo de tempo por meio de relógio digital e analógico e calendário.' },
 
-        // Geografia
-        { code: 'EF01GE01', disciplina: 'Geografia', ano: '1º Ano', objeto: 'Espaço Vivido e Lugares', descricao: 'Descrever características observadas de seus lugares de vivência e identificar semelhanças e diferenças entre esses lugares.', nivel: 'Básico' },
-        { code: 'EF05GE02', disciplina: 'Geografia', ano: '5º Ano', objeto: 'Dinâmica Populacional e Regiões', descricao: 'Identificar diferenças étnico-raciais e étnico-culturais e desigualdades socioeconômicas no Brasil e no Maranhão.', nivel: 'Intermediário' },
-        { code: 'EF09GE05', disciplina: 'Geografia', ano: '9º Ano', objeto: 'Globalização e Geopolítica', descricao: 'Analisar a atuação das corporações internacionais e das organizações multilaterais nos fluxos mundiais.', nivel: 'Avançado' },
+        // Matemática - 3º ao 5º Anos
+        { code: 'EF03MA03', disciplina: 'Matemática', ano: '3º Ano', objeto: 'Multiplicação e Divisão Básica', descricao: 'Construir e utilizar fatos básicos da multiplicação e divisão para o cálculo mental ou escrito.' },
+        { code: 'EF04MA04', disciplina: 'Matemática', ano: '4º Ano', objeto: 'Algoritmos e Operações', descricao: 'Utilizar as relações entre adição e subtração, bem como entre multiplicação e divisão para resolução de problemas.' },
+        { code: 'EF05MA01', disciplina: 'Matemática', ano: '5º Ano', objeto: 'Números Naturais até Milhões', descricao: 'Ler, escrever e ordenar números naturais até a ordem das centenas de milhar com compreensão das ordens.' },
+        { code: 'EF05MA07', disciplina: 'Matemática', ano: '5º Ano', objeto: 'Frações e Números Racionais', descricao: 'Resolver e elaborar problemas de adição e subtração com números naturais e com números racionais na forma decimal.' },
+        { code: 'EF05MA08', disciplina: 'Matemática', ano: '5º Ano', objeto: 'Multiplicação e Divisão Decimais', descricao: 'Resolver e elaborar problemas de multiplicação e divisão com números naturais e com decimais por 10, 100 e 1000.' },
+        { code: 'EF05MA16', disciplina: 'Matemática', ano: '5º Ano', objeto: 'Cálculo de Perímetro e Área', descricao: 'Associar figuras espaciais a suas planificações e calcular perímetro e área de figuras poligonais planas.' },
+        { code: 'EF05MA24', disciplina: 'Matemática', ano: '5º Ano', objeto: 'Estatística e Gráficos', descricao: 'Interpretar dados estatísticos apresentados em textos, tabelas e gráficos (colunas ou linhas).' },
 
-        // Arte
-        { code: 'EF15AR01', disciplina: 'Arte', ano: '5º Ano', objeto: 'Artes Visuais e Matrizes Culturais', descricao: 'Identificar e apreciar formas distintas das artes visuais tradicionais e contemporâneas, cultivando a percepção visual.', nivel: 'Intermediário' },
+        // Matemática - 6º ao 9º Anos
+        { code: 'EF06MA07', disciplina: 'Matemática', ano: '6º Ano', objeto: 'Operações com Frações', descricao: 'Compreender, comparar e ordenar frações associadas às ideias de parte de inteiros e resultado de divisão.' },
+        { code: 'EF07MA04', disciplina: 'Matemática', ano: '7º Ano', objeto: 'Números Inteiros e Reta', descricao: 'Resolver e elaborar problemas que envolvam operações com números inteiros na reta numérica.' },
+        { code: 'EF08MA06', disciplina: 'Matemática', ano: '8º Ano', objeto: 'Porcentagem e Juros', descricao: 'Resolver e elaborar problemas que envolvam cálculo de porcentagens, incluindo juros simples.' },
+        { code: 'EF09MA06', disciplina: 'Matemática', ano: '9º Ano', objeto: 'Funções e Equações do 2º Grau', descricao: 'Compreender as funções como relações de dependência unívoca entre duas variáveis e suas representações gráficas.' },
+        { code: 'EF09MA19', disciplina: 'Matemática', ano: '9º Ano', objeto: 'Teorema de Pitágoras', descricao: 'Demonstrar relações métricas do triângulo retângulo, entre elas o teorema de Pitágoras, e resolver problemas.' },
 
-        // Educação Física
-        { code: 'EF12EF01', disciplina: 'Educação Física', ano: '2º Ano', objeto: 'Brincadeiras e Jogos Populares', descricao: 'Experimentar, fruir e recriar diferentes brincadeiras e jogos da cultura popular presentes no contexto comunitário.', nivel: 'Básico' },
-
-        // Língua Inglesa
-        { code: 'EF06LI01', disciplina: 'Língua Inglesa', ano: '6º Ano', objeto: 'Práticas de Comunicação Oral', descricao: 'Interagir em situações de intercâmbio oral, demonstrando iniciativa para utilizar a língua inglesa.', nivel: 'Básico' }
+        // Ciências, História e Geografia
+        { code: 'EF02CI04', disciplina: 'Ciências da Natureza', ano: '2º Ano', objeto: 'Seres Vivos e Meio Ambiente', descricao: 'Descrever características de plantas e animais (tamanho, forma, cor, locomoção) do cotidiano.' },
+        { code: 'EF05CI02', disciplina: 'Ciências da Natureza', ano: '5º Ano', objeto: 'Propriedades Físicas dos Materiais', descricao: 'Aplicar os conhecimentos sobre as mudanças de estado físico da água para explicar o ciclo hidrológico.' },
+        { code: 'EF02HI04', disciplina: 'História', ano: '2º Ano', objeto: 'Tempo e Sociedade', descricao: 'Selecionar e comparar objetos e documentos pessoais como fontes de memórias da família e escola.' },
+        { code: 'EF05HI04', disciplina: 'História', ano: '5º Ano', objeto: 'Cidadania e Direitos', descricao: 'Associar a noção de cidadania com a conquista de direitos dos povos e das populações tradicionais.' },
+        { code: 'EF02GE02', disciplina: 'Geografia', ano: '2º Ano', objeto: 'Espaço Urbano e Rural', descricao: 'Comparar costumes e tradições de diferentes populações inseridas no bairro ou comunidade.' },
+        { code: 'EF05GE03', disciplina: 'Geografia', ano: '5º Ano', objeto: 'Dinâmica Populacional', descricao: 'Identificar as formas e funções das cidades e analisar as mudanças sociais, econômicas e ambientais.' }
     ];
-
-    function switchMatrizMainTab(tab) {
-        const btnSaeb = document.getElementById('btn-matriz-tab-saeb');
-        const btnBncc = document.getElementById('btn-matriz-tab-bncc');
-        const viewSaeb = document.getElementById('subview-matriz-saeb');
-        const viewBncc = document.getElementById('subview-matriz-bncc');
-
-        if (tab === 'saeb') {
-            if (btnSaeb) {
-                btnSaeb.classList.add('active');
-                btnSaeb.style.background = '#6366f1';
-                btnSaeb.style.color = '#fff';
-                btnSaeb.style.fontWeight = '700';
-            }
-            if (btnBncc) {
-                btnBncc.classList.remove('active');
-                btnBncc.style.background = 'var(--bg-secondary)';
-                btnBncc.style.color = 'var(--text-secondary)';
-                btnBncc.style.fontWeight = '600';
-            }
-            if (viewSaeb) { viewSaeb.classList.remove('hidden'); viewSaeb.style.display = 'block'; }
-            if (viewBncc) { viewBncc.classList.add('hidden'); viewBncc.style.display = 'none'; }
-        } else if (tab === 'bncc') {
-            if (btnBncc) {
-                btnBncc.classList.add('active');
-                btnBncc.style.background = '#6366f1';
-                btnBncc.style.color = '#fff';
-                btnBncc.style.fontWeight = '700';
-            }
-            if (btnSaeb) {
-                btnSaeb.classList.remove('active');
-                btnSaeb.style.background = 'var(--bg-secondary)';
-                btnSaeb.style.color = 'var(--text-secondary)';
-                btnSaeb.style.fontWeight = '600';
-            }
-            if (viewBncc) { viewBncc.classList.remove('hidden'); viewBncc.style.display = 'block'; }
-            if (viewSaeb) { viewSaeb.classList.add('hidden'); viewSaeb.style.display = 'none'; }
-
-            renderBnccSkillsTable();
-        }
-    }
-    window.switchMatrizMainTab = switchMatrizMainTab;
-
-    function renderBnccSkillsTable() {
-        const tbody = document.getElementById('bncc-skills-table-body');
-        if (!tbody) return;
-
-        const subjectFilter = document.getElementById('bncc-subject-select')?.value || 'Língua Portuguesa';
-        const stageFilter = document.getElementById('bncc-stage-select')?.value || 'all';
-        const searchInput = document.getElementById('bncc-search-input');
-        const query = searchInput ? searchInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
-
-        const filtered = BNCC_HABILIDADES_DATABASE.filter(hab => {
-            if (hab.disciplina !== subjectFilter) return false;
-            if (stageFilter !== 'all' && hab.ano !== stageFilter) return false;
-            if (query) {
-                const fullText = (hab.code + ' ' + hab.objeto + ' ' + hab.descricao).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                if (!fullText.includes(query)) return false;
-            }
-            return true;
-        });
-
-        if (filtered.length === 0) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="5" style="padding: 30px; text-align: center; color: var(--text-muted);">
-                        Nenhuma habilidade da BNCC encontrada para os filtros selecionados (${subjectFilter} - ${stageFilter}).
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-
-        tbody.innerHTML = filtered.map(hab => {
-            let badgeBg = 'background: rgba(99, 102, 241, 0.12); color: #6366f1; border: 1px solid rgba(99, 102, 241, 0.3);';
-            if (hab.nivel === 'Básico') badgeBg = 'background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);';
-            if (hab.nivel === 'Avançado') badgeBg = 'background: rgba(245, 158, 11, 0.12); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3);';
-
-            return `
-                <tr style="border-bottom: 1px solid var(--border-color); height: 56px;">
-                    <td style="padding: 12px 16px; font-weight: 800; font-family: var(--font-mono); color: #6366f1; font-size: 0.9rem;">
-                        ${hab.code}
-                    </td>
-                    <td style="padding: 12px 16px; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);">
-                        ${hab.ano}
-                    </td>
-                    <td style="padding: 12px 16px; font-size: 0.82rem; font-weight: 700; color: var(--text-primary);">
-                        ${hab.objeto}
-                    </td>
-                    <td style="padding: 12px 16px; font-size: 0.82rem; color: var(--text-secondary); line-height: 1.45;">
-                        ${hab.descricao}
-                    </td>
-                    <td style="padding: 12px 16px; text-align: center;">
-                        <span style="display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; ${badgeBg}">
-                            ${hab.nivel}
-                        </span>
-                    </td>
-                </tr>
-            `;
-        }).join('');
-    }
-    window.renderBnccSkillsTable = renderBnccSkillsTable;
-
-
-    // -------------------------------------------------------------------------
-    // 4. CRONOGRAMA DE HABILIDADES & VISÃO DO PROFESSOR (CHECKLIST INTERATIVO)
-    // -------------------------------------------------------------------------
-
-    let teacherSkillsStatusMap = {};
-
-    function initTeacherSchedulePersistence() {
-        try {
-            const saved = localStorage.getItem('teacher_skills_status_db');
-            if (saved) teacherSkillsStatusMap = JSON.parse(saved);
-        } catch(e) {}
-    }
-
-    function toggleTeacherSkillDone(skillId) {
-        initTeacherSchedulePersistence();
-        teacherSkillsStatusMap[skillId] = !teacherSkillsStatusMap[skillId];
-
-        try {
-            localStorage.setItem('teacher_skills_status_db', JSON.stringify(teacherSkillsStatusMap));
-        } catch(e) {}
-
-        const checkbox = document.getElementById('chk-teacher-skill-' + skillId);
-        const card = document.getElementById('card-teacher-skill-' + skillId);
-        const statusBadge = document.getElementById('badge-teacher-skill-' + skillId);
-
-        const isDone = teacherSkillsStatusMap[skillId];
-        if (checkbox) checkbox.checked = isDone;
-
-        if (card) {
-            if (isDone) {
-                card.style.background = 'rgba(16, 185, 129, 0.08)';
-                card.style.borderColor = '#10b981';
-            } else {
-                card.style.background = 'var(--bg-secondary)';
-                card.style.borderColor = 'var(--border-color)';
-            }
-        }
-
-        if (statusBadge) {
-            if (isDone) {
-                statusBadge.textContent = '🟢 Trabalhada na Semana';
-                statusBadge.className = 'badge badge-success';
-            } else {
-                statusBadge.textContent = '🔴 Pendente';
-                statusBadge.className = 'badge badge-danger';
-            }
-        }
-    }
-    window.toggleTeacherSkillDone = toggleTeacherSkillDone;
-
-    // Inicialização ao carregar
-    document.addEventListener('DOMContentLoaded', () => {
-        initGdMetasDatabase();
-        initTeacherSchedulePersistence();
-    });
-
-
-
-    const WEEKLY_TEACHER_SCHEDULE = [
-        { id: 'sem_seg', dia: 'Segunda-feira', hab: 'EF05LP01', tema: 'Língua Portuguesa', desc: 'Inferir o sentido de palavras ou expressões em textos literários.', defaultDone: true },
-        { id: 'sem_ter', dia: 'Terça-feira', hab: 'EF05MA07', tema: 'Matemática', desc: 'Resolver problemas de adição e subtração com números decimais.', defaultDone: true },
-        { id: 'sem_qua', dia: 'Quarta-feira', hab: 'EF05LP02', tema: 'Língua Portuguesa', desc: 'Identificar a ideia central e localizar informações explícitas.', defaultDone: true },
-        { id: 'sem_qui', dia: 'Quinta-feira', hab: 'EF05MA16', tema: 'Matemática', desc: 'Associação de figuras espaciais a suas planificações e áreas.', defaultDone: false },
-        { id: 'sem_sex', dia: 'Sexta-feira', hab: 'EF05LP03', tema: 'Língua Portuguesa', desc: 'Diferenciar fatos de opiniões em reportagens e artigos.', defaultDone: true }
-    ];
-
-    function renderTeacherWeeklyChecklist() {
-        initTeacherSchedulePersistence();
-        const container = document.getElementById('teacher-weekly-skills-grid');
-        if (!container) return;
-
-        let completedCount = 0;
-
-        container.innerHTML = WEEKLY_TEACHER_SCHEDULE.map(item => {
-            const isDone = (teacherSkillsStatusMap[item.id] !== undefined) ? teacherSkillsStatusMap[item.id] : item.defaultDone;
-            if (isDone) completedCount++;
-
-            return `
-                <div id="card-teacher-skill-${item.id}" style="background: ${isDone ? 'rgba(16, 185, 129, 0.08)' : 'var(--bg-tertiary)'}; border: 1px solid ${isDone ? '#10b981' : 'var(--border-color)'}; border-radius: var(--radius-md); padding: 14px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; transition: all 0.2s ease;">
-                    <div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                            <span style="font-size: 0.74rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">${item.dia}</span>
-                            <span class="badge ${isDone ? 'badge-success' : 'badge-danger'}" id="badge-teacher-skill-${item.id}" style="font-size: 0.65rem;">
-                                ${isDone ? '🟢 Trabalhada' : '🔴 Pendente'}
-                            </span>
-                        </div>
-                        <div style="font-weight: 800; font-size: 0.95rem; color: #6366f1; font-family: var(--font-mono);">
-                            ${item.hab}
-                        </div>
-                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); margin: 2px 0 4px 0;">
-                            ${item.tema}
-                        </div>
-                        <div style="font-size: 0.75rem; color: var(--text-secondary); line-height: 1.35;">
-                            ${item.desc}
-                        </div>
-                    </div>
-
-                    <label style="display: flex; align-items: center; gap: 8px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border-color); cursor: pointer; user-select: none;">
-                        <input type="checkbox" id="chk-teacher-skill-${item.id}" ${isDone ? 'checked' : ''} onchange="toggleTeacherSkillDone('${item.id}')" style="width: 16px; height: 16px; accent-color: #10b981; cursor: pointer;">
-                        <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary);">
-                            Dar baixa nesta aula
-                        </span>
-                    </label>
-                </div>
-            `;
-        }).join('');
-
-        const progressText = document.getElementById('teacher-weekly-progress-text');
-        if (progressText) {
-            const pct = Math.round((completedCount / WEEKLY_TEACHER_SCHEDULE.length) * 100);
-            progressText.textContent = `${completedCount} de ${WEEKLY_TEACHER_SCHEDULE.length} Cumpridas (${pct}%)`;
-        }
-    }
-    window.renderTeacherWeeklyChecklist = renderTeacherWeeklyChecklist;
-
-
-
-    // =========================================================================
-    // =========================================================================
-    // NAVEGAÇÃO GLOBAL, HISTÓRICO REAL & BASE DE DADOS UNIFICADA OFICIAL DO IDEB
-    // =========================================================================
-    // =========================================================================
-
-    // Pilha de Histórico de Navegação Real
-    window.navigationHistory = ['dashboard'];
-
-    function toggleMobileSidebar() {
-        const appContainer = document.querySelector('.app-container') || document.body;
-        appContainer.classList.toggle('mobile-sidebar-open');
-    }
-    window.toggleMobileSidebar = toggleMobileSidebar;
-
-    function handleGlobalBackNavigation() {
-        // 1. Fechar qualquer modal aberto na tela
-        const openModals = document.querySelectorAll('.modal-overlay:not(.hidden)');
-        let closedModal = false;
-        openModals.forEach(m => {
-            if (m.style.display !== 'none') {
-                m.classList.add('hidden');
-                m.style.display = 'none';
-                closedModal = true;
-            }
-        });
-        if (closedModal) return;
-
-        // 2. Fechar visualizações aninhadas (Workspace de Escola, Diário de Turma, etc.)
-        const schoolClassesView = document.getElementById('school-classes-table-view');
-        const diaryView = document.getElementById('class-diary-view');
-        const userProfileView = document.getElementById('user-profile-view');
-
-        if (diaryView && !diaryView.classList.contains('hidden') && diaryView.style.display === 'block') {
-            diaryView.classList.add('hidden');
-            diaryView.style.display = 'none';
-            if (schoolClassesView) { schoolClassesView.classList.remove('hidden'); schoolClassesView.style.display = 'block'; }
-            return;
-        }
-
-        if (schoolClassesView && !schoolClassesView.classList.contains('hidden') && schoolClassesView.style.display === 'block') {
-            schoolClassesView.classList.add('hidden');
-            schoolClassesView.style.display = 'none';
-            const overview = document.getElementById('schools-overview-container');
-            if (overview) { overview.classList.remove('hidden'); overview.style.display = 'block'; }
-            return;
-        }
-
-        if (userProfileView && !userProfileView.classList.contains('hidden') && userProfileView.style.display === 'block') {
-            userProfileView.classList.add('hidden');
-            userProfileView.style.display = 'none';
-            const usersList = document.getElementById('users-list-view');
-            if (usersList) { usersList.classList.remove('hidden'); usersList.style.display = 'block'; }
-            return;
-        }
-
-        // 3. Navegar para a aba anterior na pilha de histórico
-        if (window.navigationHistory && window.navigationHistory.length > 1) {
-            window.navigationHistory.pop(); // remove aba atual
-            const previousTab = window.navigationHistory[window.navigationHistory.length - 1] || 'dashboard';
-            switchTab(previousTab, false);
-        } else {
-            switchTab('dashboard', false);
-        }
-    }
-    window.handleGlobalBackNavigation = handleGlobalBackNavigation;
-
-
-    // -------------------------------------------------------------------------
-    // BASE DE DADOS OFICIAL UNIFICADA DAS 14 ESCOLAS DE GONÇALVES DIAS (MA)
-    // -------------------------------------------------------------------------
-    function getOfficialGoncalvesSchools() {
-        return [
-            {
-                id: '21051287',
-                nome: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS',
-                codigo: '21051287',
-                tipo: 'Escola Municipal',
-                rede: 'Municipal',
-                zona: 'Urbana',
-                endereco: 'Rua Gonçalves Dias, Centro - Gonçalves Dias / MA',
-                diretor: 'Prof. Marcos Aurélio de Sousa',
-                alunosCount: 198,
-                turmasCount: 8,
-                ideb2015: 4.5,
-                ideb2017: 4.8,
-                ideb2019: 5.2,
-                ideb2021: 5.4,
-                ideb2023: 5.8,
-                ideb2025: 6.1,
-                idebAF2023: 5.2,
-                idebAF2025: 5.5,
-                proficienciaLP: 218.4,
-                proficienciaMAT: 226.1,
-                taxaAprovacao: '98.5%'
-            },
-            {
-                id: '21051295',
-                nome: 'U I BASILIO ALVES',
-                codigo: '21051295',
-                tipo: 'Escola Municipal',
-                rede: 'Municipal',
-                zona: 'Urbana',
-                endereco: 'Av. Basílio Alves, s/n - Gonçalves Dias / MA',
-                diretor: 'Profa. Regina Maria Costa',
-                alunosCount: 184,
-                turmasCount: 7,
-                ideb2015: 4.2,
-                ideb2017: 4.5,
-                ideb2019: 4.9,
-                ideb2021: 5.1,
-                ideb2023: 5.5,
-                ideb2025: 5.8,
-                idebAF2023: 4.0,
-                idebAF2025: 4.3,
-                proficienciaLP: 212.0,
-                proficienciaMAT: 219.5,
-                taxaAprovacao: '97.2%'
-            },
-            {
-                id: '21051309',
-                nome: 'UI JOSE CORREA LIMA',
-                codigo: '21051309',
-                tipo: 'Escola Municipal',
-                rede: 'Municipal',
-                zona: 'Urbana',
-                endereco: 'Rua José Corrêa Lima, 140 - Gonçalves Dias / MA',
-                diretor: 'Profa. Raimunda Nonata Lima',
-                alunosCount: 220,
-                turmasCount: 9,
-                ideb2015: 4.0,
-                ideb2017: 4.3,
-                ideb2019: 4.6,
-                ideb2021: 4.8,
-                ideb2023: 5.2,
-                ideb2025: 5.5,
-                idebAF2023: 4.5,
-                idebAF2025: 4.8,
-                proficienciaLP: 208.5,
-                proficienciaMAT: 215.2,
-                taxaAprovacao: '96.8%'
-            },
-            {
-                id: '21051317',
-                nome: 'UNIDADE INTEGRADA ALDENORA ARAUJO CRUZ',
-                codigo: '21051317',
-                tipo: 'Escola Municipal',
-                rede: 'Municipal',
-                zona: 'Urbana',
-                endereco: 'Rua Aldenora Araújo Cruz, 45 - Gonçalves Dias / MA',
-                diretor: 'Prof. Antônio Carlos Pereira',
-                alunosCount: 165,
-                turmasCount: 6,
-                ideb2015: 3.8,
-                ideb2017: 4.1,
-                ideb2019: 4.5,
-                ideb2021: 4.7,
-                ideb2023: 5.0,
-                ideb2025: 5.3,
-                idebAF2023: 4.9,
-                idebAF2025: 5.2,
-                proficienciaLP: 205.1,
-                proficienciaMAT: 211.8,
-                taxaAprovacao: '96.5%'
-            },
-            {
-                id: '21051325',
-                nome: 'UI EMILIO MURAD',
-                codigo: '21051325',
-                tipo: 'Escola Municipal',
-                rede: 'Municipal',
-                zona: 'Urbana',
-                endereco: 'Rua Emílio Murad, Centro - Gonçalves Dias / MA',
-                diretor: 'Profa. Luciana Maria Mendes',
-                alunosCount: 190,
-                turmasCount: 8,
-                ideb2015: 3.9,
-                ideb2017: 4.2,
-                ideb2019: 4.4,
-                ideb2021: 4.6,
-                ideb2023: 4.9,
-                ideb2025: 5.2,
-                idebAF2023: 5.1,
-                idebAF2025: 5.4,
-                proficienciaLP: 204.0,
-                proficienciaMAT: 210.5,
-                taxaAprovacao: '97.0%'
-            },
-            {
-                id: '21051333',
-                nome: 'UE ANITA FURTADO',
-                codigo: '21051333',
-                tipo: 'Escola Municipal',
-                rede: 'Municipal',
-                zona: 'Rural',
-                endereco: 'Povoado Anita Furtado - Zona Rural - Gonçalves Dias / MA',
-                diretor: 'Prof. José Ribamar Santos',
-                alunosCount: 110,
-                turmasCount: 4,
-                ideb2015: 3.5,
-                ideb2017: 3.8,
-                ideb2019: 4.1,
-                ideb2021: 4.3,
-                ideb2023: 4.6,
-                ideb2025: 4.8,
-                idebAF2023: null,
-                idebAF2025: null,
-                proficienciaLP: 198.2,
-                proficienciaMAT: 204.6,
-                taxaAprovacao: '95.8%'
-            },
-            {
-                id: '21051341',
-                nome: 'UI ANTONIO GONCALVES DIAS',
-                codigo: '21051341',
-                tipo: 'Escola Municipal',
-                rede: 'Municipal',
-                zona: 'Urbana',
-                endereco: 'Praça da Matriz, s/n - Gonçalves Dias / MA',
-                diretor: 'Profa. Maria de Fátima Alves',
-                alunosCount: 175,
-                turmasCount: 7,
-                ideb2015: 3.6,
-                ideb2017: 3.9,
-                ideb2019: 4.1,
-                ideb2021: 4.3,
-                ideb2023: 4.5,
-                ideb2025: 4.8,
-                idebAF2023: 4.1,
-                idebAF2025: 4.4,
-                proficienciaLP: 196.4,
-                proficienciaMAT: 203.0,
-                taxaAprovacao: '96.2%'
-            },
-            {
-                id: '21051350',
-                nome: 'UNIDADE ESCOLAR ANISIO GOMES',
-                codigo: '21051350',
-                tipo: 'Escola Municipal',
-                rede: 'Municipal',
-                zona: 'Rural',
-                endereco: 'Povoado Anísio Gomes - Zona Rural - Gonçalves Dias / MA',
-                diretor: 'Prof. Francisco de Assis Lima',
-                alunosCount: 95,
-                turmasCount: 4,
-                ideb2015: 3.4,
-                ideb2017: 3.7,
-                ideb2019: 4.0,
-                ideb2021: 4.2,
-                ideb2023: 4.4,
-                ideb2025: 4.7,
-                idebAF2023: 3.9,
-                idebAF2025: 4.2,
-                proficienciaLP: 194.0,
-                proficienciaMAT: 201.2,
-                taxaAprovacao: '95.5%'
-            },
-            {
-                id: '21051368',
-                nome: 'UE VEREADOR LEONARDO FERREIRA LIMA',
-                codigo: '21051368',
-                tipo: 'Escola Municipal',
-                rede: 'Municipal',
-                zona: 'Rural',
-                endereco: 'Povoado Centro dos Ferreiras - Gonçalves Dias / MA',
-                diretor: 'Profa. Francisca das Chagas',
-                alunosCount: 88,
-                turmasCount: 4,
-                ideb2015: 3.3,
-                ideb2017: 3.6,
-                ideb2019: 3.9,
-                ideb2021: 4.1,
-                ideb2023: 4.3,
-                ideb2025: 4.6,
-                idebAF2023: null,
-                idebAF2025: null,
-                proficienciaLP: 192.5,
-                proficienciaMAT: 199.0,
-                taxaAprovacao: '95.0%'
-            },
-            {
-                id: '21051376',
-                nome: 'UE RAIMUNDO DOS REIS DA SILVA',
-                codigo: '21051376',
-                tipo: 'Escola Municipal',
-                rede: 'Municipal',
-                zona: 'Rural',
-                endereco: 'Povoado Boa Vista - Gonçalves Dias / MA',
-                diretor: 'Prof. Raimundo Nonato da Silva',
-                alunosCount: 82,
-                turmasCount: 3,
-                ideb2015: 3.2,
-                ideb2017: 3.5,
-                ideb2019: 3.8,
-                ideb2021: 4.0,
-                ideb2023: 4.2,
-                ideb2025: 4.5,
-                idebAF2023: null,
-                idebAF2025: null,
-                proficienciaLP: 190.0,
-                proficienciaMAT: 197.5,
-                taxaAprovacao: '94.8%'
-            },
-            {
-                id: '21051384',
-                nome: 'UE PREFEITA ROSITA SOUSA DIAS',
-                codigo: '21051384',
-                tipo: 'Escola Municipal',
-                rede: 'Municipal',
-                zona: 'Rural',
-                endereco: 'Povoado São Pedro - Gonçalves Dias / MA',
-                diretor: 'Profa. Rosita de Sousa Dias',
-                alunosCount: 78,
-                turmasCount: 3,
-                ideb2015: 3.1,
-                ideb2017: 3.4,
-                ideb2019: 3.7,
-                ideb2021: 3.9,
-                ideb2023: 4.1,
-                ideb2025: 4.4,
-                idebAF2023: null,
-                idebAF2025: null,
-                proficienciaLP: 188.0,
-                proficienciaMAT: 195.0,
-                taxaAprovacao: '94.5%'
-            },
-            {
-                id: '21051392',
-                nome: 'U I ROSA FRANCISCA DE MELO',
-                codigo: '21051392',
-                tipo: 'Escola Municipal',
-                rede: 'Municipal',
-                zona: 'Rural',
-                endereco: 'Povoado Olho d\'Água - Gonçalves Dias / MA',
-                diretor: 'Profa. Rosa Francisca de Melo',
-                alunosCount: 72,
-                turmasCount: 3,
-                ideb2015: 3.0,
-                ideb2017: 3.3,
-                ideb2019: 3.6,
-                ideb2021: 3.8,
-                ideb2023: 4.0,
-                ideb2025: 4.3,
-                idebAF2023: null,
-                idebAF2025: null,
-                proficienciaLP: 186.0,
-                proficienciaMAT: 193.0,
-                taxaAprovacao: '94.0%'
-            },
-            {
-                id: '21051406',
-                nome: 'CENTRO EDUCACIONAL SEMENTES DO AMANHA',
-                codigo: '21051406',
-                tipo: 'Escola Municipal',
-                rede: 'Municipal',
-                zona: 'Urbana',
-                endereco: 'Rua do Sol, 12 - Gonçalves Dias / MA',
-                diretor: 'Profa. Ana Beatriz Rocha',
-                alunosCount: 125,
-                turmasCount: 5,
-                ideb2015: 3.2,
-                ideb2017: 3.5,
-                ideb2019: 3.8,
-                ideb2021: 4.0,
-                ideb2023: 4.2,
-                ideb2025: 4.5,
-                idebAF2023: null,
-                idebAF2025: null,
-                proficienciaLP: 189.5,
-                proficienciaMAT: 196.2,
-                taxaAprovacao: '95.2%'
-            },
-            {
-                id: '21051414',
-                nome: 'CENTRO DE ENSINO SULAMITA LUCIO DO NASCIMENTO',
-                codigo: '21051414',
-                tipo: 'Escola Estadual',
-                rede: 'Estadual',
-                zona: 'Urbana',
-                endereco: 'Rua 7 de Setembro, Centro - Gonçalves Dias / MA',
-                diretor: 'Prof. Sulamita Lúcio do Nascimento',
-                alunosCount: 240,
-                turmasCount: 10,
-                ideb2015: 3.6,
-                ideb2017: 3.9,
-                ideb2019: 4.2,
-                ideb2021: 4.4,
-                ideb2023: 4.5,
-                ideb2025: 4.9,
-                idebAF2023: 4.6,
-                idebAF2025: 5.0,
-                proficienciaLP: 200.0,
-                proficienciaMAT: 207.0,
-                taxaAprovacao: '96.0%'
-            }
-        ];
-    }
-    window.getOfficialGoncalvesSchools = getOfficialGoncalvesSchools;
-
-
-    // Renderizador Oficial do Módulo Escolas da Rede
-    function renderDbSchools() {
-        const container = document.getElementById('schools-table-body') || document.getElementById('db-schools-table-body') || document.getElementById('schools-grid-container');
-        if (!container) return;
-
-        const schools = getOfficialGoncalvesSchools();
-        const searchInput = document.getElementById('db-school-search');
-        const query = searchInput ? searchInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
-
-        const filtered = schools.filter(s => {
-            if (query) {
-                const text = (s.nome + ' ' + s.codigo + ' ' + s.diretor + ' ' + s.zona).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                if (!text.includes(query)) return false;
-            }
-            return true;
-        });
-
-        // Se container for tabela
-        if (container.tagName === 'TBODY') {
-            container.innerHTML = filtered.map(sch => `
-                <tr style="border-bottom: 1px solid var(--border-color); height: 60px;">
-                    <td style="padding: 12px 16px;">
-                        <strong style="font-size: 0.9rem; color: var(--text-primary); display: block;">${sch.nome}</strong>
-                        <span style="font-size: 0.74rem; color: var(--text-muted); font-family: var(--font-mono);">INEP: ${sch.codigo} • ${sch.zona}</span>
-                    </td>
-                    <td style="padding: 12px 16px;">
-                        <span class="badge ${sch.rede === 'Municipal' ? 'badge-purple' : 'badge-info'}" style="font-size: 0.72rem;">${sch.rede}</span>
-                    </td>
-                    <td style="padding: 12px 16px; font-size: 0.82rem; color: var(--text-secondary);">
-                        ${sch.diretor}
-                    </td>
-                    <td style="padding: 12px 16px; text-align: center; font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">
-                        ${sch.alunosCount} alunos
-                    </td>
-                    <td style="padding: 12px 16px; text-align: center;">
-                        <div style="font-weight: 800; font-size: 1rem; color: #10b981; font-family: var(--font-mono);">${sch.ideb2025}</div>
-                        <span style="font-size: 0.7rem; color: var(--text-muted);">IDEB 2025</span>
-                    </td>
-                    <td style="padding: 12px 16px; text-align: center;">
-                        <button onclick="openSchoolWorkspace('${sch.nome}')" class="btn btn-outline btn-sm" style="font-size: 0.75rem; font-weight: 700; color: #6366f1; border-color: #6366f1;">
-                            🏫 Abrir Escola
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        } else {
-            // Se container for grid de cards
-            container.innerHTML = filtered.map(sch => `
-                <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px;">
-                    <div>
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px;">
-                            <span class="badge ${sch.rede === 'Municipal' ? 'badge-purple' : 'badge-info'}" style="font-size: 0.7rem;">${sch.rede} • ${sch.zona}</span>
-                            <div style="font-weight: 800; font-size: 1.1rem; color: #10b981; font-family: var(--font-mono);">${sch.ideb2025} <span style="font-size: 0.65rem; color: var(--text-muted); font-weight: 600;">IDEB</span></div>
-                        </div>
-                        <h4 style="margin: 0 0 4px 0; font-size: 0.95rem; font-weight: 800; color: var(--text-primary);">${sch.nome}</h4>
-                        <p style="font-size: 0.74rem; color: var(--text-muted); margin: 0 0 10px 0; font-family: var(--font-mono);">INEP: ${sch.codigo}</p>
-                        <div style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.4;">
-                            👤 <strong>Direção:</strong> ${sch.diretor}<br>
-                            👥 <strong>Matrículas:</strong> ${sch.alunosCount} alunos (${sch.turmasCount} turmas)
-                        </div>
-                    </div>
-                    <button onclick="openSchoolWorkspace('${sch.nome}')" class="btn btn-outline btn-sm btn-full" style="font-weight: 700; color: #6366f1; border-color: #6366f1;">
-                        🏫 Abrir Painel da Escola
-                    </button>
-                </div>
-            `).join('');
-        }
-    }
-    window.renderDbSchools = renderDbSchools;
-
-
-
-    // =========================================================================
-    // =========================================================================
-    // NOVO MÓDULO: CRONOGRAMA & PLANEJAMENTO ESCOLAR (VISÃO MENSAL + SEMANAL)
-    // =========================================================================
-    // =========================================================================
-
-    const SCHEDULE_MONTH_LABELS = {
-        1: 'Janeiro', 2: 'Fevereiro', 3: 'Março', 4: 'Abril', 5: 'Maio', 6: 'Junho',
-        7: 'Julho', 8: 'Agosto', 9: 'Setembro', 10: 'Outubro', 11: 'Novembro', 12: 'Dezembro'
-    };
-
-    const SCHEDULE_TIME_SLOTS = [
-        { id: 'slot_1', texto: '1ª Aula (07:30 - 08:20)' },
-        { id: 'slot_2', texto: '2ª Aula (08:20 - 09:10)' },
-        { id: 'slot_3', texto: '3ª Aula (09:20 - 10:10)' },
-        { id: 'slot_4', texto: '4ª Aula (10:10 - 11:00)' },
-        { id: 'slot_5', texto: '5ª Aula (11:00 - 11:50)' }
-    ];
-
-    let currentScheduleView = 'monthly'; // 'monthly' | 'weekly'
-    let scheduleCalMonth = 8; // Agosto
-    let scheduleCalYear = 2026;
-    let scheduleWeekOffset = 0; // 0 = Semana de 03 a 07 de Agosto
-    let draggedLessonId = null;
-
-    let scheduleLessonsData = [];
-
-    function initScheduleLessonsDatabase() {
-        try {
-            const saved = localStorage.getItem('teacher_agenda_schedule_db');
-            if (saved) {
-                scheduleLessonsData = JSON.parse(saved);
-            } else {
-                scheduleLessonsData = [
-                    {
-                        id: 'plan_2026_08_03_1',
-                        data: '2026-08-03',
-                        diaSemana: 'Segunda-feira',
-                        horarioSlot: 'slot_1',
-                        horarioTexto: '1ª Aula (07:30 - 08:20)',
-                        etapa: '2º Ano',
-                        turma: '2º Ano A',
-                        disciplina: 'Língua Portuguesa',
-                        escola: 'UI JOSE CORREA LIMA',
-                        codigoHabilidade: 'EF02LP01',
-                        descricaoHabilidade: 'Reconhecer que textos são lidos e escritos da esquerda para a direita e de cima para baixo.',
-                        objetoConhecimento: 'Decodificação e Leitura Autônoma de Cantigas',
-                        metodologia: 'Roda de leitura com cantigas regionais do Maranhão; identificação da direcionalidade do texto e marcação de rimas.',
-                        status: 'concluida',
-                        replicadoPara: ['2º Ano B']
-                    },
-                    {
-                        id: 'plan_2026_08_03_2',
-                        data: '2026-08-03',
-                        diaSemana: 'Segunda-feira',
-                        horarioSlot: 'slot_2',
-                        horarioTexto: '2ª Aula (08:20 - 09:10)',
-                        etapa: '2º Ano',
-                        turma: '2º Ano A',
-                        disciplina: 'Matemática',
-                        escola: 'UI JOSE CORREA LIMA',
-                        codigoHabilidade: 'EF02MA01',
-                        descricaoHabilidade: 'Comparar e ordenar números naturais pelo sistema de numeração decimal.',
-                        objetoConhecimento: 'Sistema de Numeração Decimal e Valor Posicional',
-                        metodologia: 'Uso de material dourado para composição e decomposição de numerais até 100.',
-                        status: 'concluida',
-                        replicadoPara: []
-                    },
-                    {
-                        id: 'plan_2026_08_04_1',
-                        data: '2026-08-04',
-                        diaSemana: 'Terça-feira',
-                        horarioSlot: 'slot_1',
-                        horarioTexto: '1ª Aula (07:30 - 08:20)',
-                        etapa: '2º Ano',
-                        turma: '2º Ano A',
-                        disciplina: 'Língua Portuguesa',
-                        escola: 'UI JOSE CORREA LIMA',
-                        codigoHabilidade: 'EF02LP04',
-                        descricaoHabilidade: 'Ler e escrever palavras com sílabas CV, V, CVC, CCV identificando formação.',
-                        objetoConhecimento: 'Consciência Fonológica e Segmentação',
-                        metodologia: 'Jogo do bingo silábico interativo em grupos com fixação temática.',
-                        status: 'concluida',
-                        replicadoPara: []
-                    },
-                    {
-                        id: 'plan_2026_08_04_3',
-                        data: '2026-08-04',
-                        diaSemana: 'Terça-feira',
-                        horarioSlot: 'slot_3',
-                        horarioTexto: '3ª Aula (09:20 - 10:10)',
-                        etapa: '2º Ano',
-                        turma: '2º Ano A',
-                        disciplina: 'Ciências da Natureza',
-                        escola: 'UI JOSE CORREA LIMA',
-                        codigoHabilidade: 'EF02CI01',
-                        descricaoHabilidade: 'Identificar de que materiais são feitos os objetos do cotidiano.',
-                        objetoConhecimento: 'Propriedades dos Materiais no Cotidiano',
-                        metodologia: 'Experimento prático no pátio analisando reciclagem de materiais.',
-                        status: 'planejada',
-                        replicadoPara: ['2º Ano B']
-                    },
-                    {
-                        id: 'plan_2026_08_05_2',
-                        data: '2026-08-05',
-                        diaSemana: 'Quarta-feira',
-                        horarioSlot: 'slot_2',
-                        horarioTexto: '2ª Aula (08:20 - 09:10)',
-                        etapa: '2º Ano',
-                        turma: '2º Ano A',
-                        disciplina: 'Matemática',
-                        escola: 'UI JOSE CORREA LIMA',
-                        codigoHabilidade: 'EF02MA06',
-                        descricaoHabilidade: 'Resolver e elaborar problemas de adição e dobro/metade.',
-                        objetoConhecimento: 'Problemas Aditivos e Multiplicativos Básicos',
-                        metodologia: 'Simulação de feira na sala com cédulas de brinquedo para troco.',
-                        status: 'planejada',
-                        replicadoPara: []
-                    },
-                    {
-                        id: 'plan_2026_08_06_1',
-                        data: '2026-08-06',
-                        diaSemana: 'Quinta-feira',
-                        horarioSlot: 'slot_1',
-                        horarioTexto: '1ª Aula (07:30 - 08:20)',
-                        etapa: '2º Ano',
-                        turma: '2º Ano A',
-                        disciplina: 'Língua Portuguesa',
-                        escola: 'UI JOSE CORREA LIMA',
-                        codigoHabilidade: 'EF02LP12',
-                        descricaoHabilidade: 'Ler e compreender parlendas e quadrinhas.',
-                        objetoConhecimento: 'Gênero Textual: Parlendas e Trava-línguas',
-                        metodologia: 'Declamação rítmica em duplas com desafio de trava-línguas.',
-                        status: 'planejada',
-                        replicadoPara: []
-                    },
-                    {
-                        id: 'plan_2026_08_07_2',
-                        data: '2026-08-07',
-                        diaSemana: 'Sexta-feira',
-                        horarioSlot: 'slot_2',
-                        horarioTexto: '2ª Aula (08:20 - 09:10)',
-                        etapa: '2º Ano',
-                        turma: '2º Ano A',
-                        disciplina: 'História',
-                        escola: 'UI JOSE CORREA LIMA',
-                        codigoHabilidade: 'EF02HI01',
-                        descricaoHabilidade: 'Reconhecer espaços de sociabilidade e convivência.',
-                        objetoConhecimento: 'A Comunidade e seus Espaços em Gonçalves Dias',
-                        metodologia: 'Mural colaborativo de fotos dos pontos comunitários do município.',
-                        status: 'planejada',
-                        replicadoPara: []
-                    },
-                    {
-                        id: 'plan_2026_08_10_1',
-                        data: '2026-08-10',
-                        diaSemana: 'Segunda-feira',
-                        horarioSlot: 'slot_1',
-                        horarioTexto: '1ª Aula (07:30 - 08:20)',
-                        etapa: '2º Ano',
-                        turma: '2º Ano A',
-                        disciplina: 'Língua Portuguesa',
-                        escola: 'UI JOSE CORREA LIMA',
-                        codigoHabilidade: 'EF02LP07',
-                        descricaoHabilidade: 'Escrever palavras com pontuação expressiva básica.',
-                        objetoConhecimento: 'Sinais de Pontuação e Entonação',
-                        metodologia: 'Leitura expressiva de tirinhas identificando pontos de interrogação.',
-                        status: 'planejada',
-                        replicadoPara: []
-                    },
-                    {
-                        id: 'plan_2026_08_12_2',
-                        data: '2026-08-12',
-                        diaSemana: 'Quarta-feira',
-                        horarioSlot: 'slot_2',
-                        horarioTexto: '2ª Aula (08:20 - 09:10)',
-                        etapa: '2º Ano',
-                        turma: '2º Ano A',
-                        disciplina: 'Matemática',
-                        escola: 'UI JOSE CORREA LIMA',
-                        codigoHabilidade: 'EF02MA16',
-                        descricaoHabilidade: 'Estimar e medir comprimento com unidades convencionais.',
-                        objetoConhecimento: 'Medidas de Comprimento e Régua',
-                        metodologia: 'Medição de objetos da sala com fita métrica e tabela.',
-                        status: 'planejada',
-                        replicadoPara: []
-                    }
-                ];
-                localStorage.setItem('teacher_agenda_schedule_db', JSON.stringify(scheduleLessonsData));
-            }
-        } catch(e) {}
-    }
-
-    function saveScheduleDatabase() {
-        try {
-            localStorage.setItem('teacher_agenda_schedule_db', JSON.stringify(scheduleLessonsData));
-        } catch(e) {}
-    }
-
-    function switchScheduleMainView(view) {
-        currentScheduleView = view;
-        const btnMonthly = document.getElementById('btn-view-monthly');
-        const btnWeekly = document.getElementById('btn-view-weekly');
-        const viewMonthly = document.getElementById('schedule-view-monthly');
-        const viewWeekly = document.getElementById('schedule-view-weekly');
-
-        if (view === 'monthly') {
-            if (btnMonthly) btnMonthly.classList.add('active');
-            if (btnWeekly) btnWeekly.classList.remove('active');
-            if (viewMonthly) { viewMonthly.style.display = 'block'; }
-            if (viewWeekly) { viewWeekly.style.display = 'none'; }
-        } else {
-            if (btnWeekly) btnWeekly.classList.add('active');
-            if (btnMonthly) btnMonthly.classList.remove('active');
-            if (viewWeekly) { viewWeekly.style.display = 'block'; }
-            if (viewMonthly) { viewMonthly.style.display = 'none'; }
-        }
-
-        renderActiveScheduleView();
-    }
-    window.switchScheduleMainView = switchScheduleMainView;
-
-    function navigateSchedulePeriod(delta) {
-        if (currentScheduleView === 'monthly') {
-            scheduleCalMonth += delta;
-            if (scheduleCalMonth < 1) { scheduleCalMonth = 12; scheduleCalYear--; }
-            if (scheduleCalMonth > 12) { scheduleCalMonth = 1; scheduleCalYear++; }
-        } else {
-            scheduleWeekOffset += delta;
-        }
-        renderActiveScheduleView();
-    }
-    window.navigateSchedulePeriod = navigateSchedulePeriod;
-
-    function renderActiveScheduleView() {
-        initScheduleLessonsDatabase();
-        const periodDisplay = document.getElementById('schedule-period-display');
-
-        if (currentScheduleView === 'monthly') {
-            if (periodDisplay) periodDisplay.textContent = `${SCHEDULE_MONTH_LABELS[scheduleCalMonth]} de ${scheduleCalYear}`;
-            renderScheduleMonthlyView();
-        } else {
-            const weekInfo = getWeekDatesForOffset(scheduleWeekOffset);
-            if (periodDisplay) periodDisplay.textContent = weekInfo.label;
-            renderScheduleWeeklyView();
-        }
-        if (typeof safeCreateIcons === 'function') safeCreateIcons();
-        if (window.lucide && typeof window.lucide.createIcons === 'function') window.lucide.createIcons();
-    }
-    window.renderActiveScheduleView = renderActiveScheduleView;
-    window.render7ColCalendar = renderActiveScheduleView;
-
-    // -------------------------------------------------------------------------
-    // RENDERIZADOR: VISÃO MENSAL COM TAGS INFORMATIVAS & QUICK ADD
-    // -------------------------------------------------------------------------
-    function renderScheduleMonthlyView() {
-        if (typeof renderScheduleMonthlyMobileAccordion === 'function') {
-            renderScheduleMonthlyMobileAccordion();
-        }
-        const grid = document.getElementById('calendar-monthly-cells-grid');
-        if (!grid) return;
-
-        grid.innerHTML = '';
-
-        const stageFilter = document.getElementById('cal-filter-stage-v2')?.value || 'all';
-        const subjectFilter = document.getElementById('cal-filter-subject-v2')?.value || 'all';
-        const schoolFilter = document.getElementById('cal-filter-school-v2')?.value || 'all';
-
-        const firstDate = new Date(scheduleCalYear, scheduleCalMonth - 1, 1);
-        const startDayOfWeek = firstDate.getDay(); // 0 = Domingo
-        const daysInCurrentMonth = new Date(scheduleCalYear, scheduleCalMonth, 0).getDate();
-        const daysInPrevMonth = new Date(scheduleCalYear, scheduleCalMonth - 1, 0).getDate();
-
-        // 1. Dias do mês anterior (preenchimento inicial)
-        for (let i = startDayOfWeek - 1; i >= 0; i--) {
-            const prevDayNum = daysInPrevMonth - i;
-            const cell = document.createElement('div');
-            cell.className = 'cal-day-cell other-month';
-            cell.innerHTML = `<div class="cal-day-header"><div class="cal-day-number" style="color:var(--text-muted);">${prevDayNum}</div></div>`;
-            grid.appendChild(cell);
-        }
-
-        let totalMonthLessons = 0;
-        let completedMonthLessons = 0;
-
-        // 2. Dias do mês corrente
-        for (let d = 1; d <= daysInCurrentMonth; d++) {
-            const monthStr = String(scheduleCalMonth).padStart(2, '0');
-            const dayStr = String(d).padStart(2, '0');
-            const dateIso = `${scheduleCalYear}-${monthStr}-${dayStr}`;
-
-            const dateObj = new Date(scheduleCalYear, scheduleCalMonth - 1, d);
-            const dayOfWeek = dateObj.getDay();
-            const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
-
-            // Filtra aulas deste dia
-            const dayLessons = scheduleLessonsData.filter(item => {
-                if (item.data !== dateIso) return false;
-                if (stageFilter !== 'all' && item.etapa !== stageFilter) return false;
-                if (subjectFilter !== 'all' && item.disciplina !== subjectFilter) return false;
-                if (schoolFilter !== 'all' && item.escola !== schoolFilter) return false;
-                return true;
-            });
-
-            totalMonthLessons += dayLessons.length;
-            completedMonthLessons += dayLessons.filter(l => l.status === 'concluida').length;
-
-            const cell = document.createElement('div');
-            cell.className = 'cal-day-cell';
-
-            // Cabeçalho da Célula com número do dia e botão + de agendamento rápido
-            let quickAddBtn = '';
-            if (!isWeekend) {
-                quickAddBtn = `
-                    <button type="button" class="btn-cal-add-lesson" onclick="event.stopPropagation(); openSchedulePlannerDrawer('${dateIso}');" title="Agendar aula neste dia">
-                        +
-                    </button>
-                `;
-            }
-
-            // Renderiza Tags/Chips (máximo 2 visíveis, restante em +X mais)
-            let tagsHtml = '';
-            const maxVisible = 2;
-            const visibleLessons = dayLessons.slice(0, maxVisible);
-            const extraCount = dayLessons.length - maxVisible;
-
-            visibleLessons.forEach(les => {
-                const isDone = les.status === 'concluida';
-                const tagClass = isDone ? 'tag-concluida' : 'tag-planejada';
-                const icon = isDone ? '✓' : '⏳';
-
-                tagsHtml += `
-                    <div class="cal-lesson-tag ${tagClass}" onclick="event.stopPropagation(); openSchedulePlannerDrawer(null, null, '${les.id}');" title="${les.horarioTexto} - ${les.disciplina}: ${les.objetoConhecimento} (${les.codigoHabilidade})">
-                        <span style="font-weight:800; font-family:var(--font-mono); font-size:0.68rem;">${icon} ${les.codigoHabilidade}</span>
-                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:65px;">${les.disciplina.split(' ')[0]}</span>
-                    </div>
-                `;
-            });
-
-            if (extraCount > 0) {
-                tagsHtml += `
-                    <div style="font-size: 0.65rem; font-weight: 800; color: #6366f1; background: rgba(99, 102, 241, 0.1); padding: 2px 5px; border-radius: 4px; text-align: center; cursor: pointer;" onclick="event.stopPropagation(); switchScheduleMainView('weekly');">
-                        +${extraCount} aulas
-                    </div>
-                `;
-            }
-
-            cell.innerHTML = `
-                <div class="cal-day-header">
-                    <div class="cal-day-number ${d === 3 && scheduleCalMonth === 8 ? 'active-today' : ''}">${d}</div>
-                    ${quickAddBtn}
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 4px;">
-                    ${tagsHtml}
-                </div>
-            `;
-
-            cell.onclick = () => {
-                if (!isWeekend) openSchedulePlannerDrawer(dateIso);
-            };
-
-            grid.appendChild(cell);
-        }
-
-        // 3. Próximos dias para fechar a grade (35 ou 42 células)
-        const totalRendered = startDayOfWeek + daysInCurrentMonth;
-        const totalNeeded = totalRendered > 35 ? 42 : 35;
-        const remaining = totalNeeded - totalRendered;
-
-        for (let nextD = 1; nextD <= remaining; nextD++) {
-            const cell = document.createElement('div');
-            cell.className = 'cal-day-cell other-month';
-            cell.innerHTML = `<div class="cal-day-header"><div class="cal-day-number" style="color:var(--text-muted);">${nextD}</div></div>`;
-            grid.appendChild(cell);
-        }
-
-        // Atualiza resumo de estatísticas do mês
-        const statsEl = document.getElementById('monthly-stats-summary');
-        if (statsEl) {
-            const pct = totalMonthLessons > 0 ? Math.round((completedMonthLessons / totalMonthLessons) * 100) : 0;
-            statsEl.innerHTML = `📊 <strong>${completedMonthLessons} de ${totalMonthLessons}</strong> aulas trabalhadas (${pct}% concluído no mês)`;
-        }
-    }
-
-    // -------------------------------------------------------------------------
-    // RENDERIZADOR: VISÃO SEMANAL (GRADE VERTICAL COM DRAG & DROP)
-    // -------------------------------------------------------------------------
-    function getWeekDatesForOffset(offset) {
-        // Base: Segunda-feira 03/08/2026
-        const baseMonday = new Date(2026, 7, 3);
-        baseMonday.setDate(baseMonday.getDate() + (offset * 7));
-
-        const days = [];
-        const dayNames = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira'];
-
-        for (let i = 0; i < 5; i++) {
-            const d = new Date(baseMonday);
-            d.setDate(d.getDate() + i);
-            const yyyy = d.getFullYear();
-            const mm = String(d.getMonth() + 1).padStart(2, '0');
-            const dd = String(d.getDate()).padStart(2, '0');
-            days.push({
-                dateIso: `${yyyy}-${mm}-${dd}`,
-                dayNum: d.getDate(),
-                monthNum: d.getMonth() + 1,
-                dayName: dayNames[i],
-                dayShort: dayNames[i].substring(0, 3).toUpperCase()
-            });
-        }
-
-        const startStr = `${days[0].dayNum} de ${SCHEDULE_MONTH_LABELS[days[0].monthNum]}`;
-        const endStr = `${days[4].dayNum} de ${SCHEDULE_MONTH_LABELS[days[4].monthNum]} de ${days[4].dateIso.substring(0,4)}`;
-        const weekNum = 32 + offset;
-
-        return {
-            days,
-            label: `Semana ${weekNum}: ${startStr} a ${endStr}`
-        };
-    }
-
-    function renderScheduleWeeklyView() {
-        const container = document.getElementById('weekly-timetable-grid');
-        if (!container) return;
-
-        const weekInfo = getWeekDatesForOffset(scheduleWeekOffset);
-        const stageFilter = document.getElementById('cal-filter-stage-v2')?.value || 'all';
-        const subjectFilter = document.getElementById('cal-filter-subject-v2')?.value || 'all';
-        const schoolFilter = document.getElementById('cal-filter-school-v2')?.value || 'all';
-
-        let html = `
-            <div style="display: grid; grid-template-columns: 140px repeat(5, 1fr); border-bottom: 1px solid var(--border-color); background: var(--bg-secondary);">
-                <div style="padding: 12px; font-weight: 800; font-size: 0.78rem; color: var(--text-muted); text-align: center; border-right: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center;">
-                    HORÁRIO / AULA
-                </div>
-        `;
-
-        // Cabeçalhos dos 5 Dias da Semana
-        weekInfo.days.forEach(d => {
-            html += `
-                <div class="weekly-day-header" style="border-right: 1px solid var(--border-color);">
-                    <div style="font-size: 0.75rem; font-weight: 800; color: #6366f1; text-transform: uppercase;">${d.dayShort}</div>
-                    <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary);">${d.dayNum} ${SCHEDULE_MONTH_LABELS[d.monthNum].substring(0,3)}</div>
-                </div>
-            `;
-        });
-        html += '</div>';
-
-        // Linhas de Horário / Slots de Aula
-        SCHEDULE_TIME_SLOTS.forEach(slot => {
-            html += `
-                <div style="display: grid; grid-template-columns: 140px repeat(5, 1fr); border-bottom: 1px solid var(--border-color);">
-                    <!-- Coluna de Horário -->
-                    <div style="padding: 12px 10px; background: var(--bg-tertiary); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; text-align: center;">
-                        <span style="font-size: 0.82rem; font-weight: 800; color: var(--text-primary);">${slot.texto.split(' ')[0]} ${slot.texto.split(' ')[1]}</span>
-                        <span style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono);">${slot.texto.split('(')[1].replace(')', '')}</span>
-                    </div>
-            `;
-
-            // 5 Células de Dias para este Horário (com Suporte a Drag & Drop)
-            weekInfo.days.forEach(day => {
-                const lesson = scheduleLessonsData.find(item => {
-                    if (item.data !== day.dateIso) return false;
-                    if (item.horarioSlot !== slot.id) return false;
-                    if (stageFilter !== 'all' && item.etapa !== stageFilter) return false;
-                    if (subjectFilter !== 'all' && item.disciplina !== subjectFilter) return false;
-                    if (schoolFilter !== 'all' && item.escola !== schoolFilter) return false;
-                    return true;
-                });
-
-                if (lesson) {
-                    const isDone = lesson.status === 'concluida';
-                    const statusBadge = isDone
-                        ? '<span class="badge badge-success" style="font-size:0.65rem; padding:2px 6px;">✓ Concluída</span>'
-                        : '<span class="badge badge-warning" style="font-size:0.65rem; padding:2px 6px;">⏳ Planejada</span>';
-
-                    html += `
-                        <div class="weekly-slot-box" ondragover="handleSlotDragOver(event)" ondragleave="handleSlotDragLeave(event)" ondrop="handleSlotDrop(event, '${day.dateIso}', '${slot.id}')">
-                            <div class="weekly-lesson-card ${isDone ? 'status-concluida' : 'status-planejada'}" draggable="true" ondragstart="handleLessonDragStart(event, '${lesson.id}')">
-                                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 4px;">
-                                    <span style="font-weight: 800; font-family: var(--font-mono); font-size: 0.75rem; color: #6366f1;">${lesson.codigoHabilidade}</span>
-                                    ${statusBadge}
-                                </div>
-                                <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; line-height: 1.25;">
-                                    ${lesson.objetoConhecimento}
-                                </div>
-                                <div style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.3; margin-bottom: 6px;">
-                                    ${lesson.disciplina} • ${lesson.turma}
-                                </div>
-                                <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 6px; border-top: 1px dashed var(--border-color);">
-                                    <button type="button" onclick="toggleLessonStatus('${lesson.id}');" class="btn btn-outline btn-sm" style="font-size: 0.68rem; padding: 2px 6px; height: 24px; color: ${isDone ? '#10b981' : '#f97316'}; border-color: ${isDone ? '#10b981' : '#f97316'};" title="Alternar status da aula">
-                                        ${isDone ? '✓ Trabalhada' : 'Dar Baixa'}
-                                    </button>
-                                    <div style="display: flex; gap: 4px;">
-                                        <button type="button" onclick="openSchedulePlannerDrawer(null, null, '${lesson.id}');" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:11px;" title="Editar">✏️</button>
-                                        <button type="button" onclick="handleDeleteScheduleLesson('${lesson.id}');" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:11px;" title="Remover">🗑️</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    html += `
-                        <div class="weekly-slot-box" ondragover="handleSlotDragOver(event)" ondragleave="handleSlotDragLeave(event)" ondrop="handleSlotDrop(event, '${day.dateIso}', '${slot.id}')" onclick="openSchedulePlannerDrawer('${day.dateIso}', '${slot.id}');" style="cursor: pointer; justify-content: center; align-items: center;">
-                            <div style="font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
-                                <span style="font-size: 1rem; color: #6366f1;">+</span> Agendar Aula
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-
-            html += '</div>';
-        });
-
-        container.innerHTML = html;
-    }
-
-    // -------------------------------------------------------------------------
-    // DRAG AND DROP HANDLERS (REORDENAÇÃO FLUÍDA)
-    // -------------------------------------------------------------------------
-    function handleLessonDragStart(event, lessonId) {
-        draggedLessonId = lessonId;
-        if (event.dataTransfer) {
-            event.dataTransfer.setData('text/plain', lessonId);
-            event.dataTransfer.effectAllowed = 'move';
-        }
-    }
-    window.handleLessonDragStart = handleLessonDragStart;
-
-    function handleSlotDragOver(event) {
-        event.preventDefault();
-        if (event.currentTarget) event.currentTarget.classList.add('drag-over');
-    }
-    window.handleSlotDragOver = handleSlotDragOver;
-
-    function handleSlotDragLeave(event) {
-        if (event.currentTarget) event.currentTarget.classList.remove('drag-over');
-    }
-    window.handleSlotDragLeave = handleSlotDragLeave;
-
-    function handleSlotDrop(event, targetDate, targetSlot) {
-        event.preventDefault();
-        if (event.currentTarget) event.currentTarget.classList.remove('drag-over');
-
-        const lessonId = draggedLessonId || (event.dataTransfer ? event.dataTransfer.getData('text/plain') : null);
-        if (!lessonId) return;
-
-        const lesson = scheduleLessonsData.find(l => l.id === lessonId);
-        if (lesson) {
-            lesson.data = targetDate;
-            lesson.horarioSlot = targetSlot;
-            const slotObj = SCHEDULE_TIME_SLOTS.find(s => s.id === targetSlot);
-            if (slotObj) lesson.horarioTexto = slotObj.texto;
-
-            saveScheduleDatabase();
-            renderActiveScheduleView();
-            showToast(`Aula de ${lesson.disciplina} movida para ${targetDate} (${slotObj ? slotObj.texto : targetSlot}) com sucesso!`, 'calendar');
-        }
-        draggedLessonId = null;
-    }
-    window.handleSlotDrop = handleSlotDrop;
-
-    // -------------------------------------------------------------------------
-    // DRAWER DE PLANEJAMENTO: ABERTURA, AUTOCOMPLETE E SALVAMENTO
-    // -------------------------------------------------------------------------
-    function openSchedulePlannerDrawer(defaultDate, defaultSlot, existingLessonId) {
-        const drawer = document.getElementById('drawer-schedule-planner');
-        if (!drawer) return;
-
-        const titleEl = document.getElementById('drawer-planner-title');
-        const idInput = document.getElementById('planner-lesson-id');
-        const dateInput = document.getElementById('planner-lesson-date');
-        const slotSelect = document.getElementById('planner-lesson-slot');
-        const subjectSelect = document.getElementById('planner-lesson-subject');
-        const turmaSelect = document.getElementById('planner-lesson-turma');
-        const contentInput = document.getElementById('planner-lesson-content');
-        const methInput = document.getElementById('planner-lesson-methodology');
-        const statusSelect = document.getElementById('planner-lesson-status');
-
-        if (existingLessonId) {
-            const les = scheduleLessonsData.find(l => l.id === existingLessonId);
-            if (les) {
-                if (titleEl) titleEl.textContent = 'Editar Planejamento de Aula';
-                if (idInput) idInput.value = les.id;
-                if (dateInput) dateInput.value = les.data;
-                if (slotSelect) slotSelect.value = les.horarioSlot;
-                if (subjectSelect) subjectSelect.value = les.disciplina;
-                if (turmaSelect) turmaSelect.value = les.turma;
-                if (contentInput) contentInput.value = les.objetoConhecimento;
-                if (methInput) methInput.value = les.metodologia;
-                if (statusSelect) statusSelect.value = les.status;
-
-                updatePlannerSkillDropdown(les.codigoHabilidade);
-            }
-        } else {
-            if (titleEl) titleEl.textContent = 'Novo Planejamento de Aula';
-            if (idInput) idInput.value = '';
-            if (dateInput) dateInput.value = defaultDate || '2026-08-03';
-            if (slotSelect) slotSelect.value = defaultSlot || 'slot_1';
-            if (contentInput) contentInput.value = '';
-            if (methInput) methInput.value = '';
-            if (statusSelect) statusSelect.value = 'planejada';
-
-            updatePlannerSkillDropdown();
-        }
-
-        drawer.style.display = 'block';
-        if (typeof safeCreateIcons === 'function') safeCreateIcons();
-    }
-    window.openSchedulePlannerDrawer = openSchedulePlannerDrawer;
-
-    function closeSchedulePlannerDrawer() {
-        const drawer = document.getElementById('drawer-schedule-planner');
-        if (drawer) drawer.style.display = 'none';
-    }
-    window.closeSchedulePlannerDrawer = closeSchedulePlannerDrawer;
-
-    function updatePlannerSkillDropdown(selectedCode) {
-        const subject = document.getElementById('planner-lesson-subject')?.value || 'Língua Portuguesa';
-        const skillSelect = document.getElementById('planner-lesson-skill');
-        if (!skillSelect) return;
-
-        // Filtra do catálogo BNCC
-        const availableSkills = (typeof BNCC_HABILIDADES_DATABASE !== 'undefined' ? BNCC_HABILIDADES_DATABASE : [])
-            .filter(s => s.disciplina === subject);
-
-        if (availableSkills.length === 0) {
-            skillSelect.innerHTML = `
-                <option value="EF02LP01">EF02LP01 - Decodificação e Leitura de Palavras</option>
-                <option value="EF02LP04">EF02LP04 - Segmentação de Palavras e Sílabas</option>
-                <option value="EF02MA01">EF02MA01 - Sistema de Numeração Decimal</option>
-                <option value="EF02MA06">EF02MA06 - Problemas de Adição e Subtração</option>
-            `;
-            return;
-        }
-
-        skillSelect.innerHTML = availableSkills.map(s => `
-            <option value="${s.code}" ${s.code === selectedCode ? 'selected' : ''}>${s.code} - ${s.objeto} (${s.ano})</option>
-        `).join('');
-    }
-    window.updatePlannerSkillDropdown = updatePlannerSkillDropdown;
-
-    function autoFillPlannerFromSkill() {
-        const skillCode = document.getElementById('planner-lesson-skill')?.value;
-        if (!skillCode) return;
-
-        const skillObj = (typeof BNCC_HABILIDADES_DATABASE !== 'undefined' ? BNCC_HABILIDADES_DATABASE : []).find(s => s.code === skillCode);
-        if (skillObj) {
-            const contentInput = document.getElementById('planner-lesson-content');
-            const methInput = document.getElementById('planner-lesson-methodology');
-
-            if (contentInput && !contentInput.value) {
-                contentInput.value = skillObj.objeto;
-            }
-            if (methInput && !methInput.value) {
-                methInput.value = `1. Introdução prática com exploração da habilidade ${skillObj.code};\n2. Atividade guiada em grupos abordando ${skillObj.descricao};\n3. Consolidação e registro de aprendizagem no caderno individual.`;
-            }
-        }
-    }
-    window.autoFillPlannerFromSkill = autoFillPlannerFromSkill;
-
-    function handleSaveScheduleLesson(e) {
-        if (e && e.preventDefault) e.preventDefault();
-
-        const id = document.getElementById('planner-lesson-id')?.value;
-        const date = document.getElementById('planner-lesson-date')?.value || '2026-08-03';
-        const slot = document.getElementById('planner-lesson-slot')?.value || 'slot_1';
-        const subject = document.getElementById('planner-lesson-subject')?.value || 'Língua Portuguesa';
-        const turma = document.getElementById('planner-lesson-turma')?.value || '2º Ano A';
-        const skillCode = document.getElementById('planner-lesson-skill')?.value || 'EF02LP01';
-        const content = document.getElementById('planner-lesson-content')?.value || 'Conteúdo Programático';
-        const methodology = document.getElementById('planner-lesson-methodology')?.value || 'Metodologia e atividades.';
-        const status = document.getElementById('planner-lesson-status')?.value || 'planejada';
-
-        const slotObj = SCHEDULE_TIME_SLOTS.find(s => s.id === slot);
-        const horarioTexto = slotObj ? slotObj.texto : '1ª Aula (07:30 - 08:20)';
-
-        const skillObj = (typeof BNCC_HABILIDADES_DATABASE !== 'undefined' ? BNCC_HABILIDADES_DATABASE : []).find(s => s.code === skillCode);
-        const descricaoHabilidade = skillObj ? skillObj.descricao : 'Desenvolvimento das competências da BNCC.';
-
-        if (id) {
-            // Edição
-            const existing = scheduleLessonsData.find(l => l.id === id);
-            if (existing) {
-                existing.data = date;
-                existing.horarioSlot = slot;
-                existing.horarioTexto = horarioTexto;
-                existing.disciplina = subject;
-                existing.turma = turma;
-                existing.codigoHabilidade = skillCode;
-                existing.descricaoHabilidade = descricaoHabilidade;
-                existing.objetoConhecimento = content;
-                existing.metodologia = methodology;
-                existing.status = status;
-            }
-        } else {
-            // Nova Aula
-            const newId = 'plan_' + Date.now();
-            const newLesson = {
-                id: newId,
-                data: date,
-                horarioSlot: slot,
-                horarioTexto: horarioTexto,
-                etapa: turma.split(' ')[0] + ' ' + turma.split(' ')[1],
-                turma: turma,
-                disciplina: subject,
-                escola: 'UI JOSE CORREA LIMA',
-                codigoHabilidade: skillCode,
-                descricaoHabilidade: descricaoHabilidade,
-                objetoConhecimento: content,
-                metodologia: methodology,
-                status: status,
-                replicadoPara: []
-            };
-            scheduleLessonsData.push(newLesson);
-
-            // Replicação para outras turmas
-            ['rep-turma-2b', 'rep-turma-2c', 'rep-turma-5b'].forEach(chkId => {
-                const chk = document.getElementById(chkId);
-                if (chk && chk.checked) {
-                    const replicated = JSON.parse(JSON.stringify(newLesson));
-                    replicated.id = 'plan_rep_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
-                    replicated.turma = chk.value;
-                    scheduleLessonsData.push(replicated);
-                }
-            });
-        }
-
-        saveScheduleDatabase();
-        closeSchedulePlannerDrawer();
-        renderActiveScheduleView();
-        alert(`✅ Aula de ${subject} (${skillCode}) salva no cronograma com sucesso!`);
-    }
-    window.handleSaveScheduleLesson = handleSaveScheduleLesson;
-
-    function toggleLessonStatus(lessonId) {
-        const les = scheduleLessonsData.find(l => l.id === lessonId);
-        if (les) {
-            les.status = (les.status === 'concluida') ? 'planejada' : 'concluida';
-            saveScheduleDatabase();
-            renderActiveScheduleView();
-        }
-    }
-    window.toggleLessonStatus = toggleLessonStatus;
-
-    function handleDeleteScheduleLesson(lessonId) {
-        if (confirm('Tem certeza que deseja remover esta aula do cronograma?')) {
-            scheduleLessonsData = scheduleLessonsData.filter(l => l.id !== lessonId);
-            saveScheduleDatabase();
-            renderActiveScheduleView();
-        }
-    }
-    window.handleDeleteScheduleLesson = handleDeleteScheduleLesson;
-
-    function handleAutoGenerateWeeklySchedule() {
-        alert('✨ Grade semanal sugerida automaticamente com base nos descritores prioritários da BNCC e SEAMA!');
-        renderActiveScheduleView();
-    }
-    window.handleAutoGenerateWeeklySchedule = handleAutoGenerateWeeklySchedule;
-
-    function handlePrintScheduleReport() {
-        window.print();
-    }
-    window.handlePrintScheduleReport = handlePrintScheduleReport;
-
-
-
-    // =========================================================================
-    // =========================================================================
-    // BLINDAGEM TÉCNICA: TOASTS, LANÇAMENTO DE NOTAS, DASHBOARD & GUARDS
-    // =========================================================================
-    // =========================================================================
-
-    // 1. Helper Global Seguro de Toasts
-    function showToast(message, type = 'info') {
-        try {
-            console.log('[Toast Notification]', message);
-            const container = document.getElementById('toast-floating-container');
-            if (!container) return;
-
-            const toast = document.createElement('div');
-            let iconSymbol = 'ℹ️';
-            let typeClass = 'toast-info';
-
-            if (type === 'check' || type === 'success') {
-                iconSymbol = '✅';
-                typeClass = 'toast-success';
-            } else if (type === 'alert-triangle' || type === 'warning') {
-                iconSymbol = '⚠️';
-                typeClass = 'toast-warning';
-            } else if (type === 'danger' || type === 'x') {
-                iconSymbol = '❌';
-                typeClass = 'toast-danger';
-            } else if (type === 'sparkles') {
-                iconSymbol = '✨';
-                typeClass = 'toast-info';
-            }
-
-            toast.className = 'toast-item ' + typeClass;
-            toast.innerHTML = `<span>${iconSymbol}</span> <span>${message}</span>`;
-
-            container.appendChild(toast);
-
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(-10px)';
-                setTimeout(() => {
-                    if (toast.parentNode) toast.parentNode.removeChild(toast);
-                }, 300);
-            }, 3500);
-        } catch(err) {
-            console.warn('[Toast Fallback Error]', err);
-        }
-    }
-    window.showToast = showToast;
-
-
-    // 2. Implementação Completa: renderLancarNotasTable()
-    function renderLancarNotasTable() {
-        try {
-            const tableBody = document.getElementById('score-entry-tbody') || document.querySelector('#lancar-notas-sub tbody');
-            if (!tableBody) return;
-
-            const students = (typeof getMasterStudentsDatabase === 'function') ? getMasterStudentsDatabase().slice(0, 15) : [];
-            if (students.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="7" style="padding:20px; text-align:center; color:var(--text-muted);">Selecione um simulado e uma turma para lançar as respostas dos estudantes.</td></tr>';
-                return;
-            }
-
-            tableBody.innerHTML = students.map((st, idx) => {
-                const optA = idx % 4 === 0 ? 'checked' : '';
-                const optB = idx % 4 === 1 ? 'checked' : '';
-                const optC = idx % 4 === 2 ? 'checked' : '';
-                const optD = idx % 4 === 3 ? 'checked' : '';
-
-                return `
-                    <tr style="border-bottom: 1px solid var(--border-color); height: 50px;">
-                        <td style="padding: 10px 14px; font-weight: 700; font-family: var(--font-mono); color: var(--text-muted); width: 50px;">
-                            #${idx + 1}
-                        </td>
-                        <td style="padding: 10px 14px;">
-                            <strong style="font-size: 0.88rem; color: var(--text-primary); display: block;">${st.nome}</strong>
-                            <span style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono);">Matrícula: ${st.matricula || '2026' + (1000 + idx)}</span>
-                        </td>
-                        <td style="padding: 10px 14px; text-align: center;">
-                            <div style="display: flex; gap: 8px; justify-content: center;">
-                                <label style="cursor: pointer;"><input type="radio" name="q1_${idx}" value="A" ${optA}> A</label>
-                                <label style="cursor: pointer;"><input type="radio" name="q1_${idx}" value="B" ${optB}> B</label>
-                                <label style="cursor: pointer;"><input type="radio" name="q1_${idx}" value="C" ${optC}> C</label>
-                                <label style="cursor: pointer;"><input type="radio" name="q1_${idx}" value="D" ${optD}> D</label>
-                            </div>
-                        </td>
-                        <td style="padding: 10px 14px; text-align: center;">
-                            <div style="display: flex; gap: 8px; justify-content: center;">
-                                <label style="cursor: pointer;"><input type="radio" name="q2_${idx}" value="A" ${optC}> A</label>
-                                <label style="cursor: pointer;"><input type="radio" name="q2_${idx}" value="B" ${optA}> B</label>
-                                <label style="cursor: pointer;"><input type="radio" name="q2_${idx}" value="C" ${optB}> C</label>
-                                <label style="cursor: pointer;"><input type="radio" name="q2_${idx}" value="D" ${optD}> D</label>
-                            </div>
-                        </td>
-                        <td style="padding: 10px 14px; text-align: center;">
-                            <div style="display: flex; gap: 8px; justify-content: center;">
-                                <label style="cursor: pointer;"><input type="radio" name="q3_${idx}" value="A" ${optB}> A</label>
-                                <label style="cursor: pointer;"><input type="radio" name="q3_${idx}" value="B" ${optD}> B</label>
-                                <label style="cursor: pointer;"><input type="radio" name="q3_${idx}" value="C" ${optA}> C</label>
-                                <label style="cursor: pointer;"><input type="radio" name="q3_${idx}" value="D" ${optD}> D</label>
-                            </div>
-                        </td>
-                        <td style="padding: 10px 14px; text-align: center; font-weight: 800; font-family: var(--font-mono); color: #10b981;">
-                            ${(6.5 + (idx % 4) * 0.8).toFixed(1)}
-                        </td>
-                        <td style="padding: 10px 14px; text-align: center;">
-                            <span class="badge badge-success" style="font-size:0.68rem;">Lançado</span>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        } catch(err) {
-            console.warn('[renderLancarNotasTable error]', err);
-        }
-    }
-    window.renderLancarNotasTable = renderLancarNotasTable;
-
-
-    // 3. Implementação Completa: renderResultadosDashboard()
-    function renderResultadosDashboard() {
-        try {
-            const heatmapGrid = document.getElementById('dashboard-heatmap-grid');
-            if (heatmapGrid) {
-                const descriptors = [
-                    { code: 'D1', taxa: 78, nivel: 'Adequado', color: '#10b981' },
-                    { code: 'D2', taxa: 64, nivel: 'Atenção', color: '#f59e0b' },
-                    { code: 'D3', taxa: 82, nivel: 'Adequado', color: '#10b981' },
-                    { code: 'D4', taxa: 44, nivel: 'Crítico', color: '#ef4444' },
-                    { code: 'D5', taxa: 71, nivel: 'Adequado', color: '#10b981' },
-                    { code: 'D6', taxa: 53, nivel: 'Atenção', color: '#f59e0b' },
-                    { code: 'D13', taxa: 41, nivel: 'Crítico', color: '#ef4444' },
-                    { code: 'D14', taxa: 68, nivel: 'Atenção', color: '#f59e0b' },
-                    { code: 'D15', taxa: 85, nivel: 'Adequado', color: '#10b981' },
-                    { code: 'D16', taxa: 58, nivel: 'Atenção', color: '#f59e0b' },
-                    { code: 'D17', taxa: 76, nivel: 'Adequado', color: '#10b981' },
-                    { code: 'D18', taxa: 39, nivel: 'Crítico', color: '#ef4444' }
-                ];
-
-                heatmapGrid.innerHTML = descriptors.map(d => `
-                    <div style="background: ${d.color}15; border: 1.5px solid ${d.color}; border-radius: 8px; padding: 10px 6px; text-align: center; cursor: pointer; transition: transform 0.2s;" title="Descritor ${d.code}: ${d.taxa}% de acertos (${d.nivel})">
-                        <strong style="font-size: 0.88rem; color: ${d.color}; display: block; font-family: var(--font-mono);">${d.code}</strong>
-                        <span style="font-size: 0.74rem; font-weight: 800; color: var(--text-primary);">${d.taxa}%</span>
-                    </div>
-                `).join('');
-            }
-
-            const adhesionEl = document.getElementById('results-adhesion-value');
-            if (adhesionEl) adhesionEl.textContent = '96.2%';
-
-            const profEl = document.getElementById('results-proficiency-value');
-            if (profEl) profEl.textContent = '224.8';
-
-            const targetEl = document.getElementById('results-target-value');
-            if (targetEl) targetEl.textContent = '235.0';
-        } catch(err) {
-            console.warn('[renderResultadosDashboard error]', err);
-        }
-    }
-    window.renderResultadosDashboard = renderResultadosDashboard;
-
-
-    // 4. Renderizador do Accordion Mobile do Cronograma
-    function renderScheduleMonthlyMobileAccordion() {
-        try {
-            const accordion = document.getElementById('calendar-monthly-accordion-mobile');
-            if (!accordion) return;
-
-            const stageFilter = document.getElementById('cal-filter-stage-v2')?.value || 'all';
-            const subjectFilter = document.getElementById('cal-filter-subject-v2')?.value || 'all';
-            const schoolFilter = document.getElementById('cal-filter-school-v2')?.value || 'all';
-
-            const daysInCurrentMonth = new Date(scheduleCalYear, scheduleCalMonth, 0).getDate();
-
-            // Agrupa os dias em 5 semanas
-            const weeks = [
-                { num: 1, label: 'Semana 1 (01 a 07 de Agosto)', days: [] },
-                { num: 2, label: 'Semana 2 (08 a 14 de Agosto)', days: [] },
-                { num: 3, label: 'Semana 3 (15 a 21 de Agosto)', days: [] },
-                { num: 4, label: 'Semana 4 (22 a 28 de Agosto)', days: [] },
-                { num: 5, label: 'Semana 5 (29 a 31 de Agosto)', days: [] }
-            ];
-
-            for (let d = 1; d <= daysInCurrentMonth; d++) {
-                const wIdx = Math.min(Math.floor((d - 1) / 7), 4);
-                const monthStr = String(scheduleCalMonth).padStart(2, '0');
-                const dayStr = String(d).padStart(2, '0');
-                const dateIso = `${scheduleCalYear}-${monthStr}-${dayStr}`;
-
-                const dateObj = new Date(scheduleCalYear, scheduleCalMonth - 1, d);
-                const dayOfWeek = dateObj.getDay();
-                const dayNames = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
-
-                const dayLessons = (scheduleLessonsData || []).filter(item => {
-                    if (item.data !== dateIso) return false;
-                    if (stageFilter !== 'all' && item.etapa !== stageFilter) return false;
-                    if (subjectFilter !== 'all' && item.disciplina !== subjectFilter) return false;
-                    if (schoolFilter !== 'all' && item.escola !== schoolFilter) return false;
-                    return true;
-                });
-
-                weeks[wIdx].days.push({
-                    dayNum: d,
-                    dateIso: dateIso,
-                    dayName: dayNames[dayOfWeek],
-                    isWeekend: (dayOfWeek === 0 || dayOfWeek === 6),
-                    lessons: dayLessons
-                });
-            }
-
-            accordion.innerHTML = weeks.map((w, wIndex) => {
-                const isFirstWeek = (wIndex === 0 || wIndex === 1);
-                const daysHtml = w.days.filter(d => !d.isWeekend).map(d => {
-                    let lessonsListHtml = '';
-                    if (d.lessons.length > 0) {
-                        lessonsListHtml = d.lessons.map(les => {
-                            const isDone = les.status === 'concluida';
-                            return `
-                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; background: ${isDone ? '#dcfce7' : '#ffedd5'}; border: 1px solid ${isDone ? '#86efac' : '#fed7aa'}; border-radius: 6px; font-size: 0.75rem;">
-                                    <div style="font-weight: 700; color: ${isDone ? '#15803d' : '#c2410c'};">
-                                        ${isDone ? '✓' : '⏳'} ${les.codigoHabilidade} - ${les.objetoConhecimento}
-                                    </div>
-                                    <button type="button" onclick="event.stopPropagation(); toggleLessonStatus('${les.id}');" style="background:none; border:none; color:${isDone ? '#15803d' : '#c2410c'}; font-weight:800; cursor:pointer;">
-                                        ${isDone ? 'Concluída' : 'Dar Baixa'}
-                                    </button>
-                                </div>
-                            `;
-                        }).join('');
-                    } else {
-                        lessonsListHtml = `<div style="font-size: 0.72rem; color: var(--text-muted);">Nenhuma aula planejada para este dia.</div>`;
-                    }
-
-                    return `
-                        <div class="schedule-day-mobile-row">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <strong style="font-size: 0.85rem; color: var(--text-primary);">
-                                    ${d.dayNum} - ${d.dayName}
-                                </strong>
-                                <button type="button" class="btn btn-outline btn-sm" onclick="event.stopPropagation(); openSchedulePlannerDrawer('${d.dateIso}');" style="font-size: 0.7rem; padding: 2px 8px; height: 26px;">
-                                    + Agendar
-                                </button>
-                            </div>
-                            ${lessonsListHtml}
-                        </div>
-                    `;
-                }).join('');
-
-                return `
-                    <div class="schedule-week-accordion-card">
-                        <div class="schedule-week-accordion-header" onclick="const b = document.getElementById('acc-week-body-${w.num}'); if(b) b.style.display = (b.style.display === 'none' ? 'flex' : 'none');">
-                            <span>📅 ${w.label}</span>
-                            <span style="font-size: 0.8rem; color: #6366f1;">Alternar ▾</span>
-                        </div>
-                        <div class="schedule-week-accordion-body" id="acc-week-body-${w.num}" style="display: ${isFirstWeek ? 'flex' : 'none'};">
-                            ${daysHtml}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        } catch(err) {
-            console.warn('[renderScheduleMonthlyMobileAccordion error]', err);
-        }
-    }
-    window.renderScheduleMonthlyMobileAccordion = renderScheduleMonthlyMobileAccordion;
-
-
-
-    // =========================================================================
-    // =========================================================================
-    // MÓDULO MASTER: PAINEL DA ESCOLA (TURMAS, PROFESSORES, ALUNOS & HISTÓRICO)
-    // E DASHBOARD MONITORAMENTO GERAL COM LINHA DO TEMPO SAEB / SIMULADOS
-    // =========================================================================
-    // =========================================================================
-
-    // 1. Base de Dados de Turmas por Escola (Persistência LocalStorage)
-    let schoolTurmasDatabase = [];
-
-    function initSchoolTurmasDatabase() {
-        try {
-            const saved = localStorage.getItem('teacher_school_turmas_db');
-            if (saved !== null) {
-                schoolTurmasDatabase = JSON.parse(saved);
-            } else {
-                // Iniciar limpo para que as escolas venham apenas com turmas reais criadas pelo usuário
-                schoolTurmasDatabase = [];
-                localStorage.setItem('teacher_school_turmas_db', JSON.stringify(schoolTurmasDatabase));
-            }
-        } catch(e) {
-            schoolTurmasDatabase = [];
-        }
-    }
-
-    function saveSchoolTurmasDatabase() {
-        try {
-            localStorage.setItem('teacher_school_turmas_db', JSON.stringify(schoolTurmasDatabase));
-        } catch(e) {}
-    }
-
-    // 2. Abertura do Painel da Escola (Visualizar Escola)
-    let currentSelectedSchool = 'UI JOSE CORREA LIMA';
-    let currentSchoolInnerTab = 'turmas';
-
-    function openSchoolWorkspace(schoolName) {
-        currentSelectedSchool = schoolName || 'UI JOSE CORREA LIMA';
-        initSchoolTurmasDatabase();
-
-        const overview = document.getElementById('schools-overview-container');
-        const detailView = document.getElementById('school-detail-view');
-
-        if (overview) {
-            overview.classList.add('hidden');
-            overview.style.display = 'none';
-        }
-        if (detailView) {
-            detailView.classList.remove('hidden');
-            detailView.style.display = 'block';
-        }
-
-        // Metadados da Escola
-        const nameEl = document.getElementById('school-detail-name');
-        const badgeEl = document.getElementById('school-detail-badge');
-        const metaEl = document.getElementById('school-detail-meta');
-
-        const officialSchools = (typeof getOfficialSchoolsState === 'function') ? getOfficialSchoolsState() : [];
-        const schoolObj = officialSchools.find(s => s.name === currentSelectedSchool || s.inep === currentSelectedSchool) || {
-            name: currentSelectedSchool,
-            inep: '21128120',
-            zone: 'Zona Rural',
-            director: 'Gestão Escolar Municipal',
-            phone: '(99) 9935-6218',
-            ideb2025: '5.2'
-        };
-
-        if (nameEl) nameEl.textContent = schoolObj.name || currentSelectedSchool;
-        if (badgeEl) {
-            const isRural = (schoolObj.zone || '').includes('Rural');
-            badgeEl.innerHTML = `<span>${isRural ? '🌾' : '🏫'}</span> <span>${schoolObj.zone || 'Zona Rural'}</span>`;
-            badgeEl.style.background = isRural ? 'rgba(245, 158, 11, 0.15)' : 'rgba(99, 102, 241, 0.15)';
-            badgeEl.style.color = isRural ? '#d97706' : '#6366f1';
-        }
-        if (metaEl) {
-            metaEl.textContent = `INEP: ${schoolObj.inep || '21128120'} • Direção: ${schoolObj.director || 'Gestão Escolar'} • Contato: ${schoolObj.phone || '-'} • Meta IDEB: 5.0 (Alcançado: ${schoolObj.ideb2025 || '5.2'})`;
-        }
-
-        switchSchoolInnerTab('turmas');
-        if (typeof window.scrollTo === 'function') window.scrollTo({ top: 0, behavior: 'smooth' });
-        if (typeof safeCreateIcons === 'function') safeCreateIcons();
-    }
-    window.openSchoolWorkspace = openSchoolWorkspace;
-
-    function backToSchoolsList() {
-        const overview = document.getElementById('schools-overview-container');
-        const detailView = document.getElementById('school-detail-view');
-
-        if (detailView) {
-            detailView.classList.add('hidden');
-            detailView.style.display = 'none';
-        }
-        if (overview) {
-            overview.classList.remove('hidden');
-            overview.style.display = 'block';
-        }
-        if (typeof window.scrollTo === 'function') window.scrollTo({ top: 0, behavior: 'smooth' });
-        if (typeof safeCreateIcons === 'function') safeCreateIcons();
-    }
-    window.backToSchoolsList = backToSchoolsList;
-
-    // 3. Alternância entre as Sub-Abas da Escola (Visão Geral, Turmas, Professores, Alunos)
-    function switchSchoolInnerTab(tabName) {
-        currentSchoolInnerTab = tabName;
-        document.querySelectorAll('.school-nav-tab-btn').forEach(btn => {
-            const isTarget = btn.getAttribute('data-tab') === tabName;
-            btn.classList.toggle('active', isTarget);
-        });
-
-        const container = document.getElementById('school-inner-tab-content-container');
-        if (!container) return;
-
-        if (tabName === 'turmas') {
-            renderSchoolTurmasTab(container);
-        } else if (tabName === 'professores') {
-            renderSchoolProfessoresTab(container);
-        } else if (tabName === 'alunos') {
-            renderSchoolAlunosTab(container);
-        } else if (tabName === 'visao-geral') {
-            renderSchoolOverviewTab(container);
-        }
-
-        if (typeof safeCreateIcons === 'function') safeCreateIcons();
-    }
-    window.switchSchoolInnerTab = switchSchoolInnerTab;
-
-    // -------------------------------------------------------------------------
-    // RENDERIZADOR DA ABA: TURMAS (CRIAR, EDITAR, EXCLUIR & VER DIÁRIO)
-    // -------------------------------------------------------------------------
-    function renderSchoolTurmasTab(container) {
-        initSchoolTurmasDatabase();
-        const turmas = schoolTurmasDatabase.filter(t => t.escola === currentSelectedSchool);
-
-        let turmasCardsHtml = '';
-        if (turmas.length === 0) {
-            turmasCardsHtml = `
-                <div style="padding: 40px 20px; text-align: center; color: var(--text-muted); background: var(--bg-primary); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
-                    <div style="font-size: 2.2rem; margin-bottom: 8px;">🏫</div>
-                    <h4 style="font-weight: 700; color: var(--text-primary); font-size: 1rem; margin: 0 0 4px 0;">Nenhuma turma cadastrada nesta escola</h4>
-                    <p style="font-size: 0.82rem; margin: 0 0 16px 0; color: var(--text-secondary);">Cadastre as turmas reais para registrar alunos, gerenciar professores e acompanhar o Diário de Classe.</p>
-                    <button type="button" onclick="openCreateTurmaModal();" class="btn btn-primary" style="font-weight: 700; background: #6366f1; border-color: #6366f1;">
-                        + Cadastrar Nova Turma
-                    </button>
-                </div>
-            `;
-        } else {
-            turmasCardsHtml = `
-                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px;">
-                    ${turmas.map(t => `
-                        <div class="turma-card-item" style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.04);">
-                            <div>
-                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-                                    <div>
-                                        <h4 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">${t.nome}</h4>
-                                        <span style="font-size: 0.75rem; color: #6366f1; font-weight: 700;">${t.etapa} • ${t.turno}</span>
-                                    </div>
-                                    <span class="badge badge-success" style="font-size: 0.68rem;">Ativa</span>
-                                </div>
-                                
-                                <div style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 14px; display: flex; flex-direction: column; gap: 4px;">
-                                    <div>👨‍🏫 <strong>Regente:</strong> ${t.regente || 'Docente a Atribuir'}</div>
-                                    <div>👥 <strong>Estudantes:</strong> <span style="font-weight: 800; color: var(--text-primary);">${t.totalAlunos || 25} matriculados</span></div>
-                                </div>
-                            </div>
-
-                            <div style="display: flex; gap: 8px; flex-wrap: wrap; padding-top: 12px; border-top: 1px dashed var(--border-color); align-items: center;">
-                                <!-- Botão Principal: Ver Diário -->
-                                <button type="button" onclick="openTurmaJournalModal('${t.id}', '${t.nome}', '${t.escola}');" class="btn btn-primary btn-sm" style="flex: 1; font-size: 0.78rem; font-weight: 700; background: #6366f1; border-color: #6366f1; display: flex; align-items: center; justify-content: center; gap: 4px;">
-                                    📖 Ver Diário
-                                </button>
-                                
-                                <!-- Botão de Opções: Editar Turma, Alunos e Excluir -->
-                                <button type="button" onclick="openEditTurmaModal('${t.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem;" title="Editar Dados da Turma">
-                                    ✏️ Editar
-                                </button>
-                                <button type="button" onclick="openManageClassStudentsModal('${t.id}', '${t.nome}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem;" title="Enturmação de Alunos">
-                                    👥 Alunos
-                                </button>
-                                <button type="button" onclick="handleDeleteTurma('${t.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem; color: #ef4444; border-color: #fca5a5;" title="Excluir Turma">
-                                    🗑️ Excluir
-                                </button>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        container.innerHTML = `
-            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
-                    <div>
-                        <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">Turmas e Enturmações da Escola</h3>
-                        <p style="margin: 2px 0 0 0; font-size: 0.8rem; color: var(--text-secondary);">Cadastre turmas reais, acesse os diários de classe e monitore o avanço dos alunos</p>
-                    </div>
-                    <button type="button" onclick="openCreateTurmaModal();" class="btn btn-primary" style="display: flex; align-items: center; gap: 6px; font-weight: 700; background: #6366f1; border-color: #6366f1;">
-                        <i data-lucide="plus-circle" style="width:16px; height:16px;"></i> + Cadastrar Nova Turma
-                    </button>
-                </div>
-                ${turmasCardsHtml}
-            </div>
-        `;
-        if (typeof safeCreateIcons === 'function') safeCreateIcons();
-    }
-    window.renderSchoolTurmasTab = renderSchoolTurmasTab;
-
-    // -------------------------------------------------------------------------
-    // RENDERIZADOR DA ABA: PROFESSORES
-    // -------------------------------------------------------------------------
-    function renderSchoolProfessoresTab(container) {
-        const professores = [
-            { nome: 'Profa. Silvana Ferreira', cpf: '012.345.678-90', disciplina: 'Língua Portuguesa', turmas: '2º Ano A, 5º Ano A', status: 'Ativo' },
-            { nome: 'Prof. Carlos Alberto Silva', cpf: '123.456.789-01', disciplina: 'Matemática', turmas: '5º Ano A, 9º Ano A', status: 'Ativo' },
-            { nome: 'Profa. Maria Josefa Lima', cpf: '234.567.890-12', disciplina: 'Pedagogia / Polivalente', turmas: '2º Ano B', status: 'Ativo' },
-            { nome: 'Prof. Raimundo Nonato', cpf: '345.678.901-23', disciplina: 'Ciências da Natureza', turmas: '9º Ano A', status: 'Ativo' },
-            { nome: 'Profa. Francisca Antonia', cpf: '456.789.012-34', disciplina: 'História e Geografia', turmas: '2º Ano A', status: 'Ativo' }
-        ];
-
-        container.innerHTML = `
-            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
-                    <div>
-                        <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">Corpo Docente da Escola</h3>
-                        <p style="margin: 2px 0 0 0; font-size: 0.8rem; color: var(--text-secondary);">Professores vinculados às turmas e componentes curriculares</p>
-                    </div>
-                    <button type="button" onclick="alert('Funcionalidade: Vincular Docente da Rede aberto com sucesso!');" class="btn btn-primary" style="font-weight: 700; background: #6366f1; border-color: #6366f1;">
-                        + Vincular Novo Docente
-                    </button>
-                </div>
-
-                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; background: var(--bg-primary);">
-                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
-                        <thead style="background: var(--bg-tertiary); color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase;">
-                            <tr>
-                                <th style="padding: 12px 16px;">PROFESSOR(A)</th>
-                                <th style="padding: 12px 16px;">COMPONENTE / FORMAÇÃO</th>
-                                <th style="padding: 12px 16px;">TURMAS ATRIBUÍDAS</th>
-                                <th style="padding: 12px 16px; text-align: center;">STATUS</th>
-                                <th style="padding: 12px 16px; text-align: center;">AÇÕES</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${professores.map(p => `
-                                <tr style="border-bottom: 1px solid var(--border-color); height: 48px;">
-                                    <td style="padding: 10px 16px; font-weight: 700; color: var(--text-primary);">
-                                        👨‍🏫 ${p.nome}
-                                        <span style="display: block; font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono);">CPF: ${p.cpf}</span>
-                                    </td>
-                                    <td style="padding: 10px 16px; font-weight: 600; color: #6366f1;">${p.disciplina}</td>
-                                    <td style="padding: 10px 16px; font-size: 0.82rem; color: var(--text-secondary);">${p.turmas}</td>
-                                    <td style="padding: 10px 16px; text-align: center;">
-                                        <span class="badge badge-success" style="font-size:0.68rem;">${p.status}</span>
-                                    </td>
-                                    <td style="padding: 10px 16px; text-align: center;">
-                                        <button type="button" onclick="alert('Editar atribuição de ${p.nome}');" class="btn btn-outline btn-sm" style="font-size:0.72rem;">✏️ Gerenciar</button>
-                                    </td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        `;
-    }
-
-    // -------------------------------------------------------------------------
-    // RENDERIZADOR DA ABA: ALUNOS (COM BOTÃO VER HISTÓRICO DE PROGRESSÃO)
-    // -------------------------------------------------------------------------
-    function renderSchoolAlunosTab(container) {
-        const allStudents = (typeof getMasterStudentsDatabase === 'function') ? getMasterStudentsDatabase() : [];
-        const schoolStudents = allStudents.filter(s => s.escola === currentSelectedSchool);
-        const displayStudents = (schoolStudents.length > 0) ? schoolStudents : allStudents.slice(0, 20);
-
-        container.innerHTML = `
-            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
-                    <div>
-                        <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">Quadro de Estudantes Matriculados</h3>
-                        <p style="margin: 2px 0 0 0; font-size: 0.8rem; color: var(--text-secondary);">Acompanhamento individualizado e histórico de proficiência dos alunos da escola</p>
-                    </div>
-                    <button type="button" onclick="openCreateStudentModal();" class="btn btn-primary" style="display: flex; align-items: center; gap: 6px; font-weight: 700; background: #6366f1; border-color: #6366f1;">
-                        + Matricular Novo Aluno
-                    </button>
-                </div>
-
-                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow-x: auto; background: var(--bg-primary);">
-                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem; min-width: 650px;">
-                        <thead style="background: var(--bg-tertiary); color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase;">
-                            <tr>
-                                <th style="padding: 12px 16px;">NOME DO ALUNO</th>
-                                <th style="padding: 12px 16px;">MATRÍCULA / CPF</th>
-                                <th style="padding: 12px 16px;">TURMA / ETAPA</th>
-                                <th style="padding: 12px 16px;">TURNO</th>
-                                <th style="padding: 12px 16px; text-align: center;">AÇÕES & PROGRESSÃO</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${displayStudents.map((st, idx) => `
-                                <tr style="border-bottom: 1px solid var(--border-color); height: 48px;">
-                                    <td style="padding: 10px 16px; font-weight: 700; color: var(--text-primary);">
-                                        ${st.nome}
-                                    </td>
-                                    <td style="padding: 10px 16px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">
-                                        ${st.matricula || '2026' + (1000 + idx)}
-                                    </td>
-                                    <td style="padding: 10px 16px; font-weight: 600; color: #6366f1;">
-                                        ${st.turma || st.etapa || '5º Ano A'}
-                                    </td>
-                                    <td style="padding: 10px 16px; font-size: 0.82rem; color: var(--text-secondary);">
-                                        ${st.turno || 'Matutino'}
-                                    </td>
-                                    <td style="padding: 10px 16px; text-align: center;">
-                                        <button type="button" onclick="openStudentProgressModal('${st.id || ('st_' + idx)}', '${st.nome}');" class="btn btn-outline btn-sm" style="font-weight: 700; font-size: 0.75rem; color: #10b981; border-color: #10b981; display: inline-flex; align-items: center; gap: 4px;">
-                                            📊 Ver Histórico de Progressão
-                                        </button>
-                                    </td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        `;
-    }
-
-    // -------------------------------------------------------------------------
-    // RENDERIZADOR DA ABA: VISÃO GERAL DA ESCOLA
-    // -------------------------------------------------------------------------
-    function renderSchoolOverviewTab(container) {
-        container.innerHTML = `
-            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px;">
-                <h3 style="margin: 0 0 16px 0; font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">Desempenho Geral e Diagnóstico da Unidade</h3>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
-                    <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; text-align: center;">
-                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">IDEB / SAEB 2025</div>
-                        <div style="font-size: 1.8rem; font-weight: 800; color: #6366f1; margin-top: 4px;">5.2 ★</div>
-                        <div style="font-size: 0.72rem; color: #10b981; font-weight: 700;">+0.4 vs 2023</div>
-                    </div>
-                    <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; text-align: center;">
-                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">TAXA DE APROVAÇÃO</div>
-                        <div style="font-size: 1.8rem; font-weight: 800; color: #10b981; margin-top: 4px;">97.4%</div>
-                        <div style="font-size: 0.72rem; color: var(--text-secondary);">Fluxo Regular</div>
-                    </div>
-                    <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; text-align: center;">
-                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">META PACTUADA 2026</div>
-                        <div style="font-size: 1.8rem; font-weight: 800; color: #f59e0b; margin-top: 4px;">5.5</div>
-                        <div style="font-size: 0.72rem; color: #f59e0b; font-weight: 700;">Gap: -0.3 pontos</div>
-                    </div>
-                </div>
-
-                <div style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: var(--radius-md); padding: 16px;">
-                    <h4 style="margin: 0 0 8px 0; font-size: 0.95rem; font-weight: 800; color: #6366f1;">🎯 Plano de Ação Pedagógica (PDE)</h4>
-                    <p style="margin: 0; font-size: 0.85rem; color: var(--text-primary); line-height: 1.5;">
-                        Foco nas intervenções de Língua Portuguesa (Descritores D1 e D4) e Matemática (Descritor D13) para o 5º Ano. Aplicação de simulados quinzenais e monitoramento de recomposição ativo.
-                    </p>
-                </div>
-            </div>
-        `;
-    }
-
-    // -------------------------------------------------------------------------
-    // MODAL DE TURMA: CRIAR & EDITAR
-    // -------------------------------------------------------------------------
-    function openCreateTurmaModal() {
-        const modal = document.getElementById('modal-create-turma');
-        if (!modal) return;
-
-        document.getElementById('modal-turma-title').textContent = `+ Cadastrar Nova Turma em ${currentSelectedSchool}`;
-        document.getElementById('turma-form-id').value = '';
-        document.getElementById('turma-form-school').value = currentSelectedSchool;
-        document.getElementById('turma-form-name').value = '';
-        document.getElementById('turma-form-stage').value = '5º Ano';
-        document.getElementById('turma-form-shift').value = 'Matutino';
-        document.getElementById('turma-form-teacher').value = '';
-
-        modal.style.display = 'flex';
-        modal.classList.remove('hidden');
-    }
-    window.openCreateTurmaModal = openCreateTurmaModal;
-
-    function openEditTurmaModal(turmaId) {
-        const modal = document.getElementById('modal-create-turma');
-        if (!modal) return;
-
-        initSchoolTurmasDatabase();
-        const turma = schoolTurmasDatabase.find(t => t.id === turmaId);
-        if (turma) {
-            document.getElementById('modal-turma-title').textContent = 'Editar Dados da Turma';
-            document.getElementById('turma-form-id').value = turma.id;
-            document.getElementById('turma-form-school').value = turma.escola;
-            document.getElementById('turma-form-name').value = turma.nome;
-            document.getElementById('turma-form-stage').value = turma.etapa;
-            document.getElementById('turma-form-shift').value = turma.turno;
-            document.getElementById('turma-form-teacher').value = turma.regente || '';
-
-            modal.style.display = 'flex';
-            modal.classList.remove('hidden');
-        }
-    }
-    window.openEditTurmaModal = openEditTurmaModal;
-
-    function closeModalTurma() {
-        const modal = document.getElementById('modal-create-turma');
-        if (modal) {
-            modal.style.display = 'none';
-            modal.classList.add('hidden');
-        }
-    }
-    window.closeModalTurma = closeModalTurma;
-
-    function handleSaveTurma(e) {
-        if (e && e.preventDefault) e.preventDefault();
-
-        const id = document.getElementById('turma-form-id')?.value;
-        const escola = document.getElementById('turma-form-school')?.value || currentSelectedSchool;
-        const nome = document.getElementById('turma-form-name')?.value || 'Nova Turma';
-        const etapa = document.getElementById('turma-form-stage')?.value || '5º Ano';
-        const turno = document.getElementById('turma-form-shift')?.value || 'Matutino';
-        const regente = document.getElementById('turma-form-teacher')?.value || 'A Atribuir';
-
-        initSchoolTurmasDatabase();
-
-        if (id) {
-            const existing = schoolTurmasDatabase.find(t => t.id === id);
-            if (existing) {
-                existing.nome = nome;
-                existing.etapa = etapa;
-                existing.turno = turno;
-                existing.regente = regente;
-            }
-        } else {
-            const newTurma = {
-                id: 'turma_' + Date.now(),
-                escola: escola,
-                nome: nome,
-                etapa: etapa,
-                turno: turno,
-                regente: regente,
-                totalAlunos: 25
-            };
-            schoolTurmasDatabase.push(newTurma);
-        }
-
-        saveSchoolTurmasDatabase();
-        closeModalTurma();
-        switchSchoolInnerTab('turmas');
-        showToast(`Turma "${nome}" salva com sucesso em ${escola}!`, 'check');
-    }
-    window.handleSaveTurma = handleSaveTurma;
-
-    function handleDeleteTurma(turmaId) {
-        if (confirm('Tem certeza que deseja excluir esta turma? Os alunos serão desacoplados.')) {
-            initSchoolTurmasDatabase();
-            schoolTurmasDatabase = schoolTurmasDatabase.filter(t => t.id !== turmaId);
-            saveSchoolTurmasDatabase();
-            switchSchoolInnerTab('turmas');
-            showToast('Turma excluída com sucesso!', 'trash-2');
-        }
-    }
-    window.handleDeleteTurma = handleDeleteTurma;
-
-    // -------------------------------------------------------------------------
-    // MODAL DE GERENCIAR E VINCULAR ALUNOS À TURMA
-    // -------------------------------------------------------------------------
-    let activeManageTurmaId = null;
-    let activeManageTurmaName = null;
-
-    function openManageClassStudentsModal(turmaId, turmaName) {
-        activeManageTurmaId = turmaId;
-        activeManageTurmaName = turmaName;
-
-        const modal = document.getElementById('modal-manage-class-students');
-        if (!modal) return;
-
-        document.getElementById('modal-class-students-title').textContent = `Alunos da Turma: ${turmaName}`;
-        document.getElementById('modal-class-students-subtitle').textContent = `${currentSelectedSchool} • Vincule ou desvincule estudantes da rede`;
-
-        renderStudentsToLinkList();
-        modal.style.display = 'flex';
-        modal.classList.remove('hidden');
-    }
-    window.openManageClassStudentsModal = openManageClassStudentsModal;
-
-    function closeModalManageClassStudents() {
-        const modal = document.getElementById('modal-manage-class-students');
-        if (modal) {
-            modal.style.display = 'none';
-            modal.classList.add('hidden');
-        }
-        switchSchoolInnerTab('turmas');
-    }
-    window.closeModalManageClassStudents = closeModalManageClassStudents;
-
-    function renderStudentsToLinkList(searchQuery = '') {
-        const listContainer = document.getElementById('class-students-list-container');
-        if (!listContainer) return;
-
-        const allStudents = (typeof getMasterStudentsDatabase === 'function') ? getMasterStudentsDatabase() : [];
-        const schoolStudents = allStudents.filter(s => s.escola === currentSelectedSchool);
-        const pool = (schoolStudents.length > 0) ? schoolStudents : allStudents.slice(0, 25);
-
-        const filtered = pool.filter(s => !searchQuery || s.nome.toLowerCase().includes(searchQuery.toLowerCase()));
-
-        listContainer.innerHTML = filtered.map((st, idx) => {
-            const isLinked = (idx % 2 === 0);
-            return `
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
-                    <div>
-                        <strong style="font-size: 0.88rem; color: var(--text-primary); display: block;">${st.nome}</strong>
-                        <span style="font-size: 0.75rem; color: var(--text-muted);">Matrícula: ${st.matricula || '2026' + (1000 + idx)} • Etapa: ${st.etapa || '5º Ano'}</span>
-                    </div>
-                    <button type="button" onclick="toggleStudentLinkToTurma('${st.id}', this);" class="btn ${isLinked ? 'btn-outline' : 'btn-primary'} btn-sm" style="font-size: 0.75rem; font-weight: 700;">
-                        ${isLinked ? '✓ Vinculado' : '+ Vincular'}
-                    </button>
-                </div>
-            `;
-        }).join('');
-
-        const countEl = document.getElementById('modal-class-students-count');
-        if (countEl) countEl.textContent = `Total: ${filtered.length} Alunos Disponíveis`;
-    }
-
-    function filterStudentsToLink() {
-        const query = document.getElementById('search-student-to-link')?.value || '';
-        renderStudentsToLinkList(query);
-    }
-    window.filterStudentsToLink = filterStudentsToLink;
-
-    function toggleStudentLinkToTurma(studentId, btn) {
-        if (btn.classList.contains('btn-primary')) {
-            btn.className = 'btn btn-outline btn-sm';
-            btn.textContent = '✓ Vinculado';
-            showToast('Estudante vinculado à turma!', 'check');
-        } else {
-            btn.className = 'btn btn-primary btn-sm';
-            btn.textContent = '+ Vincular';
-            showToast('Estudante desvinculado da turma.', 'info');
-        }
-    }
-    window.toggleStudentLinkToTurma = toggleStudentLinkToTurma;
-
-    // -------------------------------------------------------------------------
-    // MODAL DE HISTÓRICO DE PROGRESSÃO DO ALUNO (PROFICIÊNCIA & NOTAS)
-    // -------------------------------------------------------------------------
-    function openStudentProgressModal(studentId, studentName, turmaNome) {
-        const modal = document.getElementById('modal-student-progress-history');
-        if (!modal) return;
-
-        const name = studentName || 'Estudante da Rede';
-        const school = currentSelectedSchool || 'UI JOSE CORREA LIMA';
-        const turma = turmaNome || '5º Ano A';
-
-        const nameEl = document.getElementById('modal-student-name');
-        const avatarEl = document.getElementById('modal-student-avatar');
-        const metaEl = document.getElementById('modal-student-meta');
-        const profBadgeEl = document.getElementById('modal-student-prof-badge');
-
-        if (nameEl) nameEl.textContent = name;
-        if (avatarEl) avatarEl.textContent = name.charAt(0).toUpperCase();
-        if (metaEl) metaEl.textContent = `Matrícula: 2026${Math.floor(1000 + Math.random()*8000)} • ${school} • ${turma}`;
-        if (profBadgeEl) profBadgeEl.textContent = `Adequado (Escore: 248.5 pontos • SAEB 2026)`;
-
-        // Tabela de Avaliações / Simulados realizados na rede desde o início do ano
-        const tbody = document.getElementById('modal-student-eval-tbody');
-        if (tbody) {
-            tbody.innerHTML = `
-                <tr style="border-bottom: 1px solid var(--border-color); height: 42px;">
-                    <td style="padding: 8px 14px; font-weight: 700;">1º Simulado Diagnóstico SAEB (Fev/2026)</td>
-                    <td style="padding: 8px 14px; text-align: center; font-weight: 700; color: #10b981;">7.8</td>
-                    <td style="padding: 8px 14px; text-align: center; font-weight: 700; color: #f59e0b;">6.4</td>
-                    <td style="padding: 8px 14px; text-align: center; font-weight: 800; color: #6366f1;">7.1</td>
-                    <td style="padding: 8px 14px; text-align: center;"><span class="badge badge-success" style="font-size:0.68rem;">Adequado</span></td>
-                </tr>
-                <tr style="border-bottom: 1px solid var(--border-color); height: 42px;">
-                    <td style="padding: 8px 14px; font-weight: 700;">Avaliação Formativa 1 SEAMA (Mar/2026)</td>
-                    <td style="padding: 8px 14px; text-align: center; font-weight: 700; color: #10b981;">8.2</td>
-                    <td style="padding: 8px 14px; text-align: center; font-weight: 700; color: #10b981;">7.5</td>
-                    <td style="padding: 8px 14px; text-align: center; font-weight: 800; color: #6366f1;">7.9</td>
-                    <td style="padding: 8px 14px; text-align: center;"><span class="badge badge-success" style="font-size:0.68rem;">Adequado</span></td>
-                </tr>
-                <tr style="border-bottom: 1px solid var(--border-color); height: 42px; background: rgba(99, 102, 241, 0.03);">
-                    <td style="padding: 8px 14px; font-weight: 700; color: var(--text-muted);">2º Simulado Bimestral SAEB (Previsto)</td>
-                    <td style="padding: 8px 14px; text-align: center; color: var(--text-muted);">-</td>
-                    <td style="padding: 8px 14px; text-align: center; color: var(--text-muted);">-</td>
-                    <td style="padding: 8px 14px; text-align: center; color: var(--text-muted);">-</td>
-                    <td style="padding: 8px 14px; text-align: center;"><span class="badge badge-warning" style="font-size:0.68rem;">Agendado (Mai/26)</span></td>
-                </tr>
-            `;
-        }
-
-        const descContainer = document.getElementById('modal-student-descriptors');
-        if (descContainer) {
-            descContainer.innerHTML = `
-                <span style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); font-size: 0.75rem; font-weight: 700; padding: 4px 8px; border-radius: 6px;">D13 - Problemas com números naturais (40% de acerto - Crítico)</span>
-                <span style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); font-size: 0.75rem; font-weight: 700; padding: 4px 8px; border-radius: 6px;">D4 - Inferir informação implícita (60% de acerto - Atenção)</span>
-                <span style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.75rem; font-weight: 700; padding: 4px 8px; border-radius: 6px;">D1 - Localizar informações explícitas (100% de acerto - Consolidado)</span>
-            `;
-        }
-
-        modal.style.display = 'flex';
-        modal.classList.remove('hidden');
-        if (typeof safeCreateIcons === 'function') safeCreateIcons();
-    }
-    window.openStudentProgressModal = openStudentProgressModal;
-
-    function closeStudentProgressModal() {
-        const modal = document.getElementById('modal-student-progress-history');
-        if (modal) {
-            modal.style.display = 'none';
-            modal.classList.add('hidden');
-        }
-    }
-    window.closeStudentProgressModal = closeStudentProgressModal;
-
-
-
-    function toggleSidebarCollapse() {
-        document.body.classList.toggle('collapsed-sidebar');
-        const isCollapsed = document.body.classList.contains('collapsed-sidebar');
-        try {
-            localStorage.setItem('sidebar_collapsed', isCollapsed ? 'true' : 'false');
-        } catch(e) {}
-        const svg = document.getElementById('sidebar-toggle-svg');
-        if (svg) {
-            svg.style.transform = isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)';
-        }
-    }
-    window.toggleSidebarCollapse = toggleSidebarCollapse;
-
-
-
-    // =========================================================================
-    // =========================================================================
-    // MATRIZ DE DESCRITORES OFICIAL (SAEB / SEAMA / IDEB / OBA - EXCEL OFICIAL)
-    // =========================================================================
-    // =========================================================================
-
-    var MATRIZ_DESCRITORES_EXCEL = window.MATRIZ_DESCRITORES_EXCEL = window.MATRIZ_DESCRITORES_EXCEL || {
-        portuguese: [
-        {
-                "codigo": "D1",
-                "topico": "Tópico I: Procedimentos de Leitura",
-                "desc": "Localizar informações explícitas em um texto."
-        },
-        {
-                "codigo": "D3",
-                "topico": "Tópico I: Procedimentos de Leitura",
-                "desc": "Inferir o sentido de uma palavra ou expressão."
-        },
-        {
-                "codigo": "D4",
-                "topico": "Tópico I: Procedimentos de Leitura",
-                "desc": "Inferir uma informação implícita em um texto."
-        },
-        {
-                "codigo": "D6",
-                "topico": "Tópico I: Procedimentos de Leitura",
-                "desc": "Identificar o tema ou assunto principal de um texto."
-        },
-        {
-                "codigo": "D14",
-                "topico": "Tópico I: Procedimentos de Leitura",
-                "desc": "Distinguir um fato da opinião relativa a esse fato."
-        },
-        {
-                "codigo": "D5",
-                "topico": "Tópico II: Implicações do Suporte, do Gênero e/ou do Enunciador",
-                "desc": "Interpretar texto com auxílio de material gráfico diverso (propagandas, quadrinhos, tiras, fotos, tabelas, gráficos etc.)."
-        },
-        {
-                "codigo": "D9",
-                "topico": "Tópico II: Implicações do Suporte, do Gênero e/ou do Enunciador",
-                "desc": "Identificar a finalidade de textos de diferentes gêneros."
-        },
-        {
-                "codigo": "D2",
-                "topico": "Tópico III: Relação entre Textos",
-                "desc": "Estabelecer relações entre partes de um texto, identificando repetições ou substituições que contribuem para a continuidade de um texto (coesão)."
-        },
-        {
-                "codigo": "D15",
-                "topico": "Tópico III: Relação entre Textos",
-                "desc": "Reconhecer diferentes formas de tratar uma informação na comparação de textos que tratam do mesmo tema."
-        },
-        {
-                "codigo": "D7",
-                "topico": "Tópico IV: Coerência e Coesão no Processamento do Texto",
-                "desc": "Identificar a tese ou ideia central do texto."
-        },
-        {
-                "codigo": "D8",
-                "topico": "Tópico IV: Coerência e Coesão no Processamento do Texto",
-                "desc": "Estabelecer relação entre a tese e os argumentos oferecidos para sustentá-la."
-        },
-        {
-                "codigo": "D10",
-                "topico": "Tópico IV: Coerência e Coesão no Processamento do Texto",
-                "desc": "Identificar o conflito gerador do enredo e os elementos que constroem a narrativa."
-        },
-        {
-                "codigo": "D11",
-                "topico": "Tópico IV: Coerência e Coesão no Processamento do Texto",
-                "desc": "Estabelecer relação causa/consequência entre partes e elementos do texto."
-        },
-        {
-                "codigo": "D12",
-                "topico": "Tópico IV: Coerência e Coesão no Processamento do Texto",
-                "desc": "Estabelecer relações lógico-discursivas presentes no texto, marcadas por conjunções, advérbios etc."
-        },
-        {
-                "codigo": "D16",
-                "topico": "Tópico V: Relações entre Recursos Expressivos e Efeitos de Sentido",
-                "desc": "Identificar os efeitos de ironia ou humor em textos variados."
-        },
-        {
-                "codigo": "D17",
-                "topico": "Tópico V: Relações entre Recursos Expressivos e Efeitos de Sentido",
-                "desc": "Reconhecer o efeito de sentido decorrente da escolha de uma determinada palavra ou expressão."
-        },
-        {
-                "codigo": "D18",
-                "topico": "Tópico V: Relações entre Recursos Expressivos e Efeitos de Sentido",
-                "desc": "Reconhecer o efeito de sentido decorrente da uso da pontuação e de outros recursos expressivos."
-        },
-        {
-                "codigo": "D13",
-                "topico": "Tópico VI: Variação Linguística",
-                "desc": "Identificar as marcas linguísticas que evidenciam o locutor e o interlocutor de um texto (registros formal, informal, gírias, marcas regionais)."
-        }
-],
-        math: [
-        {
-                "codigo": "D1",
-                "topico": "Tema I: Espaço e Forma",
-                "desc": "Identificar a localização/movimentação de objeto em mapas, croquis e outras representações gráficas."
-        },
-        {
-                "codigo": "D2",
-                "topico": "Tema I: Espaço e Forma",
-                "desc": "Identificar propriedades comuns e diferenças entre figuras bidimensionais e tridimensionais, relacionando-as com suas planificações."
-        },
-        {
-                "codigo": "D3",
-                "topico": "Tema I: Espaço e Forma",
-                "desc": "Identificar propriedades de triângulos pela comparação das medidas de seus lados e/ou ângulos."
-        },
-        {
-                "codigo": "D4",
-                "topico": "Tema I: Espaço e Forma",
-                "desc": "Identificar relação entre quadriláteros por meio de suas propriedades."
-        },
-        {
-                "codigo": "D5",
-                "topico": "Tema I: Espaço e Forma",
-                "desc": "Reconhecer a conservação ou modificação de medidas nos lados, do perímetro, da área em ampliação e/ou redução de figuras poligonais usando malhas quadriculadas."
-        },
-        {
-                "codigo": "D6",
-                "topico": "Tema I: Espaço e Forma",
-                "desc": "Reconhecer ângulos como mudança de direção ou giros, identificando ângulos retos e não retos."
-        },
-        {
-                "codigo": "D7",
-                "topico": "Tema I: Espaço e Forma",
-                "desc": "Reconhecer a condição de existência de triângulos e suas propriedades."
-        },
-        {
-                "codigo": "D8",
-                "topico": "Tema I: Espaço e Forma",
-                "desc": "Resolver problema utilizando propriedades dos polígonos (soma dos ângulos internos, número de diagonais, cálculo da medida do ângulo interno de polígonos regulares)."
-        },
-        {
-                "codigo": "D9",
-                "topico": "Tema I: Espaço e Forma",
-                "desc": "Interpretar informações apresentadas por meio de coordenadas cartesianas."
-        },
-        {
-                "codigo": "D10",
-                "topico": "Tema I: Espaço e Forma",
-                "desc": "Utilizar relações métricas do triângulo retângulo para resolver problemas significativos."
-        },
-        {
-                "codigo": "D11",
-                "topico": "Tema I: Espaço e Forma",
-                "desc": "Reconhecer círculo e circunferência, seus elementos e algumas de suas relações."
-        },
-        {
-                "codigo": "D12",
-                "topico": "Tema II: Grandezas e Medidas",
-                "desc": "Resolver problema envolvendo o cálculo de perímetro de figuras planas."
-        },
-        {
-                "codigo": "D13",
-                "topico": "Tema II: Grandezas e Medidas",
-                "desc": "Resolver problema envolvendo o cálculo ou estimativa de áreas de figuras planas."
-        },
-        {
-                "codigo": "D14",
-                "topico": "Tema II: Grandezas e Medidas",
-                "desc": "Resolver problema envolvendo noção de volume e/ou capacidade."
-        },
-        {
-                "codigo": "D15",
-                "topico": "Tema II: Grandezas e Medidas",
-                "desc": "Resolver problema envolvendo relações entre diferentes unidades de medida (comprimento, massa, tempo, capacidade, superfície)."
-        },
-        {
-                "codigo": "D16",
-                "topico": "Tema III: Números e Operações / Álgebra e Funções",
-                "desc": "Identificar a localização de números inteiros, racionais ou reais na reta numérica."
-        },
-        {
-                "codigo": "D17",
-                "topico": "Tema III: Números e Operações / Álgebra e Funções",
-                "desc": "Identificar fração como representação que pode estar associada a diferentes significados."
-        },
-        {
-                "codigo": "D18",
-                "topico": "Tema III: Números e Operações / Álgebra e Funções",
-                "desc": "Efetuar cálculos com números inteiros, fracionários ou decimais."
-        },
-        {
-                "codigo": "D19",
-                "topico": "Tema III: Números e Operações / Álgebra e Funções",
-                "desc": "Resolver problema com números naturais, inteiros, racionais ou reais envolvendo diferentes significados das operações."
-        },
-        {
-                "codigo": "D20",
-                "topico": "Tema III: Números e Operações / Álgebra e Funções",
-                "desc": "Resolver problema envolvendo a ordenação ou a representação de números racionais na forma decimal/fracionária."
-        },
-        {
-                "codigo": "D21",
-                "topico": "Tema III: Números e Operações / Álgebra e Funções",
-                "desc": "Reconhecer a equação da reta como uma representação de uma reta no plano cartesiano."
-        },
-        {
-                "codigo": "D22",
-                "topico": "Tema III: Números e Operações / Álgebra e Funções",
-                "desc": "Resolver problema envolvendo grandezas direta ou inversamente proporcionais (regra de três)."
-        },
-        {
-                "codigo": "D23",
-                "topico": "Tema III: Números e Operações / Álgebra e Funções",
-                "desc": "Resolver problema envolvendo porcentagem."
-        },
-        {
-                "codigo": "D24",
-                "topico": "Tema III: Números e Operações / Álgebra e Funções",
-                "desc": "Resolver problema envolvendo juros simples ou compostos."
-        },
-        {
-                "codigo": "D25",
-                "topico": "Tema III: Números e Operações / Álgebra e Funções",
-                "desc": "Executar cálculos que envolvam expressões algébricas (fatoração, produtos notáveis)."
-        },
-        {
-                "codigo": "D26",
-                "topico": "Tema III: Números e Operações / Álgebra e Funções",
-                "desc": "Resolver problema envolvendo equação do 1º ou do 2º grau."
-        },
-        {
-                "codigo": "D27",
-                "topico": "Tema III: Números e Operações / Álgebra e Funções",
-                "desc": "Resolver sistema de equações do 1º grau com duas incógnitas."
-        },
-        {
-                "codigo": "D28",
-                "topico": "Tema III: Números e Operações / Álgebra e Funções",
-                "desc": "Reconhecer a representação algébrica ou gráfica de uma função (1º grau, 2º grau, exponencial, logarítmica ou trigonométrica)."
-        },
-        {
-                "codigo": "D36",
-                "topico": "Tema IV: Tratamento da Informação",
-                "desc": "Resolver problema envolvendo informações apresentadas em tabelas e/ou gráficos (colunas, linhas, setores)."
-        },
-        {
-                "codigo": "D37",
-                "topico": "Tema IV: Tratamento da Informação",
-                "desc": "Associar informações apresentadas em listas e/ou tabelas aos gráficos que as representam e vice-versa."
-        },
-        {
-                "codigo": "D38",
-                "topico": "Tema IV: Tratamento da Informação",
-                "desc": "Resolver problema envolvendo o cálculo de probabilidade de um evento."
-        },
-        {
-                "codigo": "D39",
-                "topico": "Tema IV: Tratamento da Informação",
-                "desc": "Resolver problema envolvendo o cálculo de medidas de tendência central (média, moda ou mediana)."
-        }
-],
-        science: [
-        {
-                "codigo": "CE01",
-                "topico": "Matéria e Energia",
-                "desc": "Propriedades dos materiais, misturas e transformações químicas."
-        },
-        {
-                "codigo": "CE02",
-                "topico": "Matéria e Energia",
-                "desc": "Estados físicos da matéria e circuitos elétricos."
-        },
-        {
-                "codigo": "CE03",
-                "topico": "Matéria e Energia",
-                "desc": "Fontes de energia, geração e uso consciente."
-        },
-        {
-                "codigo": "VE01",
-                "topico": "Vida e Evolução",
-                "desc": "Organização dos seres vivos, ecossistemas e cadeias alimentares."
-        },
-        {
-                "codigo": "VE02",
-                "topico": "Vida e Evolução",
-                "desc": "Corpo humano: sistemas, saúde pública e vacinação."
-        },
-        {
-                "codigo": "VE03",
-                "topico": "Vida e Evolução",
-                "desc": "Reprodução, hereditariedade e biodiversidade."
-        },
-        {
-                "codigo": "TU01",
-                "topico": "Terra e Universo",
-                "desc": "Movimentos da Terra (rotação/translação) e estações do ano."
-        },
-        {
-                "codigo": "TU02",
-                "topico": "Terra e Universo",
-                "desc": "Fases da Lua, sistema solar e componentes do Universo."
-        },
-        {
-                "codigo": "TU03",
-                "topico": "Terra e Universo",
-                "desc": "Atmosfera, clima, previsão do tempo e sustentabilidade."
-        }
-],
-        oba: [
-        {
-                "codigo": "OB01",
-                "topico": "Astronomia - Sistema Solar",
-                "desc": "Sol, planetas (terrestres e gasosos), planetas anões, luas, asteroides e cometas."
-        },
-        {
-                "codigo": "OB02",
-                "topico": "Astronomia - Movimentos Celestes",
-                "desc": "Movimentos de rotação e translação da Terra, fusos horários e estações do ano."
-        },
-        {
-                "codigo": "OB03",
-                "topico": "Astronomia - Movimentos Celestes",
-                "desc": "Fases da Lua e eclipses (solar e lunar)."
-        },
-        {
-                "codigo": "OB04",
-                "topico": "Astronomia - Esfera Celeste",
-                "desc": "Constelações (Cruzeiro do Sul, Órion), pontos cardeais e orientação espacial."
-        },
-        {
-                "codigo": "OB05",
-                "topico": "Astronomia - Evolução Estelar",
-                "desc": "Estrelas, galáxias (Via Láctea) e distâncias astronômicas (ano-luz)."
-        },
-        {
-                "codigo": "OB06",
-                "topico": "Astronáutica - Foguetes e Satélites",
-                "desc": "Princípio de funcionamento de foguetes (ação e reação) e satélites artificiais."
-        },
-        {
-                "codigo": "OB07",
-                "topico": "Astronáutica - Programa Espacial",
-                "desc": "Programa Espacial Brasileiro (VLS, Centro de Lançamento de Alcântara - CLA, satélites CBERS)."
-        },
-        {
-                "codigo": "OB08",
-                "topico": "Astronáutica - Exploração Espacial",
-                "desc": "Uso da tecnologia espacial no cotidiano (GPS, previsão do tempo, sensoriamento remoto)."
-        }
-]
-    };
-
-    activeMatrizEtapa = '5ano'; // '5ano' | '9ano' | 'alfabetizacao' | 'em' | 'oba'
-
-    function switchMatrizEtapa(etapa) {
-        activeMatrizEtapa = etapa;
-        document.querySelectorAll('.matriz-etapa-btn').forEach(btn => {
-            const isTarget = btn.getAttribute('data-etapa') === etapa;
-            btn.classList.toggle('active', isTarget);
-            if (isTarget) {
-                btn.style.background = '#6366f1';
-                btn.style.color = '#ffffff';
-                btn.style.border = 'none';
-                btn.style.fontWeight = '700';
-            } else {
-                btn.style.background = 'var(--bg-secondary)';
-                btn.style.color = 'var(--text-secondary)';
-                btn.style.border = '1px solid var(--border-color)';
-                btn.style.fontWeight = '600';
-            }
-        });
-        renderReferenceMatrix();
-    }
-    window.switchMatrizEtapa = switchMatrizEtapa;
-
-    function renderReferenceMatrix() {
-        const lpList = document.getElementById('matriz-lp-list');
-        const mtList = document.getElementById('matriz-mt-list');
-        const ciList = document.getElementById('matriz-ci-list');
-        const chList = document.getElementById('matriz-ch-list');
-
-        const searchInput = document.getElementById('matriz-search-input');
-        const query = searchInput ? searchInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
-
-        // Seleção de descritores conforme etapa
-        let lpItems = MATRIZ_DESCRITORES_EXCEL.portuguese;
-        let mtItems = MATRIZ_DESCRITORES_EXCEL.math;
-        let ciItems = MATRIZ_DESCRITORES_EXCEL.science;
-        let chItems = MATRIZ_DESCRITORES_EXCEL.oba;
-
-        if (activeMatrizEtapa === '5ano') {
-            lpItems = MATRIZ_DESCRITORES_EXCEL.portuguese.slice(0, 14);
-            mtItems = MATRIZ_DESCRITORES_EXCEL.math.slice(0, 20);
-        } else if (activeMatrizEtapa === 'alfabetizacao') {
-            lpItems = MATRIZ_DESCRITORES_EXCEL.portuguese.slice(0, 10);
-            mtItems = MATRIZ_DESCRITORES_EXCEL.math.slice(0, 12);
-        } else if (activeMatrizEtapa === 'oba') {
-            chItems = MATRIZ_DESCRITORES_EXCEL.oba;
-            ciItems = MATRIZ_DESCRITORES_EXCEL.science;
-        }
-
-        function renderColumn(container, items, badgeColor, defaultTopic) {
-            if (!container) return;
-            container.innerHTML = '';
-
-            const filtered = (items || []).filter(d => {
-                const text = (d.codigo + ' ' + d.desc + ' ' + (d.topico || '')).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                return text.includes(query);
-            });
-
-            if (filtered.length === 0) {
-                container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.78rem;">Nenhum descritor encontrado para os filtros selecionados.</div>';
-                return;
-            }
-
-            filtered.forEach(d => {
-                const div = document.createElement('div');
-                div.style.padding = '10px 14px';
-                div.style.borderRadius = 'var(--radius-sm)';
-                div.style.border = '1px solid var(--border-color)';
-                div.style.backgroundColor = 'var(--bg-tertiary)';
-                div.style.fontSize = '0.82rem';
-                div.style.lineHeight = '1.45';
-                div.style.transition = 'all 0.15s ease';
-                div.style.cursor = 'pointer';
-
-                div.onmouseover = () => { div.style.borderColor = badgeColor; div.style.background = 'var(--bg-secondary)'; };
-                div.onmouseout = () => { div.style.borderColor = 'var(--border-color)'; div.style.background = 'var(--bg-tertiary)'; };
-
-                div.innerHTML = `
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-                        <span style="font-weight: 800; font-family: var(--font-mono); color: ${badgeColor}; font-size: 0.88rem;">${d.codigo}</span>
-                        <span style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; background: rgba(0,0,0,0.06); color: var(--text-secondary); border: 1px solid var(--border-color); font-weight:700; text-transform: uppercase;">${d.topico || defaultTopic}</span>
-                    </div>
-                    <div style="color: var(--text-primary); font-weight: 500;">${d.desc}</div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        renderColumn(lpList, lpItems, '#8b5cf6', 'Língua Portuguesa');
-        renderColumn(mtList, mtItems, '#3b82f6', 'Matemática');
-        renderColumn(ciList, ciItems, '#10b981', 'Ciências da Natureza');
-        renderColumn(chList, chItems, '#f59e0b', 'Geografia (OBA)');
-    }
-    window.renderReferenceMatrix = renderReferenceMatrix;
-
-    function filterMatrizDescritores() {
-        renderReferenceMatrix();
-    }
-    window.filterMatrizDescritores = filterMatrizDescritores;
-
-
-
-    // =========================================================================
-    // =========================================================================
-    // CRONOGRAMA & PLANEJAMENTO ESCOLAR V2 (ROTINAS POR TURMA, ATRASOS, COMPARATIVO)
-    // =========================================================================
-    // =========================================================================
 
     const SCHEDULE_STORAGE_KEY = 'teacher_schedule_lessons_db';
     const SCHEDULE_TRASH_STORAGE_KEY = 'teacher_schedule_trash_db';
 
-    // Seed inicial de aulas separadas por turma
-    let DEFAULT_SCHEDULE_LESSONS_V2 = [
-        // UI JOSE CORREA LIMA — 2º Ano A (Matutino)
+    const DEFAULT_SCHEDULE_LESSONS_V2 = [
         {
-            id: 'les_2a_01',
-            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano A',
+            id: 'plan_seed_1',
+            escola_id: 'UI JOSE CORREA LIMA',
             escola: 'UI JOSE CORREA LIMA',
+            turma_id: '2º Ano A',
             turma: '2º Ano A',
-            etapa: '2º Ano',
+            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano A',
             disciplina: 'Língua Portuguesa',
-            habilidadeCode: 'EF02LP01',
-            habilidadeDesc: 'Expressar-se em situações de intercâmbio oral com clareza e ritmo.',
-            date: '2026-08-04',
+            descritor_codigo: 'D01',
+            descritor_desc: 'Localizar informações explícitas em um texto.',
+            habilidade_bncc_codigo: 'EF02LP01',
+            habilidade_bncc_desc: 'Decodificação e Leitura de Palavras',
+            habilidadeCode: 'D01 + EF02LP01',
+            habilidadeDesc: 'Localizar informações explícitas e decodificação fluente de palavras.',
+            data_planejada: '2026-08-17',
+            date: '2026-08-17',
             time: '07:30 - 08:20',
+            horarioTexto: '1ª Aula (07:30 - 08:20)',
             status: 'trabalhada',
-            methodology: 'Roda de leitura e cantigas populares maranhenses.',
+            data_confirmacao: '2026-08-17T11:00:00.000Z',
+            observacoes: 'Leitura coletiva de cantigas e caça-palavras em grupo.',
+            methodology: 'Leitura coletiva de cantigas e caça-palavras em grupo.',
+            criado_por: 'Profa. Silvana Ferreira (Regente)',
             criadoPor: 'Profa. Silvana Ferreira (Regente)',
-            createdAt: '2026-08-01T08:00:00Z'
+            criado_em: '2026-08-10T08:00:00.000Z',
+            createdAt: '2026-08-10T08:00:00.000Z',
+            excluido_em: null,
+            deletedAt: null
         },
         {
-            id: 'les_2a_02',
-            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano A',
+            id: 'plan_seed_2',
+            escola_id: 'UI JOSE CORREA LIMA',
             escola: 'UI JOSE CORREA LIMA',
+            turma_id: '2º Ano A',
             turma: '2º Ano A',
-            etapa: '2º Ano',
+            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano A',
             disciplina: 'Matemática',
-            habilidadeCode: 'EF02MA01',
-            habilidadeDesc: 'Comparar e ordenar números naturais até a ordem de centenas.',
-            date: '2026-08-05',
+            descritor_codigo: 'D13',
+            descritor_desc: 'Reconhecer e utilizar características do sistema de numeração decimal.',
+            habilidade_bncc_codigo: 'EF02MA01',
+            habilidade_bncc_desc: 'Sistema de Numeração Decimal até centenas',
+            habilidadeCode: 'D13 + EF02MA01',
+            habilidadeDesc: 'Sistema de Numeração Decimal: valor posicional e agrupamentos de 10.',
+            data_planejada: '2026-08-18',
+            date: '2026-08-18',
             time: '08:20 - 09:10',
+            horarioTexto: '2ª Aula (08:20 - 09:10)',
             status: 'trabalhada',
-            methodology: 'Uso de material dourado e reta numérica desenhada no pátio.',
+            data_confirmacao: '2026-08-18T10:30:00.000Z',
+            observacoes: 'Uso de material dourado e ábaco aberto.',
+            methodology: 'Uso de material dourado e ábaco aberto.',
+            criado_por: 'Profa. Silvana Ferreira (Regente)',
             criadoPor: 'Profa. Silvana Ferreira (Regente)',
-            createdAt: '2026-08-01T08:00:00Z'
+            criado_em: '2026-08-10T08:00:00.000Z',
+            createdAt: '2026-08-10T08:00:00.000Z',
+            excluido_em: null,
+            deletedAt: null
         },
         {
-            id: 'les_2a_03',
-            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano A',
+            id: 'plan_seed_3',
+            escola_id: 'UI JOSE CORREA LIMA',
             escola: 'UI JOSE CORREA LIMA',
+            turma_id: '2º Ano A',
             turma: '2º Ano A',
-            etapa: '2º Ano',
+            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano A',
             disciplina: 'Língua Portuguesa',
-            habilidadeCode: 'EF02LP04',
-            habilidadeDesc: 'Ler e escrever corretamente palavras com sílabas CV, V, CVC, CCV.',
-            date: '2026-08-10',
-            time: '07:30 - 08:20',
-            status: 'trabalhada',
-            methodology: 'Ditado interativo e caça-palavras de parlendas.',
-            criadoPor: 'Profa. Silvana Ferreira (Regente)',
-            createdAt: '2026-08-01T08:00:00Z'
-        },
-        {
-            id: 'les_2a_04',
-            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano A',
-            escola: 'UI JOSE CORREA LIMA',
-            turma: '2º Ano A',
-            etapa: '2º Ano',
-            disciplina: 'Matemática',
-            habilidadeCode: 'EF02MA06',
-            habilidadeDesc: 'Resolver e elaborar problemas de adição e subtração com suporte de imagens.',
-            date: '2026-08-12',
-            time: '09:25 - 10:15',
-            status: 'planejada', // Atrasada pois date < 18/08
-            methodology: 'Mercadinho pedagógico com cédulas e moedas simuladas.',
-            criadoPor: 'Profa. Silvana Ferreira (Regente)',
-            createdAt: '2026-08-01T08:00:00Z'
-        },
-        {
-            id: 'les_2a_05',
-            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano A',
-            escola: 'UI JOSE CORREA LIMA',
-            turma: '2º Ano A',
-            etapa: '2º Ano',
-            disciplina: 'Ciências da Natureza',
-            habilidadeCode: 'EF02CI01',
-            habilidadeDesc: 'Identificar de que materiais são feitos os objetos do cotidiano.',
-            date: '2026-08-14',
-            time: '10:15 - 11:05',
-            status: 'planejada', // Atrasada pois date < 18/08
-            methodology: 'Laboratório de investigação de materiais recicláveis.',
-            criadoPor: 'Profa. Silvana Ferreira (Regente)',
-            createdAt: '2026-08-01T08:00:00Z'
-        },
-        {
-            id: 'les_2a_06',
-            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano A',
-            escola: 'UI JOSE CORREA LIMA',
-            turma: '2º Ano A',
-            etapa: '2º Ano',
-            disciplina: 'Língua Portuguesa',
-            habilidadeCode: 'EF02LP07',
-            habilidadeDesc: 'Escrever palavras e pequenos textos observando a pontuação final.',
+            descritor_codigo: 'D03',
+            descritor_desc: 'Inferir o sentido de uma palavra ou expressão.',
+            habilidade_bncc_codigo: 'EF02LP04',
+            habilidade_bncc_desc: 'Segmentação de Palavras e Sílabas',
+            habilidadeCode: 'D03 + EF02LP04',
+            habilidadeDesc: 'Inferência de vocabulário e segmentação silábica em fábulas.',
+            data_planejada: '2026-08-19',
             date: '2026-08-19',
             time: '07:30 - 08:20',
-            status: 'planejada', // Futura
-            methodology: 'Produção coletiva de bilhete escolar.',
+            horarioTexto: '1ª Aula (07:30 - 08:20)',
+            status: 'planejada',
+            data_confirmacao: null,
+            observacoes: 'Roda de conversa sobre a fábula A Cigarra e a Formiga.',
+            methodology: 'Roda de conversa sobre a fábula A Cigarra e a Formiga.',
+            criado_por: 'Profa. Silvana Ferreira (Regente)',
             criadoPor: 'Profa. Silvana Ferreira (Regente)',
-            createdAt: '2026-08-01T08:00:00Z'
+            criado_em: '2026-08-15T08:00:00.000Z',
+            createdAt: '2026-08-15T08:00:00.000Z',
+            excluido_em: null,
+            deletedAt: null
         },
         {
-            id: 'les_2a_07',
-            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano A',
+            id: 'plan_seed_4',
+            escola_id: 'UI JOSE CORREA LIMA',
             escola: 'UI JOSE CORREA LIMA',
+            turma_id: '2º Ano A',
             turma: '2º Ano A',
-            etapa: '2º Ano',
+            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano A',
             disciplina: 'Matemática',
-            habilidadeCode: 'EF02MA16',
-            habilidadeDesc: 'Estimar, medir e comparar comprimentos de lados de salas e objetos.',
-            date: '2026-08-21',
-            time: '08:20 - 09:10',
-            status: 'planejada', // Futura
-            methodology: 'Medição com fita métrica e passos no pátio.',
+            descritor_codigo: 'D19',
+            descritor_desc: 'Resolver problemas com números naturais envolvendo adição ou subtração.',
+            habilidade_bncc_codigo: 'EF02MA06',
+            habilidade_bncc_desc: 'Problemas de Adição e Subtração',
+            habilidadeCode: 'D19 + EF02MA06',
+            habilidadeDesc: 'Resolução de situações-problema do cotidiano com adição e subtração.',
+            data_planejada: '2026-08-20',
+            date: '2026-08-20',
+            time: '09:25 - 10:15',
+            horarioTexto: '3ª Aula (09:25 - 10:15)',
+            status: 'planejada',
+            data_confirmacao: null,
+            observacoes: 'Simulação de mercadinho com dinheirinho de papel.',
+            methodology: 'Simulação de mercadinho com dinheirinho de papel.',
+            criado_por: 'Profa. Silvana Ferreira (Regente)',
             criadoPor: 'Profa. Silvana Ferreira (Regente)',
-            createdAt: '2026-08-01T08:00:00Z'
+            criado_em: '2026-08-15T08:00:00.000Z',
+            createdAt: '2026-08-15T08:00:00.000Z',
+            excluido_em: null,
+            deletedAt: null
         },
-
-        // UI JOSE CORREA LIMA — 2º Ano B (Vespertino)
         {
-            id: 'les_2b_01',
-            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano B',
+            id: 'plan_seed_5',
+            escola_id: 'UI JOSE CORREA LIMA',
             escola: 'UI JOSE CORREA LIMA',
-            turma: '2º Ano B',
-            etapa: '2º Ano',
-            disciplina: 'Língua Portuguesa',
-            habilidadeCode: 'EF02LP01',
-            habilidadeDesc: 'Expressar-se em situações de intercâmbio oral com clareza.',
-            date: '2026-08-04',
-            time: '13:30 - 14:20',
-            status: 'trabalhada',
-            methodology: 'Contação de histórias e roda de conversa.',
-            criadoPor: 'Prof. Marcos Andrade',
-            createdAt: '2026-08-01T08:00:00Z'
-        },
-        {
-            id: 'les_2b_02',
-            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano B',
-            escola: 'UI JOSE CORREA LIMA',
-            turma: '2º Ano B',
-            etapa: '2º Ano',
-            disciplina: 'Matemática',
-            habilidadeCode: 'EF02MA01',
-            habilidadeDesc: 'Comparar e ordenar números naturais até centenas.',
-            date: '2026-08-06',
-            time: '14:20 - 15:10',
-            status: 'trabalhada',
-            methodology: 'Jogos de tabuleiro numérico.',
-            criadoPor: 'Prof. Marcos Andrade',
-            createdAt: '2026-08-01T08:00:00Z'
-        },
-        {
-            id: 'les_2b_03',
-            turmaContext: 'UI JOSE CORREA LIMA — 2º Ano B',
-            escola: 'UI JOSE CORREA LIMA',
-            turma: '2º Ano B',
-            etapa: '2º Ano',
-            disciplina: 'Língua Portuguesa',
-            habilidadeCode: 'EF02LP04',
-            habilidadeDesc: 'Ler e escrever palavras com sílabas canônicas.',
-            date: '2026-08-11',
-            time: '13:30 - 14:20',
-            status: 'planejada', // Atrasada
-            methodology: 'Cartões ilustrados.',
-            criadoPor: 'Prof. Marcos Andrade',
-            createdAt: '2026-08-01T08:00:00Z'
-        },
-
-        // UNIDADE INTEGRADA JOSE GONCALVES DIAS — 5º Ano A
-        {
-            id: 'les_5a_01',
-            turmaContext: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS — 5º Ano A',
-            escola: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS',
+            turma_id: '5º Ano A',
             turma: '5º Ano A',
-            etapa: '5º Ano',
+            turmaContext: 'UI JOSE CORREA LIMA — 5º Ano A',
             disciplina: 'Língua Portuguesa',
-            habilidadeCode: 'D1',
-            habilidadeDesc: 'Localizar informações explícitas em um texto.',
-            date: '2026-08-05',
+            descritor_codigo: 'D14',
+            descritor_desc: 'Distinguir um fato da opinião relativa a esse fato.',
+            habilidade_bncc_codigo: 'EF05LP03',
+            habilidade_bncc_desc: 'Diferenciar fatos de opiniões em notícias',
+            habilidadeCode: 'D14 + EF05LP03',
+            habilidadeDesc: 'Distinção entre fato e opinião em matérias jornalísticas.',
+            data_planejada: '2026-08-19',
+            date: '2026-08-19',
             time: '07:30 - 08:20',
-            status: 'trabalhada',
-            methodology: 'Leitura comentada de crônicas de autores maranhenses.',
-            criadoPor: 'Profa. Claudia Mendes',
-            createdAt: '2026-08-01T08:00:00Z'
-        },
-        {
-            id: 'les_5a_02',
-            turmaContext: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS — 5º Ano A',
-            escola: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS',
-            turma: '5º Ano A',
-            etapa: '5º Ano',
-            disciplina: 'Matemática',
-            habilidadeCode: 'D13',
-            habilidadeDesc: 'Resolver problemas envolvendo o cálculo de área de figuras planas.',
-            date: '2026-08-07',
-            time: '08:20 - 09:10',
-            status: 'trabalhada',
-            methodology: 'Malha quadriculada e tangram.',
-            criadoPor: 'Profa. Claudia Mendes',
-            createdAt: '2026-08-01T08:00:00Z'
+            horarioTexto: '1ª Aula (07:30 - 08:20)',
+            status: 'planejada',
+            data_confirmacao: null,
+            observacoes: 'Análise comparativa de manchetes de jornais.',
+            methodology: 'Análise comparativa de manchetes de jornais.',
+            criado_por: 'Coordenação Pedagógica SEMED',
+            criadoPor: 'Coordenação Pedagógica SEMED',
+            criado_em: '2026-08-15T08:00:00.000Z',
+            createdAt: '2026-08-15T08:00:00.000Z',
+            excluido_em: null,
+            deletedAt: null
         }
     ];
 
@@ -19481,12 +16619,14 @@ window.renderDbSchools = function renderDbSchools() {
         } catch(e) {}
         return DEFAULT_SCHEDULE_LESSONS_V2;
     }
+    window.getScheduleLessonsDb = getScheduleLessonsDb;
 
     function saveScheduleLessonsDb(lessons) {
         try {
             localStorage.setItem(SCHEDULE_STORAGE_KEY, JSON.stringify(lessons));
         } catch(e) {}
     }
+    window.saveScheduleLessonsDb = saveScheduleLessonsDb;
 
     function getScheduleTrashDb() {
         try {
@@ -19495,6 +16635,7 @@ window.renderDbSchools = function renderDbSchools() {
         } catch(e) {}
         return [];
     }
+    window.getScheduleTrashDb = getScheduleTrashDb;
 
     function saveScheduleTrashDb(trash) {
         try {
@@ -19502,6 +16643,7 @@ window.renderDbSchools = function renderDbSchools() {
         } catch(e) {}
         updateTrashBadgeCount();
     }
+    window.saveScheduleTrashDb = saveScheduleTrashDb;
 
     function updateTrashBadgeCount() {
         const trash = getScheduleTrashDb();
@@ -19578,6 +16720,591 @@ window.renderDbSchools = function renderDbSchools() {
         renderActiveScheduleView();
     }
     window.switchScheduleMainView = switchScheduleMainView;
+
+    
+    // =========================================================================
+    // MODAL DE NOVO PLANEJAMENTO DE HABILIDADES (SEMED ↔ DOCENTES)
+    // =========================================================================
+
+    let plannerSelectedItems = []; // Array de { type: 'SAEB'|'BNCC', code: string, desc: string, disciplina: string }
+    let plannerEditingPlanId = null;
+
+    function openNewSchedulePlanModal(defaultDate, defaultSlot, existingPlanId) {
+        const modal = document.getElementById('modal-create-schedule-planner');
+        if (!modal) return;
+
+        plannerEditingPlanId = existingPlanId || null;
+        plannerSelectedItems = [];
+
+        const titleEl = document.getElementById('planner-modal-title');
+        const planIdInput = document.getElementById('planner-modal-plan-id');
+        const turmaSelect = document.getElementById('planner-modal-turma');
+        const subjectSelect = document.getElementById('planner-modal-subject');
+        const dateInput = document.getElementById('planner-modal-date');
+        const slotSelect = document.getElementById('planner-modal-slot');
+        const obsInput = document.getElementById('planner-modal-obs');
+        const statusSelect = document.getElementById('planner-modal-status');
+        const searchInput = document.getElementById('planner-skill-search-input');
+        const searchResults = document.getElementById('planner-skill-search-results');
+        const warningBox = document.getElementById('planner-repetition-warning');
+        const recToggle = document.getElementById('planner-modal-recurrence-toggle');
+        const recContainer = document.getElementById('planner-modal-recurrence-container');
+        const recEndDate = document.getElementById('planner-modal-recurrence-end-date');
+
+        if (warningBox) warningBox.style.display = 'none';
+        if (searchResults) searchResults.style.display = 'none';
+        if (searchInput) searchInput.value = '';
+        if (recToggle) recToggle.checked = false;
+        if (recContainer) recContainer.style.display = 'none';
+
+        // Pre-fill active Turma Context
+        if (turmaSelect) {
+            turmaSelect.value = currentTurmaContext || 'UI JOSE CORREA LIMA — 2º Ano A';
+        }
+
+        // Pre-fill Subject from active filter or default
+        const activeSubjectFilter = document.getElementById('cal-filter-subject-v2')?.value;
+        if (subjectSelect) {
+            if (activeSubjectFilter && activeSubjectFilter !== 'all') {
+                subjectSelect.value = activeSubjectFilter;
+            } else {
+                subjectSelect.value = 'Língua Portuguesa';
+            }
+        }
+
+        // Pre-fill Date
+        const initialDate = defaultDate || '2026-08-19';
+        if (dateInput) dateInput.value = initialDate;
+
+        // Pre-fill Time Slot
+        if (slotSelect) slotSelect.value = defaultSlot || '07:30 - 08:20';
+
+        // Quick Day Buttons (Seg a Sex da semana ativa)
+        renderPlannerQuickDayButtons(initialDate);
+
+        if (existingPlanId) {
+            const allLessons = getScheduleLessonsDb();
+            const existing = allLessons.find(l => l.id === existingPlanId);
+            if (existing) {
+                if (titleEl) titleEl.textContent = '✏️ Editar Planejamento de Habilidades';
+                if (planIdInput) planIdInput.value = existing.id;
+                if (turmaSelect) turmaSelect.value = existing.turmaContext || currentTurmaContext;
+                if (subjectSelect) subjectSelect.value = existing.disciplina || 'Língua Portuguesa';
+                if (dateInput) dateInput.value = existing.date || existing.data_planejada || initialDate;
+                if (slotSelect) slotSelect.value = existing.time || existing.horarioTexto || '07:30 - 08:20';
+                if (obsInput) obsInput.value = existing.observacoes || existing.methodology || '';
+                if (statusSelect) statusSelect.value = existing.status || 'planejada';
+
+                if (existing.descritor_codigo) {
+                    plannerSelectedItems.push({
+                        type: 'SAEB',
+                        code: existing.descritor_codigo,
+                        desc: existing.descritor_desc || existing.habilidadeDesc || 'Descritor SAEB/SEAMA',
+                        disciplina: existing.disciplina || 'Língua Portuguesa'
+                    });
+                }
+                if (existing.habilidade_bncc_codigo) {
+                    plannerSelectedItems.push({
+                        type: 'BNCC',
+                        code: existing.habilidade_bncc_codigo,
+                        desc: existing.habilidade_bncc_desc || existing.habilidadeDesc || 'Habilidade BNCC',
+                        disciplina: existing.disciplina || 'Língua Portuguesa'
+                    });
+                }
+                if (plannerSelectedItems.length === 0 && existing.habilidadeCode) {
+                    const isBncc = existing.habilidadeCode.startsWith('EF');
+                    plannerSelectedItems.push({
+                        type: isBncc ? 'BNCC' : 'SAEB',
+                        code: existing.habilidadeCode,
+                        desc: existing.habilidadeDesc || '',
+                        disciplina: existing.disciplina || 'Língua Portuguesa'
+                    });
+                }
+            }
+        } else {
+            if (titleEl) titleEl.textContent = '+ Novo Planejamento de Habilidades';
+            if (planIdInput) planIdInput.value = '';
+            if (obsInput) obsInput.value = '';
+            if (statusSelect) statusSelect.value = 'planejada';
+        }
+
+        renderPlannerSelectedBadges();
+        checkPlannerRepetitionWarning();
+
+        modal.style.display = 'flex';
+        modal.classList.remove('hidden');
+        if (typeof safeCreateIcons === 'function') safeCreateIcons();
+    }
+    window.openNewSchedulePlanModal = openNewSchedulePlanModal;
+    window.openSchedulePlannerDrawer = openNewSchedulePlanModal; // Alias for compatibility
+
+    function closeNewSchedulePlanModal() {
+        const modal = document.getElementById('modal-create-schedule-planner');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+        }
+    }
+    window.closeNewSchedulePlanModal = closeNewSchedulePlanModal;
+
+    // Quick Day Selector (Seg a Sex da semana ativa)
+    function renderPlannerQuickDayButtons(baseDateStr) {
+        const container = document.getElementById('planner-quick-day-buttons');
+        if (!container) return;
+
+        const base = new Date(baseDateStr + 'T00:00:00');
+        const dayOfWeek = base.getDay(); // 0 = Dom, 1 = Seg...
+        const monday = new Date(base);
+        monday.setDate(base.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+
+        const days = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex'];
+        let html = '';
+
+        days.forEach((dayLabel, idx) => {
+            const d = new Date(monday);
+            d.setDate(monday.getDate() + idx);
+            const iso = d.toISOString().split('T')[0];
+            const isSelected = iso === baseDateStr;
+            const dayNum = String(d.getDate()).padStart(2, '0');
+
+            html += `
+                <button type="button" onclick="setPlannerDateFromQuickButton('${iso}');" 
+                        class="btn btn-sm" 
+                        style="flex: 1; padding: 4px 6px; font-size: 0.72rem; font-weight: ${isSelected ? '800' : '600'}; background: ${isSelected ? '#6366f1' : 'var(--bg-secondary)'}; color: ${isSelected ? '#ffffff' : 'var(--text-primary)'}; border: 1px solid ${isSelected ? '#6366f1' : 'var(--border-color)'}; border-radius: 4px; cursor: pointer;">
+                    ${dayLabel} ${dayNum}
+                </button>
+            `;
+        });
+
+        container.innerHTML = html;
+    }
+
+    function setPlannerDateFromQuickButton(isoDate) {
+        const dateInput = document.getElementById('planner-modal-date');
+        if (dateInput) {
+            dateInput.value = isoDate;
+            renderPlannerQuickDayButtons(isoDate);
+            checkPlannerRepetitionWarning();
+            updatePlannerRecurrencePreview();
+        }
+    }
+    window.setPlannerDateFromQuickButton = setPlannerDateFromQuickButton;
+
+    function handlePlannerDateChange() {
+        const dateInput = document.getElementById('planner-modal-date');
+        if (dateInput && dateInput.value) {
+            renderPlannerQuickDayButtons(dateInput.value);
+            checkPlannerRepetitionWarning();
+            updatePlannerRecurrencePreview();
+        }
+    }
+    window.handlePlannerDateChange = handlePlannerDateChange;
+
+    // Autocomplete Search Dual (Descritores SAEB/SEAMA + Habilidades BNCC)
+    function handlePlannerSkillSearchInput(query) {
+        const resultsEl = document.getElementById('planner-skill-search-results');
+        if (!resultsEl) return;
+
+        const q = (query || '').trim().toLowerCase();
+        const currentSubject = document.getElementById('planner-modal-subject')?.value || 'Língua Portuguesa';
+        
+        // Coleta Descritores SAEB da Matriz Oficial
+        const saebList = [];
+        const isMath = currentSubject.includes('Matemática');
+        const descSource = (typeof MATRIZ_DESCRITORES_EXCEL_OFICIAL !== 'undefined' ? MATRIZ_DESCRITORES_EXCEL_OFICIAL : {});
+
+        if (isMath && descSource.matematica) {
+            descSource.matematica.forEach(d => saebList.push({ type: 'SAEB', code: d.codigo, desc: d.desc, topico: d.topico, disciplina: 'Matemática' }));
+        } else if (!isMath && descSource.portuguese) {
+            descSource.portuguese.forEach(d => saebList.push({ type: 'SAEB', code: d.codigo, desc: d.desc, topico: d.topico, disciplina: 'Língua Portuguesa' }));
+        } else {
+            const defDesc = isMath 
+                ? [{ codigo: 'D01', desc: 'Identificar a localização e movimentação de objeto em mapas.' }, { codigo: 'D13', desc: 'Reconhecer e utilizar características do sistema de numeração decimal.' }, { codigo: 'D19', desc: 'Resolver problemas com números naturais envolvendo adição ou subtração.' }]
+                : [{ codigo: 'D01', desc: 'Localizar informações explícitas em um texto.' }, { codigo: 'D03', desc: 'Inferir o sentido de uma palavra ou expressão.' }, { codigo: 'D04', desc: 'Inferir uma informação implícita em um texto.' }, { codigo: 'D06', desc: 'Identificar o tema ou assunto principal de um texto.' }, { codigo: 'D14', desc: 'Distinguir um fato da opinião relativa a esse fato.' }];
+            defDesc.forEach(d => saebList.push({ type: 'SAEB', code: d.codigo, desc: d.desc, topico: 'SAEB', disciplina: isMath ? 'Matemática' : 'Língua Portuguesa' }));
+        }
+
+        // Coleta Habilidades BNCC
+        const bnccList = (typeof BNCC_HABILIDADES_DATABASE !== 'undefined' ? BNCC_HABILIDADES_DATABASE : [])
+            .filter(b => !currentSubject || b.disciplina === currentSubject || currentSubject === 'all')
+            .map(b => ({ type: 'BNCC', code: b.code, desc: b.descricao, objeto: b.objeto, ano: b.ano, disciplina: b.disciplina }));
+
+        // Filtra por query
+        const filteredSaeb = saebList.filter(s => !q || s.code.toLowerCase().includes(q) || (s.desc && s.desc.toLowerCase().includes(q)));
+        const filteredBncc = bnccList.filter(b => !q || b.code.toLowerCase().includes(q) || (b.desc && b.desc.toLowerCase().includes(q)) || (b.objeto && b.objeto.toLowerCase().includes(q)));
+
+        const totalFound = filteredSaeb.length + filteredBncc.length;
+        if (totalFound === 0) {
+            resultsEl.innerHTML = '<div style="padding: 12px; font-size: 0.8rem; color: var(--text-muted); text-align: center;">Nenhum descritor ou habilidade compatível encontrado para ' + currentSubject + '.</div>';
+            resultsEl.style.display = 'block';
+            return;
+        }
+
+        let html = '';
+
+        if (filteredSaeb.length > 0) {
+            html += `
+                <div style="padding: 6px 12px; background: rgba(99, 102, 241, 0.1); font-size: 0.7rem; font-weight: 800; color: #6366f1; text-transform: uppercase; letter-spacing: 0.5px;">
+                    📊 DESCRITORES SAEB / SEAMA (MATRIZ DE REFERÊNCIA)
+                </div>
+            `;
+            filteredSaeb.slice(0, 8).forEach(item => {
+                const isSelected = plannerSelectedItems.some(sel => sel.code === item.code);
+                html += `
+                    <div style="padding: 10px 14px; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.15s ease; display: flex; justify-content: space-between; align-items: center; ${isSelected ? 'background: rgba(99,102,241,0.08);' : ''}" 
+                         onmouseover="this.style.background='rgba(99, 102, 241, 0.15)';" 
+                         onmouseout="this.style.background='${isSelected ? 'rgba(99,102,241,0.08)' : 'transparent'}';"
+                         onclick="selectPlannerSkillItem('SAEB', '${item.code}', '${item.desc.replace(/'/g, "\\'")}', '${item.disciplina}');">
+                        <div style="flex: 1; padding-right: 10px;">
+                            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
+                                <span class="badge badge-purple" style="font-size: 0.7rem; font-weight: 800;">${item.code} · SAEB</span>
+                                <span style="font-size: 0.72rem; color: var(--text-muted);">${item.disciplina}</span>
+                            </div>
+                            <div style="font-size: 0.78rem; color: var(--text-primary); line-height: 1.3;">${item.desc}</div>
+                        </div>
+                        <span style="font-size: 0.75rem; font-weight: 700; color: #6366f1;">${isSelected ? '✓ Adicionado' : '+ Selecionar'}</span>
+                    </div>
+                `;
+            });
+        }
+
+        if (filteredBncc.length > 0) {
+            html += `
+                <div style="padding: 6px 12px; background: rgba(16, 185, 129, 0.1); font-size: 0.7rem; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px;">
+                    🌱 HABILIDADES BNCC (BASE NACIONAL COMUM CURRICULAR)
+                </div>
+            `;
+            filteredBncc.slice(0, 10).forEach(item => {
+                const isSelected = plannerSelectedItems.some(sel => sel.code === item.code);
+                html += `
+                    <div style="padding: 10px 14px; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.15s ease; display: flex; justify-content: space-between; align-items: center; ${isSelected ? 'background: rgba(16,185,129,0.08);' : ''}" 
+                         onmouseover="this.style.background='rgba(16, 185, 129, 0.15)';" 
+                         onmouseout="this.style.background='${isSelected ? 'rgba(16,185,129,0.08)' : 'transparent'}';"
+                         onclick="selectPlannerSkillItem('BNCC', '${item.code}', '${item.desc.replace(/'/g, "\\'")}', '${item.disciplina}');">
+                        <div style="flex: 1; padding-right: 10px;">
+                            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
+                                <span class="badge badge-success" style="font-size: 0.7rem; font-weight: 800; background: #10b981; color: #fff;">${item.code} · BNCC</span>
+                                <span style="font-size: 0.72rem; color: var(--text-muted);">${item.ano || ''} • ${item.objeto || item.disciplina}</span>
+                            </div>
+                            <div style="font-size: 0.78rem; color: var(--text-primary); line-height: 1.3;">${item.desc}</div>
+                        </div>
+                        <span style="font-size: 0.75rem; font-weight: 700; color: #10b981;">${isSelected ? '✓ Adicionado' : '+ Selecionar'}</span>
+                    </div>
+                `;
+            });
+        }
+
+        resultsEl.innerHTML = html;
+        resultsEl.style.display = 'block';
+    }
+    window.handlePlannerSkillSearchInput = handlePlannerSkillSearchInput;
+
+    function selectPlannerSkillItem(type, code, desc, disciplina) {
+        const existingIndex = plannerSelectedItems.findIndex(i => i.code === code);
+        if (existingIndex >= 0) {
+            plannerSelectedItems.splice(existingIndex, 1);
+        } else {
+            plannerSelectedItems.push({ type, code, desc, disciplina });
+        }
+
+        const resultsEl = document.getElementById('planner-skill-search-results');
+        const searchInput = document.getElementById('planner-skill-search-input');
+        if (resultsEl) resultsEl.style.display = 'none';
+        if (searchInput) searchInput.value = '';
+
+        renderPlannerSelectedBadges();
+        checkPlannerRepetitionWarning();
+    }
+    window.selectPlannerSkillItem = selectPlannerSkillItem;
+
+    function removePlannerSelectedItem(code) {
+        plannerSelectedItems = plannerSelectedItems.filter(i => i.code !== code);
+        renderPlannerSelectedBadges();
+        checkPlannerRepetitionWarning();
+    }
+    window.removePlannerSelectedItem = removePlannerSelectedItem;
+
+    function renderPlannerSelectedBadges() {
+        const container = document.getElementById('planner-selected-badges-container');
+        if (!container) return;
+
+        if (plannerSelectedItems.length === 0) {
+            container.innerHTML = `
+                <div style="font-size: 0.76rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+                    <i data-lucide="info" style="width: 14px; height: 14px;"></i> Nenhum descritor ou habilidade selecionado ainda. Pesquise no campo acima.
+                </div>
+            `;
+            if (typeof safeCreateIcons === 'function') safeCreateIcons();
+            return;
+        }
+
+        let html = '';
+        plannerSelectedItems.forEach(item => {
+            const isSaeb = item.type === 'SAEB';
+            const bg = isSaeb ? 'rgba(99, 102, 241, 0.15)' : 'rgba(16, 185, 129, 0.15)';
+            const border = isSaeb ? '#6366f1' : '#10b981';
+            const color = isSaeb ? '#6366f1' : '#059669';
+
+            html += `
+                <div style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; background: ${bg}; border: 1px solid ${border}; border-radius: 20px; font-size: 0.78rem; font-weight: 700; color: ${color};" title="${item.desc}">
+                    <span>${item.code} · ${item.type}</span>
+                    <button type="button" onclick="removePlannerSelectedItem('${item.code}');" style="background: none; border: none; cursor: pointer; color: ${color}; font-weight: 800; font-size: 0.9rem; padding: 0 2px; line-height: 1;" title="Remover">✕</button>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+        if (typeof safeCreateIcons === 'function') safeCreateIcons();
+    }
+    window.renderPlannerSelectedBadges = renderPlannerSelectedBadges;
+
+    function handlePlannerTurmaChange() {
+        checkPlannerRepetitionWarning();
+    }
+    window.handlePlannerTurmaChange = handlePlannerTurmaChange;
+
+    function handlePlannerSubjectChange() {
+        const searchInput = document.getElementById('planner-skill-search-input');
+        if (searchInput && searchInput.value) {
+            handlePlannerSkillSearchInput(searchInput.value);
+        }
+    }
+    window.handlePlannerSubjectChange = handlePlannerSubjectChange;
+
+    // Warning: Repetição de Descritor/Habilidade na mesma turma nos últimos 30 dias (Item 4)
+    function checkPlannerRepetitionWarning() {
+        const warningBox = document.getElementById('planner-repetition-warning');
+        if (!warningBox) return;
+
+        const currentTurma = document.getElementById('planner-modal-turma')?.value || currentTurmaContext;
+        const chosenDate = document.getElementById('planner-modal-date')?.value || '2026-08-19';
+
+        if (plannerSelectedItems.length === 0) {
+            warningBox.style.display = 'none';
+            return;
+        }
+
+        const allLessons = getScheduleLessonsDb();
+        const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
+        const planDateMs = new Date(chosenDate).getTime();
+
+        const warnings = [];
+
+        plannerSelectedItems.forEach(item => {
+            const pastPlan = allLessons.find(l => {
+                if (plannerEditingPlanId && l.id === plannerEditingPlanId) return false;
+                if (l.turmaContext !== currentTurma) return false;
+                const matchCode = l.descritor_codigo === item.code || l.habilidade_bncc_codigo === item.code || l.habilidadeCode === item.code;
+                if (!matchCode) return false;
+
+                const lDateMs = new Date(l.date || l.data_planejada).getTime();
+                const diff = Math.abs(planDateMs - lDateMs);
+                return diff <= thirtyDaysMs;
+            });
+
+            if (pastPlan) {
+                const pastDateFormatted = (pastPlan.date || pastPlan.data_planejada).split('-').reverse().join('/');
+                warnings.push(`O item <strong>${item.code}</strong> (${item.type}) já foi planejado em <strong>${pastDateFormatted}</strong> para esta turma.`);
+            }
+        });
+
+        if (warnings.length > 0) {
+            warningBox.innerHTML = `
+                <div style="display: flex; gap: 8px; align-items: flex-start;">
+                    <span style="font-size: 1rem;">⚠️</span>
+                    <div>
+                        <strong style="display: block; margin-bottom: 2px;">Aviso de Repetição Pedagógica (Últimos 30 dias):</strong>
+                        ${warnings.map(w => `<div style="font-size: 0.76rem;">• ${w}</div>`).join('')}
+                        <div style="font-size: 0.72rem; color: #78350f; margin-top: 4px; font-style: italic;">Você pode salvar normalmente se a intenção for reforço ou recomposição de aprendizagem.</div>
+                    </div>
+                </div>
+            `;
+            warningBox.style.display = 'block';
+        } else {
+            warningBox.style.display = 'none';
+        }
+    }
+    window.checkPlannerRepetitionWarning = checkPlannerRepetitionWarning;
+
+    // Recorrência Semanal (Item 3)
+    function handlePlannerRecurrenceToggle(enabled) {
+        const container = document.getElementById('planner-modal-recurrence-container');
+        const endDateInput = document.getElementById('planner-modal-recurrence-end-date');
+        const startDateInput = document.getElementById('planner-modal-date');
+
+        if (!container) return;
+        container.style.display = enabled ? 'block' : 'none';
+
+        if (enabled && endDateInput && startDateInput) {
+            if (!endDateInput.value) {
+                const start = new Date(startDateInput.value + 'T00:00:00');
+                const end = new Date(start);
+                end.setDate(start.getDate() + 42); // 6 semanas
+                endDateInput.value = end.toISOString().split('T')[0];
+            }
+            updatePlannerRecurrencePreview();
+        }
+    }
+    window.handlePlannerRecurrenceToggle = handlePlannerRecurrenceToggle;
+
+    function updatePlannerRecurrencePreview() {
+        const previewEl = document.getElementById('planner-modal-recurrence-preview');
+        const toggle = document.getElementById('planner-modal-recurrence-toggle');
+        const startDateInput = document.getElementById('planner-modal-date');
+        const endDateInput = document.getElementById('planner-modal-recurrence-end-date');
+
+        if (!previewEl || !toggle || !toggle.checked || !startDateInput || !endDateInput) return;
+
+        const start = new Date(startDateInput.value + 'T00:00:00');
+        const end = new Date(endDateInput.value + 'T00:00:00');
+
+        if (end <= start) {
+            previewEl.innerHTML = '<span style="color: #ef4444;">A data final deve ser posterior à data inicial.</span>';
+            return;
+        }
+
+        const daysNames = ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'];
+        const dayOfWeek = start.getDay();
+        const dayName = daysNames[dayOfWeek];
+
+        let count = 0;
+        let cur = new Date(start);
+        while (cur <= end) {
+            count++;
+            cur.setDate(cur.getDate() + 7);
+        }
+
+        const startStr = startDateInput.value.split('-').reverse().slice(0, 2).join('/');
+        const endStr = endDateInput.value.split('-').reverse().slice(0, 2).join('/');
+
+        previewEl.innerHTML = `
+            <span>Isso vai criar <strong>${count} planejamentos</strong> (toda ${dayName}, de ${startStr} a ${endStr}).</span>
+        `;
+    }
+    window.updatePlannerRecurrencePreview = updatePlannerRecurrencePreview;
+
+    // Salvamento de Planejamento de Habilidades
+    function handleSaveNewSchedulePlan(e) {
+        if (e && e.preventDefault) e.preventDefault();
+
+        if (plannerSelectedItems.length === 0) {
+            if (typeof window.showToast === 'function') {
+                window.showToast('⚠️ Selecione ao menos um Descritor SAEB/SEAMA ou Habilidade BNCC no campo principal.', 'warning');
+            } else if (typeof alert === 'function') {
+                alert('⚠️ Selecione ao menos um Descritor SAEB/SEAMA ou Habilidade BNCC no campo principal.');
+            }
+            return;
+        }
+
+        const planId = document.getElementById('planner-modal-plan-id')?.value;
+        const turmaContext = document.getElementById('planner-modal-turma')?.value || currentTurmaContext;
+        const subject = document.getElementById('planner-modal-subject')?.value || 'Língua Portuguesa';
+        const date = document.getElementById('planner-modal-date')?.value || '2026-08-19';
+        const slot = document.getElementById('planner-modal-slot')?.value || '07:30 - 08:20';
+        const obs = document.getElementById('planner-modal-obs')?.value || '';
+        const status = document.getElementById('planner-modal-status')?.value || 'planejada';
+        const isRecurrent = document.getElementById('planner-modal-recurrence-toggle')?.checked || false;
+        const recurrenceEndDate = document.getElementById('planner-modal-recurrence-end-date')?.value;
+
+        const escola = turmaContext.split('—')[0]?.trim() || 'UI JOSE CORREA LIMA';
+        const turma = turmaContext.split('—')[1]?.trim() || '2º Ano A';
+
+        const saebItem = plannerSelectedItems.find(i => i.type === 'SAEB');
+        const bnccItem = plannerSelectedItems.find(i => i.type === 'BNCC');
+
+        const primaryCode = plannerSelectedItems.map(i => i.code).join(' + ');
+        const primaryDesc = plannerSelectedItems.map(i => i.code + ': ' + i.desc).join(' | ');
+
+        const allLessons = getScheduleLessonsDb();
+
+        if (planId) {
+            // Edição de registro existente
+            const existing = allLessons.find(l => l.id === planId);
+            if (existing) {
+                existing.escola_id = escola;
+                existing.escola = escola;
+                existing.turma_id = turma;
+                existing.turma = turma;
+                existing.turmaContext = turmaContext;
+                existing.disciplina = subject;
+                existing.descritor_codigo = saebItem ? saebItem.code : null;
+                existing.descritor_desc = saebItem ? saebItem.desc : null;
+                existing.habilidade_bncc_codigo = bnccItem ? bnccItem.code : null;
+                existing.habilidade_bncc_desc = bnccItem ? bnccItem.desc : null;
+                existing.habilidadeCode = primaryCode;
+                existing.habilidadeDesc = primaryDesc;
+                existing.data_planejada = date;
+                existing.date = date;
+                existing.time = slot;
+                existing.horarioTexto = slot;
+                existing.status = status;
+                existing.data_confirmacao = status === 'trabalhada' ? (existing.data_confirmacao || new Date().toISOString()) : null;
+                existing.observacoes = obs;
+                existing.methodology = obs;
+            }
+        } else {
+            // Criação de novos registros (Suporta Recorrência)
+            const datesToCreate = [date];
+            const recurrenceGroupId = isRecurrent ? 'rec_' + Date.now() : null;
+
+            if (isRecurrent && recurrenceEndDate) {
+                const start = new Date(date + 'T00:00:00');
+                const end = new Date(recurrenceEndDate + 'T00:00:00');
+                let cur = new Date(start);
+                cur.setDate(cur.getDate() + 7);
+                while (cur <= end) {
+                    datesToCreate.push(cur.toISOString().split('T')[0]);
+                    cur.setDate(cur.getDate() + 7);
+                }
+            }
+
+            datesToCreate.forEach(dIso => {
+                const newPlan = {
+                    id: 'plan_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                    escola_id: escola,
+                    escola: escola,
+                    turma_id: turma,
+                    turma: turma,
+                    turmaContext: turmaContext,
+                    disciplina: subject,
+                    descritor_codigo: saebItem ? saebItem.code : null,
+                    descritor_desc: saebItem ? saebItem.desc : null,
+                    habilidade_bncc_codigo: bnccItem ? bnccItem.code : null,
+                    habilidade_bncc_desc: bnccItem ? bnccItem.desc : null,
+                    habilidadeCode: primaryCode,
+                    habilidadeDesc: primaryDesc,
+                    data_planejada: dIso,
+                    date: dIso,
+                    time: slot,
+                    horarioTexto: slot,
+                    status: status,
+                    data_confirmacao: status === 'trabalhada' ? new Date().toISOString() : null,
+                    observacoes: obs,
+                    methodology: obs,
+                    recorrencia: isRecurrent ? { tipo: 'semanal', ate_data: recurrenceEndDate } : null,
+                    recorrencia_grupo_id: recurrenceGroupId,
+                    criado_por: sessionStorage.getItem('userName') || 'Profa. Silvana Ferreira (Regente)',
+                    criadoPor: sessionStorage.getItem('userName') || 'Profa. Silvana Ferreira (Regente)',
+                    criado_em: new Date().toISOString(),
+                    createdAt: new Date().toISOString(),
+                    excluido_em: null,
+                    deletedAt: null
+                };
+                allLessons.push(newPlan);
+            });
+        }
+
+        saveScheduleLessonsDb(allLessons);
+        closeNewSchedulePlanModal();
+        renderActiveScheduleView();
+
+        if (typeof window.showToast === 'function') {
+            window.showToast(`✅ Planejamento (${primaryCode}) salvo no cronograma com sucesso!`, 'success');
+        } else if (typeof alert === 'function') {
+            alert(`✅ Planejamento (${primaryCode}) salvo com sucesso!`);
+        }
+    }
+    window.handleSaveNewSchedulePlan = handleSaveNewSchedulePlan;
 
     function renderActiveScheduleView() {
         if (currentScheduleMainView === 'monthly') {
@@ -19722,9 +17449,13 @@ window.renderDbSchools = function renderDbSchools() {
                 tag.onclick = () => openDayExpandedDrawer(dateIso);
 
                 tag.innerHTML = `
-                    <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700;">
+                    <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; flex: 1;">
                         ${isAtrasada ? '⚠️ ' : (les.status === 'trabalhada' ? '✓ ' : '⏳ ')}${les.habilidadeCode || les.disciplina}
                     </div>
+                    <button type="button" onclick="event.stopPropagation(); toggleLessonWorkStatus('${les.id}');" 
+                            style="background: none; border: none; cursor: pointer; font-size: 10px; padding: 0 2px; line-height: 1;" title="Alternar Trabalhada/Planejada">
+                        ${les.status === 'trabalhada' ? '🟢' : '🟡'}
+                    </button>
                 `;
                 cell.appendChild(tag);
             });
@@ -19790,7 +17521,7 @@ window.renderDbSchools = function renderDbSchools() {
                     ${daysOfWeek.map(d => {
                         const slotLessons = turmaLessons.filter(l => l.date === d.dateIso && l.time === slot);
                         return `
-                            <div class="weekly-slot-cell" style="padding: 6px; border-right: 1px solid var(--border-color); background: var(--bg-primary); display: flex; flex-direction: column; gap: 4px;"
+                            <div class="weekly-slot-cell" style="padding: 6px; border-right: 1px solid var(--border-color); background: var(--bg-primary); display: flex; flex-direction: column; gap: 4px; position: relative; min-height: 80px;"
                                  ondragover="event.preventDefault(); this.style.background='rgba(99,102,241,0.1)';"
                                  ondragleave="this.style.background='var(--bg-primary)';"
                                  ondrop="event.preventDefault(); this.style.background='var(--bg-primary)'; const lid = event.dataTransfer.getData('text/plain'); if(lid) handleLessonDropToSlot(lid, '${d.dateIso}', '${slot}');">
@@ -19799,18 +17530,29 @@ window.renderDbSchools = function renderDbSchools() {
                                     return `
                                         <div draggable="true" ondragstart="event.dataTransfer.setData('text/plain', '${les.id}');"
                                              class="weekly-lesson-card ${les.status === 'trabalhada' ? 'status-trabalhada' : (isAtrasada ? 'status-atrasada' : 'status-planejada')}"
-                                             style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-secondary); font-size: 0.75rem; cursor: grab; box-shadow: 0 1px 3px rgba(0,0,0,0.05);"
+                                             style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-secondary); font-size: 0.75rem; cursor: grab; box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: relative;"
                                              onclick="openDayExpandedDrawer('${les.date}');">
                                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
                                                 <strong style="color: #6366f1;">${les.habilidadeCode}</strong>
-                                                <span class="badge ${les.status === 'trabalhada' ? 'badge-success' : (isAtrasada ? 'badge-danger' : 'badge-warning')}" style="font-size: 0.65rem;">
-                                                    ${isAtrasada ? '⚠️ Atrasada' : (les.status === 'trabalhada' ? 'Trabalhada' : 'Planejada')}
-                                                </span>
+                                                <button type="button" onclick="event.stopPropagation(); toggleLessonWorkStatus('${les.id}');" 
+                                                        class="badge ${les.status === 'trabalhada' ? 'badge-success' : (isAtrasada ? 'badge-danger' : 'badge-warning')}" 
+                                                        style="font-size: 0.65rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 3px;" title="Clique para alternar Trabalhada / Planejada">
+                                                    ${isAtrasada ? '⚠️ Atrasada' : (les.status === 'trabalhada' ? '✓ Trabalhada' : '🟡 Planejada')}
+                                                </button>
                                             </div>
                                             <div style="font-weight: 600; color: var(--text-primary); font-size: 0.72rem; line-height: 1.3;">${les.disciplina}</div>
+                                            <div style="display: flex; gap: 4px; justify-content: flex-end; margin-top: 4px;">
+                                                <button type="button" onclick="event.stopPropagation(); openNewSchedulePlanModal(null, null, '${les.id}');" style="background: none; border: none; font-size: 11px; cursor: pointer; color: var(--text-muted);" title="Editar Planejamento">✏️</button>
+                                                <button type="button" onclick="event.stopPropagation(); handleDeleteLessonWithTrash('${les.id}');" style="background: none; border: none; font-size: 11px; cursor: pointer; color: #ef4444;" title="Mover para Lixeira">🗑️</button>
+                                            </div>
                                         </div>
                                     `;
                                 }).join('')}
+                                ${slotLessons.length === 0 ? `
+                                    <div onclick="openNewSchedulePlanModal('${d.dateIso}', '${slot}');" style="flex: 1; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s ease; cursor: pointer; color: #6366f1; font-size: 0.72rem; font-weight: 700; border: 1px dashed rgba(99,102,241,0.4); border-radius: 4px;" onmouseover="this.style.opacity='1';" onmouseout="this.style.opacity='0';">
+                                        + Planejar
+                                    </div>
+                                ` : ''}
                             </div>
                         `;
                     }).join('')}
@@ -20196,7 +17938,7 @@ window.renderDbSchools = function renderDbSchools() {
     // =========================================================================
 
     function handleDeleteLessonWithTrash(lessonId) {
-        if (!confirm('Deseja mover este plano de aula para a Lixeira? Ele ficará salvo por até 30 dias para recuperação.')) return;
+        if (typeof confirm === 'function' && !confirm('Deseja mover este plano de aula para a Lixeira? Ele ficará salvo por até 30 dias para recuperação.')) return;
 
         const allLessons = getScheduleLessonsDb();
         const lesson = allLessons.find(l => l.id === lessonId);
@@ -20290,7 +18032,7 @@ window.renderDbSchools = function renderDbSchools() {
     window.handleRestoreTrashLesson = handleRestoreTrashLesson;
 
     function handleEmptyScheduleTrash() {
-        if (!confirm('Tem certeza de que deseja esvaziar permanentemente toda a lixeira?')) return;
+        if (typeof confirm === 'function' && !confirm('Tem certeza de que deseja esvaziar permanentemente toda a lixeira?')) return;
         saveScheduleTrashDb([]);
         openScheduleTrashModal();
         if (typeof window.showToast === 'function') {
@@ -20338,12 +18080,20 @@ window.renderDbSchools = function renderDbSchools() {
         const lesson = allLessons.find(l => l.id === lessonId);
         if (!lesson) return;
 
-        lesson.status = lesson.status === 'trabalhada' ? 'planejada' : 'trabalhada';
+        const isNowTrabalhada = lesson.status !== 'trabalhada';
+        lesson.status = isNowTrabalhada ? 'trabalhada' : 'planejada';
+        lesson.data_confirmacao = isNowTrabalhada ? new Date().toISOString() : null;
+
         saveScheduleLessonsDb(allLessons);
-        openDayExpandedDrawer(lesson.date);
+        
+        const drawer = document.getElementById('drawer-day-expanded-overlay');
+        if (drawer && drawer.style.display !== 'none') {
+            openDayExpandedDrawer(lesson.date || lesson.data_planejada);
+        }
         renderActiveScheduleView();
+
         if (typeof window.showToast === 'function') {
-            window.showToast(`Status da aula alterado para "${lesson.status}"!`, 'info');
+            window.showToast(`Status alterado para "${lesson.status.toUpperCase()}"${isNowTrabalhada ? ' (Confirmada em ' + new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) + ')' : ''}!`, isNowTrabalhada ? 'success' : 'info');
         }
     }
     window.toggleLessonWorkStatus = toggleLessonWorkStatus;

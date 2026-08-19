@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <link rel="stylesheet" href="styles.css?v=7ca4607f7c_mszjq0qx">
+    <link rel="stylesheet" href="styles.css?v=7ca4607f7c_mt00zpvt">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2229,7 +2229,7 @@
                                 </button>
 
                                 <!-- CTA Principal: + Novo Planejamento / Agendar Aula -->
-                                <button type="button" class="btn btn-primary" onclick="openSchedulePlannerDrawer(); return false;" style="display: flex; align-items: center; gap: 8px; font-weight: 700; padding: 9px 18px; border-radius: var(--radius-md); background: linear-gradient(135deg, #4f46e5, #6366f1); border: none; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);">
+                                <button type="button" class="btn btn-primary" onclick="openNewSchedulePlanModal(); return false;" style="display: flex; align-items: center; gap: 8px; font-weight: 700; padding: 9px 18px; border-radius: var(--radius-md); background: linear-gradient(135deg, #4f46e5, #6366f1); border: none; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);">
                                     <i data-lucide="plus-circle" style="width: 16px; height: 16px;"></i>
                                     <span>+ Novo Planejamento</span>
                                 </button>
@@ -5993,6 +5993,180 @@
                     </div>
                 </div>
 
+
+    <!-- Modal: Novo Planejamento de Habilidades (SEMED ↔ Docente) -->
+    <div id="modal-create-schedule-planner" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 20px;">
+        <div class="modal-container card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 720px; padding: 0; overflow: hidden; box-shadow: 0 12px 36px rgba(0,0,0,0.3); max-height: 92vh; display: flex; flex-direction: column;">
+            <!-- Header -->
+            <div style="padding: 18px 24px; border-bottom: 1px solid var(--border-color); background: var(--bg-tertiary); display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(99, 102, 241, 0.15); color: #6366f1; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="calendar-plus" style="width: 22px; height: 22px;"></i>
+                    </div>
+                    <div>
+                        <h3 id="planner-modal-title" style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">+ Novo Planejamento de Habilidades</h3>
+                        <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">Pactuação pedagógica de descritor (SAEB/SEAMA) e/ou habilidade BNCC por turma.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeNewSchedulePlanModal();" class="btn-icon" style="background: none; border: none; cursor: pointer; color: var(--text-muted); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+                </button>
+            </div>
+
+            <!-- Form Body -->
+            <form id="form-create-schedule-planner" onsubmit="handleSaveNewSchedulePlan(event); return false;" style="padding: 22px 24px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 16px;">
+                <input type="hidden" id="planner-modal-plan-id" value="">
+
+                <!-- Banner Alerta de Repetição nos últimos 30 dias (Item 4) -->
+                <div id="planner-repetition-warning" style="display: none; background: #fef3c7; border: 1px solid #f59e0b; color: #92400e; padding: 10px 14px; border-radius: 8px; font-size: 0.8rem; line-height: 1.4;">
+                    <!-- Dinâmico -->
+                </div>
+
+                <!-- Campo Principal em Destaque: Descritor SAEB/SEAMA e/ou Habilidade BNCC (Item 2) -->
+                <div style="background: var(--bg-primary); border: 1.5px solid #6366f1; border-radius: var(--radius-md); padding: 16px; box-shadow: 0 2px 8px rgba(99, 102, 241, 0.08);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <label style="font-size: 0.82rem; font-weight: 800; color: #6366f1; display: flex; align-items: center; gap: 6px;">
+                            🎯 DESCRITOR SAEB / SEAMA E/OU HABILIDADE BNCC <span style="color: #ef4444;">*</span>
+                        </label>
+                        <span style="font-size: 0.72rem; color: var(--text-muted);">Objeto central do planejamento</span>
+                    </div>
+
+                    <!-- Input com Autocomplete Dual -->
+                    <div style="position: relative;">
+                        <input type="text" id="planner-skill-search-input" oninput="handlePlannerSkillSearchInput(this.value);" onfocus="handlePlannerSkillSearchInput(this.value);" placeholder="🔍 Digite código ou palavra-chave (ex: D01, EF02LP01, inferir, fração, leitura...)" class="form-input-text" style="width: 100%; height: 42px; font-size: 0.86rem; padding: 0 12px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);" autocomplete="off">
+                        
+                        <!-- Dropdown de Resultados com Badges SAEB / BNCC -->
+                        <div id="planner-skill-search-results" style="display: none; position: absolute; top: 46px; left: 0; right: 0; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: 0 10px 28px rgba(0,0,0,0.25); z-index: 1000; max-height: 250px; overflow-y: auto;">
+                            <!-- Injetado dinamicamente -->
+                        </div>
+                    </div>
+
+                    <!-- Badges de Itens Selecionados (Permite múltiplos: Descritores e/ou BNCC) -->
+                    <div id="planner-selected-badges-container" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; min-height: 28px;">
+                        <!-- Tags renderizadas dinamicamente -->
+                    </div>
+                </div>
+
+                <!-- Grid 2 Colunas: Escola & Turma + Disciplina -->
+                <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 14px;">
+                    <div>
+                        <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                            Escola & Turma <span style="color: #ef4444;">*</span>
+                        </label>
+                        <select id="planner-modal-turma" onchange="handlePlannerTurmaChange();" class="form-select" style="width: 100%; height: 38px; font-size: 0.82rem; font-weight: 600; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                            <option value="UI JOSE CORREA LIMA — 2º Ano A">UI JOSE CORREA LIMA — 2º Ano A (Matutino)</option>
+                            <option value="UI JOSE CORREA LIMA — 2º Ano B">UI JOSE CORREA LIMA — 2º Ano B (Vespertino)</option>
+                            <option value="UI JOSE CORREA LIMA — 5º Ano A">UI JOSE CORREA LIMA — 5º Ano A (Matutino)</option>
+                            <option value="UI JOSE CORREA LIMA — 9º Ano A">UI JOSE CORREA LIMA — 9º Ano A (Matutino)</option>
+                            <option value="UNIDADE INTEGRADA JOSE GONCALVES DIAS — 5º Ano A">UNIDADE INTEGRADA JOSE GONCALVES DIAS — 5º Ano A</option>
+                            <option value="UNIDADE INTEGRADA JOSE GONCALVES DIAS — 9º Ano A">UNIDADE INTEGRADA JOSE GONCALVES DIAS — 9º Ano A</option>
+                            <option value="U I BASILIO ALVES — 2º Ano A">U I BASILIO ALVES — 2º Ano A</option>
+                            <option value="U I BASILIO ALVES — 5º Ano A">U I BASILIO ALVES — 5º Ano A</option>
+                            <option value="UE ANITA FURTADO — 5º Ano A">UE ANITA FURTADO — 5º Ano A</option>
+                            <option value="UI EMILIO MURAD — 5º Ano A">UI EMILIO MURAD — 5º Ano A</option>
+                            <option value="UNIDADE INTEGRADA ALDENORA ARAUJO CRUZ — 5º Ano A">UNIDADE INTEGRADA ALDENORA ARAUJO CRUZ — 5º Ano A</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                            Componente Curricular / Disciplina <span style="color: #ef4444;">*</span>
+                        </label>
+                        <select id="planner-modal-subject" onchange="handlePlannerSubjectChange();" class="form-select" style="width: 100%; height: 38px; font-size: 0.82rem; font-weight: 600; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                            <option value="Língua Portuguesa" selected>📖 Língua Portuguesa</option>
+                            <option value="Matemática">📐 Matemática</option>
+                            <option value="Ciências da Natureza">🌱 Ciências da Natureza</option>
+                            <option value="História">🏛️ História</option>
+                            <option value="Geografia">🌍 Geografia</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Grid 2 Colunas: Data Planejada + Horário / Aula -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary);">
+                                Data Planejada <span style="color: #ef4444;">*</span>
+                            </label>
+                            <span style="font-size: 0.7rem; color: var(--text-muted);">Atalhos da semana:</span>
+                        </div>
+                        <input type="date" id="planner-modal-date" onchange="handlePlannerDateChange();" class="form-input-text" required style="width: 100%; height: 38px; font-size: 0.84rem; padding: 0 10px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                        
+                        <!-- Botões Rápidos de Dias da Semana (Seg a Sex) -->
+                        <div id="planner-quick-day-buttons" style="display: flex; gap: 4px; margin-top: 6px;">
+                            <!-- Injetados dinamicamente -->
+                        </div>
+                    </div>
+
+                    <div>
+                        <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                            Horário / Aula
+                        </label>
+                        <select id="planner-modal-slot" class="form-select" style="width: 100%; height: 38px; font-size: 0.82rem; font-weight: 600; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                            <option value="07:30 - 08:20" selected>1ª Aula (07:30 - 08:20)</option>
+                            <option value="08:20 - 09:10">2ª Aula (08:20 - 09:10)</option>
+                            <option value="09:25 - 10:15">3ª Aula (09:25 - 10:15)</option>
+                            <option value="10:15 - 11:05">4ª Aula (10:15 - 11:05)</option>
+                            <option value="13:30 - 14:20">1ª Aula Vespertino (13:30 - 14:20)</option>
+                            <option value="14:20 - 15:10">2ª Aula Vespertino (14:20 - 15:10)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Seção de Recorrência Semanal (Item 3) -->
+                <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 16px;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.82rem; font-weight: 700; color: var(--text-primary);">
+                        <input type="checkbox" id="planner-modal-recurrence-toggle" onchange="handlePlannerRecurrenceToggle(this.checked);" style="accent-color: #6366f1; width: 16px; height: 16px;">
+                        <span>🔁 Repetir semanalmente no mesmo dia da semana</span>
+                    </label>
+
+                    <div id="planner-modal-recurrence-container" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border-color);">
+                        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                            <div>
+                                <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 2px;">REPETIR ATÉ:</label>
+                                <input type="date" id="planner-modal-recurrence-end-date" onchange="updatePlannerRecurrencePreview();" class="form-input-text" style="height: 36px; font-size: 0.82rem; padding: 0 10px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                            </div>
+                            <div id="planner-modal-recurrence-preview" style="flex: 1; font-size: 0.78rem; color: #6366f1; font-weight: 600; min-width: 200px;">
+                                <!-- Texto de prévia -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campo Complementar: Observações / Metodologia -->
+                <div>
+                    <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                        Observações Pedagógicas / Encaminhamentos Metodológicos <span style="font-size: 0.72rem; color: var(--text-muted);">(Opcional)</span>
+                    </label>
+                    <textarea id="planner-modal-obs" rows="2" placeholder="Descreva atividades, recursos didáticos (ex: livro didático p. 45, jogos, dinâmicas de recomposição)..." class="form-input-text" style="width: 100%; font-size: 0.82rem; padding: 8px 12px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); resize: vertical;"></textarea>
+                </div>
+
+                <!-- Footer com Status e Botões de Ação -->
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 8px; padding-top: 14px; border-top: 1px solid var(--border-color);">
+                    <!-- Status Inicial -->
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">Status inicial:</label>
+                        <select id="planner-modal-status" class="form-select" style="height: 34px; font-size: 0.78rem; font-weight: 700; padding: 0 8px; border-radius: var(--radius-sm);">
+                            <option value="planejada" selected>🟡 Planejada (Laranja)</option>
+                            <option value="trabalhada">🟢 Trabalhada (Verde)</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <button type="button" onclick="closeNewSchedulePlanModal();" class="btn btn-outline" style="padding: 0 18px; height: 38px; font-weight: 600;">
+                            Cancelar
+                        </button>
+                        <button type="submit" id="btn-save-schedule-planner" class="btn btn-primary" style="padding: 0 22px; height: 38px; font-weight: 700; background: linear-gradient(135deg, #4f46e5, #6366f1); border: none; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35); display: flex; align-items: center; gap: 6px;">
+                            <i data-lucide="check" style="width: 16px; height: 16px;"></i>
+                            <span>Salvar Planejamento</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
 <!-- Script de Limpeza de Cache de Service Workers Antigos -->
     <script>
         if ('serviceWorker' in navigator) {
@@ -6010,13 +6184,13 @@
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=mszjq0qx"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=mszjq0qx"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=mszjq0qx"></script>
-    <script src="ideb_publico_db.js?v=mszjq0qx"></script>
-    <script src="alunos_db.js?v=mszjq0qx"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=mt00zpvt"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=mt00zpvt"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=mt00zpvt"></script>
+    <script src="ideb_publico_db.js?v=mt00zpvt"></script>
+    <script src="alunos_db.js?v=mt00zpvt"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=1901abbcce_mszjq0qx"></script>
+    <script src="app.js?v=98ce9139f3_mt00zpvt"></script>
 </body>
 </html>
