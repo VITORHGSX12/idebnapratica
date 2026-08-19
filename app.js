@@ -4,9 +4,8 @@
 // =========================================================================
 
 
-    // =========================================================================
-    // MOTOR DO DASHBOARD INICIAL 100% DINÂMICO E INTEGRADO ÀS FONTES REAIS
-    // =========================================================================
+    var STORAGE_KEY_EVENTS = 'gd_network_evaluations_db';
+    var INITIAL_DEFAULT_EVENTS = [];
 
     function getPdeGoalsState() {
         try {
@@ -271,28 +270,37 @@
         const container = document.getElementById('dashboard-priority-descriptors-container');
         if (!container) return;
 
-        // Verificar se há avaliações/simulados REAIS com notas computadas
-        const events = typeof getStoredEvents === 'function' ? getStoredEvents() : [];
-        const finishedEvents = events.filter(e => e.status === 'finalizados' || e.mediaScore);
+        // Verificar se há respostas de simulados REALMENTE lançadas no sistema
+        let hasSimuladoWithAnswers = false;
+        try {
+            const savedRespostas = (typeof localStorage !== 'undefined' && localStorage.getItem) ? localStorage.getItem('gd_simulado_respostas_db') : null;
+            if (savedRespostas && savedRespostas !== '{}' && savedRespostas !== '[]') {
+                hasSimuladoWithAnswers = true;
+            }
+            const events = typeof getStoredEvents === 'function' ? getStoredEvents() : [];
+            if (events.some(e => e.respostasLancadas && e.respostasLancadas > 0 && e.status === 'finalizados')) {
+                hasSimuladoWithAnswers = true;
+            }
+        } catch(e) {}
 
-        // Se NÃO houver nenhum simulado aplicado/corrigido: OCULTAR A LISTA E EXIBIR ESTADO VAZIO
-        if (finishedEvents.length === 0) {
+        // Se NÃO houver respostas de simulados lançadas: RENDERIZAR O ESTADO VAZIO PADRÃO
+        if (!hasSimuladoWithAnswers) {
             container.innerHTML = `
-                <div style="padding: 28px 20px; text-align: center; color: var(--text-muted); background: var(--bg-tertiary); border: 1.5px dashed var(--border-color); border-radius: var(--radius-md);">
-                    <div style="font-size: 2rem; margin-bottom: 6px;">⏳</div>
-                    <h4 style="margin: 0 0 4px 0; font-size: 1rem; font-weight: 800; color: var(--text-primary);">Aguardando 1ª Avaliação / Simulado da Rede</h4>
-                    <p style="margin: 0 auto 14px auto; font-size: 0.8rem; color: var(--text-secondary); max-width: 460px; line-height: 1.45;">
+                <div style="padding: 32px 20px; text-align: center; color: var(--text-muted); background: var(--bg-tertiary); border: 1.5px dashed var(--border-color); border-radius: var(--radius-md); min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <div style="font-size: 2.2rem; margin-bottom: 8px;">📊</div>
+                    <h4 style="margin: 0 0 6px 0; font-size: 1.05rem; font-weight: 800; color: var(--text-primary);">Nenhum simulado aplicado ainda</h4>
+                    <p style="margin: 0 auto 16px auto; font-size: 0.82rem; color: var(--text-secondary); max-width: 440px; line-height: 1.45;">
                         Aplique seu primeiro simulado para visualizar os descritores e habilidades prioritárias da rede calculados em tempo real.
                     </p>
-                    <button type="button" onclick="switchTab('sec-criar-avaliacoes');" class="btn btn-primary btn-sm" style="font-weight: 700; background: #6366f1; border-color: #6366f1; display: inline-flex; align-items: center; gap: 6px;">
-                        <span>+ Lançar 1ª Avaliação</span>
+                    <button type="button" onclick="switchTab('sec-criar-avaliacoes');" class="btn btn-primary btn-sm" style="font-weight: 700; background: #6366f1; border-color: #6366f1; display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px;">
+                        <span>+ Aplicar Simulado</span>
                     </button>
                 </div>
             `;
             return;
         }
 
-        // Se HOUVER simulados corrigidos: computar percentuais reais dos descritores
+        // Se HOUVER simulados com respostas: computar percentuais reais dos descritores
         const dynamicDescriptors = [
             { code: 'D03', subject: 'LP', name: 'Inferir o sentido de palavra ou expressão no texto', pct: 42.5, status: 'Crítico', color: '#ef4444' },
             { code: 'D19', subject: 'MAT', name: 'Resolver problema envolvendo cálculo de área de figuras planas', pct: 51.0, status: 'Alerta', color: '#f59e0b' },
@@ -13161,9 +13169,7 @@ if (document.readyState === 'loading') {
     // =========================================================================
     // BANCO CENTRALIZADO E PERSISTÊNCIA REAL DE AVALIAÇÕES / SIMULADOS
     // =========================================================================
-    const STORAGE_KEY_EVENTS = 'gd_network_evaluations_db';
-
-    const INITIAL_DEFAULT_EVENTS = [
+    INITIAL_DEFAULT_EVENTS = [
         {
             id: 'ev_1',
             nome: '1º Simulado Diagnóstico SAEB 2026 - Anos Iniciais',
@@ -20729,6 +20735,17 @@ window.renderDbSchools = function renderDbSchools() {
 // ==========================================
 // BOOTSTRAP APPLICATION
 // ==========================================
+function initApp() {
+    try {
+        if (typeof renderDashboardComplete === 'function') renderDashboardComplete();
+        if (typeof renderDbSchools === 'function') renderDbSchools();
+        if (typeof renderDbStudents === 'function') renderDbStudents();
+        if (typeof populateIdebGoalsTable === 'function') populateIdebGoalsTable();
+        if (typeof safeCreateIcons === 'function') safeCreateIcons();
+    } catch(e) {
+        console.error('[InitApp Error]', e);
+    }
+}
 window.initApp = initApp;
 
 if (typeof document !== 'undefined') {
