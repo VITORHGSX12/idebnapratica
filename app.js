@@ -13005,10 +13005,17 @@ if (document.readyState === 'loading') {
     // CONTROLADORES INTERATIVOS DE AVALIAÇÕES E APLICAÇÃO DE PROVAS (COMPLETO)
     // =========================================================================
 
-    const DEFAULT_EVENTS_LIST = [
+    
+    // =========================================================================
+    // BANCO CENTRALIZADO E PERSISTÊNCIA REAL DE AVALIAÇÕES / SIMULADOS
+    // =========================================================================
+    const STORAGE_KEY_EVENTS = 'gd_network_evaluations_db';
+
+    const INITIAL_DEFAULT_EVENTS = [
         {
             id: 'ev_1',
             nome: '1º Simulado Diagnóstico SAEB 2026 - Anos Iniciais',
+            titulo: '1º Simulado Diagnóstico SAEB 2026 - Anos Iniciais',
             escola: 'Todas as 9 Escolas da Rede',
             janela: '01/09/2026 a 15/09/2026',
             tipo: 'Simulado Diagnóstico',
@@ -13021,6 +13028,7 @@ if (document.readyState === 'loading') {
         {
             id: 'ev_2',
             nome: 'Simulado Prova Brasil 2026 - Anos Finais',
+            titulo: 'Simulado Prova Brasil 2026 - Anos Finais',
             escola: 'Todas as 9 Escolas da Rede',
             janela: '10/09/2026 a 25/09/2026',
             tipo: 'Simulado Bimestral',
@@ -13033,6 +13041,7 @@ if (document.readyState === 'loading') {
         {
             id: 'ev_3',
             nome: 'Avaliação Diagnóstica de Alfabetização 2026',
+            titulo: 'Avaliação Diagnóstica de Alfabetização 2026',
             escola: 'Todas as 9 Escolas da Rede',
             janela: '15/08/2026 a 30/08/2026',
             tipo: 'Avaliação Formativa',
@@ -13044,102 +13053,46 @@ if (document.readyState === 'loading') {
         }
     ];
 
+    var currentEventFilter = 'ativos';
+    var currentWizardStep = 1;
+
     function getStoredEvents() {
         try {
-            const saved = localStorage.getItem('gestao_eventos_db');
-            if (saved) return JSON.parse(saved);
+            const saved = localStorage.getItem(STORAGE_KEY_EVENTS);
+            if (saved !== null) {
+                return JSON.parse(saved);
+            }
         } catch(e) {}
-        localStorage.setItem('gestao_eventos_db', JSON.stringify(DEFAULT_EVENTS_LIST));
-        return DEFAULT_EVENTS_LIST;
+        try {
+            localStorage.setItem(STORAGE_KEY_EVENTS, JSON.stringify(INITIAL_DEFAULT_EVENTS));
+        } catch(e) {}
+        return INITIAL_DEFAULT_EVENTS;
     }
+    window.getStoredEvents = getStoredEvents;
 
     function saveStoredEvents(list) {
         try {
-            localStorage.setItem('gestao_eventos_db', JSON.stringify(list));
+            localStorage.setItem(STORAGE_KEY_EVENTS, JSON.stringify(list));
         } catch(e) {}
     }
+    window.saveStoredEvents = saveStoredEvents;
 
-    let currentEventFilter = 'ativos';
-    let currentWizardStep = 1;
+    function updateEventFilterBadges() {
+        const all = getStoredEvents();
+        const ativosCount = all.filter(e => e.status === 'ativos').length;
+        const rascunhosCount = all.filter(e => e.status === 'rascunhos').length;
+        const finalizadosCount = all.filter(e => e.status === 'finalizados').length;
 
-    // Subtab switcher for Criar Avaliações
-    function setupEvalSubtabs() {
-        document.querySelectorAll('.eval-subtab-btn').forEach(btn => {
-            btn.onclick = function(e) {
-                e.preventDefault();
-                const subtab = this.getAttribute('data-subtab');
-                
-                document.querySelectorAll('.eval-subtab-btn').forEach(b => {
-                    b.classList.remove('active');
-                    b.style.color = 'var(--text-secondary)';
-                    b.style.borderBottom = 'none';
-                    b.style.fontWeight = '500';
-                });
-                this.classList.add('active');
-                this.style.color = 'var(--purple-light)';
-                this.style.borderBottom = '2px solid var(--purple)';
-                this.style.fontWeight = '700';
+        const elAtivos = document.getElementById('filter-count-ativos') || document.querySelector('.event-filter-link[data-filter="ativos"]');
+        const elRascunhos = document.getElementById('filter-count-rascunhos') || document.querySelector('.event-filter-link[data-filter="rascunhos"]');
+        const elFinalizados = document.getElementById('filter-count-finalizados') || document.querySelector('.event-filter-link[data-filter="finalizados"]');
 
-                document.querySelectorAll('.eval-subtab-content').forEach(c => c.classList.add('hidden'));
-                const targetContent = document.getElementById(subtab);
-                if (targetContent) targetContent.classList.remove('hidden');
-
-                if (subtab === 'criar-evento-sub') renderCreatedEventsTable();
-                if (subtab === 'lancar-notas-sub') renderLancarNotasTable();
-                if (subtab === 'resultados-dash-sub') renderResultadosDashboard();
-            };
-        });
+        if (elAtivos) elAtivos.textContent = `Ativos (${ativosCount})`;
+        if (elRascunhos) elRascunhos.textContent = `Rascunhos (${rascunhosCount})`;
+        if (elFinalizados) elFinalizados.textContent = `Finalizados (${finalizadosCount})`;
     }
+    window.updateEventFilterBadges = updateEventFilterBadges;
 
-    // Toggle between Eventos Criados and Novo Evento Wizard
-    function setupEventWizardToggles() {
-        const btnShowEvents = document.getElementById('btn-show-created-events');
-        const btnShowWizard = document.getElementById('btn-show-new-event-wizard');
-        const panelEvents = document.getElementById('panel-created-events');
-        const panelWizard = document.getElementById('panel-new-event-wizard');
-
-        if (btnShowEvents) {
-            btnShowEvents.onclick = function(e) {
-                e.preventDefault();
-                if (panelEvents) panelEvents.classList.remove('hidden');
-                if (panelWizard) panelWizard.classList.add('hidden');
-                btnShowEvents.className = 'btn btn-primary';
-                if (btnShowWizard) btnShowWizard.className = 'btn btn-outline';
-                renderCreatedEventsTable();
-            };
-        }
-
-        if (btnShowWizard) {
-            btnShowWizard.onclick = function(e) {
-                e.preventDefault();
-                if (panelEvents) panelEvents.classList.add('hidden');
-                if (panelWizard) panelWizard.classList.remove('hidden');
-                btnShowWizard.className = 'btn btn-primary';
-                if (btnShowEvents) btnShowEvents.className = 'btn btn-outline';
-                goToWizardStep(1);
-            };
-        }
-
-        // Filter links: Ativos, Rascunhos, Finalizados
-        document.querySelectorAll('.event-filter-link').forEach(link => {
-            link.onclick = function(e) {
-                e.preventDefault();
-                document.querySelectorAll('.event-filter-link').forEach(l => {
-                    l.classList.remove('active');
-                    l.style.color = 'var(--text-muted)';
-                    l.style.fontWeight = 'normal';
-                });
-                this.classList.add('active');
-                this.style.color = 'var(--green-light)';
-                this.style.fontWeight = '700';
-                currentEventFilter = this.getAttribute('data-filter') || 'ativos';
-                renderCreatedEventsTable();
-            };
-        });
-    }
-
-    // Render Events Table
-    
     function handleDeleteCreatedEvent(eventId) {
         if (typeof confirm === 'function' && !confirm('Tem certeza de que deseja excluir este evento de avaliação/simulado da rede?')) {
             return;
@@ -13149,18 +13102,21 @@ if (document.readyState === 'loading') {
         const updated = events.filter(ev => ev.id !== eventId);
         saveStoredEvents(updated);
         renderCreatedEventsTable();
+        if (typeof renderOngoingAssessments === 'function') renderOngoingAssessments();
 
         if (typeof window.showToast === 'function') {
-            window.showToast('Simulado/Avaliação excluído com sucesso.', 'info');
+            window.showToast('Simulado/Avaliação excluído do banco de dados com sucesso.', 'info');
         }
     }
     window.handleDeleteCreatedEvent = handleDeleteCreatedEvent;
 
     function renderCreatedEventsTable() {
         const tbody = document.getElementById('created-events-table-body');
+        updateEventFilterBadges();
         if (!tbody) return;
 
-        const events = getStoredEvents().filter(ev => {
+        const all = getStoredEvents();
+        const events = all.filter(ev => {
             if (currentEventFilter === 'ativos') return ev.status === 'ativos';
             if (currentEventFilter === 'rascunhos') return ev.status === 'rascunhos';
             if (currentEventFilter === 'finalizados') return ev.status === 'finalizados';
@@ -13170,8 +13126,10 @@ if (document.readyState === 'loading') {
         if (events.length === 0) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="7" style="padding: 30px; text-align: center; color: var(--text-secondary);">
-                        Nenhum evento de avaliação encontrado nesta categoria.
+                    <td colspan="7" style="padding: 36px 20px; text-align: center; color: var(--text-secondary);">
+                        <div style="font-size: 1.8rem; margin-bottom: 6px;">📋</div>
+                        <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">Nenhum evento de avaliação encontrado nesta categoria.</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Clique em "+ Novo Evento" para agendar uma nova avaliação.</div>
                     </td>
                 </tr>
             `;
@@ -13181,7 +13139,7 @@ if (document.readyState === 'loading') {
         tbody.innerHTML = events.map(ev => `
             <tr style="border-bottom: 1px solid var(--border-color); height: 56px;">
                 <td style="padding: 12px 16px;">
-                    <div style="font-weight: 700; color: var(--text-primary); font-size: 0.9rem;">${ev.nome}</div>
+                    <div style="font-weight: 700; color: var(--text-primary); font-size: 0.9rem;">${ev.nome || ev.titulo}</div>
                     <div style="font-size: 0.74rem; color: var(--text-secondary); margin-top: 2px;">
                         LP: ${ev.questoesLP || 11} Questões • MAT: ${ev.questoesMT || 11} Questões
                     </div>
@@ -13191,17 +13149,17 @@ if (document.readyState === 'loading') {
                 <td style="padding: 12px 16px;"><span class="badge badge-purple" style="font-size: 0.7rem;">${ev.tipo}</span></td>
                 <td style="padding: 12px 16px; font-size: 0.82rem; font-weight: 600;">${ev.etapa}</td>
                 <td style="padding: 12px 16px; text-align: center;">
-                    <span class="badge badge-success" style="font-size: 0.72rem;">${ev.gabaritoStatus}</span>
+                    <span class="badge badge-success" style="font-size: 0.72rem;">${ev.gabaritoStatus || 'Gabarito Ativo'}</span>
                 </td>
                 <td style="padding: 12px 16px; text-align: center;">
                     <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
-                        <button onclick="openLancarNotasForEvent('${ev.id}')" class="btn btn-outline btn-sm" style="font-weight: 700; font-size: 0.75rem; padding: 4px 8px; color: #6366f1;" title="Lançar Notas">
+                        <button type="button" onclick="openLancarNotasForEvent('${ev.id}')" class="btn btn-outline btn-sm" style="font-weight: 700; font-size: 0.75rem; padding: 4px 8px; color: #6366f1;" title="Lançar Notas">
                             📝 Lançar Notas
                         </button>
-                        <button onclick="openPrintModalForEvent('${ev.id}')" class="btn btn-outline btn-sm" style="font-weight: 600; font-size: 0.75rem; padding: 4px 8px;" title="Imprimir Caderno">
+                        <button type="button" onclick="openPrintModalForEvent('${ev.id}')" class="btn btn-outline btn-sm" style="font-weight: 600; font-size: 0.75rem; padding: 4px 8px;" title="Imprimir Caderno">
                             🖨️ Caderno A4
                         </button>
-                        <button onclick="handleDeleteCreatedEvent('${ev.id}')" class="btn btn-outline btn-sm" style="font-weight: 600; font-size: 0.75rem; padding: 4px 6px; color: #ef4444; border-color: #fca5a5;" title="Excluir Simulado">
+                        <button type="button" onclick="handleDeleteCreatedEvent('${ev.id}')" class="btn btn-outline btn-sm" style="font-weight: 600; font-size: 0.75rem; padding: 4px 6px; color: #ef4444; border-color: #fca5a5;" title="Excluir Simulado do Banco">
                             🗑️
                         </button>
                     </div>
@@ -13210,6 +13168,8 @@ if (document.readyState === 'loading') {
         `).join('');
     }
     window.renderCreatedEventsTable = renderCreatedEventsTable;
+    window.renderCreatedEvents = renderCreatedEventsTable;
+
 
     // Wizard Step Navigation
     function goToWizardStep(step) {
@@ -13260,6 +13220,7 @@ if (document.readyState === 'loading') {
         const current = getStoredEvents();
         current.unshift(newEvent);
         saveStoredEvents(current);
+        updateEventFilterBadges();
 
         alert('✅ Avaliação criada com sucesso! O gabarito e os cadernos de prova A4 foram gerados para todas as escolas da rede.');
 
@@ -13322,6 +13283,82 @@ if (document.readyState === 'loading') {
         if (printModal) printModal.classList.remove('hidden');
     }
     window.openPrintModalForEvent = openPrintModalForEvent;
+
+    function setupEvalSubtabs() {
+        document.querySelectorAll('.eval-subtab-btn').forEach(btn => {
+            btn.onclick = function(e) {
+                e.preventDefault();
+                const subtab = this.getAttribute('data-subtab');
+                
+                document.querySelectorAll('.eval-subtab-btn').forEach(b => {
+                    b.classList.remove('active');
+                    b.style.color = 'var(--text-secondary)';
+                    b.style.borderBottom = 'none';
+                    b.style.fontWeight = '500';
+                });
+                this.classList.add('active');
+                this.style.color = 'var(--purple-light)';
+                this.style.borderBottom = '2px solid var(--purple)';
+                this.style.fontWeight = '700';
+
+                document.querySelectorAll('.eval-subtab-content').forEach(c => c.classList.add('hidden'));
+                const targetContent = document.getElementById(subtab);
+                if (targetContent) targetContent.classList.remove('hidden');
+
+                if (subtab === 'criar-evento-sub') renderCreatedEventsTable();
+                if (subtab === 'lancar-notas-sub' && typeof renderLancarNotasTable === 'function') renderLancarNotasTable();
+                if (subtab === 'resultados-dash-sub' && typeof renderResultadosDashboard === 'function') renderResultadosDashboard();
+            };
+        });
+    }
+    window.setupEvalSubtabs = setupEvalSubtabs;
+
+    function setupEventWizardToggles() {
+        const btnShowEvents = document.getElementById('btn-show-created-events');
+        const btnShowWizard = document.getElementById('btn-show-new-event-wizard');
+        const panelEvents = document.getElementById('panel-created-events');
+        const panelWizard = document.getElementById('panel-new-event-wizard');
+
+        if (btnShowEvents) {
+            btnShowEvents.onclick = function(e) {
+                e.preventDefault();
+                if (panelEvents) panelEvents.classList.remove('hidden');
+                if (panelWizard) panelWizard.classList.add('hidden');
+                btnShowEvents.className = 'btn btn-primary';
+                if (btnShowWizard) btnShowWizard.className = 'btn btn-outline';
+                renderCreatedEventsTable();
+            };
+        }
+
+        if (btnShowWizard) {
+            btnShowWizard.onclick = function(e) {
+                e.preventDefault();
+                if (panelEvents) panelEvents.classList.add('hidden');
+                if (panelWizard) panelWizard.classList.remove('hidden');
+                btnShowWizard.className = 'btn btn-primary';
+                if (btnShowEvents) btnShowEvents.className = 'btn btn-outline';
+                if (typeof goToWizardStep === 'function') goToWizardStep(1);
+            };
+        }
+
+        // Filter links: Ativos, Rascunhos, Finalizados
+        document.querySelectorAll('.event-filter-link').forEach(link => {
+            link.onclick = function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.event-filter-link').forEach(l => {
+                    l.classList.remove('active');
+                    l.style.color = 'var(--text-muted)';
+                    l.style.fontWeight = 'normal';
+                });
+                this.classList.add('active');
+                this.style.color = 'var(--green-light)';
+                this.style.fontWeight = '700';
+                currentEventFilter = this.getAttribute('data-filter') || 'ativos';
+                renderCreatedEventsTable();
+            };
+        });
+    }
+    window.setupEventWizardToggles = setupEventWizardToggles;
 
     // Initialize all button listeners on startup
     document.addEventListener('DOMContentLoaded', () => {
