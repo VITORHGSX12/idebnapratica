@@ -16066,23 +16066,72 @@ if (document.readyState === 'loading') {
         const tbody = document.getElementById('db-students-table-body');
         if (!tbody) return;
 
+        const userRole = sessionStorage.getItem('userRole') || 'Master Admin';
+        const userEscola = sessionStorage.getItem('userEscola') || 'UI JOSE CORREA LIMA';
+        const userTurma = sessionStorage.getItem('userTurma') || '5º Ano A';
+        const isDirector = userRole === 'Diretor Escola';
+        const isTeacher = userRole === 'Professor' || userRole === 'Professor AEE';
+        const isAdminOrSemed = userRole === 'Master Admin' || userRole === 'Gestor da Rede';
+
         const allStudents = getMasterStudentsDatabase();
 
         const searchVal = document.getElementById('db-student-search')?.value?.toLowerCase()?.trim() || '';
-        const schoolFilter = document.getElementById('db-student-school-filter')?.value || 'all';
-        const stageFilter = document.getElementById('db-student-stage-filter')?.value || 'all';
-
-        // Populate school filter dropdown if needed
         const selectSchool = document.getElementById('db-student-school-filter');
-        if (selectSchool && selectSchool.options.length <= 1) {
-            const schools = Array.from(new Set(allStudents.map(s => s.escola))).sort();
-            selectSchool.innerHTML = '<option value="all">Filtrar por Escola (Todas as 9 Escolas)</option>' +
-                schools.map(sch => `<option value="${sch}">${sch}</option>`).join('');
+        const selectStage = document.getElementById('db-student-stage-filter');
+
+        // Configuração de Dropdowns e Bloqueio de Filtro por Nível de Acesso
+        if (selectSchool) {
+            if (isTeacher || isDirector) {
+                selectSchool.innerHTML = `<option value="${userEscola}">${userEscola} (🔒 Sua Escola)</option>`;
+                selectSchool.disabled = true;
+                selectSchool.style.opacity = '0.9';
+                selectSchool.style.cursor = 'not-allowed';
+            } else {
+                selectSchool.disabled = false;
+                selectSchool.style.opacity = '1';
+                selectSchool.style.cursor = 'pointer';
+                if (selectSchool.options.length <= 1) {
+                    const schools = Array.from(new Set(allStudents.map(s => s.escola))).sort();
+                    selectSchool.innerHTML = '<option value="all">Filtrar por Escola (Todas as 9 Escolas)</option>' +
+                        schools.map(sch => `<option value="${sch}">${sch}</option>`).join('');
+                }
+            }
         }
 
+        if (selectStage) {
+            if (isTeacher) {
+                selectStage.innerHTML = `<option value="5º Ano">${userTurma} (🔒 Sua Turma)</option>`;
+                selectStage.disabled = true;
+                selectStage.style.opacity = '0.9';
+                selectStage.style.cursor = 'not-allowed';
+            } else {
+                selectStage.disabled = false;
+                selectStage.style.opacity = '1';
+                selectStage.style.cursor = 'pointer';
+            }
+        }
+
+        const schoolFilter = selectSchool ? selectSchool.value : 'all';
+        const stageFilter = selectStage ? selectStage.value : 'all';
+
         const filtered = allStudents.filter(s => {
-            if (schoolFilter !== 'all' && s.escola !== schoolFilter) return false;
-            if (stageFilter !== 'all' && !(s.etapa || '').includes(stageFilter)) return false;
+            // 1. Escopo Estrito de Professor: Apenas sua escola e sua turma
+            if (isTeacher) {
+                if (s.escola !== userEscola) return false;
+                const etapaStr = (s.etapa || '') + ' ' + (s.turma || '');
+                if (!etapaStr.includes('5') && !etapaStr.includes('5º')) return false;
+            } 
+            // 2. Escopo Estrito de Diretor: Apenas alunos da sua unidade escolar
+            else if (isDirector) {
+                if (s.escola !== userEscola) return false;
+                if (stageFilter !== 'all' && !(s.etapa || '').includes(stageFilter) && !(s.turma || '').includes(stageFilter)) return false;
+            } 
+            // 3. Admin / SEMED: Acesso completo com filtros globais
+            else {
+                if (schoolFilter !== 'all' && s.escola !== schoolFilter) return false;
+                if (stageFilter !== 'all' && !(s.etapa || '').includes(stageFilter) && !(s.turma || '').includes(stageFilter)) return false;
+            }
+
             if (searchVal) {
                 const full = (s.nome + ' ' + s.matricula + ' ' + (s.cpf || '')).toLowerCase();
                 if (!full.includes(searchVal)) return false;
@@ -20663,7 +20712,6 @@ window.closeStudentProficiencyCalcModal = closeStudentProficiencyCalcModal;
         }
 
         setTimeout(() => {
-            // Abrir visualizador A4 do caderno combinado
             const combinedObj = {
                 titulo: `Caderno Unificado de Simulados SAEB/SEAMA (${selectedBooks.length} Provas)`,
                 componente: 'Multidisciplinar Integrado',
@@ -20681,12 +20729,8 @@ window.closeStudentProficiencyCalcModal = closeStudentProficiencyCalcModal;
     }
     window.executeGenerateCombinedA4Booklet = executeGenerateCombinedA4Booklet;
 
-
-
-    // =========================================================================
     // =========================================================================
     // MÓDULO ESCOLAS DA REDE: LISTAGEM LIMPA, STATUS & MODAL DE EDIÇÃO DE ESCOLA
-    // =========================================================================
     // =========================================================================
 
     var officialSchoolsDatabase = null;
@@ -20701,8 +20745,6 @@ window.closeStudentProficiencyCalcModal = closeStudentProficiencyCalcModal;
         { id: 'esc_08', name: 'UNIDADE ESCOLAR ANISIO GOMES', inep: '21128774', zone: 'Zona Rural', city: 'Gonçalves Dias - MA', director: 'Prof. Raimundo Nonato', role: 'Diretor Escolar', status: 'Ativa', phone: '(99) 9935-6225', email: 'anisiogomes@educacao.ma.gov.br', alunosCount: 140, turmasCount: 5, ideb2025: '4.8' },
         { id: 'esc_09', name: 'UE ANITA FURTADO', inep: '21192544', zone: 'Sede Urbana', city: 'Gonçalves Dias - MA', director: 'Profa. Teresa Cristina', role: 'Diretora Escolar', status: 'Ativa', phone: '(99) 9935-6226', email: 'anitafurtado@educacao.ma.gov.br', alunosCount: 280, turmasCount: 9, ideb2025: '5.4' }
     ];
-
-    // officialSchoolsDatabase declared above
 
     function getOfficialSchoolsState() {
         if (!officialSchoolsDatabase) {
@@ -20737,7 +20779,21 @@ window.closeStudentProficiencyCalcModal = closeStudentProficiencyCalcModal;
         const tbody = document.getElementById('db-schools-table-body') || document.getElementById('schools-table-body');
         if (!tbody) return;
 
-        const schools = getOfficialSchoolsState();
+        const userRole = sessionStorage.getItem('userRole') || 'Master Admin';
+        const userEscola = sessionStorage.getItem('userEscola') || '';
+        const isDirector = userRole === 'Diretor Escola';
+        const isTeacher = userRole === 'Professor' || userRole === 'Professor AEE';
+        const isAdminOrSemed = userRole === 'Master Admin' || userRole === 'Gestor da Rede';
+
+        let schools = getOfficialSchoolsState();
+
+        // Filtro estrito de escopo por papel
+        if (isDirector && userEscola) {
+            schools = schools.filter(s => s.name.toUpperCase().includes(userEscola.toUpperCase()) || userEscola.toUpperCase().includes(s.name.toUpperCase()) || (s.inep && s.inep === '21128723'));
+        } else if (isTeacher && userEscola) {
+            schools = schools.filter(s => s.name.toUpperCase().includes(userEscola.toUpperCase()) || userEscola.toUpperCase().includes(s.name.toUpperCase()) || (s.inep && s.inep === '21128723'));
+        }
+
         const searchInput = document.getElementById('db-school-search');
         const query = searchInput ? searchInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
 
@@ -20749,10 +20805,18 @@ window.closeStudentProficiencyCalcModal = closeStudentProficiencyCalcModal;
         // Atualizar Contadores de KPI
         const kpiTotal = document.getElementById('kpi-total-schools');
         const kpiStudents = document.getElementById('kpi-total-students-val');
-        if (kpiTotal) kpiTotal.textContent = `${schools.length} Unidades`;
+        if (kpiTotal) {
+            kpiTotal.textContent = (isDirector || isTeacher) ? `1 Unidade (${userEscola || 'Vinculada'})` : `${schools.length} Unidades da Rede`;
+        }
         if (kpiStudents) {
             const totalAlunos = schools.reduce((sum, s) => sum + (s.alunosCount || 0), 0);
             kpiStudents.textContent = `${totalAlunos.toLocaleString('pt-BR')} Estudantes`;
+        }
+
+        // Ocultar botão de cadastrar nova escola para diretor/professor
+        const btnNewSchool = document.getElementById('btn-create-school') || document.querySelector('[data-action="create-school"]');
+        if (btnNewSchool) {
+            btnNewSchool.style.display = isAdminOrSemed ? 'inline-flex' : 'none';
         }
 
         if (filtered.length === 0) {
@@ -20804,7 +20868,7 @@ window.closeStudentProficiencyCalcModal = closeStudentProficiencyCalcModal;
                         </span>
                     </td>
 
-                    <!-- Coluna 5: Ações (Ver Escola + Editar Escola) -->
+                    <!-- Coluna 5: Ações (Ver Escola + Editar Escola se Admin/SEMED) -->
                     <td style="padding: 12px 20px; text-align: center;">
                         <div style="display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
                             <!-- Botão Principal: Ver Escola -->
@@ -20812,10 +20876,12 @@ window.closeStudentProficiencyCalcModal = closeStudentProficiencyCalcModal;
                                 <span>Ver Escola</span> <span style="font-size: 0.85rem;">→</span>
                             </button>
                             
-                            <!-- Botão Secundário: Editar Escola -->
-                            <button type="button" onclick="openEditSchoolModal('${sch.inep}');" class="btn btn-outline btn-sm" style="font-size: 0.76rem; font-weight: 600; color: var(--text-primary); border: 1px solid var(--border-color); background: var(--bg-tertiary); padding: 6px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; transition: all 0.15s ease;" title="Editar Dados da Escola">
-                                ✏️ Editar
-                            </button>
+                            <!-- Botão Secundário: Editar Escola (Apenas Admin & SEMED) -->
+                            ${isAdminOrSemed ? `
+                                <button type="button" onclick="openEditSchoolModal('${sch.inep}');" class="btn btn-outline btn-sm" style="font-size: 0.76rem; font-weight: 600; color: var(--text-primary); border: 1px solid var(--border-color); background: var(--bg-tertiary); padding: 6px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; transition: all 0.15s ease;" title="Editar Dados da Escola (Admin/SEMED)">
+                                    ✏️ Editar
+                                </button>
+                            ` : ''}
                         </div>
                     </td>
                 </tr>
