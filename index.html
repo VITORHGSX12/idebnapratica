@@ -5892,5 +5892,133 @@
                     </div>
                 </div>
 
+
+                <!-- ==================== MODAL: EDITAR DADOS DA ESCOLA ==================== -->
+                <div id="modal-edit-school" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 20px;">
+                    <div class="modal-container card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 680px; padding: 0; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-height: 90vh; display: flex; flex-direction: column;">
+                        <!-- Header do Modal -->
+                        <div style="padding: 18px 24px; border-bottom: 1px solid var(--border-color); background: var(--bg-primary); display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h3 id="modal-edit-school-title" style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">Editar Dados da Escola</h3>
+                                <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">Atualize informações cadastrais, localização, equipe gestora e situação operacional</p>
+                            </div>
+                            <button type="button" onclick="closeEditSchoolModal();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);">✕</button>
+                        </div>
+
+                        <!-- Formulário do Modal com Validação Inline -->
+                        <form id="form-edit-school" onsubmit="handleSaveEditSchool(event);" style="padding: 20px 24px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 14px;">
+                            <input type="hidden" id="edit-school-id">
+
+                            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 14px;">
+                                <!-- Nome da Escola (Obrigatório) -->
+                                <div>
+                                    <label for="edit-school-name" style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                                        Nome da Escola <span style="color: #ef4444;">*</span>
+                                    </label>
+                                    <input type="text" id="edit-school-name" required class="form-input-text" style="width: 100%; height: 38px; font-size: 0.84rem;">
+                                    <span id="err-school-name" class="inline-err-msg" style="display: none; color: #ef4444; font-size: 0.7rem; margin-top: 2px;">O nome da escola é obrigatório.</span>
+                                </div>
+
+                                <!-- Código INEP (Obrigatório) -->
+                                <div>
+                                    <label for="edit-school-inep" style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                                        Código INEP <span style="color: #ef4444;">*</span>
+                                    </label>
+                                    <input type="text" id="edit-school-inep" required maxlength="8" class="form-input-text" style="width: 100%; height: 38px; font-size: 0.84rem; font-family: var(--font-mono);">
+                                    <span id="err-school-inep" class="inline-err-msg" style="display: none; color: #ef4444; font-size: 0.7rem; margin-top: 2px;">INEP de 8 dígitos obrigatório.</span>
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                                <!-- Zona (Obrigatório) -->
+                                <div>
+                                    <label for="edit-school-zone" style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                                        Zona de Localização <span style="color: #ef4444;">*</span>
+                                    </label>
+                                    <select id="edit-school-zone" required class="form-select" style="width: 100%; height: 38px; font-size: 0.84rem;">
+                                        <option value="Zona Rural">🌾 Zona Rural</option>
+                                        <option value="Sede Urbana">🏫 Sede Urbana</option>
+                                    </select>
+                                    <span id="err-school-zone" class="inline-err-msg" style="display: none; color: #ef4444; font-size: 0.7rem; margin-top: 2px;">Selecione a zona.</span>
+                                </div>
+
+                                <!-- Município (Pré-preenchido) -->
+                                <div>
+                                    <label for="edit-school-city" style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">
+                                        Município / UF
+                                    </label>
+                                    <input type="text" id="edit-school-city" value="Gonçalves Dias - MA" readonly class="form-input-text" style="width: 100%; height: 38px; font-size: 0.84rem; background: var(--bg-tertiary); color: var(--text-muted); cursor: not-allowed;">
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 14px;">
+                                <!-- Nome do Gestor/Diretor -->
+                                <div>
+                                    <label for="edit-school-director" style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                                        Nome do Gestor / Diretor
+                                    </label>
+                                    <input type="text" id="edit-school-director" placeholder="Ex: Profa. Antonia Silva" class="form-input-text" style="width: 100%; height: 38px; font-size: 0.84rem;">
+                                </div>
+
+                                <!-- Cargo do Gestor -->
+                                <div>
+                                    <label for="edit-school-role" style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                                        Cargo do Gestor
+                                    </label>
+                                    <input type="text" id="edit-school-role" placeholder="Diretor(a) Escolar" class="form-input-text" style="width: 100%; height: 38px; font-size: 0.84rem;">
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+                                <!-- Status da Escola (Obrigatório) -->
+                                <div>
+                                    <label for="edit-school-status" style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                                        Status Operacional <span style="color: #ef4444;">*</span>
+                                    </label>
+                                    <select id="edit-school-status" required class="form-select" style="width: 100%; height: 38px; font-size: 0.84rem;">
+                                        <option value="Ativa">● Ativa</option>
+                                        <option value="Em manutenção">● Em manutenção</option>
+                                        <option value="Inativa">● Inativa</option>
+                                    </select>
+                                </div>
+
+                                <!-- Telefone de Contato (Opcional) -->
+                                <div>
+                                    <label for="edit-school-phone" style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                                        Telefone de Contato
+                                    </label>
+                                    <input type="text" id="edit-school-phone" placeholder="(99) 9935-6218" class="form-input-text" style="width: 100%; height: 38px; font-size: 0.84rem;">
+                                </div>
+
+                                <!-- Total de Alunos Matriculados (Somente Leitura) -->
+                                <div>
+                                    <label for="edit-school-students" style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">
+                                        Estudantes Matriculados
+                                    </label>
+                                    <input type="text" id="edit-school-students" readonly class="form-input-text" style="width: 100%; height: 38px; font-size: 0.84rem; background: var(--bg-tertiary); color: var(--text-muted); cursor: not-allowed;">
+                                </div>
+                            </div>
+
+                            <!-- E-mail de Contato (Opcional) -->
+                            <div>
+                                <label for="edit-school-email" style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">
+                                    E-mail Institucional de Contato
+                                </label>
+                                <input type="email" id="edit-school-email" placeholder="escola.goncalvesdias@educacao.ma.gov.br" class="form-input-text" style="width: 100%; height: 38px; font-size: 0.84rem;">
+                            </div>
+
+                            <!-- Footer do Modal com Botões -->
+                            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; padding-top: 14px; border-top: 1px solid var(--border-color);">
+                                <button type="button" onclick="closeEditSchoolModal();" class="btn btn-outline" style="padding: 0 18px; height: 38px; font-weight: 600;">
+                                    Cancelar
+                                </button>
+                                <button type="submit" id="btn-save-school-edit" class="btn btn-primary" style="padding: 0 20px; height: 38px; font-weight: 700; background: #6366f1; border-color: #6366f1;">
+                                    Salvar Alterações
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
 </body>
 </html>
