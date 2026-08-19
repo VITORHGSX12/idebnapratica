@@ -5324,3 +5324,65 @@ body.collapsed-sidebar .sidebar-collapse-toggle svg {
     flex-direction: column;
     gap: 16px;
 }
+
+
+/* =========================================================================
+   LAUDO TÉCNICO, DIAGNÓSTICO PEDAGÓGICO & DIÁRIO DE TURMA
+   ========================================================================= */
+
+.diag-summary-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.diag-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.diag-bar-row:hover {
+    border-color: #6366f1;
+    background: var(--bg-secondary);
+}
+
+.diag-bar-fill {
+    height: 12px;
+    border-radius: 6px;
+    transition: width 0.4s ease;
+}
+
+.diag-bar-critico { background: linear-gradient(90deg, #ef4444, #f87171); }
+.diag-bar-atencao { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.diag-bar-adequado { background: linear-gradient(90deg, #10b981, #34d399); }
+
+.accordion-escola-header {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+}
+
+.accordion-turma-row {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    margin-top: 6px;
+    padding: 10px 14px;
+}

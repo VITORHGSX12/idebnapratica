@@ -3103,69 +3103,85 @@
 
                 <!-- ==================== PLAYGROUND IA TAB ==================== -->
                 <section id="relatorios-monitoramento" class="tab-content">
-                    <div style="display: grid; grid-template-columns: 320px 1fr; gap: 24px; align-items: start;">
-                        <!-- Col 1: Configuração do Relatório por Escola -->
-                        <div class="card" style="background-color: var(--bg-secondary); position: sticky; top: 104px;">
-                            <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
-                                <h3>Filtros de Análise da Rede</h3>
-                                <p class="card-subtitle">Selecione a unidade e turma para gerar o laudo pedagógico conforme dados atuais.</p>
+                    <div class="card margin-bottom-md" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(16, 185, 129, 0.05) 100%); border-left: 4px solid #6366f1;">
+                        <div class="flex-between" style="flex-wrap: wrap; gap: 14px;">
+                            <div>
+                                <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                                    <i data-lucide="file-bar-chart" style="color: #6366f1;"></i>
+                                    Laudo Técnico e Diagnóstico Pedagógico
+                                </h3>
+                                <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;">
+                                    Motor diagnóstico de 4 níveis (Rede → Escola → Turma → Aluno) com cálculo de proficiência por descritores e evolução temporal entre simulados.
+                                </p>
                             </div>
-                            <div class="card-body" style="padding-top: 14px;">
-                                <div class="form-group">
-                                    <label for="ai-school-select" style="font-size:0.75rem; color:var(--text-secondary); display:block; margin-bottom:4px;">Unidade Escolar</label>
-                                    <select id="ai-school-select" class="form-select" style="font-size:0.75rem;">
-                                        <option value="all">Toda a Rede Geral</option>
-                                        <option value="Escola Municipal Tancredo Neves">Escola Municipal Tancredo Neves</option>
-                                        <option value="Centro Educacional Sobral">Centro Educacional Sobral</option>
-                                        <option value="Escola Rui Barbosa">Escola Rui Barbosa</option>
-                                        <option value="C.E.M. Dom Pedro II">C.E.M. Dom Pedro II</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group margin-top-md" style="margin-top: 12px;">
-                                    <label for="ai-grade-select" style="font-size:0.75rem; color:var(--text-secondary); display:block; margin-bottom:4px;">Ano / Turma</label>
-                                    <select id="ai-grade-select" class="form-select" style="font-size:0.75rem;">
-                                        <option value="all">Todas as Turmas (2º, 5º, 9º)</option>
-                                        <option value="2º Ano">2º Ano EF</option>
-                                        <option value="5º Ano">5º Ano EF</option>
-                                        <option value="9º Ano">9º Ano EF</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group margin-top-md" style="margin-top: 12px;">
-                                    <label for="ai-subject-select" style="font-size:0.75rem; color:var(--text-secondary); display:block; margin-bottom:4px;">Componente Curricular</label>
-                                    <select id="ai-subject-select" class="form-select" style="font-size:0.75rem;">
-                                        <option value="all">Todos os Componentes</option>
-                                        <option value="Língua Portuguesa">Língua Portuguesa</option>
-                                        <option value="Matemática">Matemática</option>
-                                        <option value="Ciências">Ciências</option>
-                                    </select>
-                                </div>
-
-                                <button class="btn btn-primary" id="btn-generate-school-report" style="width:100%; margin-top:18px; height:40px; display:flex; align-items:center; justify-content:center; gap:4px; font-size:0.8rem; cursor:pointer;">
-                                    <i data-lucide="sparkles" style="width:16px; height:16px;"></i> Gerar conforme dados atuais
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button type="button" onclick="handlePrintDiagnosticoReport();" class="btn btn-outline btn-sm" style="display: flex; align-items: center; gap: 6px; font-weight: 700;">
+                                    <i data-lucide="printer" style="width: 15px; height: 15px;"></i> Imprimir Laudo Completo
                                 </button>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Col 2: Relatório Gerado (Markdown Estilizado Amplo) -->
-                        <div class="card" style="background-color: var(--bg-secondary); min-height: 500px;">
-                            <div class="card-header flex-between" style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
-                                <div>
-                                    <h3>Laudo Técnico e Diagnóstico Pedagógico</h3>
-                                    <p class="card-subtitle">Análise detalhada de proficiências, descritores críticos e plano de intervenção escolar.</p>
-                                </div>
-                                <span class="badge badge-success hidden" id="ai-report-generation-status">Atualizando...</span>
+                    <!-- Filtros de Escopo do Laudo Técnico -->
+                    <div class="card margin-bottom-md" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px 24px;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; align-items: flex-end;">
+                            <!-- Filtro 1: Unidade Escolar -->
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">UNIDADE ESCOLAR</label>
+                                <select id="diag-filter-school" onchange="runDiagnosticoCalculation();" class="form-select" style="height: 38px; font-size: 0.82rem; font-weight: 600; width: 100%;">
+                                    <option value="all" selected>Toda a Rede Geral (Gonçalves Dias)</option>
+                                    <option value="UNIDADE INTEGRADA JOSE GONCALVES DIAS">UNIDADE INTEGRADA JOSE GONCALVES DIAS</option>
+                                    <option value="U I BASILIO ALVES">U I BASILIO ALVES</option>
+                                    <option value="UI JOSE CORREA LIMA">UI JOSE CORREA LIMA</option>
+                                    <option value="UE ANITA FURTADO">UE ANITA FURTADO</option>
+                                    <option value="UI EMILIO MURAD">UI EMILIO MURAD</option>
+                                </select>
                             </div>
-                            <div class="card-body" style="padding-top: 16px;">
-                                <div id="ai-school-report-container" style="font-size: 0.9rem; line-height: 1.6; color: var(--text-primary); max-height:600px; overflow-y:auto; padding-right:8px;">
-                                    <div style="text-align:center; padding: 40px; color:var(--text-secondary);">
-                                        <i data-lucide="brain" style="width:48px; height:48px; margin-bottom:12px; opacity:0.3; color:var(--purple-light); display:inline-block;"></i>
-                                        <p style="font-size:0.95rem; font-weight:500;">Selecione a Escola/Turma e clique em <strong>Gerar conforme dados atuais</strong> para rodar a análise pedagógica.</p>
-                                    </div>
-                                </div>
+
+                            <!-- Filtro 2: Ano / Turma -->
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">ANO / TURMA</label>
+                                <select id="diag-filter-turma" onchange="runDiagnosticoCalculation();" class="form-select" style="height: 38px; font-size: 0.82rem; font-weight: 600; width: 100%;">
+                                    <option value="all" selected>Todas as Turmas (Rede Completa)</option>
+                                    <option value="5º Ano A">5º Ano A (Matutino)</option>
+                                    <option value="5º Ano B">5º Ano B (Vespertino)</option>
+                                    <option value="9º Ano A">9º Ano A (Matutino)</option>
+                                </select>
+                            </div>
+
+                            <!-- Filtro 3: Componente Curricular -->
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">COMPONENTE CURRICULAR</label>
+                                <select id="diag-filter-subject" onchange="runDiagnosticoCalculation();" class="form-select" style="height: 38px; font-size: 0.82rem; font-weight: 600; width: 100%;">
+                                    <option value="all" selected>Todos os Componentes</option>
+                                    <option value="Língua Portuguesa">📖 Língua Portuguesa</option>
+                                    <option value="Matemática">📐 Matemática</option>
+                                </select>
+                            </div>
+
+                            <!-- Filtro 4: Seletor de Simulado / Comparativo Temporal -->
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 700; color: #6366f1; display: block; margin-bottom: 4px;">SIMULADO / CICLO TEMPORAL</label>
+                                <select id="diag-filter-simulado" onchange="runDiagnosticoCalculation();" class="form-select" style="height: 38px; font-size: 0.82rem; font-weight: 700; width: 100%; border: 1.5px solid #6366f1; color: var(--text-primary);">
+                                    <option value="sim_2026_02" selected>2º Simulado Bimestral (Maio/2026 - Recente)</option>
+                                    <option value="sim_2026_01">1º Simulado Diagnóstico (Março/2026)</option>
+                                    <option value="all">Comparar com Simulado Anterior (Evolução Temporal)</option>
+                                </select>
+                            </div>
+
+                            <!-- Botão de Ação -->
+                            <div>
+                                <button type="button" id="btn-generate-school-report" onclick="runDiagnosticoCalculation();" class="btn btn-primary btn-full" style="height: 38px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                                    <i data-lucide="sparkles" style="width: 15px; height: 15px;"></i>
+                                    <span>Gerar Laudo Atualizado</span>
+                                </button>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- CONTAINER DINÂMICO DO LAUDO PEDAGÓGICO (5 SEÇÕES) -->
+                    <div id="diagnostico-results-container" style="display: flex; flex-direction: column; gap: 20px;">
+                        <!-- Injetado dinamicamente via renderDiagnosticoReportView() -->
                     </div>
                 </section>
 
@@ -5775,6 +5791,46 @@
             </div>
         </div>
     </div>
+
+
+                <!-- ==================== MODAL: DIÁRIO DA TURMA ==================== -->
+                <div id="modal-turma-journal" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 20px;">
+                    <div class="modal-container card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 820px; padding: 0; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-height: 90vh; display: flex; flex-direction: column;">
+                        <div style="padding: 18px 24px; border-bottom: 1px solid var(--border-color); background: var(--bg-primary); display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h3 id="modal-journal-turma-title" style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">Diário da Turma</h3>
+                                <p id="modal-journal-turma-subtitle" style="margin: 2px 0 0 0; font-size: 0.8rem; color: var(--text-secondary);">Lista de estudantes vinculados e acompanhamento de desempenho por simulados</p>
+                            </div>
+                            <button type="button" onclick="closeTurmaJournalModal();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);">✕</button>
+                        </div>
+                        <div id="modal-journal-students-table-container" style="padding: 20px; overflow-y: auto; flex: 1;">
+                            <!-- Injetado dinamicamente -->
+                        </div>
+                        <div style="padding: 14px 24px; border-top: 1px solid var(--border-color); background: var(--bg-primary); display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 0.78rem; color: var(--text-muted);">Total de estudantes vinculados a esta turma.</span>
+                            <button type="button" onclick="closeTurmaJournalModal();" class="btn btn-primary btn-sm" style="padding: 0 18px;">Fechar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== MODAL: NÍVEL DE PROFICIÊNCIA DO ALUNO ==================== -->
+                <div id="modal-student-proficiency-calc" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 20px;">
+                    <div class="modal-container card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 640px; padding: 0; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-height: 85vh; display: flex; flex-direction: column;">
+                        <div style="padding: 18px 24px; border-bottom: 1px solid var(--border-color); background: var(--bg-primary); display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h3 id="modal-prof-calc-name" style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">Cálculo de Nível de Proficiência</h3>
+                                <p id="modal-prof-calc-meta" style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">Diagnóstico baseado no acerto e erro de questões por descritor</p>
+                            </div>
+                            <button type="button" onclick="closeStudentProficiencyCalcModal();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);">✕</button>
+                        </div>
+                        <div id="modal-prof-calc-body" style="padding: 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 14px;">
+                            <!-- Injetado dinamicamente -->
+                        </div>
+                        <div style="padding: 14px 24px; border-top: 1px solid var(--border-color); background: var(--bg-primary); display: flex; justify-content: flex-end;">
+                            <button type="button" onclick="closeStudentProficiencyCalcModal();" class="btn btn-primary btn-sm" style="padding: 0 18px;">Fechar</button>
+                        </div>
+                    </div>
+                </div>
 
 </body>
 </html>
