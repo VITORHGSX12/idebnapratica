@@ -10204,31 +10204,37 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
             console.warn('[IDEB Engine] Warning in UI updates:', err);
         }
 
-        // Navegação direta para a aba do perfil
-        try {
-            if (window.navigateToTab) {
-                window.navigateToTab(targetTab);
-            } else if (window.switchTab) {
-                window.switchTab(targetTab);
-            }
-        } catch (err) {
-            console.warn('[IDEB Engine] Warning in navigateToTab:', err);
+        // Exibição Imediata da Aplicação Principal
+        const appContainer = document.querySelector('.app-container');
+        if (appContainer) {
+            appContainer.style.display = 'flex';
         }
 
-        // Animação de transição suave
+        // Navegação direta para a aba do perfil
+        try {
+            if (window.switchTab) {
+                window.switchTab(targetTab);
+            } else if (window.navigateToTab) {
+                window.navigateToTab(targetTab);
+            }
+        } catch (err) {
+            console.warn('[IDEB Engine] Warning in switchTab:', err);
+        }
+
+        // Remoção imediata e fluida da tela de login
         if (loginScreen) {
             loginScreen.classList.add('fade-out');
-            setTimeout(() => {
-                loginScreen.style.display = 'none';
-                if (btnSubmit) {
-                    btnSubmit.disabled = false;
-                    const btnSpan = btnSubmit.querySelector('span');
-                    if (btnSpan) btnSpan.textContent = 'Entrar no Sistema';
-                }
-                if (window.lucide && typeof window.lucide.createIcons === 'function') {
-                    window.lucide.createIcons({ attrs: { class: 'lucide' } });
-                }
-            }, 300);
+            loginScreen.style.display = 'none';
+            loginScreen.style.pointerEvents = 'none';
+            if (btnSubmit) {
+                btnSubmit.disabled = false;
+                const btnSpan = btnSubmit.querySelector('span');
+                if (btnSpan) btnSpan.textContent = 'Entrar no Sistema';
+            }
+        }
+
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+            try { window.lucide.createIcons({ attrs: { class: 'lucide' } }); } catch(e) {}
         }
 
         if (typeof showToast === 'function') {

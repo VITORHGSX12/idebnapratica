@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <link rel="stylesheet" href="styles.css?v=434c672a33_mt058aod">
+    <link rel="stylesheet" href="styles.css?v=434c672a33_mt05f3dy">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -232,17 +232,17 @@
                         <p class="text-muted">Insira suas credenciais para acessar o sistema.</p>
                     </div>
 
-                    <form id="login-form" class="login-form-body">
+                    <form id="login-form" class="login-form-body" onsubmit="event.preventDefault(); if(window.executeSystemLogin) window.executeSystemLogin(); return false;">
                         <!-- Input Email -->
                         <div class="login-input-group">
                             <i data-lucide="mail" class="login-input-icon"></i>
-                            <input type="email" id="login-email" class="login-input-field" placeholder="E-mail institucional" required autocomplete="email" value="">
+                            <input type="email" id="login-email" class="login-input-field" placeholder="E-mail institucional" required autocomplete="email" value="" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); if(window.executeSystemLogin) window.executeSystemLogin(); }">
                         </div>
 
                         <!-- Input Senha -->
                         <div class="login-input-group">
                             <i data-lucide="lock" class="login-input-icon"></i>
-                            <input type="password" id="login-password" class="login-input-field" placeholder="Sua senha" required autocomplete="current-password" value="">
+                            <input type="password" id="login-password" class="login-input-field" placeholder="Sua senha" required autocomplete="current-password" value="" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); if(window.executeSystemLogin) window.executeSystemLogin(); }">
                             <button type="button" id="btn-toggle-login-password" class="login-password-toggle" title="Mostrar/ocultar senha">
                                 <i data-lucide="eye" style="width: 18px; height: 18px;"></i>
                             </button>
@@ -258,7 +258,7 @@
                         </div>
 
                         <!-- Submit Button -->
-                        <button type="submit" id="btn-login-submit" class="btn-login-primary">
+                        <button type="button" id="btn-login-submit" class="btn-login-primary" onclick="if(window.executeSystemLogin) window.executeSystemLogin();">
                             <span>Entrar no Sistema</span>
                             <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
                         </button>
@@ -267,22 +267,22 @@
                     <!-- Container de Credenciais de Teste -->
                     <div id="login-test-credentials-container" style="display: block;">
                         <div class="login-divider">
-                            <span>AMBIENTE DE TESTES</span>
+                            <span>AMBIENTE DE TESTES (Clique para entrar)</span>
                         </div>
                         <div class="test-accounts-grid">
-                            <div class="test-account-card" data-email="professor@goncalvesdias.ma.gov.br" data-pass="123" data-role="Professor">
+                            <div class="test-account-card" onclick="if(window.executeSystemLogin) window.executeSystemLogin('professor@goncalvesdias.ma.gov.br', '123');" data-email="professor@goncalvesdias.ma.gov.br" data-pass="123" data-role="Professor" style="cursor: pointer;">
                                 <span class="test-role-title">PROFESSOR</span>
                                 <span class="test-role-email">professor@goncalvesdias.ma.gov.br</span>
                             </div>
-                            <div class="test-account-card" data-email="diretor@goncalvesdias.ma.gov.br" data-pass="123" data-role="Diretor Escola">
+                            <div class="test-account-card" onclick="if(window.executeSystemLogin) window.executeSystemLogin('diretor@goncalvesdias.ma.gov.br', '123');" data-email="diretor@goncalvesdias.ma.gov.br" data-pass="123" data-role="Diretor Escola" style="cursor: pointer;">
                                 <span class="test-role-title">DIRETOR</span>
                                 <span class="test-role-email">diretor@goncalvesdias.ma.gov.br</span>
                             </div>
-                            <div class="test-account-card" data-email="admin@goncalvesdias.ma.gov.br" data-pass="admin" data-role="Master Admin">
+                            <div class="test-account-card" onclick="if(window.executeSystemLogin) window.executeSystemLogin('admin@goncalvesdias.ma.gov.br', 'admin');" data-email="admin@goncalvesdias.ma.gov.br" data-pass="admin" data-role="Master Admin" style="cursor: pointer;">
                                 <span class="test-role-title">ADMIN</span>
                                 <span class="test-role-email">admin@goncalvesdias.ma.gov.br</span>
                             </div>
-                            <div class="test-account-card" data-email="semed@goncalvesdias.ma.gov.br" data-pass="admin" data-role="Gestor da Rede">
+                            <div class="test-account-card" onclick="if(window.executeSystemLogin) window.executeSystemLogin('semed@goncalvesdias.ma.gov.br', 'admin');" data-email="semed@goncalvesdias.ma.gov.br" data-pass="admin" data-role="Gestor da Rede" style="cursor: pointer;">
                                 <span class="test-role-title">SEMED</span>
                                 <span class="test-role-email">semed@goncalvesdias.ma.gov.br</span>
                             </div>
@@ -6175,13 +6175,13 @@
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=mt058aod"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=mt058aod"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=mt058aod"></script>
-    <script src="ideb_publico_db.js?v=mt058aod"></script>
-    <script src="alunos_db.js?v=mt058aod"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=mt05f3dy"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=mt05f3dy"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=mt05f3dy"></script>
+    <script src="ideb_publico_db.js?v=mt05f3dy"></script>
+    <script src="alunos_db.js?v=mt05f3dy"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=f9e89c54fe_mt058aod"></script>
+    <script src="app.js?v=4a08640c1c_mt05f3dy"></script>
 </body>
 </html>
