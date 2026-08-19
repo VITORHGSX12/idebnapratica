@@ -402,7 +402,7 @@ function updateIdebComparativoView() {
         safeCreateIcons();
 
     // ==========================================
-    // LOGIN SCREEN ROTATING HEADLINES & CANVAS
+    // LOGIN SCREEN & CINEMATIC MOTION ENGINE
     // ==========================================
     const loginHeadlines = [
         "Cada décimo do IDEB planejado e conquistado.",
@@ -426,9 +426,6 @@ function updateIdebComparativoView() {
         }, 5000);
     }
 
-    // ==========================================
-    // UNIFIED NETWORK IDEB PERFORMANCE CONFIG
-    // ==========================================
     const NETWORK_IDEB_PERFORMANCE_CONFIG = {
         indicatorTitle: "Evolução do IDEB (Escala 0 a 10)",
         targetBadge: "Meta Pactuada 2025 • 6.5",
@@ -443,16 +440,12 @@ function updateIdebComparativoView() {
         ]
     };
 
-    // ==========================================
-    // CINEMATIC MOTION CANVAS ENGINE
-    // ==========================================
     function initLoginMotionCanvas() {
         const canvas = document.getElementById('login-motion-canvas');
         if (!canvas || !canvas.getContext) return;
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        // Synchronize DOM elements with unified config
         const targetBadgeEl = document.getElementById('login-card-target-badge');
         const captionEl = document.getElementById('login-card-caption-text');
         if (targetBadgeEl) targetBadgeEl.textContent = NETWORK_IDEB_PERFORMANCE_CONFIG.targetBadge;
@@ -465,10 +458,9 @@ function updateIdebComparativoView() {
         canvas.height = height * dpr;
         ctx.scale(dpr, dpr);
 
-        const LOOP_DURATION = 9500; // 9.5 seconds total fluid loop
+        const LOOP_DURATION = 9500;
         let startTime = null;
 
-        // Ambient floating particles (clean blue/sky tones)
         const particles = Array.from({ length: 22 }, () => ({
             x: Math.random() * width,
             y: Math.random() * height,
@@ -478,7 +470,6 @@ function updateIdebComparativoView() {
             alpha: Math.random() * 0.4 + 0.15
         }));
 
-        // 7 Educational Nodes with minimal icons & positions
         const eduNodes = [
             { label: "Escola", icon: "school", x: 55, y: 40, color: "#2563eb" },
             { label: "Alunos", icon: "users", x: 155, y: 32, color: "#7c3aed" },
@@ -489,7 +480,6 @@ function updateIdebComparativoView() {
             { label: "Avaliação", icon: "check-circle", x: 425, y: 140, color: "#4f46e5" }
         ];
 
-        // Chart Points from Single Source of Truth
         const chartPoints = NETWORK_IDEB_PERFORMANCE_CONFIG.chartPoints;
 
         function drawIcon(type, x, y, size, color) {
@@ -566,7 +556,6 @@ function updateIdebComparativoView() {
             const elapsed = (timestamp - startTime) % LOOP_DURATION;
             const progress = elapsed / LOOP_DURATION;
 
-            // Recalculate dimensions dynamically
             width = canvas.clientWidth || 480;
             height = canvas.clientHeight || 195;
             if (canvas.width !== width * dpr || canvas.height !== height * dpr) {
@@ -575,10 +564,8 @@ function updateIdebComparativoView() {
                 ctx.scale(dpr, dpr);
             }
 
-            // Clear with crisp transparent / subtle deep navy gradient
             ctx.clearRect(0, 0, width, height);
 
-            // 1. Ambient Floating Micro-Particles
             particles.forEach(p => {
                 p.x += p.vx;
                 p.y += p.vy;
@@ -595,7 +582,6 @@ function updateIdebComparativoView() {
                 ctx.restore();
             });
 
-            // 2. High-Tech Grid & Scale lines
             ctx.save();
             ctx.strokeStyle = "rgba(255, 255, 255, 0.04)";
             ctx.lineWidth = 1;
@@ -607,7 +593,6 @@ function updateIdebComparativoView() {
             }
             ctx.restore();
 
-            // 3. Official Target Horizon Dashed Line (Meta 6.5)
             const targetY = 48;
             ctx.save();
             ctx.setLineDash([4, 4]);
@@ -619,7 +604,6 @@ function updateIdebComparativoView() {
             ctx.stroke();
             ctx.restore();
 
-            // 4. Smooth IDEB Trajectory Curve (CENA 2: 1.8s -> 5.5s)
             const graphProgress = Math.min(1, Math.max(0, (elapsed - 1400) / 3600));
 
             if (graphProgress > 0) {
@@ -628,7 +612,6 @@ function updateIdebComparativoView() {
                 const baseIndex = Math.floor(activeIndex);
                 const segmentProgress = activeIndex - baseIndex;
 
-                // Gradient Area Fill under trajectory
                 ctx.save();
                 const grad = ctx.createLinearGradient(0, 30, 0, height);
                 grad.addColorStop(0, "rgba(37, 99, 235, 0.28)");
@@ -655,7 +638,6 @@ function updateIdebComparativoView() {
                 ctx.fill();
                 ctx.restore();
 
-                // Draw Glowing Royal Blue Progress Line
                 ctx.save();
                 ctx.strokeStyle = "#2563eb";
                 ctx.lineWidth = 3.2;
@@ -677,7 +659,6 @@ function updateIdebComparativoView() {
                 ctx.stroke();
                 ctx.restore();
 
-                // Draw Points & Labels
                 for (let i = 0; i <= baseIndex; i++) {
                     const pt = chartPoints[i];
                     const pointAlpha = Math.min(1, (graphProgress - (i / (totalPoints - 1))) * 4);
@@ -685,7 +666,6 @@ function updateIdebComparativoView() {
                     if (pointAlpha > 0) {
                         const isTarget = pt.isTarget;
 
-                        // Point Circle
                         ctx.save();
                         ctx.beginPath();
                         ctx.arc(pt.x, pt.y, isTarget ? 5.5 : 4.5, 0, Math.PI * 2);
@@ -697,7 +677,6 @@ function updateIdebComparativoView() {
                         ctx.fill();
                         ctx.stroke();
 
-                        // Ripple pulse on Target point
                         if (isTarget) {
                             const pulseR = 5 + (elapsed % 1400) / 90;
                             const pulseOp = 1 - (elapsed % 1400) / 1400;
@@ -708,13 +687,11 @@ function updateIdebComparativoView() {
                             ctx.stroke();
                         }
 
-                        // Year Label
                         ctx.fillStyle = "#64748b";
                         ctx.font = "600 " + (isTarget ? "8.5px" : "8px") + " 'Plus Jakarta Sans', sans-serif";
                         ctx.textAlign = "center";
                         ctx.fillText(pt.year, pt.x, height - 4);
 
-                        // Value Pill / Tag
                         ctx.fillStyle = isTarget ? "#059669" : "#1e293b";
                         ctx.font = "bold " + (isTarget ? "11px" : "9.5px") + " 'Plus Jakarta Sans', sans-serif";
                         ctx.fillText(pt.val, pt.x, pt.y - 8);
@@ -723,7 +700,6 @@ function updateIdebComparativoView() {
                 }
             }
 
-            // 5. Connecting Mesh Beams (CENA 3: 5.6s -> 8.2s)
             const meshProgress = Math.min(1, Math.max(0, (elapsed - 5600) / 2400));
             if (meshProgress > 0) {
                 ctx.save();
@@ -736,7 +712,6 @@ function updateIdebComparativoView() {
                     const targetX = originPt.x + (node.x - originPt.x) * laserProgress;
                     const targetY = originPt.y + (node.y - originPt.y) * laserProgress;
 
-                    // Beam line
                     const beamGrad = ctx.createLinearGradient(originPt.x, originPt.y, node.x, node.y);
                     beamGrad.addColorStop(0, "rgba(37, 99, 235, 0.45)");
                     beamGrad.addColorStop(1, "rgba(59, 130, 246, 0.15)");
@@ -747,7 +722,6 @@ function updateIdebComparativoView() {
                     ctx.lineTo(targetX, targetY);
                     ctx.stroke();
 
-                    // Energy spark traveling
                     const sparkT = (elapsed * 0.002 + idx * 0.2) % 1;
                     const sparkX = originPt.x + (node.x - originPt.x) * sparkT;
                     const sparkY = originPt.y + (node.y - originPt.y) * sparkT;
@@ -762,7 +736,6 @@ function updateIdebComparativoView() {
                 ctx.restore();
             }
 
-            // 6. Educational Minimalist Nodes (Clean White Cards Floating)
             const nodeAlpha = Math.min(1, Math.max(0, (elapsed - 400) / 1400));
             if (nodeAlpha > 0) {
                 eduNodes.forEach((node, idx) => {
@@ -772,7 +745,6 @@ function updateIdebComparativoView() {
                     ctx.save();
                     ctx.globalAlpha = nodeAlpha * (progress > 0.92 ? (1 - (progress - 0.92) / 0.08) : 1);
 
-                    // Node Card Circle
                     ctx.fillStyle = "#ffffff";
                     ctx.strokeStyle = "rgba(226, 232, 240, 0.9)";
                     ctx.lineWidth = 1.5;
@@ -783,10 +755,8 @@ function updateIdebComparativoView() {
                     ctx.fill();
                     ctx.stroke();
 
-                    // Icon
                     drawIcon(node.icon, node.x, curY, 5.5, node.color);
 
-                    // Label
                     ctx.fillStyle = "#1e293b";
                     ctx.font = "700 7.5px 'Plus Jakarta Sans', sans-serif";
                     ctx.textAlign = "center";
@@ -796,7 +766,6 @@ function updateIdebComparativoView() {
                 });
             }
 
-            // 7. Luminous Blue Brand Sweep Transition (Seamless Loop)
             if (elapsed > 8200) {
                 const sweepProgress = (elapsed - 8200) / 1300;
                 const sweepX = width * sweepProgress;
@@ -865,108 +834,109 @@ function updateIdebComparativoView() {
     }
 
     // Login Form Submit Handlers & Role-Based Dashboard Routing
-    const loginForm = document.getElementById('login-form');
-    const loginScreen = document.getElementById('login-screen');
-    const btnLoginSubmit = document.getElementById('btn-login-submit');
+    function handleLoginSubmit(e) {
+        if (e && e.preventDefault) e.preventDefault();
 
-    if (loginForm && loginScreen && btnLoginSubmit) {
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const emailInput = document.getElementById('login-email').value.trim().toLowerCase();
-            const passInput = document.getElementById('login-password')?.value || '123';
+        const emailEl = document.getElementById('login-email');
+        const passEl = document.getElementById('login-password');
+        const loginScreen = document.getElementById('login-screen');
+        const btnLoginSubmit = document.getElementById('btn-login-submit');
 
-            let detectedRole = 'Gestor da Rede';
-            let targetTab = 'dashboard';
-            let assignedSchool = '';
-            let assignedTurma = '';
+        const emailInput = emailEl ? emailEl.value.trim().toLowerCase() : '';
+        const passInput = passEl ? passEl.value : '123';
 
-            if (emailInput.startsWith('prof') || emailInput.includes('professor')) {
-                detectedRole = 'Professor';
-                targetTab = 'alunos-panel';
-                assignedSchool = 'U.E. BENTA VILANOVA';
-                assignedTurma = '2º Ano';
-            } else if (emailInput.startsWith('diret') || emailInput.includes('diretor') || emailInput.includes('escola') || emailInput.includes('cora')) {
-                detectedRole = 'Diretor Escola';
-                targetTab = 'escolas-panel';
-                assignedSchool = 'U.E. BENTA VILANOVA';
-            } else if (emailInput.startsWith('admin') || emailInput.startsWith('dpo')) {
-                detectedRole = 'Master Admin';
-                targetTab = 'dashboard';
-            } else if (emailInput.startsWith('semed') || emailInput.startsWith('gestor') || emailInput.includes('semed')) {
-                detectedRole = 'Gestor da Rede';
-                targetTab = 'dashboard';
-            }
+        let detectedRole = 'Gestor da Rede';
+        let targetTab = 'dashboard';
+        let assignedSchool = 'SEMED Gonçalves Dias';
+        let assignedTurma = '';
 
-            // Loading status feedback
+        if (emailInput.startsWith('prof') || emailInput.includes('professor')) {
+            detectedRole = 'Professor';
+            targetTab = 'alunos-panel';
+            assignedSchool = 'U.E. BENTA VILANOVA';
+            assignedTurma = '2º Ano';
+        } else if (emailInput.startsWith('diret') || emailInput.includes('diretor') || emailInput.includes('escola') || emailInput.includes('cora')) {
+            detectedRole = 'Diretor Escola';
+            targetTab = 'escolas-panel';
+            assignedSchool = 'U.E. BENTA VILANOVA';
+        } else if (emailInput.startsWith('admin') || emailInput.startsWith('dpo')) {
+            detectedRole = 'Master Admin';
+            targetTab = 'dashboard';
+        } else if (emailInput.startsWith('semed') || emailInput.startsWith('gestor') || emailInput.includes('semed')) {
+            detectedRole = 'Gestor da Rede';
+            targetTab = 'dashboard';
+        }
+
+        if (btnLoginSubmit) {
             btnLoginSubmit.disabled = true;
             const btnSpan = btnLoginSubmit.querySelector('span');
-            const originalText = btnSpan ? btnSpan.textContent : '';
             if (btnSpan) btnSpan.textContent = 'Autenticando...';
+        }
 
-            sessionStorage.setItem('isLoggedIn', 'true');
-            sessionStorage.setItem('activeTenant', 'default');
-            sessionStorage.setItem('userEmail', emailInput);
-            sessionStorage.setItem('userRole', detectedRole);
-            sessionStorage.setItem('userEscola', assignedSchool);
-            sessionStorage.setItem('userTurma', assignedTurma);
+        sessionStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('isLoggedIn', 'true');
+        sessionStorage.setItem('activeTenant', 'default');
+        sessionStorage.setItem('userEmail', emailInput || 'semed@goncalvesdias.ma.gov.br');
+        localStorage.setItem('userEmail', emailInput || 'semed@goncalvesdias.ma.gov.br');
+        sessionStorage.setItem('userRole', detectedRole);
+        sessionStorage.setItem('userEscola', assignedSchool);
+        sessionStorage.setItem('userTurma', assignedTurma);
 
-            try {
-                if (typeof loadDatabaseState === 'function') await loadDatabaseState();
-            } catch (err) {
-                console.warn('[IDEB Engine] Warning in loadDatabaseState:', err);
+        try {
+            updateMenuVisibilityByRole();
+        } catch (err) {
+            console.warn('[IDEB Engine] Warning in updateMenuVisibilityByRole:', err);
+        }
+
+        try {
+            if (window.navigateToTab) {
+                window.navigateToTab(targetTab);
             }
+        } catch (err) {
+            console.warn('[IDEB Engine] Warning in navigateToTab:', err);
+        }
 
-            try {
-                updateMenuVisibilityByRole();
-            } catch (err) {
-                console.warn('[IDEB Engine] Warning in updateMenuVisibilityByRole:', err);
-            }
-
-            // Direct Navigation to the Role's Panel
-            try {
-                if (window.navigateToTab) {
-                    window.navigateToTab(targetTab);
+        // Apply role-specific filters
+        try {
+            if (detectedRole === 'Diretor Escola') {
+                const dbSchoolSearch = document.getElementById('db-school-search');
+                if (dbSchoolSearch) {
+                    dbSchoolSearch.value = 'Benta Vilanova';
+                    if (typeof renderDbSchools === 'function') renderDbSchools();
                 }
-            } catch (err) {
-                console.warn('[IDEB Engine] Warning in navigateToTab:', err);
-            }
-
-            // Apply role-specific filters
-            try {
-                if (detectedRole === 'Diretor Escola') {
-                    const dbSchoolSearch = document.getElementById('db-school-search');
-                    if (dbSchoolSearch) {
-                        dbSchoolSearch.value = 'Benta Vilanova';
-                        if (typeof renderDbSchools === 'function') renderDbSchools();
-                    }
-                } else if (detectedRole === 'Professor') {
-                    const dbStudentSchoolFilter = document.getElementById('db-student-school-filter');
-                    if (dbStudentSchoolFilter) {
-                        dbStudentSchoolFilter.value = 'U.E. BENTA VILANOVA';
-                        if (typeof applyDbFilters === 'function') applyDbFilters();
-                    }
-                } else if (detectedRole === 'Professor AEE') {
-                    const dbStudentNeeFilter = document.getElementById('db-student-nee-filter');
-                    if (dbStudentNeeFilter) {
-                        dbStudentNeeFilter.value = 'sim';
-                        if (typeof applyDbFilters === 'function') applyDbFilters();
-                    }
+            } else if (detectedRole === 'Professor') {
+                const dbStudentSchoolFilter = document.getElementById('db-student-school-filter');
+                if (dbStudentSchoolFilter) {
+                    dbStudentSchoolFilter.value = 'U.E. BENTA VILANOVA';
+                    if (typeof applyDbFilters === 'function') applyDbFilters();
                 }
-            } catch (err) {
-                console.warn('[IDEB Engine] Filter warning:', err);
             }
+        } catch (err) {
+            console.warn('[IDEB Engine] Filter warning:', err);
+        }
 
-            // Smooth Fade-out animation
+        if (loginScreen) {
             loginScreen.classList.add('fade-out');
-            showToast("Bem-vindo ao IDEB na Prática! Painel " + detectedRole + " carregado.", 'check');
-            window.scrollTo(0, 0);
-
             setTimeout(() => {
                 loginScreen.style.display = 'none';
                 safeCreateIcons();
-            }, 500);
-        });
+            }, 350);
+        }
+
+        showToast("Bem-vindo ao IDEB na Prática! Painel " + detectedRole + " carregado.", 'check');
+        window.scrollTo(0, 0);
+        return false;
+    }
+    window.handleLoginSubmit = handleLoginSubmit;
+
+    const loginForm = document.getElementById('login-form');
+    const btnLoginSubmit = document.getElementById('btn-login-submit');
+
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLoginSubmit);
+    }
+    if (btnLoginSubmit) {
+        btnLoginSubmit.addEventListener('click', handleLoginSubmit);
     }
 
     function updateMenuVisibilityByRole() {
@@ -1043,116 +1013,6 @@ function updateIdebComparativoView() {
     rotateLoginHeadlines();
     initLoginMotionCanvas();
 
-function updateIdebComparativoView() {
-        const stateSelect = document.getElementById('ideb-state-select');
-        const citySearchInput = document.getElementById('ideb-city-search');
-        const stageSelect = document.getElementById('ideb-stage-select');
-
-        if (!stateSelect || !citySearchInput || !stageSelect) return;
-
-        const uf = stateSelect.value;
-        const city = selectedIdebCity;
-        const stage = stageSelect.value;
-
-        const emptyState = document.getElementById('ideb-empty-state');
-        const resultsContainer = document.getElementById('ideb-results-container');
-
-        // Filter historical records
-        const records = (window.idebPublicoReferencia || []).filter(r => 
-            r.uf === uf && r.municipio === city && r.etapa === stage
-        ).sort((a, b) => a.ano - b.ano);
-
-        if (records.length === 0) {
-            if (emptyState) emptyState.classList.remove('hidden');
-            if (resultsContainer) resultsContainer.classList.add('hidden');
-            return;
-        }
-
-        if (emptyState) emptyState.classList.add('hidden');
-        if (resultsContainer) resultsContainer.classList.remove('hidden');
-
-        // Latest record (2023)
-        const latestRecord = records.find(r => r.ano === 2023) || records[records.length - 1];
-
-        // Update KPIs
-        const kpiObserved = document.getElementById('ideb-kpi-observed');
-        const kpiTarget = document.getElementById('ideb-kpi-target');
-        const kpiStatusContainer = document.getElementById('ideb-kpi-status-container');
-        const kpiStatusText = document.getElementById('ideb-kpi-status-text');
-
-        if (kpiObserved) kpiObserved.textContent = latestRecord.ideb_observado !== null ? latestRecord.ideb_observado.toFixed(1) : 'N/A';
-        if (kpiTarget) kpiTarget.textContent = latestRecord.meta_projetada !== null ? latestRecord.meta_projetada.toFixed(1) : 'N/A';
-
-        if (latestRecord.ideb_observado !== null && latestRecord.meta_projetada !== null) {
-            const diff = latestRecord.ideb_observado - latestRecord.meta_projetada;
-            const met = diff >= 0;
-
-            if (kpiStatusContainer) {
-                kpiStatusContainer.innerHTML = met 
-                    ? `<span class="badge badge-success" style="font-size: 1.1rem; padding: 6px 12px; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="check" style="width: 16px; height: 16px;"></i> Atingida</span>`
-                    : `<span class="badge" style="font-size: 1.1rem; padding: 6px 12px; background-color: var(--red-light); color: white; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="x" style="width: 16px; height: 16px;"></i> Não Atingida</span>`;
-            }
-
-            if (kpiStatusText) {
-                kpiStatusText.textContent = met 
-                    ? `Diferença positiva de +${diff.toFixed(1)} pontos em relação à meta.`
-                    : `Diferença negativa de ${diff.toFixed(1)} pontos em relação à meta.`;
-            }
-        } else {
-            if (kpiStatusContainer) kpiStatusContainer.innerHTML = `<span class="badge badge-info" style="font-size: 1.1rem; padding: 6px 12px;">Sem Comparativo</span>`;
-            if (kpiStatusText) kpiStatusText.textContent = 'Metas ou resultados indisponíveis para este ciclo.';
-        }
-
-        // Draw Historical SVG Line Chart
-        renderIdebSvgChart(records);
-
-        // Projeção Meta 2025
-        const projVal = document.getElementById('ideb-proj-val');
-        const projDesc = document.getElementById('ideb-proj-desc');
-
-        if (latestRecord.ideb_observado !== null) {
-            // Check state statistics for 2023
-            const stateRecords2023 = (window.idebPublicoReferencia || []).filter(r => 
-                r.uf === uf && r.ano === 2023 && r.etapa === stage && !r.municipio.includes('(Estado)') && r.municipio !== 'Brasil'
-            );
-
-            let metCount = 0;
-            let totalCount = 0;
-            stateRecords2023.forEach(r => {
-                if (r.ideb_observado !== null && r.meta_projetada !== null) {
-                    totalCount++;
-                    if (r.ideb_observado >= r.meta_projetada) metCount++;
-                }
-            });
-
-            // Growth factor
-            const metRatio = totalCount > 0 ? (metCount / totalCount) : 0.5;
-            let growthFactor = 0.2; // default
-            let trajectory = "similar";
-
-            if (latestRecord.ideb_observado >= latestRecord.meta_projetada) {
-                growthFactor = uf === 'CE' ? 0.35 : 0.25;
-                trajectory = "favorável";
-            } else {
-                growthFactor = 0.15;
-                trajectory = "de recuperação";
-            }
-
-            const projectedIdeb = latestRecord.ideb_observado + growthFactor;
-
-            if (projVal) projVal.textContent = projectedIdeb.toFixed(2);
-            if (projDesc) {
-                projDesc.textContent = `Sugere-se uma meta de ${projectedIdeb.toFixed(2)} para o ciclo 2025. Municípios de ${uf} com trajetória ${trajectory} cresceram, em média, +${growthFactor.toFixed(2)} no ciclo seguinte.`;
-            }
-        } else {
-            if (projVal) projVal.textContent = 'N/A';
-            if (projDesc) projDesc.textContent = 'Histórico insuficiente para projetar meta atual.';
-        }
-
-        // State Ranking
-        renderIdebRankingTable(uf, stage, city);
-
-        safeCreateIcons();
     }
 window.updateIdebComparativoView = updateIdebComparativoView;
 
@@ -10314,38 +10174,14 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
             const originalText = btnSpan ? btnSpan.textContent : '';
             if (btnSpan) btnSpan.textContent = 'Autenticando...';
 
-            try {
-                const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: emailInput, password: passInput })
-                });
-                const authData = await res.json();
-                
-                if (res.ok && authData.success) {
-                    sessionStorage.setItem('isLoggedIn', 'true');
-                    sessionStorage.setItem('activeTenant', 'default');
-                    sessionStorage.setItem('userEmail', authData.user.email);
-                    sessionStorage.setItem('userRole', authData.user.role || detectedRole);
-                    sessionStorage.setItem('userName', authData.user.nome || 'Usuário');
-                    sessionStorage.setItem('userEscola', authData.user.escola || assignedSchool);
-                    sessionStorage.setItem('userTurma', authData.user.turma || assignedTurma);
-                } else {
-                    sessionStorage.setItem('isLoggedIn', 'true');
-                    sessionStorage.setItem('activeTenant', 'default');
-                    sessionStorage.setItem('userEmail', emailInput);
-                    sessionStorage.setItem('userRole', detectedRole);
-                    sessionStorage.setItem('userEscola', assignedSchool);
-                    sessionStorage.setItem('userTurma', assignedTurma);
-                }
-            } catch (err) {
-                sessionStorage.setItem('isLoggedIn', 'true');
-                sessionStorage.setItem('activeTenant', 'default');
-                sessionStorage.setItem('userEmail', emailInput);
-                sessionStorage.setItem('userRole', detectedRole);
-                sessionStorage.setItem('userEscola', assignedSchool);
-                sessionStorage.setItem('userTurma', assignedTurma);
-            }
+            sessionStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('isLoggedIn', 'true');
+            sessionStorage.setItem('activeTenant', 'default');
+            sessionStorage.setItem('userEmail', emailInput || 'semed@goncalvesdias.ma.gov.br');
+            localStorage.setItem('userEmail', emailInput || 'semed@goncalvesdias.ma.gov.br');
+            sessionStorage.setItem('userRole', detectedRole);
+            sessionStorage.setItem('userEscola', assignedSchool || 'U.E. BENTA VILANOVA');
+            sessionStorage.setItem('userTurma', assignedTurma || '2º Ano');
 
             try {
                 await loadDatabaseState();
@@ -11508,24 +11344,17 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
     // Initial render calls - Start clean and responsive
     initLoginMotionCanvas();
     rotateLoginHeadlines();
-    loadDatabaseState();
-    renderCreatedEvents();
-    renderOngoingAssessments();
-    renderActiveDescriptors();
-    renderQuestions();
-    renderReferenceMatrix();
-    renderSkillsSchedule();
-    populateQuestionCreatorDropdowns();
-    initIdebComparativo();
-    renderPedagogicLibrary();
-    loadUsersList();
-};
-
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initApp);
-} else {
-    initApp();
-}
+    if (typeof loadDatabaseState === 'function') loadDatabaseState();
+    if (typeof renderCreatedEvents === 'function') renderCreatedEvents();
+    if (typeof renderOngoingAssessments === 'function') renderOngoingAssessments();
+    if (typeof renderActiveDescriptors === 'function') renderActiveDescriptors();
+    if (typeof renderQuestions === 'function') renderQuestions();
+    if (typeof renderReferenceMatrix === 'function') renderReferenceMatrix();
+    if (typeof renderSkillsSchedule === 'function') renderSkillsSchedule();
+    if (typeof populateQuestionCreatorDropdowns === 'function') populateQuestionCreatorDropdowns();
+    if (typeof initIdebComparativo === 'function') initIdebComparativo();
+    if (typeof renderPedagogicLibrary === 'function') renderPedagogicLibrary();
+    if (typeof loadUsersList === 'function') loadUsersList();
 
 
 
@@ -22689,3 +22518,21 @@ if (document.readyState === 'loading') {
     initApp();
 }
 
+
+
+    window.executeLogin = function(customEmail, customRole) {
+        const email = customEmail || document.getElementById('login-email')?.value || 'semed@goncalvesdias.ma.gov.br';
+        const role = customRole || 'Gestor da Rede';
+        sessionStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('isLoggedIn', 'true');
+        sessionStorage.setItem('userEmail', email);
+        sessionStorage.setItem('userRole', role);
+        const loginScreen = document.getElementById('login-screen');
+        if (loginScreen) {
+            loginScreen.classList.add('fade-out');
+            setTimeout(() => { loginScreen.style.display = 'none'; }, 400);
+        }
+        if (typeof updateMenuVisibilityByRole === 'function') updateMenuVisibilityByRole();
+        if (typeof window.navigateToTab === 'function') window.navigateToTab('dashboard');
+        if (typeof safeCreateIcons === 'function') safeCreateIcons();
+    };
