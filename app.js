@@ -49,6 +49,124 @@
     }
     window.getCurrentUserProfile = getCurrentUserProfile;
 
+    // =========================================================================
+    // EXECUÇÃO CENTRAL E GLOBAL DE AUTENTICAÇÃO DO SISTEMA
+    // =========================================================================
+    function executeSystemLogin(explicitEmail, explicitPass) {
+        const emailEl = document.getElementById('login-email');
+        const passEl = document.getElementById('login-password');
+        const btnSubmit = document.getElementById('btn-login-submit');
+        const loginScreen = document.getElementById('login-screen');
+        const appContainer = document.querySelector('.app-container');
+
+        const emailInput = (explicitEmail || emailEl?.value || 'semed@goncalvesdias.ma.gov.br').trim().toLowerCase();
+        const passInput = explicitPass || passEl?.value || '123';
+
+        let detectedRole = 'Gestor da Rede';
+        let targetTab = 'dashboard';
+        let assignedSchool = 'Rede Municipal Oficial';
+        let assignedTurma = 'Todas as Turmas';
+        let profileName = 'Secretaria de Educação';
+        let profileRole = 'Gestão Executiva SEMED';
+        let profileAvatar = '🧑‍💼';
+
+        if (emailInput.startsWith('prof') || emailInput.includes('professor')) {
+            detectedRole = 'Professor';
+            targetTab = 'alunos-panel';
+            assignedSchool = 'UI JOSE CORREA LIMA';
+            assignedTurma = '5º Ano A';
+            profileName = 'Prof. Carlos Eduardo';
+            profileRole = 'Professor(a) • UI JOSE CORREA LIMA';
+            profileAvatar = '👨‍🏫';
+        } else if (emailInput.startsWith('diret') || emailInput.includes('diretor') || emailInput.includes('escola') || emailInput.includes('cora')) {
+            detectedRole = 'Diretor Escola';
+            targetTab = 'escolas-panel';
+            assignedSchool = 'UI JOSE CORREA LIMA';
+            assignedTurma = 'Todas as Turmas';
+            profileName = 'Profa. Antonia Silva';
+            profileRole = 'Diretora Escolar • UI JOSE CORREA LIMA';
+            profileAvatar = '👩‍💼';
+        } else if (emailInput.startsWith('admin') || emailInput.startsWith('dpo')) {
+            detectedRole = 'Master Admin';
+            targetTab = 'dashboard';
+            assignedSchool = 'Administração TI / DPO';
+            assignedTurma = 'Todas as Redes';
+            profileName = 'Administrador TI';
+            profileRole = 'Administrador(a) do Sistema & TI';
+            profileAvatar = '👨‍💻';
+        } else {
+            detectedRole = 'Gestor da Rede';
+            targetTab = 'dashboard';
+            assignedSchool = 'Rede Municipal Oficial';
+            assignedTurma = 'Todas as Turmas';
+            profileName = 'Secretaria de Educação';
+            profileRole = 'Gestão Executiva SEMED';
+            profileAvatar = '🧑‍💼';
+        }
+
+        // Salvar Perfil Isolado do Usuário Atual
+        const userProfileData = {
+            name: profileName,
+            email: emailInput,
+            role: profileRole,
+            avatarIcon: profileAvatar,
+            avatarPhoto: ''
+        };
+        try {
+            localStorage.setItem('gd_current_user_profile', JSON.stringify(userProfileData));
+        } catch(e) {}
+
+        sessionStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('isLoggedIn', 'true');
+        sessionStorage.setItem('activeTenant', 'default');
+        sessionStorage.setItem('userEmail', emailInput);
+        localStorage.setItem('userEmail', emailInput);
+        sessionStorage.setItem('userName', profileName);
+        sessionStorage.setItem('userRole', detectedRole);
+        sessionStorage.setItem('userEscola', assignedSchool);
+        sessionStorage.setItem('userTurma', assignedTurma);
+
+        // Exibir imediatamente o appContainer e esconder o loginScreen
+        if (appContainer) {
+            appContainer.style.display = 'flex';
+        }
+        if (loginScreen) {
+            loginScreen.style.display = 'none';
+            loginScreen.style.pointerEvents = 'none';
+        }
+
+        try {
+            if (typeof updateMenuVisibilityByRole === 'function') updateMenuVisibilityByRole();
+            if (typeof updateUserHeaderUI === 'function') updateUserHeaderUI();
+            if (typeof renderDashboardWelcomeBanner === 'function') renderDashboardWelcomeBanner();
+            if (typeof renderDbSchools === 'function') renderDbSchools();
+            if (typeof renderDbStudents === 'function') renderDbStudents();
+        } catch (err) {
+            console.warn('[IDEB Engine] Warning in UI updates:', err);
+        }
+
+        // Navegação direta para a aba do perfil
+        try {
+            if (typeof window.switchTab === 'function') {
+                window.switchTab(targetTab);
+            } else if (typeof window.navigateToTab === 'function') {
+                window.navigateToTab(targetTab);
+            }
+        } catch (err) {
+            console.warn('[IDEB Engine] Warning in switchTab:', err);
+        }
+
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+            try { window.lucide.createIcons({ attrs: { class: 'lucide' } }); } catch(e) {}
+        }
+
+        if (typeof showToast === 'function') {
+            showToast(`Bem-vindo ao IDEB na Prática! Painel ${detectedRole} carregado.`, 'check');
+        }
+        window.scrollTo(0, 0);
+    }
+    window.executeSystemLogin = executeSystemLogin;
+
     function saveCurrentUserProfile(profileData) {
         try {
             localStorage.setItem(STORAGE_KEY_USER_PROFILE, JSON.stringify(profileData));
