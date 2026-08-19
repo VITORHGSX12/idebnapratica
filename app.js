@@ -24,7 +24,19 @@ window.debounce = function debounce(func, wait = 250) {
 };
 var debounce = window.debounce;
 
-// 3. Estados Globais de Paginação e Seleção
+// 3. Estados Globais de Paginação, Seleção e Bancos de Dados
+window.gdSchoolTargetsMap = window.gdSchoolTargetsMap || {};
+var gdSchoolTargetsMap = window.gdSchoolTargetsMap;
+
+window.gdSchoolPdePlansMap = window.gdSchoolPdePlansMap || {};
+var gdSchoolPdePlansMap = window.gdSchoolPdePlansMap;
+
+window.MATRIZ_DESCRITORES_EXCEL = window.MATRIZ_DESCRITORES_EXCEL || {};
+var MATRIZ_DESCRITORES_EXCEL = window.MATRIZ_DESCRITORES_EXCEL;
+
+window.PEDAGOGIC_LIBRARY_DATABASE = window.PEDAGOGIC_LIBRARY_DATABASE || [];
+var PEDAGOGIC_LIBRARY_DATABASE = window.PEDAGOGIC_LIBRARY_DATABASE;
+
 window.currentAlunosPage = 1;
 window.alunosPageSize = 25;
 window.currentSelectedCity = "Gonçalves Dias";
@@ -430,7 +442,8 @@ function debounce(func, delay = 300) {
     };
 }
 
-const initApp = () => {
+function initApp() {
+    window.initApp = initApp;
 
     // ==========================================
     // LOGIN SCREEN & CINEMATIC MOTION ENGINE
@@ -16158,8 +16171,8 @@ window.renderDbSchools = function renderDbSchools() {
     // -------------------------------------------------------------------------
 
     // Armazenamento em memória / localStorage das metas e planos das escolas de Gonçalves Dias
-    let gdSchoolTargetsMap = {};
-    let gdSchoolPdePlansMap = {};
+    var gdSchoolTargetsMap = window.gdSchoolTargetsMap = window.gdSchoolTargetsMap || {};
+    var gdSchoolPdePlansMap = window.gdSchoolPdePlansMap = window.gdSchoolPdePlansMap || {};
 
     function initGdMetasDatabase() {
         try {
@@ -18899,7 +18912,7 @@ window.renderDbSchools = function renderDbSchools() {
     // =========================================================================
     // =========================================================================
 
-    const MATRIZ_DESCRITORES_EXCEL = {
+    var MATRIZ_DESCRITORES_EXCEL = window.MATRIZ_DESCRITORES_EXCEL = {
         portuguese: [
         {
                 "codigo": "D1",
@@ -21060,7 +21073,7 @@ window.renderDbSchools = function renderDbSchools() {
     // =========================================================================
     // =========================================================================
 
-    const PEDAGOGIC_LIBRARY_DATABASE = [
+    var PEDAGOGIC_LIBRARY_DATABASE = window.PEDAGOGIC_LIBRARY_DATABASE = [
         {
             id: 'BOOK_07',
             titulo: 'Simulado Diagnóstico 5º Ano • Língua Portuguesa (Foco D1, D3, D4)',
