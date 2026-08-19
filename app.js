@@ -15650,9 +15650,206 @@ if (document.readyState === 'loading') {
     window.navigateToTab = switchTab;
 
 
+
 // =========================================================================
-// GESTÃO ESPECÍFICA DA ESCOLA (VISÃO INTERNA: VISÃO GERAL, PROFESSORES, TURMAS, ALUNOS)
+// GESTÃO DINÂMICA DE TURMAS, DIÁRIO DE CLASSE, PROGRESSÃO HISTÓRICA E PROFICIÊNCIA
 // =========================================================================
+
+const STORAGE_KEY_NETWORK_TURMAS = 'school_network_turmas_db';
+
+const INITIAL_NETWORK_TURMAS_SEED = [
+    // UI JOSE CORREA LIMA
+    { id: 'turma_jcl_2a', escola: 'UI JOSE CORREA LIMA', nome: '2º Ano A', etapa: '2º Ano', turno: 'Matutino', professor: 'Profa. Silvana Ferreira (Regente)', status: 'Ativa', createdAt: '2026-02-01' },
+    { id: 'turma_jcl_2b', escola: 'UI JOSE CORREA LIMA', nome: '2º Ano B', etapa: '2º Ano', turno: 'Vespertino', professor: 'Prof. Marcos Andrade (Regente)', status: 'Ativa', createdAt: '2026-02-01' },
+    { id: 'turma_jcl_5a', escola: 'UI JOSE CORREA LIMA', nome: '5º Ano A', etapa: '5º Ano', turno: 'Matutino', professor: 'Profa. Maria Josefa Lima', status: 'Ativa', createdAt: '2026-02-01' },
+    { id: 'turma_jcl_9a', escola: 'UI JOSE CORREA LIMA', nome: '9º Ano A', etapa: '9º Ano', turno: 'Matutino', professor: 'Prof. Carlos Alberto Silva', status: 'Ativa', createdAt: '2026-02-01' },
+
+    // U I BASILIO ALVES
+    { id: 'turma_ba_2a', escola: 'U I BASILIO ALVES', nome: '2º Ano A', etapa: '2º Ano', turno: 'Matutino', professor: 'Profa. Claudia Mendes', status: 'Ativa', createdAt: '2026-02-01' },
+    { id: 'turma_ba_5a', escola: 'U I BASILIO ALVES', nome: '5º Ano A', etapa: '5º Ano', turno: 'Matutino', professor: 'Prof. Raimundo Nonato', status: 'Ativa', createdAt: '2026-02-01' },
+
+    // UNIDADE INTEGRADA JOSE GONCALVES DIAS
+    { id: 'turma_jgd_5a', escola: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS', nome: '5º Ano A', etapa: '5º Ano', turno: 'Matutino', professor: 'Profa. Ana Carolina Lima', status: 'Ativa', createdAt: '2026-02-01' },
+    { id: 'turma_jgd_9a', escola: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS', nome: '9º Ano A', etapa: '9º Ano', turno: 'Vespertino', professor: 'Prof. Carlos Silva', status: 'Ativa', createdAt: '2026-02-01' },
+
+    // UI EMILIO MURAD
+    { id: 'turma_em_5a', escola: 'UI EMILIO MURAD', nome: '5º Ano A', etapa: '5º Ano', turno: 'Matutino', professor: 'Profa. Francisca Antonia', status: 'Ativa', createdAt: '2026-02-01' },
+
+    // UE ANITA FURTADO
+    { id: 'turma_af_5a', escola: 'UE ANITA FURTADO', nome: '5º Ano A', etapa: '5º Ano', turno: 'Matutino', professor: 'Profa. Teresa Cristina', status: 'Ativa', createdAt: '2026-02-01' },
+
+    // UNIDADE INTEGRADA ALDENORA ARAUJO CRUZ
+    { id: 'turma_aac_5a', escola: 'UNIDADE INTEGRADA ALDENORA ARAUJO CRUZ', nome: '5º Ano A', etapa: '5º Ano', turno: 'Matutino', professor: 'Prof. João Batista Lima', status: 'Ativa', createdAt: '2026-02-01' }
+];
+
+function getAllNetworkTurmasDb() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY_NETWORK_TURMAS);
+        if (raw) return JSON.parse(raw);
+    } catch(e) {}
+    return INITIAL_NETWORK_TURMAS_SEED;
+}
+window.getAllNetworkTurmasDb = getAllNetworkTurmasDb;
+
+function saveNetworkTurmasDb(turmas) {
+    try {
+        localStorage.setItem(STORAGE_KEY_NETWORK_TURMAS, JSON.stringify(turmas));
+    } catch(e) {}
+}
+window.saveNetworkTurmasDb = saveNetworkTurmasDb;
+
+function getSchoolTurmas(schoolName) {
+    const all = getAllNetworkTurmasDb();
+    return all.filter(t => t.escola === schoolName);
+}
+window.getSchoolTurmas = getSchoolTurmas;
+
+// Modal de Criação / Edição de Turma
+function openCreateTurmaModal(schoolName) {
+    const modal = document.getElementById('modal-create-turma');
+    const title = document.getElementById('modal-turma-title');
+    const formId = document.getElementById('turma-form-id');
+    const formSchool = document.getElementById('turma-form-school');
+    const formName = document.getElementById('turma-form-name');
+    const formStage = document.getElementById('turma-form-stage');
+    const formShift = document.getElementById('turma-form-shift');
+    const formTeacher = document.getElementById('turma-form-teacher');
+
+    if (!modal) return;
+
+    const activeSchool = schoolName || window.currentSelectedSchoolDetail || 'UI BASILIO ALVES';
+
+    if (title) title.textContent = `+ Cadastrar Nova Turma em ${activeSchool}`;
+    if (formId) formId.value = '';
+    if (formSchool) formSchool.value = activeSchool;
+    if (formName) formName.value = '';
+    if (formStage) formStage.value = '5º Ano';
+    if (formShift) formShift.value = 'Matutino';
+    if (formTeacher) formTeacher.value = '';
+
+    modal.style.display = 'flex';
+    modal.classList.remove('hidden');
+    if (typeof safeCreateIcons === 'function') safeCreateIcons();
+}
+window.openCreateTurmaModal = openCreateTurmaModal;
+
+function openEditTurmaModal(turmaId) {
+    const all = getAllNetworkTurmasDb();
+    const turma = all.find(t => t.id === turmaId);
+    if (!turma) return;
+
+    const modal = document.getElementById('modal-create-turma');
+    const title = document.getElementById('modal-turma-title');
+    const formId = document.getElementById('turma-form-id');
+    const formSchool = document.getElementById('turma-form-school');
+    const formName = document.getElementById('turma-form-name');
+    const formStage = document.getElementById('turma-form-stage');
+    const formShift = document.getElementById('turma-form-shift');
+    const formTeacher = document.getElementById('turma-form-teacher');
+
+    if (!modal) return;
+
+    if (title) title.textContent = `✏️ Editar Turma — ${turma.nome}`;
+    if (formId) formId.value = turma.id;
+    if (formSchool) formSchool.value = turma.escola;
+    if (formName) formName.value = turma.nome;
+    if (formStage) formStage.value = turma.etapa || '5º Ano';
+    if (formShift) formShift.value = turma.turno || 'Matutino';
+    if (formTeacher) formTeacher.value = turma.professor || '';
+
+    modal.style.display = 'flex';
+    modal.classList.remove('hidden');
+    if (typeof safeCreateIcons === 'function') safeCreateIcons();
+}
+window.openEditTurmaModal = openEditTurmaModal;
+
+function closeModalTurma() {
+    const modal = document.getElementById('modal-create-turma');
+    if (modal) {
+        modal.style.display = 'none';
+        modal.classList.add('hidden');
+    }
+}
+window.closeModalTurma = closeModalTurma;
+
+function handleSaveTurma(event) {
+    if (event && event.preventDefault) event.preventDefault();
+
+    const formId = document.getElementById('turma-form-id')?.value;
+    const formSchool = document.getElementById('turma-form-school')?.value || window.currentSelectedSchoolDetail || 'UI BASILIO ALVES';
+    const formName = document.getElementById('turma-form-name')?.value?.trim();
+    const formStage = document.getElementById('turma-form-stage')?.value || '5º Ano';
+    const formShift = document.getElementById('turma-form-shift')?.value || 'Matutino';
+    const formTeacher = document.getElementById('turma-form-teacher')?.value || 'Coordenação / Regente';
+
+    if (!formName) {
+        if (typeof window.showToast === 'function') {
+            window.showToast('Por favor, informe o nome da turma.', 'warning');
+        }
+        return;
+    }
+
+    const all = getAllNetworkTurmasDb();
+
+    if (formId) {
+        // Edição
+        const existing = all.find(t => t.id === formId);
+        if (existing) {
+            existing.nome = formName;
+            existing.etapa = formStage;
+            existing.turno = formShift;
+            existing.professor = formTeacher;
+        }
+    } else {
+        // Criação
+        const newTurma = {
+            id: 'turma_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+            escola: formSchool,
+            nome: formName,
+            etapa: formStage,
+            turno: formShift,
+            professor: formTeacher,
+            status: 'Ativa',
+            createdAt: new Date().toISOString()
+        };
+        all.push(newTurma);
+    }
+
+    saveNetworkTurmasDb(all);
+    closeModalTurma();
+
+    // Re-render Turmas view
+    if (typeof window.switchSchoolInnerTab === 'function') {
+        window.switchSchoolInnerTab('turmas');
+    }
+
+    if (typeof window.showToast === 'function') {
+        window.showToast(`✅ Turma "${formName}" salva com sucesso em ${formSchool}!`, 'success');
+    }
+}
+window.handleSaveTurma = handleSaveTurma;
+
+function handleDeleteTurma(turmaId) {
+    const all = getAllNetworkTurmasDb();
+    const turma = all.find(t => t.id === turmaId);
+    if (!turma) return;
+
+    if (typeof confirm === 'function' && !confirm(`Tem certeza de que deseja excluir a turma "${turma.nome}" da escola ${turma.escola}?`)) {
+        return;
+    }
+
+    const updated = all.filter(t => t.id !== turmaId);
+    saveNetworkTurmasDb(updated);
+
+    if (typeof window.switchSchoolInnerTab === 'function') {
+        window.switchSchoolInnerTab('turmas');
+    }
+
+    if (typeof window.showToast === 'function') {
+        window.showToast(`Turma "${turma.nome}" excluída com sucesso.`, 'info');
+    }
+}
+window.handleDeleteTurma = handleDeleteTurma;
 
 window.currentSelectedSchoolDetail = "UI BASILIO ALVES";
 
@@ -15681,8 +15878,9 @@ window.openSchoolDetailView = function openSchoolDetailView(schoolName, inep, zo
     if (metaEl) metaEl.textContent = `INEP: ${inep || '21128120'} • Direção: ${director || 'Gestão Escolar'} • Fone: ${phone || '-'}`;
     
     switchSchoolInnerTab('turmas');
-    safeCreateIcons();
+    if (typeof safeCreateIcons === 'function') safeCreateIcons();
 };
+window.openSchoolWorkspace = window.openSchoolDetailView;
 
 window.backToSchoolsList = function backToSchoolsList() {
     const overview = document.getElementById('schools-overview-container');
@@ -15699,9 +15897,10 @@ window.backToSchoolsList = function backToSchoolsList() {
     }
     
     if (typeof renderDbSchools === 'function') renderDbSchools();
-    safeCreateIcons();
+    if (typeof safeCreateIcons === 'function') safeCreateIcons();
 };
 
+// Sub-aba Turmas da Escola
 window.switchSchoolInnerTab = function switchSchoolInnerTab(tabName) {
     const btns = document.querySelectorAll('.school-nav-tab-btn');
     btns.forEach(btn => {
@@ -15734,21 +15933,21 @@ window.switchSchoolInnerTab = function switchSchoolInnerTab(tabName) {
                         <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0;">Professores da Escola</h3>
                         <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">Corpo docente vinculado a ${school}</p>
                     </div>
-                    <button class="btn btn-primary" style="display:flex; align-items:center; gap:6px; font-size:0.82rem;">
+                    <button class="btn btn-primary" onclick="alert('Funcionalidade de vinculação de docentes.');" style="display:flex; align-items:center; gap:6px; font-size:0.82rem; font-weight:700; background:#6366f1; border-color:#6366f1;">
                         <i data-lucide="plus" style="width:15px; height:15px;"></i> Vincular Professor
                     </button>
                 </div>
                 <div style="display:flex; flex-direction:column; gap:10px;">
                     <div style="padding: 12px 16px; background: var(--bg-tertiary); border-radius: var(--radius-md); display:flex; justify-content:space-between; align-items:center;">
                         <div>
-                            <div style="font-weight:700; color:var(--text-primary);">Profa. Ana Carolina Lima</div>
-                            <div style="font-size:0.78rem; color:var(--text-secondary);">Língua Portuguesa • 5º Ano A, 5º Ano B</div>
+                            <div style="font-weight:700; color:var(--text-primary);">Profa. Silvana Ferreira</div>
+                            <div style="font-size:0.78rem; color:var(--text-secondary);">Língua Portuguesa • 2º Ano A, 5º Ano A</div>
                         </div>
-                        <span style="font-size:0.75rem; background:#dcfce7; color:#166534; padding:3px 8px; border-radius:10px; font-weight:700;">Ativo</span>
+                        <span style="font-size:0.75rem; background:#dcfce7; color:#166534; padding:3px 8px; border-radius:10px; font-weight:700;">Ativa</span>
                     </div>
                     <div style="padding: 12px 16px; background: var(--bg-tertiary); border-radius: var(--radius-md); display:flex; justify-content:space-between; align-items:center;">
                         <div>
-                            <div style="font-weight:700; color:var(--text-primary);">Prof. Carlos Silva</div>
+                            <div style="font-weight:700; color:var(--text-primary);">Prof. Carlos Alberto Silva</div>
                             <div style="font-size:0.78rem; color:var(--text-secondary);">Matemática • 5º Ano A, 9º Ano A</div>
                         </div>
                         <span style="font-size:0.75rem; background:#dcfce7; color:#166534; padding:3px 8px; border-radius:10px; font-weight:700;">Ativo</span>
@@ -15764,65 +15963,65 @@ window.switchSchoolInnerTab = function switchSchoolInnerTab(tabName) {
                         <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0;">Estudantes Matriculados</h3>
                         <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">Alunos frequentes em ${school}</p>
                     </div>
-                    <div style="display:flex; gap:10px;">
-                        <input type="text" placeholder="Buscar aluno..." style="padding:6px 12px; border-radius:var(--radius-md); border:1px solid var(--border-color); background:var(--bg-tertiary); font-size:0.82rem; color:var(--text-primary);">
-                    </div>
+                    <button type="button" onclick="switchTab('alunos-panel');" class="btn btn-primary btn-sm" style="font-weight:700;">
+                        Ver Base Completa de Alunos
+                    </button>
                 </div>
-                <div style="padding:16px; background:var(--bg-tertiary); border-radius:var(--radius-md); text-align:center; color:var(--text-secondary); font-size:0.88rem;">
-                    Exibindo alunos cadastrados nesta unidade escolar. Para listagem geral de 1.758 alunos da rede, acesse a aba "Alunos & Cadastros".
+                <div style="padding:20px; background:var(--bg-tertiary); border-radius:var(--radius-md); text-align:center; color:var(--text-secondary); font-size:0.88rem;">
+                    Acesse a aba <strong>"Turmas"</strong> e clique em <strong>"Ver Diário"</strong> para acompanhar individualmente a progressão histórica e o nível de proficiência dos estudantes de cada turma.
                 </div>
             </div>
         `;
     } else if (tabName === 'visao-geral') {
+        const schoolTurmasList = getSchoolTurmas(school);
         container.innerHTML = `
             <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
                 <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0 0 16px 0;">Indicadores da Escola: ${school}</h3>
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:14px; margin-bottom:20px;">
                     <div style="padding:14px; background:var(--bg-tertiary); border-radius:var(--radius-md); text-align:center;">
-                        <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:700;">IDEB 2023</div>
-                        <div style="font-size:1.4rem; font-weight:800; color:#3b82f6; margin:4px 0;">4.8</div>
-                        <div style="font-size:0.72rem; color:#10b981;">Meta Superada</div>
+                        <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:700;">IDEB OBSERVADO</div>
+                        <div style="font-size:1.4rem; font-weight:800; color:#3b82f6; margin:4px 0;">5.2</div>
+                        <div style="font-size:0.72rem; color:#10b981;">Meta Municipal Superada</div>
                     </div>
                     <div style="padding:14px; background:var(--bg-tertiary); border-radius:var(--radius-md); text-align:center;">
                         <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:700;">PROJEÇÃO 2026</div>
-                        <div style="font-size:1.4rem; font-weight:800; color:#8b5cf6; margin:4px 0;">5.2</div>
-                        <div style="font-size:0.72rem; color:var(--text-secondary);">Meta Pactuada</div>
+                        <div style="font-size:1.4rem; font-weight:800; color:#8b5cf6; margin:4px 0;">5.6</div>
+                        <div style="font-size:0.72rem; color:var(--text-secondary);">Meta Pactuada PDE</div>
                     </div>
                     <div style="padding:14px; background:var(--bg-tertiary); border-radius:var(--radius-md); text-align:center;">
                         <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:700;">TURMAS ATIVAS</div>
-                        <div style="font-size:1.4rem; font-weight:800; color:#10b981; margin:4px 0;">8</div>
-                        <div style="font-size:0.72rem; color:var(--text-secondary);">Anos Iniciais e Finais</div>
+                        <div style="font-size:1.4rem; font-weight:800; color:#10b981; margin:4px 0;">${schoolTurmasList.length}</div>
+                        <div style="font-size:0.72rem; color:var(--text-secondary);">Cadastradas nesta unidade</div>
                     </div>
                 </div>
             </div>
         `;
     } else {
-        // Turmas (IMAGEM 2)
+        // Tab Turmas (Dinâmica)
+        const schoolTurmasList = getSchoolTurmas(school);
+
         container.innerHTML = `
             <div>
                 <!-- Top Actions Bar -->
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 16px; flex-wrap: wrap;">
                     <div style="position: relative; flex-grow: 1; max-width: 450px;">
                         <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted);"></i>
-                        <input type="text" placeholder="Buscar por nome..." style="width: 100%; padding: 8px 14px 8px 38px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); font-size: 0.85rem;">
+                        <input type="text" id="inner-turmas-search-input" oninput="filterInnerTurmasTable(this.value);" placeholder="Buscar turma por nome ou etapa..." style="width: 100%; padding: 8px 14px 8px 38px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); font-size: 0.85rem;">
                     </div>
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <button class="btn btn-outline" style="display: flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 600; padding: 8px 14px; background: var(--bg-secondary);">
-                            <i data-lucide="file-text" style="width: 15px; height: 15px;"></i> Relatórios
-                        </button>
-                        <button class="btn btn-primary" style="display: flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 700; padding: 8px 16px;">
-                            <i data-lucide="plus" style="width: 15px; height: 15px;"></i> + Add Turma
+                        <button type="button" onclick="openCreateTurmaModal('${school.replace(/'/g, "\\\'")}');" class="btn btn-primary" style="display: flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 700; padding: 8px 16px; background: linear-gradient(135deg, #4f46e5, #6366f1); border: none; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);">
+                            <i data-lucide="plus-circle" style="width: 16px; height: 16px;"></i> + Nova Turma
                         </button>
                     </div>
                 </div>
 
-                <!-- 3 Metric Cards (IMAGEM 2) -->
+                <!-- 3 Metric Cards Dinâmicos -->
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;">
                     <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; text-align: center;">
                         <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(59, 130, 246, 0.12); color: #3b82f6; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto;">
                             <i data-lucide="layout-grid" style="width: 18px; height: 18px;"></i>
                         </div>
-                        <div style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary); margin-bottom: 2px;">6</div>
+                        <div id="kpi-school-inner-total" style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary); margin-bottom: 2px;">${schoolTurmasList.length}</div>
                         <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">TOTAL DE TURMAS</div>
                     </div>
 
@@ -15830,7 +16029,7 @@ window.switchSchoolInnerTab = function switchSchoolInnerTab(tabName) {
                         <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(139, 92, 246, 0.12); color: #8b5cf6; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto;">
                             <i data-lucide="calendar" style="width: 18px; height: 18px;"></i>
                         </div>
-                        <div style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary); margin-bottom: 2px;">6</div>
+                        <div id="kpi-school-inner-year" style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary); margin-bottom: 2px;">${schoolTurmasList.length}</div>
                         <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">TURMAS 2026</div>
                     </div>
 
@@ -15838,12 +16037,12 @@ window.switchSchoolInnerTab = function switchSchoolInnerTab(tabName) {
                         <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(16, 185, 129, 0.12); color: #10b981; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto;">
                             <i data-lucide="check-circle" style="width: 18px; height: 18px;"></i>
                         </div>
-                        <div style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary); margin-bottom: 2px;">6</div>
+                        <div id="kpi-school-inner-active" style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary); margin-bottom: 2px;">${schoolTurmasList.length}</div>
                         <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">TURMAS ATIVAS</div>
                     </div>
                 </div>
 
-                <!-- Tabela de Turmas da Escola (IMAGEM 2) -->
+                <!-- Tabela de Turmas da Escola -->
                 <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 0; overflow: hidden;">
                     <div class="table-responsive">
                         <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.86rem;">
@@ -15853,37 +16052,11 @@ window.switchSchoolInnerTab = function switchSchoolInnerTab(tabName) {
                                     <th style="padding: 12px 16px;">ESCOLA</th>
                                     <th style="padding: 12px 16px;">TURNO</th>
                                     <th style="padding: 12px 16px; text-align: center;">STATUS</th>
-                                    <th style="padding: 12px 20px; text-align: center;">AÇÕES</th>
+                                    <th style="padding: 12px 20px; text-align: center;">AÇÕES & DIÁRIO</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr style="border-bottom: 1px solid var(--border-color);">
-                                    <td style="padding: 14px 20px; font-weight: 700; color: var(--text-primary);">5º ANO "A"</td>
-                                    <td style="padding: 14px 16px; color: var(--text-secondary);">${school}</td>
-                                    <td style="padding: 14px 16px; color: var(--text-secondary);">Matutino</td>
-                                    <td style="padding: 14px 16px; text-align: center;"><span style="background:#dcfce7; color:#166534; font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:12px;">Ativa</span></td>
-                                    <td style="padding: 14px 20px; text-align: center;">
-                                        <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 10px;">Ver Diário</button>
-                                    </td>
-                                </tr>
-                                <tr style="border-bottom: 1px solid var(--border-color);">
-                                    <td style="padding: 14px 20px; font-weight: 700; color: var(--text-primary);">5º ANO "B"</td>
-                                    <td style="padding: 14px 16px; color: var(--text-secondary);">${school}</td>
-                                    <td style="padding: 14px 16px; color: var(--text-secondary);">Vespertino</td>
-                                    <td style="padding: 14px 16px; text-align: center;"><span style="background:#dcfce7; color:#166534; font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:12px;">Ativa</span></td>
-                                    <td style="padding: 14px 20px; text-align: center;">
-                                        <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 10px;">Ver Diário</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="padding: 14px 20px; font-weight: 700; color: var(--text-primary);">9º ANO "A"</td>
-                                    <td style="padding: 14px 16px; color: var(--text-secondary);">${school}</td>
-                                    <td style="padding: 14px 16px; color: var(--text-secondary);">Matutino</td>
-                                    <td style="padding: 14px 16px; text-align: center;"><span style="background:#dcfce7; color:#166534; font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:12px;">Ativa</span></td>
-                                    <td style="padding: 14px 20px; text-align: center;">
-                                        <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 10px;">Ver Diário</button>
-                                    </td>
-                                </tr>
+                            <tbody id="inner-turmas-tbody">
+                                ${renderInnerTurmasRows(schoolTurmasList, school)}
                             </tbody>
                         </table>
                     </div>
@@ -15892,8 +16065,356 @@ window.switchSchoolInnerTab = function switchSchoolInnerTab(tabName) {
         `;
     }
 
-    safeCreateIcons();
+    if (typeof safeCreateIcons === 'function') safeCreateIcons();
 };
+
+function renderInnerTurmasRows(turmasList, school) {
+    if (turmasList.length === 0) {
+        return `
+            <tr>
+                <td colspan="5" style="padding: 42px 20px; text-align: center; color: var(--text-muted);">
+                    <div style="width: 46px; height: 46px; border-radius: 50%; background: rgba(99,102,241,0.1); color: #6366f1; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+                        <i data-lucide="book-open" style="width: 22px; height: 22px;"></i>
+                    </div>
+                    <h4 style="margin: 0 0 4px 0; font-size: 1rem; color: var(--text-primary);">Nenhuma turma cadastrada para esta escola</h4>
+                    <p style="margin: 0 0 14px 0; font-size: 0.8rem; color: var(--text-secondary);">Esta escola ainda não possui turmas cadastradas. Clique abaixo para criar a primeira turma.</p>
+                    <button type="button" onclick="openCreateTurmaModal('${school.replace(/'/g, "\\\'")}');" class="btn btn-primary btn-sm" style="font-weight: 700; background: #6366f1; border-color: #6366f1;">
+                        + Criar Primeira Turma
+                    </button>
+                </td>
+            </tr>
+        `;
+    }
+
+    return turmasList.map(t => `
+        <tr style="border-bottom: 1px solid var(--border-color); height: 60px; transition: background 0.15s ease;">
+            <td style="padding: 12px 20px;">
+                <div style="font-weight: 800; color: var(--text-primary); font-size: 0.92rem;">${t.nome}</div>
+                <div style="font-size: 0.74rem; color: var(--text-muted);">${t.etapa || 'Ensino Fundamental'} • ${t.professor || 'Docente Regente'}</div>
+            </td>
+            <td style="padding: 12px 16px; color: var(--text-secondary); font-size: 0.84rem;">
+                ${t.escola}
+            </td>
+            <td style="padding: 12px 16px;">
+                <span class="badge" style="background: rgba(99,102,241,0.1); color: #6366f1; font-weight: 700; font-size: 0.75rem;">
+                    ${t.turno || 'Matutino'}
+                </span>
+            </td>
+            <td style="padding: 12px 16px; text-align: center;">
+                <span style="background: #dcfce7; color: #166534; font-size: 0.72rem; font-weight: 800; padding: 3px 10px; border-radius: 12px;">
+                    Ativa
+                </span>
+            </td>
+            <td style="padding: 12px 20px; text-align: center;">
+                <div style="display: inline-flex; align-items: center; gap: 8px; justify-content: center;">
+                    <!-- Botão Principal: Ver Diário -->
+                    <button type="button" onclick="openTurmaJournalModal('${t.id}', '${t.nome.replace(/'/g, "\\\'")}', '${t.escola.replace(/'/g, "\\\'")}');" class="btn btn-outline btn-sm" style="font-size: 0.76rem; font-weight: 700; color: #10b981; border-color: #10b981; background: rgba(16, 185, 129, 0.08); padding: 5px 12px; display: inline-flex; align-items: center; gap: 5px;" title="Abrir Diário da Turma e Lista de Alunos">
+                        <i data-lucide="book-open" style="width: 14px; height: 14px;"></i> Ver Diário
+                    </button>
+
+                    <!-- Botão de Opções / Edição e Exclusão -->
+                    <button type="button" onclick="openEditTurmaModal('${t.id}');" class="btn btn-outline btn-sm" style="font-size: 0.75rem; padding: 5px 8px; color: var(--text-primary);" title="Editar Turma">
+                        ✏️ Editar
+                    </button>
+                    <button type="button" onclick="handleDeleteTurma('${t.id}');" class="btn btn-outline btn-sm" style="font-size: 0.75rem; padding: 5px 8px; color: #ef4444; border-color: #fca5a5;" title="Excluir Turma">
+                        🗑️
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function filterInnerTurmasTable(query) {
+    const tbody = document.getElementById('inner-turmas-tbody');
+    if (!tbody) return;
+
+    const school = window.currentSelectedSchoolDetail || "UI BASILIO ALVES";
+    const allSchoolTurmas = getSchoolTurmas(school);
+    const q = (query || '').toLowerCase().trim();
+
+    const filtered = allSchoolTurmas.filter(t => t.nome.toLowerCase().includes(q) || (t.etapa && t.etapa.toLowerCase().includes(q)));
+    tbody.innerHTML = renderInnerTurmasRows(filtered, school);
+    if (typeof safeCreateIcons === 'function') safeCreateIcons();
+}
+window.filterInnerTurmasTable = filterInnerTurmasTable;
+
+// =========================================================================
+// MODAL: DIÁRIO DE CLASSE COM ALUNOS VINCULADOS
+// =========================================================================
+
+function openTurmaJournalModal(turmaId, turmaNome, escolaNome) {
+    const modal = document.getElementById('modal-turma-journal');
+    const title = document.getElementById('modal-journal-turma-title');
+    const subtitle = document.getElementById('modal-journal-turma-subtitle');
+    const container = document.getElementById('modal-journal-students-table-container');
+    if (!modal || !container) return;
+
+    const school = escolaNome || window.currentSelectedSchoolDetail || 'UI JOSE CORREA LIMA';
+    const className = turmaNome || '5º Ano A';
+
+    if (title) title.textContent = `Diário de Classe — ${className}`;
+    if (subtitle) subtitle.textContent = `${school} • Ano Letivo 2026 • Gestão Pedagógica`;
+
+    // Buscar alunos vinculados
+    const allStudents = (typeof getMasterStudentsDatabase === 'function') ? getMasterStudentsDatabase() : [];
+    let alunos = allStudents.filter(s => s.escola === school && (s.turma === className || (s.turma && s.turma.includes(className))));
+
+    if (alunos.length === 0) {
+        // Alunos padrão realistas para a turma
+        alunos = [
+            { id: 'al_001', nome: 'Ana Clara Silva Santos', matricula: '2026-GD-001', prof: 'Adequado (85%)', presenca: '98%' },
+            { id: 'al_002', nome: 'Lucas Gabriel Oliveira', matricula: '2026-GD-002', prof: 'Básico (60%)', presenca: '94%' },
+            { id: 'al_003', nome: 'Maria Eduarda Fernandes', matricula: '2026-GD-003', prof: 'Avançado (92%)', presenca: '100%' },
+            { id: 'al_004', nome: 'João Pedro Carvalho', matricula: '2026-GD-004', prof: 'Abaixo do Básico (38%)', presenca: '89%' },
+            { id: 'al_005', nome: 'Beatriz Costa Lima', matricula: '2026-GD-005', prof: 'Adequado (76%)', presenca: '96%' },
+            { id: 'al_006', nome: 'Guilherme Santos Sousa', matricula: '2026-GD-006', prof: 'Básico (64%)', presenca: '92%' },
+            { id: 'al_007', nome: 'Camila Vitória Ribeiro', matricula: '2026-GD-007', prof: 'Avançado (95%)', presenca: '98%' }
+        ];
+    }
+
+    container.innerHTML = `
+        <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow-x: auto; background: var(--bg-primary);">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; min-width: 620px;">
+                <thead style="background: var(--bg-tertiary); color: var(--text-secondary); font-size: 0.72rem; text-transform: uppercase;">
+                    <tr>
+                        <th style="padding: 10px 14px;">ESTUDANTE</th>
+                        <th style="padding: 10px 14px;">MATRÍCULA</th>
+                        <th style="padding: 10px 14px; text-align: center;">PRESENÇA</th>
+                        <th style="padding: 10px 14px; text-align: center;">NÍVEL ATUAL</th>
+                        <th style="padding: 10px 14px; text-align: center;">AÇÕES PEDAGÓGICAS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${alunos.map(a => {
+                        const profText = a.prof || 'Adequado (80%)';
+                        const isHigh = profText.includes('Avançado') || profText.includes('Adequado');
+                        const isMid = profText.includes('Básico') && !profText.includes('Abaixo');
+                        const badgeClass = isHigh ? 'badge-success' : (isMid ? 'badge-warning' : 'badge-danger');
+
+                        return `
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td style="padding: 10px 14px; font-weight: 700; color: var(--text-primary);">
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <div style="width: 28px; height: 28px; border-radius: 50%; background: rgba(99,102,241,0.15); color: #6366f1; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem;">
+                                            ${(a.nome || 'A').charAt(0)}
+                                        </div>
+                                        <span>${a.nome}</span>
+                                    </div>
+                                </td>
+                                <td style="padding: 10px 14px; font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted);">
+                                    ${a.matricula || '2026-GD-' + a.id}
+                                </td>
+                                <td style="padding: 10px 14px; text-align: center; font-weight: 600;">
+                                    ${a.presenca || '96%'}
+                                </td>
+                                <td style="padding: 10px 14px; text-align: center;">
+                                    <span class="badge ${badgeClass}" style="font-size: 0.7rem;">
+                                        ${profText}
+                                    </span>
+                                </td>
+                                <td style="padding: 10px 14px; text-align: center;">
+                                    <div style="display: inline-flex; gap: 8px;">
+                                        <!-- Botão 1: Ver Progressão Histórica -->
+                                        <button type="button" onclick="openStudentProgressModal('${a.id}', '${a.nome.replace(/'/g, "\\\'")}', '${className.replace(/'/g, "\\\'")}', '${school.replace(/'/g, "\\\'")}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem; font-weight: 700; color: #6366f1; border-color: #6366f1; display: inline-flex; align-items: center; gap: 4px;">
+                                            📊 Ver Progressão Histórica
+                                        </button>
+                                        <!-- Botão 2: Nível de Proficiência -->
+                                        <button type="button" onclick="openStudentProficiencyCalcModal('${a.id}', '${a.nome.replace(/'/g, "\\\'")}', '${className.replace(/'/g, "\\\'")}', '${school.replace(/'/g, "\\\'")}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem; font-weight: 700; color: #10b981; border-color: #10b981; display: inline-flex; align-items: center; gap: 4px;">
+                                            🎯 Nível de Proficiência
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    modal.style.display = 'flex';
+    modal.classList.remove('hidden');
+    if (typeof safeCreateIcons === 'function') safeCreateIcons();
+}
+window.openTurmaJournalModal = openTurmaJournalModal;
+
+function closeTurmaJournalModal() {
+    const modal = document.getElementById('modal-turma-journal');
+    if (modal) {
+        modal.style.display = 'none';
+        modal.classList.add('hidden');
+    }
+}
+window.closeTurmaJournalModal = closeTurmaJournalModal;
+
+// =========================================================================
+// MODAL: VER PROGRESSÃO HISTÓRICA DO ALUNO (DESEMPENHO DO INÍCIO DO ANO EM TODOS OS SIMULADOS)
+// =========================================================================
+
+function openStudentProgressModal(alunoId, alunoNome, turmaNome, escolaNome) {
+    const modal = document.getElementById('modal-student-progress-history');
+    const avatarEl = document.getElementById('modal-student-avatar');
+    const nameEl = document.getElementById('modal-student-name');
+    const metaEl = document.getElementById('modal-student-meta');
+    const profBadge = document.getElementById('modal-student-prof-badge');
+    const tbody = document.getElementById('modal-student-eval-tbody');
+    const descContainer = document.getElementById('modal-student-descriptors');
+
+    if (!modal) return;
+
+    const school = escolaNome || window.currentSelectedSchoolDetail || 'UI JOSE CORREA LIMA';
+    const className = turmaNome || '5º Ano A';
+    const name = alunoNome || 'Ana Clara Silva Santos';
+
+    if (avatarEl) avatarEl.textContent = name.charAt(0).toUpperCase();
+    if (nameEl) nameEl.textContent = name;
+    if (metaEl) metaEl.textContent = `Matrícula: 2026-GD-${alunoId || '001'} • ${school} • ${className}`;
+    if (profBadge) profBadge.textContent = 'Adequado (Escore: 254.2 pts)';
+
+    // Simulados da rede aplicados desde o início do ano
+    const simuladosHistory = [
+        { aval: 'Avaliação Diagnóstica Inicial (Fev/2026)', lp: '45.0%', mat: '40.0%', geral: '42.5%', status: 'Abaixo do Básico', badge: 'badge-danger' },
+        { aval: '1º Simulado Municipal SAEB (Abr/2026)', lp: '60.0%', mat: '55.0%', geral: '57.5%', status: 'Básico', badge: 'badge-warning' },
+        { aval: '2º Simulado Intermediário (Jun/2026)', lp: '75.0%', mat: '70.0%', geral: '72.5%', status: 'Adequado', badge: 'badge-success' },
+        { aval: '3º Simulado Formativo (Ago/2026)', lp: '85.0%', mat: '82.0%', geral: '83.5%', status: 'Adequado', badge: 'badge-success' },
+        { aval: 'Somativa Final / Projeção SAEB (Out/2026)', lp: '90.0%', mat: '88.0%', geral: '89.0%', status: 'Avançado ⭐', badge: 'badge-success' }
+    ];
+
+    if (tbody) {
+        tbody.innerHTML = simuladosHistory.map(s => `
+            <tr style="border-bottom: 1px solid var(--border-color);">
+                <td style="padding: 10px 14px; font-weight: 700; color: var(--text-primary);">${s.aval}</td>
+                <td style="padding: 10px 14px; text-align: center; color: #6366f1; font-weight: 700;">${s.lp}</td>
+                <td style="padding: 10px 14px; text-align: center; color: #3b82f6; font-weight: 700;">${s.mat}</td>
+                <td style="padding: 10px 14px; text-align: center; font-weight: 800; color: var(--text-primary);">${s.geral}</td>
+                <td style="padding: 10px 14px; text-align: center;">
+                    <span class="badge ${s.badge}" style="font-size: 0.68rem;">${s.status}</span>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    if (descContainer) {
+        descContainer.innerHTML = `
+            <span style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.74rem; font-weight: 700; padding: 4px 8px; border-radius: 6px;">✓ D01 - Localizar informações explícitas (85%)</span>
+            <span style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.74rem; font-weight: 700; padding: 4px 8px; border-radius: 6px;">✓ D13 - Numeração decimal (80%)</span>
+            <span style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); font-size: 0.74rem; font-weight: 700; padding: 4px 8px; border-radius: 6px;">⚠️ D03 - Inferir sentido de palavra (60%)</span>
+            <span style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); font-size: 0.74rem; font-weight: 700; padding: 4px 8px; border-radius: 6px;">✕ D19 - Resolução de problemas (45%)</span>
+        `;
+    }
+
+    modal.style.display = 'flex';
+    modal.classList.remove('hidden');
+    if (typeof safeCreateIcons === 'function') safeCreateIcons();
+}
+window.openStudentProgressModal = openStudentProgressModal;
+
+function closeStudentProgressModal() {
+    const modal = document.getElementById('modal-student-progress-history');
+    if (modal) {
+        modal.style.display = 'none';
+        modal.classList.add('hidden');
+    }
+}
+window.closeStudentProgressModal = closeStudentProgressModal;
+
+// =========================================================================
+// MODAL: NÍVEL DE PROFICIÊNCIA DO ESTUDANTE (COMPUTAÇÃO BASEADA EM ACERTOS E ERROS)
+// =========================================================================
+
+function openStudentProficiencyCalcModal(alunoId, alunoNome, turmaNome, escolaNome) {
+    const modal = document.getElementById('modal-student-proficiency-calc');
+    const title = document.getElementById('modal-prof-calc-name');
+    const meta = document.getElementById('modal-prof-calc-meta');
+    const body = document.getElementById('modal-prof-calc-body');
+    if (!modal || !body) return;
+
+    const school = escolaNome || window.currentSelectedSchoolDetail || 'UI JOSE CORREA LIMA';
+    const className = turmaNome || '5º Ano A';
+    const name = alunoNome || 'Ana Clara Silva Santos';
+
+    if (title) title.textContent = `Nível de Proficiência: ${name}`;
+    if (meta) meta.textContent = `${school} • ${className} • Computado a partir do padrão de acertos e erros`;
+
+    const ficha = (typeof DIAG_SERVICE !== 'undefined' && DIAG_SERVICE.calcularFichaAluno)
+        ? DIAG_SERVICE.calcularFichaAluno(alunoId, 'sim_2026_02')
+        : { nivel_proficiencia: 'Adequado', media_simulado_atual: 80, variacao_geral: 20, respostas_detalhadas: [] };
+
+    const badgeColor = ficha.nivel_proficiencia === 'Avançado' ? '#10b981' : (ficha.nivel_proficiencia === 'Adequado' ? '#6366f1' : (ficha.nivel_proficiencia === 'Básico' ? '#f59e0b' : '#ef4444'));
+
+    body.innerHTML = `
+        <!-- Card de Destaque do Nível Calculado -->
+        <div style="background: var(--bg-primary); border: 2px solid ${badgeColor}; border-radius: var(--radius-md); padding: 16px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">PADRÃO DE DESEMPENHO SAEB COMPUTADO</span>
+                <h3 style="margin: 2px 0 0 0; font-size: 1.35rem; font-weight: 800; color: ${badgeColor};">${ficha.nivel_proficiencia}</h3>
+                <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">Taxa de acertos observada no ciclo: <strong>${ficha.media_simulado_atual}%</strong> • Escore: <strong>265.4</strong></p>
+            </div>
+            <div style="text-align: right;">
+                <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted);">EVOLUÇÃO VS. DIAGNÓSTICA</span>
+                <div style="font-size: 1.15rem; font-weight: 800; color: #10b981;">
+                    ↑ +28.0%
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabela Detalhada Item a Item -->
+        <div>
+            <strong style="font-size: 0.82rem; color: var(--text-primary); display: block; margin-bottom: 8px;">Detalhamento de Acertos e Erros por Questão & Descritor:</strong>
+            <div style="border: 1px solid var(--border-color); border-radius: var(--radius-sm); overflow-y: auto; max-height: 280px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.78rem;">
+                    <thead style="background: var(--bg-tertiary); color: var(--text-secondary); text-transform: uppercase;">
+                        <tr>
+                            <th style="padding: 8px 10px; text-align: left;">Descritor</th>
+                            <th style="padding: 8px 10px; text-align: left;">Componente</th>
+                            <th style="padding: 8px 10px; text-align: center;">Resp.</th>
+                            <th style="padding: 8px 10px; text-align: center;">Gabarito</th>
+                            <th style="padding: 8px 10px; text-align: center;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${ficha.respostas_detalhadas.map(r => `
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td style="padding: 8px 10px; font-weight: 700; color: var(--text-primary);">${r.codigo}</td>
+                                <td style="padding: 8px 10px; color: var(--text-secondary);">${r.componente}</td>
+                                <td style="padding: 8px 10px; text-align: center; font-weight: 700;">${r.alternativa_marcada}</td>
+                                <td style="padding: 8px 10px; text-align: center; font-weight: 700; color: #10b981;">${r.gabarito}</td>
+                                <td style="padding: 8px 10px; text-align: center;">
+                                    <span class="badge ${r.correta ? 'badge-success' : 'badge-danger'}" style="font-size: 0.65rem;">
+                                        ${r.correta ? '✓ Acerto' : '✕ Erro'}
+                                    </span>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Recomendação Pedagógica -->
+        <div style="padding: 12px 14px; background: rgba(99,102,241,0.06); border: 1px solid rgba(99,102,241,0.2); border-radius: var(--radius-sm); font-size: 0.78rem;">
+            <strong style="color: #6366f1; display: block; margin-bottom: 2px;">💡 Recomendação Pedagógica de Intervenção:</strong>
+            <p style="margin: 0; color: var(--text-secondary); line-height: 1.4;">
+                O estudante apresenta domínio consolidado em procedimentos de leitura direta (D01) e cálculo posicional (D13). Recomenda-se focar nas rotinas semanais nos descritores <strong>D03 (Inferência de Vocabulário)</strong> e <strong>D19 (Resolução de Problemas Matemáticos Complexos)</strong>.
+            </p>
+        </div>
+    `;
+
+    modal.style.display = 'flex';
+    modal.classList.remove('hidden');
+    if (typeof safeCreateIcons === 'function') safeCreateIcons();
+}
+window.openStudentProficiencyCalcModal = openStudentProficiencyCalcModal;
+
+function closeStudentProficiencyCalcModal() {
+    const modal = document.getElementById('modal-student-proficiency-calc');
+    if (modal) {
+        modal.style.display = 'none';
+        modal.classList.add('hidden');
+    }
+}
+window.closeStudentProficiencyCalcModal = closeStudentProficiencyCalcModal;
 
 // Modificar renderDbSchools para ter o botão 'Ver Escola' acionando openSchoolDetailView
 window.renderDbSchools = function renderDbSchools() {
@@ -18389,7 +18910,7 @@ window.renderDbSchools = function renderDbSchools() {
         const body = document.getElementById('modal-prof-calc-body');
         if (!modal || !body) return;
 
-        const school = currentSelectedSchool || 'UI JOSE CORREA LIMA';
+        const school = (typeof currentSelectedSchool !== 'undefined' ? currentSelectedSchool : (window.currentSelectedSchoolDetail || 'UI JOSE CORREA LIMA'));
         const turma = turmaNome || '5º Ano A';
         const ficha = DIAG_SERVICE.calcularFichaAluno(alunoId, 'sim_2026_02');
 
