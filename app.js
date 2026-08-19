@@ -9841,6 +9841,21 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
     // CINEMATIC MOTION CANVAS ENGINE (Clean White/Blue & Meta Pactuada 2025)
     // ==========================================
     function initLoginMotionCanvas() {
+        // 1. Suporte e reprodução fluida do vídeo de login
+        const loginVideo = document.getElementById('login-video-player');
+        if (loginVideo) {
+            try {
+                loginVideo.muted = true;
+                const playPromise = loginVideo.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(() => {
+                        // Autoplay prevenido pelo navegador - silenciar e tentar no primeiro clique
+                        document.addEventListener('click', () => { loginVideo.play().catch(() => {}); }, { once: true });
+                    });
+                }
+            } catch(e) {}
+        }
+
         const canvas = document.getElementById('login-motion-canvas');
         if (!canvas || !canvas.getContext) return;
         const ctx = canvas.getContext('2d');
