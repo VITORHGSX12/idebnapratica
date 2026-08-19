@@ -6,8 +6,14 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>IDEB na Prática - Plataforma de Gestão e Avaliação Educacional</title>
-    <link rel="stylesheet" href="styles.css?v=msze05ro">
+    <title>IDEB na Prática | SEMED Gonçalves Dias</title>
+    <!-- Favicon Oficial IDEB na Prática -->
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="stylesheet" href="styles.css?v=mszeyj14">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -185,7 +191,7 @@
                         </div>
                         <div class="login-logo-text">
                             <h2>IDEB na Prática</h2>
-                            <span>Gestão & Avaliação SaaS</span>
+                            <span>GESTÃO & AVALIAÇÃO PEDAGÓGICA</span>
                         </div>
                     </div>
                     
@@ -230,13 +236,13 @@
                         <!-- Input Email -->
                         <div class="login-input-group">
                             <i data-lucide="mail" class="login-input-icon"></i>
-                            <input type="email" id="login-email" class="login-input-field" placeholder="E-mail corporativo" required autocomplete="email" value="semed@goncalvesdias.ma.gov.br">
+                            <input type="email" id="login-email" class="login-input-field" placeholder="E-mail institucional" required autocomplete="email" value="">
                         </div>
 
                         <!-- Input Senha -->
                         <div class="login-input-group">
                             <i data-lucide="lock" class="login-input-icon"></i>
-                            <input type="password" id="login-password" class="login-input-field" placeholder="Sua senha" required autocomplete="current-password" value="admin">
+                            <input type="password" id="login-password" class="login-input-field" placeholder="Sua senha" required autocomplete="current-password" value="">
                             <button type="button" id="btn-toggle-login-password" class="login-password-toggle" title="Mostrar/ocultar senha">
                                 <i data-lucide="eye" style="width: 18px; height: 18px;"></i>
                             </button>
@@ -258,34 +264,35 @@
                         </button>
                     </form>
 
-                    <!-- Divider: Ambiente de Testes -->
-                    <div class="login-divider">
-                        <span>AMBIENTE DE TESTES</span>
-                    </div>
-
-                    <!-- Quick Role Selection Grid (2x2) -->
-                    <div class="test-accounts-grid">
-                        <div class="test-account-card" data-email="professor@goncalvesdias.ma.gov.br" data-pass="123" data-role="Professor">
-                            <span class="test-role-title">PROFESSOR</span>
-                            <span class="test-role-email">professor@goncalvesdias.ma.gov.br</span>
+                    <!-- Container de Credenciais de Teste (Controlado por SHOW_TEST_CREDENTIALS - Oculto em Produção) -->
+                    <div id="login-test-credentials-container" style="display: none;">
+                        <div class="login-divider">
+                            <span>AMBIENTE DE TESTES</span>
                         </div>
-                        <div class="test-account-card" data-email="diretor@goncalvesdias.ma.gov.br" data-pass="123" data-role="Diretor Escola">
-                            <span class="test-role-title">DIRETOR</span>
-                            <span class="test-role-email">diretor@goncalvesdias.ma.gov.br</span>
-                        </div>
-                        <div class="test-account-card" data-email="admin@goncalvesdias.ma.gov.br" data-pass="admin" data-role="Master Admin">
-                            <span class="test-role-title">ADMIN</span>
-                            <span class="test-role-email">admin@goncalvesdias.ma.gov.br</span>
-                        </div>
-                        <div class="test-account-card active" data-email="semed@goncalvesdias.ma.gov.br" data-pass="admin" data-role="Gestor da Rede">
-                            <span class="test-role-title">SEMED</span>
-                            <span class="test-role-email">semed@goncalvesdias.ma.gov.br</span>
+                        <div class="test-accounts-grid">
+                            <div class="test-account-card" data-email="professor@goncalvesdias.ma.gov.br" data-pass="123" data-role="Professor">
+                                <span class="test-role-title">PROFESSOR</span>
+                                <span class="test-role-email">professor@goncalvesdias.ma.gov.br</span>
+                            </div>
+                            <div class="test-account-card" data-email="diretor@goncalvesdias.ma.gov.br" data-pass="123" data-role="Diretor Escola">
+                                <span class="test-role-title">DIRETOR</span>
+                                <span class="test-role-email">diretor@goncalvesdias.ma.gov.br</span>
+                            </div>
+                            <div class="test-account-card" data-email="admin@goncalvesdias.ma.gov.br" data-pass="admin" data-role="Master Admin">
+                                <span class="test-role-title">ADMIN</span>
+                                <span class="test-role-email">admin@goncalvesdias.ma.gov.br</span>
+                            </div>
+                            <div class="test-account-card" data-email="semed@goncalvesdias.ma.gov.br" data-pass="admin" data-role="Gestor da Rede">
+                                <span class="test-role-title">SEMED</span>
+                                <span class="test-role-email">semed@goncalvesdias.ma.gov.br</span>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="login-footer">
-                    <span>© 2026 IDEB na Prática. Sistema de Gestão & Avaliação SaaS.</span>
+                <div class="login-footer" style="text-align: center; margin-top: 24px; font-size: 0.75rem; color: var(--text-muted); line-height: 1.5;">
+                    <span style="font-weight: 600; color: var(--text-secondary); display: block;">© 2026 IDEB na Prática · Desenvolvido por I6 Sistems</span>
+                    <span style="font-size: 0.72rem; color: var(--text-muted); display: block;">Secretaria Municipal de Educação de Gonçalves Dias - MA</span>
                 </div>
             </div>
         </div>
@@ -3006,7 +3013,7 @@
                             <div class="card card-full">
                                 <div class="card-header">
                                     <h3>Documentação de Endpoints da API RESTful</h3>
-                                    <p class="card-subtitle">Lista de recursos expostos pelo ecossistema SaaS.</p>
+                                    <p class="card-subtitle">Lista de recursos expostos pela plataforma pedagógica.</p>
                                 </div>
                                 <div class="card-body no-padding">
                                     <div class="api-explorer">
@@ -5392,11 +5399,11 @@
     <!-- Scripts da Aplicação -->
     <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="alunos_db.js"></script>
-    <script src="ideb_publico_db.js"></script>
-    <script src="ideb_maranhao_oficial_2015_2025.js"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js"></script>
-    <script src="app.js?v=fa535716"></script>
+    <script src="alunos_db.js?v=mszeyj14"></script>
+    <script src="ideb_publico_db.js?v=mszeyj14"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=mszeyj14"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=mszeyj14"></script>
+    <script src="app.js?v=mszeyj14"></script>
 
     <!-- Modal Completo de Novo Aluno (Prevenções e Campos Obrigatórios) -->
     <div id="modal-create-student-complete" class="modal-overlay hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 999; display: none; align-items: center; justify-content: center; padding: 16px;">
@@ -6032,13 +6039,13 @@
     </script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=msze05ro"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=msze05ro"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=msze05ro"></script>
-    <script src="ideb_publico_db.js?v=msze05ro"></script>
-    <script src="alunos_db.js?v=msze05ro"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=mszeyj14"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=mszeyj14"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=mszeyj14"></script>
+    <script src="ideb_publico_db.js?v=mszeyj14"></script>
+    <script src="alunos_db.js?v=mszeyj14"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=msze05ro"></script>
+    <script src="app.js?v=mszeyj14"></script>
 </body>
 </html>

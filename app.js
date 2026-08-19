@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * IDEB NA PRÁTICA - SAAS DE GESTÃO EDUCACIONAL
+ * IDEB NA PRÁTICA - PLATAFORMA DE GESTÃO & AVALIAÇÃO PEDAGÓGICA
  * HEADER GLOBAL DE ESTADOS, CONSTANTES E HELPERS (Sem TDZ / Escopo Seguro)
  * ============================================================================
  */
@@ -1735,7 +1735,7 @@ DIRETRIZES DO DIAGNÓSTICO:
                             <span class="badge badge-warning" style="font-size:0.68rem;">Avaliação Formativa</span>
                         </div>
                         <p style="font-size:0.78rem; color:var(--text-secondary); margin:0 0 4px 0;">
-                            <strong>Ação Docente:</strong> Aplicação do mini-simulado de 10 itens calibrados nos descritores trabalhados. Tabulação instantânea no SaaS.
+                            <strong>Ação Docente:</strong> Aplicação do mini-simulado de 10 itens calibrados nos descritores trabalhados. Tabulação instantânea na plataforma.
                         </p>
                         <span style="font-size:0.72rem; color:var(--text-muted);">Meta: Redução de pelo menos 50% no contingente de alunos no nível crítico.</span>
                     </div>
@@ -9303,11 +9303,18 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
+        // Configuração de exibição das credenciais de teste (false = Produção)
+        const SHOW_TEST_CREDENTIALS = false;
+        const testCredsContainer = document.getElementById('login-test-credentials-container');
+        if (testCredsContainer) {
+            testCredsContainer.style.display = SHOW_TEST_CREDENTIALS ? 'block' : 'none';
+        }
+
         // Synchronize DOM elements with unified config
         const targetBadgeEl = document.getElementById('login-card-target-badge');
         const captionEl = document.getElementById('login-card-caption-text');
-        if (targetBadgeEl) targetBadgeEl.textContent = NETWORK_IDEB_PERFORMANCE_CONFIG.targetBadge;
-        if (captionEl) captionEl.textContent = NETWORK_IDEB_PERFORMANCE_CONFIG.caption;
+        if (targetBadgeEl && typeof NETWORK_IDEB_PERFORMANCE_CONFIG !== 'undefined') targetBadgeEl.textContent = NETWORK_IDEB_PERFORMANCE_CONFIG.targetBadge;
+        if (captionEl && typeof NETWORK_IDEB_PERFORMANCE_CONFIG !== 'undefined') captionEl.textContent = NETWORK_IDEB_PERFORMANCE_CONFIG.caption;
 
         let width = canvas.clientWidth || 480;
         let height = canvas.clientHeight || 195;
@@ -9320,91 +9327,22 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         let startTime = null;
 
         // Ambient floating particles (clean blue/sky tones)
-        const particles = Array.from({ length: 22 }, () => ({
+        const particles = Array.from({ length: 18 }, () => ({
             x: Math.random() * width,
             y: Math.random() * height,
-            radius: Math.random() * 1.6 + 0.8,
-            vx: (Math.random() - 0.5) * 0.25,
-            vy: (Math.random() - 0.5) * 0.25,
-            alpha: Math.random() * 0.4 + 0.15
+            radius: Math.random() * 1.5 + 0.8,
+            vx: (Math.random() - 0.5) * 0.2,
+            vy: (Math.random() - 0.5) * 0.2,
+            alpha: Math.random() * 0.35 + 0.1
         }));
 
-        // 7 Educational Nodes with minimal icons & positions
-        const eduNodes = [
-            { label: "Escola", icon: "school", x: 55, y: 40, color: "#2563eb" },
-            { label: "Alunos", icon: "users", x: 155, y: 32, color: "#7c3aed" },
-            { label: "Professor", icon: "user-check", x: 425, y: 55, color: "#059669" },
-            { label: "Livro", icon: "book", x: 75, y: 160, color: "#d97706" },
-            { label: "Gráfico", icon: "bar-chart", x: 195, y: 160, color: "#0284c7" },
-            { label: "Meta", icon: "target", x: 310, y: 160, color: "#e11d48" },
-            { label: "Avaliação", icon: "check-circle", x: 425, y: 140, color: "#4f46e5" }
-        ];
-
         // Chart Points from Single Source of Truth
-        const chartPoints = NETWORK_IDEB_PERFORMANCE_CONFIG.chartPoints;
-
-        function drawIcon(type, x, y, size, color) {
-            ctx.save();
-            ctx.strokeStyle = color;
-            ctx.fillStyle = color;
-            ctx.lineWidth = 1.6;
-            ctx.lineCap = "round";
-            ctx.lineJoin = "round";
-
-            if (type === "school") {
-                // School roof + building
-                ctx.beginPath();
-                ctx.moveTo(x - size, y);
-                ctx.lineTo(x, y - size);
-                ctx.lineTo(x + size, y);
-                ctx.closePath();
-                ctx.stroke();
-                ctx.strokeRect(x - size * 0.7, y, size * 1.4, size * 1.1);
-            } else if (type === "users" || type === "user-check") {
-                // User / Student avatar
-                ctx.beginPath();
-                ctx.arc(x, y - size * 0.4, size * 0.45, 0, Math.PI * 2);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.arc(x, y + size * 0.8, size * 0.7, Math.PI * 1.2, Math.PI * 1.8, false);
-                ctx.stroke();
-            } else if (type === "book") {
-                // Open book
-                ctx.beginPath();
-                ctx.moveTo(x, y - size * 0.5);
-                ctx.lineTo(x, y + size * 0.6);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.moveTo(x - size * 0.8, y - size * 0.3);
-                ctx.quadraticCurveTo(x - size * 0.4, y - size * 0.6, x, y - size * 0.5);
-                ctx.quadraticCurveTo(x + size * 0.4, y - size * 0.6, x + size * 0.8, y - size * 0.3);
-                ctx.stroke();
-            } else if (type === "bar-chart") {
-                // Mini bar chart
-                ctx.strokeRect(x - size * 0.7, y + size * 0.1, size * 0.35, size * 0.6);
-                ctx.strokeRect(x - size * 0.15, y - size * 0.4, size * 0.35, size * 1.1);
-                ctx.strokeRect(x + size * 0.4, y - size * 0.7, size * 0.35, size * 1.4);
-            } else if (type === "target") {
-                // Bullseye target
-                ctx.beginPath();
-                ctx.arc(x, y, size * 0.8, 0, Math.PI * 2);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.arc(x, y, size * 0.3, 0, Math.PI * 2);
-                ctx.fill();
-            } else {
-                // Checkmark / assessment
-                ctx.beginPath();
-                ctx.arc(x, y, size * 0.75, 0, Math.PI * 2);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.moveTo(x - size * 0.35, y);
-                ctx.lineTo(x - size * 0.1, y + size * 0.3);
-                ctx.lineTo(x + size * 0.4, y - size * 0.3);
-                ctx.stroke();
-            }
-            ctx.restore();
-        }
+        const chartPoints = (typeof NETWORK_IDEB_PERFORMANCE_CONFIG !== 'undefined' && NETWORK_IDEB_PERFORMANCE_CONFIG.chartPoints) ? NETWORK_IDEB_PERFORMANCE_CONFIG.chartPoints : [
+            { year: "2019", val: "4.8", x: 45, y: 125, isTarget: false },
+            { year: "2021", val: "5.1", x: 155, y: 105, isTarget: false },
+            { year: "2023", val: "5.4", x: 275, y: 85, isTarget: false },
+            { year: "Meta 2025", val: "6.5", x: 415, y: 45, isTarget: true }
+        ];
 
         function render(timestamp) {
             if (!startTime) startTime = timestamp;
@@ -9414,7 +9352,7 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
             ctx.clearRect(0, 0, width, height);
 
             // 1. Subtle Clean Light Blue Grid Lines
-            ctx.strokeStyle = "rgba(37, 99, 235, 0.06)";
+            ctx.strokeStyle = "rgba(37, 99, 235, 0.07)";
             ctx.lineWidth = 1;
             for (let y = 25; y < height; y += 32) {
                 ctx.beginPath();
@@ -9434,32 +9372,31 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
 
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(37, 99, 235, ${p.alpha})`;
+                ctx.fillStyle = "rgba(37, 99, 235, " + p.alpha + ")";
                 ctx.fill();
             });
 
             // 3. Projected Target Dashed Line (Meta Local Pactuada: 6.5)
-            const metaLineAlpha = Math.min(1, Math.max(0, (elapsed - 1200) / 1000));
+            const metaLineAlpha = Math.min(1, Math.max(0, (elapsed - 1000) / 1000));
             if (metaLineAlpha > 0) {
                 ctx.save();
-                ctx.setLineDash([4, 4]);
-                ctx.strokeStyle = `rgba(37, 99, 235, ${metaLineAlpha * 0.5})`;
+                ctx.setLineDash([5, 4]);
+                ctx.strokeStyle = "rgba(37, 99, 235, " + (metaLineAlpha * 0.45) + ")";
                 ctx.lineWidth = 1.5;
                 ctx.beginPath();
-                ctx.moveTo(40, 75);
-                ctx.lineTo(150, 65);
-                ctx.lineTo(260, 56);
-                ctx.lineTo(405, 48);
+                ctx.moveTo(chartPoints[0].x, chartPoints[chartPoints.length - 1].y + 25);
+                ctx.lineTo(chartPoints[chartPoints.length - 1].x, chartPoints[chartPoints.length - 1].y);
                 ctx.stroke();
 
-                ctx.fillStyle = `rgba(37, 99, 235, ${metaLineAlpha * 0.95})`;
+                ctx.fillStyle = "rgba(37, 99, 235, " + (metaLineAlpha * 0.95) + ")";
                 ctx.font = "bold 9px 'Plus Jakarta Sans', sans-serif";
-                ctx.fillText(NETWORK_IDEB_PERFORMANCE_CONFIG.targetLineAnnotation, 390, 32);
+                ctx.textAlign = "right";
+                ctx.fillText("Meta Pactuada 2025 · 6.5", chartPoints[chartPoints.length - 1].x + 10, chartPoints[chartPoints.length - 1].y - 18);
                 ctx.restore();
             }
 
             // 4. Progressive Line Graph Evolution (2019 -> 2021 -> 2023 -> 2025 Meta)
-            const graphProgress = Math.min(1, Math.max(0, (elapsed - 1600) / 3800));
+            const graphProgress = Math.min(1, Math.max(0, (elapsed - 1400) / 3800));
             const totalPoints = chartPoints.length;
             const currentPointIndex = graphProgress * (totalPoints - 1);
             const baseIndex = Math.floor(currentPointIndex);
@@ -9469,7 +9406,7 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
                 // Gradient Fill Under Curve
                 ctx.save();
                 const grad = ctx.createLinearGradient(0, 0, 0, height);
-                grad.addColorStop(0, "rgba(37, 99, 235, 0.18)");
+                grad.addColorStop(0, "rgba(37, 99, 235, 0.20)");
                 grad.addColorStop(1, "rgba(37, 99, 235, 0.00)");
 
                 ctx.beginPath();
@@ -9498,7 +9435,7 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
                 ctx.lineWidth = 3.2;
                 ctx.lineCap = "round";
                 ctx.lineJoin = "round";
-                ctx.shadowColor = "rgba(37, 99, 235, 0.4)";
+                ctx.shadowColor = "rgba(37, 99, 235, 0.45)";
                 ctx.shadowBlur = 10;
 
                 ctx.beginPath();
@@ -9540,113 +9477,24 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
                             const pulseOp = 1 - (elapsed % 1400) / 1400;
                             ctx.beginPath();
                             ctx.arc(pt.x, pt.y, pulseR, 0, Math.PI * 2);
-                            ctx.strokeStyle = `rgba(5, 150, 105, ${pulseOp})`;
+                            ctx.strokeStyle = "rgba(5, 150, 105, " + pulseOp + ")";
                             ctx.lineWidth = 1.5;
                             ctx.stroke();
                         }
 
                         // Year Label
                         ctx.fillStyle = "#64748b";
-                        ctx.font = `600 ${isTarget ? '8.5px' : '8px'} 'Plus Jakarta Sans', sans-serif`;
+                        ctx.font = "600 " + (isTarget ? "8.5px" : "8px") + " 'Plus Jakarta Sans', sans-serif";
                         ctx.textAlign = "center";
                         ctx.fillText(pt.year, pt.x, height - 4);
 
                         // Value Pill / Tag
                         ctx.fillStyle = isTarget ? "#059669" : "#1e293b";
-                        ctx.font = `bold ${isTarget ? '11px' : '9.5px'} 'Plus Jakarta Sans', sans-serif`;
+                        ctx.font = "bold " + (isTarget ? "11px" : "9.5px") + " 'Plus Jakarta Sans', sans-serif";
                         ctx.fillText(pt.val, pt.x, pt.y - 8);
                         ctx.restore();
                     }
                 }
-            }
-
-            // 5. Connecting Mesh Beams (CENA 3: 5.6s -> 8.2s)
-            const meshProgress = Math.min(1, Math.max(0, (elapsed - 5600) / 2400));
-            if (meshProgress > 0) {
-                ctx.save();
-                ctx.lineWidth = 1.2;
-
-                eduNodes.forEach((node, idx) => {
-                    const originPt = chartPoints[idx % chartPoints.length];
-                    const laserProgress = Math.min(1, meshProgress * 1.3);
-
-                    const targetX = originPt.x + (node.x - originPt.x) * laserProgress;
-                    const targetY = originPt.y + (node.y - originPt.y) * laserProgress;
-
-                    // Beam line
-                    const beamGrad = ctx.createLinearGradient(originPt.x, originPt.y, node.x, node.y);
-                    beamGrad.addColorStop(0, "rgba(37, 99, 235, 0.45)");
-                    beamGrad.addColorStop(1, "rgba(59, 130, 246, 0.15)");
-
-                    ctx.strokeStyle = beamGrad;
-                    ctx.beginPath();
-                    ctx.moveTo(originPt.x, originPt.y);
-                    ctx.lineTo(targetX, targetY);
-                    ctx.stroke();
-
-                    // Energy spark traveling
-                    const sparkT = (elapsed * 0.002 + idx * 0.2) % 1;
-                    const sparkX = originPt.x + (node.x - originPt.x) * sparkT;
-                    const sparkY = originPt.y + (node.y - originPt.y) * sparkT;
-
-                    ctx.beginPath();
-                    ctx.arc(sparkX, sparkY, 2.2, 0, Math.PI * 2);
-                    ctx.fillStyle = "#2563eb";
-                    ctx.shadowColor = "#3b82f6";
-                    ctx.shadowBlur = 6;
-                    ctx.fill();
-                });
-                ctx.restore();
-            }
-
-            // 6. Educational Minimalist Nodes (Clean White Cards Floating)
-            const nodeAlpha = Math.min(1, Math.max(0, (elapsed - 400) / 1400));
-            if (nodeAlpha > 0) {
-                eduNodes.forEach((node, idx) => {
-                    const floatOffset = Math.sin((elapsed * 0.002) + idx) * 3;
-                    const curY = node.y + floatOffset;
-
-                    ctx.save();
-                    ctx.globalAlpha = nodeAlpha * (progress > 0.92 ? (1 - (progress - 0.92) / 0.08) : 1);
-
-                    // Node Card Circle
-                    ctx.fillStyle = "#ffffff";
-                    ctx.strokeStyle = "rgba(226, 232, 240, 0.9)";
-                    ctx.lineWidth = 1.5;
-                    ctx.shadowColor = "rgba(37, 99, 235, 0.08)";
-                    ctx.shadowBlur = 8;
-                    ctx.beginPath();
-                    ctx.arc(node.x, curY, 12, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.stroke();
-
-                    // Icon
-                    drawIcon(node.icon, node.x, curY, 5.5, node.color);
-
-                    // Label
-                    ctx.fillStyle = "#1e293b";
-                    ctx.font = "700 7.5px 'Plus Jakarta Sans', sans-serif";
-                    ctx.textAlign = "center";
-                    ctx.fillText(node.label, node.x, curY + 17);
-
-                    ctx.restore();
-                });
-            }
-
-            // 7. Luminous Blue Brand Sweep Transition (Seamless Loop)
-            if (elapsed > 8200) {
-                const sweepProgress = (elapsed - 8200) / 1300;
-                const sweepX = width * sweepProgress;
-
-                ctx.save();
-                const sweepGrad = ctx.createLinearGradient(sweepX - 70, 0, sweepX + 70, 0);
-                sweepGrad.addColorStop(0, "rgba(255, 255, 255, 0)");
-                sweepGrad.addColorStop(0.5, "rgba(37, 99, 235, 0.12)");
-                sweepGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
-
-                ctx.fillStyle = sweepGrad;
-                ctx.fillRect(0, 0, width, height);
-                ctx.restore();
             }
 
             requestAnimationFrame(render);
