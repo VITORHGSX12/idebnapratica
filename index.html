@@ -696,41 +696,15 @@
 
                             <!-- HABILIDADES CRÍTICAS / DESCRITORES SAEB -->
                             <div class="card card-full" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
-                                <div class="card-header" style="margin-bottom: 16px;">
-                                    <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">Descritores e Habilidades Prioritárias</h3>
-                                    <p class="card-subtitle" style="font-size: 0.8rem; color: var(--text-secondary);">Taxa de acertos diagnosticada na rede municipal de Gonçalves Dias.</p>
-                                </div>
-                                <div class="card-body" style="padding: 0;">
-                                    <div style="display: flex; flex-direction: column; gap: 10px;">
-                                        <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;">
-                                            <div>
-                                                <strong style="font-size: 0.84rem; color: var(--text-primary); display: block;">D1 - Localizar informações explícitas</strong>
-                                                <span style="font-size: 0.72rem; color: var(--text-muted);">Língua Portuguesa • 5º e 9º Ano</span>
-                                            </div>
-                                            <span class="badge badge-danger" style="font-weight: 800;">44% Acertos</span>
-                                        </div>
-                                        <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;">
-                                            <div>
-                                                <strong style="font-size: 0.84rem; color: var(--text-primary); display: block;">D13 - Resolver problemas com números naturais</strong>
-                                                <span style="font-size: 0.72rem; color: var(--text-muted);">Matemática • 5º Ano</span>
-                                            </div>
-                                            <span class="badge badge-danger" style="font-weight: 800;">41% Acertos</span>
-                                        </div>
-                                        <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;">
-                                            <div>
-                                                <strong style="font-size: 0.84rem; color: var(--text-primary); display: block;">D4 - Inferir o sentido de uma palavra ou expressão</strong>
-                                                <span style="font-size: 0.72rem; color: var(--text-muted);">Língua Portuguesa • 5º Ano</span>
-                                            </div>
-                                            <span class="badge badge-warning" style="font-weight: 800;">58% Acertos</span>
-                                        </div>
-                                        <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;">
-                                            <div>
-                                                <strong style="font-size: 0.84rem; color: var(--text-primary); display: block;">D15 - Reconhecer diferentes formas de gráficos/tabelas</strong>
-                                                <span style="font-size: 0.72rem; color: var(--text-muted);">Matemática • 5º e 9º Ano</span>
-                                            </div>
-                                            <span class="badge badge-success" style="font-weight: 800;">85% Acertos</span>
-                                        </div>
+                                <div class="card-header" style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+                                    <div>
+                                        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0;">Descritores e Habilidades Prioritárias</h3>
+                                        <p class="card-subtitle" style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">Taxa de acertos computada a partir das avaliações e simulados da rede municipal de Gonçalves Dias.</p>
                                     </div>
+                                    <span class="badge badge-purple" style="font-size: 0.7rem; font-weight: 700;">SAEB & SEAMA</span>
+                                </div>
+                                <div class="card-body" id="dashboard-priority-descriptors-container" style="padding: 0;">
+                                    <!-- Injetado dinamicamente via renderDashboardPriorityDescriptors() -->
                                 </div>
                             </div>
                         </div>
@@ -878,8 +852,8 @@
                                 </div>
                                 <div>
                                     <div class="school-kpi-label">IDEB MÉDIO DA REDE</div>
-                                    <div class="school-kpi-value">5.2 ★</div>
-                                    <div class="school-kpi-sub">Meta Superada</div>
+                                    <div class="school-kpi-value" style="color: #10b981;">5.2</div>
+                                    <div class="school-kpi-sub" style="color: #10b981; font-weight: 600;">Meta: 5.0 · +0.2 acima da meta</div>
                                 </div>
                             </div>
                         </div>
@@ -887,7 +861,7 @@
                         <!-- Search Bar -->
                         <div class="schools-search-bar" style="margin-bottom: 20px;">
                             <i data-lucide="search" style="width:18px; height:18px; color:var(--text-muted);"></i>
-                            <input type="text" id="db-school-search" class="schools-search-input" placeholder="Buscar escola por nome, INEP ou diretor...">
+                            <input type="text" id="db-school-search" class="schools-search-input" placeholder="Buscar escola por nome ou código INEP...">
                         </div>
 
                         <!-- Tabela de Escolas -->
@@ -896,12 +870,11 @@
                                 <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
                                     <thead style="background: var(--bg-tertiary); color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">
                                         <tr>
-                                            <th style="padding: 14px 20px;">ESCOLA</th>
-                                            <th style="padding: 14px 16px;">CÓDIGO INEP</th>
-                                            <th style="padding: 14px 16px;">LOCALIZAÇÃO</th>
-                                            <th style="padding: 14px 16px;">DIREÇÃO / GESTOR</th>
-                                            <th style="padding: 14px 16px;">CONTATO</th>
-                                            <th style="padding: 14px 20px; text-align: center;">AÇÕES</th>
+                                            <th style="padding: 14px 20px; width: 34%;">ESCOLA</th>
+                                            <th style="padding: 14px 16px; width: 16%;">CÓDIGO INEP</th>
+                                            <th style="padding: 14px 16px; width: 18%;">LOCALIZAÇÃO</th>
+                                            <th style="padding: 14px 16px; width: 14%; text-align: center;">STATUS</th>
+                                            <th style="padding: 14px 20px; width: 18%; text-align: center;">AÇÕES</th>
                                         </tr>
                                     </thead>
                                     <tbody id="db-schools-table-body">
