@@ -10085,14 +10085,14 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
                 testCards.forEach(c => c.classList.remove('active'));
                 card.classList.add('active');
 
-                const email = card.getAttribute('data-email');
+                const email = card.getAttribute('data-email') || '';
                 const pass = card.getAttribute('data-pass') || '123';
                 const role = card.getAttribute('data-role') || 'Gestor da Rede';
 
                 loginEmailInput.value = email;
                 if (loginPassword) loginPassword.value = pass;
 
-                showToast(`Perfil ${card.querySelector('.test-role-title')?.textContent} selecionado (${email})`, 'check');
+                showToast(`Perfil ${card.querySelector('.test-role-title')?.textContent || role} preenchido. Clique em "Entrar no Sistema".`, 'check');
             });
         });
     }
@@ -10106,151 +10106,152 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         });
     }
 
-    // Login Form Submit Handlers & Role-Based Dashboard Routing
-    const loginForm = document.getElementById('login-form');
-    const loginScreen = document.getElementById('login-screen');
-    const btnLoginSubmit = document.getElementById('btn-login-submit');
+    // Função Central e Unificada de Autenticação do Sistema
+    async function executeSystemLogin(explicitEmail, explicitPass) {
+        const emailEl = document.getElementById('login-email');
+        const passEl = document.getElementById('login-password');
+        const btnSubmit = document.getElementById('btn-login-submit');
+        const loginScreen = document.getElementById('login-screen');
 
-        if (loginForm && loginScreen && btnLoginSubmit) {
-        btnLoginSubmit.addEventListener('click', () => {
-            if (loginForm.requestSubmit) {
-                loginForm.requestSubmit();
-            } else {
-                loginForm.dispatchEvent(new Event('submit', { cancelable: true }));
-            }
-        });
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const emailInput = document.getElementById('login-email').value.trim().toLowerCase();
-            const passInput = document.getElementById('login-password')?.value || '123';
+        const emailInput = (explicitEmail || emailEl?.value || 'semed@goncalvesdias.ma.gov.br').trim().toLowerCase();
+        const passInput = explicitPass || passEl?.value || '123';
 
-            let detectedRole = 'Gestor da Rede';
-            let targetTab = 'dashboard';
-            let assignedSchool = 'Rede Municipal Oficial';
-            let assignedTurma = 'Todas as Turmas';
-            let profileName = 'Secretaria de Educação';
-            let profileRole = 'Gestor(a) da Rede SEMED';
-            let profileAvatar = '🧑‍💼';
+        let detectedRole = 'Gestor da Rede';
+        let targetTab = 'dashboard';
+        let assignedSchool = 'Rede Municipal Oficial';
+        let assignedTurma = 'Todas as Turmas';
+        let profileName = 'Secretaria de Educação';
+        let profileRole = 'Gestão Executiva SEMED';
+        let profileAvatar = '🧑‍💼';
 
-            if (emailInput.startsWith('prof') || emailInput.includes('professor')) {
-                detectedRole = 'Professor';
-                targetTab = 'alunos-panel';
-                assignedSchool = 'UI JOSE CORREA LIMA';
-                assignedTurma = '5º Ano A';
-                profileName = 'Prof. Carlos Eduardo';
-                profileRole = 'Professor(a) • UI JOSE CORREA LIMA';
-                profileAvatar = '👨‍🏫';
-            } else if (emailInput.startsWith('diret') || emailInput.includes('diretor') || emailInput.includes('escola') || emailInput.includes('cora')) {
-                detectedRole = 'Diretor Escola';
-                targetTab = 'escolas-panel';
-                assignedSchool = 'UI JOSE CORREA LIMA';
-                assignedTurma = 'Todas as Turmas';
-                profileName = 'Profa. Antonia Silva';
-                profileRole = 'Diretora Escolar • UI JOSE CORREA LIMA';
-                profileAvatar = '👩‍💼';
-            } else if (emailInput.startsWith('admin') || emailInput.startsWith('dpo')) {
-                detectedRole = 'Master Admin';
-                targetTab = 'dashboard';
-                assignedSchool = 'Administração TI / DPO';
-                assignedTurma = 'Todas as Redes';
-                profileName = 'Administrador TI';
-                profileRole = 'Administrador(a) do Sistema & TI';
-                profileAvatar = '👨‍💻';
-            } else if (emailInput.startsWith('semed') || emailInput.startsWith('gestor') || emailInput.includes('semed')) {
-                detectedRole = 'Gestor da Rede';
-                targetTab = 'dashboard';
-                assignedSchool = 'Rede Municipal Oficial';
-                assignedTurma = 'Todas as Turmas';
-                profileName = 'Secretaria de Educação';
-                profileRole = 'Gestão Executiva SEMED';
-                profileAvatar = '🧑‍💼';
-            }
+        if (emailInput.startsWith('prof') || emailInput.includes('professor')) {
+            detectedRole = 'Professor';
+            targetTab = 'alunos-panel';
+            assignedSchool = 'UI JOSE CORREA LIMA';
+            assignedTurma = '5º Ano A';
+            profileName = 'Prof. Carlos Eduardo';
+            profileRole = 'Professor(a) • UI JOSE CORREA LIMA';
+            profileAvatar = '👨‍🏫';
+        } else if (emailInput.startsWith('diret') || emailInput.includes('diretor') || emailInput.includes('escola') || emailInput.includes('cora')) {
+            detectedRole = 'Diretor Escola';
+            targetTab = 'escolas-panel';
+            assignedSchool = 'UI JOSE CORREA LIMA';
+            assignedTurma = 'Todas as Turmas';
+            profileName = 'Profa. Antonia Silva';
+            profileRole = 'Diretora Escolar • UI JOSE CORREA LIMA';
+            profileAvatar = '👩‍💼';
+        } else if (emailInput.startsWith('admin') || emailInput.startsWith('dpo')) {
+            detectedRole = 'Master Admin';
+            targetTab = 'dashboard';
+            assignedSchool = 'Administração TI / DPO';
+            assignedTurma = 'Todas as Redes';
+            profileName = 'Administrador TI';
+            profileRole = 'Administrador(a) do Sistema & TI';
+            profileAvatar = '👨‍💻';
+        } else {
+            detectedRole = 'Gestor da Rede';
+            targetTab = 'dashboard';
+            assignedSchool = 'Rede Municipal Oficial';
+            assignedTurma = 'Todas as Turmas';
+            profileName = 'Secretaria de Educação';
+            profileRole = 'Gestão Executiva SEMED';
+            profileAvatar = '🧑‍💼';
+        }
 
-            // Salvar Perfil Isolado do Usuário Atual
-            const userProfileData = {
-                name: profileName,
-                email: emailInput,
-                role: profileRole,
-                avatarIcon: profileAvatar,
-                avatarPhoto: ''
-            };
-            try {
-                localStorage.setItem('gd_current_user_profile', JSON.stringify(userProfileData));
-            } catch(e) {}
+        // Salvar Perfil Isolado do Usuário Atual
+        const userProfileData = {
+            name: profileName,
+            email: emailInput,
+            role: profileRole,
+            avatarIcon: profileAvatar,
+            avatarPhoto: ''
+        };
+        try {
+            localStorage.setItem('gd_current_user_profile', JSON.stringify(userProfileData));
+        } catch(e) {}
 
-            // Loading status feedback
-            btnLoginSubmit.disabled = true;
-            const btnSpan = btnLoginSubmit.querySelector('span');
+        if (btnSubmit) {
+            btnSubmit.disabled = true;
+            const btnSpan = btnSubmit.querySelector('span');
             if (btnSpan) btnSpan.textContent = 'Autenticando...';
+        }
 
-            sessionStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('isLoggedIn', 'true');
-            sessionStorage.setItem('activeTenant', 'default');
-            sessionStorage.setItem('userEmail', emailInput);
-            localStorage.setItem('userEmail', emailInput);
-            sessionStorage.setItem('userName', profileName);
-            sessionStorage.setItem('userRole', detectedRole);
-            sessionStorage.setItem('userEscola', assignedSchool);
-            sessionStorage.setItem('userTurma', assignedTurma);
+        sessionStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('isLoggedIn', 'true');
+        sessionStorage.setItem('activeTenant', 'default');
+        sessionStorage.setItem('userEmail', emailInput);
+        localStorage.setItem('userEmail', emailInput);
+        sessionStorage.setItem('userName', profileName);
+        sessionStorage.setItem('userRole', detectedRole);
+        sessionStorage.setItem('userEscola', assignedSchool);
+        sessionStorage.setItem('userTurma', assignedTurma);
 
-            try {
+        try {
+            if (typeof loadDatabaseState === 'function') {
                 await loadDatabaseState();
-            } catch (err) {
-                console.warn('[IDEB Engine] Warning in loadDatabaseState:', err);
             }
+        } catch (err) {
+            console.warn('[IDEB Engine] Warning in loadDatabaseState:', err);
+        }
 
-            try {
-                updateMenuVisibilityByRole();
-                updateUserHeaderUI();
-                renderDashboardWelcomeBanner();
-            } catch (err) {
-                console.warn('[IDEB Engine] Warning in updateMenuVisibilityByRole:', err);
+        try {
+            if (typeof updateMenuVisibilityByRole === 'function') updateMenuVisibilityByRole();
+            if (typeof updateUserHeaderUI === 'function') updateUserHeaderUI();
+            if (typeof renderDashboardWelcomeBanner === 'function') renderDashboardWelcomeBanner();
+            if (typeof renderDbSchools === 'function') renderDbSchools();
+            if (typeof renderDbStudents === 'function') renderDbStudents();
+        } catch (err) {
+            console.warn('[IDEB Engine] Warning in UI updates:', err);
+        }
+
+        // Navegação direta para a aba do perfil
+        try {
+            if (window.navigateToTab) {
+                window.navigateToTab(targetTab);
+            } else if (window.switchTab) {
+                window.switchTab(targetTab);
             }
+        } catch (err) {
+            console.warn('[IDEB Engine] Warning in navigateToTab:', err);
+        }
 
-            // Direct Navigation to the Role's Panel
-            try {
-                if (window.navigateToTab) {
-                    window.navigateToTab(targetTab);
-                } else if (window.switchTab) {
-                    window.switchTab(targetTab);
-                }
-            } catch (err) {
-                console.warn('[IDEB Engine] Warning in navigateToTab:', err);
-            }
-
-            // Apply role-specific filters and school context
-            try {
-                if (detectedRole === 'Diretor Escola') {
-                    const dbSchoolSearch = document.getElementById('db-school-search');
-                    if (dbSchoolSearch) {
-                        dbSchoolSearch.value = 'JOSE CORREA';
-                        if (typeof renderDbSchools === 'function') renderDbSchools();
-                    }
-                } else if (detectedRole === 'Professor') {
-                    const dbStudentSchoolFilter = document.getElementById('db-student-school-filter');
-                    if (dbStudentSchoolFilter) {
-                        dbStudentSchoolFilter.value = 'UI JOSE CORREA LIMA';
-                        if (typeof applyDbFilters === 'function') applyDbFilters();
-                    }
-                }
-            } catch (err) {
-                console.warn('[IDEB Engine] Filter warning:', err);
-            }
-
-            // Smooth Fade-out animation
+        // Animação de transição suave
+        if (loginScreen) {
             loginScreen.classList.add('fade-out');
-            showToast(`Bem-vindo ao IDEB na Prática! Painel ${detectedRole} carregado.`, 'check');
-            window.scrollTo(0, 0);
-
             setTimeout(() => {
                 loginScreen.style.display = 'none';
-                btnLoginSubmit.disabled = false;
-                if (btnSpan) btnSpan.textContent = 'Entrar no Sistema';
-                if (window.lucide) {
-                    lucide.createIcons({ attrs: { class: 'lucide' } });
+                if (btnSubmit) {
+                    btnSubmit.disabled = false;
+                    const btnSpan = btnSubmit.querySelector('span');
+                    if (btnSpan) btnSpan.textContent = 'Entrar no Sistema';
+                }
+                if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                    window.lucide.createIcons({ attrs: { class: 'lucide' } });
                 }
             }, 300);
+        }
+
+        if (typeof showToast === 'function') {
+            showToast(`Bem-vindo ao IDEB na Prática! Painel ${detectedRole} carregado.`, 'check');
+        }
+        window.scrollTo(0, 0);
+    }
+    window.executeSystemLogin = executeSystemLogin;
+
+    // Login Form Submit Listeners
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            executeSystemLogin();
+        });
+    }
+
+    const btnLoginSubmit = document.getElementById('btn-login-submit');
+    if (btnLoginSubmit) {
+        btnLoginSubmit.addEventListener('click', (e) => {
+            e.preventDefault();
+            executeSystemLogin();
         });
     }
 
