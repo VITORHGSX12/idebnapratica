@@ -10127,40 +10127,72 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
 
             let detectedRole = 'Gestor da Rede';
             let targetTab = 'dashboard';
-            let assignedSchool = '';
-            let assignedTurma = '';
+            let assignedSchool = 'Rede Municipal Oficial';
+            let assignedTurma = 'Todas as Turmas';
+            let profileName = 'Secretaria de Educação';
+            let profileRole = 'Gestor(a) da Rede SEMED';
+            let profileAvatar = '🧑‍💼';
 
             if (emailInput.startsWith('prof') || emailInput.includes('professor')) {
                 detectedRole = 'Professor';
                 targetTab = 'alunos-panel';
-                assignedSchool = 'U.E. BENTA VILANOVA';
-                assignedTurma = '2º Ano';
+                assignedSchool = 'UI JOSE CORREA LIMA';
+                assignedTurma = '5º Ano A';
+                profileName = 'Prof. Carlos Eduardo';
+                profileRole = 'Professor(a) • UI JOSE CORREA LIMA';
+                profileAvatar = '👨‍🏫';
             } else if (emailInput.startsWith('diret') || emailInput.includes('diretor') || emailInput.includes('escola') || emailInput.includes('cora')) {
                 detectedRole = 'Diretor Escola';
                 targetTab = 'escolas-panel';
-                assignedSchool = 'U.E. BENTA VILANOVA';
+                assignedSchool = 'UI JOSE CORREA LIMA';
+                assignedTurma = 'Todas as Turmas';
+                profileName = 'Profa. Antonia Silva';
+                profileRole = 'Diretora Escolar • UI JOSE CORREA LIMA';
+                profileAvatar = '👩‍💼';
             } else if (emailInput.startsWith('admin') || emailInput.startsWith('dpo')) {
                 detectedRole = 'Master Admin';
                 targetTab = 'dashboard';
+                assignedSchool = 'Administração TI / DPO';
+                assignedTurma = 'Todas as Redes';
+                profileName = 'Administrador TI';
+                profileRole = 'Administrador(a) do Sistema & TI';
+                profileAvatar = '👨‍💻';
             } else if (emailInput.startsWith('semed') || emailInput.startsWith('gestor') || emailInput.includes('semed')) {
                 detectedRole = 'Gestor da Rede';
                 targetTab = 'dashboard';
+                assignedSchool = 'Rede Municipal Oficial';
+                assignedTurma = 'Todas as Turmas';
+                profileName = 'Secretaria de Educação';
+                profileRole = 'Gestão Executiva SEMED';
+                profileAvatar = '🧑‍💼';
             }
+
+            // Salvar Perfil Isolado do Usuário Atual
+            const userProfileData = {
+                name: profileName,
+                email: emailInput,
+                role: profileRole,
+                avatarIcon: profileAvatar,
+                avatarPhoto: ''
+            };
+            try {
+                localStorage.setItem('gd_current_user_profile', JSON.stringify(userProfileData));
+            } catch(e) {}
 
             // Loading status feedback
             btnLoginSubmit.disabled = true;
             const btnSpan = btnLoginSubmit.querySelector('span');
-            const originalText = btnSpan ? btnSpan.textContent : '';
             if (btnSpan) btnSpan.textContent = 'Autenticando...';
 
             sessionStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('isLoggedIn', 'true');
             sessionStorage.setItem('activeTenant', 'default');
-            sessionStorage.setItem('userEmail', emailInput || 'semed@goncalvesdias.ma.gov.br');
-            localStorage.setItem('userEmail', emailInput || 'semed@goncalvesdias.ma.gov.br');
+            sessionStorage.setItem('userEmail', emailInput);
+            localStorage.setItem('userEmail', emailInput);
+            sessionStorage.setItem('userName', profileName);
             sessionStorage.setItem('userRole', detectedRole);
-            sessionStorage.setItem('userEscola', assignedSchool || 'U.E. BENTA VILANOVA');
-            sessionStorage.setItem('userTurma', assignedTurma || '2º Ano');
+            sessionStorage.setItem('userEscola', assignedSchool);
+            sessionStorage.setItem('userTurma', assignedTurma);
 
             try {
                 await loadDatabaseState();
@@ -10170,6 +10202,8 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
 
             try {
                 updateMenuVisibilityByRole();
+                updateUserHeaderUI();
+                renderDashboardWelcomeBanner();
             } catch (err) {
                 console.warn('[IDEB Engine] Warning in updateMenuVisibilityByRole:', err);
             }
@@ -10178,29 +10212,25 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
             try {
                 if (window.navigateToTab) {
                     window.navigateToTab(targetTab);
+                } else if (window.switchTab) {
+                    window.switchTab(targetTab);
                 }
             } catch (err) {
                 console.warn('[IDEB Engine] Warning in navigateToTab:', err);
             }
 
-            // Apply role-specific filters
+            // Apply role-specific filters and school context
             try {
                 if (detectedRole === 'Diretor Escola') {
                     const dbSchoolSearch = document.getElementById('db-school-search');
                     if (dbSchoolSearch) {
-                        dbSchoolSearch.value = 'Benta Vilanova';
+                        dbSchoolSearch.value = 'JOSE CORREA';
                         if (typeof renderDbSchools === 'function') renderDbSchools();
                     }
                 } else if (detectedRole === 'Professor') {
                     const dbStudentSchoolFilter = document.getElementById('db-student-school-filter');
                     if (dbStudentSchoolFilter) {
-                        dbStudentSchoolFilter.value = 'U.E. BENTA VILANOVA';
-                        if (typeof applyDbFilters === 'function') applyDbFilters();
-                    }
-                } else if (detectedRole === 'Professor AEE') {
-                    const dbStudentNeeFilter = document.getElementById('db-student-nee-filter');
-                    if (dbStudentNeeFilter) {
-                        dbStudentNeeFilter.value = 'sim';
+                        dbStudentSchoolFilter.value = 'UI JOSE CORREA LIMA';
                         if (typeof applyDbFilters === 'function') applyDbFilters();
                     }
                 }
@@ -10215,10 +10245,12 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
 
             setTimeout(() => {
                 loginScreen.style.display = 'none';
+                btnLoginSubmit.disabled = false;
+                if (btnSpan) btnSpan.textContent = 'Entrar no Sistema';
                 if (window.lucide) {
                     lucide.createIcons({ attrs: { class: 'lucide' } });
                 }
-            }, 500);
+            }, 300);
         });
     }
 
@@ -10318,6 +10350,7 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
             lucide.createIcons({ attrs: { class: 'lucide' } });
         }
     }
+    window.updateMenuVisibilityByRole = updateMenuVisibilityByRole;
 
     // ==========================================
     // BIBLIOTECA PEDAGÓGICA & GERADOR DE PROVAS
@@ -14303,35 +14336,8 @@ if (document.readyState === 'loading') {
     }
     window.validateSystemLogin = validateSystemLogin;
 
-    // Hook login form to exclusive validator
+    // Hook search trigger on users view
     document.addEventListener('DOMContentLoaded', () => {
-        const loginForm = document.getElementById('login-form');
-        if (loginForm) {
-            loginForm.onsubmit = function(e) {
-                e.preventDefault();
-                const email = document.getElementById('login-email')?.value;
-                const pass = document.getElementById('login-password')?.value;
-
-                const validUser = validateSystemLogin(email, pass);
-                if (validUser) {
-                    localStorage.setItem('auth_user_email', validUser.email);
-                    localStorage.setItem('auth_user_role', validUser.tipo);
-                    localStorage.setItem('auth_user_name', validUser.nome);
-                    localStorage.setItem('auth_user_school', validUser.escola);
-
-                    const loginScreen = document.getElementById('login-screen');
-                    if (loginScreen) {
-                        loginScreen.style.opacity = '0';
-                        setTimeout(() => {
-                            loginScreen.style.display = 'none';
-                        }, 250);
-                    }
-                    if (typeof switchTab === 'function') switchTab('dashboard');
-                } else {
-                    alert('⚠️ Acesso Negado: As credenciais informadas não foram geradas nem autorizadas pelo sistema.\n\nCadastre o usuário na aba "Área Administrativa > Usuários" para gerar um acesso seguro oficial.');
-                }
-            };
-        }
 
         // Search trigger on users view
         const btnSearchUsers = document.getElementById('btn-search-users');
@@ -20993,6 +20999,8 @@ window.closeStudentProficiencyCalcModal = closeStudentProficiencyCalcModal;
 // ==========================================
 function initApp() {
     try {
+        if (typeof initLoginMotionCanvas === 'function') initLoginMotionCanvas();
+        if (typeof updateMenuVisibilityByRole === 'function') updateMenuVisibilityByRole();
         if (typeof renderDashboardComplete === 'function') renderDashboardComplete();
         if (typeof renderDbSchools === 'function') renderDbSchools();
         if (typeof renderDbStudents === 'function') renderDbStudents();
