@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <link rel="stylesheet" href="styles.css?v=7ca4607f7c_mt02la3g">
+    <link rel="stylesheet" href="styles.css?v=7ca4607f7c_mt02um5f">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -541,155 +541,27 @@
                     </div>
 
                                         <div id="dashboard-main-content">
-                        <!-- Metric Cards Grid -->
-                        <div class="metrics-grid">
-                            <div class="metric-card" style="border: 1px solid var(--border-color); background: var(--bg-secondary);">
-                                <div class="metric-header">
-                                    <span class="metric-title">IDEB / SAEB 2025 Oficial</span>
-                                    <div class="metric-icon purple"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 3 18 18"/><path d="m13 3 8 8-4 4-8-8Z"/></svg></div>
-                                </div>
-                                <div class="metric-value" id="metric-ideb" style="color: var(--green-light); font-weight: 800; font-size: 2.2rem;">5.2 ★</div>
-                                <div class="metric-footer">
-                                    <span class="trend up" style="color: var(--green-light); font-weight: 700;">+0.4 vs 2023</span>
-                                    <span class="trend-label" style="margin-left: auto;">Meta 2026: <strong>5.5</strong></span>
-                                </div>
-                            </div>
-                            <div class="metric-card" style="border: 1px solid var(--border-color); background: var(--bg-secondary);">
-                                <div class="metric-header">
-                                    <span class="metric-title">Proficiência SAEB 2025</span>
-                                    <div class="metric-icon blue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
-                                </div>
-                                <div class="metric-value" id="metric-seama-lp" style="color: var(--text-primary); font-weight: 800; font-size: 2.2rem;">224.8 pts</div>
-                                <div class="metric-footer">
-                                    <span class="trend-label">LP: <strong>226.4</strong> • MAT: <strong>223.2</strong></span>
-                                </div>
-                            </div>
-                            <div class="metric-card" style="border: 1px solid var(--border-color); background: var(--bg-secondary);">
-                                <div class="metric-header">
-                                    <span class="metric-title">Taxa de Aprovação (Fluxo)</span>
-                                    <div class="metric-icon green"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></div>
-                                </div>
-                                <div class="metric-value" style="color: #10b981; font-weight: 800; font-size: 2.2rem;">96.8%</div>
-                                <div class="metric-footer">
-                                    <span class="trend-label">Censo Escolar / Gonçalves Dias</span>
-                                </div>
-                            </div>
-                            <div class="metric-card" style="border: 1px solid var(--border-color); background: var(--bg-secondary);">
-                                <div class="metric-header">
-                                    <span class="metric-title">Evolução dos Simulados</span>
-                                    <div class="metric-icon red"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="m9 16 2 2 4-4"/></svg></div>
-                                </div>
-                                <div class="metric-value" id="metric-simulado-status" style="font-size: 1.15rem; font-weight: 700; color: #6366f1; margin: 6px 0;">1º Simulado: 5.4 pts</div>
-                                <div class="metric-footer" style="margin-top: 4px;">
-                                    <button onclick="switchTab('sec-criar-avaliacoes')" style="background: rgba(99, 102, 241, 0.12); color: #6366f1; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
-                                        Lançar Respostas →
-                                    </button>
-                                </div>
-                            </div>
+                        <!-- Metric Cards Grid (Dynamic) -->
+                        <div class="metrics-grid" id="dashboard-metric-cards-container">
+                            <!-- Injetado dinamicamente via renderDashboardMetricCards() -->
                         </div>
 
-                        <!-- SEGUNDA ETAPA: TERMÔMETRO META VS. REALIZADO (GAP & ALERTA DE RECOMPOSIÇÃO) -->
-                        <div class="card card-full" style="margin-top: 20px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px 24px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 12px;">
-                                <div>
-                                    <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(245, 158, 11, 0.12); color: #d97706; padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; margin-bottom: 4px;">
-                                        ⚡ MONITORAMENTO DE TRAJETÓRIA DO CICLO
-                                    </div>
-                                    <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: var(--text-primary);">
-                                        Meta Pactuada vs. Desempenho Observado (Gonçalves Dias)
-                                    </h3>
-                                    <p style="margin: 2px 0 0 0; font-size: 0.82rem; color: var(--text-secondary);">
-                                        Acompanhamento do índice obtido em relação à meta projetada pelo INEP e plano de recomposição de aprendizagem.
-                                    </p>
-                                </div>
-                                <div style="text-align: right;">
-                                    <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted);">GAP ATUAL DA REDE</div>
-                                    <div style="font-size: 1.45rem; font-weight: 800; color: #f59e0b;">-0.3 pontos</div>
-                                </div>
-                            </div>
-
-                            <!-- Barra Termômetro de Progresso -->
-                            <div style="margin-top: 10px;">
-                                <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; margin-bottom: 6px;">
-                                    <span style="color: var(--text-secondary);">Progresso para a Meta (5.5)</span>
-                                    <span style="color: #6366f1;">94.5% da meta alcançada (5.2 / 5.5)</span>
-                                </div>
-                                <div style="height: 14px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; position: relative;">
-                                    <div style="width: 94.5%; height: 100%; background: linear-gradient(90deg, #6366f1, #10b981); border-radius: 6px;"></div>
-                                </div>
-                            </div>
-
-                            <!-- Alerta Dinâmico -->
-                            <div style="margin-top: 14px; padding: 12px 16px; background: rgba(245, 158, 11, 0.08); border-left: 4px solid #f59e0b; border-radius: var(--radius-sm); font-size: 0.84rem; color: var(--text-primary); display: flex; align-items: center; gap: 10px;">
-                                <span style="font-size: 1.2rem;">🏃</span>
-                                <div>
-                                    <strong>Atenção Pedagógica:</strong> A rede está a <strong>0.3 pontos</strong> de atingir a meta oficial de 5.5. Recomenda-se intensificar as ações de recomposição nos descritores críticos de Língua Portuguesa (D1, D4) e Matemática (D13) com os simulados quinzenais.
-                                </div>
-                            </div>
+                        <!-- SEGUNDA ETAPA: TERMÔMETRO META VS. REALIZADO (GAP & PDE) -->
+                        <div id="dashboard-pde-progress-container" style="margin-top: 20px;">
+                            <!-- Injetado dinamicamente via renderDashboardPdeProgress() -->
                         </div>
 
-                        <!-- GRÁFICO: LINHA DO TEMPO HISTÓRICA -> SAEB 2025 -> SIMULADOS 2026 -->
+                        <!-- GRÁFICO: LINHA DO TEMPO & DESCRITORES PRIORITÁRIOS -->
                         <div class="dashboard-row grid-2" style="margin-top: 20px; gap: 20px;">
+                            <!-- Gráfico de Linha do Tempo -->
                             <div class="card card-full" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
                                 <div class="card-header" style="margin-bottom: 16px;">
                                     <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">Linha do Tempo: Histórico, SAEB e Simulados</h3>
-                                    <p class="card-subtitle" style="font-size: 0.8rem; color: var(--text-secondary);">Evolução contínua do índice desde 2015 até os resultados dos simulados atuais.</p>
+                                    <p class="card-subtitle" style="font-size: 0.8rem; color: var(--text-secondary);">Evolução contínua do índice oficial e dos simulados aplicados.</p>
                                 </div>
                                 <div class="card-body" style="padding: 0;">
                                     <div id="dashboard-ideb-chart-container" style="width: 100%;">
-                                        <svg viewBox="0 0 540 230" width="100%" height="210" style="overflow: visible; font-family: system-ui, -apple-system, sans-serif;">
-                                            <!-- Grid Lines -->
-                                            <line x1="45" y1="35" x2="510" y2="35" stroke="var(--border-color)" stroke-dasharray="3,3" stroke-width="1" opacity="0.6"/>
-                                            <text x="35" y="38" fill="var(--text-secondary)" font-size="10" font-weight="600" text-anchor="end">6.0</text>
-
-                                            <line x1="45" y1="80" x2="510" y2="80" stroke="var(--border-color)" stroke-dasharray="3,3" stroke-width="1" opacity="0.6"/>
-                                            <text x="35" y="83" fill="var(--text-secondary)" font-size="10" font-weight="600" text-anchor="end">5.0</text>
-
-                                            <line x1="45" y1="125" x2="510" y2="125" stroke="var(--border-color)" stroke-dasharray="3,3" stroke-width="1" opacity="0.6"/>
-                                            <text x="35" y="128" fill="var(--text-secondary)" font-size="10" font-weight="600" text-anchor="end">4.0</text>
-
-                                            <line x1="45" y1="170" x2="510" y2="170" stroke="var(--border-color)" stroke-dasharray="3,3" stroke-width="1" opacity="0.6"/>
-                                            <text x="35" y="173" fill="var(--text-secondary)" font-size="10" font-weight="600" text-anchor="end">3.0</text>
-
-                                            <!-- Target Line (Green Dashed) -->
-                                            <path d="M 75 105 L 165 95 L 255 83 L 345 71 L 435 60 L 500 55" fill="none" stroke="#10b981" stroke-width="2.5" stroke-dasharray="5,5"/>
-                                            
-                                            <!-- Observed Line (Purple Solid) -->
-                                            <path d="M 75 118 L 165 105 L 255 95 L 345 83 L 435 71 L 500 64" fill="none" stroke="#6366f1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                            
-                                            <!-- Points: 2017: 3.8, 2019: 4.2, 2021: 4.5, 2023: 4.8, 2025: 5.2, 1º Simulado: 5.4 -->
-                                            <circle cx="75" cy="118" r="5" fill="#6366f1" stroke="#fff" stroke-width="2"><title>2017: 3.8</title></circle>
-                                            <circle cx="165" cy="105" r="5" fill="#6366f1" stroke="#fff" stroke-width="2"><title>2019: 4.2</title></circle>
-                                            <circle cx="255" cy="95" r="5" fill="#6366f1" stroke="#fff" stroke-width="2"><title>2021: 4.5</title></circle>
-                                            <circle cx="345" cy="83" r="6" fill="#6366f1" stroke="#fff" stroke-width="2"><title>2023: 4.8</title></circle>
-                                            
-                                            <!-- SAEB 2025 Point -->
-                                            <circle cx="435" cy="71" r="7" fill="#10b981" stroke="#fff" stroke-width="2.5"><title>SAEB 2025: 5.2</title></circle>
-                                            <rect x="415" y="44" width="40" height="18" rx="4" fill="#10b981"/>
-                                            <text x="435" y="56" text-anchor="middle" font-size="10" font-weight="800" fill="#ffffff">5.2 ★</text>
-
-                                            <!-- 1º Simulado 2026 Point -->
-                                            <circle cx="500" cy="64" r="7" fill="#6366f1" stroke="#fff" stroke-width="2.5"><title>1º Simulado 2026: 5.4</title></circle>
-                                            <rect x="480" y="36" width="42" height="18" rx="4" fill="#6366f1"/>
-                                            <text x="501" y="48" text-anchor="middle" font-size="10" font-weight="800" fill="#ffffff">5.4 📈</text>
-
-                                            <!-- X Axis Labels -->
-                                            <text x="75" y="195" text-anchor="middle" font-size="11" font-weight="600" fill="var(--text-secondary)">2017</text>
-                                            <text x="165" y="195" text-anchor="middle" font-size="11" font-weight="600" fill="var(--text-secondary)">2019</text>
-                                            <text x="255" y="195" text-anchor="middle" font-size="11" font-weight="600" fill="var(--text-secondary)">2021</text>
-                                            <text x="345" y="195" text-anchor="middle" font-size="11" font-weight="600" fill="var(--text-secondary)">2023</text>
-                                            <text x="435" y="195" text-anchor="middle" font-size="11" font-weight="800" fill="#10b981">SAEB 25</text>
-                                            <text x="500" y="195" text-anchor="middle" font-size="11" font-weight="800" fill="#6366f1">1º Simulado</text>
-                                        </svg>
-                                        
-                                        <div style="display: flex; justify-content: center; gap: 20px; margin-top: 10px; font-size: 0.75rem; font-weight: 700;">
-                                            <span style="display: flex; align-items: center; gap: 6px; color: #6366f1;">
-                                                <span style="width: 12px; height: 3px; background: #6366f1; border-radius: 2px;"></span> IDEB / Simulados
-                                            </span>
-                                            <span style="display: flex; align-items: center; gap: 6px; color: #10b981;">
-                                                <span style="width: 12px; height: 2px; border-top: 2px dashed #10b981;"></span> Meta Projetada (5.5)
-                                            </span>
-                                        </div>
+                                        <!-- Injetado dinamicamente via renderDashboardTimelineChart() -->
                                     </div>
                                 </div>
                             </div>
@@ -709,13 +581,13 @@
                             </div>
                         </div>
 
-                        <!-- LISTA / RANKING DE ESCOLAS DE GONÇALVES DIAS (DADOS SAEB 2025) -->
+                        <!-- LISTA / RANKING DE ESCOLAS DA REDE -->
                         <div class="dashboard-row grid-1" style="margin-top: 20px;">
                             <div class="card card-full" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
                                 <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
                                     <div>
                                         <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">Desempenho por Escola da Rede (Gonçalves Dias - MA)</h3>
-                                        <p class="card-subtitle" style="font-size: 0.8rem; color: var(--text-secondary);">Resultados obtidos no SAEB/IDEB 2025 e evolução em relação aos ciclos anteriores.</p>
+                                        <p class="card-subtitle" style="font-size: 0.8rem; color: var(--text-secondary);">Resultados obtidos no SAEB/IDEB oficial e evolução da rede municipal.</p>
                                     </div>
                                     <button type="button" onclick="switchTab('escolas-panel');" class="btn btn-outline btn-sm" style="font-weight: 700; color: #6366f1; border-color: #6366f1;">
                                         Ver Todas as Escolas →
@@ -728,73 +600,14 @@
                                             <tr>
                                                 <th style="padding: 12px 16px;">UNIDADE ESCOLAR</th>
                                                 <th style="padding: 12px 16px;">CÓDIGO INEP</th>
-                                                <th style="padding: 12px 16px; text-align: center;">SAEB 2025</th>
-                                                <th style="padding: 12px 16px; text-align: center;">EVOLUÇÃO</th>
-                                                <th style="padding: 12px 16px; text-align: center;">STATUS DA META</th>
+                                                <th style="padding: 12px 16px; text-align: center;">SAEB/IDEB</th>
+                                                <th style="padding: 12px 16px; text-align: center;">LOCALIZAÇÃO</th>
+                                                <th style="padding: 12px 16px; text-align: center;">STATUS</th>
                                                 <th style="padding: 12px 16px; text-align: center;">AÇÃO</th>
                                             </tr>
                                         </thead>
                                         <tbody id="dashboard-schools-ranking-body">
-                                            <tr style="border-bottom: 1px solid var(--border-color); height: 48px;">
-                                                <td style="padding: 10px 16px; font-weight: 700; color: var(--text-primary);">UNIDADE INTEGRADA JOSE GONCALVES DIAS</td>
-                                                <td style="padding: 10px 16px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">21045233</td>
-                                                <td style="padding: 10px 16px; text-align: center; font-weight: 800; font-size: 1.05rem; color: #10b981;">5.6 ★</td>
-                                                <td style="padding: 10px 16px; text-align: center; font-weight: 700; color: #10b981;">+0.4 📈</td>
-                                                <td style="padding: 10px 16px; text-align: center;"><span class="badge badge-success" style="font-size:0.7rem;">Meta Superada</span></td>
-                                                <td style="padding: 10px 16px; text-align: center;">
-                                                    <button type="button" onclick="switchTab('escolas-panel'); openSchoolWorkspace('UNIDADE INTEGRADA JOSE GONCALVES DIAS');" class="btn btn-outline btn-sm" style="font-size:0.72rem; font-weight:700;">Ver Escola</button>
-                                                </td>
-                                            </tr>
-                                            <tr style="border-bottom: 1px solid var(--border-color); height: 48px;">
-                                                <td style="padding: 10px 16px; font-weight: 700; color: var(--text-primary);">U I BASILIO ALVES</td>
-                                                <td style="padding: 10px 16px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">21128120</td>
-                                                <td style="padding: 10px 16px; text-align: center; font-weight: 800; font-size: 1.05rem; color: #10b981;">5.4 ★</td>
-                                                <td style="padding: 10px 16px; text-align: center; font-weight: 700; color: #10b981;">+0.3 📈</td>
-                                                <td style="padding: 10px 16px; text-align: center;"><span class="badge badge-success" style="font-size:0.7rem;">Na Trajetória</span></td>
-                                                <td style="padding: 10px 16px; text-align: center;">
-                                                    <button type="button" onclick="switchTab('escolas-panel'); openSchoolWorkspace('U I BASILIO ALVES');" class="btn btn-outline btn-sm" style="font-size:0.72rem; font-weight:700;">Ver Escola</button>
-                                                </td>
-                                            </tr>
-                                            <tr style="border-bottom: 1px solid var(--border-color); height: 48px;">
-                                                <td style="padding: 10px 16px; font-weight: 700; color: var(--text-primary);">UE ANITA FURTADO</td>
-                                                <td style="padding: 10px 16px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">21045209</td>
-                                                <td style="padding: 10px 16px; text-align: center; font-weight: 800; font-size: 1.05rem; color: #10b981;">5.3 ★</td>
-                                                <td style="padding: 10px 16px; text-align: center; font-weight: 700; color: #10b981;">+0.3 📈</td>
-                                                <td style="padding: 10px 16px; text-align: center;"><span class="badge badge-success" style="font-size:0.7rem;">Na Trajetória</span></td>
-                                                <td style="padding: 10px 16px; text-align: center;">
-                                                    <button type="button" onclick="switchTab('escolas-panel'); openSchoolWorkspace('UE ANITA FURTADO');" class="btn btn-outline btn-sm" style="font-size:0.72rem; font-weight:700;">Ver Escola</button>
-                                                </td>
-                                            </tr>
-                                            <tr style="border-bottom: 1px solid var(--border-color); height: 48px;">
-                                                <td style="padding: 10px 16px; font-weight: 700; color: var(--text-primary);">UI JOSE CORREA LIMA</td>
-                                                <td style="padding: 10px 16px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">21045241</td>
-                                                <td style="padding: 10px 16px; text-align: center; font-weight: 800; font-size: 1.05rem; color: #6366f1;">5.2 ★</td>
-                                                <td style="padding: 10px 16px; text-align: center; font-weight: 700; color: #10b981;">+0.4 📈</td>
-                                                <td style="padding: 10px 16px; text-align: center;"><span class="badge badge-success" style="font-size:0.7rem;">Na Trajetória</span></td>
-                                                <td style="padding: 10px 16px; text-align: center;">
-                                                    <button type="button" onclick="switchTab('escolas-panel'); openSchoolWorkspace('UI JOSE CORREA LIMA');" class="btn btn-outline btn-sm" style="font-size:0.72rem; font-weight:700;">Ver Escola</button>
-                                                </td>
-                                            </tr>
-                                            <tr style="border-bottom: 1px solid var(--border-color); height: 48px;">
-                                                <td style="padding: 10px 16px; font-weight: 700; color: var(--text-primary);">UI EMILIO MURAD</td>
-                                                <td style="padding: 10px 16px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">21045225</td>
-                                                <td style="padding: 10px 16px; text-align: center; font-weight: 800; font-size: 1.05rem; color: #f59e0b;">5.1</td>
-                                                <td style="padding: 10px 16px; text-align: center; font-weight: 700; color: #10b981;">+0.2 📈</td>
-                                                <td style="padding: 10px 16px; text-align: center;"><span class="badge badge-warning" style="font-size:0.7rem;">Atenção</span></td>
-                                                <td style="padding: 10px 16px; text-align: center;">
-                                                    <button type="button" onclick="switchTab('escolas-panel'); openSchoolWorkspace('UI EMILIO MURAD');" class="btn btn-outline btn-sm" style="font-size:0.72rem; font-weight:700;">Ver Escola</button>
-                                                </td>
-                                            </tr>
-                                            <tr style="border-bottom: 1px solid var(--border-color); height: 48px;">
-                                                <td style="padding: 10px 16px; font-weight: 700; color: var(--text-primary);">UNIDADE INTEGRADA ALDENORA ARAUJO CRUZ</td>
-                                                <td style="padding: 10px 16px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">21295710</td>
-                                                <td style="padding: 10px 16px; text-align: center; font-weight: 800; font-size: 1.05rem; color: #f59e0b;">5.0</td>
-                                                <td style="padding: 10px 16px; text-align: center; font-weight: 700; color: #10b981;">+0.2 📈</td>
-                                                <td style="padding: 10px 16px; text-align: center;"><span class="badge badge-warning" style="font-size:0.7rem;">Atenção</span></td>
-                                                <td style="padding: 10px 16px; text-align: center;">
-                                                    <button type="button" onclick="switchTab('escolas-panel'); openSchoolWorkspace('UNIDADE INTEGRADA ALDENORA ARAUJO CRUZ');" class="btn btn-outline btn-sm" style="font-size:0.72rem; font-weight:700;">Ver Escola</button>
-                                                </td>
-                                            </tr>
+                                            <!-- Injetado dinamicamente via renderDashboardSchoolsRanking() -->
                                         </tbody>
                                     </table>
                                 </div>
@@ -6240,13 +6053,13 @@
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=mt02la3g"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=mt02la3g"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=mt02la3g"></script>
-    <script src="ideb_publico_db.js?v=mt02la3g"></script>
-    <script src="alunos_db.js?v=mt02la3g"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=mt02um5f"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=mt02um5f"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=mt02um5f"></script>
+    <script src="ideb_publico_db.js?v=mt02um5f"></script>
+    <script src="alunos_db.js?v=mt02um5f"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=eab97b4b88_mt02la3g"></script>
+    <script src="app.js?v=0fca5a9611_mt02um5f"></script>
 </body>
 </html>
