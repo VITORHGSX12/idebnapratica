@@ -1223,337 +1223,348 @@ function safeSetStyle(id, prop, value) {
     let dashSaebEvoChartInstance = null;
 
     function renderDashboardGoncalvesDiasChart() {
-        const ctxGd = document.getElementById('dashChartGoncalvesDias');
-        if (!ctxGd || typeof Chart === 'undefined') return;
-
-        const anos = ['2015', '2017', '2019', '2021', '2023', '2025'];
-        const iniciaisGd = [3.4, 3.8, 4.2, 4.5, 4.8, 5.2];
-        const finaisGd   = [3.1, 3.5, 3.8, 4.1, 4.4, 4.8];
-        const metaInep   = [3.6, 4.1, 4.5, 4.8, 5.1, 5.5];
-
-        if (dashGoncalvesDiasChartInstance) dashGoncalvesDiasChartInstance.destroy();
-
-        let bgGradInc = '#8B5CF6';
-        let bgGradFin = '#0EA5E9';
         try {
-            const g1 = ctxGd.getContext('2d').createLinearGradient(0, 0, 0, 260);
-            g1.addColorStop(0, '#8B5CF6');
-            g1.addColorStop(1, '#6D28D9');
-            bgGradInc = g1;
+            const ctxGd = document.getElementById('dashChartGoncalvesDias');
+            if (!ctxGd || typeof Chart === 'undefined') return;
 
-            const g2 = ctxGd.getContext('2d').createLinearGradient(0, 0, 0, 260);
-            g2.addColorStop(0, '#38BDF8');
-            g2.addColorStop(1, '#0284C7');
-            bgGradFin = g2;
-        } catch(e) {}
+            const anos = ['2015', '2017', '2019', '2021', '2023', '2025'];
+            const iniciaisGd = [3.4, 3.8, 4.2, 4.5, 4.8, 5.2];
+            const finaisGd   = [3.1, 3.5, 3.8, 4.1, 4.4, 4.8];
+            const metaInep   = [3.6, 4.1, 4.5, 4.8, 5.1, 5.5];
 
-        dashGoncalvesDiasChartInstance = new Chart(ctxGd, {
-            data: {
-                labels: anos,
-                datasets: [
-                    {
-                        type: 'bar',
-                        label: 'Anos Iniciais (Gonçalves Dias)',
-                        data: iniciaisGd,
-                        backgroundColor: bgGradInc,
-                        borderRadius: 6,
-                        barPercentage: 0.5,
-                        categoryPercentage: 0.7,
-                        datalabels: {
-                            display: true,
-                            anchor: 'end',
-                            align: 'top',
-                            color: '#8B5CF6',
-                            font: { weight: '800', size: 11 },
-                            formatter: (v) => v ? v.toFixed(1) : ''
-                        }
-                    },
-                    {
-                        type: 'bar',
-                        label: 'Anos Finais (Gonçalves Dias)',
-                        data: finaisGd,
-                        backgroundColor: bgGradFin,
-                        borderRadius: 6,
-                        barPercentage: 0.5,
-                        categoryPercentage: 0.7,
-                        datalabels: {
-                            display: true,
-                            anchor: 'end',
-                            align: 'top',
-                            color: '#0284C7',
-                            font: { weight: '800', size: 11 },
-                            formatter: (v) => v ? v.toFixed(1) : ''
-                        }
-                    },
-                    {
-                        type: 'line',
-                        label: 'Meta Projetada INEP (Municipal)',
-                        data: metaInep,
-                        borderColor: '#F59E0B',
-                        backgroundColor: '#F59E0B',
-                        pointBackgroundColor: '#FFFFFF',
-                        pointBorderColor: '#F59E0B',
-                        pointBorderWidth: 2.5,
-                        pointRadius: 5,
-                        borderWidth: 2.5,
-                        borderDash: [6, 4],
-                        tension: 0.3,
-                        datalabels: {
-                            display: true,
-                            align: 'center',
-                            anchor: 'center',
-                            color: '#FFFFFF',
-                            backgroundColor: '#F59E0B',
+            if (dashGoncalvesDiasChartInstance) dashGoncalvesDiasChartInstance.destroy();
+
+            let bgGradInc = '#8B5CF6';
+            let bgGradFin = '#0EA5E9';
+            try {
+                const g1 = ctxGd.getContext('2d').createLinearGradient(0, 0, 0, 260);
+                g1.addColorStop(0, '#8B5CF6');
+                g1.addColorStop(1, '#6D28D9');
+                bgGradInc = g1;
+
+                const g2 = ctxGd.getContext('2d').createLinearGradient(0, 0, 0, 260);
+                g2.addColorStop(0, '#38BDF8');
+                g2.addColorStop(1, '#0284C7');
+                bgGradFin = g2;
+            } catch(e) {}
+
+            dashGoncalvesDiasChartInstance = new Chart(ctxGd, {
+                type: 'bar',
+                data: {
+                    labels: anos,
+                    datasets: [
+                        {
+                            type: 'bar',
+                            label: 'Anos Iniciais (Gonçalves Dias)',
+                            data: iniciaisGd,
+                            backgroundColor: bgGradInc,
                             borderRadius: 6,
-                            font: { weight: '800', size: 10 },
-                            padding: { top: 3, bottom: 3, left: 6, right: 6 },
-                            formatter: (v) => v ? v.toFixed(1) : ''
-                        }
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                layout: { padding: { top: 28, bottom: 8, left: 4, right: 4 } },
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, font: { size: 11.5, weight: '600' } }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                        titleFont: { size: 12, weight: '800' },
-                        bodyFont: { size: 11 },
-                        padding: 10,
-                        cornerRadius: 8,
-                        callbacks: {
-                            label: function(context) {
-                                return ` ${context.dataset.label}: ${context.raw ? context.raw.toFixed(1) : 'N/A'}`;
+                            barPercentage: 0.5,
+                            categoryPercentage: 0.7,
+                            datalabels: {
+                                display: true,
+                                anchor: 'end',
+                                align: 'top',
+                                color: '#8B5CF6',
+                                font: { weight: '800', size: 11 },
+                                formatter: (v) => v ? v.toFixed(1) : ''
+                            }
+                        },
+                        {
+                            type: 'bar',
+                            label: 'Anos Finais (Gonçalves Dias)',
+                            data: finaisGd,
+                            backgroundColor: bgGradFin,
+                            borderRadius: 6,
+                            barPercentage: 0.5,
+                            categoryPercentage: 0.7,
+                            datalabels: {
+                                display: true,
+                                anchor: 'end',
+                                align: 'top',
+                                color: '#0284C7',
+                                font: { weight: '800', size: 11 },
+                                formatter: (v) => v ? v.toFixed(1) : ''
+                            }
+                        },
+                        {
+                            type: 'line',
+                            label: 'Meta Projetada INEP (Municipal)',
+                            data: metaInep,
+                            borderColor: '#F59E0B',
+                            backgroundColor: '#F59E0B',
+                            pointBackgroundColor: '#FFFFFF',
+                            pointBorderColor: '#F59E0B',
+                            pointBorderWidth: 2.5,
+                            pointRadius: 5,
+                            borderWidth: 2.5,
+                            borderDash: [6, 4],
+                            tension: 0.3,
+                            datalabels: {
+                                display: true,
+                                align: 'center',
+                                anchor: 'center',
+                                color: '#FFFFFF',
+                                backgroundColor: '#F59E0B',
+                                borderRadius: 6,
+                                font: { weight: '800', size: 10 },
+                                padding: { top: 3, bottom: 3, left: 6, right: 6 },
+                                formatter: (v) => v ? v.toFixed(1) : ''
                             }
                         }
-                    }
+                    ]
                 },
-                scales: {
-                    y: {
-                        min: 0,
-                        max: 7,
-                        grid: { color: 'rgba(226, 232, 240, 0.6)' },
-                        ticks: { stepSize: 1, font: { size: 11, weight: '600' }, color: 'var(--text-secondary)' }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: { padding: { top: 28, bottom: 8, left: 4, right: 4 } },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, font: { size: 11.5, weight: '600' } }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleFont: { size: 12, weight: '800' },
+                            bodyFont: { size: 11 },
+                            padding: 10,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.dataset.label}: ${context.raw ? context.raw.toFixed(1) : 'N/A'}`;
+                                }
+                            }
+                        }
                     },
-                    x: {
-                        grid: { display: false },
-                        ticks: { font: { size: 11, weight: '700' }, color: 'var(--text-primary)' }
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 7,
+                            grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                            ticks: { stepSize: 1, font: { size: 11, weight: '600' }, color: 'var(--text-secondary)' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 11, weight: '700' }, color: 'var(--text-primary)' }
+                        }
                     }
                 }
-            }
-        });
+            });
+        } catch(err) {
+            console.error('[dashChartGoncalvesDias Error]', err);
+        }
     }
     window.renderDashboardGoncalvesDiasChart = renderDashboardGoncalvesDiasChart;
 
     function renderDashboardEtapasCharts() {
-        const ctxInc = document.getElementById('dashChartIniciais');
-        const ctxFin = document.getElementById('dashChartFinais');
-        if (!ctxInc || !ctxFin || typeof Chart === 'undefined') return;
-
-        const anos = ['2007','2009','2011','2013','2015','2017','2019','2021','2023','2025'];
-        const iniciaisData = { maranhao:[3.4,3.7,3.9,3.9,4.1,4.1,4.6,4.6,5.0,5.5], projetado:[2.8,3.1,3.5,3.8,4.1,4.4,4.7,5.0,5.0,null] };
-        const finaisData    = { maranhao:[3.0,3.2,3.3,3.3,3.6,3.6,4.0,4.2,4.3,4.5], projetado:[2.9,3.0,3.3,3.7,4.1,4.3,4.6,4.9,4.9,null] };
-
-        if (dashIniciaisChartInstance) dashIniciaisChartInstance.destroy();
-        if (dashFinaisChartInstance) dashFinaisChartInstance.destroy();
-
-        // Canvas 1 (Anos Iniciais) Gradient
-        let bgGradInc = '#3B82F6';
         try {
-            const g = ctxInc.getContext('2d').createLinearGradient(0, 0, 0, 260);
-            g.addColorStop(0, '#6366F1');
-            g.addColorStop(1, '#3B82F6');
-            bgGradInc = g;
-        } catch(e) {}
+            const ctxInc = document.getElementById('dashChartIniciais');
+            const ctxFin = document.getElementById('dashChartFinais');
+            if (!ctxInc || !ctxFin || typeof Chart === 'undefined') return;
 
-        dashIniciaisChartInstance = new Chart(ctxInc, {
-            data: {
-                labels: anos,
-                datasets: [
-                    {
-                        type: 'bar',
-                        label: 'Maranhão (Observado)',
-                        data: iniciaisData.maranhao,
-                        backgroundColor: bgGradInc,
-                        borderRadius: 8,
-                        borderSkipped: false,
-                        barPercentage: 0.65,
-                        categoryPercentage: 0.8,
-                        datalabels: {
-                            display: true,
-                            anchor: 'end',
-                            align: 'top',
-                            color: '#6366F1',
-                            font: { weight: '800', size: 11 },
-                            formatter: (v) => v ? v.toFixed(1) : ''
-                        }
-                    },
-                    {
-                        type: 'line',
-                        label: 'Meta Projetada (INEP)',
-                        data: iniciaisData.projetado,
-                        borderColor: '#10B981',
-                        backgroundColor: '#10B981',
-                        pointBackgroundColor: '#FFFFFF',
-                        pointBorderColor: '#10B981',
-                        pointBorderWidth: 2.5,
-                        pointRadius: 5,
-                        pointHoverRadius: 7,
-                        borderWidth: 2.5,
-                        borderDash: [5, 4],
-                        tension: 0.3,
-                        datalabels: {
-                            display: true,
-                            align: 'center',
-                            anchor: 'center',
-                            color: '#FFFFFF',
+            const anos = ['2007','2009','2011','2013','2015','2017','2019','2021','2023','2025'];
+            const iniciaisData = { maranhao:[3.4,3.7,3.9,3.9,4.1,4.1,4.6,4.6,5.0,5.5], projetado:[2.8,3.1,3.5,3.8,4.1,4.4,4.7,5.0,5.0,null] };
+            const finaisData    = { maranhao:[3.0,3.2,3.3,3.3,3.6,3.6,4.0,4.2,4.3,4.5], projetado:[2.9,3.0,3.3,3.7,4.1,4.3,4.6,4.9,4.9,null] };
+
+            if (dashIniciaisChartInstance) dashIniciaisChartInstance.destroy();
+            if (dashFinaisChartInstance) dashFinaisChartInstance.destroy();
+
+            // Canvas 1 (Anos Iniciais) Gradient
+            let bgGradInc = '#3B82F6';
+            try {
+                const g = ctxInc.getContext('2d').createLinearGradient(0, 0, 0, 260);
+                g.addColorStop(0, '#6366F1');
+                g.addColorStop(1, '#3B82F6');
+                bgGradInc = g;
+            } catch(e) {}
+
+            dashIniciaisChartInstance = new Chart(ctxInc, {
+                type: 'bar',
+                data: {
+                    labels: anos,
+                    datasets: [
+                        {
+                            type: 'bar',
+                            label: 'Maranhão (Observado)',
+                            data: iniciaisData.maranhao,
+                            backgroundColor: bgGradInc,
+                            borderRadius: 8,
+                            borderSkipped: false,
+                            barPercentage: 0.65,
+                            categoryPercentage: 0.8,
+                            datalabels: {
+                                display: true,
+                                anchor: 'end',
+                                align: 'top',
+                                color: '#6366F1',
+                                font: { weight: '800', size: 11 },
+                                formatter: (v) => v ? v.toFixed(1) : ''
+                            }
+                        },
+                        {
+                            type: 'line',
+                            label: 'Meta Projetada (INEP)',
+                            data: iniciaisData.projetado,
+                            borderColor: '#10B981',
                             backgroundColor: '#10B981',
-                            borderRadius: 6,
-                            font: { weight: '800', size: 10, family: 'var(--font-mono)' },
-                            padding: { top: 3, bottom: 3, left: 6, right: 6 },
-                            formatter: (v) => v ? v.toFixed(1) : ''
-                        }
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                layout: { padding: { top: 28, bottom: 8, left: 4, right: 4 } },
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, font: { size: 11.5, weight: '600' } }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                        titleFont: { size: 12, weight: '800' },
-                        bodyFont: { size: 11 },
-                        padding: 10,
-                        cornerRadius: 8,
-                        callbacks: {
-                            label: function(context) {
-                                return ` ${context.dataset.label}: ${context.raw ? context.raw.toFixed(1) : 'N/A'}`;
+                            pointBackgroundColor: '#FFFFFF',
+                            pointBorderColor: '#10B981',
+                            pointBorderWidth: 2.5,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            borderWidth: 2.5,
+                            borderDash: [5, 4],
+                            tension: 0.3,
+                            datalabels: {
+                                display: true,
+                                align: 'center',
+                                anchor: 'center',
+                                color: '#FFFFFF',
+                                backgroundColor: '#10B981',
+                                borderRadius: 6,
+                                font: { weight: '800', size: 10, family: 'var(--font-mono)' },
+                                padding: { top: 3, bottom: 3, left: 6, right: 6 },
+                                formatter: (v) => v ? v.toFixed(1) : ''
                             }
                         }
-                    }
+                    ]
                 },
-                scales: {
-                    y: {
-                        min: 0,
-                        max: 10,
-                        grid: { color: 'rgba(226, 232, 240, 0.6)' },
-                        ticks: { stepSize: 1, font: { size: 11, weight: '600' }, color: 'var(--text-secondary)' }
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: { font: { size: 11, weight: '700' }, color: 'var(--text-primary)' }
-                    }
-                }
-            }
-        });
-
-        // Canvas 2 (Anos Finais) Gradient
-        let bgGradFin = '#0EA5E9';
-        try {
-            const g = ctxFin.getContext('2d').createLinearGradient(0, 0, 0, 260);
-            g.addColorStop(0, '#0284C7');
-            g.addColorStop(1, '#38BDF8');
-            bgGradFin = g;
-        } catch(e) {}
-
-        dashFinaisChartInstance = new Chart(ctxFin, {
-            data: {
-                labels: anos,
-                datasets: [
-                    {
-                        type: 'bar',
-                        label: 'Maranhão (Observado)',
-                        data: finaisData.maranhao,
-                        backgroundColor: bgGradFin,
-                        borderRadius: 8,
-                        borderSkipped: false,
-                        barPercentage: 0.65,
-                        categoryPercentage: 0.8,
-                        datalabels: {
-                            display: true,
-                            anchor: 'end',
-                            align: 'top',
-                            color: '#0284C7',
-                            font: { weight: '800', size: 11 },
-                            formatter: (v) => v ? v.toFixed(1) : ''
-                        }
-                    },
-                    {
-                        type: 'line',
-                        label: 'Meta Projetada (INEP)',
-                        data: finaisData.projetado,
-                        borderColor: '#10B981',
-                        backgroundColor: '#10B981',
-                        pointBackgroundColor: '#FFFFFF',
-                        pointBorderColor: '#10B981',
-                        pointBorderWidth: 2.5,
-                        pointRadius: 5,
-                        pointHoverRadius: 7,
-                        borderWidth: 2.5,
-                        borderDash: [5, 4],
-                        tension: 0.3,
-                        datalabels: {
-                            display: true,
-                            align: 'center',
-                            anchor: 'center',
-                            color: '#FFFFFF',
-                            backgroundColor: '#10B981',
-                            borderRadius: 6,
-                            font: { weight: '800', size: 10, family: 'var(--font-mono)' },
-                            padding: { top: 3, bottom: 3, left: 6, right: 6 },
-                            formatter: (v) => v ? v.toFixed(1) : ''
-                        }
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                layout: { padding: { top: 28, bottom: 8, left: 4, right: 4 } },
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, font: { size: 11.5, weight: '600' } }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                        titleFont: { size: 12, weight: '800' },
-                        bodyFont: { size: 11 },
-                        padding: 10,
-                        cornerRadius: 8,
-                        callbacks: {
-                            label: function(context) {
-                                return ` ${context.dataset.label}: ${context.raw ? context.raw.toFixed(1) : 'N/A'}`;
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: { padding: { top: 28, bottom: 8, left: 4, right: 4 } },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, font: { size: 11.5, weight: '600' } }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleFont: { size: 12, weight: '800' },
+                            bodyFont: { size: 11 },
+                            padding: 10,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.dataset.label}: ${context.raw ? context.raw.toFixed(1) : 'N/A'}`;
+                                }
                             }
                         }
-                    }
-                },
-                scales: {
-                    y: {
-                        min: 0,
-                        max: 10,
-                        grid: { color: 'rgba(226, 232, 240, 0.6)' },
-                        ticks: { stepSize: 1, font: { size: 11, weight: '600' }, color: 'var(--text-secondary)' }
                     },
-                    x: {
-                        grid: { display: false },
-                        ticks: { font: { size: 11, weight: '700' }, color: 'var(--text-primary)' }
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 10,
+                            grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                            ticks: { stepSize: 1, font: { size: 11, weight: '600' }, color: 'var(--text-secondary)' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 11, weight: '700' }, color: 'var(--text-primary)' }
+                        }
                     }
                 }
-            }
-        });
+            });
+
+            // Canvas 2 (Anos Finais) Gradient
+            let bgGradFin = '#0EA5E9';
+            try {
+                const g = ctxFin.getContext('2d').createLinearGradient(0, 0, 0, 260);
+                g.addColorStop(0, '#0284C7');
+                g.addColorStop(1, '#38BDF8');
+                bgGradFin = g;
+            } catch(e) {}
+
+            dashFinaisChartInstance = new Chart(ctxFin, {
+                type: 'bar',
+                data: {
+                    labels: anos,
+                    datasets: [
+                        {
+                            type: 'bar',
+                            label: 'Maranhão (Observado)',
+                            data: finaisData.maranhao,
+                            backgroundColor: bgGradFin,
+                            borderRadius: 8,
+                            borderSkipped: false,
+                            barPercentage: 0.65,
+                            categoryPercentage: 0.8,
+                            datalabels: {
+                                display: true,
+                                anchor: 'end',
+                                align: 'top',
+                                color: '#0284C7',
+                                font: { weight: '800', size: 11 },
+                                formatter: (v) => v ? v.toFixed(1) : ''
+                            }
+                        },
+                        {
+                            type: 'line',
+                            label: 'Meta Projetada (INEP)',
+                            data: finaisData.projetado,
+                            borderColor: '#10B981',
+                            backgroundColor: '#10B981',
+                            pointBackgroundColor: '#FFFFFF',
+                            pointBorderColor: '#10B981',
+                            pointBorderWidth: 2.5,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            borderWidth: 2.5,
+                            borderDash: [5, 4],
+                            tension: 0.3,
+                            datalabels: {
+                                display: true,
+                                align: 'center',
+                                anchor: 'center',
+                                color: '#FFFFFF',
+                                backgroundColor: '#10B981',
+                                borderRadius: 6,
+                                font: { weight: '800', size: 10, family: 'var(--font-mono)' },
+                                padding: { top: 3, bottom: 3, left: 6, right: 6 },
+                                formatter: (v) => v ? v.toFixed(1) : ''
+                            }
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: { padding: { top: 28, bottom: 8, left: 4, right: 4 } },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, font: { size: 11.5, weight: '600' } }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleFont: { size: 12, weight: '800' },
+                            bodyFont: { size: 11 },
+                            padding: 10,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.dataset.label}: ${context.raw ? context.raw.toFixed(1) : 'N/A'}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 10,
+                            grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                            ticks: { stepSize: 1, font: { size: 11, weight: '600' }, color: 'var(--text-secondary)' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 11, weight: '700' }, color: 'var(--text-primary)' }
+                        }
+                    }
+                }
+            });
+        } catch(err) {
+            console.error('[renderDashboardEtapasCharts Error]', err);
+        }
     }
     window.renderDashboardEtapasCharts = renderDashboardEtapasCharts;
 
