@@ -367,6 +367,8 @@ function safeSetStyle(id, prop, value) {
             if (typeof renderBnccSkillsTable === 'function') renderBnccSkillsTable();
             if (typeof renderReferenceMatrix === 'function') renderReferenceMatrix();
             if (typeof initIdebComparativo === 'function') initIdebComparativo();
+            if (typeof initIdebCitySelector === 'function') initIdebCitySelector();
+            if (typeof handleSelectIdebCity === 'function') handleSelectIdebCity('Gonçalves Dias');
             if (typeof renderPedagogicLibrary === 'function') renderPedagogicLibrary();
         } catch (err) {
             console.warn('[IDEB Engine] Warning in UI updates:', err);
@@ -22431,6 +22433,8 @@ function initApp() {
         if (typeof renderBnccSkillsTable === 'function') renderBnccSkillsTable();
         if (typeof renderReferenceMatrix === 'function') renderReferenceMatrix();
         if (typeof initIdebComparativo === 'function') initIdebComparativo();
+        if (typeof initIdebCitySelector === 'function') initIdebCitySelector();
+        if (typeof handleSelectIdebCity === 'function') handleSelectIdebCity('Gonçalves Dias');
         if (typeof renderPedagogicLibrary === 'function') renderPedagogicLibrary();
         if (typeof safeCreateIcons === 'function') safeCreateIcons();
     } catch(e) {
