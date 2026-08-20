@@ -1,0 +1,10 @@
+/* ---------- Chart Container Styles ---------- */
+.chart-box {
+  position: relative;
+  width: 100%;
+}
+
+.chart-box canvas {
+  width: 100% !important;
+  height: 100% !important;
+}

@@ -1,0 +1,55 @@
+{
+  "filters": {
+    "rede": "Pública",
+    "disciplina": "Matemática",
+    "serie": "5º ano",
+    "fonte": "Saeb/INEP"
+  },
+  "levelMeta": {
+    "avancado": { "name": "Avançado", "color": "#17B26A" },
+    "adequado": { "name": "Adequado", "color": "#F2C94C" },
+    "basico": { "name": "Básico", "color": "#F2994A" },
+    "abaixo": { "name": "Abaixo do Básico", "color": "#E0483C" }
+  },
+  "legend": [
+    { "key": "avancado", "desc": "Aprendizado além da expectativa. Recomenda-se aos alunos neste nível atividades desafiadoras." },
+    { "key": "adequado", "desc": "Os alunos neste nível encontram-se preparados para continuar os estudos. Recomenda-se atividades de aprofundamento." },
+    { "key": "basico", "desc": "Os alunos neste nível precisam melhorar. Sugere-se atividades de reforço." },
+    { "key": "abaixo", "desc": "Os alunos neste nível apresentaram pouquíssimo aprendizado. É necessária a recuperação de conteúdos." }
+  ],
+  "cycles": [
+    {
+      "year": 2019,
+      "adequadoPct": 22,
+      "nextDelta": -5,
+      "levels": {
+        "avancado": { "pct": 5, "alunos": 4671 },
+        "adequado": { "pct": 18, "alunos": 17779 },
+        "basico": { "pct": 41, "alunos": 41370 },
+        "abaixo": { "pct": 37, "alunos": 37494 }
+      }
+    },
+    {
+      "year": 2021,
+      "adequadoPct": 17,
+      "nextDelta": 9,
+      "levels": {
+        "avancado": { "pct": 3, "alunos": 2902 },
+        "adequado": { "pct": 14, "alunos": 13714 },
+        "basico": { "pct": 39, "alunos": 36991 },
+        "abaixo": { "pct": 44, "alunos": 41381 }
+      }
+    },
+    {
+      "year": 2023,
+      "adequadoPct": 26,
+      "nextDelta": null,
+      "levels": {
+        "avancado": { "pct": 7, "alunos": 5973 },
+        "adequado": { "pct": 19, "alunos": 15496 },
+        "basico": { "pct": 37, "alunos": 30540 },
+        "abaixo": { "pct": 36, "alunos": 29774 }
+      }
+    }
+  ]
+}

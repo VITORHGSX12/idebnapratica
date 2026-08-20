@@ -1,0 +1,19 @@
+{
+  "municipio": "Gonçalves Dias",
+  "uf": "MA",
+  "codigoIbge": "2104675",
+  "labels": ["2015", "2017", "2019", "2021", "2023", "SAEB 25", "1° Simulado"],
+  "idebOficial": [3.4, 3.8, 4.2, 4.5, 4.8, 5.2, 5.4],
+  "metaProjetada": [3.6, 4.0, 4.3, 4.6, 4.9, 5.2, 5.5],
+  "currentIdeb": 5.2,
+  "targetIdeb": 5.5,
+  "currentGap": -0.3,
+  "progressPct": 94.5,
+  "proficienciaSaeb": {
+    "mediaGeral": 224.8,
+    "linguaPortuguesa": 226.4,
+    "matematica": 223.2
+  },
+  "taxaAprovacaoFluxo": 96.8,
+  "evolucaoSimulados": 5.4
+}

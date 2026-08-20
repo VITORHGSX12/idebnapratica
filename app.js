@@ -1,4 +1,27 @@
 
+// ==========================================
+// SAFE DOM HELPER UTILITIES (PREVENT NULL CRASHES)
+// ==========================================
+function safeEl(id) {
+    if (!id) return null;
+    return typeof id === 'string' ? document.getElementById(id) : id;
+}
+
+function safeSetProp(id, prop, value) {
+    var el = safeEl(id);
+    if (el) { el[prop] = value; }
+}
+
+function safeGetProp(id, prop, defaultVal) {
+    var el = safeEl(id);
+    return el && el[prop] !== undefined ? el[prop] : (defaultVal || '');
+}
+
+function safeSetStyle(id, prop, value) {
+    var el = safeEl(id);
+    if (el && el.style) { el.style[prop] = value; }
+}
+
 // =========================================================================
 // DASHBOARD INICIAL: DESCRITORES PRIORITÁRIOS CONDICIONAIS & RANKING SINCRONIZADO
 // =========================================================================
@@ -1024,6 +1047,114 @@
     }
     window.renderDashboardPriorityDescriptors = renderDashboardPriorityDescriptors;
 
+    function renderDashboardProficiency() {
+        const container = document.getElementById('dashboard-proficiency-container');
+        if (!container) return;
+
+        const levelMeta = {
+            avancado: { name: 'Avançado', color: '#17B26A' },
+            adequado: { name: 'Adequado', color: '#F2C94C' },
+            basico:   { name: 'Básico',   color: '#F2994A' },
+            abaixo:   { name: 'Abaixo do Básico', color: '#E0483C' }
+        };
+
+        const proficiencyCycles = [
+            { year: 2019, adequadoPct: 22, nextDelta: -5, levels: { avancado: { pct: 5, alunos: 4671 }, adequado: { pct: 18, alunos: 17779 }, basico: { pct: 41, alunos: 41370 }, abaixo: { pct: 37, alunos: 37494 } } },
+            { year: 2021, adequadoPct: 17, nextDelta: 9, levels: { avancado: { pct: 3, alunos: 2902 }, adequado: { pct: 14, alunos: 13714 }, basico: { pct: 39, alunos: 36991 }, abaixo: { pct: 44, alunos: 41381 } } },
+            { year: 2023, adequadoPct: 26, nextDelta: null, levels: { avancado: { pct: 7, alunos: 5973 }, adequado: { pct: 19, alunos: 15496 }, basico: { pct: 37, alunos: 30540 }, abaixo: { pct: 36, alunos: 29774 } } }
+        ];
+
+        const legendItems = [
+            { key: 'avancado', desc: 'Aprendizado além da expectativa. Recomenda-se aos alunos neste nível atividades desafiadoras.' },
+            { key: 'adequado', desc: 'Os alunos neste nível encontram-se preparados para continuar os estudos. Recomenda-se atividades de aprofundamento.' },
+            { key: 'basico', desc: 'Os alunos neste nível precisam melhorar. Sugere-se atividades de reforço.' },
+            { key: 'abaixo', desc: 'Os alunos neste nível apresentaram pouquíssimo aprendizado. É necessária a recuperação de conteúdos.' }
+        ];
+
+        const bannerColor = (pct) => {
+            if (pct < 25) return '#E0483C';
+            if (pct < 50) return '#F2994A';
+            if (pct < 75) return '#F2C94C';
+            return '#17B26A';
+        };
+
+        const cyclesHtml = proficiencyCycles.map(c => {
+            const levelsKeys = ['avancado', 'adequado', 'basico', 'abaixo'];
+            const levelsHtml = levelsKeys.map(key => {
+                const l = c.levels[key] || { pct: 0, alunos: 0 };
+                const meta = levelMeta[key];
+                return `
+                    <div style="padding: 9px 0; border-bottom: 1px solid var(--border-color);">
+                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                            <span style="font-family: var(--font-heading); font-weight: 700; font-size: 1rem; color: ${meta.color};">${l.pct}%</span>
+                            <span style="font-size: 0.72rem; color: var(--text-secondary);">(${l.alunos.toLocaleString('pt-BR')} alunos)</span>
+                        </div>
+                        <div style="height: 6px; border-radius: 20px; background: var(--bg-tertiary); overflow: hidden; margin: 6px 0 4px;">
+                            <div style="height: 100%; border-radius: 20px; width: ${l.pct}%; background: ${meta.color};"></div>
+                        </div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600;">${meta.name}</div>
+                    </div>
+                `;
+            }).join('');
+
+            const deltaChip = c.nextDelta === null || c.nextDelta === undefined ? '' :
+                `<span style="position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.92); color: #1C2130; font-size: 0.68rem; font-weight: 800; padding: 3px 8px; border-radius: 20px;">${c.nextDelta > 0 ? '+' : ''}${c.nextDelta}pts</span>`;
+
+            return `
+                <div style="border: 1px solid var(--border-color); border-radius: 14px; overflow: hidden; background: var(--bg-primary);">
+                    <div style="padding: 16px 10px; text-align: center; color: #fff; position: relative; background: ${bannerColor(c.adequadoPct)};">
+                        ${deltaChip}
+                        <div style="font-family: var(--font-heading); font-size: 1.45rem; font-weight: 800; line-height: 1.1;">${c.adequadoPct}%</div>
+                        <div style="font-size: 0.72rem; font-weight: 600; margin-top: 3px; opacity: 0.95;">Aprendizado adequado</div>
+                    </div>
+                    <div style="padding: 12px 16px 2px; font-family: var(--font-heading); font-weight: 700; font-size: 0.9rem; color: var(--text-primary);">${c.year}</div>
+                    <div style="padding: 2px 16px 14px;">${levelsHtml}</div>
+                </div>
+            `;
+        }).join('');
+
+        const legendHtml = legendItems.map(it => {
+            const meta = levelMeta[it.key];
+            return `
+                <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+                    <span style="width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; background: ${meta.color};"></span>
+                    <div>
+                        <div style="font-weight: 700; font-size: 0.85rem; margin-bottom: 3px; color: ${meta.color};">${meta.name}</div>
+                        <div style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5;">${it.desc}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        container.innerHTML = `
+            <div class="grid-2" style="display: grid; grid-template-columns: 2.15fr 1fr; gap: 18px; width: 100%;">
+                <div class="card card-full" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
+                    <div class="card-header" style="margin-bottom: 14px;">
+                        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0;">Distribuição dos alunos por proficiência</h3>
+                        <p class="card-subtitle" style="font-size: 0.8rem; color: var(--text-secondary); margin: 3px 0 0 0;">Podemos posicionar o aprendizado dos alunos em 4 níveis qualitativos de proficiência. O aprendizado adequado engloba os níveis Adequado e Avançado.</p>
+                    </div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 18px;">
+                        <span style="font-size: 12px; font-weight: 600; color: var(--text-secondary); background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 9px;">Pública</span>
+                        <span style="font-size: 12px; font-weight: 600; color: var(--text-secondary); background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 9px;">Matemática</span>
+                        <span style="font-size: 12px; font-weight: 600; color: var(--text-secondary); background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 9px;">5º ano</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px;">${cyclesHtml}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 14px; line-height: 1.5;">
+                        Dados oficiais Saeb/INEP (rede pública, Matemática, 5º ano). Assim que o módulo de simulados estiver ativo, os demais filtros (disciplina, série, rede) passam a refletir os resultados medidos internamente pela SEMED.
+                    </div>
+                </div>
+
+                <div class="card card-full" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
+                    <div class="card-header" style="margin-bottom: 14px;">
+                        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0;">Legenda Aprendizado</h3>
+                    </div>
+                    <div>${legendHtml}</div>
+                </div>
+            </div>
+        `;
+    }
+    window.renderDashboardProficiency = renderDashboardProficiency;
+
     function renderDashboardSchoolsRanking() {
         const tbody = document.getElementById('dashboard-schools-ranking-body');
         if (!tbody) return;
@@ -1087,6 +1218,10 @@
         renderDashboardPdeProgress();
         renderDashboardTimelineChart();
         renderDashboardPriorityDescriptors();
+        renderDashboardEtapasCharts();
+        renderDashboardComparativoChart();
+        renderDashboardIndicadorEscala();
+        renderDashboardProficiency();
         renderDashboardSchoolsRanking();
     }
     window.renderDashboardComplete = renderDashboardComplete;
@@ -2077,7 +2212,7 @@ CREATE INDEX idx_respostas_aluno_matricula ON respostas_aluno(matricula_id);
 CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
 `;
 
-    document.getElementById('sql-code-display').textContent = ddlSQLCode.trim();
+    safeSetProp('sql-code-display', 'textContent', ddlSQLCode.trim());
 
     const copySqlBtn = document.getElementById('copy-sql-btn');
     copySqlBtn.addEventListener('click', () => {
@@ -2192,11 +2327,11 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
         }
     };
 
-    document.getElementById('req-agendamento-code').textContent = JSON.stringify(apiPayloads.agendamento.request, null, 4);
-    document.getElementById('res-agendamento-code').textContent = JSON.stringify(apiPayloads.agendamento.response, null, 4);
-    document.getElementById('res-busca-questoes-code').textContent = JSON.stringify(apiPayloads['busca-questoes'].response, null, 4);
-    document.getElementById('req-diagnostico-code').textContent = JSON.stringify(apiPayloads['diagnostico-ia'].request, null, 4);
-    document.getElementById('res-diagnostico-code').textContent = JSON.stringify(apiPayloads['diagnostico-ia'].response, null, 4);
+    safeSetProp('req-agendamento-code', 'textContent', JSON.stringify(apiPayloads.agendamento.request, null, 4));
+    safeSetProp('res-agendamento-code', 'textContent', JSON.stringify(apiPayloads.agendamento.response, null, 4));
+    safeSetProp('res-busca-questoes-code', 'textContent', JSON.stringify(apiPayloads['busca-questoes'].response, null, 4));
+    safeSetProp('req-diagnostico-code', 'textContent', JSON.stringify(apiPayloads['diagnostico-ia'].request, null, 4));
+    safeSetProp('res-diagnostico-code', 'textContent', JSON.stringify(apiPayloads['diagnostico-ia'].response, null, 4));
 
     apiNavBtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -4509,27 +4644,27 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
 
     function openEditQuestionModal(q) {
         if (!editQModal) return;
-        document.getElementById('edit-q-id').value = q.id;
-        document.getElementById('edit-q-matrix').value = q.matriz || 'IDEB';
-        document.getElementById('edit-q-desc').value = q.codigo_bncc || '';
-        document.getElementById('edit-q-subject').value = q.disciplina || 'Língua Portuguesa';
-        document.getElementById('edit-q-diff').value = q.dificuldade || 'Médio';
-        document.getElementById('edit-q-bloom').value = q.nivel_cognitivo || 'Lembrar';
-        document.getElementById('edit-q-text').value = q.enunciado || '';
+        safeSetProp('edit-q-id', 'value', q.id);
+        safeSetProp('edit-q-matrix', 'value', q.matriz || 'IDEB');
+        safeSetProp('edit-q-desc', 'value', q.codigo_bncc || '');
+        safeSetProp('edit-q-subject', 'value', q.disciplina || 'Língua Portuguesa');
+        safeSetProp('edit-q-diff', 'value', q.dificuldade || 'Médio');
+        safeSetProp('edit-q-bloom', 'value', q.nivel_cognitivo || 'Lembrar');
+        safeSetProp('edit-q-text', 'value', q.enunciado || '');
 
         const opA = q.opcoes.find(o => o.letra === 'A');
         const opB = q.opcoes.find(o => o.letra === 'B');
         const opC = q.opcoes.find(o => o.letra === 'C');
         const opD = q.opcoes.find(o => o.letra === 'D');
 
-        document.getElementById('edit-q-op-a').value = opA ? opA.texto : '';
-        document.getElementById('edit-q-op-b').value = opB ? opB.texto : '';
-        document.getElementById('edit-q-op-c').value = opC ? opC.texto : '';
-        document.getElementById('edit-q-op-d').value = opD ? opD.texto : '';
+        safeSetProp('edit-q-op-a', 'value', opA ? opA.texto : '');
+        safeSetProp('edit-q-op-b', 'value', opB ? opB.texto : '');
+        safeSetProp('edit-q-op-c', 'value', opC ? opC.texto : '');
+        safeSetProp('edit-q-op-d', 'value', opD ? opD.texto : '');
 
         const correctOpt = q.opcoes.find(o => o.correta === true);
-        document.getElementById('edit-q-correct').value = correctOpt ? correctOpt.letra : 'A';
-        document.getElementById('edit-q-explanation').value = q.explicacao || '';
+        safeSetProp('edit-q-correct', 'value', correctOpt ? correctOpt.letra : 'A');
+        safeSetProp('edit-q-explanation', 'value', q.explicacao || '');
 
         editQModal.classList.remove('hidden');
     }
@@ -4543,20 +4678,20 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
 
     if (btnSaveEditedQ) {
         btnSaveEditedQ.addEventListener('click', () => {
-            const qId = document.getElementById('edit-q-id').value;
-            const matrix = document.getElementById('edit-q-matrix').value;
-            const desc = document.getElementById('edit-q-desc').value.trim();
-            const subject = document.getElementById('edit-q-subject').value;
-            const diff = document.getElementById('edit-q-diff').value;
-            const bloom = document.getElementById('edit-q-bloom').value;
-            const text = document.getElementById('edit-q-text').value.trim();
+            const qId = safeGetProp('edit-q-id', 'value');
+            const matrix = safeGetProp('edit-q-matrix', 'value');
+            const desc = safeGetProp('edit-q-desc', 'value').trim();
+            const subject = safeGetProp('edit-q-subject', 'value');
+            const diff = safeGetProp('edit-q-diff', 'value');
+            const bloom = safeGetProp('edit-q-bloom', 'value');
+            const text = safeGetProp('edit-q-text', 'value').trim();
 
-            const textA = document.getElementById('edit-q-op-a').value.trim();
-            const textB = document.getElementById('edit-q-op-b').value.trim();
-            const textC = document.getElementById('edit-q-op-c').value.trim();
-            const textD = document.getElementById('edit-q-op-d').value.trim();
-            const correct = document.getElementById('edit-q-correct').value;
-            const explanation = document.getElementById('edit-q-explanation').value.trim();
+            const textA = safeGetProp('edit-q-op-a', 'value').trim();
+            const textB = safeGetProp('edit-q-op-b', 'value').trim();
+            const textC = safeGetProp('edit-q-op-c', 'value').trim();
+            const textD = safeGetProp('edit-q-op-d', 'value').trim();
+            const correct = safeGetProp('edit-q-correct', 'value');
+            const explanation = safeGetProp('edit-q-explanation', 'value').trim();
 
             if (!desc || !text || !textA || !textB || !textC || !textD) {
                 showToast('Preencha todos os campos obrigatórios (*).', 'alert-triangle');
@@ -5477,11 +5612,11 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
     if (formCreateSchool && modalCreateSchool) {
         formCreateSchool.addEventListener('submit', (e) => {
             e.preventDefault();
-            const name = document.getElementById('school-input-name').value.trim().toUpperCase();
-            const inep = document.getElementById('school-input-inep').value.trim();
-            const zone = document.getElementById('school-input-zone').value;
-            const address = document.getElementById('school-input-address').value.trim() || 'GONÇALVES DIAS - MA';
-            const director = document.getElementById('school-input-director').value || 'Não informado';
+            const name = safeGetProp('school-input-name', 'value').trim().toUpperCase();
+            const inep = safeGetProp('school-input-inep', 'value').trim();
+            const zone = safeGetProp('school-input-zone', 'value');
+            const address = safeGetProp('school-input-address', 'value').trim() || 'GONÇALVES DIAS - MA';
+            const director = safeGetProp('school-input-director', 'value') || 'Não informado';
 
             if (!name) {
                 showToast('Informe o nome da escola.', 'alert-triangle');
@@ -5537,9 +5672,9 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
     if (formWsNewClass && modalWsNewClass) {
         formWsNewClass.addEventListener('submit', (e) => {
             e.preventDefault();
-            const className = document.getElementById('ws-class-name-input').value.trim();
-            const stage = document.getElementById('ws-class-stage-select').value;
-            const teacher = document.getElementById('ws-class-teacher-select').value;
+            const className = safeGetProp('ws-class-name-input', 'value').trim();
+            const stage = safeGetProp('ws-class-stage-select', 'value');
+            const teacher = safeGetProp('ws-class-teacher-select', 'value');
 
             const teacherKey = `${activeWorkspaceSchool}_${className}`;
             classTeachersMap[teacherKey] = teacher;
@@ -5573,10 +5708,10 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
     if (formBindStudent && modalBindStudent) {
         formBindStudent.addEventListener('submit', (e) => {
             e.preventDefault();
-            const name = document.getElementById('bind-student-name').value.trim().toUpperCase();
-            const mat = document.getElementById('bind-student-matricula').value.trim();
-            const sex = document.getElementById('bind-student-sexo').value;
-            const nee = document.getElementById('bind-student-nee').value.trim();
+            const name = safeGetProp('bind-student-name', 'value').trim().toUpperCase();
+            const mat = safeGetProp('bind-student-matricula', 'value').trim();
+            const sex = safeGetProp('bind-student-sexo', 'value');
+            const nee = safeGetProp('bind-student-nee', 'value').trim();
 
             const newStudent = {
                 matricula: mat || String(Math.floor(1000 + Math.random() * 9000)),
@@ -5990,7 +6125,7 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
     const wNext1 = document.getElementById('wizard-next-1');
     if (wNext1) {
         wNext1.addEventListener('click', () => {
-            const title = document.getElementById('wizard-title').value.trim();
+            const title = safeGetProp('wizard-title', 'value').trim();
             if (!title) {
                 showToast('Informe o nome da avaliação.', 'alert-triangle');
                 return;
@@ -6028,13 +6163,13 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
             wizardSelectedQuestions = Array.from(checkedBoxes).map(cb => cb.value);
             
             // Populate Step 3 review pane
-            const title = document.getElementById('wizard-title').value.trim();
-            const date = document.getElementById('wizard-date').value;
-            const subject = document.getElementById('wizard-subject').value;
+            const title = safeGetProp('wizard-title', 'value').trim();
+            const date = safeGetProp('wizard-date', 'value');
+            const subject = safeGetProp('wizard-subject', 'value');
             
-            document.getElementById('wizard-review-title').textContent = title;
-            document.getElementById('wizard-review-meta').textContent = `Realização: ${date} | Componente: ${subject} | Público: ${wizardSelectedStage}`;
-            document.getElementById('wizard-review-questions-count').innerHTML = `Questões Selecionadas: <span style="color:var(--green-light); font-weight:700;">${wizardSelectedQuestions.length}</span>`;
+            safeSetProp('wizard-review-title', 'textContent', title);
+            safeSetProp('wizard-review-meta', 'textContent', `Realização: ${date} | Componente: ${subject} | Público: ${wizardSelectedStage}`);
+            safeSetProp('wizard-review-questions-count', 'innerHTML', `Questões Selecionadas: <span style="color:var(--green-light); font-weight:700;">${wizardSelectedQuestions.length}</span>`);
             
             goToWizardStep(3);
         });
@@ -6052,13 +6187,13 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
     const wFinish = document.getElementById('wizard-finish-btn');
     if (wFinish) {
         wFinish.addEventListener('click', () => {
-            const title = document.getElementById('wizard-title').value.trim();
+            const title = safeGetProp('wizard-title', 'value').trim();
             if (!title) {
                 showToast('Por favor, informe o título do evento.', 'alert-triangle');
                 return;
             }
-            const startStr = document.getElementById('wizard-start-date').value;
-            const endStr = document.getElementById('wizard-end-date').value;            
+            const startStr = safeGetProp('wizard-start-date', 'value');
+            const endStr = safeGetProp('wizard-end-date', 'value');            
             const checkedClassCbs = document.querySelectorAll('.wizard-class-checkbox:checked');
             let participatingClasses = [];
             let schoolNames = [];
@@ -6082,7 +6217,7 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
             const checkedSchoolCbs = document.querySelectorAll('.wizard-school-checkbox:checked');
             let participatingSchools = Array.from(checkedSchoolCbs).map(cb => cb.value);
 
-            const subject = document.getElementById('wizard-subject').value;
+            const subject = safeGetProp('wizard-subject', 'value');
 
             const formatDateStr = (dStr) => {
                 if (!dStr) return '';
@@ -6224,10 +6359,10 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
     }
 
     function resetWizard() {
-        document.getElementById('wizard-title').value = '';
-        document.getElementById('wizard-date').value = '2026-08-20';
-        document.getElementById('wizard-start-date').value = '2026-08-20';
-        document.getElementById('wizard-end-date').value = '2026-08-26';
+        safeSetProp('wizard-title', 'value', '');
+        safeSetProp('wizard-date', 'value', '2026-08-20');
+        safeSetProp('wizard-start-date', 'value', '2026-08-20');
+        safeSetProp('wizard-end-date', 'value', '2026-08-26');
         populateWizardSchools();
         goToWizardStep(1);
     }
@@ -6237,7 +6372,7 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         if (!qContainer) return;
         qContainer.innerHTML = '';
 
-        const selectedSubject = document.getElementById('wizard-subject').value;
+        const selectedSubject = safeGetProp('wizard-subject', 'value');
 
         // Map wizardSelectedStage ("2º Ano", "5º Ano", "9º Ano") to target grade prefix ("EF02", "EF05", "EF09")
         let stagePrefix = "EF05"; // default
@@ -6676,9 +6811,9 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
     if (formDescriptor) {
         formDescriptor.addEventListener('submit', (e) => {
             e.preventDefault();
-            const code = document.getElementById('desc-code').value.trim().toUpperCase();
-            const stage = document.getElementById('desc-stage').value;
-            const text = document.getElementById('desc-text').value.trim();
+            const code = safeGetProp('desc-code', 'value').trim().toUpperCase();
+            const stage = safeGetProp('desc-stage', 'value');
+            const text = safeGetProp('desc-text', 'value').trim();
 
             const comp = code.startsWith('LP') ? 'Língua Portuguesa' : 'Matemática';
 
@@ -7231,8 +7366,8 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         if (!card) return;
         card.classList.remove('hidden');
 
-        document.getElementById('detail-desc-code').textContent = `${desc.codigo} (${desc.componente})`;
-        document.getElementById('detail-desc-desc').textContent = desc.desc;
+        safeSetProp('detail-desc-code', 'textContent', `${desc.codigo} (${desc.componente})`);
+        safeSetProp('detail-desc-desc', 'textContent', desc.desc);
 
         const ranksContainer = document.getElementById('detail-descriptor-school-ranks');
         if (ranksContainer) {
@@ -8005,12 +8140,12 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
     if (formCreateSchedule && modalCreateSchedule) {
         formCreateSchedule.addEventListener('submit', (e) => {
             e.preventDefault();
-            const week = document.getElementById('sched-input-week').value.trim();
-            const stage = document.getElementById('sched-input-stage').value;
-            const comp = document.getElementById('sched-input-component').value;
-            const desc = document.getElementById('sched-input-descriptor').value.trim();
-            const title = document.getElementById('sched-input-title').value.trim();
-            const meth = document.getElementById('sched-input-methodology').value.trim();
+            const week = safeGetProp('sched-input-week', 'value').trim();
+            const stage = safeGetProp('sched-input-stage', 'value');
+            const comp = safeGetProp('sched-input-component', 'value');
+            const desc = safeGetProp('sched-input-descriptor', 'value').trim();
+            const title = safeGetProp('sched-input-title', 'value').trim();
+            const meth = safeGetProp('sched-input-methodology', 'value').trim();
 
             const newItem = {
                 id: `SCH_${Date.now()}`,
@@ -8703,8 +8838,8 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         const avatar = document.getElementById('modal-student-avatar-circle');
         if (avatar) avatar.textContent = initial;
 
-        document.getElementById('modal-student-name').textContent = student.nome;
-        document.getElementById('modal-student-matricula').textContent = `Matrícula: ${student.matricula}`;
+        safeSetProp('modal-student-name', 'textContent', student.nome);
+        safeSetProp('modal-student-matricula', 'textContent', `Matrícula: ${student.matricula}`);
         
         // Proficiency Badge
         const profBadge = document.getElementById('modal-student-proficiency-badge');
@@ -8736,26 +8871,26 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         }
 
         // Tab 1: Ficha Cadastral Fields
-        document.getElementById('modal-student-cpf').textContent = student.cpf || 'Não Informado';
-        document.getElementById('modal-student-sexo').textContent = student.sexo === 'F' ? 'Feminino' : (student.sexo === 'M' ? 'Masculino' : 'Não Informado');
-        document.getElementById('modal-student-nascimento').textContent = student.nascimento || 'Não Informada';
-        document.getElementById('modal-student-cor').textContent = student.cor || 'Não Informada';
-        document.getElementById('modal-student-mae').textContent = student.mae || 'Não Informada';
-        document.getElementById('modal-student-pai').textContent = student.pai || 'Não Informado';
-        document.getElementById('modal-student-endereco').textContent = student.endereco || 'Não Informado';
-        document.getElementById('modal-student-cep').textContent = student.cep || 'Não Informado';
-        document.getElementById('modal-student-escola').textContent = student.escola;
-        document.getElementById('modal-student-etapa').textContent = student.etapa;
-        document.getElementById('modal-student-turma-turno').textContent = `${student.turma || student.etapa} (${student.turno || 'Matutino'})`;
-        document.getElementById('modal-student-inicio').textContent = student.data_matricula || '10/01/2026';
+        safeSetProp('modal-student-cpf', 'textContent', student.cpf || 'Não Informado');
+        safeSetProp('modal-student-sexo', 'textContent', student.sexo === 'F' ? 'Feminino' : (student.sexo === 'M' ? 'Masculino' : 'Não Informado'));
+        safeSetProp('modal-student-nascimento', 'textContent', student.nascimento || 'Não Informada');
+        safeSetProp('modal-student-cor', 'textContent', student.cor || 'Não Informada');
+        safeSetProp('modal-student-mae', 'textContent', student.mae || 'Não Informada');
+        safeSetProp('modal-student-pai', 'textContent', student.pai || 'Não Informado');
+        safeSetProp('modal-student-endereco', 'textContent', student.endereco || 'Não Informado');
+        safeSetProp('modal-student-cep', 'textContent', student.cep || 'Não Informado');
+        safeSetProp('modal-student-escola', 'textContent', student.escola);
+        safeSetProp('modal-student-etapa', 'textContent', student.etapa);
+        safeSetProp('modal-student-turma-turno', 'textContent', `${student.turma || student.etapa} (${student.turno || 'Matutino'})`);
+        safeSetProp('modal-student-inicio', 'textContent', student.data_matricula || '10/01/2026');
         
         const scoreVal = student.avg_score || 215;
         const scoreLp = student.score_lp || Math.round(scoreVal * 1.02);
         const scoreMat = student.score_mat || Math.round(scoreVal * 0.98);
-        document.getElementById('modal-student-score').textContent = `${scoreVal} pts`;
-        document.getElementById('modal-student-score-lp').textContent = `${scoreLp} pts`;
-        document.getElementById('modal-student-score-mat').textContent = `${scoreMat} pts`;
-        document.getElementById('modal-student-freq').textContent = `${student.frequencia_pct || 98}%`;
+        safeSetProp('modal-student-score', 'textContent', `${scoreVal} pts`);
+        safeSetProp('modal-student-score-lp', 'textContent', `${scoreLp} pts`);
+        safeSetProp('modal-student-score-mat', 'textContent', `${scoreMat} pts`);
+        safeSetProp('modal-student-freq', 'textContent', `${student.frequencia_pct || 98}%`);
 
         const neeField = document.getElementById('modal-student-nee');
         if (neeField) {
@@ -8941,10 +9076,10 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
     if (createSchoolForm) {
         createSchoolForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const schoolName = document.getElementById('new-school-name').value.trim().toUpperCase();
-            const schoolInep = document.getElementById('new-school-inep').value.trim();
-            const schoolCep = document.getElementById('new-school-cep').value.trim();
-            const schoolAddress = document.getElementById('new-school-address').value.trim();
+            const schoolName = safeGetProp('new-school-name', 'value').trim().toUpperCase();
+            const schoolInep = safeGetProp('new-school-inep', 'value').trim();
+            const schoolCep = safeGetProp('new-school-cep', 'value').trim();
+            const schoolAddress = safeGetProp('new-school-address', 'value').trim();
 
             if (!schoolName || !schoolInep) return;
 
@@ -9087,20 +9222,20 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
     if (createStudentForm) {
         createStudentForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const name = document.getElementById('new-student-name').value.trim().toUpperCase();
-            const cpf = document.getElementById('new-student-cpf').value.trim();
-            const birth = document.getElementById('new-student-birth').value;
-            const sexo = document.getElementById('new-student-sexo').value;
-            const color = document.getElementById('new-student-color').value;
-            const nee = document.getElementById('new-student-nee').value.trim();
-            const mae = document.getElementById('new-student-mae').value.trim().toUpperCase();
-            const pai = document.getElementById('new-student-pai').value.trim().toUpperCase();
-            const address = document.getElementById('new-student-address').value.trim().toUpperCase();
-            const cep = document.getElementById('new-student-cep').value.trim();
-            const matricula = document.getElementById('new-student-matricula').value.trim();
-            const school = document.getElementById('new-student-school').value;
-            const selectedClassId = document.getElementById('new-student-class').value;
-            const start = document.getElementById('new-student-start').value;
+            const name = safeGetProp('new-student-name', 'value').trim().toUpperCase();
+            const cpf = safeGetProp('new-student-cpf', 'value').trim();
+            const birth = safeGetProp('new-student-birth', 'value');
+            const sexo = safeGetProp('new-student-sexo', 'value');
+            const color = safeGetProp('new-student-color', 'value');
+            const nee = safeGetProp('new-student-nee', 'value').trim();
+            const mae = safeGetProp('new-student-mae', 'value').trim().toUpperCase();
+            const pai = safeGetProp('new-student-pai', 'value').trim().toUpperCase();
+            const address = safeGetProp('new-student-address', 'value').trim().toUpperCase();
+            const cep = safeGetProp('new-student-cep', 'value').trim();
+            const matricula = safeGetProp('new-student-matricula', 'value').trim();
+            const school = safeGetProp('new-student-school', 'value');
+            const selectedClassId = safeGetProp('new-student-class', 'value');
+            const start = safeGetProp('new-student-start', 'value');
 
             if (!name || !matricula || !school || !selectedClassId) {
                 showToast('Preencha todos os campos e selecione uma turma.', 'alert-triangle');
@@ -9410,8 +9545,8 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
     const btnGenerateQIa = document.getElementById('btn-generate-q-ia');
     if (btnGenerateQIa) {
         btnGenerateQIa.onclick = () => {
-            const descCode = document.getElementById('add-q-ia-desc').value;
-            const difficulty = document.getElementById('add-q-ia-diff').value;
+            const descCode = safeGetProp('add-q-ia-desc', 'value');
+            const difficulty = safeGetProp('add-q-ia-diff', 'value');
 
             let comp = 'Matemática';
             const isLP = FULL_INEP_MATRICES.portuguese.some(d => d.codigo === descCode);
@@ -9542,14 +9677,14 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
     const btnSaveQManual = document.getElementById('btn-save-q-manual');
     if (btnSaveQManual) {
         btnSaveQManual.onclick = () => {
-            const descCode = document.getElementById('add-q-manual-desc').value;
-            const difficulty = document.getElementById('add-q-manual-diff').value;
-            const text = document.getElementById('add-q-manual-text').value.trim();
-            const opA = document.getElementById('add-q-manual-op-a').value.trim();
-            const opB = document.getElementById('add-q-manual-op-b').value.trim();
-            const opC = document.getElementById('add-q-manual-op-c').value.trim();
-            const opD = document.getElementById('add-q-manual-op-d').value.trim();
-            const correct = document.getElementById('add-q-manual-correct').value;
+            const descCode = safeGetProp('add-q-manual-desc', 'value');
+            const difficulty = safeGetProp('add-q-manual-diff', 'value');
+            const text = safeGetProp('add-q-manual-text', 'value').trim();
+            const opA = safeGetProp('add-q-manual-op-a', 'value').trim();
+            const opB = safeGetProp('add-q-manual-op-b', 'value').trim();
+            const opC = safeGetProp('add-q-manual-op-c', 'value').trim();
+            const opD = safeGetProp('add-q-manual-op-d', 'value').trim();
+            const correct = safeGetProp('add-q-manual-correct', 'value');
 
             if (!text || !opA || !opB || !opC || !opD) {
                 showToast('Por favor, preencha todos os campos obrigatórios (*).', 'alert-triangle');
@@ -9584,11 +9719,11 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
 
             renderQuestions();
             
-            document.getElementById('add-q-manual-text').value = '';
-            document.getElementById('add-q-manual-op-a').value = '';
-            document.getElementById('add-q-manual-op-b').value = '';
-            document.getElementById('add-q-manual-op-c').value = '';
-            document.getElementById('add-q-manual-op-d').value = '';
+            safeSetProp('add-q-manual-text', 'value', '');
+            safeSetProp('add-q-manual-op-a', 'value', '');
+            safeSetProp('add-q-manual-op-b', 'value', '');
+            safeSetProp('add-q-manual-op-c', 'value', '');
+            safeSetProp('add-q-manual-op-d', 'value', '');
 
             showToast('Questão inserida manualmente com sucesso!', 'check-circle');
         };
@@ -9715,10 +9850,10 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
                 const cObj = dbTurmas.find(t => t.id === id);
                 if (cObj) {
                     classEditIdInput.value = cObj.id;
-                    document.getElementById('class-name').value = cObj.nome;
-                    document.getElementById('class-stage').value = cObj.serie;
-                    document.getElementById('class-shift').value = cObj.turno;
-                    document.getElementById('class-year').value = cObj.ano_letivo;
+                    safeSetProp('class-name', 'value', cObj.nome);
+                    safeSetProp('class-stage', 'value', cObj.serie);
+                    safeSetProp('class-shift', 'value', cObj.turno);
+                    safeSetProp('class-year', 'value', cObj.ano_letivo);
                     
                     newClassFormTitle.textContent = "Editar Turma";
                     newClassFormContainer.classList.remove('hidden');
@@ -9751,10 +9886,10 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         createClassForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const editId = classEditIdInput.value;
-            const name = document.getElementById('class-name').value.trim();
-            const stage = document.getElementById('class-stage').value;
-            const shift = document.getElementById('class-shift').value;
-            const year = parseInt(document.getElementById('class-year').value);
+            const name = safeGetProp('class-name', 'value').trim();
+            const stage = safeGetProp('class-stage', 'value');
+            const shift = safeGetProp('class-shift', 'value');
+            const year = parseInt(safeGetProp('class-year', 'value'));
 
             const schoolObj = dbEscolas.find(e => e.nome === currentClassesSchoolName);
             if (!schoolObj) return;
@@ -11316,11 +11451,11 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         cancelUploadBtn?.addEventListener('click', () => uploadModal.classList.add('hidden'));
         uploadForm?.addEventListener('submit', (e) => {
             e.preventDefault();
-            const title = document.getElementById('new-material-title').value;
-            const comp = document.getElementById('new-material-comp').value;
-            const etapa = document.getElementById('new-material-etapa').value;
-            const tipo = document.getElementById('new-material-tipo').value;
-            const desc = document.getElementById('new-material-desc').value;
+            const title = safeGetProp('new-material-title', 'value');
+            const comp = safeGetProp('new-material-comp', 'value');
+            const etapa = safeGetProp('new-material-etapa', 'value');
+            const tipo = safeGetProp('new-material-tipo', 'value');
+            const desc = safeGetProp('new-material-desc', 'value');
 
             defaultPedagogicMaterials.unshift({
                 id: 'mat_' + Date.now(),
@@ -13407,12 +13542,12 @@ if (document.readyState === 'loading') {
         if (formPde && modalPde) {
             formPde.onsubmit = function(e) {
                 e.preventDefault();
-                const escola = document.getElementById('pde-school-select').value;
-                const etapa = document.getElementById('pde-stage-select').value;
-                const meta = document.getElementById('pde-target-ideb').value;
-                const coord = document.getElementById('pde-coordinator').value;
-                const desc = document.getElementById('pde-descriptors').value;
-                const acoes = document.getElementById('pde-actions').value;
+                const escola = safeGetProp('pde-school-select', 'value');
+                const etapa = safeGetProp('pde-stage-select', 'value');
+                const meta = safeGetProp('pde-target-ideb', 'value');
+                const coord = safeGetProp('pde-coordinator', 'value');
+                const desc = safeGetProp('pde-descriptors', 'value');
+                const acoes = safeGetProp('pde-actions', 'value');
 
                 modalPde.classList.add('hidden');
                 showToast(`Plano de Desenvolvimento Escolar (PDE) de "${escola}" publicado com sucesso!`, 'check');
@@ -18221,7 +18356,7 @@ window.closeStudentProficiencyCalcModal = closeStudentProficiencyCalcModal;
         const modal = document.getElementById('modal-pde-manager');
         if (!modal) return;
 
-        document.getElementById('pde-manager-school-id').value = schId;
+        safeSetProp('pde-manager-school-id', 'value', schId);
         const titleEl = document.getElementById('pde-modal-school-title');
         const metaEl = document.getElementById('pde-modal-school-meta');
         const targetInput = document.getElementById('pde-manager-target-score');
@@ -18233,15 +18368,15 @@ window.closeStudentProficiencyCalcModal = closeStudentProficiencyCalcModal;
         // Preenche campos se já existir PDE cadastrado
         const existing = gdSchoolPdePlansMap[schId];
         if (existing) {
-            document.getElementById('pde-manager-indicator').value = existing.indicator || 'Recomposição de Fluência Leitora (D1 a D6)';
-            document.getElementById('pde-manager-responsible').value = existing.responsible || 'Coordenador Pedagógico';
-            document.getElementById('pde-manager-deadline').value = existing.deadline || '2026-11-30';
-            document.getElementById('pde-manager-actions').value = existing.actions || '';
-            document.getElementById('pde-manager-status').value = existing.status || 'Em Execução';
+            safeSetProp('pde-manager-indicator', 'value', existing.indicator || 'Recomposição de Fluência Leitora (D1 a D6)');
+            safeSetProp('pde-manager-responsible', 'value', existing.responsible || 'Coordenador Pedagógico');
+            safeSetProp('pde-manager-deadline', 'value', existing.deadline || '2026-11-30');
+            safeSetProp('pde-manager-actions', 'value', existing.actions || '');
+            safeSetProp('pde-manager-status', 'value', existing.status || 'Em Execução');
         } else {
-            document.getElementById('pde-manager-actions').value = '1. Monitoramento quinzenal de fluência leitora e resolução de problemas;\n2. Oficinas práticas semanais nos descritores prioritários com gap;\n3. Plantões pedagógicos para os alunos nos níveis crítico e muito crítico.';
-            document.getElementById('pde-manager-responsible').value = 'Coordenador Pedagógico & Direção';
-            document.getElementById('pde-manager-deadline').value = '2026-11-30';
+            safeSetProp('pde-manager-actions', 'value', '1. Monitoramento quinzenal de fluência leitora e resolução de problemas;\n2. Oficinas práticas semanais nos descritores prioritários com gap;\n3. Plantões pedagógicos para os alunos nos níveis crítico e muito crítico.');
+            safeSetProp('pde-manager-responsible', 'value', 'Coordenador Pedagógico & Direção');
+            safeSetProp('pde-manager-deadline', 'value', '2026-11-30');
         }
 
         switchPdeModalMode('manual');
@@ -19836,7 +19971,7 @@ window.closeStudentProficiencyCalcModal = closeStudentProficiencyCalcModal;
         } else {
             results.innerHTML = matches.map(m => `
                 <div style="padding: 10px 14px; border-bottom: 1px solid var(--border-color); cursor: pointer; font-size: 0.8rem;"
-                     onclick="openDayExpandedDrawer('${m.date}'); document.getElementById('schedule-skill-search-results').style.display='none';">
+                     onclick="openDayExpandedDrawer('${m.date}'); safeSetStyle('schedule-skill-search-results', 'display', 'none');">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <strong style="color: #6366f1;">${m.habilidadeCode}</strong>
                         <span style="font-size: 0.72rem; color: var(--text-muted);">Data: ${m.date.split('-').reverse().join('/')}</span>

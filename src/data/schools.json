@@ -1,0 +1,101 @@
+[
+  {
+    "id": "21128723",
+    "nome": "UI JOSE CORREA LIMA",
+    "codigoInep": "21128723",
+    "scoreIdeb": 5.4,
+    "localizacao": "Zona Rural",
+    "status": "ATIVA",
+    "municipio": "Gonçalves Dias",
+    "uf": "MA",
+    "rede": "Municipal"
+  },
+  {
+    "id": "21128146",
+    "nome": "UI EMILIO MURAD",
+    "codigoInep": "21128146",
+    "scoreIdeb": 5.1,
+    "localizacao": "Zona Rural",
+    "status": "ATIVA",
+    "municipio": "Gonçalves Dias",
+    "uf": "MA",
+    "rede": "Municipal"
+  },
+  {
+    "id": "21128740",
+    "nome": "UE VEREADOR LEONARDO FERREIRA LIMA",
+    "codigoInep": "21128740",
+    "scoreIdeb": 5.6,
+    "localizacao": "Sede Urbana",
+    "status": "ATIVA",
+    "municipio": "Gonçalves Dias",
+    "uf": "MA",
+    "rede": "Municipal"
+  },
+  {
+    "id": "21128120",
+    "nome": "U I BASILIO ALVES",
+    "codigoInep": "21128120",
+    "scoreIdeb": 5,
+    "localizacao": "Zona Rural",
+    "status": "ATIVA",
+    "municipio": "Gonçalves Dias",
+    "uf": "MA",
+    "rede": "Municipal"
+  },
+  {
+    "id": "21286973",
+    "nome": "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ",
+    "codigoInep": "21286973",
+    "scoreIdeb": 5.5,
+    "localizacao": "Sede Urbana",
+    "status": "ATIVA",
+    "municipio": "Gonçalves Dias",
+    "uf": "MA",
+    "rede": "Municipal"
+  },
+  {
+    "id": "21128758",
+    "nome": "UE RAIMUNDO DOS REIS DA SILVA",
+    "codigoInep": "21128758",
+    "scoreIdeb": 4.9,
+    "localizacao": "Zona Rural",
+    "status": "ATIVA",
+    "municipio": "Gonçalves Dias",
+    "uf": "MA",
+    "rede": "Municipal"
+  },
+  {
+    "id": "21286990",
+    "nome": "UNIDADE INTEGRADA JOSE GONCALVES DIAS",
+    "codigoInep": "21286990",
+    "scoreIdeb": 5.3,
+    "localizacao": "Zona Rural",
+    "status": "ATIVA",
+    "municipio": "Gonçalves Dias",
+    "uf": "MA",
+    "rede": "Municipal"
+  },
+  {
+    "id": "21128774",
+    "nome": "UNIDADE ESCOLAR ANISIO GOMES",
+    "codigoInep": "21128774",
+    "scoreIdeb": 4.8,
+    "localizacao": "Zona Rural",
+    "status": "ATIVA",
+    "municipio": "Gonçalves Dias",
+    "uf": "MA",
+    "rede": "Municipal"
+  },
+  {
+    "id": "21192544",
+    "nome": "UE ANITA FURTADO",
+    "codigoInep": "21192544",
+    "scoreIdeb": 5.4,
+    "localizacao": "Sede Urbana",
+    "status": "ATIVA",
+    "municipio": "Gonçalves Dias",
+    "uf": "MA",
+    "rede": "Municipal"
+  }
+]

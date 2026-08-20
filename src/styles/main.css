@@ -1,0 +1,149 @@
+:root {
+  --bg: #F3F4FA;
+  --card: #FFFFFF;
+  --border: #EBEDF5;
+  --text: #1C2130;
+  --text2: #767C90;
+  --text3: #9AA0B4;
+  --purple: #5B4FE9;
+  --purple-deep: #4338CA;
+  --purple-bg: #EEECFE;
+  --green: #17B26A;
+  --green-bg: #E4FAEF;
+  --blue: #3B82F6;
+  --blue-bg: #EAF2FE;
+  --amber: #F59E0B;
+  --amber-bg: #FEF3E2;
+  --teal: #0EA5A5;
+  --radius: 18px;
+  --shadow: 0 1px 2px rgba(16,24,40,.04), 0 6px 20px -8px rgba(16,24,40,.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--text);
+  padding: 28px 32px 60px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: 1220px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ---------- Header Component ---------- */
+.header {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #8B7CF6, #5B4FE9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: 'Lexend', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.greeting {
+  font-size: 19px;
+  font-weight: 700;
+  font-family: 'Lexend', sans-serif;
+}
+
+.greeting span {
+  color: var(--purple);
+}
+
+.meta-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--purple-deep);
+  background: var(--purple-bg);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.meta-text {
+  font-size: 13px;
+  color: var(--text2);
+}
+
+.dot {
+  color: var(--text3);
+}
+
+.header-right {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  background: #f8f9fc;
+}
+
+.btn-primary {
+  background: var(--purple);
+  color: #fff;
+  border: none;
+}
+
+.btn-primary:hover {
+  background: var(--purple-deep);
+}
+
+@media (max-width: 980px) {
+  body {
+    padding: 20px 16px 40px;
+  }
+}

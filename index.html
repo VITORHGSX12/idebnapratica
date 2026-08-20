@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <link rel="stylesheet" href="styles.css?v=434c672a33_mt07505w">
+    <link rel="stylesheet" href="styles.css?v=7b79aed6bd_mt23aup4">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,7 +67,143 @@
             if (typeof window.navigateToTab === 'function') {
                 window.navigateToTab('dashboard');
             }
+        function toggleMobileSidebar(forceState) {
+            var appContainer = document.querySelector('.app-container') || document.body;
+            var backdrop = document.getElementById('mobile-sidebar-backdrop');
+            var isOpen = appContainer.classList.contains('mobile-sidebar-open') || document.body.classList.contains('mobile-sidebar-open');
+
+            if (typeof forceState === 'boolean') {
+                isOpen = !forceState;
+            }
+
+            if (!isOpen) {
+                appContainer.classList.add('mobile-sidebar-open');
+                document.body.classList.add('mobile-sidebar-open');
+                document.body.style.overflow = 'hidden';
+                if (backdrop) backdrop.classList.add('active');
+            } else {
+                appContainer.classList.remove('mobile-sidebar-open');
+                document.body.classList.remove('mobile-sidebar-open');
+                document.body.style.overflow = '';
+                if (backdrop) backdrop.classList.remove('active');
+            }
         }
+        window.toggleMobileSidebar = toggleMobileSidebar;
+
+        function closeMobileSidebar() {
+            toggleMobileSidebar(false);
+        }
+        window.closeMobileSidebar = closeMobileSidebar;
+
+        function closeModal(modalId) {
+            if (!modalId) return;
+            var el = typeof modalId === 'string' ? document.getElementById(modalId) : modalId;
+            if (el) {
+                el.classList.add('hidden');
+                el.classList.remove('active');
+                el.style.display = 'none';
+            }
+        }
+        window.closeModal = closeModal;
+
+        function closeModalManageClassStudents() {
+            closeModal('modal-manage-class-students');
+        }
+        window.closeModalManageClassStudents = closeModalManageClassStudents;
+
+        function filterStudentsToLink() {
+            var searchInput = document.getElementById('search-student-to-link');
+            if (!searchInput) return;
+            var query = searchInput.value.toLowerCase().trim();
+            var rows = document.querySelectorAll('#students-link-list .student-link-item');
+            rows.forEach(function(row) {
+                var text = row.textContent.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+        window.filterStudentsToLink = filterStudentsToLink;
+
+        function switchMatrizMainTab(tab) {
+            var saebSec = document.getElementById('matriz-saeb-section');
+            var bnccSec = document.getElementById('matriz-bncc-section');
+            var btnSaeb = document.getElementById('btn-matriz-tab-saeb');
+            var btnBncc = document.getElementById('btn-matriz-tab-bncc');
+            if (tab === 'bncc') {
+                if (saebSec) saebSec.classList.add('hidden');
+                if (bnccSec) bnccSec.classList.remove('hidden');
+                if (btnSaeb) { btnSaeb.style.background = 'var(--bg-secondary)'; btnSaeb.style.color = 'var(--text-secondary)'; }
+                if (btnBncc) { btnBncc.style.background = '#6366f1'; btnBncc.style.color = '#ffffff'; }
+            } else {
+                if (bnccSec) bnccSec.classList.add('hidden');
+                if (saebSec) saebSec.classList.remove('hidden');
+                if (btnBncc) { btnBncc.style.background = 'var(--bg-secondary)'; btnBncc.style.color = 'var(--text-secondary)'; }
+                if (btnSaeb) { btnSaeb.style.background = '#6366f1'; btnSaeb.style.color = '#ffffff'; }
+            }
+        }
+        window.switchMatrizMainTab = switchMatrizMainTab;
+
+        function navigateSchedulePeriod(direction) {
+            if (typeof renderActiveScheduleView === 'function') {
+                renderActiveScheduleView();
+            }
+        }
+        window.navigateSchedulePeriod = navigateSchedulePeriod;
+
+        function handlePrintScheduleReport() {
+            window.print();
+        }
+        window.handlePrintScheduleReport = handlePrintScheduleReport;
+
+        function handleAutoGenerateWeeklySchedule() {
+            if (typeof renderActiveScheduleView === 'function') {
+                renderActiveScheduleView();
+            }
+        }
+        window.handleAutoGenerateWeeklySchedule = handleAutoGenerateWeeklySchedule;
+
+        function renderBnccSkillsTable() {
+            var tbody = document.getElementById('bncc-skills-table-body');
+            if (!tbody) return;
+            var subjectEl = document.getElementById('bncc-subject-select');
+            var stageEl = document.getElementById('bncc-stage-select');
+            var searchEl = document.getElementById('bncc-search-input');
+            
+            var subject = subjectEl ? subjectEl.value : 'all';
+            var stage = stageEl ? stageEl.value : 'all';
+            var query = searchEl ? searchEl.value.toLowerCase().trim() : '';
+
+            var mockSkills = [
+                { code: 'EF02LP01', stage: '2º Ano', subject: 'Língua Portuguesa', desc: 'Expressar-se em situações de intercâmbio oral com clareza e fluência.', status: 'Essencial' },
+                { code: 'EF02LP04', stage: '2º Ano', subject: 'Língua Portuguesa', desc: 'Ler e escrever palavras com correspondências grafofônicas regulares.', status: 'Essencial' },
+                { code: 'EF05LP01', stage: '5º Ano', subject: 'Língua Portuguesa', desc: 'Identificar a ideia central do texto, demonstrando compreensão global.', status: 'Prioritária' },
+                { code: 'EF05LP05', stage: '5º Ano', subject: 'Língua Portuguesa', desc: 'Inferir o sentido de palavras ou expressões desconhecidas em textos.', status: 'Prioritária' },
+                { code: 'EF09LP01', stage: '9º Ano', subject: 'Língua Portuguesa', desc: 'Analisar posicionamentos defendidos e refutados em textos argumentativos.', status: 'Avançada' },
+                { code: 'EF02MA01', stage: '2º Ano', subject: 'Matemática', desc: 'Comparar e ordenar números naturais até a ordem das centenas.', status: 'Essencial' },
+                { code: 'EF05MA01', stage: '5º Ano', subject: 'Matemática', desc: 'Ler, escrever e ordenar números naturais até a ordem das centenas de milhar.', status: 'Prioritária' },
+                { code: 'EF05MA07', stage: '5º Ano', subject: 'Matemática', desc: 'Resolver e elaborar problemas de adição e subtração com números naturais.', status: 'Prioritária' },
+                { code: 'EF09MA02', stage: '9º Ano', subject: 'Matemática', desc: 'Reconhecer que uma igualdade matemática não se altera ao adicionar ou subtrair.', status: 'Avançada' }
+            ];
+
+            var filtered = mockSkills.filter(function(s) {
+                var matchSub = subject === 'all' || s.subject.toLowerCase().includes(subject.toLowerCase());
+                var matchStage = stage === 'all' || s.stage.toLowerCase().includes(stage.toLowerCase());
+                var matchQ = !query || s.code.toLowerCase().includes(query) || s.desc.toLowerCase().includes(query);
+                return matchSub && matchStage && matchQ;
+            });
+
+            var rows = filtered.map(function(s) {
+                return '<tr style="border-bottom: 1px solid var(--border-color); height: 50px;">' +
+                    '<td style="padding: 10px 16px; font-weight: 800; color: #6366f1; font-family: var(--font-mono);">' + s.code + '</td>' +
+                    '<td style="padding: 10px 16px; font-weight: 600; color: var(--text-primary);">' + s.stage + '</td>' +
+                    '<td style="padding: 10px 16px; font-weight: 600; color: var(--text-secondary);">' + s.subject + '</td>' +
+                    '<td style="padding: 10px 16px; color: var(--text-primary); font-size: 0.84rem;">' + s.desc + '</td>' +
+                    '<td style="padding: 10px 16px;"><span class="badge badge-purple" style="font-weight: 700;">' + s.status + '</span></td>' +
+                '</tr>';
+            });
+
+            tbody.innerHTML = rows.join('');
+        }
+        window.renderBnccSkillsTable = renderBnccSkillsTable;
 
         // Restore sidebar state immediately before render
         if (localStorage.getItem('sidebar_collapsed') === 'true') {
@@ -595,6 +731,141 @@
                                     <!-- Injetado dinamicamente via renderDashboardPriorityDescriptors() -->
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- ROW: Ideb Anos Iniciais x Anos Finais (Combos com Projeção INEP) -->
+                        <div class="dashboard-row grid-2" style="margin-top: 20px; gap: 20px;">
+                            <div class="card card-full" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
+                                <div class="card-header" style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap;">
+                                    <div>
+                                        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0;">Ideb Maranhão · Anos Iniciais</h3>
+                                        <p class="card-subtitle" style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">Rede estadual — evolução histórica vs. trajetória projetada.</p>
+                                    </div>
+                                    <span class="badge badge-purple" style="font-size: 0.7rem; font-weight: 700;">2007–2025</span>
+                                </div>
+                                <div class="card-body" style="padding: 0; position: relative; height: 280px;">
+                                    <canvas id="dashChartIniciais"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="card card-full" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
+                                <div class="card-header" style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap;">
+                                    <div>
+                                        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0;">Ideb Maranhão · Anos Finais</h3>
+                                        <p class="card-subtitle" style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">Rede estadual — evolução histórica vs. trajetória projetada.</p>
+                                    </div>
+                                    <span class="badge badge-purple" style="font-size: 0.7rem; font-weight: 700;">2007–2025</span>
+                                </div>
+                                <div class="card-body" style="padding: 0; position: relative; height: 280px;">
+                                    <canvas id="dashChartFinais"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ROW: Comparativo Anos Iniciais x Anos Finais + Gap Strip -->
+                        <div class="dashboard-row grid-1" style="margin-top: 20px;">
+                            <div class="card card-full" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
+                                <div class="card-header" style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap;">
+                                    <div>
+                                        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0;">Comparativo Ideb Maranhão: Anos Iniciais x Anos Finais</h3>
+                                        <p class="card-subtitle" style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">Evolução lado a lado das duas etapas e abertura do hiato entre elas ao longo do tempo.</p>
+                                    </div>
+                                    <span class="badge badge-purple" style="font-size: 0.7rem; font-weight: 700;">Fonte: Ideb 2025 · INEP</span>
+                                </div>
+                                <div class="card-body" style="padding: 0; position: relative; height: 290px;">
+                                    <canvas id="dashChartComparativo"></canvas>
+                                </div>
+                                <div style="display: flex; gap: 14px; margin-top: 16px; flex-wrap: wrap;">
+                                    <div style="flex: 1; min-width: 150px; border: 1px solid var(--border-color); border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; gap: 3px; background: var(--bg-primary);">
+                                        <span style="font-size: 11.5px; color: var(--text-secondary); font-weight: 600;">Anos Iniciais (2025)</span>
+                                        <span style="font-family: var(--font-heading); font-size: 20px; font-weight: 700; color: #6366f1;">5.5</span>
+                                    </div>
+                                    <div style="flex: 1; min-width: 150px; border: 1px solid var(--border-color); border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; gap: 3px; background: var(--bg-primary);">
+                                        <span style="font-size: 11.5px; color: var(--text-secondary); font-weight: 600;">Anos Finais (2025)</span>
+                                        <span style="font-family: var(--font-heading); font-size: 20px; font-weight: 700; color: #0ea5e9;">4.5</span>
+                                    </div>
+                                    <div style="flex: 1; min-width: 150px; border: 1px solid var(--border-color); border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; gap: 3px; background: var(--bg-primary);">
+                                        <span style="font-size: 11.5px; color: var(--text-secondary); font-weight: 600;">Hiato atual entre etapas</span>
+                                        <span style="font-family: var(--font-heading); font-size: 20px; font-weight: 700; color: #f59e0b;">1.0 pt</span>
+                                    </div>
+                                    <div style="flex: 1; min-width: 150px; border: 1px solid var(--border-color); border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; gap: 3px; background: var(--bg-primary);">
+                                        <span style="font-size: 11.5px; color: var(--text-secondary); font-weight: 600;">Hiato em 2007</span>
+                                        <span style="font-family: var(--font-heading); font-size: 20px; font-weight: 700; color: var(--text-secondary);">0.4 pt</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ROW: Indicador de Aprendizado + Escala de Aprendizado -->
+                        <div class="dashboard-row grid-2" style="margin-top: 20px; gap: 20px;">
+                            <!-- Indicador de Aprendizado -->
+                            <div class="card card-full" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
+                                <div class="card-header" style="margin-bottom: 12px;">
+                                    <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0;">Indicador de Aprendizado</h3>
+                                    <p class="card-subtitle" style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">O indicador varia de 0 a 10 — quanto maior, melhor. Um valor 10 seria praticamente inatingível, pois significaria que todos os alunos obtiveram o rendimento esperado.</p>
+                                </div>
+                                <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 8px;">
+                                    <span style="font-size: 12px; font-weight: 600; color: var(--text-secondary); background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 9px;">2025</span>
+                                    <div class="tab-group" id="dashEtapaTabs" style="display: flex; gap: 6px; background: var(--bg-tertiary); border-radius: 10px; padding: 4px;">
+                                        <button class="tab-btn active" data-etapa="finais" style="border: none; background: #fff; padding: 7px 14px; border-radius: 8px; font-size: 12.5px; font-weight: 600; color: #6366f1; cursor: pointer;">Anos Finais</button>
+                                        <button class="tab-btn" data-etapa="iniciais" style="border: none; background: transparent; padding: 7px 14px; border-radius: 8px; font-size: 12.5px; font-weight: 600; color: var(--text-secondary); cursor: pointer;">Anos Iniciais</button>
+                                    </div>
+                                    <span style="font-size: 12px; font-weight: 600; color: var(--text-secondary); background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 9px;">Pública</span>
+                                </div>
+
+                                <div style="display: flex; gap: 14px; flex-wrap: wrap; margin: 16px 0 18px;">
+                                    <div style="flex: 1; min-width: 210px; border: 1px solid var(--border-color); border-radius: 14px; padding: 16px 18px; display: flex; gap: 12px; align-items: flex-start; background: var(--bg-primary);">
+                                        <span style="font-size: 24px; line-height: 1;">🎓</span>
+                                        <div>
+                                            <div style="font-family: var(--font-heading); font-size: 26px; font-weight: 700; color: #6366f1;" id="dashIndicadorNum">4,79</div>
+                                            <div style="font-size: 12px; color: var(--text-secondary); margin-top: 2px; line-height: 1.5; max-width: 260px;">Nota padronizada em português e matemática de acordo com a Prova Saeb/2025</div>
+                                        </div>
+                                    </div>
+                                    <div style="flex: 1; min-width: 220px; border: 1px solid var(--border-color); border-radius: 14px; padding: 16px 18px; display: flex; gap: 26px; background: var(--bg-primary);">
+                                        <div>
+                                            <div style="font-size: 12.5px; font-weight: 700; color: #4E9BE8; margin-bottom: 4px;">Português</div>
+                                            <div style="font-family: var(--font-heading); font-size: 22px; font-weight: 700; color: var(--text-primary);" id="dashPortNum">245,03</div>
+                                            <div style="font-size: 11.5px; color: var(--text-secondary); margin-top: 2px;">Média de proficiência</div>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 12.5px; font-weight: 700; color: #3A4356; margin-bottom: 4px;">Matemática</div>
+                                            <div style="font-family: var(--font-heading); font-size: 22px; font-weight: 700; color: var(--text-primary);" id="dashMatNum">242,35</div>
+                                            <div style="font-size: 11.5px; color: var(--text-secondary); margin-top: 2px;">Média de proficiência</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; color: var(--text-primary);">Evolução nota Saeb</h4>
+                                <div style="position: relative; height: 250px;">
+                                    <canvas id="dashChartSaebEvo"></canvas>
+                                </div>
+                                <div style="font-size: 11px; color: var(--text-secondary); text-align: right; margin-top: 10px;">Fonte: Ideb 2025, INEP.</div>
+                            </div>
+
+                            <!-- Escala do Aprendizado -->
+                            <div class="card card-full" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
+                                <div class="card-header" style="margin-bottom: 12px;">
+                                    <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0;">Como funciona a escala do aprendizado?</h3>
+                                    <p class="card-subtitle" style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">O Inep distribui o aprendizado dos alunos em níveis, utilizando a Escala Saeb. Abaixo, exemplo da distribuição de níveis.</p>
+                                </div>
+                                <div style="display: flex; gap: 8px; margin: 14px 0 16px; flex-wrap: wrap;">
+                                    <div class="seg" id="dashSerieSeg" style="display: flex; background: var(--bg-tertiary); border-radius: 10px; padding: 4px; gap: 4px;">
+                                        <button class="active" data-serie="5" style="border: none; background: #fff; padding: 7px 13px; border-radius: 8px; font-size: 12px; font-weight: 600; color: #6366f1; cursor: pointer;">5º ano EF</button>
+                                        <button data-serie="9" style="border: none; background: transparent; padding: 7px 13px; border-radius: 8px; font-size: 12px; font-weight: 600; color: var(--text-secondary); cursor: pointer;">9º ano EF</button>
+                                    </div>
+                                    <div class="seg" id="dashDiscSeg" style="display: flex; background: var(--bg-tertiary); border-radius: 10px; padding: 4px; gap: 4px;">
+                                        <button class="active" data-disc="lp" style="border: none; background: #fff; padding: 7px 13px; border-radius: 8px; font-size: 12px; font-weight: 600; color: #6366f1; cursor: pointer;">Língua Portuguesa</button>
+                                        <button data-disc="mat" style="border: none; background: transparent; padding: 7px 13px; border-radius: 8px; font-size: 12px; font-weight: 600; color: var(--text-secondary); cursor: pointer;">Matemática</button>
+                                    </div>
+                                </div>
+                                <div id="dashEscalaBody"></div>
+                                <div style="font-size: 11px; color: var(--text-secondary); text-align: right; margin-top: 10px;">Fonte: Saeb · Inep.</div>
+                            </div>
+                        </div>
+
+                        <!-- ROW: Distribuição dos alunos por proficiência -->
+                        <div class="dashboard-row grid-1" style="margin-top: 20px;" id="dashboard-proficiency-container">
+                            <!-- Injetado dinamicamente via renderDashboardProficiency() em app.js -->
                         </div>
 
                         <!-- LISTA / RANKING DE ESCOLAS DA REDE -->
@@ -6172,16 +6443,17 @@
     <!-- Bibliotecas Externas -->
     <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=mt07505w"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=mt07505w"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=mt07505w"></script>
-    <script src="ideb_publico_db.js?v=mt07505w"></script>
-    <script src="alunos_db.js?v=mt07505w"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=mt23aup4"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=mt23aup4"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=mt23aup4"></script>
+    <script src="ideb_publico_db.js?v=mt23aup4"></script>
+    <script src="alunos_db.js?v=mt23aup4"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=ee6be67f0c_mt07505w"></script>
+    <script src="app.js?v=d8d1856860_mt23aup4"></script>
 </body>
 </html>
