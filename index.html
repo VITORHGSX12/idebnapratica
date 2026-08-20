@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <link rel="stylesheet" href="styles.css?v=7b79aed6bd_mt252ot3">
+    <link rel="stylesheet" href="styles.css?v=7b79aed6bd_mt257wbr">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -741,6 +741,25 @@
                                 </div>
                                 <div class="card-body" id="dashboard-priority-descriptors-container" style="padding: 0;">
                                     <!-- Injetado dinamicamente via renderDashboardPriorityDescriptors() -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ROW: Slot IDEB Gonçalves Dias (Sua Cidade) -->
+                        <div class="dashboard-row grid-1" style="margin-top: 20px;">
+                            <div class="card card-full" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
+                                <div class="card-header" style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+                                    <div>
+                                        <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(139, 92, 246, 0.14); color: #8b5cf6; padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; margin-bottom: 4px;">
+                                            ⭐ DESEMPENHO MUNICIPAL EXCLUSIVO
+                                        </div>
+                                        <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0;">Ideb Gonçalves Dias (Rede Municipal) · Anos Iniciais & Finais</h3>
+                                        <p class="card-subtitle" style="font-size: 0.82rem; color: var(--text-secondary); margin: 2px 0 0 0;">Histórico real do município de Gonçalves Dias (ciclos 2015 a 2025) com evolução por etapa e comparativo da rede.</p>
+                                    </div>
+                                    <span class="badge badge-purple" style="font-size: 0.75rem; font-weight: 700; padding: 6px 12px;">Dados Oficiais INEP (MA)</span>
+                                </div>
+                                <div class="card-body" style="padding: 0; position: relative; height: 290px;">
+                                    <canvas id="dashChartGoncalvesDias"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -6459,14 +6478,14 @@
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=mt252ot3"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=mt252ot3"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=mt252ot3"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=mt257wbr"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=mt257wbr"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=mt257wbr"></script>
     <script src="bncc_habilidades_oficial.js?v=mt23gn8s"></script>
-    <script src="ideb_publico_db.js?v=mt252ot3"></script>
-    <script src="alunos_db.js?v=mt252ot3"></script>
+    <script src="ideb_publico_db.js?v=mt257wbr"></script>
+    <script src="alunos_db.js?v=mt257wbr"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=5c2faf0a60_mt252ot3"></script>
+    <script src="app.js?v=bdafd746eb_mt257wbr"></script>
 </body>
 </html>
