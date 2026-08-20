@@ -361,11 +361,13 @@ function safeSetStyle(id, prop, value) {
 
         try {
             updateMenuVisibilityByRole();
-            if (typeof updateUserHeaderUI === 'function') updateUserHeaderUI();
-            if (typeof renderDashboardWelcomeBanner === 'function') renderDashboardWelcomeBanner();
-            if (typeof renderDashboardMetricCards === 'function') renderDashboardMetricCards();
+            if (typeof renderDashboardComplete === 'function') renderDashboardComplete();
             if (typeof renderDbSchools === 'function') renderDbSchools();
             if (typeof renderDbStudents === 'function') renderDbStudents();
+            if (typeof renderBnccSkillsTable === 'function') renderBnccSkillsTable();
+            if (typeof renderReferenceMatrix === 'function') renderReferenceMatrix();
+            if (typeof initIdebComparativo === 'function') initIdebComparativo();
+            if (typeof renderPedagogicLibrary === 'function') renderPedagogicLibrary();
         } catch (err) {
             console.warn('[IDEB Engine] Warning in UI updates:', err);
         }
@@ -22146,6 +22148,10 @@ function initApp() {
         if (typeof renderDbSchools === 'function') renderDbSchools();
         if (typeof renderDbStudents === 'function') renderDbStudents();
         if (typeof populateIdebGoalsTable === 'function') populateIdebGoalsTable();
+        if (typeof renderBnccSkillsTable === 'function') renderBnccSkillsTable();
+        if (typeof renderReferenceMatrix === 'function') renderReferenceMatrix();
+        if (typeof initIdebComparativo === 'function') initIdebComparativo();
+        if (typeof renderPedagogicLibrary === 'function') renderPedagogicLibrary();
         if (typeof safeCreateIcons === 'function') safeCreateIcons();
     } catch(e) {
         console.error('[InitApp Error]', e);
