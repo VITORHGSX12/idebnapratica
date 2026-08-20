@@ -10367,10 +10367,10 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
             stateSelect.appendChild(opt);
         });
 
-        // Set default state to 'MA'
+        // Set default state to 'MA' and city to 'Gonçalves Dias'
         stateSelect.value = 'MA';
-        selectedIdebCity = 'Codó';
-        citySearchInput.value = 'Codó';
+        selectedIdebCity = 'Gonçalves Dias';
+        citySearchInput.value = 'Gonçalves Dias';
 
         // Function to filter and show suggestions
         function renderSuggestions(filterText = '') {
@@ -10469,6 +10469,10 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
                 suggestionsBox.classList.add('hidden');
             }
         });
+
+        if (typeof renderUrePresidenteDutraTable === 'function') renderUrePresidenteDutraTable();
+        if (typeof renderRegiaoCentroTable === 'function') renderRegiaoCentroTable();
+        if (typeof renderRankingGeralMaTable === 'function') renderRankingGeralMaTable();
 
         // 3. Render Initial View
         updateIdebComparativoView();
@@ -13372,16 +13376,6 @@ if (document.readyState === 'loading') {
         }).join('');
     }
 
-    function initIdebComparativo() {
-        selectedIdebCity = "Gonçalves Dias";
-        const cityInput = document.getElementById('ideb-city-search');
-        if (cityInput) cityInput.value = "Gonçalves Dias";
-
-        renderUrePresidenteDutraTable();
-        renderRegiaoCentroTable();
-        renderRankingGeralMaTable();
-        updateIdebComparativoView();
-    }
 
     // Direct event delegation on document for regional tab switching
     document.addEventListener('click', function(e) {
