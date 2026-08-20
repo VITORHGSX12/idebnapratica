@@ -1,12 +1,9 @@
-// Base de Dados Oficial do IDEB do Maranhão (2015 - 2025)
-// Sanitizada rigorosamente: Validação de faixa [0.0 - 10.0] e remoção de cabeçalhos
-
-window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
-  "anosIniciais": {
-    "Afonso Cunha": {
-      "codigo_ibge": "2100105",
+// Base Oficial IDEB Maranhão Municípios (2015-2025)
+window.IDEB_MARANHAO_MUNICIPIOS = {
+  "iniciais": [
+    {
+      "codigoInep": "2100105",
       "municipio": "Afonso Cunha",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.93,
       "y2017": 4.12,
       "y2019": 3.7,
@@ -14,10 +11,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.98,
       "y2025": 4.7
     },
-    "Alcântara": {
-      "codigo_ibge": "2100204",
+    {
+      "codigoInep": "2100204",
       "municipio": "Alcântara",
-      "ure": "URE Pinheiro",
       "y2015": 3.7,
       "y2017": 4.15,
       "y2019": 4.35,
@@ -25,10 +21,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.35,
       "y2025": 4.84
     },
-    "Aldeias Altas": {
-      "codigo_ibge": "2100303",
+    {
+      "codigoInep": "2100303",
       "municipio": "Aldeias Altas",
-      "ure": "URE Caxias",
       "y2015": 3.48,
       "y2017": 3.77,
       "y2019": 4.03,
@@ -36,10 +31,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.91,
       "y2025": 4.77
     },
-    "Altamira do Maranhão": {
-      "codigo_ibge": "2100402",
+    {
+      "codigoInep": "2100402",
       "municipio": "Altamira do Maranhão",
-      "ure": "URE Bacabal",
       "y2015": 3.87,
       "y2017": 4.7,
       "y2019": 3.72,
@@ -47,10 +41,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.65,
       "y2025": 5.03
     },
-    "Alto Alegre do Maranhão": {
-      "codigo_ibge": "2100436",
+    {
+      "codigoInep": "2100436",
       "municipio": "Alto Alegre do Maranhão",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.61,
       "y2017": 4.12,
       "y2019": 4.29,
@@ -58,10 +51,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.25,
       "y2025": 4.63
     },
-    "Alto Alegre do Pindaré": {
-      "codigo_ibge": "2100477",
+    {
+      "codigoInep": "2100477",
       "municipio": "Alto Alegre do Pindaré",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.88,
       "y2017": 4.93,
       "y2019": 6.02,
@@ -69,10 +61,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 6.27,
       "y2025": 6.31
     },
-    "Alto Parnaíba": {
-      "codigo_ibge": "2100501",
+    {
+      "codigoInep": "2100501",
       "municipio": "Alto Parnaíba",
-      "ure": "URE Balsas",
       "y2015": 4.8,
       "y2017": 5.3,
       "y2019": 5.7,
@@ -80,10 +71,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 6.45,
       "y2025": 6.2
     },
-    "Amapá do Maranhão": {
-      "codigo_ibge": "2100550",
+    {
+      "codigoInep": "2100550",
       "municipio": "Amapá do Maranhão",
-      "ure": "URE Zé Doca",
       "y2015": 3.67,
       "y2017": 3.65,
       "y2019": 4.28,
@@ -91,10 +81,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.4,
       "y2025": 4.7
     },
-    "Amarante do Maranhão": {
-      "codigo_ibge": "2100600",
+    {
+      "codigoInep": "2100600",
       "municipio": "Amarante do Maranhão",
-      "ure": "URE Imperatriz",
       "y2015": 4.02,
       "y2017": 4.03,
       "y2019": 3.82,
@@ -102,10 +91,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.6,
       "y2025": 4.65
     },
-    "Anajatuba": {
-      "codigo_ibge": "2100709",
+    {
+      "codigoInep": "2100709",
       "municipio": "Anajatuba",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.34,
       "y2017": 3.76,
       "y2019": 3.72,
@@ -113,10 +101,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.76,
       "y2025": 5.22
     },
-    "Anapurus": {
-      "codigo_ibge": "2100808",
+    {
+      "codigoInep": "2100808",
       "municipio": "Anapurus",
-      "ure": "URE Chapadinha",
       "y2015": 3.69,
       "y2017": 3.55,
       "y2019": 3.73,
@@ -124,10 +111,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.05,
       "y2025": 4.7
     },
-    "Apicum-Açu": {
-      "codigo_ibge": "2100832",
+    {
+      "codigoInep": "2100832",
       "municipio": "Apicum-Açu",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.3,
       "y2017": 4.67,
       "y2019": 4.15,
@@ -135,10 +121,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.26,
       "y2025": 4.66
     },
-    "Araguanã": {
-      "codigo_ibge": "2100873",
+    {
+      "codigoInep": "2100873",
       "municipio": "Araguanã",
-      "ure": "URE Zé Doca",
       "y2015": 4.3,
       "y2017": 4.28,
       "y2019": 3.98,
@@ -146,10 +131,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 6.8,
       "y2025": 5.9
     },
-    "Araioses": {
-      "codigo_ibge": "2100907",
+    {
+      "codigoInep": "2100907",
       "municipio": "Araioses",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.89,
       "y2017": 4.09,
       "y2019": 4.23,
@@ -157,10 +141,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.85,
       "y2025": 5.21
     },
-    "Arame": {
-      "codigo_ibge": "2100956",
+    {
+      "codigoInep": "2100956",
       "municipio": "Arame",
-      "ure": "URE Barra do Corda",
       "y2015": 3.55,
       "y2017": 3.7,
       "y2019": 3.42,
@@ -168,10 +151,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.7,
       "y2025": 5.45
     },
-    "Arari": {
-      "codigo_ibge": "2101004",
+    {
+      "codigoInep": "2101004",
       "municipio": "Arari",
-      "ure": "URE Viana",
       "y2015": 4.45,
       "y2017": 4.82,
       "y2019": 5.47,
@@ -179,10 +161,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.62,
       "y2025": 5.54
     },
-    "Axixá": {
-      "codigo_ibge": "2101103",
+    {
+      "codigoInep": "2101103",
       "municipio": "Axixá",
-      "ure": "URE Rosário",
       "y2015": 4.27,
       "y2017": 4.09,
       "y2019": 4.47,
@@ -190,10 +171,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.54,
       "y2025": 6.1
     },
-    "Açailândia": {
-      "codigo_ibge": "2100055",
+    {
+      "codigoInep": "2100055",
       "municipio": "Açailândia",
-      "ure": "URE Açailândia",
       "y2015": 4.81,
       "y2017": 4.85,
       "y2019": 5.14,
@@ -201,10 +181,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.25,
       "y2025": 5.61
     },
-    "Bacabal": {
-      "codigo_ibge": "2101202",
+    {
+      "codigoInep": "2101202",
       "municipio": "Bacabal",
-      "ure": "URE Bacabal",
       "y2015": 4.7,
       "y2017": 4.8,
       "y2019": 4.97,
@@ -212,10 +191,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.12,
       "y2025": 5.72
     },
-    "Bacabeira": {
-      "codigo_ibge": "2101251",
+    {
+      "codigoInep": "2101251",
       "municipio": "Bacabeira",
-      "ure": "URE Rosário",
       "y2015": 4.48,
       "y2017": 4.64,
       "y2019": 4.44,
@@ -223,10 +201,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.63,
       "y2025": 5.15
     },
-    "Bacuri": {
-      "codigo_ibge": "2101301",
+    {
+      "codigoInep": "2101301",
       "municipio": "Bacuri",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.98,
       "y2017": 3.9,
       "y2019": 4.54,
@@ -234,10 +211,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.44,
       "y2025": 5
     },
-    "Bacurituba": {
-      "codigo_ibge": "2101350",
+    {
+      "codigoInep": "2101350",
       "municipio": "Bacurituba",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.7,
       "y2017": 4.37,
       "y2019": 4.8,
@@ -245,10 +221,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 6.9,
       "y2025": 6.5
     },
-    "Balsas": {
-      "codigo_ibge": "2101400",
+    {
+      "codigoInep": "2101400",
       "municipio": "Balsas",
-      "ure": "URE Balsas",
       "y2015": 4.56,
       "y2017": 4.65,
       "y2019": 4.83,
@@ -256,10 +231,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.84,
       "y2025": 5.33
     },
-    "Barra do Corda": {
-      "codigo_ibge": "2101608",
+    {
+      "codigoInep": "2101608",
       "municipio": "Barra do Corda",
-      "ure": "URE Barra do Corda",
       "y2015": 4.23,
       "y2017": 4.31,
       "y2019": 4.65,
@@ -267,10 +241,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.05,
       "y2025": 5.18
     },
-    "Barreirinhas": {
-      "codigo_ibge": "2101707",
+    {
+      "codigoInep": "2101707",
       "municipio": "Barreirinhas",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.24,
       "y2017": 4.15,
       "y2019": 4.39,
@@ -278,10 +251,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.72,
       "y2025": 5.48
     },
-    "Barão de Grajaú": {
-      "codigo_ibge": "2101509",
+    {
+      "codigoInep": "2101509",
       "municipio": "Barão de Grajaú",
-      "ure": "URE São João dos Patos",
       "y2015": 5.53,
       "y2017": 5.4,
       "y2019": 5.47,
@@ -289,10 +261,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.43,
       "y2025": 5.7
     },
-    "Bela Vista do Maranhão": {
-      "codigo_ibge": "2101772",
+    {
+      "codigoInep": "2101772",
       "municipio": "Bela Vista do Maranhão",
-      "ure": "URE Santa Inês",
       "y2015": 3.27,
       "y2017": 4.4,
       "y2019": null,
@@ -300,10 +271,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.9,
       "y2025": 4.9
     },
-    "Belágua": {
-      "codigo_ibge": "2101731",
+    {
+      "codigoInep": "2101731",
       "municipio": "Belágua",
-      "ure": "URE Chapadinha",
       "y2015": 3.54,
       "y2017": 3.8,
       "y2019": 4.4,
@@ -311,10 +281,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.6,
       "y2025": 4.7
     },
-    "Benedito Leite": {
-      "codigo_ibge": "2101806",
+    {
+      "codigoInep": "2101806",
       "municipio": "Benedito Leite",
-      "ure": "URE São João dos Patos",
       "y2015": 3.35,
       "y2017": 4.35,
       "y2019": 4.7,
@@ -322,10 +291,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.5,
       "y2025": 5.2
     },
-    "Bequimão": {
-      "codigo_ibge": "2101905",
+    {
+      "codigoInep": "2101905",
       "municipio": "Bequimão",
-      "ure": "URE Pinheiro",
       "y2015": 4.1,
       "y2017": 4.53,
       "y2019": 4.33,
@@ -333,10 +301,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.81,
       "y2025": 4.63
     },
-    "Bernardo do Mearim": {
-      "codigo_ibge": "2101939",
+    {
+      "codigoInep": "2101939",
       "municipio": "Bernardo do Mearim",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.2,
       "y2017": 4.5,
       "y2019": 4.2,
@@ -344,10 +311,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.3,
       "y2025": 6
     },
-    "Boa Vista do Gurupi": {
-      "codigo_ibge": "2101970",
+    {
+      "codigoInep": "2101970",
       "municipio": "Boa Vista do Gurupi",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.73,
       "y2017": 3.97,
       "y2019": 4.13,
@@ -355,10 +321,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.12,
       "y2025": 5.12
     },
-    "Bom Jardim": {
-      "codigo_ibge": "2102002",
+    {
+      "codigoInep": "2102002",
       "municipio": "Bom Jardim",
-      "ure": "URE Santa Inês",
       "y2015": 4.01,
       "y2017": 3.99,
       "y2019": 3.89,
@@ -366,10 +331,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.18,
       "y2025": 5.01
     },
-    "Bom Jesus das Selvas": {
-      "codigo_ibge": "2102036",
+    {
+      "codigoInep": "2102036",
       "municipio": "Bom Jesus das Selvas",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.54,
       "y2017": 3.8,
       "y2019": 4.01,
@@ -377,10 +341,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.96,
       "y2025": 5.3
     },
-    "Bom Lugar": {
-      "codigo_ibge": "2102077",
+    {
+      "codigoInep": "2102077",
       "municipio": "Bom Lugar",
-      "ure": "URE Presidente Dutra",
       "y2015": 4,
       "y2017": 4.45,
       "y2019": 4.99,
@@ -388,10 +351,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.82,
       "y2025": 5.84
     },
-    "Brejo": {
-      "codigo_ibge": "2102101",
+    {
+      "codigoInep": "2102101",
       "municipio": "Brejo",
-      "ure": "URE Chapadinha",
       "y2015": 3.48,
       "y2017": 3.79,
       "y2019": 3.65,
@@ -399,10 +361,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.3,
       "y2025": 4.67
     },
-    "Brejo de Areia": {
-      "codigo_ibge": "2102150",
+    {
+      "codigoInep": "2102150",
       "municipio": "Brejo de Areia",
-      "ure": "URE Bacabal",
       "y2015": 3.4,
       "y2017": 3.57,
       "y2019": 4.24,
@@ -410,10 +371,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.47,
       "y2025": 5
     },
-    "Buriti": {
-      "codigo_ibge": "2102200",
+    {
+      "codigoInep": "2102200",
       "municipio": "Buriti",
-      "ure": "URE Chapadinha",
       "y2015": 3.83,
       "y2017": 3.82,
       "y2019": 3.67,
@@ -421,10 +381,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.02,
       "y2025": 5.16
     },
-    "Buriti Bravo": {
-      "codigo_ibge": "2102309",
+    {
+      "codigoInep": "2102309",
       "municipio": "Buriti Bravo",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.99,
       "y2017": 5.07,
       "y2019": 5.37,
@@ -432,10 +391,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.89,
       "y2025": 5
     },
-    "Buriticupu": {
-      "codigo_ibge": "2102325",
+    {
+      "codigoInep": "2102325",
       "municipio": "Buriticupu",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.88,
       "y2017": 4.09,
       "y2019": 4.19,
@@ -443,10 +401,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.28,
       "y2025": 4.69
     },
-    "Buritirana": {
-      "codigo_ibge": "2102358",
+    {
+      "codigoInep": "2102358",
       "municipio": "Buritirana",
-      "ure": "URE Imperatriz",
       "y2015": 3.95,
       "y2017": 4.37,
       "y2019": 4.5,
@@ -454,10 +411,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.63,
       "y2025": 4.94
     },
-    "Cachoeira Grande": {
-      "codigo_ibge": "2102374",
+    {
+      "codigoInep": "2102374",
       "municipio": "Cachoeira Grande",
-      "ure": "URE Rosário",
       "y2015": 4.5,
       "y2017": 3.83,
       "y2019": 4.08,
@@ -465,10 +421,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.93,
       "y2025": 4.75
     },
-    "Cajapió": {
-      "codigo_ibge": "2102408",
+    {
+      "codigoInep": "2102408",
       "municipio": "Cajapió",
-      "ure": "URE Viana",
       "y2015": 3.53,
       "y2017": 3.83,
       "y2019": 3.5,
@@ -476,10 +431,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.48,
       "y2025": 4.27
     },
-    "Cajari": {
-      "codigo_ibge": "2102507",
+    {
+      "codigoInep": "2102507",
       "municipio": "Cajari",
-      "ure": "URE Viana",
       "y2015": 4.26,
       "y2017": 3.8,
       "y2019": 3.76,
@@ -487,10 +441,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.95,
       "y2025": 4.39
     },
-    "Campestre do Maranhão": {
-      "codigo_ibge": "2102556",
+    {
+      "codigoInep": "2102556",
       "municipio": "Campestre do Maranhão",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.8,
       "y2017": 4.98,
       "y2019": 5.57,
@@ -498,10 +451,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.72,
       "y2025": 6.25
     },
-    "Cantanhede": {
-      "codigo_ibge": "2102705",
+    {
+      "codigoInep": "2102705",
       "municipio": "Cantanhede",
-      "ure": "URE Itapecuru-Mirim",
       "y2015": 4.62,
       "y2017": 3.99,
       "y2019": 3.95,
@@ -509,10 +461,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.88,
       "y2025": 5.5
     },
-    "Capinzal do Norte": {
-      "codigo_ibge": "2102754",
+    {
+      "codigoInep": "2102754",
       "municipio": "Capinzal do Norte",
-      "ure": "URE Pedreiras",
       "y2015": 4.1,
       "y2017": 4.24,
       "y2019": 4.77,
@@ -520,10 +471,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.22,
       "y2025": 5
     },
-    "Carolina": {
-      "codigo_ibge": "2102804",
+    {
+      "codigoInep": "2102804",
       "municipio": "Carolina",
-      "ure": "URE Balsas",
       "y2015": 4.71,
       "y2017": 4.48,
       "y2019": 4.71,
@@ -531,10 +481,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.43,
       "y2025": 4.94
     },
-    "Carutapera": {
-      "codigo_ibge": "2102903",
+    {
+      "codigoInep": "2102903",
       "municipio": "Carutapera",
-      "ure": "URE Zé Doca",
       "y2015": 4.5,
       "y2017": 4.76,
       "y2019": 5.11,
@@ -542,10 +491,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.76,
       "y2025": 5.76
     },
-    "Caxias": {
-      "codigo_ibge": "2103000",
+    {
+      "codigoInep": "2103000",
       "municipio": "Caxias",
-      "ure": "URE Caxias",
       "y2015": 4.52,
       "y2017": 4.6,
       "y2019": 4.51,
@@ -553,10 +501,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5,
       "y2025": 5.34
     },
-    "Cedral": {
-      "codigo_ibge": "2103109",
+    {
+      "codigoInep": "2103109",
       "municipio": "Cedral",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.33,
       "y2017": 4.68,
       "y2019": 5.22,
@@ -564,10 +511,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.83,
       "y2025": 5.1
     },
-    "Central do Maranhão": {
-      "codigo_ibge": "2103125",
+    {
+      "codigoInep": "2103125",
       "municipio": "Central do Maranhão",
-      "ure": "URE Pinheiro",
       "y2015": 3.88,
       "y2017": 4.1,
       "y2019": 4.09,
@@ -575,10 +521,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.98,
       "y2025": 4.55
     },
-    "Centro Novo do Maranhão": {
-      "codigo_ibge": "2103174",
+    {
+      "codigoInep": "2103174",
       "municipio": "Centro Novo do Maranhão",
-      "ure": "URE Zé Doca",
       "y2015": 3.97,
       "y2017": 3.52,
       "y2019": 3.83,
@@ -586,10 +531,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.68,
       "y2025": 4.6
     },
-    "Centro do Guilherme": {
-      "codigo_ibge": "2103158",
+    {
+      "codigoInep": "2103158",
       "municipio": "Centro do Guilherme",
-      "ure": "URE Zé Doca",
       "y2015": 3.44,
       "y2017": 3.77,
       "y2019": 3.95,
@@ -597,10 +541,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.3,
       "y2025": 6.2
     },
-    "Chapadinha": {
-      "codigo_ibge": "2103208",
+    {
+      "codigoInep": "2103208",
       "municipio": "Chapadinha",
-      "ure": "URE Chapadinha",
       "y2015": 4.14,
       "y2017": 4.22,
       "y2019": 4.35,
@@ -608,10 +551,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.56,
       "y2025": 5.82
     },
-    "Cidelândia": {
-      "codigo_ibge": "2103257",
+    {
+      "codigoInep": "2103257",
       "municipio": "Cidelândia",
-      "ure": "URE Açailândia",
       "y2015": 4.3,
       "y2017": 4.3,
       "y2019": 5.16,
@@ -619,10 +561,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.57,
       "y2025": 4.57
     },
-    "Codó": {
-      "codigo_ibge": "2103307",
+    {
+      "codigoInep": "2103307",
       "municipio": "Codó",
-      "ure": "URE Codó",
       "y2015": 3.96,
       "y2017": 4.32,
       "y2019": 4.49,
@@ -630,10 +571,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.23,
       "y2025": 4.85
     },
-    "Coelho Neto": {
-      "codigo_ibge": "2103406",
+    {
+      "codigoInep": "2103406",
       "municipio": "Coelho Neto",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.95,
       "y2017": 3.55,
       "y2019": 5.45,
@@ -641,10 +581,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.64,
       "y2025": 6.19
     },
-    "Colinas": {
-      "codigo_ibge": "2103505",
+    {
+      "codigoInep": "2103505",
       "municipio": "Colinas",
-      "ure": "URE São João dos Patos",
       "y2015": 4.34,
       "y2017": 4.01,
       "y2019": 4.16,
@@ -652,10 +591,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.6,
       "y2025": 5.07
     },
-    "Conceição do Lago-Açu": {
-      "codigo_ibge": "2103554",
+    {
+      "codigoInep": "2103554",
       "municipio": "Conceição do Lago-Açu",
-      "ure": "URE Bacabal",
       "y2015": 2.8,
       "y2017": 3.59,
       "y2019": 3.13,
@@ -663,10 +601,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.06,
       "y2025": 4.57
     },
-    "Coroatá": {
-      "codigo_ibge": "2103604",
+    {
+      "codigoInep": "2103604",
       "municipio": "Coroatá",
-      "ure": "URE Codó",
       "y2015": 4.14,
       "y2017": 4.46,
       "y2019": 4.3,
@@ -674,10 +611,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.6,
       "y2025": 4.41
     },
-    "Cururupu": {
-      "codigo_ibge": "2103703",
+    {
+      "codigoInep": "2103703",
       "municipio": "Cururupu",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.49,
       "y2017": 4.55,
       "y2019": 4.45,
@@ -685,10 +621,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.64,
       "y2025": 4.58
     },
-    "Cândido Mendes": {
-      "codigo_ibge": "2102606",
+    {
+      "codigoInep": "2102606",
       "municipio": "Cândido Mendes",
-      "ure": "URE Zé Doca",
       "y2015": 3.86,
       "y2017": 3.98,
       "y2019": 4.2,
@@ -696,10 +631,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.88,
       "y2025": 5.67
     },
-    "Davinópolis": {
-      "codigo_ibge": "2103752",
+    {
+      "codigoInep": "2103752",
       "municipio": "Davinópolis",
-      "ure": "URE Imperatriz",
       "y2015": 4.05,
       "y2017": 4.3,
       "y2019": 4.17,
@@ -707,10 +641,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.58,
       "y2025": 4.6
     },
-    "Dom Pedro": {
-      "codigo_ibge": "2103802",
+    {
+      "codigoInep": "2103802",
       "municipio": "Dom Pedro",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.43,
       "y2017": 4.75,
       "y2019": 5.28,
@@ -718,10 +651,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.17,
       "y2025": 5.81
     },
-    "Duque Bacelar": {
-      "codigo_ibge": "2103901",
+    {
+      "codigoInep": "2103901",
       "municipio": "Duque Bacelar",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.73,
       "y2017": 4.95,
       "y2019": 4.2,
@@ -729,10 +661,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 6.98,
       "y2025": 7.59
     },
-    "Esperantinópolis": {
-      "codigo_ibge": "2104008",
+    {
+      "codigoInep": "2104008",
       "municipio": "Esperantinópolis",
-      "ure": "URE Pedreiras",
       "y2015": 3.84,
       "y2017": 4.11,
       "y2019": 4.38,
@@ -740,10 +671,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.52,
       "y2025": 5.17
     },
-    "Estreito": {
-      "codigo_ibge": "2104057",
+    {
+      "codigoInep": "2104057",
       "municipio": "Estreito",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.69,
       "y2017": 4.51,
       "y2019": 5.13,
@@ -751,10 +681,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.76,
       "y2025": 5.12
     },
-    "Feira Nova do Maranhão": {
-      "codigo_ibge": "2104073",
+    {
+      "codigoInep": "2104073",
       "municipio": "Feira Nova do Maranhão",
-      "ure": "URE Balsas",
       "y2015": 3.9,
       "y2017": 4.06,
       "y2019": 4.55,
@@ -762,10 +691,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.92,
       "y2025": 5.42
     },
-    "Fernando Falcão": {
-      "codigo_ibge": "2104081",
+    {
+      "codigoInep": "2104081",
       "municipio": "Fernando Falcão",
-      "ure": "URE Barra do Corda",
       "y2015": 4.25,
       "y2017": 4.35,
       "y2019": 3.87,
@@ -773,10 +701,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.3,
       "y2025": 4.97
     },
-    "Formosa da Serra Negra": {
-      "codigo_ibge": "2104099",
+    {
+      "codigoInep": "2104099",
       "municipio": "Formosa da Serra Negra",
-      "ure": "URE Presidente Dutra",
       "y2015": 5.08,
       "y2017": 4.89,
       "y2019": 4.53,
@@ -784,10 +711,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.9,
       "y2025": 5.7
     },
-    "Fortaleza dos Nogueiras": {
-      "codigo_ibge": "2104107",
+    {
+      "codigoInep": "2104107",
       "municipio": "Fortaleza dos Nogueiras",
-      "ure": "URE Balsas",
       "y2015": 4.62,
       "y2017": 4.15,
       "y2019": 5.22,
@@ -795,10 +721,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.5,
       "y2025": 6.22
     },
-    "Fortuna": {
-      "codigo_ibge": "2104206",
+    {
+      "codigoInep": "2104206",
       "municipio": "Fortuna",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.11,
       "y2017": 3.95,
       "y2019": 4.43,
@@ -806,10 +731,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.77,
       "y2025": 5.4
     },
-    "Godofredo Viana": {
-      "codigo_ibge": "2104305",
+    {
+      "codigoInep": "2104305",
       "municipio": "Godofredo Viana",
-      "ure": "URE Zé Doca",
       "y2015": 4.4,
       "y2017": 4.05,
       "y2019": 4.4,
@@ -817,10 +741,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.67,
       "y2025": 5.97
     },
-    "Gonçalves Dias": {
-      "codigo_ibge": "2104404",
+    {
+      "codigoInep": "2104404",
       "municipio": "Gonçalves Dias",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.1,
       "y2017": 4.14,
       "y2019": 4.51,
@@ -828,10 +751,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.82,
       "y2025": 5.28
     },
-    "Governador Archer": {
-      "codigo_ibge": "2104503",
+    {
+      "codigoInep": "2104503",
       "municipio": "Governador Archer",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.97,
       "y2017": 4.37,
       "y2019": 3.82,
@@ -839,10 +761,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.35,
       "y2025": 4.95
     },
-    "Governador Edison Lobão": {
-      "codigo_ibge": "2104552",
+    {
+      "codigoInep": "2104552",
       "municipio": "Governador Edison Lobão",
-      "ure": "URE Imperatriz",
       "y2015": 3.97,
       "y2017": 4.3,
       "y2019": 4.45,
@@ -850,10 +771,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.57,
       "y2025": 4.65
     },
-    "Governador Eugênio Barros": {
-      "codigo_ibge": "2104602",
+    {
+      "codigoInep": "2104602",
       "municipio": "Governador Eugênio Barros",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.8,
       "y2017": 3.74,
       "y2019": 4.46,
@@ -861,10 +781,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.12,
       "y2025": 4.4
     },
-    "Governador Luiz Rocha": {
-      "codigo_ibge": "2104628",
+    {
+      "codigoInep": "2104628",
       "municipio": "Governador Luiz Rocha",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.38,
       "y2017": 3.58,
       "y2019": 4.15,
@@ -872,10 +791,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.08,
       "y2025": 5
     },
-    "Governador Newton Bello": {
-      "codigo_ibge": "2104651",
+    {
+      "codigoInep": "2104651",
       "municipio": "Governador Newton Bello",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.8,
       "y2017": 3.88,
       "y2019": 4.24,
@@ -883,10 +801,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.53,
       "y2025": 4.73
     },
-    "Governador Nunes Freire": {
-      "codigo_ibge": "2104677",
+    {
+      "codigoInep": "2104677",
       "municipio": "Governador Nunes Freire",
-      "ure": "URE Zé Doca",
       "y2015": 3.67,
       "y2017": 3.85,
       "y2019": 4.06,
@@ -894,10 +811,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.37,
       "y2025": 4.88
     },
-    "Grajaú": {
-      "codigo_ibge": "2104800",
+    {
+      "codigoInep": "2104800",
       "municipio": "Grajaú",
-      "ure": "URE Barra do Corda",
       "y2015": 4.12,
       "y2017": 4.07,
       "y2019": 4.18,
@@ -905,10 +821,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.45,
       "y2025": 4.54
     },
-    "Graça Aranha": {
-      "codigo_ibge": "2104701",
+    {
+      "codigoInep": "2104701",
       "municipio": "Graça Aranha",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.05,
       "y2017": 3.55,
       "y2019": 4.37,
@@ -916,10 +831,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.77,
       "y2025": 5.07
     },
-    "Guimarães": {
-      "codigo_ibge": "2104909",
+    {
+      "codigoInep": "2104909",
       "municipio": "Guimarães",
-      "ure": "URE Pinheiro",
       "y2015": 4.03,
       "y2017": 4.01,
       "y2019": 4.55,
@@ -927,10 +841,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.88,
       "y2025": 4.75
     },
-    "Humberto de Campos": {
-      "codigo_ibge": "2105005",
+    {
+      "codigoInep": "2105005",
       "municipio": "Humberto de Campos",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.08,
       "y2017": 4.38,
       "y2019": 3.91,
@@ -938,10 +851,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.38,
       "y2025": 5.12
     },
-    "Icatu": {
-      "codigo_ibge": "2105104",
+    {
+      "codigoInep": "2105104",
       "municipio": "Icatu",
-      "ure": "URE Rosário",
       "y2015": 4.05,
       "y2017": 3.89,
       "y2019": 3.86,
@@ -949,10 +861,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.03,
       "y2025": 4.71
     },
-    "Igarapé Grande": {
-      "codigo_ibge": "2105203",
+    {
+      "codigoInep": "2105203",
       "municipio": "Igarapé Grande",
-      "ure": "URE Lago da Pedra",
       "y2015": 3.88,
       "y2017": 4.36,
       "y2019": 4.98,
@@ -960,10 +871,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.28,
       "y2025": 6.38
     },
-    "Igarapé do Meio": {
-      "codigo_ibge": "2105153",
+    {
+      "codigoInep": "2105153",
       "municipio": "Igarapé do Meio",
-      "ure": "URE Santa Inês",
       "y2015": 3.82,
       "y2017": 4.16,
       "y2019": 4.03,
@@ -971,10 +881,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.57,
       "y2025": 5.09
     },
-    "Imperatriz": {
-      "codigo_ibge": "2105302",
+    {
+      "codigoInep": "2105302",
       "municipio": "Imperatriz",
-      "ure": "URE Imperatriz",
       "y2015": 4.88,
       "y2017": 5.09,
       "y2019": 5.17,
@@ -982,10 +891,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.38,
       "y2025": 5.65
     },
-    "Itaipava do Grajaú": {
-      "codigo_ibge": "2105351",
+    {
+      "codigoInep": "2105351",
       "municipio": "Itaipava do Grajaú",
-      "ure": "URE Barra do Corda",
       "y2015": 3.8,
       "y2017": 4.02,
       "y2019": 4.47,
@@ -993,10 +901,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.97,
       "y2025": 5.5
     },
-    "Itapecuru Mirim": {
-      "codigo_ibge": "2105401",
+    {
+      "codigoInep": "2105401",
       "municipio": "Itapecuru Mirim",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.01,
       "y2017": 3.85,
       "y2019": 3.96,
@@ -1004,10 +911,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.61,
       "y2025": 5.17
     },
-    "Itinga do Maranhão": {
-      "codigo_ibge": "2105427",
+    {
+      "codigoInep": "2105427",
       "municipio": "Itinga do Maranhão",
-      "ure": "URE Açailândia",
       "y2015": 4.68,
       "y2017": 4.49,
       "y2019": 5,
@@ -1015,10 +921,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.99,
       "y2025": 5.31
     },
-    "Jatobá": {
-      "codigo_ibge": "2105450",
+    {
+      "codigoInep": "2105450",
       "municipio": "Jatobá",
-      "ure": "URE São João dos Patos",
       "y2015": 3.65,
       "y2017": 3.93,
       "y2019": 4.25,
@@ -1026,10 +931,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.57,
       "y2025": 6.1
     },
-    "Jenipapo dos Vieiras": {
-      "codigo_ibge": "2105476",
+    {
+      "codigoInep": "2105476",
       "municipio": "Jenipapo dos Vieiras",
-      "ure": "URE Barra do Corda",
       "y2015": 3.94,
       "y2017": 4.6,
       "y2019": 3.93,
@@ -1037,10 +941,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.28,
       "y2025": 4.44
     },
-    "Joselândia": {
-      "codigo_ibge": "2105609",
+    {
+      "codigoInep": "2105609",
       "municipio": "Joselândia",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.17,
       "y2017": 4.08,
       "y2019": 3.95,
@@ -1048,10 +951,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.05,
       "y2025": 5.43
     },
-    "João Lisboa": {
-      "codigo_ibge": "2105500",
+    {
+      "codigoInep": "2105500",
       "municipio": "João Lisboa",
-      "ure": "URE Imperatriz",
       "y2015": 4.27,
       "y2017": 4.42,
       "y2019": 4.86,
@@ -1059,10 +961,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.25,
       "y2025": 4.96
     },
-    "Junco do Maranhão": {
-      "codigo_ibge": "2105658",
+    {
+      "codigoInep": "2105658",
       "municipio": "Junco do Maranhão",
-      "ure": "URE Zé Doca",
       "y2015": 4.75,
       "y2017": 4.76,
       "y2019": 4.47,
@@ -1070,10 +971,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.2,
       "y2025": 5.55
     },
-    "Lago Verde": {
-      "codigo_ibge": "2105906",
+    {
+      "codigoInep": "2105906",
       "municipio": "Lago Verde",
-      "ure": "URE Bacabal",
       "y2015": 3.88,
       "y2017": 3.82,
       "y2019": 3.97,
@@ -1081,10 +981,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.12,
       "y2025": 4.37
     },
-    "Lago da Pedra": {
-      "codigo_ibge": "2105708",
+    {
+      "codigoInep": "2105708",
       "municipio": "Lago da Pedra",
-      "ure": "URE Bacabal",
       "y2015": 4.47,
       "y2017": 4.51,
       "y2019": 4.37,
@@ -1092,10 +991,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.91,
       "y2025": 5.17
     },
-    "Lago do Junco": {
-      "codigo_ibge": "2105807",
+    {
+      "codigoInep": "2105807",
       "municipio": "Lago do Junco",
-      "ure": "URE Lago da Pedra",
       "y2015": 4.43,
       "y2017": 5.08,
       "y2019": 5.58,
@@ -1103,10 +1001,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.57,
       "y2025": 5.5
     },
-    "Lago dos Rodrigues": {
-      "codigo_ibge": "2105948",
+    {
+      "codigoInep": "2105948",
       "municipio": "Lago dos Rodrigues",
-      "ure": "URE Lago da Pedra",
       "y2015": 4.55,
       "y2017": 4.97,
       "y2019": 4.8,
@@ -1114,10 +1011,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.65,
       "y2025": 5.33
     },
-    "Lagoa Grande do Maranhão": {
-      "codigo_ibge": "2105963",
+    {
+      "codigoInep": "2105963",
       "municipio": "Lagoa Grande do Maranhão",
-      "ure": "URE Bacabal",
       "y2015": 3.27,
       "y2017": 3.35,
       "y2019": 4.27,
@@ -1125,10 +1021,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.43,
       "y2025": 4.65
     },
-    "Lagoa do Mato": {
-      "codigo_ibge": "2105922",
+    {
+      "codigoInep": "2105922",
       "municipio": "Lagoa do Mato",
-      "ure": "URE Presidente Dutra",
       "y2015": 5.7,
       "y2017": 5.44,
       "y2019": 5.9,
@@ -1136,10 +1031,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.9,
       "y2025": 5.65
     },
-    "Lajeado Novo": {
-      "codigo_ibge": "2105989",
+    {
+      "codigoInep": "2105989",
       "municipio": "Lajeado Novo",
-      "ure": "URE Imperatriz",
       "y2015": 4.65,
       "y2017": 4.65,
       "y2019": 4.93,
@@ -1147,10 +1041,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.07,
       "y2025": 4.83
     },
-    "Lima Campos": {
-      "codigo_ibge": "2106003",
+    {
+      "codigoInep": "2106003",
       "municipio": "Lima Campos",
-      "ure": "URE Pedreiras",
       "y2015": 3.27,
       "y2017": 4.5,
       "y2019": 5.3,
@@ -1158,10 +1051,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 6.73,
       "y2025": 6.95
     },
-    "Loreto": {
-      "codigo_ibge": "2106102",
+    {
+      "codigoInep": "2106102",
       "municipio": "Loreto",
-      "ure": "URE Balsas",
       "y2015": 4.45,
       "y2017": 4.03,
       "y2019": 4.36,
@@ -1169,10 +1061,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.87,
       "y2025": 5.12
     },
-    "Luís Domingues": {
-      "codigo_ibge": "2106201",
+    {
+      "codigoInep": "2106201",
       "municipio": "Luís Domingues",
-      "ure": "URE Zé Doca",
       "y2015": 3.83,
       "y2017": 3.57,
       "y2019": 3.98,
@@ -1180,10 +1071,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.75,
       "y2025": 5.35
     },
-    "Magalhães de Almeida": {
-      "codigo_ibge": "2106300",
+    {
+      "codigoInep": "2106300",
       "municipio": "Magalhães de Almeida",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.85,
       "y2017": 4.4,
       "y2019": 3.96,
@@ -1191,10 +1081,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.56,
       "y2025": 4.96
     },
-    "Maracaçumé": {
-      "codigo_ibge": "2106326",
+    {
+      "codigoInep": "2106326",
       "municipio": "Maracaçumé",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.3,
       "y2017": 3.93,
       "y2019": 4.15,
@@ -1202,10 +1091,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.45,
       "y2025": 4.92
     },
-    "Marajá do Sena": {
-      "codigo_ibge": "2106359",
+    {
+      "codigoInep": "2106359",
       "municipio": "Marajá do Sena",
-      "ure": "URE Bacabal",
       "y2015": 4.1,
       "y2017": 3.8,
       "y2019": 4.9,
@@ -1213,10 +1101,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.4,
       "y2025": 4.9
     },
-    "Maranhãozinho": {
-      "codigo_ibge": "2106375",
+    {
+      "codigoInep": "2106375",
       "municipio": "Maranhãozinho",
-      "ure": "URE Zé Doca",
       "y2015": 3.6,
       "y2017": 4.02,
       "y2019": 4.92,
@@ -1224,10 +1111,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.9,
       "y2025": 5.58
     },
-    "Mata Roma": {
-      "codigo_ibge": "2106409",
+    {
+      "codigoInep": "2106409",
       "municipio": "Mata Roma",
-      "ure": "URE Chapadinha",
       "y2015": 3.76,
       "y2017": 3.94,
       "y2019": 3.9,
@@ -1235,10 +1121,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.03,
       "y2025": 4.09
     },
-    "Matinha": {
-      "codigo_ibge": "2106508",
+    {
+      "codigoInep": "2106508",
       "municipio": "Matinha",
-      "ure": "URE Viana",
       "y2015": 3.7,
       "y2017": 3.84,
       "y2019": 3.83,
@@ -1246,10 +1131,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.88,
       "y2025": 4.33
     },
-    "Matões": {
-      "codigo_ibge": "2106607",
+    {
+      "codigoInep": "2106607",
       "municipio": "Matões",
-      "ure": "URE Caxias",
       "y2015": 3.36,
       "y2017": 3.51,
       "y2019": 5.71,
@@ -1257,10 +1141,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.78,
       "y2025": 5
     },
-    "Matões do Norte": {
-      "codigo_ibge": "2106631",
+    {
+      "codigoInep": "2106631",
       "municipio": "Matões do Norte",
-      "ure": "URE Itapecuru-Mirim",
       "y2015": 3.2,
       "y2017": 4.5,
       "y2019": 4.4,
@@ -1268,10 +1151,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.07,
       "y2025": 4.65
     },
-    "Milagres do Maranhão": {
-      "codigo_ibge": "2106672",
+    {
+      "codigoInep": "2106672",
       "municipio": "Milagres do Maranhão",
-      "ure": "URE Chapadinha",
       "y2015": 3.55,
       "y2017": 3.85,
       "y2019": 4.27,
@@ -1279,10 +1161,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.27,
       "y2025": 5.4
     },
-    "Mirador": {
-      "codigo_ibge": "2106706",
+    {
+      "codigoInep": "2106706",
       "municipio": "Mirador",
-      "ure": "URE São João dos Patos",
       "y2015": 3.21,
       "y2017": 4.02,
       "y2019": 4.08,
@@ -1290,10 +1171,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.11,
       "y2025": 4.43
     },
-    "Miranda do Norte": {
-      "codigo_ibge": "2106755",
+    {
+      "codigoInep": "2106755",
       "municipio": "Miranda do Norte",
-      "ure": "URE Itapecuru-Mirim",
       "y2015": 4.79,
       "y2017": 5.3,
       "y2019": 5.24,
@@ -1301,10 +1181,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.04,
       "y2025": 5.22
     },
-    "Mirinzal": {
-      "codigo_ibge": "2106805",
+    {
+      "codigoInep": "2106805",
       "municipio": "Mirinzal",
-      "ure": "URE Pinheiro",
       "y2015": 4.05,
       "y2017": 4.11,
       "y2019": 4.27,
@@ -1312,10 +1191,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.82,
       "y2025": 4.66
     },
-    "Montes Altos": {
-      "codigo_ibge": "2107001",
+    {
+      "codigoInep": "2107001",
       "municipio": "Montes Altos",
-      "ure": "URE Imperatriz",
       "y2015": 3.2,
       "y2017": 4.3,
       "y2019": 4.28,
@@ -1323,10 +1201,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4,
       "y2025": 4.73
     },
-    "Monção": {
-      "codigo_ibge": "2106904",
+    {
+      "codigoInep": "2106904",
       "municipio": "Monção",
-      "ure": "URE Santa Inês",
       "y2015": 3.48,
       "y2017": 3.41,
       "y2019": 3.58,
@@ -1334,10 +1211,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.82,
       "y2025": 4.22
     },
-    "Morros": {
-      "codigo_ibge": "2107100",
+    {
+      "codigoInep": "2107100",
       "municipio": "Morros",
-      "ure": "URE Rosário",
       "y2015": 3.34,
       "y2017": 3.5,
       "y2019": 3.61,
@@ -1345,10 +1221,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.31,
       "y2025": 4.82
     },
-    "Nina Rodrigues": {
-      "codigo_ibge": "2107209",
+    {
+      "codigoInep": "2107209",
       "municipio": "Nina Rodrigues",
-      "ure": "URE Itapecuru-Mirim",
       "y2015": 4.4,
       "y2017": 4.46,
       "y2019": 4.65,
@@ -1356,10 +1231,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.65,
       "y2025": 5.38
     },
-    "Nova Colinas": {
-      "codigo_ibge": "2107258",
+    {
+      "codigoInep": "2107258",
       "municipio": "Nova Colinas",
-      "ure": "URE Balsas",
       "y2015": 4.3,
       "y2017": 4.8,
       "y2019": 4.5,
@@ -1367,10 +1241,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5,
       "y2025": 5.7
     },
-    "Nova Iorque": {
-      "codigo_ibge": "2107308",
+    {
+      "codigoInep": "2107308",
       "municipio": "Nova Iorque",
-      "ure": "URE São João dos Patos",
       "y2015": 3.4,
       "y2017": 3.85,
       "y2019": 4.05,
@@ -1378,10 +1251,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.3,
       "y2025": 4.4
     },
-    "Nova Olinda do Maranhão": {
-      "codigo_ibge": "2107357",
+    {
+      "codigoInep": "2107357",
       "municipio": "Nova Olinda do Maranhão",
-      "ure": "URE Pinheiro",
       "y2015": 4.2,
       "y2017": 4.57,
       "y2019": 4.66,
@@ -1389,10 +1261,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.83,
       "y2025": 5.04
     },
-    "Olho d'Água das Cunhãs": {
-      "codigo_ibge": "2107407",
+    {
+      "codigoInep": "2107407",
       "municipio": "Olho d'Água das Cunhãs",
-      "ure": "URE Bacabal",
       "y2015": 3.88,
       "y2017": 4.6,
       "y2019": 4.33,
@@ -1400,10 +1271,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.82,
       "y2025": 5.74
     },
-    "Olinda Nova do Maranhão": {
-      "codigo_ibge": "2107456",
+    {
+      "codigoInep": "2107456",
       "municipio": "Olinda Nova do Maranhão",
-      "ure": "URE Viana",
       "y2015": 4.65,
       "y2017": 3.97,
       "y2019": 4.15,
@@ -1411,10 +1281,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.97,
       "y2025": 4.1
     },
-    "Palmeirândia": {
-      "codigo_ibge": "2107605",
+    {
+      "codigoInep": "2107605",
       "municipio": "Palmeirândia",
-      "ure": "URE Pinheiro",
       "y2015": 4.18,
       "y2017": 3.99,
       "y2019": 4.02,
@@ -1422,10 +1291,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.34,
       "y2025": 4.28
     },
-    "Paraibano": {
-      "codigo_ibge": "2107704",
+    {
+      "codigoInep": "2107704",
       "municipio": "Paraibano",
-      "ure": "URE São João dos Patos",
       "y2015": 3.85,
       "y2017": 3.89,
       "y2019": 4.58,
@@ -1433,10 +1301,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.46,
       "y2025": 5.21
     },
-    "Parnarama": {
-      "codigo_ibge": "2107803",
+    {
+      "codigoInep": "2107803",
       "municipio": "Parnarama",
-      "ure": "URE Caxias",
       "y2015": 4.42,
       "y2017": 3.73,
       "y2019": 4.55,
@@ -1444,10 +1311,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.74,
       "y2025": 6.14
     },
-    "Passagem Franca": {
-      "codigo_ibge": "2107902",
+    {
+      "codigoInep": "2107902",
       "municipio": "Passagem Franca",
-      "ure": "URE São João dos Patos",
       "y2015": 4.36,
       "y2017": 4.36,
       "y2019": 4.52,
@@ -1455,10 +1321,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.45,
       "y2025": 4.89
     },
-    "Pastos Bons": {
-      "codigo_ibge": "2108009",
+    {
+      "codigoInep": "2108009",
       "municipio": "Pastos Bons",
-      "ure": "URE São João dos Patos",
       "y2015": 4.4,
       "y2017": 5,
       "y2019": 5.28,
@@ -1466,10 +1331,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.71,
       "y2025": 5.94
     },
-    "Paulino Neves": {
-      "codigo_ibge": "2108058",
+    {
+      "codigoInep": "2108058",
       "municipio": "Paulino Neves",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.2,
       "y2017": 3.85,
       "y2019": 4.02,
@@ -1477,10 +1341,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.64,
       "y2025": 5.49
     },
-    "Paulo Ramos": {
-      "codigo_ibge": "2108108",
+    {
+      "codigoInep": "2108108",
       "municipio": "Paulo Ramos",
-      "ure": "URE Bacabal",
       "y2015": 4.04,
       "y2017": 3.67,
       "y2019": 4.14,
@@ -1488,10 +1351,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.44,
       "y2025": 5.04
     },
-    "Paço do Lumiar": {
-      "codigo_ibge": "2107506",
+    {
+      "codigoInep": "2107506",
       "municipio": "Paço do Lumiar",
-      "ure": "URE São Luís",
       "y2015": 4.52,
       "y2017": 4.82,
       "y2019": 5.02,
@@ -1499,10 +1361,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.15,
       "y2025": 5.4
     },
-    "Pedreiras": {
-      "codigo_ibge": "2108207",
+    {
+      "codigoInep": "2108207",
       "municipio": "Pedreiras",
-      "ure": "URE Pedreiras",
       "y2015": 4.07,
       "y2017": 4.12,
       "y2019": 4.49,
@@ -1510,10 +1371,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.28,
       "y2025": 5.94
     },
-    "Pedro do Rosário": {
-      "codigo_ibge": "2108256",
+    {
+      "codigoInep": "2108256",
       "municipio": "Pedro do Rosário",
-      "ure": "URE Pinheiro",
       "y2015": 3.8,
       "y2017": 3.55,
       "y2019": 4.16,
@@ -1521,10 +1381,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.79,
       "y2025": 4.3
     },
-    "Penalva": {
-      "codigo_ibge": "2108306",
+    {
+      "codigoInep": "2108306",
       "municipio": "Penalva",
-      "ure": "URE Viana",
       "y2015": 4.08,
       "y2017": 4.46,
       "y2019": 4.57,
@@ -1532,10 +1391,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.5,
       "y2025": 4.73
     },
-    "Peri Mirim": {
-      "codigo_ibge": "2108405",
+    {
+      "codigoInep": "2108405",
       "municipio": "Peri Mirim",
-      "ure": "URE Pinheiro",
       "y2015": 4.2,
       "y2017": 4.15,
       "y2019": 4.42,
@@ -1543,10 +1401,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.22,
       "y2025": 5.22
     },
-    "Peritoró": {
-      "codigo_ibge": "2108454",
+    {
+      "codigoInep": "2108454",
       "municipio": "Peritoró",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.54,
       "y2017": 3.75,
       "y2019": 3.66,
@@ -1554,10 +1411,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.29,
       "y2025": 4.92
     },
-    "Pindaré-Mirim": {
-      "codigo_ibge": "2108504",
+    {
+      "codigoInep": "2108504",
       "municipio": "Pindaré-Mirim",
-      "ure": "URE Santa Inês",
       "y2015": 3.68,
       "y2017": 3.79,
       "y2019": 3.99,
@@ -1565,10 +1421,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.26,
       "y2025": 4.63
     },
-    "Pinheiro": {
-      "codigo_ibge": "2108603",
+    {
+      "codigoInep": "2108603",
       "municipio": "Pinheiro",
-      "ure": "URE Pinheiro",
       "y2015": 4.65,
       "y2017": 4.55,
       "y2019": 4.69,
@@ -1576,10 +1431,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.76,
       "y2025": 4.96
     },
-    "Pio XII": {
-      "codigo_ibge": "2108702",
+    {
+      "codigoInep": "2108702",
       "municipio": "Pio XII",
-      "ure": "URE Santa Inês",
       "y2015": 3.21,
       "y2017": 3.4,
       "y2019": 4.09,
@@ -1587,10 +1441,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.56,
       "y2025": 4.59
     },
-    "Pirapemas": {
-      "codigo_ibge": "2108801",
+    {
+      "codigoInep": "2108801",
       "municipio": "Pirapemas",
-      "ure": "URE Itapecuru-Mirim",
       "y2015": 4.23,
       "y2017": 4.45,
       "y2019": 5.17,
@@ -1598,10 +1451,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.38,
       "y2025": 4.68
     },
-    "Porto Franco": {
-      "codigo_ibge": "2109007",
+    {
+      "codigoInep": "2109007",
       "municipio": "Porto Franco",
-      "ure": "URE Presidente Dutra",
       "y2015": 5.91,
       "y2017": 5.62,
       "y2019": 6.18,
@@ -1609,10 +1461,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 6.55,
       "y2025": 6.41
     },
-    "Porto Rico do Maranhão": {
-      "codigo_ibge": "2109056",
+    {
+      "codigoInep": "2109056",
       "municipio": "Porto Rico do Maranhão",
-      "ure": "URE Pinheiro",
       "y2015": 7.17,
       "y2017": 4.38,
       "y2019": 4.57,
@@ -1620,10 +1471,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.83,
       "y2025": 4.53
     },
-    "Poção de Pedras": {
-      "codigo_ibge": "2108900",
+    {
+      "codigoInep": "2108900",
       "municipio": "Poção de Pedras",
-      "ure": "URE Lago da Pedra",
       "y2015": 4.27,
       "y2017": 4.1,
       "y2019": 4.44,
@@ -1631,10 +1481,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.97,
       "y2025": 6.05
     },
-    "Presidente Dutra": {
-      "codigo_ibge": "2109106",
+    {
+      "codigoInep": "2109106",
       "municipio": "Presidente Dutra",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.91,
       "y2017": 4.17,
       "y2019": 4.35,
@@ -1642,10 +1491,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.71,
       "y2025": 5.25
     },
-    "Presidente Juscelino": {
-      "codigo_ibge": "2109205",
+    {
+      "codigoInep": "2109205",
       "municipio": "Presidente Juscelino",
-      "ure": "URE Rosário",
       "y2015": 4.53,
       "y2017": 3.93,
       "y2019": 4.08,
@@ -1653,10 +1501,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.33,
       "y2025": 5.02
     },
-    "Presidente Médici": {
-      "codigo_ibge": "2109239",
+    {
+      "codigoInep": "2109239",
       "municipio": "Presidente Médici",
-      "ure": "URE Zé Doca",
       "y2015": 3.95,
       "y2017": 4.35,
       "y2019": 4.55,
@@ -1664,10 +1511,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.47,
       "y2025": 5.75
     },
-    "Presidente Sarney": {
-      "codigo_ibge": "2109270",
+    {
+      "codigoInep": "2109270",
       "municipio": "Presidente Sarney",
-      "ure": "URE Pinheiro",
       "y2015": 3.9,
       "y2017": 4.16,
       "y2019": 4.12,
@@ -1675,10 +1521,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.45,
       "y2025": 4.44
     },
-    "Presidente Vargas": {
-      "codigo_ibge": "2109304",
+    {
+      "codigoInep": "2109304",
       "municipio": "Presidente Vargas",
-      "ure": "URE Itapecuru-Mirim",
       "y2015": 3.95,
       "y2017": 3.83,
       "y2019": 3.97,
@@ -1686,10 +1531,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.45,
       "y2025": 4.25
     },
-    "Primeira Cruz": {
-      "codigo_ibge": "2109403",
+    {
+      "codigoInep": "2109403",
       "municipio": "Primeira Cruz",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.7,
       "y2017": 4.04,
       "y2019": 3.88,
@@ -1697,10 +1541,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.55,
       "y2025": 4.88
     },
-    "Raposa": {
-      "codigo_ibge": "2109452",
+    {
+      "codigoInep": "2109452",
       "municipio": "Raposa",
-      "ure": "URE São Luís",
       "y2015": 4.11,
       "y2017": 4.39,
       "y2019": 4.15,
@@ -1708,10 +1551,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.02,
       "y2025": 5.49
     },
-    "Riachão": {
-      "codigo_ibge": "2109502",
+    {
+      "codigoInep": "2109502",
       "municipio": "Riachão",
-      "ure": "URE Balsas",
       "y2015": 4.21,
       "y2017": 4.14,
       "y2019": 4.44,
@@ -1719,10 +1561,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.42,
       "y2025": 4.92
     },
-    "Ribamar Fiquene": {
-      "codigo_ibge": "2109551",
+    {
+      "codigoInep": "2109551",
       "municipio": "Ribamar Fiquene",
-      "ure": "URE Imperatriz",
       "y2015": 4.23,
       "y2017": 4.35,
       "y2019": 3.8,
@@ -1730,10 +1571,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.25,
       "y2025": 5.05
     },
-    "Rosário": {
-      "codigo_ibge": "2109601",
+    {
+      "codigoInep": "2109601",
       "municipio": "Rosário",
-      "ure": "URE Rosário",
       "y2015": 4.54,
       "y2017": 4.78,
       "y2019": 5.19,
@@ -1741,10 +1581,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.07,
       "y2025": 5.61
     },
-    "Sambaíba": {
-      "codigo_ibge": "2109700",
+    {
+      "codigoInep": "2109700",
       "municipio": "Sambaíba",
-      "ure": "URE Balsas",
       "y2015": 4.6,
       "y2017": 4.2,
       "y2019": 4.3,
@@ -1752,10 +1591,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.25,
       "y2025": 6.8
     },
-    "Santa Filomena do Maranhão": {
-      "codigo_ibge": "2109759",
+    {
+      "codigoInep": "2109759",
       "municipio": "Santa Filomena do Maranhão",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.45,
       "y2017": 3.75,
       "y2019": 3.6,
@@ -1763,10 +1601,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.05,
       "y2025": 4.7
     },
-    "Santa Helena": {
-      "codigo_ibge": "2109809",
+    {
+      "codigoInep": "2109809",
       "municipio": "Santa Helena",
-      "ure": "URE Pinheiro",
       "y2015": 4.11,
       "y2017": 3.59,
       "y2019": 4.23,
@@ -1774,10 +1611,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.6,
       "y2025": 4.97
     },
-    "Santa Inês": {
-      "codigo_ibge": "2109908",
+    {
+      "codigoInep": "2109908",
       "municipio": "Santa Inês",
-      "ure": "URE Santa Inês",
       "y2015": 4.03,
       "y2017": 4.14,
       "y2019": 4.11,
@@ -1785,10 +1621,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.5,
       "y2025": 5.27
     },
-    "Santa Luzia": {
-      "codigo_ibge": "2110005",
+    {
+      "codigoInep": "2110005",
       "municipio": "Santa Luzia",
-      "ure": "URE Santa Inês",
       "y2015": 3.76,
       "y2017": 4.32,
       "y2019": 4.85,
@@ -1796,10 +1631,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.23,
       "y2025": 5.42
     },
-    "Santa Luzia do Paruá": {
-      "codigo_ibge": "2110039",
+    {
+      "codigoInep": "2110039",
       "municipio": "Santa Luzia do Paruá",
-      "ure": "URE Zé Doca",
       "y2015": 3.62,
       "y2017": 3.91,
       "y2019": 4.09,
@@ -1807,10 +1641,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.49,
       "y2025": 5.07
     },
-    "Santa Quitéria do Maranhão": {
-      "codigo_ibge": "2110104",
+    {
+      "codigoInep": "2110104",
       "municipio": "Santa Quitéria do Maranhão",
-      "ure": "URE Chapadinha",
       "y2015": 3.71,
       "y2017": 3.63,
       "y2019": 3.39,
@@ -1818,10 +1651,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.64,
       "y2025": 4.93
     },
-    "Santa Rita": {
-      "codigo_ibge": "2110203",
+    {
+      "codigoInep": "2110203",
       "municipio": "Santa Rita",
-      "ure": "URE Rosário",
       "y2015": 4.2,
       "y2017": 4.44,
       "y2019": 4.74,
@@ -1829,10 +1661,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.83,
       "y2025": 5.22
     },
-    "Santana do Maranhão": {
-      "codigo_ibge": "2110237",
+    {
+      "codigoInep": "2110237",
       "municipio": "Santana do Maranhão",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.8,
       "y2017": 3.35,
       "y2019": 4.3,
@@ -1840,10 +1671,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.28,
       "y2025": 5.59
     },
-    "Santo Amaro do Maranhão": {
-      "codigo_ibge": "2110278",
+    {
+      "codigoInep": "2110278",
       "municipio": "Santo Amaro do Maranhão",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.26,
       "y2017": 3.63,
       "y2019": 3.81,
@@ -1851,10 +1681,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.87,
       "y2025": 4.56
     },
-    "Santo Antônio dos Lopes": {
-      "codigo_ibge": "2110302",
+    {
+      "codigoInep": "2110302",
       "municipio": "Santo Antônio dos Lopes",
-      "ure": "URE Pedreiras",
       "y2015": 4.05,
       "y2017": 4.7,
       "y2019": 4.97,
@@ -1862,10 +1691,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.53,
       "y2025": 5.73
     },
-    "Satubinha": {
-      "codigo_ibge": "2111722",
+    {
+      "codigoInep": "2111722",
       "municipio": "Satubinha",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.9,
       "y2017": 3.9,
       "y2019": 4.1,
@@ -1873,10 +1701,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.8,
       "y2025": 4.85
     },
-    "Senador Alexandre Costa": {
-      "codigo_ibge": "2111748",
+    {
+      "codigoInep": "2111748",
       "municipio": "Senador Alexandre Costa",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.65,
       "y2017": 4.06,
       "y2019": 3.64,
@@ -1884,10 +1711,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.7,
       "y2025": 4.84
     },
-    "Senador La Rocque": {
-      "codigo_ibge": "2111763",
+    {
+      "codigoInep": "2111763",
       "municipio": "Senador La Rocque",
-      "ure": "URE Imperatriz",
       "y2015": 3.73,
       "y2017": 3.7,
       "y2019": 3.84,
@@ -1895,10 +1721,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.74,
       "y2025": 4.65
     },
-    "Serrano do Maranhão": {
-      "codigo_ibge": "2111789",
+    {
+      "codigoInep": "2111789",
       "municipio": "Serrano do Maranhão",
-      "ure": "URE Pinheiro",
       "y2015": 4.4,
       "y2017": 3.59,
       "y2019": 4.15,
@@ -1906,10 +1731,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.67,
       "y2025": 5.34
     },
-    "Sucupira do Norte": {
-      "codigo_ibge": "2111904",
+    {
+      "codigoInep": "2111904",
       "municipio": "Sucupira do Norte",
-      "ure": "URE São João dos Patos",
       "y2015": 4,
       "y2017": 4.45,
       "y2019": 4.3,
@@ -1917,10 +1741,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.52,
       "y2025": 5.16
     },
-    "Sucupira do Riachão": {
-      "codigo_ibge": "2111953",
+    {
+      "codigoInep": "2111953",
       "municipio": "Sucupira do Riachão",
-      "ure": "URE São João dos Patos",
       "y2015": 3.3,
       "y2017": 4.2,
       "y2019": 4.6,
@@ -1928,10 +1751,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.8,
       "y2025": 5.43
     },
-    "São Benedito do Rio Preto": {
-      "codigo_ibge": "2110401",
+    {
+      "codigoInep": "2110401",
       "municipio": "São Benedito do Rio Preto",
-      "ure": "URE Chapadinha",
       "y2015": 4.01,
       "y2017": 4.15,
       "y2019": 3.93,
@@ -1939,10 +1761,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.83,
       "y2025": 4.22
     },
-    "São Bento": {
-      "codigo_ibge": "2110500",
+    {
+      "codigoInep": "2110500",
       "municipio": "São Bento",
-      "ure": "URE Viana",
       "y2015": 4.32,
       "y2017": 4.42,
       "y2019": 4.32,
@@ -1950,10 +1771,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.33,
       "y2025": 4.72
     },
-    "São Bernardo": {
-      "codigo_ibge": "2110609",
+    {
+      "codigoInep": "2110609",
       "municipio": "São Bernardo",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.46,
       "y2017": 4.21,
       "y2019": 4.68,
@@ -1961,10 +1781,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.25,
       "y2025": 5.76
     },
-    "São Domingos do Azeitão": {
-      "codigo_ibge": "2110658",
+    {
+      "codigoInep": "2110658",
       "municipio": "São Domingos do Azeitão",
-      "ure": "URE São João dos Patos",
       "y2015": 3.83,
       "y2017": 3.77,
       "y2019": 3.8,
@@ -1972,10 +1791,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.27,
       "y2025": 4.9
     },
-    "São Domingos do Maranhão": {
-      "codigo_ibge": "2110708",
+    {
+      "codigoInep": "2110708",
       "municipio": "São Domingos do Maranhão",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.23,
       "y2017": 4.38,
       "y2019": 4.7,
@@ -1983,10 +1801,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.99,
       "y2025": 5.03
     },
-    "São Francisco do Brejão": {
-      "codigo_ibge": "2110856",
+    {
+      "codigoInep": "2110856",
       "municipio": "São Francisco do Brejão",
-      "ure": "URE Açailândia",
       "y2015": 3.9,
       "y2017": 5.13,
       "y2019": 5.83,
@@ -1994,10 +1811,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.23,
       "y2025": 4.8
     },
-    "São Francisco do Maranhão": {
-      "codigo_ibge": "2110906",
+    {
+      "codigoInep": "2110906",
       "municipio": "São Francisco do Maranhão",
-      "ure": "URE São João dos Patos",
       "y2015": 3.4,
       "y2017": 3.33,
       "y2019": 4.67,
@@ -2005,10 +1821,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.2,
       "y2025": 5.2
     },
-    "São Félix de Balsas": {
-      "codigo_ibge": "2110807",
+    {
+      "codigoInep": "2110807",
       "municipio": "São Félix de Balsas",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.65,
       "y2017": 3.5,
       "y2019": 3.5,
@@ -2016,10 +1831,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.65,
       "y2025": 4.65
     },
-    "São José de Ribamar": {
-      "codigo_ibge": "2111201",
+    {
+      "codigoInep": "2111201",
       "municipio": "São José de Ribamar",
-      "ure": "URE São Luís",
       "y2015": 4.95,
       "y2017": 5.3,
       "y2019": 5.71,
@@ -2027,10 +1841,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.44,
       "y2025": 5.58
     },
-    "São José dos Basílios": {
-      "codigo_ibge": "2111250",
+    {
+      "codigoInep": "2111250",
       "municipio": "São José dos Basílios",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.8,
       "y2017": 4.1,
       "y2019": 4.7,
@@ -2038,10 +1851,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.17,
       "y2025": 5.47
     },
-    "São João Batista": {
-      "codigo_ibge": "2111003",
+    {
+      "codigoInep": "2111003",
       "municipio": "São João Batista",
-      "ure": "URE Viana",
       "y2015": 3.77,
       "y2017": 4.06,
       "y2019": 4.05,
@@ -2049,10 +1861,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4,
       "y2025": 4.42
     },
-    "São João do Carú": {
-      "codigo_ibge": "2111029",
+    {
+      "codigoInep": "2111029",
       "municipio": "São João do Carú",
-      "ure": "URE Santa Inês",
       "y2015": 4.32,
       "y2017": 4.1,
       "y2019": 3.62,
@@ -2060,10 +1871,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.72,
       "y2025": 5.46
     },
-    "São João do Paraíso": {
-      "codigo_ibge": "2111052",
+    {
+      "codigoInep": "2111052",
       "municipio": "São João do Paraíso",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.2,
       "y2017": 4.42,
       "y2019": 4.57,
@@ -2071,10 +1881,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.5,
       "y2025": 5.47
     },
-    "São João do Soter": {
-      "codigo_ibge": "2111078",
+    {
+      "codigoInep": "2111078",
       "municipio": "São João do Soter",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.56,
       "y2017": 3.85,
       "y2019": 4,
@@ -2082,10 +1891,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.15,
       "y2025": 5.44
     },
-    "São João dos Patos": {
-      "codigo_ibge": "2111102",
+    {
+      "codigoInep": "2111102",
       "municipio": "São João dos Patos",
-      "ure": "URE São João dos Patos",
       "y2015": 4.89,
       "y2017": 4.82,
       "y2019": 4.9,
@@ -2093,10 +1901,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.44,
       "y2025": 5.56
     },
-    "São Luís": {
-      "codigo_ibge": "2111300",
+    {
+      "codigoInep": "2111300",
       "municipio": "São Luís",
-      "ure": "URE São Luís",
       "y2015": 4.55,
       "y2017": 4.66,
       "y2019": 5.05,
@@ -2104,10 +1911,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.35,
       "y2025": 5.87
     },
-    "São Luís Gonzaga do Maranhão": {
-      "codigo_ibge": "2111409",
+    {
+      "codigoInep": "2111409",
       "municipio": "São Luís Gonzaga do Maranhão",
-      "ure": "URE Bacabal",
       "y2015": 3.73,
       "y2017": 4.3,
       "y2019": 4.19,
@@ -2115,10 +1921,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.63,
       "y2025": 5.2
     },
-    "São Mateus do Maranhão": {
-      "codigo_ibge": "2111508",
+    {
+      "codigoInep": "2111508",
       "municipio": "São Mateus do Maranhão",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.04,
       "y2017": 4.41,
       "y2019": 4.4,
@@ -2126,10 +1931,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.68,
       "y2025": 5.24
     },
-    "São Pedro da Água Branca": {
-      "codigo_ibge": "2111532",
+    {
+      "codigoInep": "2111532",
       "municipio": "São Pedro da Água Branca",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.37,
       "y2017": 4.63,
       "y2019": 4.72,
@@ -2137,10 +1941,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.2,
       "y2025": 4.85
     },
-    "São Pedro dos Crentes": {
-      "codigo_ibge": "2111573",
+    {
+      "codigoInep": "2111573",
       "municipio": "São Pedro dos Crentes",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.3,
       "y2017": 3.8,
       "y2019": 5.2,
@@ -2148,10 +1951,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.73,
       "y2025": 5.23
     },
-    "São Raimundo das Mangabeiras": {
-      "codigo_ibge": "2111607",
+    {
+      "codigoInep": "2111607",
       "municipio": "São Raimundo das Mangabeiras",
-      "ure": "URE Balsas",
       "y2015": 4.59,
       "y2017": 5.51,
       "y2019": 5.41,
@@ -2159,10 +1961,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.17,
       "y2025": 5.98
     },
-    "São Raimundo do Doca Bezerra": {
-      "codigo_ibge": "2111631",
+    {
+      "codigoInep": "2111631",
       "municipio": "São Raimundo do Doca Bezerra",
-      "ure": "URE Pedreiras",
       "y2015": 3.75,
       "y2017": 3.52,
       "y2019": 3.73,
@@ -2170,10 +1971,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.73,
       "y2025": 4.4
     },
-    "São Roberto": {
-      "codigo_ibge": "2111672",
+    {
+      "codigoInep": "2111672",
       "municipio": "São Roberto",
-      "ure": "URE Pedreiras",
       "y2015": 3.9,
       "y2017": null,
       "y2019": null,
@@ -2181,10 +1981,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.55,
       "y2025": 5.23
     },
-    "São Vicente Ferrer": {
-      "codigo_ibge": "2111706",
+    {
+      "codigoInep": "2111706",
       "municipio": "São Vicente Ferrer",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.78,
       "y2017": 3.75,
       "y2019": 4.08,
@@ -2192,10 +1991,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.31,
       "y2025": 4.69
     },
-    "Sítio Novo": {
-      "codigo_ibge": "2111805",
+    {
+      "codigoInep": "2111805",
       "municipio": "Sítio Novo",
-      "ure": "URE Imperatriz",
       "y2015": 4.27,
       "y2017": 4.35,
       "y2019": 4.37,
@@ -2203,10 +2001,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.15,
       "y2025": 5.38
     },
-    "Tasso Fragoso": {
-      "codigo_ibge": "2112001",
+    {
+      "codigoInep": "2112001",
       "municipio": "Tasso Fragoso",
-      "ure": "URE Balsas",
       "y2015": 3.9,
       "y2017": 4.08,
       "y2019": 4.45,
@@ -2214,10 +2011,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.73,
       "y2025": 5.46
     },
-    "Timbiras": {
-      "codigo_ibge": "2112100",
+    {
+      "codigoInep": "2112100",
       "municipio": "Timbiras",
-      "ure": "URE Codó",
       "y2015": 3.74,
       "y2017": 3.9,
       "y2019": 4.24,
@@ -2225,10 +2021,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.67,
       "y2025": 5.12
     },
-    "Timon": {
-      "codigo_ibge": "2112209",
+    {
+      "codigoInep": "2112209",
       "municipio": "Timon",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.3,
       "y2017": 4.78,
       "y2019": 5.51,
@@ -2236,10 +2031,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 6.57,
       "y2025": 6.39
     },
-    "Trizidela do Vale": {
-      "codigo_ibge": "2112233",
+    {
+      "codigoInep": "2112233",
       "municipio": "Trizidela do Vale",
-      "ure": "URE Pedreiras",
       "y2015": 4.53,
       "y2017": 4.67,
       "y2019": 5.02,
@@ -2247,10 +2041,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.43,
       "y2025": 5.94
     },
-    "Tufilândia": {
-      "codigo_ibge": "2112274",
+    {
+      "codigoInep": "2112274",
       "municipio": "Tufilândia",
-      "ure": "URE Santa Inês",
       "y2015": 3.53,
       "y2017": 3.7,
       "y2019": 3.75,
@@ -2258,10 +2051,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.27,
       "y2025": 4.42
     },
-    "Tuntum": {
-      "codigo_ibge": "2112308",
+    {
+      "codigoInep": "2112308",
       "municipio": "Tuntum",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.99,
       "y2017": 4.38,
       "y2019": 4.22,
@@ -2269,10 +2061,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.73,
       "y2025": 5.21
     },
-    "Turiaçu": {
-      "codigo_ibge": "2112407",
+    {
+      "codigoInep": "2112407",
       "municipio": "Turiaçu",
-      "ure": "URE Pinheiro",
       "y2015": 3.74,
       "y2017": 4.02,
       "y2019": 4.08,
@@ -2280,10 +2071,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.01,
       "y2025": 4.17
     },
-    "Turilândia": {
-      "codigo_ibge": "2112456",
+    {
+      "codigoInep": "2112456",
       "municipio": "Turilândia",
-      "ure": "URE Pinheiro",
       "y2015": 3.56,
       "y2017": 3.78,
       "y2019": 3.85,
@@ -2291,10 +2081,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.14,
       "y2025": 4.94
     },
-    "Tutóia": {
-      "codigo_ibge": "2112506",
+    {
+      "codigoInep": "2112506",
       "municipio": "Tutóia",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.92,
       "y2017": 3.79,
       "y2019": 3.88,
@@ -2302,10 +2091,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.41,
       "y2025": 5.26
     },
-    "Urbano Santos": {
-      "codigo_ibge": "2112605",
+    {
+      "codigoInep": "2112605",
       "municipio": "Urbano Santos",
-      "ure": "URE Chapadinha",
       "y2015": 3.83,
       "y2017": 3.61,
       "y2019": 3.51,
@@ -2313,10 +2101,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.59,
       "y2025": 5.34
     },
-    "Vargem Grande": {
-      "codigo_ibge": "2112704",
+    {
+      "codigoInep": "2112704",
       "municipio": "Vargem Grande",
-      "ure": "URE Itapecuru-Mirim",
       "y2015": 4.08,
       "y2017": 4.09,
       "y2019": 4.54,
@@ -2324,10 +2111,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 7.12,
       "y2025": 6.75
     },
-    "Viana": {
-      "codigo_ibge": "2112803",
+    {
+      "codigoInep": "2112803",
       "municipio": "Viana",
-      "ure": "URE Viana",
       "y2015": 4.11,
       "y2017": 4.27,
       "y2019": 4.37,
@@ -2335,10 +2121,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.65,
       "y2025": 4.9
     },
-    "Vila Nova dos Martírios": {
-      "codigo_ibge": "2112852",
+    {
+      "codigoInep": "2112852",
       "municipio": "Vila Nova dos Martírios",
-      "ure": "URE Açailândia",
       "y2015": 4.2,
       "y2017": 4.8,
       "y2019": 4.78,
@@ -2346,10 +2131,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.9,
       "y2025": 5.13
     },
-    "Vitorino Freire": {
-      "codigo_ibge": "2113009",
+    {
+      "codigoInep": "2113009",
       "municipio": "Vitorino Freire",
-      "ure": "URE Bacabal",
       "y2015": 4.05,
       "y2017": 4.1,
       "y2019": 4.4,
@@ -2357,10 +2141,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.92,
       "y2025": 5.11
     },
-    "Vitória do Mearim": {
-      "codigo_ibge": "2112902",
+    {
+      "codigoInep": "2112902",
       "municipio": "Vitória do Mearim",
-      "ure": "URE Viana",
       "y2015": 4.35,
       "y2017": 4.29,
       "y2019": 4.24,
@@ -2368,10 +2151,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.59,
       "y2025": 4.46
     },
-    "Zé Doca": {
-      "codigo_ibge": "2114007",
+    {
+      "codigoInep": "2114007",
       "municipio": "Zé Doca",
-      "ure": "URE Zé Doca",
       "y2015": 3.95,
       "y2017": 4.25,
       "y2019": 5.58,
@@ -2379,10 +2161,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 6.49,
       "y2025": 6.54
     },
-    "Água Doce do Maranhão": {
-      "codigo_ibge": "2100154",
+    {
+      "codigoInep": "2100154",
       "municipio": "Água Doce do Maranhão",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.28,
       "y2017": 4.09,
       "y2019": 4.09,
@@ -2390,12 +2171,11 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.13,
       "y2025": 5.49
     }
-  },
-  "anosFinais": {
-    "Afonso Cunha": {
-      "codigo_ibge": "2100105",
+  ],
+  "finais": [
+    {
+      "codigoInep": "2100105",
       "municipio": "Afonso Cunha",
-      "ure": "URE Presidente Dutra",
       "y2015": 2.67,
       "y2017": 3,
       "y2019": 3,
@@ -2403,10 +2183,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.56,
       "y2025": 3.52
     },
-    "Alcântara": {
-      "codigo_ibge": "2100204",
+    {
+      "codigoInep": "2100204",
       "municipio": "Alcântara",
-      "ure": "URE Pinheiro",
       "y2015": 3.23,
       "y2017": 3.15,
       "y2019": 3.59,
@@ -2414,10 +2193,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.65,
       "y2025": 3.96
     },
-    "Aldeias Altas": {
-      "codigo_ibge": "2100303",
+    {
+      "codigoInep": "2100303",
       "municipio": "Aldeias Altas",
-      "ure": "URE Caxias",
       "y2015": 2.7,
       "y2017": 2.94,
       "y2019": 3.07,
@@ -2425,10 +2203,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.28,
       "y2025": 3.67
     },
-    "Altamira do Maranhão": {
-      "codigo_ibge": "2100402",
+    {
+      "codigoInep": "2100402",
       "municipio": "Altamira do Maranhão",
-      "ure": "URE Bacabal",
       "y2015": 2.7,
       "y2017": null,
       "y2019": null,
@@ -2436,10 +2213,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": null,
       "y2025": 4.45
     },
-    "Alto Alegre do Maranhão": {
-      "codigo_ibge": "2100436",
+    {
+      "codigoInep": "2100436",
       "municipio": "Alto Alegre do Maranhão",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.12,
       "y2017": 3.3,
       "y2019": 3.19,
@@ -2447,10 +2223,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.65,
       "y2025": 3.87
     },
-    "Alto Alegre do Pindaré": {
-      "codigo_ibge": "2100477",
+    {
+      "codigoInep": "2100477",
       "municipio": "Alto Alegre do Pindaré",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.06,
       "y2017": 4.68,
       "y2019": 5.08,
@@ -2458,10 +2233,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.38,
       "y2025": 5.23
     },
-    "Alto Parnaíba": {
-      "codigo_ibge": "2100501",
+    {
+      "codigoInep": "2100501",
       "municipio": "Alto Parnaíba",
-      "ure": "URE Balsas",
       "y2015": 3.97,
       "y2017": 3.9,
       "y2019": 4.73,
@@ -2469,10 +2243,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.15,
       "y2025": 5.03
     },
-    "Amapá do Maranhão": {
-      "codigo_ibge": "2100550",
+    {
+      "codigoInep": "2100550",
       "municipio": "Amapá do Maranhão",
-      "ure": "URE Zé Doca",
       "y2015": 3.3,
       "y2017": 3.72,
       "y2019": 3.95,
@@ -2480,10 +2253,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.03,
       "y2025": 4.07
     },
-    "Amarante do Maranhão": {
-      "codigo_ibge": "2100600",
+    {
+      "codigoInep": "2100600",
       "municipio": "Amarante do Maranhão",
-      "ure": "URE Imperatriz",
       "y2015": 3.41,
       "y2017": 3.43,
       "y2019": 3,
@@ -2491,10 +2263,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.64,
       "y2025": 3.87
     },
-    "Anajatuba": {
-      "codigo_ibge": "2100709",
+    {
+      "codigoInep": "2100709",
       "municipio": "Anajatuba",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.77,
       "y2017": 3.8,
       "y2019": 3.23,
@@ -2502,10 +2273,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.7,
       "y2025": 4.24
     },
-    "Anapurus": {
-      "codigo_ibge": "2100808",
+    {
+      "codigoInep": "2100808",
       "municipio": "Anapurus",
-      "ure": "URE Chapadinha",
       "y2015": 3.16,
       "y2017": 3.13,
       "y2019": 2.91,
@@ -2513,10 +2283,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.25,
       "y2025": 3.85
     },
-    "Apicum-Açu": {
-      "codigo_ibge": "2100832",
+    {
+      "codigoInep": "2100832",
       "municipio": "Apicum-Açu",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.03,
       "y2017": 3.78,
       "y2019": 3.61,
@@ -2524,10 +2293,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.76,
       "y2025": 4.44
     },
-    "Araguanã": {
-      "codigo_ibge": "2100873",
+    {
+      "codigoInep": "2100873",
       "municipio": "Araguanã",
-      "ure": "URE Zé Doca",
       "y2015": 3.47,
       "y2017": 3,
       "y2019": 4.15,
@@ -2535,10 +2303,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.67,
       "y2025": 4.1
     },
-    "Araioses": {
-      "codigo_ibge": "2100907",
+    {
+      "codigoInep": "2100907",
       "municipio": "Araioses",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.13,
       "y2017": 3.7,
       "y2019": 3.67,
@@ -2546,10 +2313,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.34,
       "y2025": 3.65
     },
-    "Arame": {
-      "codigo_ibge": "2100956",
+    {
+      "codigoInep": "2100956",
       "municipio": "Arame",
-      "ure": "URE Barra do Corda",
       "y2015": 2.82,
       "y2017": 2.84,
       "y2019": 2.94,
@@ -2557,10 +2323,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.62,
       "y2025": 4.03
     },
-    "Arari": {
-      "codigo_ibge": "2101004",
+    {
+      "codigoInep": "2101004",
       "municipio": "Arari",
-      "ure": "URE Viana",
       "y2015": 3.73,
       "y2017": 4.27,
       "y2019": 4.48,
@@ -2568,10 +2333,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.88,
       "y2025": 4.64
     },
-    "Axixá": {
-      "codigo_ibge": "2101103",
+    {
+      "codigoInep": "2101103",
       "municipio": "Axixá",
-      "ure": "URE Rosário",
       "y2015": 3.8,
       "y2017": 3.6,
       "y2019": 3.96,
@@ -2579,10 +2343,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.56,
       "y2025": 5.3
     },
-    "Açailândia": {
-      "codigo_ibge": "2100055",
+    {
+      "codigoInep": "2100055",
       "municipio": "Açailândia",
-      "ure": "URE Açailândia",
       "y2015": 3.9,
       "y2017": 4.05,
       "y2019": 4.03,
@@ -2590,10 +2353,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.51,
       "y2025": 4.69
     },
-    "Bacabal": {
-      "codigo_ibge": "2101202",
+    {
+      "codigoInep": "2101202",
       "municipio": "Bacabal",
-      "ure": "URE Bacabal",
       "y2015": 3.76,
       "y2017": 3.79,
       "y2019": 4.05,
@@ -2601,10 +2363,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.36,
       "y2025": 4.69
     },
-    "Bacabeira": {
-      "codigo_ibge": "2101251",
+    {
+      "codigoInep": "2101251",
       "municipio": "Bacabeira",
-      "ure": "URE Rosário",
       "y2015": 3.43,
       "y2017": 3.86,
       "y2019": 3.9,
@@ -2612,10 +2373,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.99,
       "y2025": 4.22
     },
-    "Bacuri": {
-      "codigo_ibge": "2101301",
+    {
+      "codigoInep": "2101301",
       "municipio": "Bacuri",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.44,
       "y2017": 3.46,
       "y2019": 3.7,
@@ -2623,10 +2383,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.15,
       "y2025": 4.51
     },
-    "Bacurituba": {
-      "codigo_ibge": "2101350",
+    {
+      "codigoInep": "2101350",
       "municipio": "Bacurituba",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.05,
       "y2017": 3.8,
       "y2019": 3.3,
@@ -2634,10 +2393,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.2,
       "y2025": 4.25
     },
-    "Balsas": {
-      "codigo_ibge": "2101400",
+    {
+      "codigoInep": "2101400",
       "municipio": "Balsas",
-      "ure": "URE Balsas",
       "y2015": 3.57,
       "y2017": 3.89,
       "y2019": 4.19,
@@ -2645,10 +2403,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.3,
       "y2025": 4.57
     },
-    "Barra do Corda": {
-      "codigo_ibge": "2101608",
+    {
+      "codigoInep": "2101608",
       "municipio": "Barra do Corda",
-      "ure": "URE Barra do Corda",
       "y2015": 3.57,
       "y2017": 3.72,
       "y2019": 4.07,
@@ -2656,10 +2413,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.42,
       "y2025": 4.57
     },
-    "Barreirinhas": {
-      "codigo_ibge": "2101707",
+    {
+      "codigoInep": "2101707",
       "municipio": "Barreirinhas",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.43,
       "y2017": 3.45,
       "y2019": 3.35,
@@ -2667,10 +2423,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.85,
       "y2025": 4.18
     },
-    "Barão de Grajaú": {
-      "codigo_ibge": "2101509",
+    {
+      "codigoInep": "2101509",
       "municipio": "Barão de Grajaú",
-      "ure": "URE São João dos Patos",
       "y2015": 4,
       "y2017": 4.2,
       "y2019": 4.28,
@@ -2678,10 +2433,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.38,
       "y2025": 4.62
     },
-    "Bela Vista do Maranhão": {
-      "codigo_ibge": "2101772",
+    {
+      "codigoInep": "2101772",
       "municipio": "Bela Vista do Maranhão",
-      "ure": "URE Santa Inês",
       "y2015": 3.7,
       "y2017": 3.5,
       "y2019": 4.2,
@@ -2689,10 +2443,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.25,
       "y2025": 4.34
     },
-    "Belágua": {
-      "codigo_ibge": "2101731",
+    {
+      "codigoInep": "2101731",
       "municipio": "Belágua",
-      "ure": "URE Chapadinha",
       "y2015": 3.02,
       "y2017": 2.96,
       "y2019": 3.4,
@@ -2700,10 +2453,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.1,
       "y2025": 4.94
     },
-    "Benedito Leite": {
-      "codigo_ibge": "2101806",
+    {
+      "codigoInep": "2101806",
       "municipio": "Benedito Leite",
-      "ure": "URE São João dos Patos",
       "y2015": 3.6,
       "y2017": 4.2,
       "y2019": 4.8,
@@ -2711,10 +2463,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.7,
       "y2025": 5
     },
-    "Bequimão": {
-      "codigo_ibge": "2101905",
+    {
+      "codigoInep": "2101905",
       "municipio": "Bequimão",
-      "ure": "URE Pinheiro",
       "y2015": 3.8,
       "y2017": 3.55,
       "y2019": 3.59,
@@ -2722,10 +2473,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.76,
       "y2025": 4.06
     },
-    "Bernardo do Mearim": {
-      "codigo_ibge": "2101939",
+    {
+      "codigoInep": "2101939",
       "municipio": "Bernardo do Mearim",
-      "ure": "URE Presidente Dutra",
       "y2015": 4,
       "y2017": 3.8,
       "y2019": 3.4,
@@ -2733,10 +2483,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.73,
       "y2025": 4.45
     },
-    "Boa Vista do Gurupi": {
-      "codigo_ibge": "2101970",
+    {
+      "codigoInep": "2101970",
       "municipio": "Boa Vista do Gurupi",
-      "ure": "URE Presidente Dutra",
       "y2015": 2.8,
       "y2017": 3.2,
       "y2019": 3.6,
@@ -2744,10 +2493,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.9,
       "y2025": 4.2
     },
-    "Bom Jardim": {
-      "codigo_ibge": "2102002",
+    {
+      "codigoInep": "2102002",
       "municipio": "Bom Jardim",
-      "ure": "URE Santa Inês",
       "y2015": 2.98,
       "y2017": 3.2,
       "y2019": 3.3,
@@ -2755,10 +2503,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.74,
       "y2025": 4.63
     },
-    "Bom Jesus das Selvas": {
-      "codigo_ibge": "2102036",
+    {
+      "codigoInep": "2102036",
       "municipio": "Bom Jesus das Selvas",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.15,
       "y2017": 3.18,
       "y2019": 3.82,
@@ -2766,10 +2513,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.23,
       "y2025": 4.5
     },
-    "Bom Lugar": {
-      "codigo_ibge": "2102077",
+    {
+      "codigoInep": "2102077",
       "municipio": "Bom Lugar",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.95,
       "y2017": 3.6,
       "y2019": 4.08,
@@ -2777,10 +2523,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.7,
       "y2025": 4.77
     },
-    "Brejo": {
-      "codigo_ibge": "2102101",
+    {
+      "codigoInep": "2102101",
       "municipio": "Brejo",
-      "ure": "URE Chapadinha",
       "y2015": 3.08,
       "y2017": 2.91,
       "y2019": 3.39,
@@ -2788,10 +2533,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.88,
       "y2025": 4.02
     },
-    "Brejo de Areia": {
-      "codigo_ibge": "2102150",
+    {
+      "codigoInep": "2102150",
       "municipio": "Brejo de Areia",
-      "ure": "URE Bacabal",
       "y2015": 2.9,
       "y2017": null,
       "y2019": 2.65,
@@ -2799,10 +2543,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.34,
       "y2025": 4
     },
-    "Buriti": {
-      "codigo_ibge": "2102200",
+    {
+      "codigoInep": "2102200",
       "municipio": "Buriti",
-      "ure": "URE Chapadinha",
       "y2015": 3.18,
       "y2017": 2.89,
       "y2019": 2.9,
@@ -2810,10 +2553,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.05,
       "y2025": 3.84
     },
-    "Buriti Bravo": {
-      "codigo_ibge": "2102309",
+    {
+      "codigoInep": "2102309",
       "municipio": "Buriti Bravo",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.83,
       "y2017": 3.53,
       "y2019": 4.32,
@@ -2821,10 +2563,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.28,
       "y2025": 4.36
     },
-    "Buriticupu": {
-      "codigo_ibge": "2102325",
+    {
+      "codigoInep": "2102325",
       "municipio": "Buriticupu",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.32,
       "y2017": 3.43,
       "y2019": 3.67,
@@ -2832,10 +2573,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.11,
       "y2025": 4.12
     },
-    "Buritirana": {
-      "codigo_ibge": "2102358",
+    {
+      "codigoInep": "2102358",
       "municipio": "Buritirana",
-      "ure": "URE Imperatriz",
       "y2015": 3.12,
       "y2017": 3.3,
       "y2019": 3.15,
@@ -2843,10 +2583,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.22,
       "y2025": 4.37
     },
-    "Cachoeira Grande": {
-      "codigo_ibge": "2102374",
+    {
+      "codigoInep": "2102374",
       "municipio": "Cachoeira Grande",
-      "ure": "URE Rosário",
       "y2015": 2.93,
       "y2017": 2.4,
       "y2019": 3.25,
@@ -2854,10 +2593,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.47,
       "y2025": 3.78
     },
-    "Cajapió": {
-      "codigo_ibge": "2102408",
+    {
+      "codigoInep": "2102408",
       "municipio": "Cajapió",
-      "ure": "URE Viana",
       "y2015": 3.23,
       "y2017": 2.65,
       "y2019": 2.8,
@@ -2865,10 +2603,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.47,
       "y2025": 3.33
     },
-    "Cajari": {
-      "codigo_ibge": "2102507",
+    {
+      "codigoInep": "2102507",
       "municipio": "Cajari",
-      "ure": "URE Viana",
       "y2015": 3.83,
       "y2017": 3.57,
       "y2019": 3.68,
@@ -2876,10 +2613,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.1,
       "y2025": 3.87
     },
-    "Campestre do Maranhão": {
-      "codigo_ibge": "2102556",
+    {
+      "codigoInep": "2102556",
       "municipio": "Campestre do Maranhão",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.13,
       "y2017": 4.38,
       "y2019": 4.78,
@@ -2887,10 +2623,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.8,
       "y2025": 4.98
     },
-    "Cantanhede": {
-      "codigo_ibge": "2102705",
+    {
+      "codigoInep": "2102705",
       "municipio": "Cantanhede",
-      "ure": "URE Itapecuru-Mirim",
       "y2015": 3.7,
       "y2017": 2.6,
       "y2019": 2.95,
@@ -2898,10 +2633,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.1,
       "y2025": 4.38
     },
-    "Capinzal do Norte": {
-      "codigo_ibge": "2102754",
+    {
+      "codigoInep": "2102754",
       "municipio": "Capinzal do Norte",
-      "ure": "URE Pedreiras",
       "y2015": 3.27,
       "y2017": 3.4,
       "y2019": 4.4,
@@ -2909,10 +2643,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.4,
       "y2025": 4.57
     },
-    "Carolina": {
-      "codigo_ibge": "2102804",
+    {
+      "codigoInep": "2102804",
       "municipio": "Carolina",
-      "ure": "URE Balsas",
       "y2015": 3.47,
       "y2017": 3.51,
       "y2019": 4.08,
@@ -2920,10 +2653,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.22,
       "y2025": 4.3
     },
-    "Carutapera": {
-      "codigo_ibge": "2102903",
+    {
+      "codigoInep": "2102903",
       "municipio": "Carutapera",
-      "ure": "URE Zé Doca",
       "y2015": 3.58,
       "y2017": 3.6,
       "y2019": 4.63,
@@ -2931,10 +2663,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.84,
       "y2025": 4.82
     },
-    "Caxias": {
-      "codigo_ibge": "2103000",
+    {
+      "codigoInep": "2103000",
       "municipio": "Caxias",
-      "ure": "URE Caxias",
       "y2015": 3.93,
       "y2017": 3.76,
       "y2019": 3.83,
@@ -2942,10 +2673,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.87,
       "y2025": 4.18
     },
-    "Cedral": {
-      "codigo_ibge": "2103109",
+    {
+      "codigoInep": "2103109",
       "municipio": "Cedral",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.57,
       "y2017": 3.92,
       "y2019": 4.58,
@@ -2953,10 +2683,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.52,
       "y2025": 4.76
     },
-    "Central do Maranhão": {
-      "codigo_ibge": "2103125",
+    {
+      "codigoInep": "2103125",
       "municipio": "Central do Maranhão",
-      "ure": "URE Pinheiro",
       "y2015": 3.75,
       "y2017": 3.4,
       "y2019": 3.3,
@@ -2964,10 +2693,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.6,
       "y2025": 3.73
     },
-    "Centro Novo do Maranhão": {
-      "codigo_ibge": "2103174",
+    {
+      "codigoInep": "2103174",
       "municipio": "Centro Novo do Maranhão",
-      "ure": "URE Zé Doca",
       "y2015": 3.35,
       "y2017": 2.6,
       "y2019": 2.74,
@@ -2975,10 +2703,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.8,
       "y2025": 4.17
     },
-    "Centro do Guilherme": {
-      "codigo_ibge": "2103158",
+    {
+      "codigoInep": "2103158",
       "municipio": "Centro do Guilherme",
-      "ure": "URE Zé Doca",
       "y2015": 3,
       "y2017": 3.7,
       "y2019": 2.95,
@@ -2986,10 +2713,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.95,
       "y2025": 5.03
     },
-    "Chapadinha": {
-      "codigo_ibge": "2103208",
+    {
+      "codigoInep": "2103208",
       "municipio": "Chapadinha",
-      "ure": "URE Chapadinha",
       "y2015": 3.27,
       "y2017": 3.45,
       "y2019": 3.3,
@@ -2997,10 +2723,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.76,
       "y2025": 4.41
     },
-    "Cidelândia": {
-      "codigo_ibge": "2103257",
+    {
+      "codigoInep": "2103257",
       "municipio": "Cidelândia",
-      "ure": "URE Açailândia",
       "y2015": 3.48,
       "y2017": 3.4,
       "y2019": 3.96,
@@ -3008,10 +2733,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.76,
       "y2025": 4.5
     },
-    "Codó": {
-      "codigo_ibge": "2103307",
+    {
+      "codigoInep": "2103307",
       "municipio": "Codó",
-      "ure": "URE Codó",
       "y2015": 3.1,
       "y2017": 3.35,
       "y2019": 3.69,
@@ -3019,10 +2743,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.36,
       "y2025": 3.79
     },
-    "Coelho Neto": {
-      "codigo_ibge": "2103406",
+    {
+      "codigoInep": "2103406",
       "municipio": "Coelho Neto",
-      "ure": "URE Presidente Dutra",
       "y2015": 3,
       "y2017": 3.22,
       "y2019": 4.11,
@@ -3030,10 +2753,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.38,
       "y2025": 3.84
     },
-    "Colinas": {
-      "codigo_ibge": "2103505",
+    {
+      "codigoInep": "2103505",
       "municipio": "Colinas",
-      "ure": "URE São João dos Patos",
       "y2015": 3.19,
       "y2017": 3.16,
       "y2019": 3.39,
@@ -3041,10 +2763,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.72,
       "y2025": 4.22
     },
-    "Conceição do Lago-Açu": {
-      "codigo_ibge": "2103554",
+    {
+      "codigoInep": "2103554",
       "municipio": "Conceição do Lago-Açu",
-      "ure": "URE Bacabal",
       "y2015": 2.6,
       "y2017": 2.4,
       "y2019": 3,
@@ -3052,10 +2773,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.32,
       "y2025": 3.7
     },
-    "Coroatá": {
-      "codigo_ibge": "2103604",
+    {
+      "codigoInep": "2103604",
       "municipio": "Coroatá",
-      "ure": "URE Codó",
       "y2015": 3.59,
       "y2017": 3.45,
       "y2019": 3.59,
@@ -3063,10 +2783,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.84,
       "y2025": 3.74
     },
-    "Cururupu": {
-      "codigo_ibge": "2103703",
+    {
+      "codigoInep": "2103703",
       "municipio": "Cururupu",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.72,
       "y2017": 3.82,
       "y2019": 3.79,
@@ -3074,10 +2793,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.1,
       "y2025": 4.7
     },
-    "Cândido Mendes": {
-      "codigo_ibge": "2102606",
+    {
+      "codigoInep": "2102606",
       "municipio": "Cândido Mendes",
-      "ure": "URE Zé Doca",
       "y2015": 3.45,
       "y2017": 3.64,
       "y2019": 3.86,
@@ -3085,10 +2803,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.98,
       "y2025": 4.57
     },
-    "Davinópolis": {
-      "codigo_ibge": "2103752",
+    {
+      "codigoInep": "2103752",
       "municipio": "Davinópolis",
-      "ure": "URE Imperatriz",
       "y2015": 3.53,
       "y2017": null,
       "y2019": 3.5,
@@ -3096,10 +2813,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.27,
       "y2025": 3.7
     },
-    "Dom Pedro": {
-      "codigo_ibge": "2103802",
+    {
+      "codigoInep": "2103802",
       "municipio": "Dom Pedro",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.62,
       "y2017": 4.1,
       "y2019": 4.52,
@@ -3107,10 +2823,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.92,
       "y2025": 4.77
     },
-    "Duque Bacelar": {
-      "codigo_ibge": "2103901",
+    {
+      "codigoInep": "2103901",
       "municipio": "Duque Bacelar",
-      "ure": "URE Presidente Dutra",
       "y2015": 2.74,
       "y2017": 3.27,
       "y2019": 3.93,
@@ -3118,10 +2833,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.9,
       "y2025": 6.04
     },
-    "Esperantinópolis": {
-      "codigo_ibge": "2104008",
+    {
+      "codigoInep": "2104008",
       "municipio": "Esperantinópolis",
-      "ure": "URE Pedreiras",
       "y2015": 3.52,
       "y2017": 3.21,
       "y2019": 3.9,
@@ -3129,10 +2843,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.24,
       "y2025": 4.38
     },
-    "Estreito": {
-      "codigo_ibge": "2104057",
+    {
+      "codigoInep": "2104057",
       "municipio": "Estreito",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.47,
       "y2017": 3.52,
       "y2019": 4.31,
@@ -3140,10 +2853,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.99,
       "y2025": 4.05
     },
-    "Feira Nova do Maranhão": {
-      "codigo_ibge": "2104073",
+    {
+      "codigoInep": "2104073",
       "municipio": "Feira Nova do Maranhão",
-      "ure": "URE Balsas",
       "y2015": 3.53,
       "y2017": 3.42,
       "y2019": 3.8,
@@ -3151,10 +2863,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.38,
       "y2025": 4.1
     },
-    "Fernando Falcão": {
-      "codigo_ibge": "2104081",
+    {
+      "codigoInep": "2104081",
       "municipio": "Fernando Falcão",
-      "ure": "URE Barra do Corda",
       "y2015": 3.2,
       "y2017": 3.37,
       "y2019": 4,
@@ -3162,10 +2873,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.66,
       "y2025": 3.83
     },
-    "Formosa da Serra Negra": {
-      "codigo_ibge": "2104099",
+    {
+      "codigoInep": "2104099",
       "municipio": "Formosa da Serra Negra",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.22,
       "y2017": 3.97,
       "y2019": 4.3,
@@ -3173,10 +2883,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.19,
       "y2025": 4.52
     },
-    "Fortaleza dos Nogueiras": {
-      "codigo_ibge": "2104107",
+    {
+      "codigoInep": "2104107",
       "municipio": "Fortaleza dos Nogueiras",
-      "ure": "URE Balsas",
       "y2015": 4.5,
       "y2017": 4.48,
       "y2019": 4.55,
@@ -3184,10 +2893,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.65,
       "y2025": 4.72
     },
-    "Fortuna": {
-      "codigo_ibge": "2104206",
+    {
+      "codigoInep": "2104206",
       "municipio": "Fortuna",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.1,
       "y2017": 2.8,
       "y2019": 3.57,
@@ -3195,10 +2903,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.55,
       "y2025": 4.99
     },
-    "Godofredo Viana": {
-      "codigo_ibge": "2104305",
+    {
+      "codigoInep": "2104305",
       "municipio": "Godofredo Viana",
-      "ure": "URE Zé Doca",
       "y2015": 4,
       "y2017": 3.45,
       "y2019": 4.35,
@@ -3206,10 +2913,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.9,
       "y2025": 4.4
     },
-    "Gonçalves Dias": {
-      "codigo_ibge": "2104404",
+    {
+      "codigoInep": "2104404",
       "municipio": "Gonçalves Dias",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.46,
       "y2017": 3.37,
       "y2019": 4.05,
@@ -3217,10 +2923,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.47,
       "y2025": 4.83
     },
-    "Governador Archer": {
-      "codigo_ibge": "2104503",
+    {
+      "codigoInep": "2104503",
       "municipio": "Governador Archer",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.53,
       "y2017": 3.5,
       "y2019": 4.6,
@@ -3228,10 +2933,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.08,
       "y2025": 4.67
     },
-    "Governador Edison Lobão": {
-      "codigo_ibge": "2104552",
+    {
+      "codigoInep": "2104552",
       "municipio": "Governador Edison Lobão",
-      "ure": "URE Imperatriz",
       "y2015": 2.95,
       "y2017": 3.25,
       "y2019": 3.9,
@@ -3239,10 +2943,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.1,
       "y2025": 4.13
     },
-    "Governador Eugênio Barros": {
-      "codigo_ibge": "2104602",
+    {
+      "codigoInep": "2104602",
       "municipio": "Governador Eugênio Barros",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.07,
       "y2017": 3.02,
       "y2019": 4.04,
@@ -3250,10 +2953,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.33,
       "y2025": 3.53
     },
-    "Governador Luiz Rocha": {
-      "codigo_ibge": "2104628",
+    {
+      "codigoInep": "2104628",
       "municipio": "Governador Luiz Rocha",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.5,
       "y2017": 3.28,
       "y2019": 3.2,
@@ -3261,10 +2963,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.03,
       "y2025": 4.22
     },
-    "Governador Newton Bello": {
-      "codigo_ibge": "2104651",
+    {
+      "codigoInep": "2104651",
       "municipio": "Governador Newton Bello",
-      "ure": "URE Presidente Dutra",
       "y2015": 2.6,
       "y2017": 3.35,
       "y2019": 3.55,
@@ -3272,10 +2973,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.33,
       "y2025": 3.63
     },
-    "Governador Nunes Freire": {
-      "codigo_ibge": "2104677",
+    {
+      "codigoInep": "2104677",
       "municipio": "Governador Nunes Freire",
-      "ure": "URE Zé Doca",
       "y2015": 3.22,
       "y2017": 3.04,
       "y2019": 3.15,
@@ -3283,10 +2983,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.79,
       "y2025": 4.13
     },
-    "Grajaú": {
-      "codigo_ibge": "2104800",
+    {
+      "codigoInep": "2104800",
       "municipio": "Grajaú",
-      "ure": "URE Barra do Corda",
       "y2015": 3.6,
       "y2017": 3.31,
       "y2019": 3.57,
@@ -3294,10 +2993,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.86,
       "y2025": 4.03
     },
-    "Graça Aranha": {
-      "codigo_ibge": "2104701",
+    {
+      "codigoInep": "2104701",
       "municipio": "Graça Aranha",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.8,
       "y2017": 4.4,
       "y2019": 4.6,
@@ -3305,10 +3003,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.2,
       "y2025": 4.85
     },
-    "Guimarães": {
-      "codigo_ibge": "2104909",
+    {
+      "codigoInep": "2104909",
       "municipio": "Guimarães",
-      "ure": "URE Pinheiro",
       "y2015": 3.5,
       "y2017": 3.55,
       "y2019": 3.87,
@@ -3316,10 +3013,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4,
       "y2025": 4.08
     },
-    "Humberto de Campos": {
-      "codigo_ibge": "2105005",
+    {
+      "codigoInep": "2105005",
       "municipio": "Humberto de Campos",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.06,
       "y2017": 3.4,
       "y2019": 3.33,
@@ -3327,10 +3023,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.8,
       "y2025": 4.71
     },
-    "Icatu": {
-      "codigo_ibge": "2105104",
+    {
+      "codigoInep": "2105104",
       "municipio": "Icatu",
-      "ure": "URE Rosário",
       "y2015": 3.17,
       "y2017": 3.31,
       "y2019": 3.49,
@@ -3338,10 +3033,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.62,
       "y2025": 3.81
     },
-    "Igarapé Grande": {
-      "codigo_ibge": "2105203",
+    {
+      "codigoInep": "2105203",
       "municipio": "Igarapé Grande",
-      "ure": "URE Lago da Pedra",
       "y2015": 3.4,
       "y2017": 3.88,
       "y2019": 4.08,
@@ -3349,10 +3043,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.55,
       "y2025": 4.83
     },
-    "Igarapé do Meio": {
-      "codigo_ibge": "2105153",
+    {
+      "codigoInep": "2105153",
       "municipio": "Igarapé do Meio",
-      "ure": "URE Santa Inês",
       "y2015": 3.07,
       "y2017": 3.15,
       "y2019": 3.22,
@@ -3360,10 +3053,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.1,
       "y2025": 4.27
     },
-    "Imperatriz": {
-      "codigo_ibge": "2105302",
+    {
+      "codigoInep": "2105302",
       "municipio": "Imperatriz",
-      "ure": "URE Imperatriz",
       "y2015": 4.23,
       "y2017": 4.34,
       "y2019": 4.28,
@@ -3371,10 +3063,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.51,
       "y2025": 4.55
     },
-    "Itaipava do Grajaú": {
-      "codigo_ibge": "2105351",
+    {
+      "codigoInep": "2105351",
       "municipio": "Itaipava do Grajaú",
-      "ure": "URE Barra do Corda",
       "y2015": 3.58,
       "y2017": 4,
       "y2019": 3.52,
@@ -3382,10 +3073,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.45,
       "y2025": 4.63
     },
-    "Itapecuru Mirim": {
-      "codigo_ibge": "2105401",
+    {
+      "codigoInep": "2105401",
       "municipio": "Itapecuru Mirim",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.27,
       "y2017": 3.25,
       "y2019": 3.61,
@@ -3393,10 +3083,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.8,
       "y2025": 4.38
     },
-    "Itinga do Maranhão": {
-      "codigo_ibge": "2105427",
+    {
+      "codigoInep": "2105427",
       "municipio": "Itinga do Maranhão",
-      "ure": "URE Açailândia",
       "y2015": 3.68,
       "y2017": 3.7,
       "y2019": 4.28,
@@ -3404,10 +3093,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.03,
       "y2025": 4.56
     },
-    "Jatobá": {
-      "codigo_ibge": "2105450",
+    {
+      "codigoInep": "2105450",
       "municipio": "Jatobá",
-      "ure": "URE São João dos Patos",
       "y2015": 1.87,
       "y2017": 2.9,
       "y2019": 3.24,
@@ -3415,10 +3103,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.92,
       "y2025": 5.54
     },
-    "Jenipapo dos Vieiras": {
-      "codigo_ibge": "2105476",
+    {
+      "codigoInep": "2105476",
       "municipio": "Jenipapo dos Vieiras",
-      "ure": "URE Barra do Corda",
       "y2015": 3.16,
       "y2017": 3.9,
       "y2019": 3.61,
@@ -3426,10 +3113,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.1,
       "y2025": 3.5
     },
-    "Joselândia": {
-      "codigo_ibge": "2105609",
+    {
+      "codigoInep": "2105609",
       "municipio": "Joselândia",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.3,
       "y2017": 3.1,
       "y2019": 3.28,
@@ -3437,10 +3123,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.39,
       "y2025": 4.53
     },
-    "João Lisboa": {
-      "codigo_ibge": "2105500",
+    {
+      "codigoInep": "2105500",
       "municipio": "João Lisboa",
-      "ure": "URE Imperatriz",
       "y2015": 4.1,
       "y2017": 3.84,
       "y2019": 3.99,
@@ -3448,10 +3133,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.87,
       "y2025": 4.06
     },
-    "Junco do Maranhão": {
-      "codigo_ibge": "2105658",
+    {
+      "codigoInep": "2105658",
       "municipio": "Junco do Maranhão",
-      "ure": "URE Zé Doca",
       "y2015": 3.45,
       "y2017": 3.62,
       "y2019": 4.17,
@@ -3459,10 +3143,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.13,
       "y2025": 4.83
     },
-    "Lago Verde": {
-      "codigo_ibge": "2105906",
+    {
+      "codigoInep": "2105906",
       "municipio": "Lago Verde",
-      "ure": "URE Bacabal",
       "y2015": 3.12,
       "y2017": 2.05,
       "y2019": 3.22,
@@ -3470,10 +3153,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.55,
       "y2025": 4.3
     },
-    "Lago da Pedra": {
-      "codigo_ibge": "2105708",
+    {
+      "codigoInep": "2105708",
       "municipio": "Lago da Pedra",
-      "ure": "URE Bacabal",
       "y2015": 3.35,
       "y2017": 3.52,
       "y2019": 3.71,
@@ -3481,10 +3163,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.43,
       "y2025": 4.27
     },
-    "Lago do Junco": {
-      "codigo_ibge": "2105807",
+    {
+      "codigoInep": "2105807",
       "municipio": "Lago do Junco",
-      "ure": "URE Lago da Pedra",
       "y2015": 3.83,
       "y2017": 3.98,
       "y2019": 5.17,
@@ -3492,10 +3173,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.46,
       "y2025": 4.1
     },
-    "Lago dos Rodrigues": {
-      "codigo_ibge": "2105948",
+    {
+      "codigoInep": "2105948",
       "municipio": "Lago dos Rodrigues",
-      "ure": "URE Lago da Pedra",
       "y2015": 3.7,
       "y2017": 3.83,
       "y2019": 4.05,
@@ -3503,10 +3183,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.12,
       "y2025": 4.38
     },
-    "Lagoa Grande do Maranhão": {
-      "codigo_ibge": "2105963",
+    {
+      "codigoInep": "2105963",
       "municipio": "Lagoa Grande do Maranhão",
-      "ure": "URE Bacabal",
       "y2015": 3.05,
       "y2017": 3.37,
       "y2019": 3.4,
@@ -3514,10 +3193,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.15,
       "y2025": 4.17
     },
-    "Lagoa do Mato": {
-      "codigo_ibge": "2105922",
+    {
+      "codigoInep": "2105922",
       "municipio": "Lagoa do Mato",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.07,
       "y2017": 4.3,
       "y2019": 4.36,
@@ -3525,10 +3203,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.3,
       "y2025": 4.44
     },
-    "Lajeado Novo": {
-      "codigo_ibge": "2105989",
+    {
+      "codigoInep": "2105989",
       "municipio": "Lajeado Novo",
-      "ure": "URE Imperatriz",
       "y2015": 4.4,
       "y2017": 3.77,
       "y2019": 3.9,
@@ -3536,10 +3213,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.35,
       "y2025": 4.93
     },
-    "Lima Campos": {
-      "codigo_ibge": "2106003",
+    {
+      "codigoInep": "2106003",
       "municipio": "Lima Campos",
-      "ure": "URE Pedreiras",
       "y2015": 2.8,
       "y2017": 2.75,
       "y2019": 4,
@@ -3547,10 +3223,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.15,
       "y2025": 4.85
     },
-    "Loreto": {
-      "codigo_ibge": "2106102",
+    {
+      "codigoInep": "2106102",
       "municipio": "Loreto",
-      "ure": "URE Balsas",
       "y2015": 3.83,
       "y2017": 4.02,
       "y2019": 4.22,
@@ -3558,10 +3233,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.3,
       "y2025": 4.61
     },
-    "Luís Domingues": {
-      "codigo_ibge": "2106201",
+    {
+      "codigoInep": "2106201",
       "municipio": "Luís Domingues",
-      "ure": "URE Zé Doca",
       "y2015": 2.85,
       "y2017": 3.1,
       "y2019": 3.8,
@@ -3569,10 +3243,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.5,
       "y2025": 4.4
     },
-    "Magalhães de Almeida": {
-      "codigo_ibge": "2106300",
+    {
+      "codigoInep": "2106300",
       "municipio": "Magalhães de Almeida",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.38,
       "y2017": 3.2,
       "y2019": 3.55,
@@ -3580,10 +3253,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.55,
       "y2025": 4.27
     },
-    "Maracaçumé": {
-      "codigo_ibge": "2106326",
+    {
+      "codigoInep": "2106326",
       "municipio": "Maracaçumé",
-      "ure": "URE Presidente Dutra",
       "y2015": 2.98,
       "y2017": 3.67,
       "y2019": 3.77,
@@ -3591,10 +3263,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.83,
       "y2025": 3.98
     },
-    "Marajá do Sena": {
-      "codigo_ibge": "2106359",
+    {
+      "codigoInep": "2106359",
       "municipio": "Marajá do Sena",
-      "ure": "URE Bacabal",
       "y2015": 2.6,
       "y2017": 2.8,
       "y2019": 4.47,
@@ -3602,10 +3273,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.3,
       "y2025": 5
     },
-    "Maranhãozinho": {
-      "codigo_ibge": "2106375",
+    {
+      "codigoInep": "2106375",
       "municipio": "Maranhãozinho",
-      "ure": "URE Zé Doca",
       "y2015": 3.43,
       "y2017": 3.8,
       "y2019": 4,
@@ -3613,10 +3283,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.52,
       "y2025": 4.6
     },
-    "Mata Roma": {
-      "codigo_ibge": "2106409",
+    {
+      "codigoInep": "2106409",
       "municipio": "Mata Roma",
-      "ure": "URE Chapadinha",
       "y2015": 3.06,
       "y2017": 3.19,
       "y2019": 3.53,
@@ -3624,10 +3293,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.39,
       "y2025": 3.79
     },
-    "Matinha": {
-      "codigo_ibge": "2106508",
+    {
+      "codigoInep": "2106508",
       "municipio": "Matinha",
-      "ure": "URE Viana",
       "y2015": 3.05,
       "y2017": 2.99,
       "y2019": 2.94,
@@ -3635,10 +3303,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.49,
       "y2025": 3.84
     },
-    "Matões": {
-      "codigo_ibge": "2106607",
+    {
+      "codigoInep": "2106607",
       "municipio": "Matões",
-      "ure": "URE Caxias",
       "y2015": 3.1,
       "y2017": 3.35,
       "y2019": 4.46,
@@ -3646,10 +3313,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.43,
       "y2025": 4.38
     },
-    "Matões do Norte": {
-      "codigo_ibge": "2106631",
+    {
+      "codigoInep": "2106631",
       "municipio": "Matões do Norte",
-      "ure": "URE Itapecuru-Mirim",
       "y2015": 3.5,
       "y2017": 3.7,
       "y2019": 3.68,
@@ -3657,10 +3323,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.82,
       "y2025": 4.13
     },
-    "Milagres do Maranhão": {
-      "codigo_ibge": "2106672",
+    {
+      "codigoInep": "2106672",
       "municipio": "Milagres do Maranhão",
-      "ure": "URE Chapadinha",
       "y2015": 2.8,
       "y2017": 3.25,
       "y2019": 3.7,
@@ -3668,10 +3333,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.67,
       "y2025": 4.03
     },
-    "Mirador": {
-      "codigo_ibge": "2106706",
+    {
+      "codigoInep": "2106706",
       "municipio": "Mirador",
-      "ure": "URE São João dos Patos",
       "y2015": 3.06,
       "y2017": 2.9,
       "y2019": 3.63,
@@ -3679,10 +3343,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.24,
       "y2025": 3.43
     },
-    "Miranda do Norte": {
-      "codigo_ibge": "2106755",
+    {
+      "codigoInep": "2106755",
       "municipio": "Miranda do Norte",
-      "ure": "URE Itapecuru-Mirim",
       "y2015": 3.95,
       "y2017": 4.06,
       "y2019": 4.5,
@@ -3690,10 +3353,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.37,
       "y2025": 4.28
     },
-    "Mirinzal": {
-      "codigo_ibge": "2106805",
+    {
+      "codigoInep": "2106805",
       "municipio": "Mirinzal",
-      "ure": "URE Pinheiro",
       "y2015": 3.55,
       "y2017": 3.22,
       "y2019": 3.67,
@@ -3701,10 +3363,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.98,
       "y2025": 4.33
     },
-    "Montes Altos": {
-      "codigo_ibge": "2107001",
+    {
+      "codigoInep": "2107001",
       "municipio": "Montes Altos",
-      "ure": "URE Imperatriz",
       "y2015": 3.12,
       "y2017": 3.95,
       "y2019": 3.7,
@@ -3712,10 +3373,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.1,
       "y2025": 4.3
     },
-    "Monção": {
-      "codigo_ibge": "2106904",
+    {
+      "codigoInep": "2106904",
       "municipio": "Monção",
-      "ure": "URE Santa Inês",
       "y2015": 2.73,
       "y2017": 2.67,
       "y2019": 3.3,
@@ -3723,10 +3383,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 2.9,
       "y2025": 3.37
     },
-    "Morros": {
-      "codigo_ibge": "2107100",
+    {
+      "codigoInep": "2107100",
       "municipio": "Morros",
-      "ure": "URE Rosário",
       "y2015": 3.27,
       "y2017": 3.6,
       "y2019": 3.23,
@@ -3734,10 +3393,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.94,
       "y2025": 4.08
     },
-    "Nina Rodrigues": {
-      "codigo_ibge": "2107209",
+    {
+      "codigoInep": "2107209",
       "municipio": "Nina Rodrigues",
-      "ure": "URE Itapecuru-Mirim",
       "y2015": 3.25,
       "y2017": 3.67,
       "y2019": 3.9,
@@ -3745,10 +3403,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.45,
       "y2025": 4.48
     },
-    "Nova Colinas": {
-      "codigo_ibge": "2107258",
+    {
+      "codigoInep": "2107258",
       "municipio": "Nova Colinas",
-      "ure": "URE Balsas",
       "y2015": 3.7,
       "y2017": 4.15,
       "y2019": 4.3,
@@ -3756,10 +3413,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.35,
       "y2025": 4.6
     },
-    "Nova Iorque": {
-      "codigo_ibge": "2107308",
+    {
+      "codigoInep": "2107308",
       "municipio": "Nova Iorque",
-      "ure": "URE São João dos Patos",
       "y2015": 2.4,
       "y2017": 2.95,
       "y2019": 3.05,
@@ -3767,10 +3423,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.25,
       "y2025": null
     },
-    "Nova Olinda do Maranhão": {
-      "codigo_ibge": "2107357",
+    {
+      "codigoInep": "2107357",
       "municipio": "Nova Olinda do Maranhão",
-      "ure": "URE Pinheiro",
       "y2015": 3.68,
       "y2017": 3.6,
       "y2019": 3.8,
@@ -3778,10 +3433,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.06,
       "y2025": 3.88
     },
-    "Olho d'Água das Cunhãs": {
-      "codigo_ibge": "2107407",
+    {
+      "codigoInep": "2107407",
       "municipio": "Olho d'Água das Cunhãs",
-      "ure": "URE Bacabal",
       "y2015": 3.4,
       "y2017": null,
       "y2019": null,
@@ -3789,10 +3443,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.23,
       "y2025": 5.09
     },
-    "Olinda Nova do Maranhão": {
-      "codigo_ibge": "2107456",
+    {
+      "codigoInep": "2107456",
       "municipio": "Olinda Nova do Maranhão",
-      "ure": "URE Viana",
       "y2015": 3.2,
       "y2017": 3.17,
       "y2019": 3.23,
@@ -3800,10 +3453,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.69,
       "y2025": 3.47
     },
-    "Palmeirândia": {
-      "codigo_ibge": "2107605",
+    {
+      "codigoInep": "2107605",
       "municipio": "Palmeirândia",
-      "ure": "URE Pinheiro",
       "y2015": 3.21,
       "y2017": 3,
       "y2019": 3.25,
@@ -3811,10 +3463,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.37,
       "y2025": 3.64
     },
-    "Paraibano": {
-      "codigo_ibge": "2107704",
+    {
+      "codigoInep": "2107704",
       "municipio": "Paraibano",
-      "ure": "URE São João dos Patos",
       "y2015": 3.1,
       "y2017": 3.03,
       "y2019": 3.1,
@@ -3822,10 +3473,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.88,
       "y2025": 4.13
     },
-    "Parnarama": {
-      "codigo_ibge": "2107803",
+    {
+      "codigoInep": "2107803",
       "municipio": "Parnarama",
-      "ure": "URE Caxias",
       "y2015": 3.46,
       "y2017": 3.14,
       "y2019": 3.78,
@@ -3833,10 +3483,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.09,
       "y2025": 5.09
     },
-    "Passagem Franca": {
-      "codigo_ibge": "2107902",
+    {
+      "codigoInep": "2107902",
       "municipio": "Passagem Franca",
-      "ure": "URE São João dos Patos",
       "y2015": 3.8,
       "y2017": 3.78,
       "y2019": 4.06,
@@ -3844,10 +3493,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.68,
       "y2025": 4.07
     },
-    "Pastos Bons": {
-      "codigo_ibge": "2108009",
+    {
+      "codigoInep": "2108009",
       "municipio": "Pastos Bons",
-      "ure": "URE São João dos Patos",
       "y2015": 3.43,
       "y2017": 3.7,
       "y2019": 3.73,
@@ -3855,10 +3503,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.68,
       "y2025": 5.06
     },
-    "Paulino Neves": {
-      "codigo_ibge": "2108058",
+    {
+      "codigoInep": "2108058",
       "municipio": "Paulino Neves",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.16,
       "y2017": 3.38,
       "y2019": 3.21,
@@ -3866,10 +3513,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.86,
       "y2025": 4.27
     },
-    "Paulo Ramos": {
-      "codigo_ibge": "2108108",
+    {
+      "codigoInep": "2108108",
       "municipio": "Paulo Ramos",
-      "ure": "URE Bacabal",
       "y2015": 2.89,
       "y2017": 2.8,
       "y2019": 3.9,
@@ -3877,10 +3523,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.66,
       "y2025": 4.02
     },
-    "Paço do Lumiar": {
-      "codigo_ibge": "2107506",
+    {
+      "codigoInep": "2107506",
       "municipio": "Paço do Lumiar",
-      "ure": "URE São Luís",
       "y2015": 3.98,
       "y2017": 4.07,
       "y2019": 3.92,
@@ -3888,10 +3533,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.04,
       "y2025": 4.23
     },
-    "Pedreiras": {
-      "codigo_ibge": "2108207",
+    {
+      "codigoInep": "2108207",
       "municipio": "Pedreiras",
-      "ure": "URE Pedreiras",
       "y2015": 3.57,
       "y2017": 3.46,
       "y2019": 4.06,
@@ -3899,10 +3543,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.34,
       "y2025": 4.77
     },
-    "Pedro do Rosário": {
-      "codigo_ibge": "2108256",
+    {
+      "codigoInep": "2108256",
       "municipio": "Pedro do Rosário",
-      "ure": "URE Pinheiro",
       "y2015": 3.25,
       "y2017": 3.03,
       "y2019": 3.24,
@@ -3910,10 +3553,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.77,
       "y2025": 3.69
     },
-    "Penalva": {
-      "codigo_ibge": "2108306",
+    {
+      "codigoInep": "2108306",
       "municipio": "Penalva",
-      "ure": "URE Viana",
       "y2015": 3.07,
       "y2017": 2.91,
       "y2019": 3.3,
@@ -3921,10 +3563,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.77,
       "y2025": 4.08
     },
-    "Peri Mirim": {
-      "codigo_ibge": "2108405",
+    {
+      "codigoInep": "2108405",
       "municipio": "Peri Mirim",
-      "ure": "URE Pinheiro",
       "y2015": 3.3,
       "y2017": null,
       "y2019": 3.5,
@@ -3932,10 +3573,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.15,
       "y2025": 4.5
     },
-    "Peritoró": {
-      "codigo_ibge": "2108454",
+    {
+      "codigoInep": "2108454",
       "municipio": "Peritoró",
-      "ure": "URE Presidente Dutra",
       "y2015": 2.96,
       "y2017": 3.08,
       "y2019": 3.22,
@@ -3943,10 +3583,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.46,
       "y2025": 3.77
     },
-    "Pindaré-Mirim": {
-      "codigo_ibge": "2108504",
+    {
+      "codigoInep": "2108504",
       "municipio": "Pindaré-Mirim",
-      "ure": "URE Santa Inês",
       "y2015": 3.26,
       "y2017": 3.54,
       "y2019": 3.26,
@@ -3954,10 +3593,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.58,
       "y2025": 4.05
     },
-    "Pinheiro": {
-      "codigo_ibge": "2108603",
+    {
+      "codigoInep": "2108603",
       "municipio": "Pinheiro",
-      "ure": "URE Pinheiro",
       "y2015": 3.59,
       "y2017": 3.71,
       "y2019": 4.01,
@@ -3965,10 +3603,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.83,
       "y2025": 4.13
     },
-    "Pio XII": {
-      "codigo_ibge": "2108702",
+    {
+      "codigoInep": "2108702",
       "municipio": "Pio XII",
-      "ure": "URE Santa Inês",
       "y2015": 3.24,
       "y2017": 2.9,
       "y2019": 3.1,
@@ -3976,10 +3613,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.06,
       "y2025": 4.12
     },
-    "Pirapemas": {
-      "codigo_ibge": "2108801",
+    {
+      "codigoInep": "2108801",
       "municipio": "Pirapemas",
-      "ure": "URE Itapecuru-Mirim",
       "y2015": 3.83,
       "y2017": 2.6,
       "y2019": 3.8,
@@ -3987,10 +3623,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.8,
       "y2025": 4.1
     },
-    "Porto Franco": {
-      "codigo_ibge": "2109007",
+    {
+      "codigoInep": "2109007",
       "municipio": "Porto Franco",
-      "ure": "URE Presidente Dutra",
       "y2015": 4.66,
       "y2017": 4.54,
       "y2019": 4.99,
@@ -3998,10 +3633,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.19,
       "y2025": 5.16
     },
-    "Porto Rico do Maranhão": {
-      "codigo_ibge": "2109056",
+    {
+      "codigoInep": "2109056",
       "municipio": "Porto Rico do Maranhão",
-      "ure": "URE Pinheiro",
       "y2015": 5.9,
       "y2017": 3.67,
       "y2019": 3.7,
@@ -4009,10 +3643,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.15,
       "y2025": 4.48
     },
-    "Poção de Pedras": {
-      "codigo_ibge": "2108900",
+    {
+      "codigoInep": "2108900",
       "municipio": "Poção de Pedras",
-      "ure": "URE Lago da Pedra",
       "y2015": 3.38,
       "y2017": 4,
       "y2019": 4.03,
@@ -4020,10 +3653,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5,
       "y2025": 4.74
     },
-    "Presidente Dutra": {
-      "codigo_ibge": "2109106",
+    {
+      "codigoInep": "2109106",
       "municipio": "Presidente Dutra",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.27,
       "y2017": 3.31,
       "y2019": 3.4,
@@ -4031,10 +3663,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.46,
       "y2025": 4.74
     },
-    "Presidente Juscelino": {
-      "codigo_ibge": "2109205",
+    {
+      "codigoInep": "2109205",
       "municipio": "Presidente Juscelino",
-      "ure": "URE Rosário",
       "y2015": 3.33,
       "y2017": 2.9,
       "y2019": 3.14,
@@ -4042,10 +3673,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 2.93,
       "y2025": 3.9
     },
-    "Presidente Médici": {
-      "codigo_ibge": "2109239",
+    {
+      "codigoInep": "2109239",
       "municipio": "Presidente Médici",
-      "ure": "URE Zé Doca",
       "y2015": 4.05,
       "y2017": 3.9,
       "y2019": 4.3,
@@ -4053,10 +3683,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.2,
       "y2025": 4.3
     },
-    "Presidente Sarney": {
-      "codigo_ibge": "2109270",
+    {
+      "codigoInep": "2109270",
       "municipio": "Presidente Sarney",
-      "ure": "URE Pinheiro",
       "y2015": 3.29,
       "y2017": 3.73,
       "y2019": 3.97,
@@ -4064,10 +3693,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.65,
       "y2025": 3.83
     },
-    "Presidente Vargas": {
-      "codigo_ibge": "2109304",
+    {
+      "codigoInep": "2109304",
       "municipio": "Presidente Vargas",
-      "ure": "URE Itapecuru-Mirim",
       "y2015": 2.99,
       "y2017": 2.98,
       "y2019": 3.55,
@@ -4075,10 +3703,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.44,
       "y2025": 3.48
     },
-    "Primeira Cruz": {
-      "codigo_ibge": "2109403",
+    {
+      "codigoInep": "2109403",
       "municipio": "Primeira Cruz",
-      "ure": "URE Presidente Dutra",
       "y2015": 2.47,
       "y2017": 3.07,
       "y2019": 3.73,
@@ -4086,10 +3713,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.42,
       "y2025": 3.43
     },
-    "Raposa": {
-      "codigo_ibge": "2109452",
+    {
+      "codigoInep": "2109452",
       "municipio": "Raposa",
-      "ure": "URE São Luís",
       "y2015": 3.82,
       "y2017": 4.1,
       "y2019": 3.73,
@@ -4097,10 +3723,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.05,
       "y2025": 4.6
     },
-    "Riachão": {
-      "codigo_ibge": "2109502",
+    {
+      "codigoInep": "2109502",
       "municipio": "Riachão",
-      "ure": "URE Balsas",
       "y2015": 3.07,
       "y2017": 3.17,
       "y2019": 3.96,
@@ -4108,10 +3733,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.1,
       "y2025": 4.01
     },
-    "Ribamar Fiquene": {
-      "codigo_ibge": "2109551",
+    {
+      "codigoInep": "2109551",
       "municipio": "Ribamar Fiquene",
-      "ure": "URE Imperatriz",
       "y2015": 4.1,
       "y2017": 3.5,
       "y2019": 4.35,
@@ -4119,10 +3743,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.1,
       "y2025": 4.28
     },
-    "Rosário": {
-      "codigo_ibge": "2109601",
+    {
+      "codigoInep": "2109601",
       "municipio": "Rosário",
-      "ure": "URE Rosário",
       "y2015": 3.56,
       "y2017": 3.98,
       "y2019": 4.19,
@@ -4130,10 +3753,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.95,
       "y2025": 4.27
     },
-    "Sambaíba": {
-      "codigo_ibge": "2109700",
+    {
+      "codigoInep": "2109700",
       "municipio": "Sambaíba",
-      "ure": "URE Balsas",
       "y2015": 3.23,
       "y2017": 3.27,
       "y2019": 4.55,
@@ -4141,10 +3763,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.9,
       "y2025": 5
     },
-    "Santa Filomena do Maranhão": {
-      "codigo_ibge": "2109759",
+    {
+      "codigoInep": "2109759",
       "municipio": "Santa Filomena do Maranhão",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.3,
       "y2017": 2.95,
       "y2019": 3.2,
@@ -4152,10 +3773,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.35,
       "y2025": 3.67
     },
-    "Santa Helena": {
-      "codigo_ibge": "2109809",
+    {
+      "codigoInep": "2109809",
       "municipio": "Santa Helena",
-      "ure": "URE Pinheiro",
       "y2015": 3.33,
       "y2017": 3.53,
       "y2019": 3.47,
@@ -4163,10 +3783,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.88,
       "y2025": 3.88
     },
-    "Santa Inês": {
-      "codigo_ibge": "2109908",
+    {
+      "codigoInep": "2109908",
       "municipio": "Santa Inês",
-      "ure": "URE Santa Inês",
       "y2015": 3.66,
       "y2017": 3.56,
       "y2019": 3.58,
@@ -4174,10 +3793,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4,
       "y2025": 4.62
     },
-    "Santa Luzia": {
-      "codigo_ibge": "2110005",
+    {
+      "codigoInep": "2110005",
       "municipio": "Santa Luzia",
-      "ure": "URE Santa Inês",
       "y2015": 3.27,
       "y2017": 3.36,
       "y2019": 3.95,
@@ -4185,10 +3803,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.46,
       "y2025": 4.53
     },
-    "Santa Luzia do Paruá": {
-      "codigo_ibge": "2110039",
+    {
+      "codigoInep": "2110039",
       "municipio": "Santa Luzia do Paruá",
-      "ure": "URE Zé Doca",
       "y2015": 3.12,
       "y2017": 3.42,
       "y2019": 3.6,
@@ -4196,10 +3813,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.4,
       "y2025": 4.22
     },
-    "Santa Quitéria do Maranhão": {
-      "codigo_ibge": "2110104",
+    {
+      "codigoInep": "2110104",
       "municipio": "Santa Quitéria do Maranhão",
-      "ure": "URE Chapadinha",
       "y2015": 3.07,
       "y2017": 2.55,
       "y2019": 2.67,
@@ -4207,10 +3823,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.65,
       "y2025": 3.73
     },
-    "Santa Rita": {
-      "codigo_ibge": "2110203",
+    {
+      "codigoInep": "2110203",
       "municipio": "Santa Rita",
-      "ure": "URE Rosário",
       "y2015": 3.22,
       "y2017": 3.6,
       "y2019": 4.02,
@@ -4218,10 +3833,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.99,
       "y2025": 4.05
     },
-    "Santana do Maranhão": {
-      "codigo_ibge": "2110237",
+    {
+      "codigoInep": "2110237",
       "municipio": "Santana do Maranhão",
-      "ure": "URE Presidente Dutra",
       "y2015": 3,
       "y2017": 2.55,
       "y2019": 3.78,
@@ -4229,10 +3843,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.53,
       "y2025": 4.75
     },
-    "Santo Amaro do Maranhão": {
-      "codigo_ibge": "2110278",
+    {
+      "codigoInep": "2110278",
       "municipio": "Santo Amaro do Maranhão",
-      "ure": "URE Presidente Dutra",
       "y2015": 2.55,
       "y2017": 2.83,
       "y2019": 3.1,
@@ -4240,10 +3853,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.26,
       "y2025": 3.4
     },
-    "Santo Antônio dos Lopes": {
-      "codigo_ibge": "2110302",
+    {
+      "codigoInep": "2110302",
       "municipio": "Santo Antônio dos Lopes",
-      "ure": "URE Pedreiras",
       "y2015": 3.63,
       "y2017": 3.83,
       "y2019": 4.18,
@@ -4251,10 +3863,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.33,
       "y2025": 4.77
     },
-    "Satubinha": {
-      "codigo_ibge": "2111722",
+    {
+      "codigoInep": "2111722",
       "municipio": "Satubinha",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.07,
       "y2017": 3.4,
       "y2019": 3.8,
@@ -4262,10 +3873,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.18,
       "y2025": 4.05
     },
-    "Senador Alexandre Costa": {
-      "codigo_ibge": "2111748",
+    {
+      "codigoInep": "2111748",
       "municipio": "Senador Alexandre Costa",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.5,
       "y2017": 3.65,
       "y2019": 3.47,
@@ -4273,10 +3883,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.75,
       "y2025": 4.13
     },
-    "Senador La Rocque": {
-      "codigo_ibge": "2111763",
+    {
+      "codigoInep": "2111763",
       "municipio": "Senador La Rocque",
-      "ure": "URE Imperatriz",
       "y2015": 3.2,
       "y2017": 3.6,
       "y2019": 3.22,
@@ -4284,10 +3893,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.66,
       "y2025": 3.46
     },
-    "Serrano do Maranhão": {
-      "codigo_ibge": "2111789",
+    {
+      "codigoInep": "2111789",
       "municipio": "Serrano do Maranhão",
-      "ure": "URE Pinheiro",
       "y2015": 3.06,
       "y2017": 2.94,
       "y2019": 2.88,
@@ -4295,10 +3903,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.75,
       "y2025": 3.68
     },
-    "Sucupira do Norte": {
-      "codigo_ibge": "2111904",
+    {
+      "codigoInep": "2111904",
       "municipio": "Sucupira do Norte",
-      "ure": "URE São João dos Patos",
       "y2015": 3.25,
       "y2017": 3.4,
       "y2019": 3.63,
@@ -4306,10 +3913,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.37,
       "y2025": 4.5
     },
-    "Sucupira do Riachão": {
-      "codigo_ibge": "2111953",
+    {
+      "codigoInep": "2111953",
       "municipio": "Sucupira do Riachão",
-      "ure": "URE São João dos Patos",
       "y2015": 3.5,
       "y2017": 3.4,
       "y2019": 3.55,
@@ -4317,10 +3923,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4,
       "y2025": 3.83
     },
-    "São Benedito do Rio Preto": {
-      "codigo_ibge": "2110401",
+    {
+      "codigoInep": "2110401",
       "municipio": "São Benedito do Rio Preto",
-      "ure": "URE Chapadinha",
       "y2015": 3.32,
       "y2017": 3.1,
       "y2019": 3.21,
@@ -4328,10 +3933,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.53,
       "y2025": 3.47
     },
-    "São Bento": {
-      "codigo_ibge": "2110500",
+    {
+      "codigoInep": "2110500",
       "municipio": "São Bento",
-      "ure": "URE Viana",
       "y2015": 3.52,
       "y2017": 3.86,
       "y2019": 3.63,
@@ -4339,10 +3943,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.9,
       "y2025": 4.13
     },
-    "São Bernardo": {
-      "codigo_ibge": "2110609",
+    {
+      "codigoInep": "2110609",
       "municipio": "São Bernardo",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.57,
       "y2017": 2.97,
       "y2019": 3.74,
@@ -4350,10 +3953,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.94,
       "y2025": 4.78
     },
-    "São Domingos do Azeitão": {
-      "codigo_ibge": "2110658",
+    {
+      "codigoInep": "2110658",
       "municipio": "São Domingos do Azeitão",
-      "ure": "URE São João dos Patos",
       "y2015": 3.7,
       "y2017": 3.9,
       "y2019": 4.2,
@@ -4361,10 +3963,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.7,
       "y2025": 4.93
     },
-    "São Domingos do Maranhão": {
-      "codigo_ibge": "2110708",
+    {
+      "codigoInep": "2110708",
       "municipio": "São Domingos do Maranhão",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.91,
       "y2017": 3.41,
       "y2019": 3.89,
@@ -4372,10 +3973,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.03,
       "y2025": 4.14
     },
-    "São Francisco do Brejão": {
-      "codigo_ibge": "2110856",
+    {
+      "codigoInep": "2110856",
       "municipio": "São Francisco do Brejão",
-      "ure": "URE Açailândia",
       "y2015": 3.7,
       "y2017": 3.9,
       "y2019": 4.4,
@@ -4383,10 +3983,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.3,
       "y2025": 4.25
     },
-    "São Francisco do Maranhão": {
-      "codigo_ibge": "2110906",
+    {
+      "codigoInep": "2110906",
       "municipio": "São Francisco do Maranhão",
-      "ure": "URE São João dos Patos",
       "y2015": 2.93,
       "y2017": 3.3,
       "y2019": 4.02,
@@ -4394,10 +3993,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.38,
       "y2025": 4.53
     },
-    "São Félix de Balsas": {
-      "codigo_ibge": "2110807",
+    {
+      "codigoInep": "2110807",
       "municipio": "São Félix de Balsas",
-      "ure": "URE Presidente Dutra",
       "y2015": 2.7,
       "y2017": 3.8,
       "y2019": 3.2,
@@ -4405,10 +4003,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.37,
       "y2025": 3.95
     },
-    "São José de Ribamar": {
-      "codigo_ibge": "2111201",
+    {
+      "codigoInep": "2111201",
       "municipio": "São José de Ribamar",
-      "ure": "URE São Luís",
       "y2015": 4.13,
       "y2017": 4.48,
       "y2019": 5.01,
@@ -4416,10 +4013,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.58,
       "y2025": 4.83
     },
-    "São José dos Basílios": {
-      "codigo_ibge": "2111250",
+    {
+      "codigoInep": "2111250",
       "municipio": "São José dos Basílios",
-      "ure": "URE Presidente Dutra",
       "y2015": 3,
       "y2017": 3.2,
       "y2019": 3.5,
@@ -4427,10 +4023,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.92,
       "y2025": 4.17
     },
-    "São João Batista": {
-      "codigo_ibge": "2111003",
+    {
+      "codigoInep": "2111003",
       "municipio": "São João Batista",
-      "ure": "URE Viana",
       "y2015": 2.98,
       "y2017": 3.8,
       "y2019": 3.37,
@@ -4438,10 +4033,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.37,
       "y2025": 3.33
     },
-    "São João do Carú": {
-      "codigo_ibge": "2111029",
+    {
+      "codigoInep": "2111029",
       "municipio": "São João do Carú",
-      "ure": "URE Santa Inês",
       "y2015": 3.77,
       "y2017": 3.75,
       "y2019": 2.88,
@@ -4449,10 +4043,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.76,
       "y2025": 4.29
     },
-    "São João do Paraíso": {
-      "codigo_ibge": "2111052",
+    {
+      "codigoInep": "2111052",
       "municipio": "São João do Paraíso",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.45,
       "y2017": 4.27,
       "y2019": 4.17,
@@ -4460,10 +4053,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.23,
       "y2025": 4.8
     },
-    "São João do Soter": {
-      "codigo_ibge": "2111078",
+    {
+      "codigoInep": "2111078",
       "municipio": "São João do Soter",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.04,
       "y2017": 3.08,
       "y2019": 3.47,
@@ -4471,10 +4063,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.54,
       "y2025": 3.93
     },
-    "São João dos Patos": {
-      "codigo_ibge": "2111102",
+    {
+      "codigoInep": "2111102",
       "municipio": "São João dos Patos",
-      "ure": "URE São João dos Patos",
       "y2015": 4.14,
       "y2017": 4.27,
       "y2019": 4.36,
@@ -4482,10 +4073,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.77,
       "y2025": 5.07
     },
-    "São Luís": {
-      "codigo_ibge": "2111300",
+    {
+      "codigoInep": "2111300",
       "municipio": "São Luís",
-      "ure": "URE São Luís",
       "y2015": 3.82,
       "y2017": 4.01,
       "y2019": 4.16,
@@ -4493,10 +4083,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.45,
       "y2025": 4.49
     },
-    "São Luís Gonzaga do Maranhão": {
-      "codigo_ibge": "2111409",
+    {
+      "codigoInep": "2111409",
       "municipio": "São Luís Gonzaga do Maranhão",
-      "ure": "URE Bacabal",
       "y2015": 3.42,
       "y2017": 3.4,
       "y2019": 3.64,
@@ -4504,10 +4093,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.9,
       "y2025": 4.03
     },
-    "São Mateus do Maranhão": {
-      "codigo_ibge": "2111508",
+    {
+      "codigoInep": "2111508",
       "municipio": "São Mateus do Maranhão",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.29,
       "y2017": 3.85,
       "y2019": 3.54,
@@ -4515,10 +4103,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.72,
       "y2025": 4.15
     },
-    "São Pedro da Água Branca": {
-      "codigo_ibge": "2111532",
+    {
+      "codigoInep": "2111532",
       "municipio": "São Pedro da Água Branca",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.45,
       "y2017": 3.73,
       "y2019": 3.8,
@@ -4526,10 +4113,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4,
       "y2025": 4.3
     },
-    "São Pedro dos Crentes": {
-      "codigo_ibge": "2111573",
+    {
+      "codigoInep": "2111573",
       "municipio": "São Pedro dos Crentes",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.23,
       "y2017": 3.47,
       "y2019": 4.75,
@@ -4537,10 +4123,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.67,
       "y2025": 4.37
     },
-    "São Raimundo das Mangabeiras": {
-      "codigo_ibge": "2111607",
+    {
+      "codigoInep": "2111607",
       "municipio": "São Raimundo das Mangabeiras",
-      "ure": "URE Balsas",
       "y2015": 3.53,
       "y2017": 4.28,
       "y2019": 4.61,
@@ -4548,10 +4133,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.34,
       "y2025": 4.57
     },
-    "São Raimundo do Doca Bezerra": {
-      "codigo_ibge": "2111631",
+    {
+      "codigoInep": "2111631",
       "municipio": "São Raimundo do Doca Bezerra",
-      "ure": "URE Pedreiras",
       "y2015": 2.95,
       "y2017": 2.83,
       "y2019": 3.77,
@@ -4559,10 +4143,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.6,
       "y2025": 3.73
     },
-    "São Roberto": {
-      "codigo_ibge": "2111672",
+    {
+      "codigoInep": "2111672",
       "municipio": "São Roberto",
-      "ure": "URE Pedreiras",
       "y2015": 3.1,
       "y2017": null,
       "y2019": 3.6,
@@ -4570,10 +4153,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.4,
       "y2025": 3.6
     },
-    "São Vicente Ferrer": {
-      "codigo_ibge": "2111706",
+    {
+      "codigoInep": "2111706",
       "municipio": "São Vicente Ferrer",
-      "ure": "URE Presidente Dutra",
       "y2015": 2.87,
       "y2017": 2.7,
       "y2019": 3.07,
@@ -4581,10 +4163,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.51,
       "y2025": 4.08
     },
-    "Sítio Novo": {
-      "codigo_ibge": "2111805",
+    {
+      "codigoInep": "2111805",
       "municipio": "Sítio Novo",
-      "ure": "URE Imperatriz",
       "y2015": 3.66,
       "y2017": 3.54,
       "y2019": 4.11,
@@ -4592,10 +4173,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.9,
       "y2025": 4.27
     },
-    "Tasso Fragoso": {
-      "codigo_ibge": "2112001",
+    {
+      "codigoInep": "2112001",
       "municipio": "Tasso Fragoso",
-      "ure": "URE Balsas",
       "y2015": 3.57,
       "y2017": 3.8,
       "y2019": 4.2,
@@ -4603,10 +4183,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.33,
       "y2025": 4.63
     },
-    "Timbiras": {
-      "codigo_ibge": "2112100",
+    {
+      "codigoInep": "2112100",
       "municipio": "Timbiras",
-      "ure": "URE Codó",
       "y2015": 3.22,
       "y2017": 3.38,
       "y2019": 3.77,
@@ -4614,10 +4193,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.58,
       "y2025": 3.92
     },
-    "Timon": {
-      "codigo_ibge": "2112209",
+    {
+      "codigoInep": "2112209",
       "municipio": "Timon",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.83,
       "y2017": 4.09,
       "y2019": 4.83,
@@ -4625,10 +4203,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.43,
       "y2025": 5.15
     },
-    "Trizidela do Vale": {
-      "codigo_ibge": "2112233",
+    {
+      "codigoInep": "2112233",
       "municipio": "Trizidela do Vale",
-      "ure": "URE Pedreiras",
       "y2015": 3.8,
       "y2017": 4.75,
       "y2019": 4.8,
@@ -4636,10 +4213,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.53,
       "y2025": 4.85
     },
-    "Tufilândia": {
-      "codigo_ibge": "2112274",
+    {
+      "codigoInep": "2112274",
       "municipio": "Tufilândia",
-      "ure": "URE Santa Inês",
       "y2015": 2.7,
       "y2017": 3.2,
       "y2019": 4.1,
@@ -4647,10 +4223,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.62,
       "y2025": 3.67
     },
-    "Tuntum": {
-      "codigo_ibge": "2112308",
+    {
+      "codigoInep": "2112308",
       "municipio": "Tuntum",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.22,
       "y2017": 3.18,
       "y2019": 3.57,
@@ -4658,10 +4233,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.96,
       "y2025": 4.38
     },
-    "Turiaçu": {
-      "codigo_ibge": "2112407",
+    {
+      "codigoInep": "2112407",
       "municipio": "Turiaçu",
-      "ure": "URE Pinheiro",
       "y2015": 3.51,
       "y2017": 3.29,
       "y2019": 3.83,
@@ -4669,10 +4243,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.76,
       "y2025": 3.87
     },
-    "Turilândia": {
-      "codigo_ibge": "2112456",
+    {
+      "codigoInep": "2112456",
       "municipio": "Turilândia",
-      "ure": "URE Pinheiro",
       "y2015": 2.98,
       "y2017": 3.28,
       "y2019": 3.72,
@@ -4680,10 +4253,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.91,
       "y2025": 4.5
     },
-    "Tutóia": {
-      "codigo_ibge": "2112506",
+    {
+      "codigoInep": "2112506",
       "municipio": "Tutóia",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.17,
       "y2017": 3.32,
       "y2019": 3.57,
@@ -4691,10 +4263,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.51,
       "y2025": 4.65
     },
-    "Urbano Santos": {
-      "codigo_ibge": "2112605",
+    {
+      "codigoInep": "2112605",
       "municipio": "Urbano Santos",
-      "ure": "URE Chapadinha",
       "y2015": 3.31,
       "y2017": 3,
       "y2019": 2.9,
@@ -4702,10 +4273,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.63,
       "y2025": 3.9
     },
-    "Vargem Grande": {
-      "codigo_ibge": "2112704",
+    {
+      "codigoInep": "2112704",
       "municipio": "Vargem Grande",
-      "ure": "URE Itapecuru-Mirim",
       "y2015": 3.48,
       "y2017": 3.59,
       "y2019": 3.91,
@@ -4713,10 +4283,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 5.37,
       "y2025": 4.73
     },
-    "Viana": {
-      "codigo_ibge": "2112803",
+    {
+      "codigoInep": "2112803",
       "municipio": "Viana",
-      "ure": "URE Viana",
       "y2015": 3.52,
       "y2017": 3.63,
       "y2019": 3.58,
@@ -4724,10 +4293,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 3.78,
       "y2025": 4.12
     },
-    "Vila Nova dos Martírios": {
-      "codigo_ibge": "2112852",
+    {
+      "codigoInep": "2112852",
       "municipio": "Vila Nova dos Martírios",
-      "ure": "URE Açailândia",
       "y2015": 3.1,
       "y2017": 3.73,
       "y2019": 4.07,
@@ -4735,10 +4303,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.1,
       "y2025": 4
     },
-    "Vitorino Freire": {
-      "codigo_ibge": "2113009",
+    {
+      "codigoInep": "2113009",
       "municipio": "Vitorino Freire",
-      "ure": "URE Bacabal",
       "y2015": 3.84,
       "y2017": 3.2,
       "y2019": 3.88,
@@ -4746,10 +4313,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.32,
       "y2025": 4.28
     },
-    "Vitória do Mearim": {
-      "codigo_ibge": "2112902",
+    {
+      "codigoInep": "2112902",
       "municipio": "Vitória do Mearim",
-      "ure": "URE Viana",
       "y2015": 3.48,
       "y2017": 3.64,
       "y2019": 3.64,
@@ -4757,10 +4323,9 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.15,
       "y2025": 3.95
     },
-    "Zé Doca": {
-      "codigo_ibge": "2114007",
+    {
+      "codigoInep": "2114007",
       "municipio": "Zé Doca",
-      "ure": "URE Zé Doca",
       "y2015": 3.08,
       "y2017": 2.8,
       "y2019": 3.89,
@@ -4768,310 +4333,15 @@ window.OFFICIAL_MARANHAO_IDEB_EXCEL = {
       "y2023": 4.31,
       "y2025": 4.91
     },
-    "Água Doce do Maranhão": {
-      "codigo_ibge": "2100154",
+    {
+      "codigoInep": "2100154",
       "municipio": "Água Doce do Maranhão",
-      "ure": "URE Presidente Dutra",
       "y2015": 3.76,
       "y2017": 3.34,
       "y2019": 4.57,
       "y2021": 4.23,
       "y2023": 3.77,
       "y2025": 4.52
-    }
-  },
-  "ures": [
-    {
-      "name": "URE Açailândia",
-      "id": "acailandia",
-      "cities": [
-        "Açailândia",
-        "Cidelândia",
-        "Itinga do Maranhão",
-        "São Francisco do Brejão",
-        "Vila Nova dos Martírios"
-      ]
-    },
-    {
-      "name": "URE Bacabal",
-      "id": "bacabal",
-      "cities": [
-        "Altamira do Maranhão",
-        "Lago da Pedra",
-        "Lagoa Grande do Maranhão",
-        "Paulo Ramos",
-        "Marajá do Sena",
-        "Brejo de Areia",
-        "Vitorino Freire",
-        "São Luís Gonzaga do Maranhão",
-        "Bacabal",
-        "Olho d'Água das Cunhãs",
-        "Lago Verde",
-        "Conceição do Lago-Açu"
-      ]
-    },
-    {
-      "name": "URE Balsas",
-      "id": "balsas",
-      "cities": [
-        "Alto Parnaíba",
-        "Balsas",
-        "Carolina",
-        "Feira Nova do Maranhão",
-        "Riachão",
-        "Tasso Fragoso",
-        "Fortaleza dos Nogueiras",
-        "Nova Colinas",
-        "São Raimundo das Mangabeiras",
-        "Loreto",
-        "Sambaíba"
-      ]
-    },
-    {
-      "name": "URE Barra do Corda",
-      "id": "barra-do-corda",
-      "cities": [
-        "Barra do Corda",
-        "Fernando Falcão",
-        "Jenipapo dos Vieiras",
-        "Itaipava do Grajaú",
-        "Grajaú",
-        "Arame"
-      ]
-    },
-    {
-      "name": "URE Caxias",
-      "id": "caxias",
-      "cities": [
-        "Caxias",
-        "Aldeias Altas",
-        "São João do Sóter",
-        "Parnarama",
-        "Matões"
-      ]
-    },
-    {
-      "name": "URE Chapadinha",
-      "id": "chapadinha",
-      "cities": [
-        "Anapurus",
-        "Belágua",
-        "Brejo",
-        "Buriti",
-        "Chapadinha",
-        "Mata Roma",
-        "Milagres do Maranhão",
-        "Santa Quitéria do Maranhão",
-        "São Benedito do Rio Preto",
-        "Urbano Santos"
-      ]
-    },
-    {
-      "name": "URE Codó",
-      "id": "codo",
-      "cities": [
-        "Codó",
-        "Timbiras",
-        "Coroatá"
-      ]
-    },
-    {
-      "name": "URE Imperatriz",
-      "id": "imperatriz",
-      "cities": [
-        "Amarante do Maranhão",
-        "Buritirana",
-        "Davinópolis",
-        "Governador Edison Lobão",
-        "Imperatriz",
-        "João Lisboa",
-        "Lajeado Novo",
-        "Montes Altos",
-        "Ribamar Fiquene",
-        "Senador La Rocque",
-        "Sítio Novo"
-      ]
-    },
-    {
-      "name": "URE Itapecuru-Mirim",
-      "id": "itapecuru",
-      "cities": [
-        "Cantanhede",
-        "Itapecuru-Mirim",
-        "Matões do Norte",
-        "Miranda do Norte",
-        "Nina Rodrigues",
-        "Pirapemas",
-        "Presidente Vargas",
-        "Vargem Grande"
-      ]
-    },
-    {
-      "name": "URE Lago da Pedra",
-      "id": "lago-da-pedra",
-      "cities": [
-        "Lago da Pedra",
-        "Lagoa Grande do Maranhão",
-        "Lago do Junco",
-        "Lago dos Rodrigues",
-        "Poção de Pedras",
-        "Igarapé Grande"
-      ]
-    },
-    {
-      "name": "URE Pedreiras",
-      "id": "pedreiras",
-      "cities": [
-        "Bernardo do Mêdo",
-        "Capinzal do Norte",
-        "Esperantinópolis",
-        "Igarapé Grande",
-        "Lima Campos",
-        "Pedreiras",
-        "Trizidela do Vale",
-        "Poção de Pedras",
-        "Santo Antônio dos Lopes",
-        "São Raimundo do Doca Bezerra",
-        "São Roberto"
-      ]
-    },
-    {
-      "name": "URE Pinheiro",
-      "id": "pinheiro",
-      "cities": [
-        "Pedro do Rosário",
-        "Pinheiro",
-        "Presidente Sarney",
-        "Santa Helena",
-        "Turilândia",
-        "Turiaçu",
-        "Central do Maranhão",
-        "Guimarães",
-        "Mirinzal",
-        "Porto Rico do Maranhão",
-        "Serrano do Maranhão",
-        "Bequimão",
-        "Peri Mirim",
-        "Palmeirândia",
-        "Alcântara",
-        "Nova Olinda do Maranhão"
-      ]
-    },
-    {
-      "name": "URE Presidente Dutra",
-      "id": "presidente-dutra",
-      "cities": [
-        "Dom Pedro",
-        "Fortuna",
-        "Gonçalves Dias",
-        "Governador Archer",
-        "Governador Eugênio Barros",
-        "Governador Luiz Rocha",
-        "Graça Aranha",
-        "Joselândia",
-        "Presidente Dutra",
-        "São Domingos do Maranhão",
-        "São José dos Basílios",
-        "Senador Alexandre Costa"
-      ]
-    },
-    {
-      "name": "URE Rosário",
-      "id": "rosario",
-      "cities": [
-        "Axixá",
-        "Bacabeira",
-        "Cachoeira Grande",
-        "Icatu",
-        "Morros",
-        "Presidente Juscelino",
-        "Rosário",
-        "Santa Rita"
-      ]
-    },
-    {
-      "name": "URE Santa Inês",
-      "id": "santa-ines",
-      "cities": [
-        "Bom Jardim",
-        "Monção",
-        "Pindaré-Mirim",
-        "Santa Inês",
-        "Santa Luzia",
-        "São João do Carú",
-        "Tufilândia",
-        "Pio XII",
-        "Bela Vista do Maranhão",
-        "Igarapé do Meio"
-      ]
-    },
-    {
-      "name": "URE São João dos Patos",
-      "id": "sao-joao-dos-patos",
-      "cities": [
-        "Barão de Grajaú",
-        "Benedito Leite",
-        "Passagem Franca",
-        "Pastos Bons",
-        "Nova Iorque",
-        "Paraibano",
-        "São Francisco do Maranhão",
-        "São João dos Patos",
-        "Sucupira do Riachão",
-        "Jatobá",
-        "Colinas",
-        "Mirador",
-        "Sucupira do Norte",
-        "São Domingos do Azeitão"
-      ]
-    },
-    {
-      "name": "URE São Luís",
-      "id": "sao-luis",
-      "cities": [
-        "Paço do Lumiar",
-        "Raposa",
-        "São José de Ribamar",
-        "São Luís"
-      ]
-    },
-    {
-      "name": "URE Viana",
-      "id": "viana",
-      "cities": [
-        "Arari",
-        "Cajari",
-        "Matinha",
-        "Olinda Nova do Maranhão",
-        "Penalva",
-        "São Bento",
-        "São João Batista",
-        "Viana",
-        "Vitória do Mearim",
-        "Cajapió",
-        "Vicente Ferrer"
-      ]
-    },
-    {
-      "name": "URE Zé Doca",
-      "id": "ze-doca",
-      "cities": [
-        "Araguanã",
-        "Centro do Guilherme",
-        "Centro Novo do Maranhão",
-        "Maranhãozinho",
-        "Nova Olinda do Maranhão",
-        "Presidente Médici",
-        "Santa Luzia do Paruá",
-        "Governador Nunes Freire",
-        "Junco do Maranhão",
-        "Amapá do Maranhão",
-        "Cândido Mendes",
-        "Godofredo Viana",
-        "Luís Domingues",
-        "Carutapera",
-        "Zé Doca"
-      ]
     }
   ]
 };

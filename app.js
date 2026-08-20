@@ -5859,7 +5859,16 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         const searchInput = document.getElementById('matriz-search-input');
         const query = searchInput ? searchInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
 
-        const stageData = MASTER_EXHAUSTIVE_MATRICES[activeMatrizEtapa] || MASTER_EXHAUSTIVE_MATRICES['5ano'];
+        let stageData = { portuguese: [], math: [], science: [], humanas: [] };
+        if (window.MATRIZ_DESCRITORES_EXCEL) {
+            stageData.portuguese = (window.MATRIZ_DESCRITORES_EXCEL.linguaPortuguesa || []).map(d => ({ codigo: d.codigo, topico: d.topico, desc: d.descricao }));
+            stageData.math = (window.MATRIZ_DESCRITORES_EXCEL.matematica || []).map(d => ({ codigo: d.codigo, topico: d.topico, desc: d.descricao }));
+            stageData.science = (window.MATRIZ_DESCRITORES_EXCEL.ciencias || []).map(d => ({ codigo: d.codigo, topico: d.topico, desc: d.descricao }));
+            stageData.humanas = (window.MATRIZ_DESCRITORES_EXCEL.geografiaOba || []).map(d => ({ codigo: d.codigo, topico: d.topico, desc: d.descricao }));
+        } else {
+            const masterData = MASTER_EXHAUSTIVE_MATRICES[activeMatrizEtapa] || MASTER_EXHAUSTIVE_MATRICES['5ano'];
+            stageData = masterData || stageData;
+        }
 
         function renderColumn(container, items, badgeColor) {
             if (!container) return;
@@ -10076,6 +10085,34 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
     // [HOISTED TO TOP] selectedIdebCity
 
     function initIdebComparativo() {
+        if (window.IDEB_MARANHAO_MUNICIPIOS && Array.isArray(window.idebPublicoReferencia)) {
+            const existingMap = new Set(window.idebPublicoReferencia.map(i => `MA_${(i.municipio||'').toLowerCase()}_${(i.etapa||'').toLowerCase()}`));
+            (window.IDEB_MARANHAO_MUNICIPIOS.iniciais || []).forEach(item => {
+                const key = `MA_${(item.municipio||'').toLowerCase()}_iniciais`;
+                if (!existingMap.has(key)) {
+                    window.idebPublicoReferencia.push({
+                        uf: 'MA',
+                        municipio: item.municipio,
+                        etapa: 'Iniciais',
+                        anos: { '2015': item.y2015, '2017': item.y2017, '2019': item.y2019, '2021': item.y2021, '2023': item.y2023, '2025': item.y2025 }
+                    });
+                    existingMap.add(key);
+                }
+            });
+            (window.IDEB_MARANHAO_MUNICIPIOS.finais || []).forEach(item => {
+                const key = `MA_${(item.municipio||'').toLowerCase()}_finais`;
+                if (!existingMap.has(key)) {
+                    window.idebPublicoReferencia.push({
+                        uf: 'MA',
+                        municipio: item.municipio,
+                        etapa: 'Finais',
+                        anos: { '2015': item.y2015, '2017': item.y2017, '2019': item.y2019, '2021': item.y2021, '2023': item.y2023, '2025': item.y2025 }
+                    });
+                    existingMap.add(key);
+                }
+            });
+        }
+
         const stateSelect = document.getElementById('ideb-state-select');
         const citySearchInput = document.getElementById('ideb-city-search');
         const suggestionsBox = document.getElementById('ideb-city-suggestions');
@@ -11139,6 +11176,102 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
             descricao: 'Roteiro de oficinas pedagógicas e sequências didáticas para reforço escolar nos descritores com menor índice de acerto.',
             totalQuestoes: 0,
             formato: 'Guia Prático do Professor'
+        },
+        {
+            id: 'pdf_rep_1',
+            titulo: 'Relatório Oficial SAEB - UI Basílio Alves',
+            componente: 'Multidisciplinar',
+            etapa: 'Geral',
+            tipo: 'Relatorio',
+            descritores: ['SAEB', 'IDEB'],
+            descricao: 'Relatório oficial de desempenho no SAEB da Unidade Integrada Basílio Alves (Gonçalves Dias - MA).',
+            totalQuestoes: 0,
+            formato: 'PDF Oficial INEP',
+            fileUrl: 'relatorios_saeb/RELATÓRIO - U I BASILIO ALVES.pdf'
+        },
+        {
+            id: 'pdf_rep_2',
+            titulo: 'Relatório Oficial SAEB - UE Anita Furtado',
+            componente: 'Multidisciplinar',
+            etapa: 'Geral',
+            tipo: 'Relatorio',
+            descritores: ['SAEB', 'IDEB'],
+            descricao: 'Relatório oficial de desempenho no SAEB da Unidade Escolar Anita Furtado (Gonçalves Dias - MA).',
+            totalQuestoes: 0,
+            formato: 'PDF Oficial INEP',
+            fileUrl: 'relatorios_saeb/RELATÓRIO - UE ANITA FURTADO.pdf'
+        },
+        {
+            id: 'pdf_rep_3',
+            titulo: 'Relatório Oficial SAEB - UI Antônio Gonçalves Dias',
+            componente: 'Multidisciplinar',
+            etapa: 'Geral',
+            tipo: 'Relatorio',
+            descritores: ['SAEB', 'IDEB'],
+            descricao: 'Relatório oficial de desempenho no SAEB da UI Antônio Gonçalves Dias (Gonçalves Dias - MA).',
+            totalQuestoes: 0,
+            formato: 'PDF Oficial INEP',
+            fileUrl: 'relatorios_saeb/RELATÓRIO - UI ANTONIO GONCALVES DIAS.pdf'
+        },
+        {
+            id: 'pdf_rep_4',
+            titulo: 'Relatório Oficial SAEB - UI Emílio Murad',
+            componente: 'Multidisciplinar',
+            etapa: 'Geral',
+            tipo: 'Relatorio',
+            descritores: ['SAEB', 'IDEB'],
+            descricao: 'Relatório oficial de desempenho no SAEB da Unidade Integrada Emílio Murad (Gonçalves Dias - MA).',
+            totalQuestoes: 0,
+            formato: 'PDF Oficial INEP',
+            fileUrl: 'relatorios_saeb/RELATÓRIO - UI EMILIO MURAD.pdf'
+        },
+        {
+            id: 'pdf_rep_5',
+            titulo: 'Relatório Oficial SAEB - UI José Corrêa Lima',
+            componente: 'Multidisciplinar',
+            etapa: 'Geral',
+            tipo: 'Relatorio',
+            descritores: ['SAEB', 'IDEB'],
+            descricao: 'Relatório oficial de desempenho no SAEB da Unidade Integrada José Corrêa Lima (Gonçalves Dias - MA).',
+            totalQuestoes: 0,
+            formato: 'PDF Oficial INEP',
+            fileUrl: 'relatorios_saeb/RELATÓRIO - UI JOSE CORREA LIMA.pdf'
+        },
+        {
+            id: 'pdf_rep_6',
+            titulo: 'Relatório Oficial SAEB - UE Anísio Gomes',
+            componente: 'Multidisciplinar',
+            etapa: 'Geral',
+            tipo: 'Relatorio',
+            descritores: ['SAEB', 'IDEB'],
+            descricao: 'Relatório oficial de desempenho no SAEB da Unidade Escolar Anísio Gomes (Gonçalves Dias - MA).',
+            totalQuestoes: 0,
+            formato: 'PDF Oficial INEP',
+            fileUrl: 'relatorios_saeb/RELATÓRIO - UNIDADE ESCOLAR ANISIO GOMES.pdf'
+        },
+        {
+            id: 'pdf_rep_7',
+            titulo: 'Relatório Oficial SAEB - UI Aldenora de Araújo Cruz',
+            componente: 'Multidisciplinar',
+            etapa: 'Geral',
+            tipo: 'Relatorio',
+            descritores: ['SAEB', 'IDEB'],
+            descricao: 'Relatório oficial de desempenho no SAEB da Unidade Integrada Aldenora de Araújo Cruz (Gonçalves Dias - MA).',
+            totalQuestoes: 0,
+            formato: 'PDF Oficial INEP',
+            fileUrl: 'relatorios_saeb/RELATÓRIO - UNIDADE INTEGRADA ALDENORA ARAUJO CRUZ.pdf'
+        },
+        {
+            id: 'pdf_rep_8',
+            titulo: 'Relatório Oficial SAEB - UI José Gonçalves Dias',
+            componente: 'Multidisciplinar',
+            etapa: 'Geral',
+            tipo: 'Relatorio',
+            descritores: ['SAEB', 'IDEB'],
+            descricao: 'Relatório oficial de desempenho no SAEB da Unidade Integrada José Gonçalves Dias (Gonçalves Dias - MA).',
+            totalQuestoes: 0,
+            formato: 'PDF Oficial INEP',
+            fileUrl: 'relatorios_saeb/RELATÓRIO - UNIDADE INTEGRADA JOSE GONCALVES DIAS.pdf'
         }
     ];
 
