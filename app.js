@@ -1363,8 +1363,16 @@ function safeSetStyle(id, prop, value) {
             if (!ctxInc || !ctxFin || typeof Chart === 'undefined') return;
 
             const anos = ['2007','2009','2011','2013','2015','2017','2019','2021','2023','2025'];
-            const iniciaisData = { maranhao:[3.4,3.7,3.9,3.9,4.1,4.1,4.6,4.6,5.0,5.5], projetado:[2.8,3.1,3.5,3.8,4.1,4.4,4.7,5.0,5.0,null] };
-            const finaisData    = { maranhao:[3.0,3.2,3.3,3.3,3.6,3.6,4.0,4.2,4.3,4.5], projetado:[2.9,3.0,3.3,3.7,4.1,4.3,4.6,4.9,4.9,null] };
+            // Dados exatos extraídos da Imagem 1 (Gonçalves Dias - Anos Iniciais)
+            const iniciaisData = {
+                observado: [3.2, 2.8, 3.4, 3.3, 4.1, 4.3, 4.7, null, 4.9, 5.0],
+                projetado: [3.0, 3.3, 3.8, 4.0, 4.3, 4.6, 4.9, 5.2, 5.2, null]
+            };
+            // Dados exatos extraídos da Imagem 2 (Gonçalves Dias - Anos Finais)
+            const finaisData = {
+                observado: [2.6, 3.4, 2.6, 3.0, 3.4, 3.6, 4.4, null, 4.8, 5.1],
+                projetado: [null, 2.7, 2.9, 3.2, 3.6, 3.8, 4.1, 4.3, 4.3, null]
+            };
 
             if (dashIniciaisChartInstance) dashIniciaisChartInstance.destroy();
             if (dashFinaisChartInstance) dashFinaisChartInstance.destroy();
@@ -1385,8 +1393,8 @@ function safeSetStyle(id, prop, value) {
                     datasets: [
                         {
                             type: 'bar',
-                            label: 'Maranhão (Observado)',
-                            data: iniciaisData.maranhao,
+                            label: 'Gonçalves Dias (Observado)',
+                            data: iniciaisData.observado,
                             backgroundColor: bgGradInc,
                             borderRadius: 8,
                             borderSkipped: false,
@@ -1482,8 +1490,8 @@ function safeSetStyle(id, prop, value) {
                     datasets: [
                         {
                             type: 'bar',
-                            label: 'Maranhão (Observado)',
-                            data: finaisData.maranhao,
+                            label: 'Gonçalves Dias (Observado)',
+                            data: finaisData.observado,
                             backgroundColor: bgGradFin,
                             borderRadius: 8,
                             borderSkipped: false,
