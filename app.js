@@ -1333,72 +1333,66 @@ function safeSetStyle(id, prop, value) {
         if (!ctxGd) return;
 
         const anos = ['2015', '2017', '2019', '2021', '2023', '2025'];
-        const iniciaisGd = [3.4, 3.8, 4.2, 4.5, 4.8, 5.2];
-        const finaisGd   = [3.1, 3.5, 3.8, 4.1, 4.4, 4.8];
-        const metaInep   = [3.6, 4.1, 4.5, 4.8, 5.1, 5.5];
+        const iniciaisGd = [4.1, 4.3, 4.7, 4.5, 4.9, 5.0];
+        const finaisGd   = [3.4, 3.6, 4.4, 4.2, 4.8, 5.1];
+        const metaInep   = [4.3, 4.6, 4.9, 5.2, 5.2, 5.5];
 
         if (typeof Chart === 'undefined') {
             drawCanvasFallbackChart(ctxGd, anos, [
-                { type: 'bar', label: 'Anos Iniciais', data: iniciaisGd, backgroundColor: '#8B5CF6' },
-                { type: 'bar', label: 'Anos Finais', data: finaisGd, backgroundColor: '#0284C7' },
+                { type: 'line', label: 'Anos Iniciais', data: iniciaisGd, borderColor: '#8B5CF6' },
+                { type: 'line', label: 'Anos Finais', data: finaisGd, borderColor: '#0EA5E9' },
                 { type: 'line', label: 'Meta INEP', data: metaInep, borderColor: '#F59E0B' }
-            ], 0, 7);
+            ], 2, 6);
             return;
         }
 
         try {
             if (dashGoncalvesDiasChartInstance) dashGoncalvesDiasChartInstance.destroy();
 
-            let bgGradInc = '#8B5CF6';
-            let bgGradFin = '#0EA5E9';
-            try {
-                const g1 = ctxGd.getContext('2d').createLinearGradient(0, 0, 0, 260);
-                g1.addColorStop(0, '#8B5CF6');
-                g1.addColorStop(1, '#6D28D9');
-                bgGradInc = g1;
-
-                const g2 = ctxGd.getContext('2d').createLinearGradient(0, 0, 0, 260);
-                g2.addColorStop(0, '#38BDF8');
-                g2.addColorStop(1, '#0284C7');
-                bgGradFin = g2;
-            } catch(e) {}
-
             dashGoncalvesDiasChartInstance = new Chart(ctxGd, {
-                type: 'bar',
+                type: 'line',
                 data: {
                     labels: anos,
                     datasets: [
                         {
-                            type: 'bar',
+                            type: 'line',
                             label: 'Anos Iniciais (Gonçalves Dias)',
                             data: iniciaisGd,
-                            backgroundColor: bgGradInc,
-                            borderRadius: 6,
-                            barPercentage: 0.5,
-                            categoryPercentage: 0.7,
+                            borderColor: '#8B5CF6',
+                            backgroundColor: 'rgba(139, 92, 246, 0.12)',
+                            pointBackgroundColor: '#FFFFFF',
+                            pointBorderColor: '#8B5CF6',
+                            pointBorderWidth: 2.5,
+                            pointRadius: 4.5,
+                            borderWidth: 2.5,
+                            tension: 0.35,
+                            fill: true,
                             datalabels: {
                                 display: true,
-                                anchor: 'end',
                                 align: 'top',
                                 color: '#8B5CF6',
-                                font: { weight: '800', size: 11 },
+                                font: { weight: '800', size: 10.5 },
                                 formatter: (v) => v ? v.toFixed(1) : ''
                             }
                         },
                         {
-                            type: 'bar',
+                            type: 'line',
                             label: 'Anos Finais (Gonçalves Dias)',
                             data: finaisGd,
-                            backgroundColor: bgGradFin,
-                            borderRadius: 6,
-                            barPercentage: 0.5,
-                            categoryPercentage: 0.7,
+                            borderColor: '#0EA5E9',
+                            backgroundColor: 'rgba(14, 165, 233, 0.12)',
+                            pointBackgroundColor: '#FFFFFF',
+                            pointBorderColor: '#0EA5E9',
+                            pointBorderWidth: 2.5,
+                            pointRadius: 4.5,
+                            borderWidth: 2.5,
+                            tension: 0.35,
+                            fill: true,
                             datalabels: {
                                 display: true,
-                                anchor: 'end',
-                                align: 'top',
-                                color: '#0284C7',
-                                font: { weight: '800', size: 11 },
+                                align: 'bottom',
+                                color: '#0EA5E9',
+                                font: { weight: '800', size: 10.5 },
                                 formatter: (v) => v ? v.toFixed(1) : ''
                             }
                         },
@@ -1410,20 +1404,17 @@ function safeSetStyle(id, prop, value) {
                             backgroundColor: '#F59E0B',
                             pointBackgroundColor: '#FFFFFF',
                             pointBorderColor: '#F59E0B',
-                            pointBorderWidth: 2.5,
-                            pointRadius: 5,
-                            borderWidth: 2.5,
-                            borderDash: [6, 4],
-                            tension: 0.3,
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            borderWidth: 2,
+                            borderDash: [5, 4],
+                            tension: 0.35,
+                            fill: false,
                             datalabels: {
                                 display: true,
-                                align: 'center',
-                                anchor: 'center',
-                                color: '#FFFFFF',
-                                backgroundColor: '#F59E0B',
-                                borderRadius: 6,
+                                align: 'top',
+                                color: '#D97706',
                                 font: { weight: '800', size: 10 },
-                                padding: { top: 3, bottom: 3, left: 6, right: 6 },
                                 formatter: (v) => v ? v.toFixed(1) : ''
                             }
                         }
@@ -1432,7 +1423,7 @@ function safeSetStyle(id, prop, value) {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    layout: { padding: { top: 28, bottom: 8, left: 4, right: 4 } },
+                    layout: { padding: { top: 26, bottom: 8, left: 4, right: 4 } },
                     plugins: {
                         legend: {
                             position: 'bottom',
@@ -1453,8 +1444,8 @@ function safeSetStyle(id, prop, value) {
                     },
                     scales: {
                         y: {
-                            min: 0,
-                            max: 7,
+                            min: 2,
+                            max: 6,
                             grid: { color: 'rgba(226, 232, 240, 0.6)' },
                             ticks: { stepSize: 1, font: { size: 11, weight: '600' }, color: 'var(--text-secondary)' }
                         },
@@ -1468,10 +1459,10 @@ function safeSetStyle(id, prop, value) {
         } catch(err) {
             console.error('[dashChartGoncalvesDias Error]', err);
             drawCanvasFallbackChart(ctxGd, anos, [
-                { type: 'bar', label: 'Anos Iniciais', data: iniciaisGd, backgroundColor: '#8B5CF6' },
-                { type: 'bar', label: 'Anos Finais', data: finaisGd, backgroundColor: '#0284C7' },
+                { type: 'line', label: 'Anos Iniciais', data: iniciaisGd, borderColor: '#8B5CF6' },
+                { type: 'line', label: 'Anos Finais', data: finaisGd, borderColor: '#0EA5E9' },
                 { type: 'line', label: 'Meta INEP', data: metaInep, borderColor: '#F59E0B' }
-            ], 0, 7);
+            ], 2, 6);
         }
     }
     window.renderDashboardGoncalvesDiasChart = renderDashboardGoncalvesDiasChart;
