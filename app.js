@@ -1222,16 +1222,131 @@ function safeSetStyle(id, prop, value) {
     let dashComparativoChartInstance = null;
     let dashSaebEvoChartInstance = null;
 
+    // Registrar o plugin datalabels globalmente se a biblioteca estiver carregada
+    if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined') {
+        try { Chart.register(ChartDataLabels); } catch(e) {}
+    }
+
+    // Helper de renderização Canvas Nativa de Fallback (para garantia de 100% de funcionamento)
+    function drawCanvasFallbackChart(canvas, labels, datasets, minY, maxY) {
+        if (!canvas || !canvas.getContext) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        
+        const parentW = canvas.parentElement ? canvas.parentElement.clientWidth : 600;
+        const parentH = canvas.parentElement ? canvas.parentElement.clientHeight : 280;
+        const width = parentW > 0 ? parentW : 600;
+        const height = parentH > 0 ? parentH : 280;
+        
+        canvas.width = width;
+        canvas.height = height;
+        ctx.clearRect(0, 0, width, height);
+        
+        const paddingLeft = 35;
+        const paddingRight = 15;
+        const paddingTop = 25;
+        const paddingBottom = 35;
+        const chartW = width - paddingLeft - paddingRight;
+        const chartH = height - paddingTop - paddingBottom;
+        
+        // Linhas de grade
+        ctx.strokeStyle = 'rgba(226, 232, 240, 0.6)';
+        ctx.lineWidth = 1;
+        const steps = 4;
+        for (let i = 0; i <= steps; i++) {
+            const y = paddingTop + (chartH * i) / steps;
+            ctx.beginPath();
+            ctx.moveTo(paddingLeft, y);
+            ctx.lineTo(width - paddingRight, y);
+            ctx.stroke();
+            
+            const val = (maxY - ((maxY - minY) * i) / steps).toFixed(1);
+            ctx.fillStyle = '#64748b';
+            ctx.font = '10px sans-serif';
+            ctx.textAlign = 'right';
+            ctx.fillText(val, paddingLeft - 6, y + 3);
+        }
+        
+        const n = labels.length;
+        const stepX = chartW / n;
+        
+        datasets.forEach(ds => {
+            if (ds.type === 'bar') {
+                const barW = Math.min(stepX * 0.35, 20);
+                ds.data.forEach((val, idx) => {
+                    if (val === null || val === undefined) return;
+                    const x = paddingLeft + idx * stepX + stepX / 2 - barW / 2;
+                    const norm = (val - minY) / (maxY - minY);
+                    const h = Math.max(0, norm * chartH);
+                    const y = paddingTop + chartH - h;
+                    
+                    ctx.fillStyle = typeof ds.backgroundColor === 'string' ? ds.backgroundColor : '#6366f1';
+                    ctx.fillRect(x, y, barW, h);
+                    
+                    ctx.fillStyle = '#475569';
+                    ctx.font = 'bold 10px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(val.toFixed(1), x + barW / 2, y - 4);
+                });
+            } else if (ds.type === 'line') {
+                ctx.beginPath();
+                let first = true;
+                ds.data.forEach((val, idx) => {
+                    if (val === null || val === undefined) return;
+                    const x = paddingLeft + idx * stepX + stepX / 2;
+                    const norm = (val - minY) / (maxY - minY);
+                    const y = paddingTop + chartH - norm * chartH;
+                    if (first) { ctx.moveTo(x, y); first = false; }
+                    else { ctx.lineTo(x, y); }
+                });
+                ctx.strokeStyle = ds.borderColor || '#10b981';
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+                
+                ds.data.forEach((val, idx) => {
+                    if (val === null || val === undefined) return;
+                    const x = paddingLeft + idx * stepX + stepX / 2;
+                    const norm = (val - minY) / (maxY - minY);
+                    const y = paddingTop + chartH - norm * chartH;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 4, 0, Math.PI * 2);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fill();
+                    ctx.strokeStyle = ds.borderColor || '#10b981';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                });
+            }
+        });
+        
+        labels.forEach((lbl, idx) => {
+            const x = paddingLeft + idx * stepX + stepX / 2;
+            ctx.fillStyle = '#334155';
+            ctx.font = 'bold 11px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(lbl, x, height - 10);
+        });
+    }
+
     function renderDashboardGoncalvesDiasChart() {
+        const ctxGd = document.getElementById('dashChartGoncalvesDias');
+        if (!ctxGd) return;
+
+        const anos = ['2015', '2017', '2019', '2021', '2023', '2025'];
+        const iniciaisGd = [3.4, 3.8, 4.2, 4.5, 4.8, 5.2];
+        const finaisGd   = [3.1, 3.5, 3.8, 4.1, 4.4, 4.8];
+        const metaInep   = [3.6, 4.1, 4.5, 4.8, 5.1, 5.5];
+
+        if (typeof Chart === 'undefined') {
+            drawCanvasFallbackChart(ctxGd, anos, [
+                { type: 'bar', label: 'Anos Iniciais', data: iniciaisGd, backgroundColor: '#8B5CF6' },
+                { type: 'bar', label: 'Anos Finais', data: finaisGd, backgroundColor: '#0284C7' },
+                { type: 'line', label: 'Meta INEP', data: metaInep, borderColor: '#F59E0B' }
+            ], 0, 7);
+            return;
+        }
+
         try {
-            const ctxGd = document.getElementById('dashChartGoncalvesDias');
-            if (!ctxGd || typeof Chart === 'undefined') return;
-
-            const anos = ['2015', '2017', '2019', '2021', '2023', '2025'];
-            const iniciaisGd = [3.4, 3.8, 4.2, 4.5, 4.8, 5.2];
-            const finaisGd   = [3.1, 3.5, 3.8, 4.1, 4.4, 4.8];
-            const metaInep   = [3.6, 4.1, 4.5, 4.8, 5.1, 5.5];
-
             if (dashGoncalvesDiasChartInstance) dashGoncalvesDiasChartInstance.destroy();
 
             let bgGradInc = '#8B5CF6';
@@ -1352,28 +1467,46 @@ function safeSetStyle(id, prop, value) {
             });
         } catch(err) {
             console.error('[dashChartGoncalvesDias Error]', err);
+            drawCanvasFallbackChart(ctxGd, anos, [
+                { type: 'bar', label: 'Anos Iniciais', data: iniciaisGd, backgroundColor: '#8B5CF6' },
+                { type: 'bar', label: 'Anos Finais', data: finaisGd, backgroundColor: '#0284C7' },
+                { type: 'line', label: 'Meta INEP', data: metaInep, borderColor: '#F59E0B' }
+            ], 0, 7);
         }
     }
     window.renderDashboardGoncalvesDiasChart = renderDashboardGoncalvesDiasChart;
 
     function renderDashboardEtapasCharts() {
+        const ctxInc = document.getElementById('dashChartIniciais');
+        const ctxFin = document.getElementById('dashChartFinais');
+        if (!ctxInc || !ctxFin) return;
+
+        const anos = ['2007','2009','2011','2013','2015','2017','2019','2021','2023','2025'];
+        // Imagem 1 (Ideb Maranhão Anos Iniciais)
+        const iniciaisData = {
+            observado: [3.5, 3.7, 3.9, 3.9, 4.4, 4.5, 4.7, 4.7, 5.1, 5.5],
+            projetado: [2.8, 3.1, 3.5, 3.8, 4.1, 4.4, 4.7, 5.0, 5.0, null]
+        };
+        // Imagem 2 (Ideb Maranhão Anos Finais)
+        const finaisData = {
+            observado: [3.2, 3.3, 3.4, 3.4, 3.7, 3.7, 4.0, 4.2, 4.3, 4.5],
+            projetado: [2.9, 3.0, 3.3, 3.7, 4.1, 4.3, 4.6, 4.9, 4.9, null]
+        };
+
+        if (typeof Chart === 'undefined') {
+            drawCanvasFallbackChart(ctxInc, anos, [
+                { type: 'bar', label: 'Maranhão (Observado)', data: iniciaisData.observado, backgroundColor: '#6366F1' },
+                { type: 'line', label: 'Meta Projetada (INEP)', data: iniciaisData.projetado, borderColor: '#10B981' }
+            ], 0, 10);
+
+            drawCanvasFallbackChart(ctxFin, anos, [
+                { type: 'bar', label: 'Maranhão (Observado)', data: finaisData.observado, backgroundColor: '#0284C7' },
+                { type: 'line', label: 'Meta Projetada (INEP)', data: finaisData.projetado, borderColor: '#10B981' }
+            ], 0, 10);
+            return;
+        }
+
         try {
-            const ctxInc = document.getElementById('dashChartIniciais');
-            const ctxFin = document.getElementById('dashChartFinais');
-            if (!ctxInc || !ctxFin || typeof Chart === 'undefined') return;
-
-            const anos = ['2007','2009','2011','2013','2015','2017','2019','2021','2023','2025'];
-            // Dados exatos extraídos da Imagem 1 (Gonçalves Dias - Anos Iniciais)
-            const iniciaisData = {
-                observado: [3.2, 2.8, 3.4, 3.3, 4.1, 4.3, 4.7, null, 4.9, 5.0],
-                projetado: [3.0, 3.3, 3.8, 4.0, 4.3, 4.6, 4.9, 5.2, 5.2, null]
-            };
-            // Dados exatos extraídos da Imagem 2 (Gonçalves Dias - Anos Finais)
-            const finaisData = {
-                observado: [2.6, 3.4, 2.6, 3.0, 3.4, 3.6, 4.4, null, 4.8, 5.1],
-                projetado: [null, 2.7, 2.9, 3.2, 3.6, 3.8, 4.1, 4.3, 4.3, null]
-            };
-
             if (dashIniciaisChartInstance) dashIniciaisChartInstance.destroy();
             if (dashFinaisChartInstance) dashFinaisChartInstance.destroy();
 
@@ -1393,7 +1526,7 @@ function safeSetStyle(id, prop, value) {
                     datasets: [
                         {
                             type: 'bar',
-                            label: 'Gonçalves Dias (Observado)',
+                            label: 'Maranhão (Observado)',
                             data: iniciaisData.observado,
                             backgroundColor: bgGradInc,
                             borderRadius: 8,
@@ -1490,7 +1623,7 @@ function safeSetStyle(id, prop, value) {
                     datasets: [
                         {
                             type: 'bar',
-                            label: 'Gonçalves Dias (Observado)',
+                            label: 'Maranhão (Observado)',
                             data: finaisData.observado,
                             backgroundColor: bgGradFin,
                             borderRadius: 8,
@@ -1572,70 +1705,156 @@ function safeSetStyle(id, prop, value) {
             });
         } catch(err) {
             console.error('[renderDashboardEtapasCharts Error]', err);
+            drawCanvasFallbackChart(ctxInc, anos, [
+                { type: 'bar', label: 'Maranhão (Observado)', data: iniciaisData.observado, backgroundColor: '#6366F1' },
+                { type: 'line', label: 'Meta Projetada (INEP)', data: iniciaisData.projetado, borderColor: '#10B981' }
+            ], 0, 10);
+
+            drawCanvasFallbackChart(ctxFin, anos, [
+                { type: 'bar', label: 'Maranhão (Observado)', data: finaisData.observado, backgroundColor: '#0284C7' },
+                { type: 'line', label: 'Meta Projetada (INEP)', data: finaisData.projetado, borderColor: '#10B981' }
+            ], 0, 10);
         }
     }
     window.renderDashboardEtapasCharts = renderDashboardEtapasCharts;
 
     function renderDashboardComparativoChart() {
         const ctxComp = document.getElementById('dashChartComparativo');
-        if (!ctxComp || typeof Chart === 'undefined') return;
+        if (!ctxComp) return;
 
         const anos = ['2007','2009','2011','2013','2015','2017','2019','2021','2023','2025'];
-        const iniciaisData = [3.4,3.7,3.9,3.9,4.1,4.1,4.6,4.6,5.0,5.5];
-        const finaisData    = [3.0,3.2,3.3,3.3,3.6,3.6,4.0,4.2,4.3,4.5];
+        const iniciaisData = [3.4, 3.7, 3.9, 3.9, 4.1, 4.1, 4.6, 4.6, 5.0, 5.5];
+        const finaisData   = [3.0, 3.2, 3.3, 3.3, 3.6, 3.6, 4.0, 4.2, 4.3, 4.5];
 
-        if (dashComparativoChartInstance) dashComparativoChartInstance.destroy();
+        if (typeof Chart === 'undefined') {
+            drawCanvasFallbackChart(ctxComp, anos, [
+                { type: 'line', label: 'Anos Iniciais', data: iniciaisData, borderColor: '#6366F1' },
+                { type: 'line', label: 'Anos Finais', data: finaisData, borderColor: '#0EA5E9' }
+            ], 2, 6);
+            return;
+        }
 
-        const badgeStyle = (color) => ({
-            display: true, align: 'top', offset: 6, color: '#fff',
-            font: { weight: '700', size: 11 }, backgroundColor: color, borderRadius: 20,
-            padding: { top: 4, bottom: 4, left: 8, right: 8 },
-            formatter: (v) => v === null || v === undefined ? '' : Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
-        });
+        try {
+            if (dashComparativoChartInstance) dashComparativoChartInstance.destroy();
 
-        dashComparativoChartInstance = new Chart(ctxComp, {
-            type: 'line',
-            data: {
-                labels: anos,
-                datasets: [
-                    { label: 'Anos Iniciais', data: iniciaisData, borderColor: '#5B4FE9', backgroundColor: 'rgba(91,79,233,0.14)', pointBackgroundColor: '#5B4FE9', pointRadius: 4, borderWidth: 2.5, fill: false, tension: 0.3, datalabels: badgeStyle('#5B4FE9') },
-                    { label: 'Anos Finais', data: finaisData, borderColor: '#0EA5A5', backgroundColor: 'rgba(14,165,165,0.14)', pointBackgroundColor: '#0EA5A5', pointRadius: 4, borderWidth: 2.5, fill: false, tension: 0.3, datalabels: badgeStyle('#0EA5A5') }
-                ]
-            },
-            options: {
-                responsive: true, maintainAspectRatio: false, layout: { padding: { top: 26 } },
-                plugins: { legend: { position: 'bottom', labels: { boxWidth: 8, boxHeight: 8, usePointStyle: true, font: { size: 11.5 } } } },
-                scales: { y: { min: 2, max: 6, grid: { color: '#EEF0F7' }, ticks: { stepSize: 1, font: { size: 11 } } }, x: { grid: { display: false }, ticks: { font: { size: 11 } } } }
-            }
-        });
+            dashComparativoChartInstance = new Chart(ctxComp, {
+                type: 'line',
+                data: {
+                    labels: anos,
+                    datasets: [
+                        {
+                            label: 'Anos Iniciais',
+                            data: iniciaisData,
+                            borderColor: '#6366F1',
+                            backgroundColor: 'rgba(99, 102, 241, 0.12)',
+                            pointBackgroundColor: '#FFFFFF',
+                            pointBorderColor: '#6366F1',
+                            pointBorderWidth: 2.5,
+                            pointRadius: 4.5,
+                            borderWidth: 2.5,
+                            tension: 0.3,
+                            fill: true,
+                            datalabels: {
+                                display: true,
+                                align: 'top',
+                                color: '#6366F1',
+                                font: { weight: '800', size: 10 },
+                                formatter: (v) => v ? v.toFixed(1) : ''
+                            }
+                        },
+                        {
+                            label: 'Anos Finais',
+                            data: finaisData,
+                            borderColor: '#0EA5E9',
+                            backgroundColor: 'rgba(14, 165, 233, 0.12)',
+                            pointBackgroundColor: '#FFFFFF',
+                            pointBorderColor: '#0EA5E9',
+                            pointBorderWidth: 2.5,
+                            pointRadius: 4.5,
+                            borderWidth: 2.5,
+                            tension: 0.3,
+                            fill: true,
+                            datalabels: {
+                                display: true,
+                                align: 'bottom',
+                                color: '#0EA5E9',
+                                font: { weight: '800', size: 10 },
+                                formatter: (v) => v ? v.toFixed(1) : ''
+                            }
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: { padding: { top: 26, bottom: 8, left: 4, right: 4 } },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, font: { size: 11.5, weight: '600' } }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleFont: { size: 12, weight: '800' },
+                            bodyFont: { size: 11 },
+                            padding: 10,
+                            cornerRadius: 8
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 2,
+                            max: 6,
+                            grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                            ticks: { stepSize: 1, font: { size: 11, weight: '600' }, color: 'var(--text-secondary)' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 11, weight: '700' }, color: 'var(--text-primary)' }
+                        }
+                    }
+                }
+            });
+        } catch(err) {
+            console.error('[dashChartComparativo Error]', err);
+            drawCanvasFallbackChart(ctxComp, anos, [
+                { type: 'line', label: 'Anos Iniciais', data: iniciaisData, borderColor: '#6366F1' },
+                { type: 'line', label: 'Anos Finais', data: finaisData, borderColor: '#0EA5E9' }
+            ], 2, 6);
+        }
     }
     window.renderDashboardComparativoChart = renderDashboardComparativoChart;
 
     function renderDashboardIndicadorEscala() {
+        const ctxSaeb = document.getElementById('dashChartSaebEvo');
+        if (!ctxSaeb) return;
+
+        // Dados exatos das Imagens 3 (5º Ano) e 4 (9º Ano)
+        const saebData = {
+            iniciais: {
+                indicador: '5,63', port: '201,07', mat: '209,71',
+                port_s: [157.56, 160.41, 163.69, 162.59, 177.56, 182.75, 185.42, 181.24, 191.75, 201.07],
+                mat_s:  [174.56, 175.68, 176.64, 172.31, 187.83, 189.91, 197.35, 189.87, 199.98, 209.71]
+            },
+            finais: {
+                indicador: '4,79', port: '245,03', mat: '242,35',
+                port_s: [216.58, 223.10, 223.70, 222.00, 230.50, 234.51, 236.00, 236.75, 241.86, 245.03],
+                mat_s:  [223.40, 223.26, 223.80, 222.39, 230.93, 228.68, 236.42, 230.44, 236.50, 242.35]
+            }
+        };
+        const saebYears = ['2007','2009','2011','2013','2015','2017','2019','2021','2023','2025'];
+        const fmt = (v) => (v !== null && v !== undefined) ? Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '';
+
+        if (typeof Chart === 'undefined') {
+            drawCanvasFallbackChart(ctxSaeb, saebYears, [
+                { type: 'line', label: 'Português', data: saebData.finais.port_s, borderColor: '#3B82F6' },
+                { type: 'line', label: 'Matemática', data: saebData.finais.mat_s, borderColor: '#475569' }
+            ], 80, 300);
+            return;
+        }
+
         try {
-            const ctxSaeb = document.getElementById('dashChartSaebEvo');
-            if (!ctxSaeb || typeof Chart === 'undefined') return;
-
-            // Dados exatos das Imagens 3 (5º Ano) e 4 (9º Ano)
-            const saebData = {
-                iniciais: {
-                    indicador: '5,63', port: '201,07', mat: '209,71',
-                    port_s: [157.56, 160.41, 163.69, 162.59, 177.56, 182.75, 185.42, 181.24, 191.75, 201.07],
-                    mat_s:  [174.56, 175.68, 176.64, 172.31, 187.83, 189.91, 197.35, 189.87, 199.98, 209.71]
-                },
-                finais: {
-                    indicador: '4,79', port: '245,03', mat: '242,35',
-                    port_s: [216.58, 223.10, 223.70, 222.00, 230.50, 234.51, 236.00, 236.75, 241.86, 245.03],
-                    mat_s:  [223.40, 223.26, 223.80, 222.39, 230.93, 228.68, 236.42, 230.44, 236.50, 242.35]
-                }
-            };
-            const saebYears = ['2007','2009','2011','2013','2015','2017','2019','2021','2023','2025'];
-            const fmt = (v) => (v !== null && v !== undefined) ? Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '';
-
             if (dashSaebEvoChartInstance) dashSaebEvoChartInstance.destroy();
-
-            // Padrão inicial: Anos Finais (9º Ano)
-            let activeStageKey = 'finais';
 
             dashSaebEvoChartInstance = new Chart(ctxSaeb, {
                 type: 'line',
@@ -1735,7 +1954,6 @@ function safeSetStyle(id, prop, value) {
                     const etapa = btn.dataset.etapa;
                     const d = saebData[etapa];
                     if (!d) return;
-                    activeStageKey = etapa;
 
                     const numEl = document.getElementById('dashIndicadorNum');
                     const portEl = document.getElementById('dashPortNum');
@@ -1744,93 +1962,17 @@ function safeSetStyle(id, prop, value) {
                     if (portEl) portEl.textContent = d.port;
                     if (matEl) matEl.textContent = d.mat;
 
-                    dashSaebEvoChartInstance.data.datasets[0].data = d.port_s;
-                    dashSaebEvoChartInstance.data.datasets[1].data = d.mat_s;
-                    dashSaebEvoChartInstance.update();
+                    if (dashSaebEvoChartInstance && dashSaebEvoChartInstance.data) {
+                        dashSaebEvoChartInstance.data.datasets[0].data = d.port_s;
+                        dashSaebEvoChartInstance.data.datasets[1].data = d.mat_s;
+                        dashSaebEvoChartInstance.update();
+                    }
 
                     etapaBtns.forEach(x => {
                         x.classList.toggle('active', x === btn);
                         x.style.background = x === btn ? '#fff' : 'transparent';
                         x.style.color = x === btn ? '#6366f1' : 'var(--text-secondary)';
                     });
-                };
-            });
-
-            // ==========================================
-            // ESCALA DO APRENDIZADO (ESTRUTURA EXATA SOLICITADA)
-            // ==========================================
-            const escalaData = {
-                '5-lp': [
-                    { cat: 'Abaixo do Básico', badgeBg: 'rgba(239, 68, 68, 0.12)', color: '#ef4444', rows: [['Até nível 1', '0 - 149 pts']] },
-                    { cat: 'Básico', badgeBg: 'rgba(245, 158, 11, 0.12)', color: '#f59e0b', rows: [['nível 2', '150 - 174 pts'], ['nível 3', '175 - 199 pts']] },
-                    { cat: 'Proficiente', badgeBg: 'rgba(16, 185, 129, 0.12)', color: '#10b981', rows: [['nível 4', '200 - 224 pts'], ['nível 5', '225 - 249 pts']] },
-                    { cat: 'Avançado', badgeBg: 'rgba(99, 102, 241, 0.12)', color: '#6366f1', rows: [['nível 6', '250 - 274 pts'], ['nível 7', '275 - 299 pts'], ['nível 8', '300 - 324 pts'], ['nível 9', '≥ 325 pts']] }
-                ],
-                '5-mat': [
-                    { cat: 'Abaixo do Básico', badgeBg: 'rgba(239, 68, 68, 0.12)', color: '#ef4444', rows: [['nível 0', '0 - 124 pts'], ['nível 1', '125 - 149 pts'], ['nível 2', '150 - 174 pts']] },
-                    { cat: 'Básico', badgeBg: 'rgba(245, 158, 11, 0.12)', color: '#f59e0b', rows: [['nível 3', '175 - 199 pts'], ['nível 4', '200 - 224 pts']] },
-                    { cat: 'Proficiente', badgeBg: 'rgba(16, 185, 129, 0.12)', color: '#10b981', rows: [['nível 5', '225 - 249 pts'], ['nível 6', '250 - 274 pts']] },
-                    { cat: 'Avançado', badgeBg: 'rgba(99, 102, 241, 0.12)', color: '#6366f1', rows: [['nível 7', '275 - 299 pts'], ['nível 8', '300 - 324 pts'], ['nível 9', '325 - 349 pts'], ['nível 10', '≥ 350 pts']] }
-                ],
-                '9-lp': [
-                    { cat: 'Abaixo do Básico', badgeBg: 'rgba(239, 68, 68, 0.12)', color: '#ef4444', rows: [['nível 0', '0 - 199 pts']] },
-                    { cat: 'Básico', badgeBg: 'rgba(245, 158, 11, 0.12)', color: '#f59e0b', rows: [['nível 1', '200 - 224 pts'], ['nível 2', '225 - 249 pts'], ['nível 3', '250 - 274 pts']] },
-                    { cat: 'Proficiente', badgeBg: 'rgba(16, 185, 129, 0.12)', color: '#10b981', rows: [['nível 4', '275 - 299 pts'], ['nível 5', '300 - 324 pts']] },
-                    { cat: 'Avançado', badgeBg: 'rgba(99, 102, 241, 0.12)', color: '#6366f1', rows: [['nível 6', '325 - 349 pts'], ['nível 7', '350 - 374 pts'], ['nível 8', '≥ 375 pts']] }
-                ],
-                '9-mat': [
-                    { cat: 'Abaixo do Básico', badgeBg: 'rgba(239, 68, 68, 0.12)', color: '#ef4444', rows: [['nível 0', '0 - 199 pts'], ['nível 1', '200 - 224 pts']] },
-                    { cat: 'Básico', badgeBg: 'rgba(245, 158, 11, 0.12)', color: '#f59e0b', rows: [['nível 2', '225 - 249 pts'], ['nível 3', '250 - 274 pts'], ['nível 4', '275 - 299 pts']] },
-                    { cat: 'Proficiente', badgeBg: 'rgba(16, 185, 129, 0.12)', color: '#10b981', rows: [['nível 5', '300 - 324 pts'], ['nível 6', '325 - 349 pts']] },
-                    { cat: 'Avançado', badgeBg: 'rgba(99, 102, 241, 0.12)', color: '#6366f1', rows: [['nível 7', '350 - 374 pts'], ['nível 8', '375 - 399 pts'], ['nível 9', '≥ 400 pts']] }
-                ]
-            };
-
-            let curSerie = '5';
-            let curDisc = 'lp';
-
-            function renderEscalaHtml() {
-                const key = `${curSerie}-${curDisc}`;
-                const groups = escalaData[key] || [];
-                let html = '';
-                groups.forEach(g => {
-                    html += `<div style="margin-bottom: 14px;">
-                        <div style="background: ${g.badgeBg}; color: ${g.color}; padding: 4px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; display: inline-block; margin-bottom: 8px;">
-                            ${g.cat}
-                        </div>`;
-                    g.rows.forEach(([nivel, faixa]) => {
-                        html += `<div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; padding: 6px 4px; border-bottom: 1px solid var(--border-color);">
-                            <span style="color: var(--text-primary); font-weight: 700;">${nivel}</span>
-                            <span style="color: var(--text-secondary); font-weight: 600; font-family: var(--font-mono);">${faixa}</span>
-                        </div>`;
-                    });
-                    html += `</div>`;
-                });
-                const escalaBody = document.getElementById('dashEscalaBody');
-                if (escalaBody) escalaBody.innerHTML = html;
-            }
-
-            document.querySelectorAll('#dashSerieSeg button').forEach(b => {
-                b.onclick = () => {
-                    curSerie = b.dataset.serie;
-                    document.querySelectorAll('#dashSerieSeg button').forEach(x => {
-                        x.classList.toggle('active', x === b);
-                        x.style.background = x === b ? '#fff' : 'transparent';
-                        x.style.color = x === b ? '#6366f1' : 'var(--text-secondary)';
-                    });
-                    renderEscalaHtml();
-                };
-            });
-
-            document.querySelectorAll('#dashDiscSeg button').forEach(b => {
-                b.onclick = () => {
-                    curDisc = b.dataset.disc;
-                    document.querySelectorAll('#dashDiscSeg button').forEach(x => {
-                        x.classList.toggle('active', x === b);
-                        x.style.background = x === b ? '#fff' : 'transparent';
-                        x.style.color = x === b ? '#6366f1' : 'var(--text-secondary)';
-                    });
-                    renderEscalaHtml();
                 };
             });
 
@@ -1852,6 +1994,7 @@ function safeSetStyle(id, prop, value) {
         renderDashboardEtapasCharts();
         renderDashboardComparativoChart();
         renderDashboardIndicadorEscala();
+        if (typeof renderDashboardEscalaAprendizado === 'function') renderDashboardEscalaAprendizado();
         renderDashboardProficiency();
         renderDashboardSchoolsRanking();
     }
@@ -22541,6 +22684,7 @@ function initApp() {
         if (typeof initIdebComparativo === 'function') initIdebComparativo();
         if (typeof initIdebCitySelector === 'function') initIdebCitySelector();
         if (typeof handleSelectIdebCity === 'function') handleSelectIdebCity('Gonçalves Dias');
+        if (typeof renderDashboardEscalaAprendizado === 'function') renderDashboardEscalaAprendizado();
         if (typeof renderPedagogicLibrary === 'function') renderPedagogicLibrary();
         if (typeof safeCreateIcons === 'function') safeCreateIcons();
     } catch(e) {
