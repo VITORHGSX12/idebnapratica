@@ -1612,145 +1612,232 @@ function safeSetStyle(id, prop, value) {
     window.renderDashboardComparativoChart = renderDashboardComparativoChart;
 
     function renderDashboardIndicadorEscala() {
-        const ctxSaeb = document.getElementById('dashChartSaebEvo');
-        if (!ctxSaeb || typeof Chart === 'undefined') return;
+        try {
+            const ctxSaeb = document.getElementById('dashChartSaebEvo');
+            if (!ctxSaeb || typeof Chart === 'undefined') return;
 
-        const saebData = {
-            finais: {
-                indicador: '4,79', port: '245,03', mat: '242,35',
-                port_s: [216.58,223.10,223.70,222.00,230.50,234.51,236.00,236.75,241.86,245.03],
-                mat_s: [223.40,223.26,223.80,222.39,230.93,228.68,236.42,230.44,236.50,242.35]
-            },
-            iniciais: {
-                indicador: '5,63', port: '201,07', mat: '209,71',
-                port_s: [157.56,160.41,163.69,162.59,177.56,182.75,185.42,181.24,191.75,201.07],
-                mat_s: [174.56,175.68,176.64,172.31,187.83,189.91,197.35,189.87,199.98,209.71]
-            }
-        };
-        const saebYears = ['2007','2009','2011','2013','2015','2017','2019','2021','2023','2025'];
-        const fmt = (v) => v ? v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '';
+            // Dados exatos das Imagens 3 (5º Ano) e 4 (9º Ano)
+            const saebData = {
+                iniciais: {
+                    indicador: '5,63', port: '201,07', mat: '209,71',
+                    port_s: [157.56, 160.41, 163.69, 162.59, 177.56, 182.75, 185.42, 181.24, 191.75, 201.07],
+                    mat_s:  [174.56, 175.68, 176.64, 172.31, 187.83, 189.91, 197.35, 189.87, 199.98, 209.71]
+                },
+                finais: {
+                    indicador: '4,79', port: '245,03', mat: '242,35',
+                    port_s: [216.58, 223.10, 223.70, 222.00, 230.50, 234.51, 236.00, 236.75, 241.86, 245.03],
+                    mat_s:  [223.40, 223.26, 223.80, 222.39, 230.93, 228.68, 236.42, 230.44, 236.50, 242.35]
+                }
+            };
+            const saebYears = ['2007','2009','2011','2013','2015','2017','2019','2021','2023','2025'];
+            const fmt = (v) => (v !== null && v !== undefined) ? Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '';
 
-        if (dashSaebEvoChartInstance) dashSaebEvoChartInstance.destroy();
+            if (dashSaebEvoChartInstance) dashSaebEvoChartInstance.destroy();
 
-        dashSaebEvoChartInstance = new Chart(ctxSaeb, {
-            type: 'line',
-            data: {
-                labels: saebYears,
-                datasets: [
-                    {
-                        label: 'Língua Portuguesa', data: saebData.finais.port_s, borderColor: '#4E9BE8', pointBackgroundColor: '#4E9BE8', borderWidth: 2.5, pointRadius: 4, tension: 0.3,
-                        datalabels: { display: true, align: 'bottom', offset: 6, color: '#fff', font: { weight: '700', size: 10 }, backgroundColor: '#4E9BE8', borderRadius: 20, padding: { top: 3, bottom: 3, left: 7, right: 7 }, formatter: (v) => fmt(v) }
+            // Padrão inicial: Anos Finais (9º Ano)
+            let activeStageKey = 'finais';
+
+            dashSaebEvoChartInstance = new Chart(ctxSaeb, {
+                type: 'line',
+                data: {
+                    labels: saebYears,
+                    datasets: [
+                        {
+                            label: 'Língua Portuguesa',
+                            data: saebData.finais.port_s,
+                            borderColor: '#3B82F6',
+                            backgroundColor: '#3B82F6',
+                            pointBackgroundColor: '#FFFFFF',
+                            pointBorderColor: '#3B82F6',
+                            pointBorderWidth: 2.5,
+                            borderWidth: 2.5,
+                            pointRadius: 4.5,
+                            tension: 0.3,
+                            datalabels: {
+                                display: true,
+                                align: 'bottom',
+                                offset: 6,
+                                color: '#FFFFFF',
+                                font: { weight: '800', size: 9.5, family: 'var(--font-mono)' },
+                                backgroundColor: '#3B82F6',
+                                borderRadius: 6,
+                                padding: { top: 2, bottom: 2, left: 6, right: 6 },
+                                formatter: (v) => fmt(v)
+                            }
+                        },
+                        {
+                            label: 'Matemática',
+                            data: saebData.finais.mat_s,
+                            borderColor: '#475569',
+                            backgroundColor: '#475569',
+                            pointBackgroundColor: '#FFFFFF',
+                            pointBorderColor: '#475569',
+                            pointBorderWidth: 2.5,
+                            borderWidth: 2.5,
+                            pointRadius: 4.5,
+                            tension: 0.3,
+                            datalabels: {
+                                display: true,
+                                align: 'top',
+                                offset: 6,
+                                color: '#FFFFFF',
+                                font: { weight: '800', size: 9.5, family: 'var(--font-mono)' },
+                                backgroundColor: '#475569',
+                                borderRadius: 6,
+                                padding: { top: 2, bottom: 2, left: 6, right: 6 },
+                                formatter: (v) => fmt(v)
+                            }
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: { padding: { top: 26, bottom: 8, left: 4, right: 4 } },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, font: { size: 11.5, weight: '600' } }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleFont: { size: 12, weight: '800' },
+                            bodyFont: { size: 11 },
+                            padding: 10,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.dataset.label}: ${context.raw ? fmt(context.raw) : 'N/A'}`;
+                                }
+                            }
+                        }
                     },
-                    {
-                        label: 'Matemática', data: saebData.finais.mat_s, borderColor: '#3A4356', pointBackgroundColor: '#3A4356', borderWidth: 2.5, pointRadius: 4, tension: 0.3,
-                        datalabels: { display: true, align: 'top', offset: 6, color: '#fff', font: { weight: '700', size: 10 }, backgroundColor: '#3A4356', borderRadius: 20, padding: { top: 3, bottom: 3, left: 7, right: 7 }, formatter: (v) => fmt(v) }
+                    scales: {
+                        y: {
+                            min: 80,
+                            max: 300,
+                            grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                            ticks: { stepSize: 40, font: { size: 11, weight: '600' }, color: 'var(--text-secondary)' },
+                            title: { display: true, text: 'Nota padronizada', font: { size: 11, weight: '700' }, color: 'var(--text-muted)' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 11, weight: '700' }, color: 'var(--text-primary)' }
+                        }
                     }
-                ]
-            },
-            options: {
-                responsive: true, maintainAspectRatio: false, layout: { padding: { top: 24, bottom: 6 } },
-                plugins: { legend: { position: 'bottom', labels: { boxWidth: 8, boxHeight: 8, usePointStyle: true, font: { size: 11.5 } } } },
-                scales: { y: { min: 80, max: 280, grid: { color: '#EEF0F7' }, ticks: { stepSize: 40, font: { size: 11 } }, title: { display: true, text: 'Nota padronizada', font: { size: 11, weight: '600' } } }, x: { grid: { display: false }, ticks: { font: { size: 11 } } } }
-            }
-        });
-
-        // Tab listeners for Anos Finais / Anos Iniciais
-        const etapaBtns = document.querySelectorAll('#dashEtapaTabs .tab-btn');
-        etapaBtns.forEach(btn => {
-            btn.onclick = () => {
-                const etapa = btn.dataset.etapa;
-                const d = saebData[etapa];
-                if (!d) return;
-                const numEl = document.getElementById('dashIndicadorNum');
-                const portEl = document.getElementById('dashPortNum');
-                const matEl = document.getElementById('dashMatNum');
-                if (numEl) numEl.textContent = d.indicador;
-                if (portEl) portEl.textContent = d.port;
-                if (matEl) matEl.textContent = d.mat;
-
-                dashSaebEvoChartInstance.data.datasets[0].data = d.port_s;
-                dashSaebEvoChartInstance.data.datasets[1].data = d.mat_s;
-                dashSaebEvoChartInstance.update();
-
-                etapaBtns.forEach(x => {
-                    x.classList.toggle('active', x === btn);
-                    x.style.background = x === btn ? '#fff' : 'transparent';
-                    x.style.color = x === btn ? '#6366f1' : 'var(--text-secondary)';
-                });
-            };
-        });
-
-        // Escala do Aprendizado
-        const escalaData = {
-            '5-lp': [
-                { cat: 'Insuficiente', cls: 'cat-insuf', rows: [['Até nível 1', '0 - 149 pts']] },
-                { cat: 'Básico', cls: 'cat-basico', rows: [['nível 2', '150 - 174 pts'], ['nível 3', '175 - 199 pts']] },
-                { cat: 'Proficiente', cls: 'cat-prof', rows: [['nível 4', '200 - 224 pts'], ['nível 5', '225 - 249 pts']] },
-                { cat: 'Avançado', cls: 'cat-avanc', rows: [['nível 6', '250 - 274 pts'], ['nível 7', '275 - 299 pts'], ['nível 8', '300 - 324 pts'], ['nível 9', '≥ 325 pts']] }
-            ],
-            '5-mat': [
-                { cat: 'Insuficiente', cls: 'cat-insuf', rows: [['nível 0', '0 - 124 pts'], ['nível 1', '125 - 149 pts'], ['nível 2', '150 - 174 pts']] },
-                { cat: 'Básico', cls: 'cat-basico', rows: [['nível 3', '175 - 199 pts'], ['nível 4', '200 - 224 pts']] },
-                { cat: 'Proficiente', cls: 'cat-prof', rows: [['nível 5', '225 - 249 pts'], ['nível 6', '250 - 274 pts']] },
-                { cat: 'Avançado', cls: 'cat-avanc', rows: [['nível 7', '275 - 299 pts'], ['nível 8', '300 - 324 pts'], ['nível 9', '325 - 349 pts'], ['nível 10', '≥ 350 pts']] }
-            ],
-            '9-lp': [
-                { cat: 'Insuficiente', cls: 'cat-insuf', rows: [['nível 0', '0 - 199 pts']] },
-                { cat: 'Básico', cls: 'cat-basico', rows: [['nível 1', '200 - 224 pts'], ['nível 2', '225 - 249 pts'], ['nível 3', '250 - 274 pts']] },
-                { cat: 'Proficiente', cls: 'cat-prof', rows: [['nível 4', '275 - 299 pts'], ['nível 5', '300 - 324 pts']] },
-                { cat: 'Avançado', cls: 'cat-avanc', rows: [['nível 6', '325 - 349 pts'], ['nível 7', '350 - 374 pts'], ['nível 8', '≥ 375 pts']] }
-            ],
-            '9-mat': [
-                { cat: 'Insuficiente', cls: 'cat-insuf', rows: [['nível 0', '0 - 199 pts'], ['nível 1', '200 - 224 pts']] },
-                { cat: 'Básico', cls: 'cat-basico', rows: [['nível 2', '225 - 249 pts'], ['nível 3', '250 - 274 pts'], ['nível 4', '275 - 299 pts']] },
-                { cat: 'Proficiente', cls: 'cat-prof', rows: [['nível 5', '320 - 324 pts'], ['nível 6', '325 - 349 pts']] },
-                { cat: 'Avançado', cls: 'cat-avanc', rows: [['nível 7', '350 - 374 pts'], ['nível 8', '375 - 399 pts'], ['nível 9', '≥ 400 pts']] }
-            ]
-        };
-
-        let curSerie = '5';
-        let curDisc = 'lp';
-
-        function renderEscalaHtml() {
-            const key = `${curSerie}-${curDisc}`;
-            const groups = escalaData[key] || [];
-            let html = '';
-            groups.forEach(g => {
-                html += `<div class="escala-cat" style="margin-bottom: 12px;"><div class="escala-cat-title ${g.cls}" style="font-size: 12.5px; font-weight: 800; text-align: center; margin-bottom: 6px;">${g.cat}</div>`;
-                g.rows.forEach(([nivel, faixa]) => {
-                    html += `<div class="escala-row" style="display: flex; justify-content: space-between; font-size: 13px; padding: 6px 2px; border-bottom: 1px solid var(--border-color);"><span class="nivel" style="color: #6366f1; font-weight: 600;">${nivel}</span><span>${faixa}</span></div>`;
-                });
-                html += `</div>`;
+                }
             });
-            const escalaBody = document.getElementById('dashEscalaBody');
-            if (escalaBody) escalaBody.innerHTML = html;
+
+            // Listener de abas para Anos Iniciais / Anos Finais
+            const etapaBtns = document.querySelectorAll('#dashEtapaTabs .tab-btn');
+            etapaBtns.forEach(btn => {
+                btn.onclick = () => {
+                    const etapa = btn.dataset.etapa;
+                    const d = saebData[etapa];
+                    if (!d) return;
+                    activeStageKey = etapa;
+
+                    const numEl = document.getElementById('dashIndicadorNum');
+                    const portEl = document.getElementById('dashPortNum');
+                    const matEl = document.getElementById('dashMatNum');
+                    if (numEl) numEl.textContent = d.indicador;
+                    if (portEl) portEl.textContent = d.port;
+                    if (matEl) matEl.textContent = d.mat;
+
+                    dashSaebEvoChartInstance.data.datasets[0].data = d.port_s;
+                    dashSaebEvoChartInstance.data.datasets[1].data = d.mat_s;
+                    dashSaebEvoChartInstance.update();
+
+                    etapaBtns.forEach(x => {
+                        x.classList.toggle('active', x === btn);
+                        x.style.background = x === btn ? '#fff' : 'transparent';
+                        x.style.color = x === btn ? '#6366f1' : 'var(--text-secondary)';
+                    });
+                };
+            });
+
+            // ==========================================
+            // ESCALA DO APRENDIZADO (ESTRUTURA EXATA SOLICITADA)
+            // ==========================================
+            const escalaData = {
+                '5-lp': [
+                    { cat: 'Abaixo do Básico', badgeBg: 'rgba(239, 68, 68, 0.12)', color: '#ef4444', rows: [['Até nível 1', '0 - 149 pts']] },
+                    { cat: 'Básico', badgeBg: 'rgba(245, 158, 11, 0.12)', color: '#f59e0b', rows: [['nível 2', '150 - 174 pts'], ['nível 3', '175 - 199 pts']] },
+                    { cat: 'Proficiente', badgeBg: 'rgba(16, 185, 129, 0.12)', color: '#10b981', rows: [['nível 4', '200 - 224 pts'], ['nível 5', '225 - 249 pts']] },
+                    { cat: 'Avançado', badgeBg: 'rgba(99, 102, 241, 0.12)', color: '#6366f1', rows: [['nível 6', '250 - 274 pts'], ['nível 7', '275 - 299 pts'], ['nível 8', '300 - 324 pts'], ['nível 9', '≥ 325 pts']] }
+                ],
+                '5-mat': [
+                    { cat: 'Abaixo do Básico', badgeBg: 'rgba(239, 68, 68, 0.12)', color: '#ef4444', rows: [['nível 0', '0 - 124 pts'], ['nível 1', '125 - 149 pts'], ['nível 2', '150 - 174 pts']] },
+                    { cat: 'Básico', badgeBg: 'rgba(245, 158, 11, 0.12)', color: '#f59e0b', rows: [['nível 3', '175 - 199 pts'], ['nível 4', '200 - 224 pts']] },
+                    { cat: 'Proficiente', badgeBg: 'rgba(16, 185, 129, 0.12)', color: '#10b981', rows: [['nível 5', '225 - 249 pts'], ['nível 6', '250 - 274 pts']] },
+                    { cat: 'Avançado', badgeBg: 'rgba(99, 102, 241, 0.12)', color: '#6366f1', rows: [['nível 7', '275 - 299 pts'], ['nível 8', '300 - 324 pts'], ['nível 9', '325 - 349 pts'], ['nível 10', '≥ 350 pts']] }
+                ],
+                '9-lp': [
+                    { cat: 'Abaixo do Básico', badgeBg: 'rgba(239, 68, 68, 0.12)', color: '#ef4444', rows: [['nível 0', '0 - 199 pts']] },
+                    { cat: 'Básico', badgeBg: 'rgba(245, 158, 11, 0.12)', color: '#f59e0b', rows: [['nível 1', '200 - 224 pts'], ['nível 2', '225 - 249 pts'], ['nível 3', '250 - 274 pts']] },
+                    { cat: 'Proficiente', badgeBg: 'rgba(16, 185, 129, 0.12)', color: '#10b981', rows: [['nível 4', '275 - 299 pts'], ['nível 5', '300 - 324 pts']] },
+                    { cat: 'Avançado', badgeBg: 'rgba(99, 102, 241, 0.12)', color: '#6366f1', rows: [['nível 6', '325 - 349 pts'], ['nível 7', '350 - 374 pts'], ['nível 8', '≥ 375 pts']] }
+                ],
+                '9-mat': [
+                    { cat: 'Abaixo do Básico', badgeBg: 'rgba(239, 68, 68, 0.12)', color: '#ef4444', rows: [['nível 0', '0 - 199 pts'], ['nível 1', '200 - 224 pts']] },
+                    { cat: 'Básico', badgeBg: 'rgba(245, 158, 11, 0.12)', color: '#f59e0b', rows: [['nível 2', '225 - 249 pts'], ['nível 3', '250 - 274 pts'], ['nível 4', '275 - 299 pts']] },
+                    { cat: 'Proficiente', badgeBg: 'rgba(16, 185, 129, 0.12)', color: '#10b981', rows: [['nível 5', '300 - 324 pts'], ['nível 6', '325 - 349 pts']] },
+                    { cat: 'Avançado', badgeBg: 'rgba(99, 102, 241, 0.12)', color: '#6366f1', rows: [['nível 7', '350 - 374 pts'], ['nível 8', '375 - 399 pts'], ['nível 9', '≥ 400 pts']] }
+                ]
+            };
+
+            let curSerie = '5';
+            let curDisc = 'lp';
+
+            function renderEscalaHtml() {
+                const key = `${curSerie}-${curDisc}`;
+                const groups = escalaData[key] || [];
+                let html = '';
+                groups.forEach(g => {
+                    html += `<div style="margin-bottom: 14px;">
+                        <div style="background: ${g.badgeBg}; color: ${g.color}; padding: 4px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; display: inline-block; margin-bottom: 8px;">
+                            ${g.cat}
+                        </div>`;
+                    g.rows.forEach(([nivel, faixa]) => {
+                        html += `<div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; padding: 6px 4px; border-bottom: 1px solid var(--border-color);">
+                            <span style="color: var(--text-primary); font-weight: 700;">${nivel}</span>
+                            <span style="color: var(--text-secondary); font-weight: 600; font-family: var(--font-mono);">${faixa}</span>
+                        </div>`;
+                    });
+                    html += `</div>`;
+                });
+                const escalaBody = document.getElementById('dashEscalaBody');
+                if (escalaBody) escalaBody.innerHTML = html;
+            }
+
+            document.querySelectorAll('#dashSerieSeg button').forEach(b => {
+                b.onclick = () => {
+                    curSerie = b.dataset.serie;
+                    document.querySelectorAll('#dashSerieSeg button').forEach(x => {
+                        x.classList.toggle('active', x === b);
+                        x.style.background = x === b ? '#fff' : 'transparent';
+                        x.style.color = x === b ? '#6366f1' : 'var(--text-secondary)';
+                    });
+                    renderEscalaHtml();
+                };
+            });
+
+            document.querySelectorAll('#dashDiscSeg button').forEach(b => {
+                b.onclick = () => {
+                    curDisc = b.dataset.disc;
+                    document.querySelectorAll('#dashDiscSeg button').forEach(x => {
+                        x.classList.toggle('active', x === b);
+                        x.style.background = x === b ? '#fff' : 'transparent';
+                        x.style.color = x === b ? '#6366f1' : 'var(--text-secondary)';
+                    });
+                    renderEscalaHtml();
+                };
+            });
+
+            renderEscalaHtml();
+        } catch(err) {
+            console.error('[renderDashboardIndicadorEscala Error]', err);
         }
-
-        document.querySelectorAll('#dashSerieSeg button').forEach(b => {
-            b.onclick = () => {
-                curSerie = b.dataset.serie;
-                document.querySelectorAll('#dashSerieSeg button').forEach(x => {
-                    x.classList.toggle('active', x === b);
-                    x.style.background = x === b ? '#fff' : 'transparent';
-                    x.style.color = x === b ? '#6366f1' : 'var(--text-secondary)';
-                });
-                renderEscalaHtml();
-            };
-        });
-
-        document.querySelectorAll('#dashDiscSeg button').forEach(b => {
-            b.onclick = () => {
-                curDisc = b.dataset.disc;
-                document.querySelectorAll('#dashDiscSeg button').forEach(x => {
-                    x.classList.toggle('active', x === b);
-                    x.style.background = x === b ? '#fff' : 'transparent';
-                    x.style.color = x === b ? '#6366f1' : 'var(--text-secondary)';
-                });
-                renderEscalaHtml();
-            };
-        });
-
-        renderEscalaHtml();
     }
     window.renderDashboardIndicadorEscala = renderDashboardIndicadorEscala;
 
