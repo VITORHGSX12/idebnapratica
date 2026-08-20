@@ -1211,6 +1211,241 @@ function safeSetStyle(id, prop, value) {
     }
     window.renderDashboardSchoolsRanking = renderDashboardSchoolsRanking;
 
+    // Global chart instances to destroy on re-render
+    let dashIniciaisChartInstance = null;
+    let dashFinaisChartInstance = null;
+    let dashComparativoChartInstance = null;
+    let dashSaebEvoChartInstance = null;
+
+    function renderDashboardEtapasCharts() {
+        const ctxInc = document.getElementById('dashChartIniciais');
+        const ctxFin = document.getElementById('dashChartFinais');
+        if (!ctxInc || !ctxFin || typeof Chart === 'undefined') return;
+
+        const anos = ['2007','2009','2011','2013','2015','2017','2019','2021','2023','2025'];
+        const iniciaisData = { maranhao:[3.4,3.7,3.9,3.9,4.1,4.1,4.6,4.6,5.0,5.5], projetado:[2.8,3.1,3.5,3.8,4.1,4.4,4.7,5.0,5.0,null] };
+        const finaisData    = { maranhao:[3.0,3.2,3.3,3.3,3.6,3.6,4.0,4.2,4.3,4.5], projetado:[2.9,3.0,3.3,3.7,4.1,4.3,4.6,4.9,4.9,null] };
+
+        if (dashIniciaisChartInstance) dashIniciaisChartInstance.destroy();
+        if (dashFinaisChartInstance) dashFinaisChartInstance.destroy();
+
+        const badgeStyle = (color) => ({
+            display: true, align: 'top', offset: 6, color: '#fff',
+            font: { weight: '700', size: 11 }, backgroundColor: color, borderRadius: 20,
+            padding: { top: 4, bottom: 4, left: 8, right: 8 },
+            formatter: (v) => v === null || v === undefined ? '' : Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+        });
+
+        dashIniciaisChartInstance = new Chart(ctxInc, {
+            data: {
+                labels: anos,
+                datasets: [
+                    { type: 'bar', label: 'Maranhão', data: iniciaisData.maranhao, backgroundColor: '#3B9BF6', borderRadius: 4, barPercentage: 0.62, datalabels: { display: false } },
+                    { type: 'line', label: 'Projetado', data: iniciaisData.projetado, borderColor: '#17B26A', backgroundColor: '#17B26A', pointBackgroundColor: '#17B26A', pointRadius: 4, borderWidth: 2, tension: 0.3, datalabels: badgeStyle('#17B26A') }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, layout: { padding: { top: 22 } },
+                plugins: { legend: { position: 'bottom', labels: { boxWidth: 8, boxHeight: 8, usePointStyle: true, font: { size: 11.5 } } } },
+                scales: { y: { min: 0, max: 10, grid: { color: '#EEF0F7' }, ticks: { stepSize: 1, font: { size: 11 } } }, x: { grid: { display: false }, ticks: { font: { size: 11 } } } }
+            }
+        });
+
+        dashFinaisChartInstance = new Chart(ctxFin, {
+            data: {
+                labels: anos,
+                datasets: [
+                    { type: 'bar', label: 'Maranhão', data: finaisData.maranhao, backgroundColor: '#7CC0F9', borderRadius: 4, barPercentage: 0.62, datalabels: { display: false } },
+                    { type: 'line', label: 'Projetado', data: finaisData.projetado, borderColor: '#17B26A', backgroundColor: '#17B26A', pointBackgroundColor: '#17B26A', pointRadius: 4, borderWidth: 2, tension: 0.3, datalabels: badgeStyle('#17B26A') }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, layout: { padding: { top: 22 } },
+                plugins: { legend: { position: 'bottom', labels: { boxWidth: 8, boxHeight: 8, usePointStyle: true, font: { size: 11.5 } } } },
+                scales: { y: { min: 0, max: 10, grid: { color: '#EEF0F7' }, ticks: { stepSize: 1, font: { size: 11 } } }, x: { grid: { display: false }, ticks: { font: { size: 11 } } } }
+            }
+        });
+    }
+    window.renderDashboardEtapasCharts = renderDashboardEtapasCharts;
+
+    function renderDashboardComparativoChart() {
+        const ctxComp = document.getElementById('dashChartComparativo');
+        if (!ctxComp || typeof Chart === 'undefined') return;
+
+        const anos = ['2007','2009','2011','2013','2015','2017','2019','2021','2023','2025'];
+        const iniciaisData = [3.4,3.7,3.9,3.9,4.1,4.1,4.6,4.6,5.0,5.5];
+        const finaisData    = [3.0,3.2,3.3,3.3,3.6,3.6,4.0,4.2,4.3,4.5];
+
+        if (dashComparativoChartInstance) dashComparativoChartInstance.destroy();
+
+        const badgeStyle = (color) => ({
+            display: true, align: 'top', offset: 6, color: '#fff',
+            font: { weight: '700', size: 11 }, backgroundColor: color, borderRadius: 20,
+            padding: { top: 4, bottom: 4, left: 8, right: 8 },
+            formatter: (v) => v === null || v === undefined ? '' : Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+        });
+
+        dashComparativoChartInstance = new Chart(ctxComp, {
+            type: 'line',
+            data: {
+                labels: anos,
+                datasets: [
+                    { label: 'Anos Iniciais', data: iniciaisData, borderColor: '#5B4FE9', backgroundColor: 'rgba(91,79,233,0.14)', pointBackgroundColor: '#5B4FE9', pointRadius: 4, borderWidth: 2.5, fill: false, tension: 0.3, datalabels: badgeStyle('#5B4FE9') },
+                    { label: 'Anos Finais', data: finaisData, borderColor: '#0EA5A5', backgroundColor: 'rgba(14,165,165,0.14)', pointBackgroundColor: '#0EA5A5', pointRadius: 4, borderWidth: 2.5, fill: false, tension: 0.3, datalabels: badgeStyle('#0EA5A5') }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, layout: { padding: { top: 26 } },
+                plugins: { legend: { position: 'bottom', labels: { boxWidth: 8, boxHeight: 8, usePointStyle: true, font: { size: 11.5 } } } },
+                scales: { y: { min: 2, max: 6, grid: { color: '#EEF0F7' }, ticks: { stepSize: 1, font: { size: 11 } } }, x: { grid: { display: false }, ticks: { font: { size: 11 } } } }
+            }
+        });
+    }
+    window.renderDashboardComparativoChart = renderDashboardComparativoChart;
+
+    function renderDashboardIndicadorEscala() {
+        const ctxSaeb = document.getElementById('dashChartSaebEvo');
+        if (!ctxSaeb || typeof Chart === 'undefined') return;
+
+        const saebData = {
+            finais: {
+                indicador: '4,79', port: '245,03', mat: '242,35',
+                port_s: [216.58,223.10,223.70,222.00,230.50,234.51,236.00,236.75,241.86,245.03],
+                mat_s: [223.40,223.26,223.80,222.39,230.93,228.68,236.42,230.44,236.50,242.35]
+            },
+            iniciais: {
+                indicador: '5,63', port: '201,07', mat: '209,71',
+                port_s: [157.56,160.41,163.69,162.59,177.56,182.75,185.42,181.24,191.75,201.07],
+                mat_s: [174.56,175.68,176.64,172.31,187.83,189.91,197.35,189.87,199.98,209.71]
+            }
+        };
+        const saebYears = ['2007','2009','2011','2013','2015','2017','2019','2021','2023','2025'];
+        const fmt = (v) => v ? v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '';
+
+        if (dashSaebEvoChartInstance) dashSaebEvoChartInstance.destroy();
+
+        dashSaebEvoChartInstance = new Chart(ctxSaeb, {
+            type: 'line',
+            data: {
+                labels: saebYears,
+                datasets: [
+                    {
+                        label: 'Língua Portuguesa', data: saebData.finais.port_s, borderColor: '#4E9BE8', pointBackgroundColor: '#4E9BE8', borderWidth: 2.5, pointRadius: 4, tension: 0.3,
+                        datalabels: { display: true, align: 'bottom', offset: 6, color: '#fff', font: { weight: '700', size: 10 }, backgroundColor: '#4E9BE8', borderRadius: 20, padding: { top: 3, bottom: 3, left: 7, right: 7 }, formatter: (v) => fmt(v) }
+                    },
+                    {
+                        label: 'Matemática', data: saebData.finais.mat_s, borderColor: '#3A4356', pointBackgroundColor: '#3A4356', borderWidth: 2.5, pointRadius: 4, tension: 0.3,
+                        datalabels: { display: true, align: 'top', offset: 6, color: '#fff', font: { weight: '700', size: 10 }, backgroundColor: '#3A4356', borderRadius: 20, padding: { top: 3, bottom: 3, left: 7, right: 7 }, formatter: (v) => fmt(v) }
+                    }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, layout: { padding: { top: 24, bottom: 6 } },
+                plugins: { legend: { position: 'bottom', labels: { boxWidth: 8, boxHeight: 8, usePointStyle: true, font: { size: 11.5 } } } },
+                scales: { y: { min: 80, max: 280, grid: { color: '#EEF0F7' }, ticks: { stepSize: 40, font: { size: 11 } }, title: { display: true, text: 'Nota padronizada', font: { size: 11, weight: '600' } } }, x: { grid: { display: false }, ticks: { font: { size: 11 } } } }
+            }
+        });
+
+        // Tab listeners for Anos Finais / Anos Iniciais
+        const etapaBtns = document.querySelectorAll('#dashEtapaTabs .tab-btn');
+        etapaBtns.forEach(btn => {
+            btn.onclick = () => {
+                const etapa = btn.dataset.etapa;
+                const d = saebData[etapa];
+                if (!d) return;
+                const numEl = document.getElementById('dashIndicadorNum');
+                const portEl = document.getElementById('dashPortNum');
+                const matEl = document.getElementById('dashMatNum');
+                if (numEl) numEl.textContent = d.indicador;
+                if (portEl) portEl.textContent = d.port;
+                if (matEl) matEl.textContent = d.mat;
+
+                dashSaebEvoChartInstance.data.datasets[0].data = d.port_s;
+                dashSaebEvoChartInstance.data.datasets[1].data = d.mat_s;
+                dashSaebEvoChartInstance.update();
+
+                etapaBtns.forEach(x => {
+                    x.classList.toggle('active', x === btn);
+                    x.style.background = x === btn ? '#fff' : 'transparent';
+                    x.style.color = x === btn ? '#6366f1' : 'var(--text-secondary)';
+                });
+            };
+        });
+
+        // Escala do Aprendizado
+        const escalaData = {
+            '5-lp': [
+                { cat: 'Insuficiente', cls: 'cat-insuf', rows: [['Até nível 1', '0 - 149 pts']] },
+                { cat: 'Básico', cls: 'cat-basico', rows: [['nível 2', '150 - 174 pts'], ['nível 3', '175 - 199 pts']] },
+                { cat: 'Proficiente', cls: 'cat-prof', rows: [['nível 4', '200 - 224 pts'], ['nível 5', '225 - 249 pts']] },
+                { cat: 'Avançado', cls: 'cat-avanc', rows: [['nível 6', '250 - 274 pts'], ['nível 7', '275 - 299 pts'], ['nível 8', '300 - 324 pts'], ['nível 9', '≥ 325 pts']] }
+            ],
+            '5-mat': [
+                { cat: 'Insuficiente', cls: 'cat-insuf', rows: [['nível 0', '0 - 124 pts'], ['nível 1', '125 - 149 pts'], ['nível 2', '150 - 174 pts']] },
+                { cat: 'Básico', cls: 'cat-basico', rows: [['nível 3', '175 - 199 pts'], ['nível 4', '200 - 224 pts']] },
+                { cat: 'Proficiente', cls: 'cat-prof', rows: [['nível 5', '225 - 249 pts'], ['nível 6', '250 - 274 pts']] },
+                { cat: 'Avançado', cls: 'cat-avanc', rows: [['nível 7', '275 - 299 pts'], ['nível 8', '300 - 324 pts'], ['nível 9', '325 - 349 pts'], ['nível 10', '≥ 350 pts']] }
+            ],
+            '9-lp': [
+                { cat: 'Insuficiente', cls: 'cat-insuf', rows: [['nível 0', '0 - 199 pts']] },
+                { cat: 'Básico', cls: 'cat-basico', rows: [['nível 1', '200 - 224 pts'], ['nível 2', '225 - 249 pts'], ['nível 3', '250 - 274 pts']] },
+                { cat: 'Proficiente', cls: 'cat-prof', rows: [['nível 4', '275 - 299 pts'], ['nível 5', '300 - 324 pts']] },
+                { cat: 'Avançado', cls: 'cat-avanc', rows: [['nível 6', '325 - 349 pts'], ['nível 7', '350 - 374 pts'], ['nível 8', '≥ 375 pts']] }
+            ],
+            '9-mat': [
+                { cat: 'Insuficiente', cls: 'cat-insuf', rows: [['nível 0', '0 - 199 pts'], ['nível 1', '200 - 224 pts']] },
+                { cat: 'Básico', cls: 'cat-basico', rows: [['nível 2', '225 - 249 pts'], ['nível 3', '250 - 274 pts'], ['nível 4', '275 - 299 pts']] },
+                { cat: 'Proficiente', cls: 'cat-prof', rows: [['nível 5', '320 - 324 pts'], ['nível 6', '325 - 349 pts']] },
+                { cat: 'Avançado', cls: 'cat-avanc', rows: [['nível 7', '350 - 374 pts'], ['nível 8', '375 - 399 pts'], ['nível 9', '≥ 400 pts']] }
+            ]
+        };
+
+        let curSerie = '5';
+        let curDisc = 'lp';
+
+        function renderEscalaHtml() {
+            const key = `${curSerie}-${curDisc}`;
+            const groups = escalaData[key] || [];
+            let html = '';
+            groups.forEach(g => {
+                html += `<div class="escala-cat" style="margin-bottom: 12px;"><div class="escala-cat-title ${g.cls}" style="font-size: 12.5px; font-weight: 800; text-align: center; margin-bottom: 6px;">${g.cat}</div>`;
+                g.rows.forEach(([nivel, faixa]) => {
+                    html += `<div class="escala-row" style="display: flex; justify-content: space-between; font-size: 13px; padding: 6px 2px; border-bottom: 1px solid var(--border-color);"><span class="nivel" style="color: #6366f1; font-weight: 600;">${nivel}</span><span>${faixa}</span></div>`;
+                });
+                html += `</div>`;
+            });
+            const escalaBody = document.getElementById('dashEscalaBody');
+            if (escalaBody) escalaBody.innerHTML = html;
+        }
+
+        document.querySelectorAll('#dashSerieSeg button').forEach(b => {
+            b.onclick = () => {
+                curSerie = b.dataset.serie;
+                document.querySelectorAll('#dashSerieSeg button').forEach(x => {
+                    x.classList.toggle('active', x === b);
+                    x.style.background = x === b ? '#fff' : 'transparent';
+                    x.style.color = x === b ? '#6366f1' : 'var(--text-secondary)';
+                });
+                renderEscalaHtml();
+            };
+        });
+
+        document.querySelectorAll('#dashDiscSeg button').forEach(b => {
+            b.onclick = () => {
+                curDisc = b.dataset.disc;
+                document.querySelectorAll('#dashDiscSeg button').forEach(x => {
+                    x.classList.toggle('active', x === b);
+                    x.style.background = x === b ? '#fff' : 'transparent';
+                    x.style.color = x === b ? '#6366f1' : 'var(--text-secondary)';
+                });
+                renderEscalaHtml();
+            };
+        });
+
+        renderEscalaHtml();
+    }
+    window.renderDashboardIndicadorEscala = renderDashboardIndicadorEscala;
+
     function renderDashboardComplete() {
         updateUserHeaderUI();
         renderDashboardWelcomeBanner();
