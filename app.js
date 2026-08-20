@@ -16632,16 +16632,54 @@ if (document.readyState === 'loading') {
 
     function getOfficialExcelCityData(cityName, etapa) {
         try {
-            const db = window.OFFICIAL_MARANHAO_IDEB_EXCEL;
-            if (!db) return null;
-            const collection = (etapa === 'Anos Finais') ? db.anosFinais : db.anosIniciais;
-            if (!collection) return null;
-
+            if (!cityName) return null;
             const clean = cityName.trim().toLowerCase();
-            const keys = Object.keys(collection);
-            const foundKey = keys.find(k => k.trim().toLowerCase() === clean);
-            if (foundKey) return collection[foundKey];
-        } catch(e) {}
+
+            // 1. Verificar window.IDEB_MARANHAO_MUNICIPIOS (Dataset Oficial Ativo)
+            const dbMaranhao = window.IDEB_MARANHAO_MUNICIPIOS;
+            if (dbMaranhao) {
+                const list = (etapa === 'Anos Finais') ? dbMaranhao.finais : dbMaranhao.iniciais;
+                if (Array.isArray(list)) {
+                    const found = list.find(item => item && item.municipio && item.municipio.trim().toLowerCase() === clean);
+                    if (found) return found;
+                }
+            }
+
+            // 2. Fallback: window.idebPublicoReferencia
+            const refList = window.idebPublicoReferencia;
+            if (Array.isArray(refList)) {
+                const etapaName = (etapa === 'Anos Finais') ? 'finais' : 'iniciais';
+                const found = refList.find(item => 
+                    item && item.municipio && item.municipio.trim().toLowerCase() === clean &&
+                    (item.etapa || '').toLowerCase().includes(etapaName)
+                );
+                if (found) {
+                    const anosObj = found.anos || {};
+                    return {
+                        municipio: found.municipio,
+                        y2015: anosObj['2015'] !== undefined ? anosObj['2015'] : null,
+                        y2017: anosObj['2017'] !== undefined ? anosObj['2017'] : null,
+                        y2019: anosObj['2019'] !== undefined ? anosObj['2019'] : null,
+                        y2021: anosObj['2021'] !== undefined ? anosObj['2021'] : null,
+                        y2023: anosObj['2023'] !== undefined ? anosObj['2023'] : null,
+                        y2025: anosObj['2025'] !== undefined ? anosObj['2025'] : null
+                    };
+                }
+            }
+
+            // 3. Fallback: window.OFFICIAL_MARANHAO_IDEB_EXCEL
+            const dbExcel = window.OFFICIAL_MARANHAO_IDEB_EXCEL;
+            if (dbExcel) {
+                const collection = (etapa === 'Anos Finais') ? dbExcel.anosFinais : dbExcel.anosIniciais;
+                if (collection) {
+                    const keys = Object.keys(collection);
+                    const foundKey = keys.find(k => k.trim().toLowerCase() === clean);
+                    if (foundKey) return collection[foundKey];
+                }
+            }
+        } catch(e) {
+            console.error('[getOfficialExcelCityData Error]', e);
+        }
         return null;
     }
     window.getOfficialExcelCityData = getOfficialExcelCityData;
