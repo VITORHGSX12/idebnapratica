@@ -1,5 +1,5 @@
-// Base Oficial IDEB Escolas Maranhão
-window.ESCOLAS_MARANHAO_IDEB = [
+// Base Oficial: ESCOLAS_MARANHAO_IDEB
+const ESCOLAS_MARANHAO_IDEB = [
   {
     "inep": "21151806",
     "nome": "CENTRO EDUCA MAIS ANALIZ BACELAR SILVA",
@@ -43192,3 +43192,10 @@ window.ESCOLAS_MARANHAO_IDEB = [
     "finais2025": null
   }
 ];
+
+if (typeof window !== 'undefined') {
+    window.ESCOLAS_MARANHAO_IDEB = ESCOLAS_MARANHAO_IDEB;
+}
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = ESCOLAS_MARANHAO_IDEB;
+}

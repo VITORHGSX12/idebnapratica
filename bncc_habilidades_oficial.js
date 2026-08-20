@@ -1,5 +1,5 @@
-// Base Oficial BNCC por Etapa (2º, 5º e 9º Ano)
-window.BNCC_HABILIDADES_OFICIAL = {
+// Base Oficial: BNCC_HABILIDADES_OFICIAL
+const BNCC_HABILIDADES_OFICIAL = {
   "ano2": [
     {
       "disciplina": "Língua Portuguesa",
@@ -1366,3 +1366,10 @@ window.BNCC_HABILIDADES_OFICIAL = {
     }
   ]
 };
+
+if (typeof window !== 'undefined') {
+    window.BNCC_HABILIDADES_OFICIAL = BNCC_HABILIDADES_OFICIAL;
+}
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = BNCC_HABILIDADES_OFICIAL;
+}

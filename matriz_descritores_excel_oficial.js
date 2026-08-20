@@ -1,5 +1,5 @@
-// Base Oficial de Descritores SAEB / SEAMA / IDEB / OBA
-window.MATRIZ_DESCRITORES_EXCEL = {
+// Base Oficial: MATRIZ_DESCRITORES_EXCEL
+const MATRIZ_DESCRITORES_EXCEL = {
   "visaoGeral": [
     {
       "disciplina": "Língua Portuguesa",
@@ -748,3 +748,10 @@ window.MATRIZ_DESCRITORES_EXCEL = {
     }
   ]
 };
+
+if (typeof window !== 'undefined') {
+    window.MATRIZ_DESCRITORES_EXCEL = MATRIZ_DESCRITORES_EXCEL;
+}
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = MATRIZ_DESCRITORES_EXCEL;
+}

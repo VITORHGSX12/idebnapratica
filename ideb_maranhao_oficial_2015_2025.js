@@ -1,5 +1,5 @@
-// Base Oficial IDEB Maranhão Municípios (2015-2025)
-window.IDEB_MARANHAO_MUNICIPIOS = {
+// Base Oficial: IDEB_MARANHAO_MUNICIPIOS
+const IDEB_MARANHAO_MUNICIPIOS = {
   "iniciais": [
     {
       "codigoInep": "2100105",
@@ -4345,3 +4345,10 @@ window.IDEB_MARANHAO_MUNICIPIOS = {
     }
   ]
 };
+
+if (typeof window !== 'undefined') {
+    window.IDEB_MARANHAO_MUNICIPIOS = IDEB_MARANHAO_MUNICIPIOS;
+}
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = IDEB_MARANHAO_MUNICIPIOS;
+}

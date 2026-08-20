@@ -4,6 +4,20 @@ const path = require('path');
 
 console.log('=== EXTRAINDO DADOS OFICIAIS DAS PLANILHAS DO USUÁRIO ===');
 
+// Helper to make universal UMD export string
+function makeUmdExport(varName, data) {
+    return `// Base Oficial: ${varName}
+const ${varName} = ${JSON.stringify(data, null, 2)};
+
+if (typeof window !== 'undefined') {
+    window.${varName} = ${varName};
+}
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = ${varName};
+}
+`;
+}
+
 // 1. PROCESSAR MATRIZ DE DESCRITORES
 const descritoresPath = 'C:\\Users\\Alleg\\OneDrive\\Área de Trabalho\\DESCRITORES SEAMA E SAEB\\Matriz_Descritores_SAEB_SEAMA_IDEB_OBA.xlsx';
 let descritoresData = { visaoGeral: [], linguaPortuguesa: [], matematica: [], ciencias: [], geografiaOba: [] };
@@ -61,10 +75,7 @@ if (fs.existsSync(descritoresPath)) {
 }
 
 // Write matriz_descritores_excel_oficial.js
-const descritoresJsContent = `// Base Oficial de Descritores SAEB / SEAMA / IDEB / OBA
-window.MATRIZ_DESCRITORES_EXCEL = ${JSON.stringify(descritoresData, null, 2)};
-`;
-fs.writeFileSync(path.join(__dirname, '..', 'matriz_descritores_excel_oficial.js'), descritoresJsContent, 'utf8');
+fs.writeFileSync(path.join(__dirname, '..', 'matriz_descritores_excel_oficial.js'), makeUmdExport('MATRIZ_DESCRITORES_EXCEL', descritoresData), 'utf8');
 
 // 2. PROCESSAR MATRIZ BNCC POR ETAPA
 const bnccPath = 'C:\\Users\\Alleg\\OneDrive\\Área de Trabalho\\DESCRITORES SEAMA E SAEB\\BNCC\\BNCC_Separada_por_Etapa.xlsx';
@@ -116,10 +127,7 @@ if (fs.existsSync(bnccPath)) {
 }
 
 // Write bncc_habilidades_oficial.js
-const bnccJsContent = `// Base Oficial BNCC por Etapa (2º, 5º e 9º Ano)
-window.BNCC_HABILIDADES_OFICIAL = ${JSON.stringify(bnccData, null, 2)};
-`;
-fs.writeFileSync(path.join(__dirname, '..', 'bncc_habilidades_oficial.js'), bnccJsContent, 'utf8');
+fs.writeFileSync(path.join(__dirname, '..', 'bncc_habilidades_oficial.js'), makeUmdExport('BNCC_HABILIDADES_OFICIAL', bnccData), 'utf8');
 
 // 3. PROCESSAR IDEB MUNICÍPIOS (MARANHÃO)
 const idebMunPath = 'C:\\Users\\Alleg\\OneDrive\\Área de Trabalho\\DOCUMENTOS\\idebmaranhao\\IDEB_Maranhao_Municipios_2015-2025.xlsx';
@@ -160,10 +168,7 @@ if (fs.existsSync(idebMunPath)) {
 }
 
 // Write ideb_maranhao_oficial_2015_2025.js
-const idebMunJsContent = `// Base Oficial IDEB Maranhão Municípios (2015-2025)
-window.IDEB_MARANHAO_MUNICIPIOS = ${JSON.stringify(idebMunicipiosData, null, 2)};
-`;
-fs.writeFileSync(path.join(__dirname, '..', 'ideb_maranhao_oficial_2015_2025.js'), idebMunJsContent, 'utf8');
+fs.writeFileSync(path.join(__dirname, '..', 'ideb_maranhao_oficial_2015_2025.js'), makeUmdExport('IDEB_MARANHAO_MUNICIPIOS', idebMunicipiosData), 'utf8');
 
 // 4. PROCESSAR IDEB ESCOLAS (MARANHÃO)
 const idebEscolasPath = 'C:\\Users\\Alleg\\OneDrive\\Área de Trabalho\\DOCUMENTOS\\escolasmaranahoideb\\IDEB_Maranhao_Escolas_2015-2025.xlsx';
@@ -192,9 +197,6 @@ if (fs.existsSync(idebEscolasPath)) {
 }
 
 // Write escolas_maranhao_oficial_2015_2025.js
-const idebEscJsContent = `// Base Oficial IDEB Escolas Maranhão
-window.ESCOLAS_MARANHAO_IDEB = ${JSON.stringify(idebEscolasData, null, 2)};
-`;
-fs.writeFileSync(path.join(__dirname, '..', 'escolas_maranhao_oficial_2015_2025.js'), idebEscJsContent, 'utf8');
+fs.writeFileSync(path.join(__dirname, '..', 'escolas_maranhao_oficial_2015_2025.js'), makeUmdExport('ESCOLAS_MARANHAO_IDEB', idebEscolasData), 'utf8');
 
 console.log('=== EXTRAÇÃO CONCLUÍDA COM SUCESSO! ===');
