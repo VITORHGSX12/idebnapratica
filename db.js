@@ -166,7 +166,7 @@ async function seedDatabase() {
         let defaultTenantId = null;
         if (hasTenants.rows.length === 0) {
             console.log('Seeding default Tenant...');
-            const res = await client.query(`INSERT INTO tenants (nome, cnpj) VALUES ('Rede Municipal de Codó', '12.345.678/0001-99') RETURNING id`);
+            const res = await client.query(`INSERT INTO tenants (nome, cnpj, slug) VALUES ('Município de Gonçalves Dias', '12.345.678/0001-99', 'gd') RETURNING id`);
             defaultTenantId = res.rows[0].id;
         } else {
             const res = await client.query('SELECT id FROM tenants LIMIT 1');

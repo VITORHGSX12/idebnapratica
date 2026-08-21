@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <link rel="stylesheet" href="styles.css?v=7b79aed6bd_mt28xun5">
+    <link rel="stylesheet" href="styles.css?v=7b79aed6bd_mt3gbikb">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -207,6 +207,8 @@
                     '<td style="padding: 10px 16px; font-weight: 600; color: var(--text-secondary);">' + s.subject + '</td>' +
                     '<td style="padding: 10px 16px; color: var(--text-primary); font-size: 0.84rem;">' + s.desc + '</td>' +
                     '<td style="padding: 10px 16px;"><span class="badge ' + badgeClass + '" style="font-weight: 700;">' + s.status + '</span></td>' +
+                    '</tr>';
+            });
             tbody.innerHTML = rows.join('');
         }
         window.renderBnccSkillsTable = renderBnccSkillsTable;
@@ -312,6 +314,7 @@
         window.switchTab = switchTab;
         window.switchMainTab = switchTab;
         window.showTab = switchTab;
+        window.navigateToTab = switchTab;
     </script>
 
 
@@ -6487,14 +6490,24 @@
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=mt28xun5"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=mt28xun5"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=mt28xun5"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=98c393313d_mt3gbikb"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=3b2cc05144_mt3gbikb"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mt3gbikb"></script>
     <script src="bncc_habilidades_oficial.js?v=mt23gn8s"></script>
-    <script src="ideb_publico_db.js?v=mt28xun5"></script>
-    <script src="alunos_db.js?v=mt28xun5"></script>
+    <script src="ideb_publico_db.js?v=246d2c1cd5_mt3gbikb"></script>
+    <script src="alunos_db.js?v=ed6641ae07_mt3gbikb"></script>
+
+    <!-- Módulos do Core -->
+    <script src="js/core/helpers.js?v=3e1fa864ae_mt3gbikb"></script>
+    <script src="js/core/theme-toast.js?v=5efe74db0d_mt3gbikb"></script>
+    <script src="js/core/user-profile.js?v=bad21cc2ae_mt3gbikb"></script>
+    <script src="js/core/auth.js?v=7175a7eff7_mt3gbikb"></script>
+    <script src="js/core/navigation.js?v=20cdf608c8_mt3gbikb"></script>
+
+    <!-- Módulos de Domínio -->
+    <script src="js/modules/escolas/escolas.js?v=5feaf5ca33_mt3gbikb"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=cc24e5afe7_mt28xun5"></script>
+    <script src="app.js?v=310033e61d_mt3gbikb"></script>
 </body>
 </html>

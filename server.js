@@ -8,6 +8,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const db = require('./db');
+const { resolveTenant, validateTenantAccessDB, isBypassLoginAllowed } = require('./middleware_tenant_subdominio');
 
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6';
 const IV_LENGTH = 16;
@@ -18,13 +19,23 @@ const PORT = process.env.PORT || 8080;
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
+app.use(resolveTenant);
 
 // Health Check
 app.get('/api/health', (req, res) => {
     res.json({
         status: 'OK',
         databaseMode: db.useLocalFallback ? 'local-json' : 'postgres',
+        tenant: req.tenant || null,
         timestamp: new Date()
+    });
+});
+
+// Endpoint para consulta do Tenant Atual
+app.get('/api/tenant/current', (req, res) => {
+    res.json({
+        success: true,
+        tenant: req.tenant
     });
 });
 
@@ -337,24 +348,6 @@ function applyRBACFilterToState(state, role, email) {
     return cloned;
 }
 
-function validateTenantAccess(userEmail, userRole, requestedTenant) {
-    if (!requestedTenant) return false;
-    if (userRole === 'Master Admin' || userRole === 'Gestor da Rede' || userRole === 'DPO / Encarregado') {
-        return true;
-    }
-    if (requestedTenant === 'all' || requestedTenant === 'default') {
-        return true;
-    }
-    const mapping = MOCK_USER_MAPPINGS[userEmail.trim().toLowerCase()];
-    if (mapping) {
-        const allowedTenant = mapping.tenant || 'codo';
-        if (requestedTenant !== allowedTenant && requestedTenant !== 'all' && requestedTenant !== 'default') {
-            return false;
-        }
-    }
-    return true;
-}
-
 function mergeStates(incomingState, currentState) {
     if (!currentState) return incomingState;
     const mergedState = { ...incomingState };
@@ -392,10 +385,11 @@ app.get('/api/sync', async (req, res) => {
         if (!user) {
             return res.status(401).json({ error: 'Acesso negado: Usuário não autenticado.' });
         }
-        const { tenantId } = req.query;
-        const activeTenant = tenantId || 'default';
+        const activeTenant = req.tenant.slug;
+        const tenantDbId = req.tenant.id || activeTenant;
 
-        if (!validateTenantAccess(user.email, user.role, activeTenant)) {
+        const podeAcessar = await validateTenantAccessDB(user, activeTenant);
+        if (!podeAcessar) {
             return res.status(403).json({ error: 'Acesso negado: Você não possui permissão para acessar este tenant/município.' });
         }
 
@@ -407,7 +401,7 @@ app.get('/api/sync', async (req, res) => {
                 state = fileState[activeTenant] || {};
             }
         } else {
-            const queryResult = await db.queryWithTenant(activeTenant, 'SELECT data FROM tenant_state WHERE tenant_id = $1', [activeTenant]);
+            const queryResult = await db.queryWithTenant(tenantDbId, 'SELECT data FROM tenant_state WHERE tenant_id = $1', [tenantDbId]);
             if (queryResult.rows.length > 0) {
                 state = queryResult.rows[0].data;
             }
@@ -428,11 +422,12 @@ app.post('/api/sync', async (req, res) => {
         if (!user) {
             return res.status(401).json({ error: 'Acesso negado: Usuário não autenticado.' });
         }
-        const { tenantId } = req.query;
-        const activeTenant = tenantId || 'default';
+        const activeTenant = req.tenant.slug;
+        const tenantDbId = req.tenant.id || activeTenant;
         const incomingState = req.body;
 
-        if (!validateTenantAccess(user.email, user.role, activeTenant)) {
+        const podeAcessar = await validateTenantAccessDB(user, activeTenant);
+        if (!podeAcessar) {
             return res.status(403).json({ error: 'Acesso negado: Você não possui permissão para alterar este tenant/município.' });
         }
 
@@ -445,7 +440,7 @@ app.post('/api/sync', async (req, res) => {
                 currentState = fileState[activeTenant] || {};
             }
         } else {
-            const queryResult = await db.queryWithTenant(activeTenant, 'SELECT data FROM tenant_state WHERE tenant_id = $1', [activeTenant]);
+            const queryResult = await db.queryWithTenant(tenantDbId, 'SELECT data FROM tenant_state WHERE tenant_id = $1', [tenantDbId]);
             if (queryResult.rows.length > 0) {
                 currentState = queryResult.rows[0].data;
             }
@@ -462,12 +457,12 @@ app.post('/api/sync', async (req, res) => {
             fs.writeFileSync(db.LOCAL_DB_FILE, JSON.stringify(fileState, null, 2));
             return res.json({ success: true });
         } else {
-            await db.queryWithTenant(activeTenant, `
+            await db.queryWithTenant(tenantDbId, `
                 INSERT INTO tenant_state (tenant_id, data, updated_at)
                 VALUES ($1, $2, CURRENT_TIMESTAMP)
                 ON CONFLICT (tenant_id)
                 DO UPDATE SET data = EXCLUDED.data, updated_at = CURRENT_TIMESTAMP
-            `, [activeTenant, JSON.stringify(encryptedState)]);
+            `, [tenantDbId, JSON.stringify(encryptedState)]);
             return res.json({ success: true });
         }
     } catch (err) {
@@ -483,14 +478,16 @@ app.post('/api/alunos/reveal', async (req, res) => {
         if (!user) {
             return res.status(401).json({ error: 'Acesso negado: Usuário não autenticado.' });
         }
-        const { matricula, field, justificativa, tenantId } = req.body;
-        const activeTenant = tenantId || 'default';
+        const { matricula, field, justificativa } = req.body;
+        const activeTenant = req.tenant.slug;
+        const tenantDbId = req.tenant.id || activeTenant;
         
         if (!matricula || !field) {
             return res.status(400).json({ error: 'Missing required parameters.' });
         }
 
-        if (!validateTenantAccess(user.email, user.role, activeTenant)) {
+        const podeAcessar = await validateTenantAccessDB(user, activeTenant);
+        if (!podeAcessar) {
             return res.status(403).json({ error: 'Acesso negado: Você não possui permissão para acessar este tenant/município.' });
         }
         
@@ -511,7 +508,7 @@ app.post('/api/alunos/reveal', async (req, res) => {
                 state = fileState[activeTenant] || {};
             }
         } else {
-            const queryResult = await db.queryWithTenant(activeTenant, 'SELECT data FROM tenant_state WHERE tenant_id = $1', [activeTenant]);
+            const queryResult = await db.queryWithTenant(tenantDbId, 'SELECT data FROM tenant_state WHERE tenant_id = $1', [tenantDbId]);
             if (queryResult.rows.length > 0) {
                 state = queryResult.rows[0].data;
             }
@@ -543,7 +540,7 @@ app.post('/api/alunos/reveal', async (req, res) => {
             fileState[activeTenant] = state;
             fs.writeFileSync(db.LOCAL_DB_FILE, JSON.stringify(fileState, null, 2));
         } else {
-            await db.queryWithTenant(activeTenant, `
+            await db.queryWithTenant(tenantDbId, `
                 INSERT INTO public.logs_auditoria (usuario_email, aluno_id, aluno_nome, campo_acessado, justificativa, tenant_id)
                 VALUES ($1, $2, $3, $4, $5, $6)
             `, [user.email, matricula, alunoNome, field, actionDetails, activeTenant]);

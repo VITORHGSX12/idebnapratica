@@ -22,11 +22,25 @@ if (fs.existsSync(indexHtmlPath)) {
     indexHtml = indexHtml.replace(/src="app\.js(\?[^"]*)?"/g, `src="app.js?v=${appHash}"`);
     indexHtml = indexHtml.replace(/href="styles\.css(\?[^"]*)?"/g, `href="styles.css?v=${cssHash}"`);
     
-    // Also update other JS databases
-    const jsFiles = ['ideb_maranhao_oficial_2015_2025.js', 'escolas_maranhao_oficial_2015_2025.js', 'matriz_descritores_excel_oficial.js', 'ideb_publico_db.js', 'alunos_db.js'];
+    // Also update other JS databases and modular scripts
+    const jsFiles = [
+        'ideb_maranhao_oficial_2015_2025.js', 
+        'escolas_maranhao_oficial_2015_2025.js', 
+        'matriz_descritores_excel_oficial.js', 
+        'ideb_publico_db.js', 
+        'alunos_db.js', 
+        'js/core/helpers.js',
+        'js/core/theme-toast.js',
+        'js/core/user-profile.js',
+        'js/core/auth.js',
+        'js/core/navigation.js',
+        'js/modules/escolas/escolas.js'
+    ];
     jsFiles.forEach(file => {
-        const regex = new RegExp(`src="${file}(\\?[^"]*)?"`, 'g');
-        indexHtml = indexHtml.replace(regex, `src="${file}?v=${timestamp}"`);
+        const filePath = path.join(__dirname, file);
+        const fileHash = getHash(filePath) + '_' + timestamp;
+        const regex = new RegExp(`src="${file.replace(/\//g, '\\/')}(\\?[^"]*)?"`, 'g');
+        indexHtml = indexHtml.replace(regex, `src="${file}?v=${fileHash}"`);
     });
 
     fs.writeFileSync(indexHtmlPath, indexHtml, 'utf8');

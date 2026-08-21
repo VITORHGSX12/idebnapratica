@@ -1,4 +1,49 @@
 
+// =========================================================
+// FRONTEND: extrai o slug do município a partir do subdomínio
+// e injeta em toda chamada apiFetch pro backend.
+// =========================================================
+function getTenantSlugFromHostname() {
+    if (typeof window === 'undefined') return 'gd';
+    const host = window.location.hostname; // ex: "gd.seusistema.com.br"
+    const parts = host.split('.');
+
+    // Ambiente local (localhost, 127.0.0.1) ou preview da Vercel
+    // sem subdomínio configurado -> cai no tenant 'default' ou parâmetro ?tenant=gd / ?tenantId=gd
+    if (host === 'localhost' || host === '127.0.0.1' || parts.length < 3) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('tenant') || params.get('tenantId') || 'gd';
+    }
+
+    return parts[0]; // "gd" de "gd.seusistema.com.br"
+}
+
+var TENANT_SLUG = getTenantSlugFromHostname();
+if (typeof window !== 'undefined') {
+    window.TENANT_SLUG = TENANT_SLUG;
+}
+
+// Injeta x-tenant-slug e Authorization automaticamente em todas as chamadas
+async function apiFetch(path, options = {}) {
+    const token = (typeof safeStorage !== 'undefined' ? safeStorage.getItem('authToken') : null) || 
+                  (typeof sessionStorage !== 'undefined' ? (sessionStorage.getItem('authToken') || (sessionStorage.getItem('userEmail') ? btoa(sessionStorage.getItem('userEmail')) : null)) : null);
+
+    const headers = {
+        'Content-Type': 'application/json',
+        'x-tenant-slug': TENANT_SLUG,
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(options.headers || {})
+    };
+
+    const baseUrl = (typeof window !== 'undefined' && window.location && window.location.port === '8081') ? 'http://localhost:8080' : '';
+    const fullUrl = (path.startsWith('/') && baseUrl) ? `${baseUrl}${path}` : path;
+
+    return fetch(fullUrl, { ...options, headers });
+}
+if (typeof window !== 'undefined') {
+    window.apiFetch = apiFetch;
+}
+
 // =========================================================================
 // GLOBAL INSTANCES & STATE INITIALIZATION (HOISTED AT TOP OF SCRIPT)
 // =========================================================================
@@ -9,29 +54,28 @@ var dashComparativoChartInstance = null;
 var dashSaebEvoChartInstance = null;
 var dashSaebEvolucaoChartInstance = null;
 var selectedProfileIcon = '🧑‍💼';
+var currentActiveCategory = 'all';
+var currentScheduleMainView = 'monthly';
+var currentTurmaContext = 'UI JOSE CORREA LIMA — 2º Ano A';
 
-// ==========================================
-// SAFE DOM HELPER UTILITIES (PREVENT NULL CRASHES)
-// ==========================================
-function safeEl(id) {
-    if (!id) return null;
-    return typeof id === 'string' ? document.getElementById(id) : id;
+if (typeof window !== 'undefined') {
+    if (!window.navigateToTab) {
+        window.navigateToTab = function(targetTab) {
+            if (typeof switchTab === 'function') return switchTab(targetTab);
+            if (typeof window.switchTab === 'function') return window.switchTab(targetTab);
+        };
+    }
+    window.initIdebComparativo = window.initIdebComparativo || function() { if (typeof initIdebComparativo === 'function' && window.initIdebComparativo !== initIdebComparativo) return initIdebComparativo(); };
+    window.renderReferenceMatrix = window.renderReferenceMatrix || function() { if (typeof renderReferenceMatrix === 'function' && window.renderReferenceMatrix !== renderReferenceMatrix) return renderReferenceMatrix(); };
+    window.switchScheduleMainView = window.switchScheduleMainView || function(v) { if (typeof switchScheduleMainView === 'function' && window.switchScheduleMainView !== switchScheduleMainView) return switchScheduleMainView(v); };
+    window.switchMatrizMainTab = window.switchMatrizMainTab || function(t) { if (typeof switchMatrizMainTab === 'function' && window.switchMatrizMainTab !== switchMatrizMainTab) return switchMatrizMainTab(t); };
+    window.switchMatrizEtapa = window.switchMatrizEtapa || function(e) { if (typeof switchMatrizEtapa === 'function' && window.switchMatrizEtapa !== switchMatrizEtapa) return switchMatrizEtapa(e); };
+    window.renderRankingGeralMaTable = window.renderRankingGeralMaTable || function() { if (typeof renderRankingGeralMaTable === 'function' && window.renderRankingGeralMaTable !== renderRankingGeralMaTable) return renderRankingGeralMaTable(); };
+    window.filterSchoolRankingTable = window.filterSchoolRankingTable || function() { if (typeof filterSchoolRankingTable === 'function' && window.filterSchoolRankingTable !== filterSchoolRankingTable) return filterSchoolRankingTable(); };
+    window.render19UresPanel = window.render19UresPanel || function() { if (typeof render19UresPanel === 'function' && window.render19UresPanel !== render19UresPanel) return render19UresPanel(); };
 }
 
-function safeSetProp(id, prop, value) {
-    var el = safeEl(id);
-    if (el) { el[prop] = value; }
-}
-
-function safeGetProp(id, prop, defaultVal) {
-    var el = safeEl(id);
-    return el && el[prop] !== undefined ? el[prop] : (defaultVal || '');
-}
-
-function safeSetStyle(id, prop, value) {
-    var el = safeEl(id);
-    if (el && el.style) { el.style[prop] = value; }
-}
+// (safeStorage, safeEl, safeSetProp, safeGetProp e safeSetStyle agora são carregados a partir de js/core/helpers.js)
 
 // =========================================================================
 // DASHBOARD INICIAL: DESCRITORES PRIORITÁRIOS CONDICIONAIS & RANKING SINCRONIZADO
@@ -41,615 +85,11 @@ function safeSetStyle(id, prop, value) {
     var STORAGE_KEY_EVENTS = 'gd_network_evaluations_db';
     var INITIAL_DEFAULT_EVENTS = [];
 
-    // =========================================================================
-    // GESTÃO DE PERFIL DO USUÁRIO & BOAS-VINDAS REATIVA
-    // =========================================================================
-    const STORAGE_KEY_USER_PROFILE = 'gd_current_user_profile';
+    // (Gestão de Perfil do Usuário e getCurrentUserProfile agora são gerenciados em js/core/user-profile.js)
 
-    function getCurrentUserProfile() {
-        try {
-            const saved = localStorage.getItem(STORAGE_KEY_USER_PROFILE);
-            if (saved) {
-                return JSON.parse(saved);
-            }
-        } catch(e) {}
+    // (Roteamento de abas, switchTab, sidebar e menus por papel agora são gerenciados em js/core/navigation.js)
 
-        const userEmail = (typeof localStorage !== 'undefined' ? localStorage.getItem('userEmail') : null) || 'semed@goncalvesdias.ma.gov.br';
-        let defaultName = 'Gestor da Rede';
-        let defaultRole = 'Gestor(a) da Rede';
-        let defaultAvatar = '🧑‍💼';
-
-        if (userEmail.includes('prof')) {
-            defaultName = 'Prof. Carlos Eduardo';
-            defaultRole = 'Professor(a)';
-            defaultAvatar = '👨‍🏫';
-        } else if (userEmail.includes('diretor')) {
-            defaultName = 'Profa. Antonia Silva';
-            defaultRole = 'Diretor(a) Escolar';
-            defaultAvatar = '👩‍💼';
-        } else if (userEmail.includes('admin')) {
-            defaultName = 'Administrador do Sistema';
-            defaultRole = 'Administrador(a) do Sistema';
-            defaultAvatar = '👨‍💻';
-        }
-
-        return {
-            name: defaultName,
-            email: userEmail,
-            role: defaultRole,
-            avatarIcon: defaultAvatar,
-            avatarPhoto: ''
-        };
-    }
-    window.getCurrentUserProfile = getCurrentUserProfile;
-
-    // =========================================================================
-    // GESTÃO CENTRAL DE MENUS DA SIDEBAR POR PAPEL (DIRETOR, PROFESSOR, SEMED, ADMIN)
-    // =========================================================================
-    function renderFullNetworkSidebar(sidebarMenu, currentTab, isAdmin) {
-        sidebarMenu.innerHTML = `
-            <!-- GESTÃO -->
-            <div class="menu-group">
-                <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Gestão</span>
-                <div style="display: flex; flex-direction: column; gap: 4px;">
-                    <a href="javascript:void(0)" onclick="switchTab('dashboard'); return false;" class="menu-item ${currentTab === 'dashboard' ? 'active' : ''}" data-target="dashboard">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-                        <span>Painel Executivo</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="switchTab('escolas-panel'); return false;" class="menu-item ${currentTab === 'escolas-panel' ? 'active' : ''}" data-target="escolas-panel">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 8-4 8 4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="M18 5v17"/><path d="M6 5v17"/></svg>
-                        <span>Escolas da Rede</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="switchTab('alunos-panel'); return false;" class="menu-item ${currentTab === 'alunos-panel' ? 'active' : ''}" data-target="alunos-panel">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                        <span>Estudantes & Turmas</span>
-                    </a>
-                </div>
-            </div>
-
-            <!-- AVALIAÇÃO -->
-            <div class="menu-group">
-                <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Avaliação & Metas</span>
-                <div style="display: flex; flex-direction: column; gap: 4px;">
-                    <a href="javascript:void(0)" onclick="switchTab('metas-ideb'); return false;" class="menu-item ${currentTab === 'metas-ideb' ? 'active' : ''}" data-target="metas-ideb">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                        <span>Metas Municipais (PDE)</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="switchTab('ideb-comparativo'); return false;" class="menu-item ${currentTab === 'ideb-comparativo' ? 'active' : ''}" data-target="ideb-comparativo">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-                        <span>Comparativo Regional</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="switchTab('matriz-descritores'); return false;" class="menu-item ${currentTab === 'matriz-descritores' ? 'active' : ''}" data-target="matriz-descritores">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
-                        <span>Matriz & Descritores</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="switchTab('cronograma-habilidades'); return false;" class="menu-item ${currentTab === 'cronograma-habilidades' ? 'active' : ''}" data-target="cronograma-habilidades">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>
-                        <span>Cronograma de Habilidades</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="switchTab('sec-criar-avaliacoes'); return false;" class="menu-item ${currentTab === 'sec-criar-avaliacoes' ? 'active' : ''}" data-target="sec-criar-avaliacoes">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M12 14v4"/><path d="M10 16h4"/></svg>
-                        <span>Criar Avaliações</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="switchTab('sec-aplicacao-provas'); return false;" class="menu-item ${currentTab === 'sec-aplicacao-provas' ? 'active' : ''}" data-target="sec-aplicacao-provas">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
-                        <span>Aplicação de Provas</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="switchTab('banco-questoes'); return false;" class="menu-item ${currentTab === 'banco-questoes' ? 'active' : ''}" data-target="banco-questoes">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><circle cx="10" cy="13" r="1"/><path d="M9.1 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3"/></svg>
-                        <span>Banco de Questões</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="switchTab('relatorios-monitoramento'); return false;" class="menu-item ${currentTab === 'relatorios-monitoramento' ? 'active' : ''}" data-target="relatorios-monitoramento">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
-                        <span>Relatórios & Monitoramento</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="switchTab('biblioteca-recursos'); return false;" class="menu-item ${currentTab === 'biblioteca-recursos' ? 'active' : ''}" data-target="biblioteca-recursos">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-                        <span>Biblioteca Pedagógica</span>
-                    </a>
-                </div>
-            </div>
-
-            ${isAdmin ? `
-            <!-- SISTEMA -->
-            <div class="menu-group">
-                <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Sistema</span>
-                <div style="display: flex; flex-direction: column; gap: 4px;">
-                    <a href="javascript:void(0)" onclick="switchTab('doc-tecnica'); return false;" class="menu-item ${currentTab === 'doc-tecnica' ? 'active' : ''}" data-target="doc-tecnica">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
-                        <span>Documentação Técnica</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="switchTab('admin-panel'); return false;" class="menu-item ${currentTab === 'admin-panel' ? 'active' : ''}" data-target="admin-panel">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
-                        <span>Área Administrativa</span>
-                    </a>
-                </div>
-            </div>` : ''}
-        `;
-    }
-
-    function updateMenuVisibilityByRole() {
-        const userRole = sessionStorage.getItem('userRole') || 'Master Admin';
-        const userEscola = sessionStorage.getItem('userEscola') || 'UI JOSE CORREA LIMA';
-        const userTurma = sessionStorage.getItem('userTurma') || '5º Ano A';
-
-        const activeNetworkLabel = document.getElementById('sidebar-active-network-label');
-        const userProfileName = document.querySelector('.user-profile .user-name');
-        const userProfileRole = document.querySelector('.user-profile .user-role');
-        const userProfileAvatar = document.querySelector('.user-profile .avatar');
-        const sidebarMenu = document.querySelector('.sidebar-menu');
-
-        if (!sidebarMenu) return;
-
-        const currentTab = localStorage.getItem('lastActiveTab') || 'dashboard';
-
-        // 1. VISÃO EXCLUSIVA DO PROFESSOR (Apenas as 4 Funções Permitidas)
-        if (userRole === 'Professor' || userRole === 'Professor AEE') {
-            if (activeNetworkLabel) activeNetworkLabel.textContent = `👨‍🏫 ${userTurma} • ${userEscola}`;
-            if (userProfileName) userProfileName.textContent = 'Prof. Carlos Eduardo';
-            if (userProfileRole) userProfileRole.textContent = `Visão de Docente • ${userTurma}`;
-            if (userProfileAvatar) {
-                userProfileAvatar.textContent = 'PR';
-                userProfileAvatar.style.backgroundColor = '#2563eb';
-            }
-
-            sidebarMenu.innerHTML = `
-                <div class="menu-group">
-                    <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Diagnóstico Pedagógico</span>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <a href="javascript:void(0)" onclick="switchTab('dashboard'); return false;" class="menu-item ${currentTab === 'dashboard' ? 'active' : ''}" data-target="dashboard">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-                            <span>Painel da Turma</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('alunos-panel'); return false;" class="menu-item ${currentTab === 'alunos-panel' ? 'active' : ''}" data-target="alunos-panel">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                            <span>Diagnóstico por Aluno</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('matriz-descritores'); return false;" class="menu-item ${currentTab === 'matriz-descritores' ? 'active' : ''}" data-target="matriz-descritores">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
-                            <span>Habilidades a Recompor</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('sec-aplicacao-provas'); return false;" class="menu-item ${currentTab === 'sec-aplicacao-provas' || currentTab === 'aplicacao-provas' ? 'active' : ''}" data-target="aplicacao-provas">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
-                            <span>Desempenho em Simulados</span>
-                        </a>
-                    </div>
-                </div>
-            `;
-        } 
-        // 2. VISÃO EXCLUSIVA DO DIRETOR ESCOLAR (Apenas as 5 Funções Permitidas)
-        else if (userRole === 'Diretor Escola') {
-            if (activeNetworkLabel) activeNetworkLabel.textContent = `🏫 ${userEscola} (INEP 21128723)`;
-            if (userProfileName) userProfileName.textContent = 'Profa. Antonia Silva';
-            if (userProfileRole) userProfileRole.textContent = `Visão de Direção • ${userEscola}`;
-            if (userProfileAvatar) {
-                userProfileAvatar.textContent = 'DE';
-                userProfileAvatar.style.backgroundColor = '#059669';
-            }
-
-            sidebarMenu.innerHTML = `
-                <div class="menu-group">
-                    <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Gestão da Unidade Escolar</span>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <a href="javascript:void(0)" onclick="switchTab('dashboard'); return false;" class="menu-item ${currentTab === 'dashboard' ? 'active' : ''}" data-target="dashboard">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-                            <span>Monitoramento da Escola</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('escolas-panel'); return false;" class="menu-item ${currentTab === 'escolas-panel' ? 'active' : ''}" data-target="escolas-panel">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 8-4 8 4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="M18 5v17"/><path d="M6 5v17"/></svg>
-                            <span>Desempenho por Turma</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('relatorios-monitoramento'); return false;" class="menu-item ${currentTab === 'relatorios-monitoramento' ? 'active' : ''}" data-target="relatorios-monitoramento">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
-                            <span>Evolução dos Simulados</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('matriz-descritores'); return false;" class="menu-item ${currentTab === 'matriz-descritores' ? 'active' : ''}" data-target="matriz-descritores">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
-                            <span>Matriz de Descritores (BNCC)</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('metas-ideb'); return false;" class="menu-item ${currentTab === 'metas-ideb' ? 'active' : ''}" data-target="metas-ideb">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                            <span>Acompanhamento de Metas (PDE)</span>
-                        </a>
-                    </div>
-                </div>
-            `;
-        } 
-        // 3. MASTER ADMIN (Governança & TI)
-        else if (userRole === 'Master Admin') {
-            if (activeNetworkLabel) activeNetworkLabel.textContent = '⚙️ Administração TI / DPO';
-            if (userProfileName) userProfileName.textContent = 'Administrador TI';
-            if (userProfileRole) userProfileRole.textContent = 'DPO & Infraestrutura';
-            if (userProfileAvatar) {
-                userProfileAvatar.textContent = 'AD';
-                userProfileAvatar.style.backgroundColor = '#e11d48';
-            }
-            renderFullNetworkSidebar(sidebarMenu, currentTab, true);
-        } 
-        // 4. SEMED (Gestor da Rede Municipal)
-        else {
-            if (activeNetworkLabel) activeNetworkLabel.textContent = '🏛️ SEMED Gonçalves Dias - MA';
-            if (userProfileName) userProfileName.textContent = 'Secretaria de Educação';
-            if (userProfileRole) userProfileRole.textContent = 'Gestão Executiva SEMED';
-            if (userProfileAvatar) {
-                userProfileAvatar.textContent = 'SM';
-                userProfileAvatar.style.backgroundColor = '#9333ea';
-            }
-            renderFullNetworkSidebar(sidebarMenu, currentTab, false);
-        }
-
-        if (window.lucide && typeof window.lucide.createIcons === 'function') {
-            try { window.lucide.createIcons({ attrs: { class: 'lucide' } }); } catch(e) {}
-        }
-    }
-    window.updateMenuVisibilityByRole = updateMenuVisibilityByRole;
-
-    // =========================================================================
-    // EXECUÇÃO CENTRAL E GLOBAL DE AUTENTICAÇÃO DO SISTEMA
-    // =========================================================================
-    function executeSystemLogin(explicitEmail, explicitPass) {
-        const emailEl = document.getElementById('login-email');
-        const passEl = document.getElementById('login-password');
-        const btnSubmit = document.getElementById('btn-login-submit');
-        const loginScreen = document.getElementById('login-screen');
-        const appContainer = document.querySelector('.app-container');
-
-        const emailInput = (explicitEmail || emailEl?.value || 'semed@goncalvesdias.ma.gov.br').trim().toLowerCase();
-        const passInput = explicitPass || passEl?.value || '123';
-
-        let detectedRole = 'Gestor da Rede';
-        let targetTab = 'dashboard';
-        let assignedSchool = 'Rede Municipal Oficial';
-        let assignedTurma = 'Todas as Turmas';
-        let profileName = 'Secretaria de Educação';
-        let profileRole = 'Gestão Executiva SEMED';
-        let profileAvatar = '🧑‍💼';
-
-        if (emailInput.startsWith('prof') || emailInput.includes('professor')) {
-            detectedRole = 'Professor';
-            targetTab = 'dashboard';
-            assignedSchool = 'UI JOSE CORREA LIMA';
-            assignedTurma = '5º Ano A';
-            profileName = 'Prof. Carlos Eduardo';
-            profileRole = 'Professor(a) • UI JOSE CORREA LIMA';
-            profileAvatar = '👨‍🏫';
-        } else if (emailInput.startsWith('diret') || emailInput.includes('diretor') || emailInput.includes('escola') || emailInput.includes('cora')) {
-            detectedRole = 'Diretor Escola';
-            targetTab = 'dashboard';
-            assignedSchool = 'UI JOSE CORREA LIMA';
-            assignedTurma = 'Todas as Turmas';
-            profileName = 'Profa. Antonia Silva';
-            profileRole = 'Diretora Escolar • UI JOSE CORREA LIMA';
-            profileAvatar = '👩‍💼';
-        } else if (emailInput.startsWith('admin') || emailInput.startsWith('dpo')) {
-            detectedRole = 'Master Admin';
-            targetTab = 'dashboard';
-            assignedSchool = 'Administração TI / DPO';
-            assignedTurma = 'Todas as Redes';
-            profileName = 'Administrador TI';
-            profileRole = 'Administrador(a) do Sistema & TI';
-            profileAvatar = '👨‍💻';
-        } else {
-            detectedRole = 'Gestor da Rede';
-            targetTab = 'dashboard';
-            assignedSchool = 'Rede Municipal Oficial';
-            assignedTurma = 'Todas as Turmas';
-            profileName = 'Secretaria de Educação';
-            profileRole = 'Gestão Executiva SEMED';
-            profileAvatar = '🧑‍💼';
-        }
-
-        // Salvar Perfil Isolado do Usuário Atual
-        const userProfileData = {
-            name: profileName,
-            email: emailInput,
-            role: profileRole,
-            avatarIcon: profileAvatar,
-            avatarPhoto: ''
-        };
-        try {
-            localStorage.setItem('gd_current_user_profile', JSON.stringify(userProfileData));
-        } catch(e) {}
-
-        sessionStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('isLoggedIn', 'true');
-        sessionStorage.setItem('activeTenant', 'default');
-        sessionStorage.setItem('userEmail', emailInput);
-        localStorage.setItem('userEmail', emailInput);
-        sessionStorage.setItem('userName', profileName);
-        sessionStorage.setItem('userRole', detectedRole);
-        sessionStorage.setItem('userEscola', assignedSchool);
-        sessionStorage.setItem('userTurma', assignedTurma);
-
-        // Exibir imediatamente o appContainer e esconder o loginScreen
-        if (appContainer) {
-            appContainer.style.display = 'flex';
-        }
-        if (loginScreen) {
-            loginScreen.style.display = 'none';
-            loginScreen.style.pointerEvents = 'none';
-        }
-
-        try {
-            updateMenuVisibilityByRole();
-            if (typeof renderDashboardComplete === 'function') renderDashboardComplete();
-            if (typeof renderDbSchools === 'function') renderDbSchools();
-            if (typeof renderDbStudents === 'function') renderDbStudents();
-            if (typeof renderBnccSkillsTable === 'function') renderBnccSkillsTable();
-            if (typeof renderReferenceMatrix === 'function') renderReferenceMatrix();
-            if (typeof initIdebComparativo === 'function') initIdebComparativo();
-            if (typeof initIdebCitySelector === 'function') initIdebCitySelector();
-            if (typeof handleSelectIdebCity === 'function') handleSelectIdebCity('Gonçalves Dias');
-            if (typeof renderPedagogicLibrary === 'function') renderPedagogicLibrary();
-        } catch (err) {
-            console.warn('[IDEB Engine] Warning in UI updates:', err);
-        }
-
-        // Navegação direta para a aba do perfil
-        try {
-            if (typeof window.switchTab === 'function') {
-                window.switchTab(targetTab);
-            } else if (typeof window.navigateToTab === 'function') {
-                window.navigateToTab(targetTab);
-            }
-        } catch (err) {
-            console.warn('[IDEB Engine] Warning in switchTab:', err);
-        }
-
-        if (window.lucide && typeof window.lucide.createIcons === 'function') {
-            try { window.lucide.createIcons({ attrs: { class: 'lucide' } }); } catch(e) {}
-        }
-
-        if (typeof showToast === 'function') {
-            showToast(`Bem-vindo ao IDEB na Prática! Painel ${detectedRole} carregado.`, 'check');
-        }
-        window.scrollTo(0, 0);
-    }
-    window.executeSystemLogin = executeSystemLogin;
-
-    function saveCurrentUserProfile(profileData) {
-        try {
-            localStorage.setItem(STORAGE_KEY_USER_PROFILE, JSON.stringify(profileData));
-            sessionStorage.setItem('userName', profileData.name);
-            sessionStorage.setItem('userEmail', profileData.email);
-            sessionStorage.setItem('userRole', profileData.role);
-        } catch(e) {}
-
-        // Atualizar todos os elementos reativos na interface
-        updateUserHeaderUI();
-        renderDashboardWelcomeBanner();
-    }
-    window.saveCurrentUserProfile = saveCurrentUserProfile;
-
-    function updateUserHeaderUI() {
-        const profile = getCurrentUserProfile();
-        
-        // 1. Header do Topo (Navbar)
-        const headerName = document.getElementById('header-user-name');
-        const headerAvatar = document.getElementById('header-user-avatar');
-        if (headerName) headerName.textContent = profile.name;
-        if (headerAvatar) {
-            if (profile.avatarPhoto) {
-                headerAvatar.innerHTML = `<img src="${profile.avatarPhoto}" alt="${profile.name}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
-            } else {
-                headerAvatar.innerHTML = profile.avatarIcon || '🧑‍💼';
-            }
-        }
-
-        // 2. Sidebar Footer
-        const sidebarName = document.querySelector('.sidebar-footer .user-name');
-        const sidebarRole = document.querySelector('.sidebar-footer .user-role');
-        const sidebarAvatar = document.querySelector('.sidebar-footer .avatar');
-        if (sidebarName) sidebarName.textContent = profile.name;
-        if (sidebarRole) sidebarRole.textContent = profile.role;
-        if (sidebarAvatar) {
-            if (profile.avatarPhoto) {
-                sidebarAvatar.innerHTML = `<img src="${profile.avatarPhoto}" alt="${profile.name}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
-            } else {
-                sidebarAvatar.textContent = profile.avatarIcon || (profile.name.substring(0, 2).toUpperCase());
-            }
-        }
-    }
-    window.updateUserHeaderUI = updateUserHeaderUI;
-
-    function renderDashboardWelcomeBanner() {
-        const banner = document.getElementById('dashboard-welcome-banner');
-        if (!banner) return;
-
-        const profile = getCurrentUserProfile();
-
-        // Saudação por horário
-        const hour = new Date().getHours();
-        let greeting = 'Olá';
-        let emojiGreeting = '👋';
-        if (hour >= 5 && hour < 12) {
-            greeting = 'Bom dia';
-            emojiGreeting = '☀️';
-        } else if (hour >= 12 && hour < 18) {
-            greeting = 'Boa tarde';
-            emojiGreeting = '🌤️';
-        } else {
-            greeting = 'Boa noite';
-            emojiGreeting = '🌙';
-        }
-
-        // Data atual formatada em português
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const todayStr = new Date().toLocaleDateString('pt-BR', options);
-        const capitalizedToday = todayStr.charAt(0).toUpperCase() + todayStr.slice(1);
-
-        const avatarContent = profile.avatarPhoto 
-            ? `<img src="${profile.avatarPhoto}" alt="${profile.name}">` 
-            : `<span>${profile.avatarIcon || '🧑‍💼'}</span>`;
-
-        banner.innerHTML = `
-            <div class="welcome-banner-left">
-                <div class="welcome-user-avatar" onclick="openUserProfileModal();" style="cursor: pointer;" title="Clique para editar seu avatar e dados">
-                    ${avatarContent}
-                </div>
-                <div>
-                    <h2 class="welcome-user-title">
-                        <span>${greeting}, <span id="welcome-user-display-name" style="color: #6366f1;">${profile.name}</span>!</span>
-                        <span>${emojiGreeting}</span>
-                    </h2>
-                    <p class="welcome-user-subtitle">
-                        <span style="font-weight: 700; color: #6366f1; background: rgba(99, 102, 241, 0.1); padding: 2px 8px; border-radius: 10px; font-size: 0.74rem;">
-                            ● ${profile.role}
-                        </span>
-                        <span>•</span>
-                        <span>${capitalizedToday}</span>
-                        <span>•</span>
-                        <span style="color: var(--text-muted);">SEMED Gonçalves Dias - MA</span>
-                    </p>
-                </div>
-            </div>
-            <div class="welcome-banner-actions">
-                <button type="button" onclick="openUserProfileModal();" class="btn btn-outline btn-sm" style="font-size: 0.8rem; font-weight: 700; background: var(--bg-secondary); border-color: var(--border-color); color: var(--text-primary); display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
-                    <span>👤 Meu Perfil</span>
-                </button>
-                <button type="button" onclick="switchTab('sec-criar-avaliacoes');" class="btn btn-primary btn-sm" style="font-size: 0.8rem; font-weight: 700; background: linear-gradient(135deg, #4f46e5, #6366f1); border: none; display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);">
-                    <span>+ Nova Avaliação</span>
-                </button>
-            </div>
-        `;
-    }
-    window.renderDashboardWelcomeBanner = renderDashboardWelcomeBanner;
-
-    // Controladores do Modal de Perfil
-    // selectedProfileIcon gerenciado no topo do arquivo
-
-    function openUserProfileModal() {
-        const modal = document.getElementById('modal-user-profile');
-        if (!modal) return;
-
-        const profile = getCurrentUserProfile();
-        selectedProfileIcon = profile.avatarIcon || '🧑‍💼';
-
-        const elName = document.getElementById('profile-input-name');
-        const elEmail = document.getElementById('profile-input-email');
-        const elRole = document.getElementById('profile-input-role');
-        const elPhoto = document.getElementById('profile-input-photo-url');
-        const preview = document.getElementById('profile-avatar-preview');
-
-        if (elName) elName.value = profile.name || '';
-        if (elEmail) elEmail.value = profile.email || '';
-        if (elRole) elRole.value = profile.role || 'Gestor(a) da Rede';
-        if (elPhoto) elPhoto.value = profile.avatarPhoto || '';
-
-        if (preview) {
-            if (profile.avatarPhoto) {
-                preview.innerHTML = `<img src="${profile.avatarPhoto}" alt="${profile.name}" style="width:100%; height:100%; object-fit:cover;">`;
-            } else {
-                preview.innerHTML = selectedProfileIcon;
-            }
-        }
-
-        // Marcar botão de emoji ativo
-        document.querySelectorAll('.avatar-option-btn').forEach(btn => {
-            if (btn.getAttribute('data-icon') === selectedProfileIcon) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
-        });
-
-        modal.style.display = 'flex';
-        modal.classList.remove('hidden');
-    }
-    window.openUserProfileModal = openUserProfileModal;
-
-    function closeUserProfileModal() {
-        const modal = document.getElementById('modal-user-profile');
-        if (modal) {
-            modal.style.display = 'none';
-            modal.classList.add('hidden');
-        }
-    }
-    window.closeUserProfileModal = closeUserProfileModal;
-
-    function selectProfileAvatar(icon, btnEl) {
-        selectedProfileIcon = icon;
-        document.querySelectorAll('.avatar-option-btn').forEach(btn => btn.classList.remove('active'));
-        if (btnEl) btnEl.classList.add('active');
-
-        const elPhoto = document.getElementById('profile-input-photo-url');
-        if (elPhoto) elPhoto.value = '';
-
-        const preview = document.getElementById('profile-avatar-preview');
-        if (preview) preview.innerHTML = icon;
-    }
-    window.selectProfileAvatar = selectProfileAvatar;
-
-    function previewProfilePhotoUrl(url) {
-        const preview = document.getElementById('profile-avatar-preview');
-        if (!preview) return;
-        const trimmed = (url || '').trim();
-        if (trimmed) {
-            preview.innerHTML = `<img src="${trimmed}" alt="Preview" style="width:100%; height:100%; object-fit:cover;" onerror="this.onerror=null; this.parentElement.innerHTML='${selectedProfileIcon}';">`;
-        } else {
-            preview.innerHTML = selectedProfileIcon;
-        }
-    }
-    window.previewProfilePhotoUrl = previewProfilePhotoUrl;
-
-    function handleSaveUserProfile(event) {
-        if (event) event.preventDefault();
-
-        const nameVal = document.getElementById('profile-input-name')?.value?.trim();
-        const emailVal = document.getElementById('profile-input-email')?.value?.trim();
-        const roleVal = document.getElementById('profile-input-role')?.value;
-        const photoVal = document.getElementById('profile-input-photo-url')?.value?.trim();
-
-        if (!nameVal) {
-            const err = document.getElementById('err-profile-name');
-            if (err) err.style.display = 'block';
-            return;
-        }
-
-        const profileData = {
-            name: nameVal,
-            email: emailVal || 'semed@goncalvesdias.ma.gov.br',
-            role: roleVal || 'Gestor(a) da Rede',
-            avatarIcon: selectedProfileIcon || '🧑‍💼',
-            avatarPhoto: photoVal || ''
-        };
-
-        saveCurrentUserProfile(profileData);
-        closeUserProfileModal();
-
-        if (typeof showToast === 'function') {
-            showToast(`Perfil de "${nameVal}" salvo com sucesso!`, 'check');
-        }
-    }
-    window.handleSaveUserProfile = handleSaveUserProfile;
-
-    function handleSystemLogout() {
-        if (confirm('Deseja realmente encerrar sua sessão no sistema?')) {
-            try {
-                localStorage.removeItem('isLoggedIn');
-                sessionStorage.clear();
-            } catch(e) {}
-
-            const loginScreen = document.getElementById('login-screen');
-            const appContainer = document.querySelector('.app-container');
-
-            if (loginScreen) {
-                loginScreen.style.display = 'block';
-                loginScreen.classList.remove('hidden');
-            }
-            if (appContainer) {
-                appContainer.style.display = 'none';
-            }
-
-            if (typeof showToast === 'function') {
-                showToast('Sessão encerrada com sucesso!', 'log-out');
-            }
-            if (typeof window !== 'undefined' && window.location && typeof window.location.reload === 'function') {
-                setTimeout(() => window.location.reload(), 300);
-            }
-        }
-    }
-    window.handleSystemLogout = handleSystemLogout;
+    // (Autenticação, executeSystemLogin e handleSystemLogout agora são gerenciados exclusivamente em js/core/auth.js)
 
     function getPdeGoalsState() {
         try {
@@ -3082,47 +2522,7 @@ function initApp() {
         });
     });
 
-    // ==========================================
-    // THEME TOGGLER (DARK / LIGHT MODE)
-    // ==========================================
-    const themeToggleBtn = document.getElementById('theme-toggle');
-    if (themeToggleBtn) {
-        themeToggleBtn.innerHTML = document.body.classList.contains('dark-mode') ? '<i data-lucide="sun"></i>' : '<i data-lucide="moon"></i>';
-        safeCreateIcons();
-        
-        themeToggleBtn.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            
-            themeToggleBtn.innerHTML = isDark ? '<i data-lucide="sun"></i>' : '<i data-lucide="moon"></i>';
-            safeCreateIcons();
-            
-            showToast(`Tema alternado para modo ${isDark ? 'Escuro' : 'Claro'}`);
-
-            const activeTab = document.querySelector('.menu-item.active') ? document.querySelector('.menu-item.active').getAttribute('data-target') : '';
-            if (activeTab === 'doc-tecnica') {
-                renderMermaidDiagram(isDark ? 'dark' : 'default');
-            }
-        });
-    }
-
-    // ==========================================
-    // NOTIFICATION TOAST SYSTEM
-    // ==========================================
-    const toast = document.getElementById('toast-notification');
-    const toastMessage = document.getElementById('toast-message');
-    const toastIcon = document.getElementById('toast-icon');
-
-    function showToast(message, iconName = 'info') {
-        toastMessage.textContent = message;
-        toastIcon.setAttribute('data-lucide', iconName);
-        safeCreateIcons();
-        
-        toast.classList.remove('hidden');
-        setTimeout(() => {
-            toast.classList.add('hidden');
-        }, 3000);
-    }
+    // (Theme toggler e showToast agora são gerenciados em js/core/theme-toast.js)
 
     // ==========================================
     // FUNCTIONAL MODULES TAB
@@ -3638,7 +3038,7 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
 
     async function checkCloudStatus() {
         try {
-            const res = await fetch(`${API_BASE_URL}/api/health`);
+            const res = await apiFetch('/api/health');
             if (res.ok) {
                 const info = await res.json();
                 isCloudSyncActive = true;
@@ -3690,16 +3090,8 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
                 rawQuestions,
                 activeEvaluations
             };
-            const userEmail = sessionStorage.getItem('userEmail') || 'gestor@municipio.gov.br';
-            const tenantId = sessionStorage.getItem('activeTenant') || 'default';
-            const url = `${API_BASE_URL}/api/sync?tenantId=${encodeURIComponent(tenantId)}`;
-            const token = btoa(userEmail);
-            fetch(url, {
+            apiFetch('/api/sync', {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
                 body: JSON.stringify(state)
             }).catch(err => console.error('Cloud save failed:', err));
         }
@@ -10004,18 +9396,12 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
                 }
                 
                 try {
-                    const token = btoa(userEmail);
-                    const revealRes = await fetch(`${API_BASE_URL}/api/alunos/reveal`, {
+                    const revealRes = await apiFetch('/api/alunos/reveal', {
                         method: 'POST',
-                        headers: { 
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
                         body: JSON.stringify({
                             matricula,
                             field: fieldName,
-                            justificativa: justification,
-                            tenantId
+                            justificativa: justification
                         })
                     });
                     
@@ -11927,387 +11313,9 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         });
     }
 
-    // Quick Test Accounts Cards Handlers
-    const testCards = document.querySelectorAll('.test-account-card');
-    const loginEmailInput = document.getElementById('login-email');
-    if (testCards && loginEmailInput) {
-        testCards.forEach(card => {
-            card.addEventListener('click', () => {
-                testCards.forEach(c => c.classList.remove('active'));
-                card.classList.add('active');
+    // (Listeners de formulário de login, contas de teste e executeSystemLogin são gerenciados em js/core/auth.js)
 
-                const email = card.getAttribute('data-email') || '';
-                const pass = card.getAttribute('data-pass') || '123';
-                const role = card.getAttribute('data-role') || 'Gestor da Rede';
-
-                loginEmailInput.value = email;
-                if (loginPassword) loginPassword.value = pass;
-
-                showToast(`Perfil ${card.querySelector('.test-role-title')?.textContent || role} preenchido. Clique em "Entrar no Sistema".`, 'check');
-            });
-        });
-    }
-
-    // Forgot password placeholder
-    const linkForgotPassword = document.getElementById('link-forgot-password');
-    if (linkForgotPassword) {
-        linkForgotPassword.addEventListener('click', (e) => {
-            e.preventDefault();
-            alert('Para redefinir sua senha institucional, entre em contato com a equipe de TI da SEMED Gonçalves Dias - MA (admin@goncalvesdias.ma.gov.br).');
-        });
-    }
-
-    // Função Central e Unificada de Autenticação do Sistema
-    async function executeSystemLogin(explicitEmail, explicitPass) {
-        const emailEl = document.getElementById('login-email');
-        const passEl = document.getElementById('login-password');
-        const btnSubmit = document.getElementById('btn-login-submit');
-        const loginScreen = document.getElementById('login-screen');
-
-        const emailInput = (explicitEmail || emailEl?.value || 'semed@goncalvesdias.ma.gov.br').trim().toLowerCase();
-        const passInput = explicitPass || passEl?.value || '123';
-
-        let detectedRole = 'Gestor da Rede';
-        let targetTab = 'dashboard';
-        let assignedSchool = 'Rede Municipal Oficial';
-        let assignedTurma = 'Todas as Turmas';
-        let profileName = 'Secretaria de Educação';
-        let profileRole = 'Gestão Executiva SEMED';
-        let profileAvatar = '🧑‍💼';
-
-        if (emailInput.startsWith('prof') || emailInput.includes('professor')) {
-            detectedRole = 'Professor';
-            targetTab = 'alunos-panel';
-            assignedSchool = 'UI JOSE CORREA LIMA';
-            assignedTurma = '5º Ano A';
-            profileName = 'Prof. Carlos Eduardo';
-            profileRole = 'Professor(a) • UI JOSE CORREA LIMA';
-            profileAvatar = '👨‍🏫';
-        } else if (emailInput.startsWith('diret') || emailInput.includes('diretor') || emailInput.includes('escola') || emailInput.includes('cora')) {
-            detectedRole = 'Diretor Escola';
-            targetTab = 'escolas-panel';
-            assignedSchool = 'UI JOSE CORREA LIMA';
-            assignedTurma = 'Todas as Turmas';
-            profileName = 'Profa. Antonia Silva';
-            profileRole = 'Diretora Escolar • UI JOSE CORREA LIMA';
-            profileAvatar = '👩‍💼';
-        } else if (emailInput.startsWith('admin') || emailInput.startsWith('dpo')) {
-            detectedRole = 'Master Admin';
-            targetTab = 'dashboard';
-            assignedSchool = 'Administração TI / DPO';
-            assignedTurma = 'Todas as Redes';
-            profileName = 'Administrador TI';
-            profileRole = 'Administrador(a) do Sistema & TI';
-            profileAvatar = '👨‍💻';
-        } else {
-            detectedRole = 'Gestor da Rede';
-            targetTab = 'dashboard';
-            assignedSchool = 'Rede Municipal Oficial';
-            assignedTurma = 'Todas as Turmas';
-            profileName = 'Secretaria de Educação';
-            profileRole = 'Gestão Executiva SEMED';
-            profileAvatar = '🧑‍💼';
-        }
-
-        // Salvar Perfil Isolado do Usuário Atual
-        const userProfileData = {
-            name: profileName,
-            email: emailInput,
-            role: profileRole,
-            avatarIcon: profileAvatar,
-            avatarPhoto: ''
-        };
-        try {
-            localStorage.setItem('gd_current_user_profile', JSON.stringify(userProfileData));
-        } catch(e) {}
-
-        if (btnSubmit) {
-            btnSubmit.disabled = true;
-            const btnSpan = btnSubmit.querySelector('span');
-            if (btnSpan) btnSpan.textContent = 'Autenticando...';
-        }
-
-        sessionStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('isLoggedIn', 'true');
-        sessionStorage.setItem('activeTenant', 'default');
-        sessionStorage.setItem('userEmail', emailInput);
-        localStorage.setItem('userEmail', emailInput);
-        sessionStorage.setItem('userName', profileName);
-        sessionStorage.setItem('userRole', detectedRole);
-        sessionStorage.setItem('userEscola', assignedSchool);
-        sessionStorage.setItem('userTurma', assignedTurma);
-
-        try {
-            if (typeof loadDatabaseState === 'function') {
-                await loadDatabaseState();
-            }
-        } catch (err) {
-            console.warn('[IDEB Engine] Warning in loadDatabaseState:', err);
-        }
-
-        try {
-            if (typeof updateMenuVisibilityByRole === 'function') updateMenuVisibilityByRole();
-            if (typeof updateUserHeaderUI === 'function') updateUserHeaderUI();
-            if (typeof renderDashboardWelcomeBanner === 'function') renderDashboardWelcomeBanner();
-            if (typeof renderDbSchools === 'function') renderDbSchools();
-            if (typeof renderDbStudents === 'function') renderDbStudents();
-        } catch (err) {
-            console.warn('[IDEB Engine] Warning in UI updates:', err);
-        }
-
-        // Exibição Imediata da Aplicação Principal
-        const appContainer = document.querySelector('.app-container');
-        if (appContainer) {
-            appContainer.style.display = 'flex';
-        }
-
-        // Navegação direta para a aba do perfil
-        try {
-            if (window.switchTab) {
-                window.switchTab(targetTab);
-            } else if (window.navigateToTab) {
-                window.navigateToTab(targetTab);
-            }
-        } catch (err) {
-            console.warn('[IDEB Engine] Warning in switchTab:', err);
-        }
-
-        // Remoção imediata e fluida da tela de login
-        if (loginScreen) {
-            loginScreen.classList.add('fade-out');
-            loginScreen.style.display = 'none';
-            loginScreen.style.pointerEvents = 'none';
-            if (btnSubmit) {
-                btnSubmit.disabled = false;
-                const btnSpan = btnSubmit.querySelector('span');
-                if (btnSpan) btnSpan.textContent = 'Entrar no Sistema';
-            }
-        }
-
-        if (window.lucide && typeof window.lucide.createIcons === 'function') {
-            try { window.lucide.createIcons({ attrs: { class: 'lucide' } }); } catch(e) {}
-        }
-
-        if (typeof showToast === 'function') {
-            showToast(`Bem-vindo ao IDEB na Prática! Painel ${detectedRole} carregado.`, 'check');
-        }
-        window.scrollTo(0, 0);
-    }
-    window.executeSystemLogin = executeSystemLogin;
-
-    // Login Form Submit Listeners
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            executeSystemLogin();
-        });
-    }
-
-    const btnLoginSubmit = document.getElementById('btn-login-submit');
-    if (btnLoginSubmit) {
-        btnLoginSubmit.addEventListener('click', (e) => {
-            e.preventDefault();
-            executeSystemLogin();
-        });
-    }
-
-    function renderFullNetworkSidebar(sidebarMenu, currentTab, isAdmin) {
-        sidebarMenu.innerHTML = `
-            <!-- GESTÃO -->
-            <div class="menu-group">
-                <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Gestão</span>
-                <div style="display: flex; flex-direction: column; gap: 4px;">
-                    <a href="javascript:void(0)" onclick="switchTab('dashboard'); return false;" class="menu-item ${currentTab === 'dashboard' ? 'active' : ''}" data-target="dashboard">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-                        <span>Painel Executivo</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="switchTab('escolas-panel'); return false;" class="menu-item ${currentTab === 'escolas-panel' ? 'active' : ''}" data-target="escolas-panel">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 8-4 8 4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="M18 5v17"/><path d="M6 5v17"/></svg>
-                        <span>Escolas da Rede</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="switchTab('alunos-panel'); return false;" class="menu-item ${currentTab === 'alunos-panel' ? 'active' : ''}" data-target="alunos-panel">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                        <span>Estudantes & Turmas</span>
-                    </a>
-                </div>
-            </div>
-
-            <!-- AVALIAÇÃO -->
-            <div class="menu-group">
-                <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Avaliação & Metas</span>
-                <div style="display: flex; flex-direction: column; gap: 4px;">
-                    <a href="javascript:void(0)" onclick="switchTab('metas-ideb'); return false;" class="menu-item ${currentTab === 'metas-ideb' ? 'active' : ''}" data-target="metas-ideb">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                        <span>Metas Municipais (PDE)</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="switchTab('ideb-comparativo'); return false;" class="menu-item ${currentTab === 'ideb-comparativo' ? 'active' : ''}" data-target="ideb-comparativo">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-                        <span>Comparativo Regional</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="switchTab('matriz-descritores'); return false;" class="menu-item ${currentTab === 'matriz-descritores' ? 'active' : ''}" data-target="matriz-descritores">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
-                        <span>Matriz & Descritores</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="switchTab('cronograma-habilidades'); return false;" class="menu-item ${currentTab === 'cronograma-habilidades' ? 'active' : ''}" data-target="cronograma-habilidades">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>
-                        <span>Cronograma de Habilidades</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="switchTab('sec-criar-avaliacoes'); return false;" class="menu-item ${currentTab === 'sec-criar-avaliacoes' ? 'active' : ''}" data-target="sec-criar-avaliacoes">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M12 14v4"/><path d="M10 16h4"/></svg>
-                        <span>Criar Avaliações</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="switchTab('sec-aplicacao-provas'); return false;" class="menu-item ${currentTab === 'sec-aplicacao-provas' ? 'active' : ''}" data-target="sec-aplicacao-provas">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
-                        <span>Aplicação de Provas</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="switchTab('banco-questoes'); return false;" class="menu-item ${currentTab === 'banco-questoes' ? 'active' : ''}" data-target="banco-questoes">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><circle cx="10" cy="13" r="1"/><path d="M9.1 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3"/></svg>
-                        <span>Banco de Questões</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="switchTab('relatorios-monitoramento'); return false;" class="menu-item ${currentTab === 'relatorios-monitoramento' ? 'active' : ''}" data-target="relatorios-monitoramento">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
-                        <span>Relatórios & Monitoramento</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="switchTab('biblioteca-recursos'); return false;" class="menu-item ${currentTab === 'biblioteca-recursos' ? 'active' : ''}" data-target="biblioteca-recursos">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-                        <span>Biblioteca Pedagógica</span>
-                    </a>
-                </div>
-            </div>
-
-            ${isAdmin ? `
-            <!-- SISTEMA -->
-            <div class="menu-group">
-                <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Sistema</span>
-                <div style="display: flex; flex-direction: column; gap: 4px;">
-                    <a href="javascript:void(0)" onclick="switchTab('doc-tecnica'); return false;" class="menu-item ${currentTab === 'doc-tecnica' ? 'active' : ''}" data-target="doc-tecnica">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
-                        <span>Documentação Técnica</span>
-                    </a>
-                    <a href="javascript:void(0)" onclick="switchTab('admin-panel'); return false;" class="menu-item ${currentTab === 'admin-panel' ? 'active' : ''}" data-target="admin-panel">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
-                        <span>Área Administrativa</span>
-                    </a>
-                </div>
-            </div>` : ''}
-        `;
-    }
-
-    function updateMenuVisibilityByRole() {
-        const userRole = sessionStorage.getItem('userRole') || 'Master Admin';
-        const userEscola = sessionStorage.getItem('userEscola') || 'UI JOSE CORREA LIMA';
-        const userTurma = sessionStorage.getItem('userTurma') || '5º Ano A';
-
-        const activeNetworkLabel = document.getElementById('sidebar-active-network-label');
-        const userProfileName = document.querySelector('.user-profile .user-name');
-        const userProfileRole = document.querySelector('.user-profile .user-role');
-        const userProfileAvatar = document.querySelector('.user-profile .avatar');
-        const sidebarMenu = document.querySelector('.sidebar-menu');
-
-        if (!sidebarMenu) return;
-
-        const currentTab = localStorage.getItem('lastActiveTab') || 'dashboard';
-
-        // 1. VISÃO EXCLUSIVA DO PROFESSOR (4 Funções Estritas da Especificação)
-        if (userRole === 'Professor' || userRole === 'Professor AEE') {
-            if (activeNetworkLabel) activeNetworkLabel.textContent = `👨‍🏫 ${userTurma} • ${userEscola}`;
-            if (userProfileName) userProfileName.textContent = 'Prof. Carlos Eduardo';
-            if (userProfileRole) userProfileRole.textContent = `Visão de Docente • ${userTurma}`;
-            if (userProfileAvatar) {
-                userProfileAvatar.textContent = 'PR';
-                userProfileAvatar.style.backgroundColor = '#2563eb';
-            }
-
-            sidebarMenu.innerHTML = `
-                <div class="menu-group">
-                    <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Diagnóstico Pedagógico</span>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <a href="javascript:void(0)" onclick="switchTab('dashboard'); return false;" class="menu-item ${currentTab === 'dashboard' ? 'active' : ''}" data-target="dashboard">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-                            <span>Painel da Turma</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('alunos-panel'); return false;" class="menu-item ${currentTab === 'alunos-panel' ? 'active' : ''}" data-target="alunos-panel">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                            <span>Diagnóstico por Aluno</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('matriz-descritores'); return false;" class="menu-item ${currentTab === 'matriz-descritores' ? 'active' : ''}" data-target="matriz-descritores">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
-                            <span>Habilidades a Recompor</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('sec-aplicacao-provas'); return false;" class="menu-item ${currentTab === 'sec-aplicacao-provas' || currentTab === 'aplicacao-provas' ? 'active' : ''}" data-target="aplicacao-provas">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
-                            <span>Desempenho em Simulados</span>
-                        </a>
-                    </div>
-                </div>
-            `;
-        } 
-        // 2. VISÃO EXCLUSIVA DO DIRETOR ESCOLAR (5 Funções Estritas da Especificação)
-        else if (userRole === 'Diretor Escola') {
-            if (activeNetworkLabel) activeNetworkLabel.textContent = `🏫 ${userEscola} (INEP 21128723)`;
-            if (userProfileName) userProfileName.textContent = 'Profa. Antonia Silva';
-            if (userProfileRole) userProfileRole.textContent = `Visão de Direção • ${userEscola}`;
-            if (userProfileAvatar) {
-                userProfileAvatar.textContent = 'DE';
-                userProfileAvatar.style.backgroundColor = '#059669';
-            }
-
-            sidebarMenu.innerHTML = `
-                <div class="menu-group">
-                    <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Gestão da Unidade Escolar</span>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <a href="javascript:void(0)" onclick="switchTab('dashboard'); return false;" class="menu-item ${currentTab === 'dashboard' ? 'active' : ''}" data-target="dashboard">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-                            <span>Monitoramento da Escola</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('escolas-panel'); return false;" class="menu-item ${currentTab === 'escolas-panel' ? 'active' : ''}" data-target="escolas-panel">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 8-4 8 4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="M18 5v17"/><path d="M6 5v17"/></svg>
-                            <span>Desempenho por Turma</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('relatorios-monitoramento'); return false;" class="menu-item ${currentTab === 'relatorios-monitoramento' ? 'active' : ''}" data-target="relatorios-monitoramento">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
-                            <span>Evolução dos Simulados</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('matriz-descritores'); return false;" class="menu-item ${currentTab === 'matriz-descritores' ? 'active' : ''}" data-target="matriz-descritores">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
-                            <span>Matriz de Descritores (BNCC)</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="switchTab('metas-ideb'); return false;" class="menu-item ${currentTab === 'metas-ideb' ? 'active' : ''}" data-target="metas-ideb">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                            <span>Acompanhamento de Metas (PDE)</span>
-                        </a>
-                    </div>
-                </div>
-            `;
-        } 
-        // 3. MASTER ADMIN (Governança & TI)
-        else if (userRole === 'Master Admin') {
-            if (activeNetworkLabel) activeNetworkLabel.textContent = '⚙️ Administração TI / DPO';
-            if (userProfileName) userProfileName.textContent = 'Administrador TI';
-            if (userProfileRole) userProfileRole.textContent = 'DPO & Infraestrutura';
-            if (userProfileAvatar) {
-                userProfileAvatar.textContent = 'AD';
-                userProfileAvatar.style.backgroundColor = '#e11d48';
-            }
-            renderFullNetworkSidebar(sidebarMenu, currentTab, true);
-        } 
-        // 4. SEMED (Gestor da Rede Municipal)
-        else {
-            if (activeNetworkLabel) activeNetworkLabel.textContent = '🏛️ SEMED Gonçalves Dias - MA';
-            if (userProfileName) userProfileName.textContent = 'Secretaria de Educação';
-            if (userProfileRole) userProfileRole.textContent = 'Gestão Executiva SEMED';
-            if (userProfileAvatar) {
-                userProfileAvatar.textContent = 'SM';
-                userProfileAvatar.style.backgroundColor = '#9333ea';
-            }
-            renderFullNetworkSidebar(sidebarMenu, currentTab, false);
-        }
-
-        if (window.lucide && typeof window.lucide.createIcons === 'function') {
-            try { window.lucide.createIcons({ attrs: { class: 'lucide' } }); } catch(e) {}
-        }
-    }
+    // (Renderizadores de menu lateral duplicados foram unificados em js/core/navigation.js)
     window.updateMenuVisibilityByRole = updateMenuVisibilityByRole;
 
     // ==========================================
@@ -17721,26 +16729,71 @@ if (document.readyState === 'loading') {
             `;
         }
 
-        const dbCollection = (activeStage === 'Anos Finais')
-            ? (window.OFFICIAL_MARANHAO_IDEB_EXCEL && window.OFFICIAL_MARANHAO_IDEB_EXCEL.anosFinais)
-            : (window.OFFICIAL_MARANHAO_IDEB_EXCEL && window.OFFICIAL_MARANHAO_IDEB_EXCEL.anosIniciais);
+        // 1. Obter lista oficial dos 217 municípios
+        let list = [];
+        const dbMaranhao = window.IDEB_MARANHAO_MUNICIPIOS;
+        if (dbMaranhao) {
+            const rawList = (activeStage === 'Anos Finais') ? dbMaranhao.finais : dbMaranhao.iniciais;
+            if (Array.isArray(rawList)) {
+                list = rawList.map(c => ({
+                    codigoInep: c.codigoInep || '',
+                    municipio: c.municipio || '',
+                    ure: c.ure || getUreForCity(c.municipio),
+                    y2015: (c.y2015 !== undefined && c.y2015 !== null) ? Number(c.y2015) : null,
+                    y2017: (c.y2017 !== undefined && c.y2017 !== null) ? Number(c.y2017) : null,
+                    y2019: (c.y2019 !== undefined && c.y2019 !== null) ? Number(c.y2019) : null,
+                    y2021: (c.y2021 !== undefined && c.y2021 !== null) ? Number(c.y2021) : null,
+                    y2023: (c.y2023 !== undefined && c.y2023 !== null) ? Number(c.y2023) : null,
+                    y2025: (c.y2025 !== undefined && c.y2025 !== null) ? Number(c.y2025) : null
+                }));
+            }
+        }
 
-        if (!dbCollection) return;
+        // Fallback: window.idebPublicoReferencia
+        if (list.length === 0 && Array.isArray(window.idebPublicoReferencia)) {
+            const etapaName = (activeStage === 'Anos Finais') ? 'finais' : 'iniciais';
+            list = window.idebPublicoReferencia
+                .filter(item => (item.etapa || '').toLowerCase().includes(etapaName))
+                .map(item => ({
+                    codigoInep: item.codigoInep || '',
+                    municipio: item.municipio || '',
+                    ure: getUreForCity(item.municipio),
+                    y2015: item.anos ? Number(item.anos['2015']) : null,
+                    y2017: item.anos ? Number(item.anos['2017']) : null,
+                    y2019: item.anos ? Number(item.anos['2019']) : null,
+                    y2021: item.anos ? Number(item.anos['2021']) : null,
+                    y2023: item.anos ? Number(item.anos['2023']) : null,
+                    y2025: item.anos ? Number(item.anos['2025']) : null
+                }));
+        }
 
-        const list = Object.values(dbCollection).filter(c => {
+        // Fallback: window.OFFICIAL_MARANHAO_IDEB_EXCEL
+        if (list.length === 0 && window.OFFICIAL_MARANHAO_IDEB_EXCEL) {
+            const collection = (activeStage === 'Anos Finais') ? window.OFFICIAL_MARANHAO_IDEB_EXCEL.anosFinais : window.OFFICIAL_MARANHAO_IDEB_EXCEL.anosIniciais;
+            if (collection) {
+                list = Object.values(collection);
+            }
+        }
+
+        if (!list || list.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" style="padding:24px; text-align:center; color:var(--text-muted);">Base de dados oficial dos municípios está sendo carregada...</td></tr>';
+            return;
+        }
+
+        const validList = list.filter(c => {
             if (!c || !c.municipio) return false;
             const name = c.municipio.trim().toLowerCase();
             return !name.includes('município') && !name.includes('código');
         });
 
-        // Sort by activeYear score descending
-        list.sort((a, b) => {
+        // Ordenar pelo ano selecionado decrescente
+        validList.sort((a, b) => {
             const valA = (a[currKey] !== null && a[currKey] >= 0 && a[currKey] <= 10) ? a[currKey] : -1;
             const valB = (b[currKey] !== null && b[currKey] >= 0 && b[currKey] <= 10) ? b[currKey] : -1;
             return valB - valA;
         });
 
-        const filtered = list.filter(c => {
+        const filtered = validList.filter(c => {
             const ure = c.ure || getUreForCity(c.municipio);
             if (ureFilter !== 'all' && ure !== ureFilter) return false;
             if (query) {
@@ -17774,7 +16827,8 @@ if (document.readyState === 'loading') {
                 else diffBadge = `<span style="color:var(--text-muted); font-weight:700; font-size:0.8rem;">= 0.0</span>`;
             }
 
-            const isGD = c.municipio.trim().toLowerCase() === 'gonçalves dias';
+            const cleanCityName = (c.municipio || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+            const isGD = cleanCityName === 'goncalves dias';
             const ureName = c.ure || getUreForCity(c.municipio);
 
             // Mini sparkline chips
@@ -17791,7 +16845,7 @@ if (document.readyState === 'loading') {
                         #${idx + 1} ${idx === 0 ? '👑' : ''}
                     </td>
                     <td style="padding: 10px 14px; font-weight: 700; color: ${isGD ? '#10b981' : 'var(--text-primary)'};">
-                        <a href="javascript:void(0)" onclick="selectCityFromUre('${c.municipio.replace(/'/g, "\\'")}')" style="color:inherit; text-decoration:none;">
+                        <a href="javascript:void(0)" onclick="selectCityFromUre('${(c.municipio||'').replace(/'/g, "\\'")}')" style="color:inherit; text-decoration:none;">
                             ${c.municipio} ${isGD ? '⭐ (Sua Rede)' : ''}
                         </a>
                     </td>
@@ -17808,8 +16862,8 @@ if (document.readyState === 'loading') {
                         ${diffBadge}
                     </td>
                     <td style="padding: 10px 14px; text-align: center;">
-                        <span class="badge ${rawCurr >= 5.0 ? 'badge-success' : 'badge-warning'}" style="font-size: 0.68rem;">
-                            ${rawCurr >= 5.0 ? 'Alto Desempenho 🟢' : 'Em Desenvolvimento 🟡'}
+                        <span class="badge ${rawCurr !== null && rawCurr >= 5.0 ? 'badge-success' : 'badge-warning'}" style="font-size: 0.68rem;">
+                            ${rawCurr !== null && rawCurr >= 5.0 ? 'Alto Desempenho 🟢' : 'Em Desenvolvimento 🟡'}
                         </span>
                     </td>
                     <td style="padding: 10px 14px; text-align: center; white-space: nowrap;">
@@ -17829,24 +16883,34 @@ if (document.readyState === 'loading') {
         const select = document.getElementById('ranking-escolas-city-select');
         if (!select) return;
 
-        const uresList = getOfficial19UresList();
         const allCitiesSet = new Set();
-        uresList.forEach(ure => {
-            if (ure.cities) ure.cities.forEach(c => allCitiesSet.add(c));
-        });
+
+        if (window.IDEB_MARANHAO_MUNICIPIOS && Array.isArray(window.IDEB_MARANHAO_MUNICIPIOS.iniciais)) {
+            window.IDEB_MARANHAO_MUNICIPIOS.iniciais.forEach(item => {
+                if (item && item.municipio) allCitiesSet.add(item.municipio.trim());
+            });
+        }
+
+        if (allCitiesSet.size === 0) {
+            const uresList = getOfficial19UresList();
+            uresList.forEach(ure => {
+                if (ure.cities) ure.cities.forEach(c => allCitiesSet.add(c.trim()));
+            });
+        }
+
         const sortedCities = Array.from(allCitiesSet).sort((a, b) => a.localeCompare(b));
 
         const optionsHtml = `
             <option value="all">Todos os Municípios do Maranhão</option>
             <option value="Gonçalves Dias" selected>Gonçalves Dias ⭐ (Sua Rede)</option>
-            ${sortedCities.filter(c => c !== 'Gonçalves Dias').map(c => `<option value="${c}">${c}</option>`).join('')}
+            ${sortedCities.filter(c => c.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() !== 'goncalves dias').map(c => `<option value="${c}">${c}</option>`).join('')}
         `;
         select.innerHTML = optionsHtml;
     }
     window.populateSchoolCitySelectDropdown = populateSchoolCitySelectDropdown;
 
     function filterSchoolRankingTable() {
-        const rawDb = window.OFFICIAL_MARANHAO_ESCOLAS_EXCEL || [];
+        const rawDb = window.ESCOLAS_MARANHAO_IDEB || window.OFFICIAL_MARANHAO_ESCOLAS_EXCEL || [];
         const activeStage = window.currentIdebStage || 'Anos Iniciais';
         const isAnosIniciais = (activeStage === 'Anos Iniciais');
         const activeYear = window.currentIdebYear || 2025;
@@ -17860,30 +16924,60 @@ if (document.readyState === 'loading') {
         const searchInput = document.getElementById('ranking-escolas-search-input');
         const query = searchInput ? searchInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
 
-        // Extract stage data per school
+        const cleanCityFilter = cityFilter.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+        // Extract stage data per school with full backwards compatibility
         const schoolsData = [];
         rawDb.forEach(sch => {
-            const dataObj = isAnosIniciais ? sch.ai : sch.af;
-            if (!dataObj) return;
+            const id = sch.inep || sch.codigoEscola || sch.id || '';
+            const name = sch.nome || sch.nomeEscola || '';
+            const city = sch.municipio || '';
+            const network = sch.localizacao || (sch.rede === 'Estadual' || sch.rede === 'Municipal' ? sch.rede : (sch.rede === '2104404' ? 'Municipal' : 'Municipal'));
+            const ure = sch.ure || getUreForCity(city);
 
-            const scoreCurr = dataObj[currKey];
-            const scorePrev = (activeYear === 2015) ? null : dataObj[prevKey];
+            let scoreCurr = null;
+            let scorePrev = null;
+
+            if (isAnosIniciais) {
+                if (activeYear === 2025) {
+                    scoreCurr = (sch.iniciais2025 !== undefined && sch.iniciais2025 !== null) ? sch.iniciais2025 : (sch.ai ? sch.ai.y2025 : null);
+                    scorePrev = (sch.ai && sch.ai.y2023 !== undefined) ? sch.ai.y2023 : null;
+                } else if (sch.ai) {
+                    scoreCurr = (sch.ai[currKey] !== undefined) ? sch.ai[currKey] : null;
+                    scorePrev = (activeYear === 2015) ? null : ((sch.ai[prevKey] !== undefined) ? sch.ai[prevKey] : null);
+                } else if (sch.iniciais2025 !== undefined && sch.iniciais2025 !== null) {
+                    scoreCurr = sch.iniciais2025;
+                }
+            } else {
+                if (activeYear === 2025) {
+                    scoreCurr = (sch.finais2025 !== undefined && sch.finais2025 !== null) ? sch.finais2025 : (sch.af ? sch.af.y2025 : null);
+                    scorePrev = (sch.af && sch.af.y2023 !== undefined) ? sch.af.y2023 : null;
+                } else if (sch.af) {
+                    scoreCurr = (sch.af[currKey] !== undefined) ? sch.af[currKey] : null;
+                    scorePrev = (activeYear === 2015) ? null : ((sch.af[prevKey] !== undefined) ? sch.af[prevKey] : null);
+                } else if (sch.finais2025 !== undefined && sch.finais2025 !== null) {
+                    scoreCurr = sch.finais2025;
+                }
+            }
 
             schoolsData.push({
-                id: sch.codigoEscola,
-                name: sch.nomeEscola,
-                city: sch.municipio,
-                ure: sch.ure || getUreForCity(sch.municipio),
-                network: sch.rede,
-                scoreCurr: (scoreCurr !== null && scoreCurr >= 0 && scoreCurr <= 10) ? scoreCurr : null,
-                scorePrev: (scorePrev !== null && scorePrev >= 0 && scorePrev <= 10) ? scorePrev : null,
-                raw: sch,
-                dataObj: dataObj
+                id: id,
+                name: name,
+                city: city,
+                ure: ure,
+                network: network,
+                scoreCurr: (scoreCurr !== null && scoreCurr >= 0 && scoreCurr <= 10) ? Number(scoreCurr) : null,
+                scorePrev: (scorePrev !== null && scorePrev >= 0 && scorePrev <= 10) ? Number(scorePrev) : null,
+                raw: sch
             });
         });
 
         // Global sort by scoreCurr descending
-        schoolsData.sort((a, b) => (b.scoreCurr || -1) - (a.scoreCurr || -1));
+        schoolsData.sort((a, b) => {
+            const valA = (a.scoreCurr !== null) ? a.scoreCurr : -1;
+            const valB = (b.scoreCurr !== null) ? b.scoreCurr : -1;
+            return valB - valA;
+        });
 
         // Assign global state rank
         schoolsData.forEach((sch, idx) => {
@@ -17894,21 +16988,25 @@ if (document.readyState === 'loading') {
         // Assign local city rank
         const cityGroups = {};
         schoolsData.forEach(sch => {
-            if (!cityGroups[sch.city]) cityGroups[sch.city] = [];
-            cityGroups[sch.city].push(sch);
+            const cleanC = (sch.city || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+            if (!cityGroups[cleanC]) cityGroups[cleanC] = [];
+            cityGroups[cleanC].push(sch);
         });
 
-        Object.keys(cityGroups).forEach(cName => {
-            cityGroups[cName].sort((a, b) => (b.scoreCurr || -1) - (a.scoreCurr || -1));
-            cityGroups[cName].forEach((sch, lIdx) => {
+        Object.keys(cityGroups).forEach(cleanC => {
+            cityGroups[cleanC].sort((a, b) => ((b.scoreCurr !== null ? b.scoreCurr : -1) - (a.scoreCurr !== null ? a.scoreCurr : -1)));
+            cityGroups[cleanC].forEach((sch, lIdx) => {
                 sch.localRank = lIdx + 1;
-                sch.localTotal = cityGroups[cName].length;
+                sch.localTotal = cityGroups[cleanC].length;
             });
         });
 
         // Filter for display
         const filtered = schoolsData.filter(sch => {
-            if (cityFilter !== 'all' && sch.city.toLowerCase() !== cityFilter.toLowerCase()) return false;
+            if (cityFilter !== 'all') {
+                const cleanSchoolCity = (sch.city || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+                if (cleanSchoolCity !== cleanCityFilter) return false;
+            }
             if (redeFilter !== 'all' && sch.network !== redeFilter) return false;
             if (query) {
                 const full = (sch.name + ' ' + sch.city + ' ' + sch.ure).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -17928,8 +17026,8 @@ if (document.readyState === 'loading') {
             return;
         }
 
-        // Render top 120 rows for smooth UI performance
-        tbody.innerHTML = filtered.slice(0, 120).map(sch => {
+        // Render rows
+        tbody.innerHTML = filtered.slice(0, 150).map(sch => {
             const displayCurr = sch.scoreCurr !== null ? Number(sch.scoreCurr).toFixed(1) : '—';
             const displayPrev = (activeYear === 2015) ? 'Base' : (sch.scorePrev !== null ? Number(sch.scorePrev).toFixed(1) : '—');
 
@@ -17943,7 +17041,8 @@ if (document.readyState === 'loading') {
                 else diffMarkup = `<span style="color:var(--text-muted); font-weight:700; font-size:0.75rem;">= (0.0)</span>`;
             }
 
-            const isGD = sch.city.toLowerCase() === 'gonçalves dias';
+            const cleanSchoolCity = (sch.city || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+            const isGD = cleanSchoolCity === 'goncalves dias';
 
             return `
                 <tr style="border-bottom: 1px solid var(--border-color); height: 54px; ${isGD ? 'background: rgba(16, 185, 129, 0.05);' : ''}">
@@ -18022,14 +17121,22 @@ if (document.readyState === 'loading') {
     }
 
     function openSchoolIdebDetailModalById(schoolId) {
-        const rawDb = window.OFFICIAL_MARANHAO_ESCOLAS_EXCEL || [];
-        const sch = rawDb.find(s => s.codigoEscola === schoolId) || rawDb[0];
+        const rawDb = window.ESCOLAS_MARANHAO_IDEB || window.OFFICIAL_MARANHAO_ESCOLAS_EXCEL || [];
+        const sch = rawDb.find(s => (s.inep === schoolId || s.codigoEscola === schoolId || s.id === schoolId)) || rawDb[0];
         if (!sch) return;
+
+        const schoolName = sch.nome || sch.nomeEscola || 'Unidade Escolar';
+        const schoolCity = sch.municipio || 'Gonçalves Dias';
+        const schoolRede = sch.localizacao || (sch.rede === 'Estadual' || sch.rede === 'Municipal' ? sch.rede : 'Municipal');
+        const schoolUre = sch.ure || getUreForCity(schoolCity);
 
         const activeStage = window.currentIdebStage || 'Anos Iniciais';
         const isAnosIniciais = (activeStage === 'Anos Iniciais');
-        const dataObj = isAnosIniciais ? sch.ai : sch.af;
         const activeYear = window.currentIdebYear || 2025;
+
+        const currentScore = isAnosIniciais 
+            ? ((sch.iniciais2025 !== undefined && sch.iniciais2025 !== null) ? sch.iniciais2025 : (sch.ai ? sch.ai.y2025 : 5.0))
+            : ((sch.finais2025 !== undefined && sch.finais2025 !== null) ? sch.finais2025 : (sch.af ? sch.af.y2025 : 4.5));
 
         const modal = document.getElementById('modal-school-ideb-detail');
         const nameEl = document.getElementById('school-detail-modal-name');
@@ -18037,43 +17144,48 @@ if (document.readyState === 'loading') {
         const historyGrid = document.getElementById('school-detail-history-grid');
         const compBars = document.getElementById('school-detail-comp-bars');
 
-        if (nameEl) nameEl.textContent = sch.nomeEscola;
-        if (metaEl) metaEl.textContent = `${sch.municipio} - MA • ${sch.ure || getUreForCity(sch.municipio)} • Rede ${sch.rede} (${activeStage})`;
+        if (nameEl) nameEl.textContent = schoolName;
+        if (metaEl) metaEl.textContent = `${schoolCity} - MA • ${schoolUre} • Rede ${schoolRede} (${activeStage})`;
 
         if (historyGrid) {
             const cycles = [2015, 2017, 2019, 2021, 2023, 2025];
             historyGrid.innerHTML = cycles.map(cyc => {
-                const k = 'y' + cyc;
-                const score = dataObj && dataObj[k] !== null ? dataObj[k] : null;
                 const isSelected = (cyc === activeYear);
+                let score = '-';
+                if (cyc === 2025 && currentScore !== null) {
+                    score = Number(currentScore).toFixed(1);
+                } else if (isAnosIniciais && sch.ai && sch.ai['y' + cyc] !== undefined) {
+                    score = Number(sch.ai['y' + cyc]).toFixed(1);
+                } else if (!isAnosIniciais && sch.af && sch.af['y' + cyc] !== undefined) {
+                    score = Number(sch.af['y' + cyc]).toFixed(1);
+                }
                 return `
                     <div style="background:var(--bg-secondary); padding:8px 6px; border-radius:var(--radius-sm); border:${isSelected ? '2px solid #6366f1' : '1px solid var(--border-color)'};">
                         <div style="font-size:0.68rem; font-weight:700; color:var(--text-muted);">${cyc}</div>
-                        <div style="font-size:1.1rem; font-weight:800; color:${isSelected ? '#6366f1' : 'var(--text-primary)'}; margin-top:2px;">${score !== null ? score : '-'}</div>
+                        <div style="font-size:1.1rem; font-weight:800; color:${isSelected ? '#6366f1' : 'var(--text-primary)'}; margin-top:2px;">${score}</div>
                     </div>
                 `;
             }).join('');
         }
 
         if (compBars) {
-            const currKey = 'y' + activeYear;
-            const currentScore = dataObj && dataObj[currKey] !== null ? dataObj[currKey] : 4.5;
-            const targetMeta = Number((currentScore + 0.3).toFixed(1));
+            const validScoreNum = Number(currentScore || 5.0);
+            const targetMeta = Number((validScoreNum + 0.4).toFixed(1));
 
             compBars.innerHTML = `
                 <div>
                     <div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:700; color:var(--text-primary); margin-bottom:3px;">
-                        <span>${sch.nomeEscola} (${activeYear})</span>
-                        <span style="color:#10b981;">${currentScore}</span>
+                        <span>${schoolName} (${activeYear})</span>
+                        <span style="color:#10b981;">${validScoreNum.toFixed(1)}</span>
                     </div>
                     <div style="width:100%; height:8px; background:var(--bg-secondary); border-radius:4px; overflow:hidden;">
-                        <div style="width:${Math.min(100, (currentScore/10)*100)}%; height:100%; background:#10b981; border-radius:4px;"></div>
+                        <div style="width:${Math.min(100, (validScoreNum/10)*100)}%; height:100%; background:#10b981; border-radius:4px;"></div>
                     </div>
                 </div>
 
                 <div>
                     <div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:700; color:var(--text-secondary); margin-bottom:3px;">
-                        <span>Média do Município (${sch.municipio})</span>
+                        <span>Média do Município (${schoolCity})</span>
                         <span>5.2</span>
                     </div>
                     <div style="width:100%; height:8px; background:var(--bg-secondary); border-radius:4px; overflow:hidden;">
@@ -18363,142 +17475,7 @@ if (document.readyState === 'loading') {
         }
     });
 
-// =========================================================================
-    // ROTEADOR MASTER LIMPO E RESILIENTE (15 ABAS DA SIDEBAR)
-    // =========================================================================
-
-    function switchTab(targetTab, trackHistory = true) {
-        const safeTarget = (targetTab || 'dashboard').toString().trim();
-
-        const tabMap = {
-            'dashboard': 'dashboard',
-            'escolas-panel': 'escolas-panel',
-            'alunos-panel': 'alunos-panel',
-            'metas-ideb': 'metas-ideb',
-            'ideb-comparativo': 'ideb-comparativo',
-            'matriz-descritores': 'matriz-descritores',
-            'cronograma-habilidades': 'cronograma-habilidades',
-            'sec-criar-avaliacoes': 'sec-criar-avaliacoes',
-            'criar-avaliacoes': 'sec-criar-avaliacoes',
-            'sec-aplicacao-provas': 'sec-aplicacao-provas',
-            'aplicacao-provas': 'sec-aplicacao-provas',
-            'banco-questoes': 'banco-questoes',
-            'questions': 'banco-questoes',
-            'relatorios-monitoramento': 'relatorios-monitoramento',
-            'ai-playground': 'relatorios-monitoramento',
-            'gestao-pedagogica': 'gestao-pedagogica',
-            'biblioteca-recursos': 'biblioteca-recursos',
-            'doc-tecnica': 'doc-tecnica',
-            'admin-panel': 'admin-panel'
-        };
-
-        const resolvedId = tabMap[safeTarget] || safeTarget;
-        console.log('[Router] Switching to tab:', resolvedId);
-
-        try {
-            try { localStorage.setItem('lastActiveTab', resolvedId); } catch(err) {}
-
-            // Atualiza pilha de histórico de navegação
-            if (trackHistory !== false) {
-                if (!window.navigationHistory) window.navigationHistory = ['dashboard'];
-                const last = window.navigationHistory[window.navigationHistory.length - 1];
-                if (last !== resolvedId) {
-                    window.navigationHistory.push(resolvedId);
-                }
-            }
-
-            // Fecha drawer mobile ao navegar
-            const appContainer = document.querySelector('.app-container') || document.body;
-            if (appContainer && appContainer.classList.contains('mobile-sidebar-open')) {
-                appContainer.classList.remove('mobile-sidebar-open');
-            }
-
-            // Reseta scroll para o topo para eliminar espaços em branco e rolagem residual
-            const mainContent = document.querySelector('.main-content');
-            if (mainContent) mainContent.scrollTop = 0;
-            if (typeof window.scrollTo === 'function') window.scrollTo(0, 0);
-
-            // 1. Ocultar rigorosamente todas as seções .tab-content
-            const allSections = document.querySelectorAll('.tab-content');
-            allSections.forEach(function(sec) {
-                sec.classList.remove('active');
-                sec.classList.add('hidden');
-                sec.style.display = 'none';
-            });
-
-            // 2. Exibir exclusivamente a seção correspondente
-            let targetEl = document.getElementById(resolvedId);
-            if (!targetEl) targetEl = document.getElementById(safeTarget);
-
-            if (targetEl) {
-                targetEl.classList.remove('hidden');
-                targetEl.classList.add('active');
-                targetEl.style.display = 'block';
-            } else {
-                console.warn('[Router Warning] Section element missing for ID:', resolvedId, '- Falling back to Dashboard');
-                const dashEl = document.getElementById('dashboard');
-                if (dashEl) {
-                    dashEl.classList.remove('hidden');
-                    dashEl.classList.add('active');
-                    dashEl.style.display = 'block';
-                }
-            }
-
-            // 3. Atualizar realce visual na Sidebar Principal
-            const menuItems = document.querySelectorAll('.menu-item');
-            menuItems.forEach(function(item) {
-                const dt = item.getAttribute('data-target');
-                if (dt === resolvedId || dt === safeTarget || tabMap[dt] === resolvedId) {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
-                }
-            });
-
-            // 4. Executar o renderizador próprio da aba selecionada
-            if (resolvedId === 'dashboard' || resolvedId === 'sec-dashboard') {
-                if (typeof renderDashboardComplete === 'function') renderDashboardComplete();
-            } else if (resolvedId === 'escolas-panel') {
-                if (typeof renderDbSchools === 'function') renderDbSchools();
-            } else if (resolvedId === 'alunos-panel') {
-                if (typeof renderDbStudents === 'function') renderDbStudents();
-            } else if (resolvedId === 'metas-ideb') {
-                if (typeof populateIdebGoalsTable === 'function') populateIdebGoalsTable();
-            } else if (resolvedId === 'ideb-comparativo') {
-                if (typeof initIdebCitySelector === 'function') initIdebCitySelector();
-                if (typeof updateIdebComparativoView === 'function') updateIdebComparativoView();
-            } else if (resolvedId === 'matriz-descritores') {
-                if (typeof renderReferenceMatrix === 'function') renderReferenceMatrix();
-                if (typeof renderBnccSkillsTable === 'function') renderBnccSkillsTable();
-            } else if (resolvedId === 'cronograma-habilidades') {
-                if (typeof render7ColCalendar === 'function') render7ColCalendar();
-                if (typeof renderTeacherWeeklyChecklist === 'function') renderTeacherWeeklyChecklist();
-            } else if (resolvedId === 'sec-criar-avaliacoes') {
-                if (typeof populateWizardSchools === 'function') populateWizardSchools();
-            } else if (resolvedId === 'sec-aplicacao-provas') {
-                if (typeof renderEventsListForPrinting === 'function') renderEventsListForPrinting();
-            } else if (resolvedId === 'banco-questoes') {
-                if (typeof renderQuestions === 'function') renderQuestions();
-            } else if (resolvedId === 'relatorios-monitoramento') {
-                if (typeof renderAiGenDescriptors === 'function') renderAiGenDescriptors();
-            } else if (resolvedId === 'gestao-pedagogica') {
-                if (typeof renderPedagogicInterventions === 'function') renderPedagogicInterventions();
-            } else if (resolvedId === 'biblioteca-recursos') {
-                if (typeof renderPedagogicLibrary === 'function') renderPedagogicLibrary();
-            } else if (resolvedId === 'admin-panel') {
-                if (typeof loadUsersList === 'function') loadUsersList();
-            }
-
-            safeCreateIcons();
-        } catch(e) {
-            console.error('[Router Error]', e);
-        }
-    }
-
-    window.switchTab = switchTab;
-    window.switchMainTab = switchTab;
-    window.showTab = switchTab;
-    window.navigateToTab = switchTab;
+    // (switchTab e roteamento SPA agora são gerenciados em js/core/navigation.js)
 
 
 
@@ -18895,70 +17872,7 @@ function handleDeleteTeacher(teacherId) {
 }
 window.handleDeleteTeacher = handleDeleteTeacher;
 
-window.currentSelectedSchoolDetail = "UI BASILIO ALVES";
-
-window.openSchoolDetailView = function openSchoolDetailView(schoolName, inep, zone, phone, director) {
-    const schools = (typeof getOfficialSchoolsState === 'function') ? getOfficialSchoolsState() : [];
-    const schoolObj = schools.find(s => s.name === schoolName || s.inep === inep || s.name.toLowerCase().includes((schoolName || '').toLowerCase())) || {
-        name: schoolName || "UI BASILIO ALVES",
-        inep: inep || "21128120",
-        zone: zone || "Zona Rural",
-        phone: phone || "(99) 9935-6218",
-        director: director || "Gestão Escolar"
-    };
-
-    window.currentSelectedSchoolDetail = schoolObj.name;
-    
-    const overview = document.getElementById('schools-overview-container');
-    const detail = document.getElementById('school-detail-view');
-    
-    if (overview) {
-        overview.classList.add('hidden');
-        overview.style.display = 'none';
-    }
-    
-    if (detail) {
-        detail.classList.remove('hidden');
-        detail.style.display = 'block';
-    }
-    
-    const nameEl = document.getElementById('school-detail-name');
-    const badgeEl = document.getElementById('school-detail-badge');
-    const metaEl = document.getElementById('school-detail-meta');
-    const isRural = (schoolObj.zone || '').includes('Rural');
-    
-    if (nameEl) nameEl.textContent = schoolObj.name;
-    if (badgeEl) {
-        badgeEl.innerHTML = `<span>${isRural ? '🌾' : '🏫'}</span> <span>${schoolObj.zone || 'Rede Municipal'}</span>`;
-        badgeEl.style.background = isRural ? 'rgba(245, 158, 11, 0.15)' : 'rgba(99, 102, 241, 0.15)';
-        badgeEl.style.color = isRural ? '#d97706' : '#6366f1';
-    }
-    if (metaEl) {
-        metaEl.textContent = `INEP: ${schoolObj.inep} • Direção: ${schoolObj.director || 'Gestão Escolar'} • Fone: ${schoolObj.phone || '-'}`;
-    }
-    
-    switchSchoolInnerTab('turmas');
-    if (typeof safeCreateIcons === 'function') safeCreateIcons();
-};
-window.openSchoolWorkspace = window.openSchoolDetailView;
-
-window.backToSchoolsList = function backToSchoolsList() {
-    const overview = document.getElementById('schools-overview-container');
-    const detail = document.getElementById('school-detail-view');
-    
-    if (detail) {
-        detail.classList.add('hidden');
-        detail.style.display = 'none';
-    }
-    
-    if (overview) {
-        overview.classList.remove('hidden');
-        overview.style.display = 'block';
-    }
-    
-    if (typeof renderDbSchools === 'function') renderDbSchools();
-    if (typeof safeCreateIcons === 'function') safeCreateIcons();
-};
+    // (openSchoolDetailView, openSchoolWorkspace e backToSchoolsList agora são gerenciados em js/modules/escolas/escolas.js)
 
 // Sub-aba Turmas da Escola
 window.switchSchoolInnerTab = function switchSchoolInnerTab(tabName) {
@@ -20218,8 +19132,8 @@ window.closeStudentProficiencyCalcModal = closeStudentProficiencyCalcModal;
     // CONTEXTO DE TURMA ATIVA & NAVEGAÇÃO
     // =========================================================================
 
-    let currentTurmaContext = 'UI JOSE CORREA LIMA — 2º Ano A';
-    let currentScheduleMainView = 'monthly'; // 'monthly' | 'weekly' | 'comparison'
+    currentTurmaContext = 'UI JOSE CORREA LIMA — 2º Ano A';
+    currentScheduleMainView = 'monthly'; // 'monthly' | 'weekly' | 'comparison'
 
     function handleTurmaContextChange() {
         const select = document.getElementById('cal-filter-turma-context');
@@ -21682,9 +20596,8 @@ window.closeStudentProficiencyCalcModal = closeStudentProficiencyCalcModal;
     async function requestGenerateAiQuestion(stage, subject, descriptorCode, difficulty, matrix) {
         // Tentar via backend primeiro
         try {
-            const resp = await fetch('/api/ia/gerar-questao', {
+            const resp = await apiFetch('/api/ia/gerar-questao', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     stage,
                     subject,
@@ -22395,7 +21308,7 @@ window.closeStudentProficiencyCalcModal = closeStudentProficiencyCalcModal;
         }
     ];
 
-    let currentActiveCategory = 'all';
+    currentActiveCategory = 'all';
     let searchDebounceTimer = null;
 
     // -------------------------------------------------------------------------
@@ -22876,335 +21789,9 @@ window.closeStudentProficiencyCalcModal = closeStudentProficiencyCalcModal;
     window.executeGenerateCombinedA4Booklet = executeGenerateCombinedA4Booklet;
 
     // =========================================================================
-    // MÓDULO ESCOLAS DA REDE: LISTAGEM LIMPA, STATUS & MODAL DE EDIÇÃO DE ESCOLA
+    // MÓDULO ESCOLAS DA REDE
+    // (renderDbSchools, getOfficialSchoolsState, openEditSchoolModal, etc. são gerenciados em js/modules/escolas/escolas.js)
     // =========================================================================
-
-    var officialSchoolsDatabase = null;
-    var DEFAULT_OFFICIAL_GONCALVES_SCHOOLS = [
-        { id: 'esc_01', name: 'UI JOSE CORREA LIMA', inep: '21128723', zone: 'Zona Rural', city: 'Gonçalves Dias - MA', director: 'Prof. Marcos Aurelio', role: 'Diretor Escolar', status: 'Ativa', phone: '(99) 9935-6218', email: 'josecorrealima@educacao.ma.gov.br', alunosCount: 245, turmasCount: 8, ideb2025: '5.4' },
-        { id: 'esc_02', name: 'UI EMILIO MURAD', inep: '21128146', zone: 'Zona Rural', city: 'Gonçalves Dias - MA', director: 'Profa. Antonia Silva', role: 'Diretora Escolar', status: 'Ativa', phone: '(99) 9935-6219', email: 'emiliomurad@educacao.ma.gov.br', alunosCount: 198, turmasCount: 6, ideb2025: '5.1' },
-        { id: 'esc_03', name: 'UE VEREADOR LEONARDO FERREIRA LIMA', inep: '21128740', zone: 'Sede Urbana', city: 'Gonçalves Dias - MA', director: 'Prof. Joao Paulo Mendes', role: 'Gestor Escolar', status: 'Ativa', phone: '(99) 9935-6220', email: 'leonardoferreira@educacao.ma.gov.br', alunosCount: 310, turmasCount: 10, ideb2025: '5.6' },
-        { id: 'esc_04', name: 'U I BASILIO ALVES', inep: '21128120', zone: 'Zona Rural', city: 'Gonçalves Dias - MA', director: 'Profa. Maria Jose', role: 'Diretora Escolar', status: 'Ativa', phone: '(99) 9935-6221', email: 'basilioalves@educacao.ma.gov.br', alunosCount: 180, turmasCount: 6, ideb2025: '5.0' },
-        { id: 'esc_05', name: 'UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ', inep: '21286973', zone: 'Sede Urbana', city: 'Gonçalves Dias - MA', director: 'Profa. Aldenora Cruz', role: 'Diretora Geral', status: 'Ativa', phone: '(99) 9935-6222', email: 'aldenoracruz@educacao.ma.gov.br', alunosCount: 290, turmasCount: 9, ideb2025: '5.5' },
-        { id: 'esc_06', name: 'UE RAIMUNDO DOS REIS DA SILVA', inep: '21128758', zone: 'Zona Rural', city: 'Gonçalves Dias - MA', director: 'Prof. Carlos Eduardo', role: 'Gestor Escolar', status: 'Ativa', phone: '(99) 9935-6223', email: 'raimundoreis@educacao.ma.gov.br', alunosCount: 155, turmasCount: 5, ideb2025: '4.9' },
-        { id: 'esc_07', name: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS', inep: '21286990', zone: 'Zona Rural', city: 'Gonçalves Dias - MA', director: 'Profa. Francisca Lima', role: 'Diretora Escolar', status: 'Ativa', phone: '(99) 9935-6224', email: 'josegoncalves@educacao.ma.gov.br', alunosCount: 220, turmasCount: 7, ideb2025: '5.3' },
-        { id: 'esc_08', name: 'UNIDADE ESCOLAR ANISIO GOMES', inep: '21128774', zone: 'Zona Rural', city: 'Gonçalves Dias - MA', director: 'Prof. Raimundo Nonato', role: 'Diretor Escolar', status: 'Ativa', phone: '(99) 9935-6225', email: 'anisiogomes@educacao.ma.gov.br', alunosCount: 140, turmasCount: 5, ideb2025: '4.8' },
-        { id: 'esc_09', name: 'UE ANITA FURTADO', inep: '21192544', zone: 'Sede Urbana', city: 'Gonçalves Dias - MA', director: 'Profa. Teresa Cristina', role: 'Diretora Escolar', status: 'Ativa', phone: '(99) 9935-6226', email: 'anitafurtado@educacao.ma.gov.br', alunosCount: 280, turmasCount: 9, ideb2025: '5.4' }
-    ];
-
-    function getOfficialSchoolsState() {
-        if (!officialSchoolsDatabase) {
-            try {
-                const saved = (typeof localStorage !== 'undefined' && localStorage.getItem) ? localStorage.getItem('gd_official_schools_data') : null;
-                if (saved && typeof saved === 'string' && saved.trim().startsWith('[')) {
-                    officialSchoolsDatabase = JSON.parse(saved);
-                }
-            } catch(e) {
-                officialSchoolsDatabase = null;
-            }
-
-            if (!officialSchoolsDatabase || !Array.isArray(officialSchoolsDatabase) || officialSchoolsDatabase.length === 0) {
-                officialSchoolsDatabase = Array.isArray(DEFAULT_OFFICIAL_GONCALVES_SCHOOLS) ? JSON.parse(JSON.stringify(DEFAULT_OFFICIAL_GONCALVES_SCHOOLS)) : [];
-            }
-        }
-        return officialSchoolsDatabase;
-    }
-    window.getOfficialSchoolsState = getOfficialSchoolsState;
-
-    function saveOfficialSchoolsState() {
-        try {
-            localStorage.setItem('gd_official_schools_data', JSON.stringify(officialSchoolsDatabase));
-        } catch(e) {}
-    }
-    window.saveOfficialSchoolsState = saveOfficialSchoolsState;
-
-    // -------------------------------------------------------------------------
-    // 1. RENDERIZADOR OFICIAL DA TABELA DE ESCOLAS DA REDE
-    // -------------------------------------------------------------------------
-    function renderDbSchools() {
-        const tbody = document.getElementById('db-schools-table-body') || document.getElementById('schools-table-body');
-        if (!tbody) return;
-
-        const userRole = sessionStorage.getItem('userRole') || 'Master Admin';
-        const userEscola = sessionStorage.getItem('userEscola') || '';
-        const isDirector = userRole === 'Diretor Escola';
-        const isTeacher = userRole === 'Professor' || userRole === 'Professor AEE';
-        const isAdminOrSemed = userRole === 'Master Admin' || userRole === 'Gestor da Rede';
-
-        let schools = getOfficialSchoolsState();
-
-        // Filtro estrito de escopo por papel
-        if (isDirector && userEscola) {
-            schools = schools.filter(s => s.name.toUpperCase().includes(userEscola.toUpperCase()) || userEscola.toUpperCase().includes(s.name.toUpperCase()) || (s.inep && s.inep === '21128723'));
-        } else if (isTeacher && userEscola) {
-            schools = schools.filter(s => s.name.toUpperCase().includes(userEscola.toUpperCase()) || userEscola.toUpperCase().includes(s.name.toUpperCase()) || (s.inep && s.inep === '21128723'));
-        }
-
-        const searchInput = document.getElementById('db-school-search');
-        const query = searchInput ? searchInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
-
-        const filtered = schools.filter(s => {
-            const normName = s.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            return normName.includes(query) || s.inep.includes(query);
-        });
-
-        // Atualizar Contadores de KPI
-        const kpiTotal = document.getElementById('kpi-total-schools');
-        const kpiStudents = document.getElementById('kpi-total-students-val');
-        if (kpiTotal) {
-            kpiTotal.textContent = (isDirector || isTeacher) ? `1 Unidade (${userEscola || 'Vinculada'})` : `${schools.length} Unidades da Rede`;
-        }
-        if (kpiStudents) {
-            const totalAlunos = schools.reduce((sum, s) => sum + (s.alunosCount || 0), 0);
-            kpiStudents.textContent = `${totalAlunos.toLocaleString('pt-BR')} Estudantes`;
-        }
-
-        // Ocultar botão de cadastrar nova escola para diretor/professor
-        const btnNewSchool = document.getElementById('btn-create-school') || document.querySelector('[data-action="create-school"]');
-        if (btnNewSchool) {
-            btnNewSchool.style.display = isAdminOrSemed ? 'inline-flex' : 'none';
-        }
-
-        if (filtered.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="padding: 36px; text-align: center; color: var(--text-muted);">Nenhuma escola encontrada com este termo de busca.</td></tr>';
-            return;
-        }
-
-        tbody.innerHTML = filtered.map(sch => {
-            const isUrban = sch.zone.includes('Urbana');
-            const zoneIcon = isUrban ? '🏫' : '🌾';
-            const statusLabel = sch.status || 'Ativa';
-            const statusColor = statusLabel === 'Ativa' ? '#16a34a' : (statusLabel === 'Em manutenção' ? '#d97706' : '#ef4444');
-            const statusBg = statusLabel === 'Ativa' ? 'rgba(34, 197, 94, 0.12)' : (statusLabel === 'Em manutenção' ? 'rgba(245, 158, 11, 0.12)' : 'rgba(239, 68, 68, 0.12)');
-            const statusBorder = statusLabel === 'Ativa' ? 'rgba(34, 197, 94, 0.25)' : (statusLabel === 'Em manutenção' ? 'rgba(245, 158, 11, 0.25)' : 'rgba(239, 68, 68, 0.25)');
-
-            return `
-                <tr style="border-bottom: 1px solid var(--border-color); height: 64px; transition: background-color 0.15s ease;">
-                    <!-- Coluna 1: Nome da Escola -->
-                    <td style="padding: 12px 20px;">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div style="width: 38px; height: 38px; border-radius: 8px; background: rgba(99, 102, 241, 0.1); color: #6366f1; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.15rem;">
-                                ${zoneIcon}
-                            </div>
-                            <div>
-                                <strong style="font-size: 0.9rem; color: var(--text-primary); display: block; line-height: 1.3;">${sch.name}</strong>
-                                <span style="font-size: 0.74rem; color: var(--text-muted); margin-top: 2px; display: block;">
-                                    ${sch.city || 'Gonçalves Dias - MA'} • ${sch.alunosCount || 200} estudantes
-                                </span>
-                            </div>
-                        </div>
-                    </td>
-
-                    <!-- Coluna 2: Código INEP -->
-                    <td style="padding: 12px 16px; font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-secondary); font-weight: 700;">
-                        ${sch.inep}
-                    </td>
-
-                    <!-- Coluna 3: Localização (Padronizada) -->
-                    <td style="padding: 12px 16px;">
-                        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color);">
-                            <span>${zoneIcon}</span> <span>${sch.zone}</span>
-                        </span>
-                    </td>
-
-                    <!-- Coluna 4: Status Operacional -->
-                    <td style="padding: 12px 16px; text-align: center;">
-                        <span style="display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 20px; font-size: 0.74rem; font-weight: 800; background: ${statusBg}; color: ${statusColor}; border: 1px solid ${statusBorder};">
-                            ● ${statusLabel.toUpperCase()}
-                        </span>
-                    </td>
-
-                    <!-- Coluna 5: Ações (Ver Escola + Editar Escola se Admin/SEMED) -->
-                    <td style="padding: 12px 20px; text-align: center;">
-                        <div style="display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
-                            <!-- Botão Principal: Ver Escola -->
-                            <button type="button" onclick="openSchoolWorkspace('${sch.name.replace(/'/g, "\\\'")}');" class="btn btn-outline btn-sm" style="font-size: 0.76rem; font-weight: 700; color: #6366f1; border: 1px solid #6366f1; background: rgba(99, 102, 241, 0.08); padding: 6px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 1px 2px rgba(99, 102, 241, 0.08); cursor: pointer; transition: all 0.15s ease;">
-                                <span>Ver Escola</span> <span style="font-size: 0.85rem;">→</span>
-                            </button>
-                            
-                            <!-- Botão Secundário: Editar Escola (Apenas Admin & SEMED) -->
-                            ${isAdminOrSemed ? `
-                                <button type="button" onclick="openEditSchoolModal('${sch.inep}');" class="btn btn-outline btn-sm" style="font-size: 0.76rem; font-weight: 600; color: var(--text-primary); border: 1px solid var(--border-color); background: var(--bg-tertiary); padding: 6px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; transition: all 0.15s ease;" title="Editar Dados da Escola (Admin/SEMED)">
-                                    ✏️ Editar
-                                </button>
-                            ` : ''}
-                        </div>
-                    </td>
-                </tr>
-            `;
-        }).join('');
-
-        if (typeof safeCreateIcons === 'function') safeCreateIcons();
-    }
-    window.renderDbSchools = renderDbSchools;
-
-    // -------------------------------------------------------------------------
-    // 2. MODAL DE EDIÇÃO DE ESCOLA
-    // -------------------------------------------------------------------------
-    function openEditSchoolModal(schoolInepOrName) {
-        const modal = document.getElementById('modal-edit-school');
-        if (!modal) return;
-
-        const schools = getOfficialSchoolsState();
-        const target = schoolInepOrName || (typeof currentSelectedSchool !== 'undefined' ? currentSelectedSchool : null);
-        const school = schools.find(s => s.inep === target || s.name === target || s.id === target) || schools[0];
-        if (!school) return;
-
-        // Limpar mensagens de erro anteriores
-        document.querySelectorAll('.inline-err-msg').forEach(el => el.style.display = 'none');
-
-        // Preencher campos do modal
-        const elId = document.getElementById('edit-school-id');
-        const elName = document.getElementById('edit-school-name');
-        const elInep = document.getElementById('edit-school-inep');
-        const elZone = document.getElementById('edit-school-zone');
-        const elCity = document.getElementById('edit-school-city');
-        const elDirector = document.getElementById('edit-school-director');
-        const elRole = document.getElementById('edit-school-role');
-        const elStatus = document.getElementById('edit-school-status');
-        const elPhone = document.getElementById('edit-school-phone');
-        const elEmail = document.getElementById('edit-school-email');
-        const elStudents = document.getElementById('edit-school-students');
-
-        if (elId) elId.value = school.inep;
-        if (elName) elName.value = school.name || '';
-        if (elInep) elInep.value = school.inep || '';
-        if (elZone) elZone.value = school.zone || 'Zona Rural';
-        if (elCity) elCity.value = school.city || 'Gonçalves Dias - MA';
-        if (elDirector) elDirector.value = school.director || '';
-        if (elRole) elRole.value = school.role || 'Diretor(a) Escolar';
-        if (elStatus) elStatus.value = school.status || 'Ativa';
-        if (elPhone) elPhone.value = school.phone || '';
-        if (elEmail) elEmail.value = school.email || '';
-        if (elStudents) elStudents.value = `${school.alunosCount || 200} estudantes matriculados`;
-
-        modal.style.display = 'flex';
-        modal.classList.remove('hidden');
-    }
-    window.openEditSchoolModal = openEditSchoolModal;
-
-    function closeEditSchoolModal() {
-        const modal = document.getElementById('modal-edit-school');
-        if (modal) {
-            modal.style.display = 'none';
-            modal.classList.add('hidden');
-        }
-    }
-    window.closeEditSchoolModal = closeEditSchoolModal;
-
-    function handleSaveEditSchool(event) {
-        if (event) event.preventDefault();
-
-        const inepId = document.getElementById('edit-school-id')?.value;
-        const nameVal = document.getElementById('edit-school-name')?.value?.trim();
-        const inepVal = document.getElementById('edit-school-inep')?.value?.trim();
-        const zoneVal = document.getElementById('edit-school-zone')?.value;
-        const statusVal = document.getElementById('edit-school-status')?.value;
-        const directorVal = document.getElementById('edit-school-director')?.value?.trim();
-        const roleVal = document.getElementById('edit-school-role')?.value?.trim();
-        const phoneVal = document.getElementById('edit-school-phone')?.value?.trim();
-        const emailVal = document.getElementById('edit-school-email')?.value?.trim();
-
-        let hasError = false;
-
-        // Validações de campos obrigatórios
-        const errName = document.getElementById('err-school-name');
-        const errInep = document.getElementById('err-school-inep');
-        const errZone = document.getElementById('err-school-zone');
-
-        if (!nameVal) {
-            if (errName) errName.style.display = 'block';
-            hasError = true;
-        } else if (errName) errName.style.display = 'none';
-
-        if (!inepVal || inepVal.length < 7) {
-            if (errInep) errInep.style.display = 'block';
-            hasError = true;
-        } else if (errInep) errInep.style.display = 'none';
-
-        if (!zoneVal) {
-            if (errZone) errZone.style.display = 'block';
-            hasError = true;
-        } else if (errZone) errZone.style.display = 'none';
-
-        if (hasError) return;
-
-        // Atualizar registro no banco
-        const schools = getOfficialSchoolsState();
-        const index = schools.findIndex(s => s.inep === inepId || s.inep === inepVal);
-
-        if (index !== -1) {
-            schools[index] = {
-                ...schools[index],
-                name: nameVal,
-                inep: inepVal,
-                zone: zoneVal,
-                status: statusVal,
-                director: directorVal,
-                role: roleVal,
-                phone: phoneVal,
-                email: emailVal
-            };
-        } else {
-            schools.push({
-                id: `esc_${Date.now()}`,
-                name: nameVal,
-                inep: inepVal,
-                zone: zoneVal,
-                status: statusVal,
-                city: 'Gonçalves Dias - MA',
-                director: directorVal,
-                role: roleVal,
-                phone: phoneVal,
-                email: emailVal,
-                alunosCount: 200,
-                turmasCount: 6,
-                ideb2025: '5.2'
-            });
-        }
-
-        saveOfficialSchoolsState();
-        closeEditSchoolModal();
-        renderDbSchools();
-
-        // Se a escola editada estiver aberta no detalhe da escola, atualizar cabeçalho
-        if (typeof currentSelectedSchool !== 'undefined' && (currentSelectedSchool === inepId || currentSelectedSchool === nameVal || currentSelectedSchool === inepVal)) {
-            currentSelectedSchool = nameVal;
-            const nameEl = document.getElementById('school-detail-name');
-            const badgeEl = document.getElementById('school-detail-badge');
-            const metaEl = document.getElementById('school-detail-meta');
-            const isRural = zoneVal.includes('Rural');
-            if (nameEl) nameEl.textContent = nameVal;
-            if (badgeEl) {
-                badgeEl.innerHTML = `<span>${isRural ? '🌾' : '🏫'}</span> <span>${zoneVal}</span>`;
-                badgeEl.style.background = isRural ? 'rgba(245, 158, 11, 0.15)' : 'rgba(99, 102, 241, 0.15)';
-                badgeEl.style.color = isRural ? '#d97706' : '#6366f1';
-            }
-            if (metaEl) {
-                metaEl.textContent = `INEP: ${inepVal} • Direção: ${directorVal || 'Gestão Escolar'} • Contato: ${phoneVal || '-'} • Meta IDEB: 5.0`;
-            }
-        }
-
-        // Toast de confirmação visual não-bloqueante
-        const msg = `Escola "${nameVal}" atualizada com sucesso!`;
-        if (typeof showToast === 'function') {
-            showToast(msg, 'check');
-        } else {
-            let container = document.getElementById('toast-floating-container');
-            if (!container) {
-                container = document.createElement('div');
-                container.id = 'toast-floating-container';
-                container.className = 'toast-floating-container';
-                document.body.appendChild(container);
-            }
-            const toast = document.createElement('div');
-            toast.className = 'toast-item toast-success';
-            toast.innerHTML = `<span>✅</span> <span>${msg}</span>`;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 3500);
-        }
-    }
-    window.handleSaveEditSchool = handleSaveEditSchool;
 
 // ==========================================
 // BOOTSTRAP APPLICATION
