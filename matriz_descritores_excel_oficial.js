@@ -1,5 +1,5 @@
 // Base Oficial: MATRIZ_DESCRITORES_EXCEL
-window.MATRIZ_DESCRITORES_EXCEL = window.MATRIZ_DESCRITORES_EXCEL || {
+var MATRIZ_DESCRITORES_EXCEL_DATA = {
   "visaoGeral": [
     {
       "disciplina": "Língua Portuguesa",
@@ -750,8 +750,8 @@ window.MATRIZ_DESCRITORES_EXCEL = window.MATRIZ_DESCRITORES_EXCEL || {
 };
 
 if (typeof window !== 'undefined') {
-    window.MATRIZ_DESCRITORES_EXCEL = MATRIZ_DESCRITORES_EXCEL;
+    window.MATRIZ_DESCRITORES_EXCEL = MATRIZ_DESCRITORES_EXCEL_DATA;
 }
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = MATRIZ_DESCRITORES_EXCEL;
+    module.exports = MATRIZ_DESCRITORES_EXCEL_DATA;
 }
