@@ -1196,11 +1196,11 @@ function safeSetStyle(id, prop, value) {
     window.renderDashboardSchoolsRanking = renderDashboardSchoolsRanking;
 
     // Global chart instances to destroy on re-render
-    let dashGoncalvesDiasChartInstance = null;
-    let dashIniciaisChartInstance = null;
-    let dashFinaisChartInstance = null;
-    let dashComparativoChartInstance = null;
-    let dashSaebEvoChartInstance = null;
+    var dashGoncalvesDiasChartInstance = null;
+    var dashIniciaisChartInstance = null;
+    var dashFinaisChartInstance = null;
+    var dashComparativoChartInstance = null;
+    var dashSaebEvoChartInstance = null;
 
     // Registrar o plugin datalabels globalmente se a biblioteca estiver carregada
     if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined') {

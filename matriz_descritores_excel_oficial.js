@@ -1,5 +1,5 @@
 // Base Oficial: MATRIZ_DESCRITORES_EXCEL
-const MATRIZ_DESCRITORES_EXCEL = {
+window.MATRIZ_DESCRITORES_EXCEL = window.MATRIZ_DESCRITORES_EXCEL || {
   "visaoGeral": [
     {
       "disciplina": "Língua Portuguesa",
