@@ -8,11 +8,19 @@ let pool = null;
 let useLocalFallback = false;
 
 if (connectionString) {
-    console.log('Connecting to PostgreSQL using DATABASE_URL...');
-    pool = new Pool({
-        connectionString,
-        ssl: connectionString.includes('localhost') ? false : { rejectUnauthorized: false }
-    });
+    try {
+        console.log('Connecting to PostgreSQL using DATABASE_URL...');
+        pool = new Pool({
+            connectionString,
+            ssl: connectionString.includes('localhost') ? false : { rejectUnauthorized: false }
+        });
+        pool.on('error', (err) => {
+            console.error('[PG Pool Error]', err ? err.message : err);
+        });
+    } catch(e) {
+        console.error('Failed to create PG pool, using local fallback:', e.message);
+        useLocalFallback = true;
+    }
 } else {
     console.log('DATABASE_URL not found. Running in local fallback mode (using local JSON file for database).');
     useLocalFallback = true;
