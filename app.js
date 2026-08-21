@@ -1971,7 +1971,256 @@ function safeSetStyle(id, prop, value) {
             console.error('[renderDashboardIndicadorEscala Error]', err);
         }
     }
-    window.renderDashboardIndicadorEscala = renderDashboardIndicadorEscala;
+    function renderDashboardEscalaAprendizado() {
+        const escalaBody = document.getElementById('dashEscalaBody');
+        if (!escalaBody) return;
+
+        const escalaData = {
+            '5-lp': [
+                {
+                    cat: 'Abaixo do Básico',
+                    bg: 'rgba(239, 68, 68, 0.08)',
+                    color: '#ef4444',
+                    borderColor: 'rgba(239, 68, 68, 0.25)',
+                    rows: [
+                        ['Até nível 1', '0 - 149 pts']
+                    ]
+                },
+                {
+                    cat: 'Básico',
+                    bg: 'rgba(245, 158, 11, 0.08)',
+                    color: '#d97706',
+                    borderColor: 'rgba(245, 158, 11, 0.25)',
+                    rows: [
+                        ['Nível 2', '150 - 174 pts'],
+                        ['Nível 3', '175 - 199 pts']
+                    ]
+                },
+                {
+                    cat: 'Proficiente',
+                    bg: 'rgba(59, 130, 246, 0.08)',
+                    color: '#2563eb',
+                    borderColor: 'rgba(59, 130, 246, 0.25)',
+                    rows: [
+                        ['Nível 4', '200 - 224 pts'],
+                        ['Nível 5', '225 - 249 pts']
+                    ]
+                },
+                {
+                    cat: 'Avançado',
+                    bg: 'rgba(16, 185, 129, 0.08)',
+                    color: '#10b981',
+                    borderColor: 'rgba(16, 185, 129, 0.25)',
+                    rows: [
+                        ['Nível 6', '250 - 274 pts'],
+                        ['Nível 7', '275 - 299 pts'],
+                        ['Nível 8', '300 - 324 pts'],
+                        ['Nível 9', '≥ 325 pts']
+                    ]
+                }
+            ],
+            '5-mat': [
+                {
+                    cat: 'Abaixo do Básico',
+                    bg: 'rgba(239, 68, 68, 0.08)',
+                    color: '#ef4444',
+                    borderColor: 'rgba(239, 68, 68, 0.25)',
+                    rows: [
+                        ['Nível 0', '0 - 124 pts'],
+                        ['Nível 1', '125 - 149 pts'],
+                        ['Nível 2', '150 - 174 pts']
+                    ]
+                },
+                {
+                    cat: 'Básico',
+                    bg: 'rgba(245, 158, 11, 0.08)',
+                    color: '#d97706',
+                    borderColor: 'rgba(245, 158, 11, 0.25)',
+                    rows: [
+                        ['Nível 3', '175 - 199 pts'],
+                        ['Nível 4', '200 - 224 pts']
+                    ]
+                },
+                {
+                    cat: 'Proficiente',
+                    bg: 'rgba(59, 130, 246, 0.08)',
+                    color: '#2563eb',
+                    borderColor: 'rgba(59, 130, 246, 0.25)',
+                    rows: [
+                        ['Nível 5', '225 - 249 pts'],
+                        ['Nível 6', '250 - 274 pts']
+                    ]
+                },
+                {
+                    cat: 'Avançado',
+                    bg: 'rgba(16, 185, 129, 0.08)',
+                    color: '#10b981',
+                    borderColor: 'rgba(16, 185, 129, 0.25)',
+                    rows: [
+                        ['Nível 7', '275 - 299 pts'],
+                        ['Nível 8', '300 - 324 pts'],
+                        ['Nível 9', '325 - 349 pts'],
+                        ['Nível 10', '≥ 350 pts']
+                    ]
+                }
+            ],
+            '9-lp': [
+                {
+                    cat: 'Abaixo do Básico',
+                    bg: 'rgba(239, 68, 68, 0.08)',
+                    color: '#ef4444',
+                    borderColor: 'rgba(239, 68, 68, 0.25)',
+                    rows: [
+                        ['Nível 0', '0 - 199 pts']
+                    ]
+                },
+                {
+                    cat: 'Básico',
+                    bg: 'rgba(245, 158, 11, 0.08)',
+                    color: '#d97706',
+                    borderColor: 'rgba(245, 158, 11, 0.25)',
+                    rows: [
+                        ['Nível 1', '200 - 224 pts'],
+                        ['Nível 2', '225 - 249 pts'],
+                        ['Nível 3', '250 - 274 pts']
+                    ]
+                },
+                {
+                    cat: 'Proficiente',
+                    bg: 'rgba(59, 130, 246, 0.08)',
+                    color: '#2563eb',
+                    borderColor: 'rgba(59, 130, 246, 0.25)',
+                    rows: [
+                        ['Nível 4', '275 - 299 pts'],
+                        ['Nível 5', '300 - 324 pts']
+                    ]
+                },
+                {
+                    cat: 'Avançado',
+                    bg: 'rgba(16, 185, 129, 0.08)',
+                    color: '#10b981',
+                    borderColor: 'rgba(16, 185, 129, 0.25)',
+                    rows: [
+                        ['Nível 6', '325 - 349 pts'],
+                        ['Nível 7', '350 - 374 pts'],
+                        ['Nível 8', '≥ 375 pts']
+                    ]
+                }
+            ],
+            '9-mat': [
+                {
+                    cat: 'Abaixo do Básico',
+                    bg: 'rgba(239, 68, 68, 0.08)',
+                    color: '#ef4444',
+                    borderColor: 'rgba(239, 68, 68, 0.25)',
+                    rows: [
+                        ['Nível 0', '0 - 199 pts'],
+                        ['Nível 1', '200 - 224 pts']
+                    ]
+                },
+                {
+                    cat: 'Básico',
+                    bg: 'rgba(245, 158, 11, 0.08)',
+                    color: '#d97706',
+                    borderColor: 'rgba(245, 158, 11, 0.25)',
+                    rows: [
+                        ['Nível 2', '225 - 249 pts'],
+                        ['Nível 3', '250 - 274 pts'],
+                        ['Nível 4', '275 - 299 pts']
+                    ]
+                },
+                {
+                    cat: 'Proficiente',
+                    bg: 'rgba(59, 130, 246, 0.08)',
+                    color: '#2563eb',
+                    borderColor: 'rgba(59, 130, 246, 0.25)',
+                    rows: [
+                        ['Nível 5', '300 - 324 pts'],
+                        ['Nível 6', '325 - 349 pts']
+                    ]
+                },
+                {
+                    cat: 'Avançado',
+                    bg: 'rgba(16, 185, 129, 0.08)',
+                    color: '#10b981',
+                    borderColor: 'rgba(16, 185, 129, 0.25)',
+                    rows: [
+                        ['Nível 7', '350 - 374 pts'],
+                        ['Nível 8', '375 - 399 pts'],
+                        ['Nível 9', '≥ 400 pts']
+                    ]
+                }
+            ]
+        };
+
+        let curSerie = '5';
+        let curDisc = 'lp';
+
+        function renderActiveEscala() {
+            const key = `${curSerie}-${curDisc}`;
+            const groups = escalaData[key] || [];
+
+            let html = '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 10px;">';
+
+            groups.forEach(g => {
+                html += `
+                    <div style="background: ${g.bg}; border: 1px solid ${g.borderColor}; border-radius: 12px; padding: 14px 16px;">
+                        <div style="font-size: 0.85rem; font-weight: 800; color: ${g.color}; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+                            <span>${g.cat}</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                `;
+
+                g.rows.forEach(([nivel, faixa]) => {
+                    html += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; padding: 5px 10px; background: var(--bg-secondary); border-radius: 6px; border: 1px solid var(--border-color);">
+                            <span style="font-weight: 700; color: var(--text-primary);">${nivel}</span>
+                            <span style="font-weight: 800; color: ${g.color}; font-family: var(--font-mono);">${faixa}</span>
+                        </div>
+                    `;
+                });
+
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            escalaBody.innerHTML = html;
+        }
+
+        const serieBtns = document.querySelectorAll('#dashSerieSeg button');
+        serieBtns.forEach(btn => {
+            btn.onclick = () => {
+                curSerie = btn.dataset.serie;
+                serieBtns.forEach(b => {
+                    const isActive = (b === btn);
+                    b.className = isActive ? 'active' : '';
+                    b.style.background = isActive ? '#fff' : 'transparent';
+                    b.style.color = isActive ? '#6366f1' : 'var(--text-secondary)';
+                });
+                renderActiveEscala();
+            };
+        });
+
+        const discBtns = document.querySelectorAll('#dashDiscSeg button');
+        discBtns.forEach(btn => {
+            btn.onclick = () => {
+                curDisc = btn.dataset.disc;
+                discBtns.forEach(b => {
+                    const isActive = (b === btn);
+                    b.className = isActive ? 'active' : '';
+                    b.style.background = isActive ? '#fff' : 'transparent';
+                    b.style.color = isActive ? '#6366f1' : 'var(--text-secondary)';
+                });
+                renderActiveEscala();
+            };
+        });
+
+        renderActiveEscala();
+    }
+    window.renderDashboardEscalaAprendizado = renderDashboardEscalaAprendizado;
 
     function renderDashboardComplete() {
         updateUserHeaderUI();
