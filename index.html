@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <link rel="stylesheet" href="styles.css?v=7b79aed6bd_mt27ft9x">
+    <link rel="stylesheet" href="styles.css?v=7b79aed6bd_mt27o0ib">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -874,6 +874,43 @@
                                 </div>
                                 <div id="dashEscalaBody"></div>
                                 <div style="font-size: 11px; color: var(--text-secondary); text-align: right; margin-top: 10px;">Fonte: Saeb · Inep.</div>
+                            </div>
+                        </div>
+
+                        <!-- ROW: Gráfico de Evolução Histórica SAEB Gonçalves Dias -->
+                        <div class="dashboard-row grid-1" style="margin-top: 20px;">
+                            <div class="card card-full" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
+                                <div class="card-header" style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+                                    <div>
+                                        <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(59, 130, 246, 0.12); color: #3b82f6; padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; margin-bottom: 4px;">
+                                            📊 DIAGNÓSTICO OFICIAL SAEB / INEP
+                                        </div>
+                                        <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin: 0;">Evolução da Proficiência SAEB (Gonçalves Dias - MA) · 2015 a 2025</h3>
+                                        <p class="card-subtitle" style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">Histórico contínuo das médias de proficiência em Língua Portuguesa e Matemática (5º e 9º Anos do Ensino Fundamental).</p>
+                                    </div>
+                                    <span class="badge badge-purple" style="font-size: 0.75rem; font-weight: 700; padding: 6px 12px;">Dados Oficiais Relatórios SAEB</span>
+                                </div>
+                                <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; font-size: 0.76rem; font-weight: 700; background: var(--bg-tertiary); padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border-color);">
+                                    <span style="display: inline-flex; align-items: center; gap: 6px; color: #8B5CF6;">
+                                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #8B5CF6; display: inline-block;"></span>
+                                        🟣 5º Ano — Português
+                                    </span>
+                                    <span style="display: inline-flex; align-items: center; gap: 6px; color: #3B82F6;">
+                                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #3B82F6; display: inline-block;"></span>
+                                        🔵 5º Ano — Matemática
+                                    </span>
+                                    <span style="display: inline-flex; align-items: center; gap: 6px; color: #0EA5E9;">
+                                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #0EA5E9; display: inline-block;"></span>
+                                        🔷 9º Ano — Português
+                                    </span>
+                                    <span style="display: inline-flex; align-items: center; gap: 6px; color: #10B981;">
+                                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #10B981; display: inline-block;"></span>
+                                        🟩 9º Ano — Matemática
+                                    </span>
+                                </div>
+                                <div class="card-body" style="padding: 0; position: relative; height: 300px;">
+                                    <canvas id="dashChartSaebEvolucaoGoncalves" style="width: 100%; height: 100%; display: block;"></canvas>
+                                </div>
                             </div>
                         </div>
 
@@ -6456,14 +6493,14 @@
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=mt27ft9x"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=mt27ft9x"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=mt27ft9x"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=mt27o0ib"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=mt27o0ib"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=mt27o0ib"></script>
     <script src="bncc_habilidades_oficial.js?v=mt23gn8s"></script>
-    <script src="ideb_publico_db.js?v=mt27ft9x"></script>
-    <script src="alunos_db.js?v=mt27ft9x"></script>
+    <script src="ideb_publico_db.js?v=mt27o0ib"></script>
+    <script src="alunos_db.js?v=mt27o0ib"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=96faeb586b_mt27ft9x"></script>
+    <script src="app.js?v=62712bcc7d_mt27o0ib"></script>
 </body>
 </html>

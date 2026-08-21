@@ -2222,6 +2222,154 @@ function safeSetStyle(id, prop, value) {
     }
     window.renderDashboardEscalaAprendizado = renderDashboardEscalaAprendizado;
 
+    function renderDashboardSaebEvolucaoGoncalvesChart() {
+        const ctx = document.getElementById('dashChartSaebEvolucaoGoncalves');
+        if (!ctx) return;
+
+        const anos = ['2015', '2017', '2019', '2021', '2023', '2025'];
+        const port5 = [201.4, 205.8, 216.3, 210.2, 224.5, 231.8];
+        const mat5  = [206.2, 211.5, 222.1, 215.8, 230.4, 238.2];
+        const port9 = [232.1, 235.6, 248.4, 242.0, 254.8, 261.5];
+        const mat9  = [238.5, 241.2, 252.7, 246.3, 258.9, 267.4];
+
+        if (typeof Chart === 'undefined') return;
+
+        try {
+            if (window.dashSaebEvolucaoChartInstance) window.dashSaebEvolucaoChartInstance.destroy();
+
+            window.dashSaebEvolucaoChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: anos,
+                    datasets: [
+                        {
+                            type: 'line',
+                            label: '5º Ano — Língua Portuguesa',
+                            data: port5,
+                            borderColor: '#8B5CF6',
+                            backgroundColor: 'rgba(139, 92, 246, 0.08)',
+                            pointBackgroundColor: '#FFFFFF',
+                            pointBorderColor: '#8B5CF6',
+                            pointBorderWidth: 2.5,
+                            pointRadius: 4.5,
+                            borderWidth: 2.5,
+                            tension: 0.35,
+                            fill: false,
+                            datalabels: {
+                                display: true,
+                                align: 'top',
+                                color: '#8B5CF6',
+                                font: { weight: '800', size: 10 },
+                                formatter: (v) => v ? v.toFixed(1) : ''
+                            }
+                        },
+                        {
+                            type: 'line',
+                            label: '5º Ano — Matemática',
+                            data: mat5,
+                            borderColor: '#3B82F6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.08)',
+                            pointBackgroundColor: '#FFFFFF',
+                            pointBorderColor: '#3B82F6',
+                            pointBorderWidth: 2.5,
+                            pointRadius: 4.5,
+                            borderWidth: 2.5,
+                            tension: 0.35,
+                            fill: false,
+                            datalabels: {
+                                display: true,
+                                align: 'bottom',
+                                color: '#3B82F6',
+                                font: { weight: '800', size: 10 },
+                                formatter: (v) => v ? v.toFixed(1) : ''
+                            }
+                        },
+                        {
+                            type: 'line',
+                            label: '9º Ano — Língua Portuguesa',
+                            data: port9,
+                            borderColor: '#0EA5E9',
+                            backgroundColor: 'rgba(14, 165, 233, 0.08)',
+                            pointBackgroundColor: '#FFFFFF',
+                            pointBorderColor: '#0EA5E9',
+                            pointBorderWidth: 2.5,
+                            pointRadius: 4.5,
+                            borderWidth: 2.5,
+                            tension: 0.35,
+                            fill: false,
+                            datalabels: {
+                                display: true,
+                                align: 'top',
+                                color: '#0EA5E9',
+                                font: { weight: '800', size: 10 },
+                                formatter: (v) => v ? v.toFixed(1) : ''
+                            }
+                        },
+                        {
+                            type: 'line',
+                            label: '9º Ano — Matemática',
+                            data: mat9,
+                            borderColor: '#10B981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                            pointBackgroundColor: '#FFFFFF',
+                            pointBorderColor: '#10B981',
+                            pointBorderWidth: 2.5,
+                            pointRadius: 4.5,
+                            borderWidth: 2.5,
+                            tension: 0.35,
+                            fill: false,
+                            datalabels: {
+                                display: true,
+                                align: 'bottom',
+                                color: '#10B981',
+                                font: { weight: '800', size: 10 },
+                                formatter: (v) => v ? v.toFixed(1) : ''
+                            }
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: { padding: { top: 26, bottom: 8, left: 4, right: 4 } },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, font: { size: 11.5, weight: '600' } }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleFont: { size: 12, weight: '800' },
+                            bodyFont: { size: 11 },
+                            padding: 10,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.dataset.label}: ${context.raw ? context.raw.toFixed(1) : 'N/A'} pts`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 190,
+                            max: 280,
+                            grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                            ticks: { stepSize: 15, font: { size: 11, weight: '600' }, color: 'var(--text-secondary)' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 11, weight: '700' }, color: 'var(--text-primary)' }
+                        }
+                    }
+                }
+            });
+        } catch(err) {
+            console.error('[renderDashboardSaebEvolucaoGoncalvesChart Error]', err);
+        }
+    }
+    window.renderDashboardSaebEvolucaoGoncalvesChart = renderDashboardSaebEvolucaoGoncalvesChart;
+
     function renderDashboardComplete() {
         updateUserHeaderUI();
         renderDashboardWelcomeBanner();
@@ -2234,6 +2382,7 @@ function safeSetStyle(id, prop, value) {
         renderDashboardComparativoChart();
         renderDashboardIndicadorEscala();
         if (typeof renderDashboardEscalaAprendizado === 'function') renderDashboardEscalaAprendizado();
+        if (typeof renderDashboardSaebEvolucaoGoncalvesChart === 'function') renderDashboardSaebEvolucaoGoncalvesChart();
         renderDashboardProficiency();
         renderDashboardSchoolsRanking();
     }
