@@ -1,4 +1,15 @@
 
+// =========================================================================
+// GLOBAL INSTANCES & STATE INITIALIZATION (HOISTED AT TOP OF SCRIPT)
+// =========================================================================
+var dashGoncalvesDiasChartInstance = null;
+var dashIniciaisChartInstance = null;
+var dashFinaisChartInstance = null;
+var dashComparativoChartInstance = null;
+var dashSaebEvoChartInstance = null;
+var dashSaebEvolucaoChartInstance = null;
+var selectedProfileIcon = '🧑‍💼';
+
 // ==========================================
 // SAFE DOM HELPER UTILITIES (PREVENT NULL CRASHES)
 // ==========================================
@@ -505,7 +516,7 @@ function safeSetStyle(id, prop, value) {
     window.renderDashboardWelcomeBanner = renderDashboardWelcomeBanner;
 
     // Controladores do Modal de Perfil
-    let selectedProfileIcon = '🧑‍💼';
+    // selectedProfileIcon gerenciado no topo do arquivo
 
     function openUserProfileModal() {
         const modal = document.getElementById('modal-user-profile');
