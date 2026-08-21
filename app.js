@@ -776,13 +776,35 @@ function safeSetStyle(id, prop, value) {
         const fluxoVal = '96.8%';
         const fluxoSub = 'Censo Escolar / Gonçalves Dias';
 
-        let simuladoVal = '5.4 pts';
-        let simuladoSub = '<span style="color:var(--green-light); font-weight:700;">Simulado SAEB 1º Semestre</span>';
+        // Estado inicial sem dados para o slot Evolução dos Simulados (gerando dados somente após a 1ª avaliação)
+        let temSimuladoAplicado = false;
+        try {
+            const saved = localStorage.getItem('saeb_avaliacoes_aplicadas') || localStorage.getItem('avaliacoes');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    temSimuladoAplicado = true;
+                }
+            }
+        } catch(e) {}
+
+        let simuladoVal = '—';
+        let simuladoSub = '<span style="color: var(--text-muted); font-size: 0.78rem;">Aguardando 1ª Avaliação</span>';
         let simuladoBtn = `
-            <button onclick="switchTab('sec-criar-avaliacoes')" style="background: rgba(99, 102, 241, 0.12); color: #6366f1; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
-                Ver Resultados →
+            <button onclick="switchTab('sec-criar-avaliacoes')" style="background: rgba(99, 102, 241, 0.12); color: #6366f1; border: none; border-radius: 6px; padding: 5px 10px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+                Aplicar 1º Simulado →
             </button>
         `;
+
+        if (temSimuladoAplicado) {
+            simuladoVal = '5.4 pts';
+            simuladoSub = '<span style="color:var(--green-light); font-weight:700;">Simulado SAEB 1º Semestre</span>';
+            simuladoBtn = `
+                <button onclick="switchTab('sec-criar-avaliacoes')" style="background: rgba(99, 102, 241, 0.12); color: #6366f1; border: none; border-radius: 6px; padding: 5px 10px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+                    Ver Resultados →
+                </button>
+            `;
+        }
 
         container.innerHTML = `
             <div class="metric-card" style="border: 1px solid var(--border-color); background: var(--bg-secondary);">
