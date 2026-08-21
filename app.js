@@ -7021,13 +7021,16 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         const searchInput = document.getElementById('matriz-search-input');
         const query = searchInput ? searchInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
 
+        const db = (window.MATRIZES_DESCRITORES_BNCC_DATA && window.MATRIZES_DESCRITORES_BNCC_DATA.descritores) || window.MATRIZ_DESCRITORES_EXCEL;
+
         let stageData = { portuguese: [], math: [], science: [], humanas: [] };
-        if (window.MATRIZ_DESCRITORES_EXCEL) {
-            stageData.portuguese = (window.MATRIZ_DESCRITORES_EXCEL.linguaPortuguesa || []).map(d => ({ codigo: d.codigo, topico: d.topico, desc: d.descricao }));
-            stageData.math = (window.MATRIZ_DESCRITORES_EXCEL.matematica || []).map(d => ({ codigo: d.codigo, topico: d.topico, desc: d.descricao }));
-            stageData.science = (window.MATRIZ_DESCRITORES_EXCEL.ciencias || []).map(d => ({ codigo: d.codigo, topico: d.topico, desc: d.descricao }));
-            stageData.humanas = (window.MATRIZ_DESCRITORES_EXCEL.geografiaOba || []).map(d => ({ codigo: d.codigo, topico: d.topico, desc: d.descricao }));
-        } else {
+
+        if (db) {
+            stageData.portuguese = (db.linguaPortuguesa || []).map(d => ({ codigo: d.codigo, topico: d.topico || '', desc: d.descricao || d.desc || '' }));
+            stageData.math = (db.matematica || []).map(d => ({ codigo: d.codigo, topico: d.topico || '', desc: d.descricao || d.desc || '' }));
+            stageData.science = (db.ciencias || []).map(d => ({ codigo: d.codigo, topico: d.topico || '', desc: d.descricao || d.desc || '' }));
+            stageData.humanas = (db.geografiaOba || []).map(d => ({ codigo: d.codigo, topico: d.topico || '', desc: d.descricao || d.desc || '' }));
+        } else if (typeof MASTER_EXHAUSTIVE_MATRICES !== 'undefined') {
             const masterData = MASTER_EXHAUSTIVE_MATRICES[activeMatrizEtapa] || MASTER_EXHAUSTIVE_MATRICES['5ano'];
             stageData = masterData || stageData;
         }
@@ -7037,7 +7040,7 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
             container.innerHTML = '';
 
             const filtered = (items || []).filter(d => {
-                const text = (d.codigo + ' ' + d.desc + ' ' + (d.topico || '')).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                const text = ((d.codigo || '') + ' ' + (d.desc || '') + ' ' + (d.topico || '')).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 return text.includes(query);
             });
 
@@ -7048,16 +7051,18 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
 
             filtered.forEach(d => {
                 const div = document.createElement('div');
-                div.style.padding = '8px 12px';
+                div.style.padding = '10px 14px';
                 div.style.borderRadius = 'var(--radius-sm)';
                 div.style.border = '1px solid var(--border-color)';
                 div.style.backgroundColor = 'var(--bg-tertiary)';
-                div.style.fontSize = '0.8rem';
-                div.style.lineHeight = '1.4';
+                div.style.fontSize = '0.84rem';
+                div.style.lineHeight = '1.45';
+                div.style.transition = 'all 0.15s ease';
+                div.style.marginBottom = '6px';
                 div.innerHTML = `
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px;">
-                        <span style="font-weight: 800; font-family: var(--font-mono); color: ${badgeColor}; font-size: 0.82rem;">${d.codigo}</span>
-                        ${d.topico ? `<span style="font-size: 0.65rem; padding: 1px 5px; border-radius: 4px; background: rgba(0,0,0,0.06); color: var(--text-secondary); border: 1px solid var(--border-color); font-weight:600;">${d.topico}</span>` : ''}
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                        <span style="font-weight: 800; font-family: var(--font-mono); color: ${badgeColor}; font-size: 0.85rem;">${d.codigo}</span>
+                        ${d.topico ? `<span style="font-size: 0.68rem; padding: 2px 6px; border-radius: 4px; background: rgba(0,0,0,0.06); color: var(--text-secondary); border: 1px solid var(--border-color); font-weight:600;">${d.topico}</span>` : ''}
                     </div>
                     <div style="color: var(--text-primary); font-weight: 500;">${d.desc}</div>
                 `;
@@ -16438,74 +16443,7 @@ if (document.readyState === 'loading') {
     }
     window.filterMatrizDescritores = filterMatrizDescritores;
 
-    function renderReferenceMatrix() {
-        const lpList = document.getElementById('matriz-lp-list');
-        const mtList = document.getElementById('matriz-mt-list');
-        const ciList = document.getElementById('matriz-ci-list');
-        const chList = document.getElementById('matriz-ch-list');
-
-        const searchInput = document.getElementById('matriz-search-input');
-        const query = searchInput ? searchInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
-
-        const db = window.MATRIZES_DESCRITORES_BNCC_DATA ? window.MATRIZES_DESCRITORES_BNCC_DATA.descritores : null;
-
-        let lpData = (db && db.linguaPortuguesa) ? db.linguaPortuguesa.map(i => ({ codigo: i.codigo, desc: i.descricao, topico: i.topico })) : [];
-        let mtData = (db && db.matematica) ? db.matematica.map(i => ({ codigo: i.codigo, desc: i.descricao, topico: i.topico })) : [];
-        let ciData = (db && db.ciencias) ? db.ciencias.map(i => ({ codigo: i.codigo, desc: i.descricao, topico: i.topico })) : [];
-        let chData = (db && db.geografiaOba) ? db.geografiaOba.map(i => ({ codigo: i.codigo, desc: i.descricao, topico: i.topico })) : [];
-
-        // If stage fallback
-        if (activeMatrizEtapa && FULL_OFFICIAL_SAEB_BNCC_MATRICES[activeMatrizEtapa]) {
-            const fallback = FULL_OFFICIAL_SAEB_BNCC_MATRICES[activeMatrizEtapa];
-            if (lpData.length === 0) lpData = fallback.portuguese || [];
-            if (mtData.length === 0) mtData = fallback.math || [];
-            if (ciData.length === 0) ciData = fallback.science || [];
-        }
-
-        function renderColumn(container, items, badgeColor) {
-            if (!container) return;
-            container.innerHTML = '';
-
-            const filtered = (items || []).filter(d => {
-                const text = ((d.codigo || '') + ' ' + (d.desc || d.descricao || '') + ' ' + (d.topico || '')).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                return text.includes(query);
-            });
-
-            if (filtered.length === 0) {
-                container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.8rem;">Nenhum descritor encontrado.</div>';
-                return;
-            }
-
-            filtered.forEach(d => {
-                const codigo = d.codigo || '';
-                const desc = d.desc || d.descricao || '';
-                const topico = d.topico || '';
-
-                const div = document.createElement('div');
-                div.style.padding = '10px 14px';
-                div.style.borderRadius = 'var(--radius-sm)';
-                div.style.border = '1px solid var(--border-color)';
-                div.style.backgroundColor = 'var(--bg-tertiary)';
-                div.style.fontSize = '0.84rem';
-                div.style.lineHeight = '1.45';
-                div.style.transition = 'all 0.15s ease';
-                div.innerHTML = `
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-                        <span style="font-weight: 800; font-family: var(--font-mono); color: ${badgeColor}; font-size: 0.85rem;">${codigo}</span>
-                        ${topico ? `<span style="font-size: 0.68rem; padding: 2px 6px; border-radius: 4px; background: rgba(0,0,0,0.06); color: var(--text-secondary); border: 1px solid var(--border-color); font-weight:600;">${topico}</span>` : ''}
-                    </div>
-                    <div style="color: var(--text-primary); font-weight: 500;">${desc}</div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        renderColumn(lpList, lpData, '#8b5cf6');
-        renderColumn(mtList, mtData, '#3b82f6');
-        renderColumn(ciList, ciData, '#10b981');
-        renderColumn(chList, chData, '#f59e0b');
-    }
-    window.renderReferenceMatrix = renderReferenceMatrix;
+    // renderReferenceMatrix e gerenciado globalmente pela definicao principal
 
     function renderBnccSkillsTable() {
         const tbody = document.getElementById('bncc-skills-table-body');

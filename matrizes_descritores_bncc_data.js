@@ -1815,6 +1815,7 @@ window.MATRIZES_DESCRITORES_BNCC_DATA = {
     ]
   }
 };
+window.MATRIZ_DESCRITORES_EXCEL = window.MATRIZES_DESCRITORES_BNCC_DATA.descritores;
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = window.MATRIZES_DESCRITORES_BNCC_DATA;
 }
