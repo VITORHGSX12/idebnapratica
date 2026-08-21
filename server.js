@@ -890,8 +890,8 @@ app.get('*', (req, res) => {
 });
 
 // Start Server and Init Database
-app.listen(PORT, async () => {
-    console.log(`Server running on port ${PORT}`);
+const server = app.listen(PORT, '0.0.0.0', async () => {
+    console.log(`[Railway/Production] Server running on 0.0.0.0:${PORT}`);
     
     if (!db.useLocalFallback) {
         try {
@@ -909,7 +909,15 @@ app.listen(PORT, async () => {
             await db.runMigrations();
             await db.seedDatabase();
         } catch (err) {
-            console.error('Database initialization failed:', err);
+            console.error('Database initialization non-fatal warning:', err);
         }
     }
+});
+
+process.on('uncaughtException', (err) => {
+    console.error('[UncaughtException]', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('[UnhandledRejection]', reason);
 });
