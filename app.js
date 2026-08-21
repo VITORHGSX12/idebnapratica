@@ -1207,6 +1207,50 @@ function safeSetStyle(id, prop, value) {
         try { Chart.register(ChartDataLabels); } catch(e) {}
     }
 
+    // Configuração Global de Tooltips Interativas Dark Theme para todos os Gráficos
+    function configureGlobalChartTooltips() {
+        if (typeof Chart === 'undefined') return;
+        try {
+            Chart.defaults.interaction = Chart.defaults.interaction || {};
+            Chart.defaults.interaction.mode = 'index';
+            Chart.defaults.interaction.intersect = false;
+
+            Chart.defaults.plugins = Chart.defaults.plugins || {};
+            Chart.defaults.plugins.tooltip = Chart.defaults.plugins.tooltip || {};
+            Chart.defaults.plugins.tooltip.enabled = true;
+            Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(15, 23, 42, 0.94)';
+            Chart.defaults.plugins.tooltip.titleColor = '#FFFFFF';
+            Chart.defaults.plugins.tooltip.titleFont = { size: 13, weight: '800' };
+            Chart.defaults.plugins.tooltip.bodyColor = '#F8FAFC';
+            Chart.defaults.plugins.tooltip.bodyFont = { size: 12, weight: '600' };
+            Chart.defaults.plugins.tooltip.padding = 12;
+            Chart.defaults.plugins.tooltip.cornerRadius = 8;
+            Chart.defaults.plugins.tooltip.usePointStyle = true;
+            Chart.defaults.plugins.tooltip.boxWidth = 8;
+            Chart.defaults.plugins.tooltip.boxHeight = 8;
+            Chart.defaults.plugins.tooltip.boxPadding = 6;
+            Chart.defaults.plugins.tooltip.borderColor = 'rgba(255, 255, 255, 0.12)';
+            Chart.defaults.plugins.tooltip.borderWidth = 1;
+            Chart.defaults.plugins.tooltip.caretSize = 6;
+            Chart.defaults.plugins.tooltip.caretPadding = 6;
+            Chart.defaults.plugins.tooltip.callbacks = {
+                title: function(context) {
+                    if (!context || !context.length) return '';
+                    const lbl = context[0].label;
+                    return lbl.toString().toLowerCase().includes('ano') ? lbl : `Ciclo ${lbl}`;
+                },
+                label: function(context) {
+                    const label = context.dataset.label || '';
+                    const val = context.raw;
+                    if (val === null || val === undefined) return null;
+                    const formatted = typeof val === 'number' ? (val >= 50 ? val.toFixed(1) + ' pts' : val.toFixed(1) + ' ★') : val;
+                    return ` ${label}: ${formatted}`;
+                }
+            };
+        } catch(e) {}
+    }
+    configureGlobalChartTooltips();
+
     // Helper de renderização Canvas Nativa de Fallback (para garantia de 100% de funcionamento)
     function drawCanvasFallbackChart(canvas, labels, datasets, minY, maxY) {
         if (!canvas || !canvas.getContext) return;
@@ -1427,18 +1471,6 @@ function safeSetStyle(id, prop, value) {
                         legend: {
                             position: 'bottom',
                             labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, font: { size: 11.5, weight: '600' } }
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                            titleFont: { size: 12, weight: '800' },
-                            bodyFont: { size: 11 },
-                            padding: 10,
-                            cornerRadius: 8,
-                            callbacks: {
-                                label: function(context) {
-                                    return ` ${context.dataset.label}: ${context.raw ? context.raw.toFixed(1) : 'N/A'}`;
-                                }
-                            }
                         }
                     },
                     scales: {
