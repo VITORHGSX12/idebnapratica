@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <link rel="stylesheet" href="styles.css?v=7b79aed6bd_mt27e63x">
+    <link rel="stylesheet" href="styles.css?v=7b79aed6bd_mt27ft9x">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -854,52 +854,8 @@
                             </div>
                         </div>
 
-                        <!-- ROW: Indicador de Aprendizado + Escala de Aprendizado -->
-                        <div class="dashboard-row grid-2" style="margin-top: 20px; gap: 20px;">
-                            <!-- Indicador de Aprendizado -->
-                            <div class="card card-full" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
-                                <div class="card-header" style="margin-bottom: 12px;">
-                                    <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0;">Indicador de Aprendizado</h3>
-                                    <p class="card-subtitle" style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">O indicador varia de 0 a 10 — quanto maior, melhor. Um valor 10 seria praticamente inatingível, pois significaria que todos os alunos obtiveram o rendimento esperado.</p>
-                                </div>
-                                <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 8px;">
-                                    <span style="font-size: 12px; font-weight: 600; color: var(--text-secondary); background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 9px;">2025</span>
-                                    <div class="tab-group" id="dashEtapaTabs" style="display: flex; gap: 6px; background: var(--bg-tertiary); border-radius: 10px; padding: 4px;">
-                                        <button class="tab-btn active" data-etapa="finais" style="border: none; background: #fff; padding: 7px 14px; border-radius: 8px; font-size: 12.5px; font-weight: 600; color: #6366f1; cursor: pointer;">Anos Finais</button>
-                                        <button class="tab-btn" data-etapa="iniciais" style="border: none; background: transparent; padding: 7px 14px; border-radius: 8px; font-size: 12.5px; font-weight: 600; color: var(--text-secondary); cursor: pointer;">Anos Iniciais</button>
-                                    </div>
-                                    <span style="font-size: 12px; font-weight: 600; color: var(--text-secondary); background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 9px;">Pública</span>
-                                </div>
-
-                                <div style="display: flex; gap: 14px; flex-wrap: wrap; margin: 16px 0 18px;">
-                                    <div style="flex: 1; min-width: 210px; border: 1px solid var(--border-color); border-radius: 14px; padding: 16px 18px; display: flex; gap: 12px; align-items: flex-start; background: var(--bg-primary);">
-                                        <span style="font-size: 24px; line-height: 1;">🎓</span>
-                                        <div>
-                                            <div style="font-family: var(--font-heading); font-size: 26px; font-weight: 700; color: #6366f1;" id="dashIndicadorNum">4,79</div>
-                                            <div style="font-size: 12px; color: var(--text-secondary); margin-top: 2px; line-height: 1.5; max-width: 260px;">Nota padronizada em português e matemática de acordo com a Prova Saeb/2025</div>
-                                        </div>
-                                    </div>
-                                    <div style="flex: 1; min-width: 220px; border: 1px solid var(--border-color); border-radius: 14px; padding: 16px 18px; display: flex; gap: 26px; background: var(--bg-primary);">
-                                        <div>
-                                            <div style="font-size: 12.5px; font-weight: 700; color: #4E9BE8; margin-bottom: 4px;">Português</div>
-                                            <div style="font-family: var(--font-heading); font-size: 22px; font-weight: 700; color: var(--text-primary);" id="dashPortNum">245,03</div>
-                                            <div style="font-size: 11.5px; color: var(--text-secondary); margin-top: 2px;">Média de proficiência</div>
-                                        </div>
-                                        <div>
-                                            <div style="font-size: 12.5px; font-weight: 700; color: #3A4356; margin-bottom: 4px;">Matemática</div>
-                                            <div style="font-family: var(--font-heading); font-size: 22px; font-weight: 700; color: var(--text-primary);" id="dashMatNum">242,35</div>
-                                            <div style="font-size: 11.5px; color: var(--text-secondary); margin-top: 2px;">Média de proficiência</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; color: var(--text-primary);">Evolução nota Saeb</h4>
-                                <div style="position: relative; height: 250px;">
-                                    <canvas id="dashChartSaebEvo" style="width: 100%; height: 100%; display: block;"></canvas>
-                                </div>
-                                <div style="font-size: 11px; color: var(--text-secondary); text-align: right; margin-top: 10px;">Fonte: Ideb 2025, INEP.</div>
-                            </div>
-
+                        <!-- ROW: Escala do Aprendizado (Largura Total) -->
+                        <div class="dashboard-row grid-1" style="margin-top: 20px;">
                             <!-- Escala do Aprendizado -->
                             <div class="card card-full" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
                                 <div class="card-header" style="margin-bottom: 12px;">
@@ -919,11 +875,6 @@
                                 <div id="dashEscalaBody"></div>
                                 <div style="font-size: 11px; color: var(--text-secondary); text-align: right; margin-top: 10px;">Fonte: Saeb · Inep.</div>
                             </div>
-                        </div>
-
-                        <!-- ROW: Distribuição dos alunos por proficiência -->
-                        <div class="dashboard-row grid-1" style="margin-top: 20px;" id="dashboard-proficiency-container">
-                            <!-- Injetado dinamicamente via renderDashboardProficiency() em app.js -->
                         </div>
 
                         <!-- LISTA / RANKING DE ESCOLAS DA REDE -->
@@ -6505,14 +6456,14 @@
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=mt27e63x"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=mt27e63x"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=mt27e63x"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=mt27ft9x"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=mt27ft9x"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=mt27ft9x"></script>
     <script src="bncc_habilidades_oficial.js?v=mt23gn8s"></script>
-    <script src="ideb_publico_db.js?v=mt27e63x"></script>
-    <script src="alunos_db.js?v=mt27e63x"></script>
+    <script src="ideb_publico_db.js?v=mt27ft9x"></script>
+    <script src="alunos_db.js?v=mt27ft9x"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=96faeb586b_mt27e63x"></script>
+    <script src="app.js?v=96faeb586b_mt27ft9x"></script>
 </body>
 </html>
