@@ -889,29 +889,33 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// Health check simples para proxy Railway
+app.get('/health', (req, res) => res.status(200).send('OK'));
+
 // Start Server and Init Database
-const server = app.listen(PORT, '0.0.0.0', async () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`[Railway/Production] Server running on 0.0.0.0:${PORT}`);
     
-    if (!db.useLocalFallback) {
-        try {
-            // Ensure tenant_state table exists
-            console.log('Ensuring tenant_state table exists...');
-            await db.query(`
-                CREATE TABLE IF NOT EXISTS tenant_state (
-                    tenant_id VARCHAR(50) PRIMARY KEY,
-                    data JSONB,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            `);
-            
-            // Run migrations and seed
-            await db.runMigrations();
-            await db.seedDatabase();
-        } catch (err) {
-            console.error('Database initialization non-fatal warning:', err);
+    // Rodar checagens de banco em segundo plano de forma assíncrona para não atrasar o binding do Railway
+    setImmediate(async () => {
+        if (!db.useLocalFallback) {
+            try {
+                console.log('Ensuring tenant_state table exists...');
+                await db.query(`
+                    CREATE TABLE IF NOT EXISTS tenant_state (
+                        tenant_id VARCHAR(50) PRIMARY KEY,
+                        data JSONB,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    )
+                `);
+                
+                await db.runMigrations();
+                await db.seedDatabase();
+            } catch (err) {
+                console.error('[DB Init Warning]', err.message);
+            }
         }
-    }
+    });
 });
 
 process.on('uncaughtException', (err) => {
