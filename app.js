@@ -776,36 +776,6 @@ function safeSetStyle(id, prop, value) {
         const fluxoVal = '96.8%';
         const fluxoSub = 'Censo Escolar / Gonçalves Dias';
 
-        // Estado inicial sem dados para o slot Evolução dos Simulados (gerando dados somente após a 1ª avaliação)
-        let temSimuladoAplicado = false;
-        try {
-            const saved = localStorage.getItem('saeb_avaliacoes_aplicadas') || localStorage.getItem('avaliacoes');
-            if (saved) {
-                const parsed = JSON.parse(saved);
-                if (Array.isArray(parsed) && parsed.length > 0) {
-                    temSimuladoAplicado = true;
-                }
-            }
-        } catch(e) {}
-
-        let simuladoVal = '—';
-        let simuladoSub = '<span style="color: var(--text-muted); font-size: 0.78rem;">Aguardando 1ª Avaliação</span>';
-        let simuladoBtn = `
-            <button onclick="switchTab('sec-criar-avaliacoes')" style="background: rgba(99, 102, 241, 0.12); color: #6366f1; border: none; border-radius: 6px; padding: 5px 10px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
-                Aplicar 1º Simulado →
-            </button>
-        `;
-
-        if (temSimuladoAplicado) {
-            simuladoVal = '5.4 pts';
-            simuladoSub = '<span style="color:var(--green-light); font-weight:700;">Simulado SAEB 1º Semestre</span>';
-            simuladoBtn = `
-                <button onclick="switchTab('sec-criar-avaliacoes')" style="background: rgba(99, 102, 241, 0.12); color: #6366f1; border: none; border-radius: 6px; padding: 5px 10px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
-                    Ver Resultados →
-                </button>
-            `;
-        }
-
         container.innerHTML = `
             <div class="metric-card" style="border: 1px solid var(--border-color); background: var(--bg-secondary);">
                 <div class="metric-header">
@@ -838,18 +808,6 @@ function safeSetStyle(id, prop, value) {
                 <div class="metric-value" style="color: #10b981; font-weight: 800; font-size: 2.2rem;">${fluxoVal}</div>
                 <div class="metric-footer">
                     <span class="trend-label">${fluxoSub}</span>
-                </div>
-            </div>
-
-            <div class="metric-card" style="border: 1px solid var(--border-color); background: var(--bg-secondary);">
-                <div class="metric-header">
-                    <span class="metric-title">Evolução dos Simulados</span>
-                    <div class="metric-icon red"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="m9 16 2 2 4-4"/></svg></div>
-                </div>
-                <div class="metric-value" style="font-size: 2rem; font-weight: 800; color: #6366f1; margin: 4px 0;">${simuladoVal}</div>
-                <div class="metric-footer" style="margin-top: 4px; display:flex; justify-content:space-between; align-items:center;">
-                    <div style="font-size:0.75rem;">${simuladoSub}</div>
-                    ${simuladoBtn}
                 </div>
             </div>
         `;
