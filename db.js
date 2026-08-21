@@ -41,10 +41,11 @@ async function query(text, params) {
 
 // Auto-run Migrations
 async function runMigrations() {
-    if (useLocalFallback) return;
+    if (useLocalFallback || !pool) return;
 
-    const client = await pool.connect();
+    let client = null;
     try {
+        client = await pool.connect();
         console.log('Checking/running database migrations...');
         // Create migrations tracking table
         await client.query(`
@@ -75,18 +76,21 @@ async function runMigrations() {
             }
         }
     } catch (err) {
-        console.error('Error running migrations:', err);
+        console.error('Error running migrations (continuing in fallback mode):', err.message);
     } finally {
-        client.release();
+        if (client) {
+            try { client.release(); } catch(e) {}
+        }
     }
 }
 
 // Seed Initial Data (Municipios and Alunos)
 async function seedDatabase() {
-    if (useLocalFallback) return;
+    if (useLocalFallback || !pool) return;
 
-    const client = await pool.connect();
+    let client = null;
     try {
+        client = await pool.connect();
         // 1. Seed municipios_ma
         const hasMunicipios = await client.query('SELECT 1 FROM municipios_ma LIMIT 1');
         if (hasMunicipios.rows.length === 0) {
@@ -171,8 +175,6 @@ async function seedDatabase() {
                 const endIdx = content.lastIndexOf(']');
                 if (startIdx > -1 && endIdx > -1) {
                     const students = JSON.parse(content.substring(startIdx, endIdx + 1));
-                    
-                    // Extract unique schools
                     const schoolNames = Array.from(new Set(students.map(s => s.escola)));
                     const schoolMap = {};
                     
@@ -208,9 +210,11 @@ async function seedDatabase() {
             }
         }
     } catch (err) {
-        console.error('Error seeding database:', err);
+        console.error('Error seeding database (continuing in fallback mode):', err.message);
     } finally {
-        client.release();
+        if (client) {
+            try { client.release(); } catch(e) {}
+        }
     }
 }
 
