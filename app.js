@@ -1244,11 +1244,30 @@ function safeSetStyle(id, prop, value) {
         
         const paddingLeft = 35;
         const paddingRight = 15;
-        const paddingTop = 25;
+        const paddingTop = 32;
         const paddingBottom = 35;
         const chartW = width - paddingLeft - paddingRight;
         const chartH = height - paddingTop - paddingBottom;
         
+        // Desenhando Legenda no topo
+        let legendX = paddingLeft;
+        datasets.forEach(ds => {
+            if (!ds.label) return;
+            const color = ds.borderColor || (typeof ds.backgroundColor === 'string' ? ds.backgroundColor : '#6366f1');
+            
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(legendX + 5, 12, 4, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#475569';
+            ctx.font = 'bold 10.5px sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText(ds.label, legendX + 13, 15);
+            
+            legendX += ctx.measureText(ds.label).width + 30;
+        });
+
         // Linhas de grade
         ctx.strokeStyle = 'rgba(226, 232, 240, 0.6)';
         ctx.lineWidth = 1;

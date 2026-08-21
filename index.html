@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <link rel="stylesheet" href="styles.css?v=7b79aed6bd_mt26mqco">
+    <link rel="stylesheet" href="styles.css?v=7b79aed6bd_mt26u3xr">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -748,7 +748,7 @@
                         <!-- ROW: Slot IDEB Gonçalves Dias (Sua Cidade) -->
                         <div class="dashboard-row grid-1" style="margin-top: 20px;">
                             <div class="card card-full" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
-                                <div class="card-header" style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+                                <div class="card-header" style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
                                     <div>
                                         <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(139, 92, 246, 0.14); color: #8b5cf6; padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; margin-bottom: 4px;">
                                             ⭐ DESEMPENHO MUNICIPAL EXCLUSIVO
@@ -757,6 +757,21 @@
                                         <p class="card-subtitle" style="font-size: 0.82rem; color: var(--text-secondary); margin: 2px 0 0 0;">Histórico real do município de Gonçalves Dias (ciclos 2015 a 2025) com evolução por etapa e comparativo da rede.</p>
                                     </div>
                                     <span class="badge badge-purple" style="font-size: 0.75rem; font-weight: 700; padding: 6px 12px;">Dados Oficiais INEP (MA)</span>
+                                </div>
+                                <!-- Legenda Explícita do Gráfico -->
+                                <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; font-size: 0.78rem; font-weight: 700; background: var(--bg-tertiary); padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border-color);">
+                                    <span style="display: inline-flex; align-items: center; gap: 6px; color: #8B5CF6;">
+                                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #8B5CF6; display: inline-block;"></span>
+                                        🟣 Anos Iniciais (Gonçalves Dias)
+                                    </span>
+                                    <span style="display: inline-flex; align-items: center; gap: 6px; color: #0EA5E9;">
+                                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #0EA5E9; display: inline-block;"></span>
+                                        🔷 Anos Finais (Gonçalves Dias)
+                                    </span>
+                                    <span style="display: inline-flex; align-items: center; gap: 6px; color: #D97706;">
+                                        <span style="width: 14px; height: 3px; background: #F59E0B; display: inline-block; border-radius: 2px;"></span>
+                                        🟧 Meta Projetada INEP
+                                    </span>
                                 </div>
                                 <div class="card-body" style="padding: 0; position: relative; height: 290px;">
                                     <canvas id="dashChartGoncalvesDias" style="width: 100%; height: 100%; display: block;"></canvas>
@@ -767,27 +782,47 @@
                         <!-- ROW: Ideb Maranhão - Anos Iniciais x Anos Finais (Dados Oficiais INEP Imagens 1 & 2) -->
                         <div class="dashboard-row grid-2" style="margin-top: 20px; gap: 20px;">
                             <div class="card card-full" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
-                                <div class="card-header" style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap;">
+                                <div class="card-header" style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap;">
                                     <div>
                                         <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0;">Ideb Maranhão · Anos Iniciais</h3>
                                         <p class="card-subtitle" style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">Rede estadual — evolução histórica vs. trajetória projetada.</p>
                                     </div>
                                     <span class="badge badge-purple" style="font-size: 0.7rem; font-weight: 700;">2007–2025</span>
                                 </div>
-                                <div class="card-body" style="padding: 0; position: relative; height: 280px;">
+                                <div style="display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 10px; font-size: 0.76rem; font-weight: 700; background: var(--bg-tertiary); padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border-color);">
+                                    <span style="display: inline-flex; align-items: center; gap: 6px; color: #6366F1;">
+                                        <span style="width: 10px; height: 10px; border-radius: 2px; background: #6366F1; display: inline-block;"></span>
+                                        🟦 Maranhão (Observado)
+                                    </span>
+                                    <span style="display: inline-flex; align-items: center; gap: 6px; color: #10B981;">
+                                        <span style="width: 14px; height: 3px; background: #10B981; display: inline-block; border-radius: 2px;"></span>
+                                        🟩 Meta Projetada INEP
+                                    </span>
+                                </div>
+                                <div class="card-body" style="padding: 0; position: relative; height: 270px;">
                                     <canvas id="dashChartIniciais" style="width: 100%; height: 100%; display: block;"></canvas>
                                 </div>
                             </div>
 
                             <div class="card card-full" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
-                                <div class="card-header" style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap;">
+                                <div class="card-header" style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap;">
                                     <div>
                                         <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0;">Ideb Maranhão · Anos Finais</h3>
                                         <p class="card-subtitle" style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">Rede estadual — evolução histórica vs. trajetória projetada.</p>
                                     </div>
                                     <span class="badge badge-purple" style="font-size: 0.7rem; font-weight: 700;">2007–2025</span>
                                 </div>
-                                <div class="card-body" style="padding: 0; position: relative; height: 280px;">
+                                <div style="display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 10px; font-size: 0.76rem; font-weight: 700; background: var(--bg-tertiary); padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border-color);">
+                                    <span style="display: inline-flex; align-items: center; gap: 6px; color: #0284C7;">
+                                        <span style="width: 10px; height: 10px; border-radius: 2px; background: #0284C7; display: inline-block;"></span>
+                                        🔷 Maranhão (Observado)
+                                    </span>
+                                    <span style="display: inline-flex; align-items: center; gap: 6px; color: #10B981;">
+                                        <span style="width: 14px; height: 3px; background: #10B981; display: inline-block; border-radius: 2px;"></span>
+                                        🟩 Meta Projetada INEP
+                                    </span>
+                                </div>
+                                <div class="card-body" style="padding: 0; position: relative; height: 270px;">
                                     <canvas id="dashChartFinais" style="width: 100%; height: 100%; display: block;"></canvas>
                                 </div>
                             </div>
@@ -796,14 +831,24 @@
                         <!-- ROW: Comparativo Anos Iniciais x Anos Finais + Gap Strip -->
                         <div class="dashboard-row grid-1" style="margin-top: 20px;">
                             <div class="card card-full" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
-                                <div class="card-header" style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap;">
+                                <div class="card-header" style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap;">
                                     <div>
                                         <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0;">Comparativo Ideb Maranhão: Anos Iniciais x Anos Finais</h3>
                                         <p class="card-subtitle" style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">Evolução lado a lado das duas etapas e abertura do hiato entre elas ao longo do tempo.</p>
                                     </div>
                                     <span class="badge badge-purple" style="font-size: 0.7rem; font-weight: 700;">Fonte: Ideb 2025 · INEP</span>
                                 </div>
-                                <div class="card-body" style="padding: 0; position: relative; height: 290px;">
+                                <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 10px; font-size: 0.76rem; font-weight: 700; background: var(--bg-tertiary); padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border-color);">
+                                    <span style="display: inline-flex; align-items: center; gap: 6px; color: #6366F1;">
+                                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #6366F1; display: inline-block;"></span>
+                                        🟣 Anos Iniciais (Maranhão)
+                                    </span>
+                                    <span style="display: inline-flex; align-items: center; gap: 6px; color: #0EA5E9;">
+                                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #0EA5E9; display: inline-block;"></span>
+                                        🔷 Anos Finais (Maranhão)
+                                    </span>
+                                </div>
+                                <div class="card-body" style="padding: 0; position: relative; height: 280px;">
                                     <canvas id="dashChartComparativo" style="width: 100%; height: 100%; display: block;"></canvas>
                                 </div>
                             </div>
@@ -6460,14 +6505,14 @@
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=mt26mqco"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=mt26mqco"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=mt26mqco"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=mt26u3xr"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=mt26u3xr"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=mt26u3xr"></script>
     <script src="bncc_habilidades_oficial.js?v=mt23gn8s"></script>
-    <script src="ideb_publico_db.js?v=mt26mqco"></script>
-    <script src="alunos_db.js?v=mt26mqco"></script>
+    <script src="ideb_publico_db.js?v=mt26u3xr"></script>
+    <script src="alunos_db.js?v=mt26u3xr"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=c17e0ebdb7_mt26mqco"></script>
+    <script src="app.js?v=2ea9103b91_mt26u3xr"></script>
 </body>
 </html>
