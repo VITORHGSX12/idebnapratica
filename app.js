@@ -16221,6 +16221,48 @@ if (document.readyState === 'loading') {
 
     // [GLOBAL] activeMatrizEtapa
 
+    function switchMatrizMainTab(tab) {
+        const btnSaeb = document.getElementById('btn-matriz-tab-saeb');
+        const btnBncc = document.getElementById('btn-matriz-tab-bncc');
+        const subSaeb = document.getElementById('subview-matriz-saeb');
+        const subBncc = document.getElementById('subview-matriz-bncc');
+
+        if (tab === 'saeb') {
+            if (btnSaeb) {
+                btnSaeb.classList.add('active');
+                btnSaeb.style.background = '#6366f1';
+                btnSaeb.style.color = '#ffffff';
+                btnSaeb.style.border = 'none';
+            }
+            if (btnBncc) {
+                btnBncc.classList.remove('active');
+                btnBncc.style.background = 'var(--bg-secondary)';
+                btnBncc.style.color = 'var(--text-secondary)';
+                btnBncc.style.border = '1px solid var(--border-color)';
+            }
+            if (subSaeb) subSaeb.style.display = 'block';
+            if (subBncc) subBncc.style.display = 'none';
+            renderReferenceMatrix();
+        } else {
+            if (btnBncc) {
+                btnBncc.classList.add('active');
+                btnBncc.style.background = '#6366f1';
+                btnBncc.style.color = '#ffffff';
+                btnBncc.style.border = 'none';
+            }
+            if (btnSaeb) {
+                btnSaeb.classList.remove('active');
+                btnSaeb.style.background = 'var(--bg-secondary)';
+                btnSaeb.style.color = 'var(--text-secondary)';
+                btnSaeb.style.border = '1px solid var(--border-color)';
+            }
+            if (subSaeb) subSaeb.style.display = 'none';
+            if (subBncc) subBncc.style.display = 'block';
+            renderBnccSkillsTable();
+        }
+    }
+    window.switchMatrizMainTab = switchMatrizMainTab;
+
     function switchMatrizEtapa(etapa) {
         activeMatrizEtapa = etapa;
         document.querySelectorAll('.matriz-etapa-btn').forEach(b => {
@@ -16251,27 +16293,45 @@ if (document.readyState === 'loading') {
         const lpList = document.getElementById('matriz-lp-list');
         const mtList = document.getElementById('matriz-mt-list');
         const ciList = document.getElementById('matriz-ci-list');
+        const chList = document.getElementById('matriz-ch-list');
 
         const searchInput = document.getElementById('matriz-search-input');
         const query = searchInput ? searchInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
 
-        const stageData = FULL_OFFICIAL_SAEB_BNCC_MATRICES[activeMatrizEtapa] || FULL_OFFICIAL_SAEB_BNCC_MATRICES['5ano'];
+        const db = window.MATRIZES_DESCRITORES_BNCC_DATA ? window.MATRIZES_DESCRITORES_BNCC_DATA.descritores : null;
+
+        let lpData = (db && db.linguaPortuguesa) ? db.linguaPortuguesa.map(i => ({ codigo: i.codigo, desc: i.descricao, topico: i.topico })) : [];
+        let mtData = (db && db.matematica) ? db.matematica.map(i => ({ codigo: i.codigo, desc: i.descricao, topico: i.topico })) : [];
+        let ciData = (db && db.ciencias) ? db.ciencias.map(i => ({ codigo: i.codigo, desc: i.descricao, topico: i.topico })) : [];
+        let chData = (db && db.geografiaOba) ? db.geografiaOba.map(i => ({ codigo: i.codigo, desc: i.descricao, topico: i.topico })) : [];
+
+        // If stage fallback
+        if (activeMatrizEtapa && FULL_OFFICIAL_SAEB_BNCC_MATRICES[activeMatrizEtapa]) {
+            const fallback = FULL_OFFICIAL_SAEB_BNCC_MATRICES[activeMatrizEtapa];
+            if (lpData.length === 0) lpData = fallback.portuguese || [];
+            if (mtData.length === 0) mtData = fallback.math || [];
+            if (ciData.length === 0) ciData = fallback.science || [];
+        }
 
         function renderColumn(container, items, badgeColor) {
             if (!container) return;
             container.innerHTML = '';
 
             const filtered = (items || []).filter(d => {
-                const text = (d.codigo + ' ' + d.desc + ' ' + (d.topico || '')).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                const text = ((d.codigo || '') + ' ' + (d.desc || d.descricao || '') + ' ' + (d.topico || '')).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 return text.includes(query);
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.8rem;">Nenhum descritor encontrado com este filtro.</div>';
+                container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.8rem;">Nenhum descritor encontrado.</div>';
                 return;
             }
 
             filtered.forEach(d => {
+                const codigo = d.codigo || '';
+                const desc = d.desc || d.descricao || '';
+                const topico = d.topico || '';
+
                 const div = document.createElement('div');
                 div.style.padding = '10px 14px';
                 div.style.borderRadius = 'var(--radius-sm)';
@@ -16282,20 +16342,91 @@ if (document.readyState === 'loading') {
                 div.style.transition = 'all 0.15s ease';
                 div.innerHTML = `
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-                        <span style="font-weight: 800; font-family: var(--font-mono); color: ${badgeColor}; font-size: 0.85rem;">${d.codigo}</span>
-                        ${d.topico ? `<span style="font-size: 0.68rem; padding: 2px 6px; border-radius: 4px; background: rgba(0,0,0,0.06); color: var(--text-secondary); border: 1px solid var(--border-color); font-weight:600;">${d.topico}</span>` : ''}
+                        <span style="font-weight: 800; font-family: var(--font-mono); color: ${badgeColor}; font-size: 0.85rem;">${codigo}</span>
+                        ${topico ? `<span style="font-size: 0.68rem; padding: 2px 6px; border-radius: 4px; background: rgba(0,0,0,0.06); color: var(--text-secondary); border: 1px solid var(--border-color); font-weight:600;">${topico}</span>` : ''}
                     </div>
-                    <div style="color: var(--text-primary); font-weight: 500;">${d.desc}</div>
+                    <div style="color: var(--text-primary); font-weight: 500;">${desc}</div>
                 `;
                 container.appendChild(div);
             });
         }
 
-        renderColumn(lpList, stageData.portuguese, '#8b5cf6');
-        renderColumn(mtList, stageData.math, '#3b82f6');
-        renderColumn(ciList, stageData.science, '#10b981');
+        renderColumn(lpList, lpData, '#8b5cf6');
+        renderColumn(mtList, mtData, '#3b82f6');
+        renderColumn(ciList, ciData, '#10b981');
+        renderColumn(chList, chData, '#f59e0b');
     }
     window.renderReferenceMatrix = renderReferenceMatrix;
+
+    function renderBnccSkillsTable() {
+        const tbody = document.getElementById('bncc-skills-table-body');
+        if (!tbody) return;
+
+        const subjectSel = document.getElementById('bncc-subject-select');
+        const stageSel = document.getElementById('bncc-stage-select');
+        const searchInp = document.getElementById('bncc-search-input');
+
+        const selectedSubject = subjectSel ? subjectSel.value.toLowerCase() : '';
+        const selectedStage = stageSel ? stageSel.value : 'all';
+        const query = searchInp ? searchInp.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
+
+        const db = window.MATRIZES_DESCRITORES_BNCC_DATA ? window.MATRIZES_DESCRITORES_BNCC_DATA.bncc : null;
+        let allSkills = [];
+
+        if (db) {
+            if (db.segundoAno) allSkills.push(...db.segundoAno.map(i => ({ ...i, etapa: '2º Ano' })));
+            if (db.quintoAno) allSkills.push(...db.quintoAno.map(i => ({ ...i, etapa: '5º Ano' })));
+            if (db.nonoAno) allSkills.push(...db.nonoAno.map(i => ({ ...i, etapa: '9º Ano' })));
+        }
+
+        let filtered = allSkills.filter(item => {
+            if (selectedSubject && !item.disciplina.toLowerCase().includes(selectedSubject) && !selectedSubject.includes(item.disciplina.toLowerCase())) {
+                return false;
+            }
+            if (selectedStage !== 'all' && !item.etapa.includes(selectedStage.replace('EF', '').trim())) {
+                return false;
+            }
+            if (query) {
+                const text = (item.codigo + ' ' + item.descricao + ' ' + item.campo + ' ' + item.objeto + ' ' + item.disciplina).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                return text.includes(query);
+            }
+            return true;
+        });
+
+        tbody.innerHTML = '';
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+                        Nenhuma habilidade encontrada para o componente "${selectedSubject || 'Geral'}" no filtro selecionado.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        filtered.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = '1px solid var(--border-color)';
+            tr.style.fontSize = '0.82rem';
+
+            tr.innerHTML = `
+                <td style="padding: 12px 16px; font-weight: 800; font-family: var(--font-mono); color: #6366f1;">${item.codigo}</td>
+                <td style="padding: 12px 16px; font-weight: 700; color: var(--text-primary);">${item.etapa || 'Geral'}</td>
+                <td style="padding: 12px 16px;">
+                    <div style="font-weight: 700; color: var(--text-primary);">${item.objeto || item.campo || '—'}</div>
+                    <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">${item.campo || ''}</div>
+                </td>
+                <td style="padding: 12px 16px; color: var(--text-primary); line-height: 1.45;">${item.descricao}</td>
+                <td style="padding: 12px 16px; text-align: center;">
+                    <span class="badge badge-purple" style="font-size: 0.7rem; padding: 4px 8px;">BNCC Oficial</span>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+    window.renderBnccSkillsTable = renderBnccSkillsTable;
 
 
     // =========================================================================

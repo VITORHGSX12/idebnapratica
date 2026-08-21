@@ -1,0 +1,1820 @@
+// Base Oficial Consolidada: Matrizes SAEB / SEAMA / IDEB / OBA & BNCC
+window.MATRIZES_DESCRITORES_BNCC_DATA = {
+  "descritores": {
+    "visaoGeral": [
+      {
+        "disciplina": "Língua Portuguesa",
+        "topico": "Tópico I: Procedimentos de Leitura",
+        "codigo": "D1",
+        "descricao": "Localizar informações explícitas em um texto."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "topico": "Tópico I: Procedimentos de Leitura",
+        "codigo": "D3",
+        "descricao": "Inferir o sentido de uma palavra ou expressão."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "topico": "Tópico I: Procedimentos de Leitura",
+        "codigo": "D4",
+        "descricao": "Inferir uma informação implícita em um texto."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "topico": "Tópico I: Procedimentos de Leitura",
+        "codigo": "D6",
+        "descricao": "Identificar o tema ou assunto principal de um texto."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "topico": "Tópico I: Procedimentos de Leitura",
+        "codigo": "D14",
+        "descricao": "Distinguir um fato da opinião relativa a esse fato."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "topico": "Tópico II: Implicações do Suporte, do Gênero e/ou do Enunciador",
+        "codigo": "D5",
+        "descricao": "Interpretar texto com auxílio de material gráfico diverso (propagandas, quadrinhos, tiras, fotos, tabelas, gráficos etc.)."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "topico": "Tópico II: Implicações do Suporte, do Gênero e/ou do Enunciador",
+        "codigo": "D9",
+        "descricao": "Identificar a finalidade de textos de diferentes gêneros."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "topico": "Tópico III: Relação entre Textos",
+        "codigo": "D2",
+        "descricao": "Estabelecer relações entre partes de um texto, identificando repetições ou substituições que contribuem para a continuidade de um texto (coesão)."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "topico": "Tópico III: Relação entre Textos",
+        "codigo": "D15",
+        "descricao": "Reconhecer diferentes formas de tratar uma informação na comparação de textos que tratam do mesmo tema."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "topico": "Tópico IV: Coerência e Coesão no Processamento do Texto",
+        "codigo": "D7",
+        "descricao": "Identificar a tese ou ideia central do texto."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "topico": "Tópico IV: Coerência e Coesão no Processamento do Texto",
+        "codigo": "D8",
+        "descricao": "Estabelecer relação entre a tese e os argumentos oferecidos para sustentá-la."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "topico": "Tópico IV: Coerência e Coesão no Processamento do Texto",
+        "codigo": "D10",
+        "descricao": "Identificar o conflito gerador do enredo e os elementos que constroem a narrativa."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "topico": "Tópico IV: Coerência e Coesão no Processamento do Texto",
+        "codigo": "D11",
+        "descricao": "Estabelecer relação causa/consequência entre partes e elementos do texto."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "topico": "Tópico IV: Coerência e Coesão no Processamento do Texto",
+        "codigo": "D12",
+        "descricao": "Estabelecer relações lógico-discursivas presentes no texto, marcadas por conjunções, advérbios etc."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "topico": "Tópico V: Relações entre Recursos Expressivos e Efeitos de Sentido",
+        "codigo": "D16",
+        "descricao": "Identificar os efeitos de ironia ou humor em textos variados."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "topico": "Tópico V: Relações entre Recursos Expressivos e Efeitos de Sentido",
+        "codigo": "D17",
+        "descricao": "Reconhecer o efeito de sentido decorrente da escolha de uma determinada palavra ou expressão."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "topico": "Tópico V: Relações entre Recursos Expressivos e Efeitos de Sentido",
+        "codigo": "D18",
+        "descricao": "Reconhecer o efeito de sentido decorrente da uso da pontuação e de outros recursos expressivos."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "topico": "Tópico VI: Variação Linguística",
+        "codigo": "D13",
+        "descricao": "Identificar as marcas linguísticas que evidenciam o locutor e o interlocutor de um texto (registros formal, informal, gírias, marcas regionais)."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema I: Espaço e Forma",
+        "codigo": "D1",
+        "descricao": "Identificar a localização/movimentação de objeto em mapas, croquis e outras representações gráficas."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema I: Espaço e Forma",
+        "codigo": "D2",
+        "descricao": "Identificar propriedades comuns e diferenças entre figuras bidimensionais e tridimensionais, relacionando-as com suas planificações."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema I: Espaço e Forma",
+        "codigo": "D3",
+        "descricao": "Identificar propriedades de triângulos pela comparação das medidas de seus lados e/ou ângulos."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema I: Espaço e Forma",
+        "codigo": "D4",
+        "descricao": "Identificar relação entre quadriláteros por meio de suas propriedades."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema I: Espaço e Forma",
+        "codigo": "D5",
+        "descricao": "Reconhecer a conservação ou modificação de medidas nos lados, do perímetro, da área em ampliação e/ou redução de figuras poligonais usando malhas quadriculadas."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema I: Espaço e Forma",
+        "codigo": "D6",
+        "descricao": "Reconhecer ângulos como mudança de direção ou giros, identificando ângulos retos e não retos."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema I: Espaço e Forma",
+        "codigo": "D7",
+        "descricao": "Reconhecer a condição de existência de triângulos e suas propriedades."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema I: Espaço e Forma",
+        "codigo": "D8",
+        "descricao": "Resolver problema utilizando propriedades dos polígonos (soma dos ângulos internos, número de diagonais, cálculo da medida do ângulo interno de polígonos regulares)."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema I: Espaço e Forma",
+        "codigo": "D9",
+        "descricao": "Interpretar informações apresentadas por meio de coordenadas cartesianas."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema I: Espaço e Forma",
+        "codigo": "D10",
+        "descricao": "Utilizar relações métricas do triângulo retângulo para resolver problemas significativos."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema I: Espaço e Forma",
+        "codigo": "D11",
+        "descricao": "Reconhecer círculo e circunferência, seus elementos e algumas de suas relações."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema II: Grandezas e Medidas",
+        "codigo": "D12",
+        "descricao": "Resolver problema envolvendo o cálculo de perímetro de figuras planas."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema II: Grandezas e Medidas",
+        "codigo": "D13",
+        "descricao": "Resolver problema envolvendo o cálculo ou estimativa de áreas de figuras planas."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema II: Grandezas e Medidas",
+        "codigo": "D14",
+        "descricao": "Resolver problema envolvendo noção de volume e/ou capacidade."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema II: Grandezas e Medidas",
+        "codigo": "D15",
+        "descricao": "Resolver problema envolvendo relações entre diferentes unidades de medida (comprimento, massa, tempo, capacidade, superfície)."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D16",
+        "descricao": "Identificar a localização de números inteiros, racionais ou reais na reta numérica."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D17",
+        "descricao": "Identificar fração como representação que pode estar associada a diferentes significados."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D18",
+        "descricao": "Efetuar cálculos com números inteiros, fracionários ou decimais."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D19",
+        "descricao": "Resolver problema com números naturais, inteiros, racionais ou reais envolvendo diferentes significados das operações."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D20",
+        "descricao": "Resolver problema envolvendo a ordenação ou a representação de números racionais na forma decimal/fracionária."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D21",
+        "descricao": "Reconhecer a equação da reta como uma representação de uma reta no plano cartesiano."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D22",
+        "descricao": "Resolver problema envolvendo grandezas direta ou inversamente proporcionais (regra de três)."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D23",
+        "descricao": "Resolver problema envolvendo porcentagem."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D24",
+        "descricao": "Resolver problema envolvendo juros simples ou compostos."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D25",
+        "descricao": "Executar cálculos que envolvam expressões algébricas (fatoração, produtos notáveis)."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D26",
+        "descricao": "Resolver problema envolvendo equação do 1º ou do 2º grau."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D27",
+        "descricao": "Resolver sistema de equações do 1º grau com duas incógnitas."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D28",
+        "descricao": "Reconhecer a representação algébrica ou gráfica de uma função (1º grau, 2º grau, exponencial, logarítmica ou trigonométrica)."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema IV: Tratamento da Informação",
+        "codigo": "D36",
+        "descricao": "Resolver problema envolvendo informações apresentadas em tabelas e/ou gráficos (colunas, linhas, setores)."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema IV: Tratamento da Informação",
+        "codigo": "D37",
+        "descricao": "Associar informações apresentadas em listas e/ou tabelas aos gráficos que as representam e vice-versa."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema IV: Tratamento da Informação",
+        "codigo": "D38",
+        "descricao": "Resolver problema envolvendo o cálculo de probabilidade de um evento."
+      },
+      {
+        "disciplina": "Matemática",
+        "topico": "Tema IV: Tratamento da Informação",
+        "codigo": "D39",
+        "descricao": "Resolver problema envolvendo o cálculo de medidas de tendência central (média, moda ou mediana)."
+      },
+      {
+        "disciplina": "Ciências",
+        "topico": "Matéria e Energia",
+        "codigo": "CE01",
+        "descricao": "Propriedades dos materiais, misturas e transformações químicas."
+      },
+      {
+        "disciplina": "Ciências",
+        "topico": "Matéria e Energia",
+        "codigo": "CE02",
+        "descricao": "Estados físicos da matéria e circuitos elétricos."
+      },
+      {
+        "disciplina": "Ciências",
+        "topico": "Matéria e Energia",
+        "codigo": "CE03",
+        "descricao": "Fontes de energia, geração e uso consciente."
+      },
+      {
+        "disciplina": "Ciências",
+        "topico": "Vida e Evolução",
+        "codigo": "VE01",
+        "descricao": "Organização dos seres vivos, ecossistemas e cadeias alimentares."
+      },
+      {
+        "disciplina": "Ciências",
+        "topico": "Vida e Evolução",
+        "codigo": "VE02",
+        "descricao": "Corpo humano: sistemas, saúde pública e vacinação."
+      },
+      {
+        "disciplina": "Ciências",
+        "topico": "Vida e Evolução",
+        "codigo": "VE03",
+        "descricao": "Reprodução, hereditariedade e biodiversidade."
+      },
+      {
+        "disciplina": "Ciências",
+        "topico": "Terra e Universo",
+        "codigo": "TU01",
+        "descricao": "Movimentos da Terra (rotação/translação) e estações do ano."
+      },
+      {
+        "disciplina": "Ciências",
+        "topico": "Terra e Universo",
+        "codigo": "TU02",
+        "descricao": "Fases da Lua, sistema solar e componentes do Universo."
+      },
+      {
+        "disciplina": "Ciências",
+        "topico": "Terra e Universo",
+        "codigo": "TU03",
+        "descricao": "Atmosfera, clima, previsão do tempo e sustentabilidade."
+      },
+      {
+        "disciplina": "Geografia (OBA)",
+        "topico": "Astronomia - Sistema Solar",
+        "codigo": "OB01",
+        "descricao": "Sol, planetas (terrestres e gasosos), planetas anões, luas, asteroides e cometas."
+      },
+      {
+        "disciplina": "Geografia (OBA)",
+        "topico": "Astronomia - Movimentos Celestes",
+        "codigo": "OB02",
+        "descricao": "Movimentos de rotação e translação da Terra, fusos horários e estações do ano."
+      },
+      {
+        "disciplina": "Geografia (OBA)",
+        "topico": "Astronomia - Movimentos Celestes",
+        "codigo": "OB03",
+        "descricao": "Fases da Lua e eclipses (solar e lunar)."
+      },
+      {
+        "disciplina": "Geografia (OBA)",
+        "topico": "Astronomia - Esfera Celeste",
+        "codigo": "OB04",
+        "descricao": "Constelações (Cruzeiro do Sul, Órion), pontos cardeais e orientação espacial."
+      },
+      {
+        "disciplina": "Geografia (OBA)",
+        "topico": "Astronomia - Evolução Estelar",
+        "codigo": "OB05",
+        "descricao": "Estrelas, galáxias (Via Láctea) e distâncias astronômicas (ano-luz)."
+      },
+      {
+        "disciplina": "Geografia (OBA)",
+        "topico": "Astronáutica - Foguetes e Satélites",
+        "codigo": "OB06",
+        "descricao": "Princípio de funcionamento de foguetes (ação e reação) e satélites artificiais."
+      },
+      {
+        "disciplina": "Geografia (OBA)",
+        "topico": "Astronáutica - Programa Espacial",
+        "codigo": "OB07",
+        "descricao": "Programa Espacial Brasileiro (VLS, Centro de Lançamento de Alcântara - CLA, satélites CBERS)."
+      },
+      {
+        "disciplina": "Geografia (OBA)",
+        "topico": "Astronáutica - Exploração Espacial",
+        "codigo": "OB08",
+        "descricao": "Uso da tecnologia espacial no cotidiano (GPS, previsão do tempo, sensoriamento remoto)."
+      }
+    ],
+    "linguaPortuguesa": [
+      {
+        "topico": "Tópico I: Procedimentos de Leitura",
+        "codigo": "D1",
+        "descricao": "Localizar informações explícitas em um texto."
+      },
+      {
+        "topico": "Tópico I: Procedimentos de Leitura",
+        "codigo": "D3",
+        "descricao": "Inferir o sentido de uma palavra ou expressão."
+      },
+      {
+        "topico": "Tópico I: Procedimentos de Leitura",
+        "codigo": "D4",
+        "descricao": "Inferir uma informação implícita em um texto."
+      },
+      {
+        "topico": "Tópico I: Procedimentos de Leitura",
+        "codigo": "D6",
+        "descricao": "Identificar o tema ou assunto principal de um texto."
+      },
+      {
+        "topico": "Tópico I: Procedimentos de Leitura",
+        "codigo": "D14",
+        "descricao": "Distinguir um fato da opinião relativa a esse fato."
+      },
+      {
+        "topico": "Tópico II: Implicações do Suporte, do Gênero e/ou do Enunciador",
+        "codigo": "D5",
+        "descricao": "Interpretar texto com auxílio de material gráfico diverso (propagandas, quadrinhos, tiras, fotos, tabelas, gráficos etc.)."
+      },
+      {
+        "topico": "Tópico II: Implicações do Suporte, do Gênero e/ou do Enunciador",
+        "codigo": "D9",
+        "descricao": "Identificar a finalidade de textos de diferentes gêneros."
+      },
+      {
+        "topico": "Tópico III: Relação entre Textos",
+        "codigo": "D2",
+        "descricao": "Estabelecer relações entre partes de um texto, identificando repetições ou substituições que contribuem para a continuidade de um texto (coesão)."
+      },
+      {
+        "topico": "Tópico III: Relação entre Textos",
+        "codigo": "D15",
+        "descricao": "Reconhecer diferentes formas de tratar uma informação na comparação de textos que tratam do mesmo tema."
+      },
+      {
+        "topico": "Tópico IV: Coerência e Coesão no Processamento do Texto",
+        "codigo": "D7",
+        "descricao": "Identificar a tese ou ideia central do texto."
+      },
+      {
+        "topico": "Tópico IV: Coerência e Coesão no Processamento do Texto",
+        "codigo": "D8",
+        "descricao": "Estabelecer relação entre a tese e os argumentos oferecidos para sustentá-la."
+      },
+      {
+        "topico": "Tópico IV: Coerência e Coesão no Processamento do Texto",
+        "codigo": "D10",
+        "descricao": "Identificar o conflito gerador do enredo e os elementos que constroem a narrativa."
+      },
+      {
+        "topico": "Tópico IV: Coerência e Coesão no Processamento do Texto",
+        "codigo": "D11",
+        "descricao": "Estabelecer relação causa/consequência entre partes e elementos do texto."
+      },
+      {
+        "topico": "Tópico IV: Coerência e Coesão no Processamento do Texto",
+        "codigo": "D12",
+        "descricao": "Estabelecer relações lógico-discursivas presentes no texto, marcadas por conjunções, advérbios etc."
+      },
+      {
+        "topico": "Tópico V: Relações entre Recursos Expressivos e Efeitos de Sentido",
+        "codigo": "D16",
+        "descricao": "Identificar os efeitos de ironia ou humor em textos variados."
+      },
+      {
+        "topico": "Tópico V: Relações entre Recursos Expressivos e Efeitos de Sentido",
+        "codigo": "D17",
+        "descricao": "Reconhecer o efeito de sentido decorrente da escolha de uma determinada palavra ou expressão."
+      },
+      {
+        "topico": "Tópico V: Relações entre Recursos Expressivos e Efeitos de Sentido",
+        "codigo": "D18",
+        "descricao": "Reconhecer o efeito de sentido decorrente da uso da pontuação e de outros recursos expressivos."
+      },
+      {
+        "topico": "Tópico VI: Variação Linguística",
+        "codigo": "D13",
+        "descricao": "Identificar as marcas linguísticas que evidenciam o locutor e o interlocutor de um texto (registros formal, informal, gírias, marcas regionais)."
+      }
+    ],
+    "matematica": [
+      {
+        "topico": "Tema I: Espaço e Forma",
+        "codigo": "D1",
+        "descricao": "Identificar a localização/movimentação de objeto em mapas, croquis e outras representações gráficas."
+      },
+      {
+        "topico": "Tema I: Espaço e Forma",
+        "codigo": "D2",
+        "descricao": "Identificar propriedades comuns e diferenças entre figuras bidimensionais e tridimensionais, relacionando-as com suas planificações."
+      },
+      {
+        "topico": "Tema I: Espaço e Forma",
+        "codigo": "D3",
+        "descricao": "Identificar propriedades de triângulos pela comparação das medidas de seus lados e/ou ângulos."
+      },
+      {
+        "topico": "Tema I: Espaço e Forma",
+        "codigo": "D4",
+        "descricao": "Identificar relação entre quadriláteros por meio de suas propriedades."
+      },
+      {
+        "topico": "Tema I: Espaço e Forma",
+        "codigo": "D5",
+        "descricao": "Reconhecer a conservação ou modificação de medidas nos lados, do perímetro, da área em ampliação e/ou redução de figuras poligonais usando malhas quadriculadas."
+      },
+      {
+        "topico": "Tema I: Espaço e Forma",
+        "codigo": "D6",
+        "descricao": "Reconhecer ângulos como mudança de direção ou giros, identificando ângulos retos e não retos."
+      },
+      {
+        "topico": "Tema I: Espaço e Forma",
+        "codigo": "D7",
+        "descricao": "Reconhecer a condição de existência de triângulos e suas propriedades."
+      },
+      {
+        "topico": "Tema I: Espaço e Forma",
+        "codigo": "D8",
+        "descricao": "Resolver problema utilizando propriedades dos polígonos (soma dos ângulos internos, número de diagonais, cálculo da medida do ângulo interno de polígonos regulares)."
+      },
+      {
+        "topico": "Tema I: Espaço e Forma",
+        "codigo": "D9",
+        "descricao": "Interpretar informações apresentadas por meio de coordenadas cartesianas."
+      },
+      {
+        "topico": "Tema I: Espaço e Forma",
+        "codigo": "D10",
+        "descricao": "Utilizar relações métricas do triângulo retângulo para resolver problemas significativos."
+      },
+      {
+        "topico": "Tema I: Espaço e Forma",
+        "codigo": "D11",
+        "descricao": "Reconhecer círculo e circunferência, seus elementos e algumas de suas relações."
+      },
+      {
+        "topico": "Tema II: Grandezas e Medidas",
+        "codigo": "D12",
+        "descricao": "Resolver problema envolvendo o cálculo de perímetro de figuras planas."
+      },
+      {
+        "topico": "Tema II: Grandezas e Medidas",
+        "codigo": "D13",
+        "descricao": "Resolver problema envolvendo o cálculo ou estimativa de áreas de figuras planas."
+      },
+      {
+        "topico": "Tema II: Grandezas e Medidas",
+        "codigo": "D14",
+        "descricao": "Resolver problema envolvendo noção de volume e/ou capacidade."
+      },
+      {
+        "topico": "Tema II: Grandezas e Medidas",
+        "codigo": "D15",
+        "descricao": "Resolver problema envolvendo relações entre diferentes unidades de medida (comprimento, massa, tempo, capacidade, superfície)."
+      },
+      {
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D16",
+        "descricao": "Identificar a localização de números inteiros, racionais ou reais na reta numérica."
+      },
+      {
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D17",
+        "descricao": "Identificar fração como representação que pode estar associada a diferentes significados."
+      },
+      {
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D18",
+        "descricao": "Efetuar cálculos com números inteiros, fracionários ou decimais."
+      },
+      {
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D19",
+        "descricao": "Resolver problema com números naturais, inteiros, racionais ou reais envolvendo diferentes significados das operações."
+      },
+      {
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D20",
+        "descricao": "Resolver problema envolvendo a ordenação ou a representação de números racionais na forma decimal/fracionária."
+      },
+      {
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D21",
+        "descricao": "Reconhecer a equação da reta como uma representação de uma reta no plano cartesiano."
+      },
+      {
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D22",
+        "descricao": "Resolver problema envolvendo grandezas direta ou inversamente proporcionais (regra de três)."
+      },
+      {
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D23",
+        "descricao": "Resolver problema envolvendo porcentagem."
+      },
+      {
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D24",
+        "descricao": "Resolver problema envolvendo juros simples ou compostos."
+      },
+      {
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D25",
+        "descricao": "Executar cálculos que envolvam expressões algébricas (fatoração, produtos notáveis)."
+      },
+      {
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D26",
+        "descricao": "Resolver problema envolvendo equação do 1º ou do 2º grau."
+      },
+      {
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D27",
+        "descricao": "Resolver sistema de equações do 1º grau com duas incógnitas."
+      },
+      {
+        "topico": "Tema III: Números e Operações / Álgebra e Funções",
+        "codigo": "D28",
+        "descricao": "Reconhecer a representação algébrica ou gráfica de uma função (1º grau, 2º grau, exponencial, logarítmica ou trigonométrica)."
+      },
+      {
+        "topico": "Tema IV: Tratamento da Informação",
+        "codigo": "D36",
+        "descricao": "Resolver problema envolvendo informações apresentadas em tabelas e/ou gráficos (colunas, linhas, setores)."
+      },
+      {
+        "topico": "Tema IV: Tratamento da Informação",
+        "codigo": "D37",
+        "descricao": "Associar informações apresentadas em listas e/ou tabelas aos gráficos que as representam e vice-versa."
+      },
+      {
+        "topico": "Tema IV: Tratamento da Informação",
+        "codigo": "D38",
+        "descricao": "Resolver problema envolvendo o cálculo de probabilidade de um evento."
+      },
+      {
+        "topico": "Tema IV: Tratamento da Informação",
+        "codigo": "D39",
+        "descricao": "Resolver problema envolvendo o cálculo de medidas de tendência central (média, moda ou mediana)."
+      }
+    ],
+    "ciencias": [
+      {
+        "topico": "Matéria e Energia",
+        "codigo": "CE01",
+        "descricao": "Propriedades dos materiais, misturas e transformações químicas."
+      },
+      {
+        "topico": "Matéria e Energia",
+        "codigo": "CE02",
+        "descricao": "Estados físicos da matéria e circuitos elétricos."
+      },
+      {
+        "topico": "Matéria e Energia",
+        "codigo": "CE03",
+        "descricao": "Fontes de energia, geração e uso consciente."
+      },
+      {
+        "topico": "Vida e Evolução",
+        "codigo": "VE01",
+        "descricao": "Organização dos seres vivos, ecossistemas e cadeias alimentares."
+      },
+      {
+        "topico": "Vida e Evolução",
+        "codigo": "VE02",
+        "descricao": "Corpo humano: sistemas, saúde pública e vacinação."
+      },
+      {
+        "topico": "Vida e Evolução",
+        "codigo": "VE03",
+        "descricao": "Reprodução, hereditariedade e biodiversidade."
+      },
+      {
+        "topico": "Terra e Universo",
+        "codigo": "TU01",
+        "descricao": "Movimentos da Terra (rotação/translação) e estações do ano."
+      },
+      {
+        "topico": "Terra e Universo",
+        "codigo": "TU02",
+        "descricao": "Fases da Lua, sistema solar e componentes do Universo."
+      },
+      {
+        "topico": "Terra e Universo",
+        "codigo": "TU03",
+        "descricao": "Atmosfera, clima, previsão do tempo e sustentabilidade."
+      }
+    ],
+    "geografiaOba": [
+      {
+        "topico": "Astronomia - Sistema Solar",
+        "codigo": "OB01",
+        "descricao": "Sol, planetas (terrestres e gasosos), planetas anões, luas, asteroides e cometas."
+      },
+      {
+        "topico": "Astronomia - Movimentos Celestes",
+        "codigo": "OB02",
+        "descricao": "Movimentos de rotação e translação da Terra, fusos horários e estações do ano."
+      },
+      {
+        "topico": "Astronomia - Movimentos Celestes",
+        "codigo": "OB03",
+        "descricao": "Fases da Lua e eclipses (solar e lunar)."
+      },
+      {
+        "topico": "Astronomia - Esfera Celeste",
+        "codigo": "OB04",
+        "descricao": "Constelações (Cruzeiro do Sul, Órion), pontos cardeais e orientação espacial."
+      },
+      {
+        "topico": "Astronomia - Evolução Estelar",
+        "codigo": "OB05",
+        "descricao": "Estrelas, galáxias (Via Láctea) e distâncias astronômicas (ano-luz)."
+      },
+      {
+        "topico": "Astronáutica - Foguetes e Satélites",
+        "codigo": "OB06",
+        "descricao": "Princípio de funcionamento de foguetes (ação e reação) e satélites artificiais."
+      },
+      {
+        "topico": "Astronáutica - Programa Espacial",
+        "codigo": "OB07",
+        "descricao": "Programa Espacial Brasileiro (VLS, Centro de Lançamento de Alcântara - CLA, satélites CBERS)."
+      },
+      {
+        "topico": "Astronáutica - Exploração Espacial",
+        "codigo": "OB08",
+        "descricao": "Uso da tecnologia espacial no cotidiano (GPS, previsão do tempo, sensoriamento remoto)."
+      }
+    ]
+  },
+  "bncc": {
+    "segundoAno": [
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Construção do sistema alfabético / Convenções da escrita",
+        "codigo": "EF02LP01",
+        "descricao": "Utilizar, ao produzir o texto, grafia correta de palavras conhecidas ou com estruturas silábicas já dominadas, letras maiúsculas em início de frases e em substantivos próprios, segmentação entre as palavras, ponto final, ponto de interrogação e ponto de exclamação."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Construção do sistema alfabético e da ortografia",
+        "codigo": "EF02LP02",
+        "descricao": "Segmentar palavras em sílabas e remover e substituir sílabas iniciais, mediais ou finais para criar novas palavras."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Construção do sistema alfabético e da ortografia",
+        "codigo": "EF02LP03",
+        "descricao": "Ler e escrever palavras com correspondências regulares diretas entre letras e fonemas (f, v, t, d, p, b) e correspondências regulares contextuais (c e q; e e o, em posição átona em final de palavra)."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Construção do sistema alfabético e da ortografia",
+        "codigo": "EF02LP04",
+        "descricao": "Ler e escrever corretamente palavras com sílabas CV, V, CVC, CCV, identificando que existem vogais em todas as sílabas."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Construção do sistema alfabético e da ortografia",
+        "codigo": "EF02LP05",
+        "descricao": "Ler e escrever corretamente palavras com marcas de nasalidade (til, m, n)."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Conhecimento do alfabeto do português do Brasil",
+        "codigo": "EF02LP06",
+        "descricao": "Perceber o princípio acrofônico que opera nos nomes das letras do alfabeto."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Conhecimento das diversas grafias do alfabeto / Acentuação",
+        "codigo": "EF02LP07",
+        "descricao": "Escrever palavras, frases, textos curtos nas formas imprensa e cursiva."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Segmentação de palavras / Número de sílabas",
+        "codigo": "EF02LP08",
+        "descricao": "Segmentar corretamente as palavras ao escrever frases e textos."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Pontuação",
+        "codigo": "EF02LP09",
+        "descricao": "Usar adequadamente ponto final, ponto de interrogação e ponto de exclamação."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Sinonímia e antonímia / Morfologia / Pontuação",
+        "codigo": "EF02LP10",
+        "descricao": "Identificar sinônimos de palavras de texto lido, determinando a diferença de sentido entre eles, e formar antônimos de palavras encontradas em texto lido pelo acréscimo do prefixo de negação in-/im-."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Morfologia",
+        "codigo": "EF02LP11",
+        "descricao": "Formar o aumentativo e o diminutivo de palavras com os sufixos -ão e -inho/-zinho."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "1º e 2º Anos (Bloco)",
+        "objeto": "Decodificação / Fluência de leitura",
+        "codigo": "EF12LP01",
+        "descricao": "Ler palavras novas com precisão na decodificação, no caso de palavras de uso frequente, ler globalmente, por memorização."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "1º e 2º Anos (Bloco)",
+        "objeto": "Formação de leitor",
+        "codigo": "EF12LP02",
+        "descricao": "Buscar, selecionar e ler, com a mediação do professor (leitura compartilhada), textos que circulam em meios impressos ou digitais, de acordo com as necessidades e interesses."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "1º e 2º Anos (Bloco)",
+        "objeto": "Construção do sistema alfabético",
+        "codigo": "EF12LP03",
+        "descricao": "Copiar textos breves, mantendo suas características e voltando para o texto sempre que tiver dúvidas sobre sua distribuição gráfica, espaçamento entre as palavras, escrita das palavras e pontuação."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Vida Cotidiana",
+        "objeto": "Compreensão em leitura",
+        "codigo": "EF02LP12",
+        "descricao": "Ler e compreender com certa autonomia cantigas, letras de canção, dentre outros gêneros do campo da vida cotidiana, considerando a situação comunicativa e o tema/assunto do texto."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Vida Cotidiana",
+        "objeto": "Escrita autônoma e compartilhada",
+        "codigo": "EF02LP13",
+        "descricao": "Planejar e produzir bilhetes e cartas, em meio impresso e/ou digital, dentre outros gêneros do campo da vida cotidiana, considerando a situação comunicativa e o tema/assunto/finalidade do texto."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Vida Cotidiana",
+        "objeto": "Escrita autônoma e compartilhada",
+        "codigo": "EF02LP14",
+        "descricao": "Planejar e produzir pequenos relatos de observação de processos, de fatos, de experiências pessoais, mantendo as características do gênero."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Vida Cotidiana",
+        "objeto": "Produção de texto oral",
+        "codigo": "EF02LP15",
+        "descricao": "Cantar cantigas e canções, obedecendo ao ritmo e à melodia."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Vida Cotidiana",
+        "objeto": "Forma de composição do texto",
+        "codigo": "EF02LP16",
+        "descricao": "Identificar e reproduzir, em bilhetes, recados, avisos, cartas, e-mails, receitas (modo de fazer), relatos (digitais ou impressos), a formatação e diagramação específica de cada um desses gêneros."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Vida Cotidiana",
+        "objeto": "Forma de composição do texto",
+        "codigo": "EF02LP17",
+        "descricao": "Identificar e reproduzir, em relatos de experiências pessoais, a sequência dos fatos, utilizando expressões que marquem a passagem do tempo ('antes', 'depois', 'ontem', 'hoje', 'amanhã' etc.)."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Vida Pública",
+        "objeto": "Escrita compartilhada",
+        "codigo": "EF02LP18",
+        "descricao": "Planejar e produzir cartazes e folhetos para divulgar eventos da escola ou da comunidade, utilizando linguagem persuasiva e elementos textuais e visuais."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Vida Pública",
+        "objeto": "Produção de texto oral",
+        "codigo": "EF02LP19",
+        "descricao": "Planejar e produzir, em colaboração com os colegas e com a ajuda do professor, notícias curtas para público infantil, para compor jornal falado."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Práticas de Estudo",
+        "objeto": "Imagens analíticas em textos",
+        "codigo": "EF02LP20",
+        "descricao": "Reconhecer a função de textos utilizados para apresentar informações coletadas em atividades de pesquisa (enquetes, pequenas entrevistas, registros de experimentações)."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Práticas de Estudo",
+        "objeto": "Pesquisa",
+        "codigo": "EF02LP21",
+        "descricao": "Explorar, com a mediação do professor, textos informativos de diferentes ambientes digitais de pesquisa, conhecendo suas possibilidades."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Práticas de Estudo",
+        "objeto": "Produção de textos",
+        "codigo": "EF02LP22",
+        "descricao": "Planejar e produzir, em colaboração com os colegas e com a ajuda do professor, pequenos relatos de experimentos, entrevistas, verbetes de enciclopédia infantil."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Práticas de Estudo",
+        "objeto": "Escrita autônoma",
+        "codigo": "EF02LP23",
+        "descricao": "Planejar e produzir, com certa autonomia, pequenos registros de observação de resultados de pesquisa, coerentes com um tema investigado."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Práticas de Estudo",
+        "objeto": "Exposição oral",
+        "codigo": "EF02LP24",
+        "descricao": "Planejar e produzir, em colaboração com os colegas e com a ajuda do professor, relatos de experimentos, registros de observação, entrevistas em áudio ou vídeo."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Práticas de Estudo",
+        "objeto": "Forma de composição dos textos",
+        "codigo": "EF02LP25",
+        "descricao": "Identificar e reproduzir, em relatos de experimentos, entrevistas, verbetes de enciclopédia infantil, a formatação e diagramação específica desses gêneros."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Artístico-Literário",
+        "objeto": "Formação do leitor literário",
+        "codigo": "EF02LP26",
+        "descricao": "Ler e compreender, com certa autonomia, textos literários, de gêneros variados, desenvolvendo o gosto pela leitura."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Artístico-Literário",
+        "objeto": "Escrita autônoma e compartilhada",
+        "codigo": "EF02LP27",
+        "descricao": "Reescrever textos narrativos literários lidos pelo professor."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Artístico-Literário",
+        "objeto": "Formas de composição de narrativas",
+        "codigo": "EF02LP28",
+        "descricao": "Reconhecer o conflito gerador de uma narrativa ficcional e sua resolução, além de palavras, expressões e frases que caracterizam personagens e ambientes."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Artístico-Literário",
+        "objeto": "Textos poéticos visuais",
+        "codigo": "EF02LP29",
+        "descricao": "Observar, em poemas visuais, o formato do texto na página, as ilustrações e outros efeitos visuais."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Números",
+        "objeto": "Leitura, escrita e comparação de números naturais",
+        "codigo": "EF02MA01",
+        "descricao": "Comparar e ordenar números naturais (até a ordem de centenas) pela compreensão de características do sistema de numeração decimal (valor posicional e função do zero)."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Números",
+        "objeto": "Contagem de rotina e estimativa",
+        "codigo": "EF02MA02",
+        "descricao": "Fazer estimativas por meio de estratégias diversas a respeito da quantidade de objetos de coleções e registrar o resultado da contagem desses objetos (até 100 unidades)."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Números",
+        "objeto": "Construção de fatos fundamentais da adição e subtração",
+        "codigo": "EF02MA03",
+        "descricao": "Comparar quantidades de objetos de dois conjuntos, por estimativa ou por correspondência, para indicar 'tem mais', 'tem menos' ou 'tem a mesma quantidade'."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Números",
+        "objeto": "Composição e decomposição de números naturais",
+        "codigo": "EF02MA04",
+        "descricao": "Compor e decompor números naturais de até três ordens, com suporte de material manipulável, por meio de diferentes adições."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Números",
+        "objeto": "Construção de fatos fundamentais da adição e subtração",
+        "codigo": "EF02MA05",
+        "descricao": "Construir fatos básicos da adição e subtração e utilizá-los no cálculo mental ou escrito."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Números",
+        "objeto": "Problemas envolvendo adição e subtração",
+        "codigo": "EF02MA06",
+        "descricao": "Resolver e elaborar problemas de adição e de subtração, envolvendo números de até três ordens, com os significados de juntar, acrescentar, separar, retirar."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Números",
+        "objeto": "Problemas envolvendo multiplicação e divisão",
+        "codigo": "EF02MA07",
+        "descricao": "Resolver e elaborar problemas de multiplicação (por 2, 3, 4 e 5) com a ideia de adição de parcelas iguais por meio de estratégias e formas de registro pessoais."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Números",
+        "objeto": "Problemas envolvendo multiplicação e divisão",
+        "codigo": "EF02MA08",
+        "descricao": "Resolver e elaborar problemas de divisão de um número natural por outro (até 10), com resto zero e com resto diferente de zero."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Álgebra",
+        "objeto": "Padrões figurais e numéricos",
+        "codigo": "EF02MA09",
+        "descricao": "Construir sequências de números naturais em ordem crescente ou decrescente a partir de um número qualquer, utilizando uma regularidade estabelecida."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Álgebra",
+        "objeto": "Sequências repetitivas e recursivas",
+        "codigo": "EF02MA10",
+        "descricao": "Descrever um padrão (ou regularidade) de sequências repetitivas e de sequências recursivas, por meio de objetos, figuras ou números."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Álgebra",
+        "objeto": "Regularidades em sequências",
+        "codigo": "EF02MA11",
+        "descricao": "Descrever os elementos ausentes em sequências repetitivas e em sequências recursivas de números naturais, objetos ou figuras."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Geometria",
+        "objeto": "Localização e movimentação no espaço",
+        "codigo": "EF02MA12",
+        "descricao": "Identificar e registrar a localização e os deslocamentos de pessoas e de objetos no espaço, segundo pontos de referência, indicando mudanças de direção e sentido."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Geometria",
+        "objeto": "Esboço de roteiros e plantas baixas simples",
+        "codigo": "EF02MA13",
+        "descricao": "Esboçar roteiros e plantas baixas simples para representar a localização de objetos e pessoas no espaço."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Geometria",
+        "objeto": "Figuras geométricas espaciais",
+        "codigo": "EF02MA14",
+        "descricao": "Reconhecer, nomear e comparar figuras geométricas espaciais (cubo, bloco retangular, pirâmide, cone, cilindro e esfera), relacionando-as com objetos do mundo físico."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Geometria",
+        "objeto": "Figuras geométricas planas",
+        "codigo": "EF02MA15",
+        "descricao": "Reconhecer, nomear e comparar figuras geométricas planas (círculo, quadrado, retângulo e triângulo) em desenhos e ilustrações."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Grandezas e Medidas",
+        "objeto": "Medida de comprimento, massa e capacidade",
+        "codigo": "EF02MA16",
+        "descricao": "Estimar, medir e comparar comprimento de objetos utilizando unidades de medida não padronizadas e padronizadas mais usuais (metro, centímetro, milímetro)."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Grandezas e Medidas",
+        "objeto": "Medida de comprimento, massa e capacidade",
+        "codigo": "EF02MA17",
+        "descricao": "Estimar, medir e comparar capacidade e massa, utilizando unidades de medida não padronizadas e padronizadas mais usuais (litro, mililitro, quilograma, grama)."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Grandezas e Medidas",
+        "objeto": "Medidas de tempo",
+        "codigo": "EF02MA18",
+        "descricao": "Indicar a duração de intervalos de tempo entre dois eventos, utilizando relógios e calendários."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Grandezas e Medidas",
+        "objeto": "Medidas de tempo",
+        "codigo": "EF02MA19",
+        "descricao": "Medir a duração de um intervalo de tempo por meio de relógio digital e ler horas inteiras e meias horas em relógio analógico."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Grandezas e Medidas",
+        "objeto": "Sistema monetário brasileiro",
+        "codigo": "EF02MA20",
+        "descricao": "Estabelecer a equivalência de valores entre moedas e cédulas do sistema monetário brasileiro para resolver situações cotidianas."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Estatística e Probabilidade",
+        "objeto": "Análise de chances de eventos aleatórios",
+        "codigo": "EF02MA21",
+        "descricao": "Classificar resultados de eventos cotidianos aleatórios como 'pouco prováveis', 'muito prováveis', 'improváveis' ou 'impossíveis'."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Estatística e Probabilidade",
+        "objeto": "Coleta e representação de dados",
+        "codigo": "EF02MA22",
+        "descricao": "Comparar informações de pesquisas apresentadas por meio de tabelas de dupla entrada e em gráficos de colunas simples ou barras."
+      }
+    ],
+    "quintoAno": [
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Construção do sistema alfabético e ortografia",
+        "codigo": "EF05LP01",
+        "descricao": "Grafar palavras utilizando regras de correspondência fonema-grafema regulares, contextuais e morfológicas e palavras de uso frequente com correspondências irregulares."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Polissemia",
+        "codigo": "EF05LP02",
+        "descricao": "Identificar o caráter polissêmico das palavras, comparando o significado de determinados termos utilizados nas áreas científicas com esses mesmos termos na linguagem usual."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Acentuação",
+        "codigo": "EF05LP03",
+        "descricao": "Acentuar corretamente palavras oxítonas, paroxítonas e proparoxítonas."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Pontuação",
+        "codigo": "EF05LP04",
+        "descricao": "Diferenciar, na leitura de textos, vírgula, ponto e vírgula, dois-pontos e reconhecer o efeito de sentido do uso de reticências, aspas, parênteses."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Morfologia / Morfossintaxe",
+        "codigo": "EF05LP05",
+        "descricao": "Identificar a expressão de presente, passado e futuro em tempos verbais do modo indicativo."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Morfologia / Morfossintaxe",
+        "codigo": "EF05LP06",
+        "descricao": "Flexionar, adequadamente, na escrita e na oralidade, os verbos em concordância com pronomes pessoais/nomes sujeitos da oração."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Morfologia",
+        "codigo": "EF05LP07",
+        "descricao": "Identificar, em textos, o uso de conjunções e a relação que estabelecem entre partes do texto: adição, oposição, tempo, causa, condição, finalidade."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Morfologia",
+        "codigo": "EF05LP08",
+        "descricao": "Diferenciar palavras primitivas, derivadas e compostas, e derivadas por adição de prefixo e de sufixo."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "3º ao 5º Ano (Bloco)",
+        "objeto": "Decodificação / Fluência de leitura",
+        "codigo": "EF35LP01",
+        "descricao": "Ler e compreender, silenciosamente e, em seguida, em voz alta, com autonomia e fluência, textos curtos com nível de textualidade adequado."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "3º ao 5º Ano (Bloco)",
+        "objeto": "Formação de leitor",
+        "codigo": "EF35LP02",
+        "descricao": "Selecionar livros da biblioteca ou ambiente digital para leitura individual, justificando a escolha e compartilhando sua opinião."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "3º ao 5º Ano (Bloco)",
+        "objeto": "Compreensão em leitura",
+        "codigo": "EF35LP03",
+        "descricao": "Identificar a ideia central do texto, demonstrando compreensão global."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "3º ao 5º Ano (Bloco)",
+        "objeto": "Estratégia de leitura",
+        "codigo": "EF35LP04",
+        "descricao": "Inferir informações implícitas nos textos lidos."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "3º ao 5º Ano (Bloco)",
+        "objeto": "Estratégia de leitura",
+        "codigo": "EF35LP05",
+        "descricao": "Inferir o sentido de palavras ou expressões desconhecidas em textos, com base no contexto da frase ou do texto."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "3º ao 5º Ano (Bloco)",
+        "objeto": "Coesão e referenciação",
+        "codigo": "EF35LP06",
+        "descricao": "Recuperar relações entre partes de um texto, identificando substituições lexicais ou pronominais que contribuem para a continuidade do texto."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Vida Cotidiana",
+        "objeto": "Compreensão em leitura",
+        "codigo": "EF05LP09",
+        "descricao": "Ler e compreender, com autonomia, textos instrucionais de regras de jogo, dentre outros gêneros do campo da vida cotidiana."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Vida Cotidiana",
+        "objeto": "Compreensão em leitura",
+        "codigo": "EF05LP10",
+        "descricao": "Ler e compreender, com autonomia, anedotas, piadas e cartuns, considerando a situação comunicativa e a finalidade do texto."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Vida Cotidiana",
+        "objeto": "Escrita autônoma",
+        "codigo": "EF05LP11",
+        "descricao": "Registrar, com autonomia, anedotas, piadas e cartuns, de acordo com as convenções do gênero."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Vida Cotidiana",
+        "objeto": "Escrita autônoma",
+        "codigo": "EF05LP12",
+        "descricao": "Planejar e produzir, com autonomia, textos instrucionais de regras de jogo, considerando a situação comunicativa."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Vida Cotidiana",
+        "objeto": "Produção de texto oral",
+        "codigo": "EF05LP13",
+        "descricao": "Assistir a postagem de vlog infantil de críticas e planejar e produzir resenhas digitais em áudio ou vídeo."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Vida Cotidiana",
+        "objeto": "Forma de composição do texto",
+        "codigo": "EF05LP14",
+        "descricao": "Identificar e reproduzir, em textos de resenha crítica de brinquedos ou livros, a formatação própria desses textos."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Vida Pública",
+        "objeto": "Compreensão em leitura",
+        "codigo": "EF05LP15",
+        "descricao": "Ler/assistir e compreender, com autonomia, notícias, reportagens e vídeos em vlogs argumentativos do campo político-cidadão."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Vida Pública",
+        "objeto": "Compreensão em leitura",
+        "codigo": "EF05LP16",
+        "descricao": "Comparar informações sobre um mesmo fato veiculadas em diferentes mídias e concluir sobre qual é mais confiável e por quê."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Vida Pública",
+        "objeto": "Escrita colaborativa",
+        "codigo": "EF05LP17",
+        "descricao": "Produzir roteiro para edição de uma reportagem digital sobre temas de interesse da turma."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Vida Pública",
+        "objeto": "Planejamento e produção oral",
+        "codigo": "EF05LP18",
+        "descricao": "Roteirizar, produzir e editar vídeo para vlogs argumentativos sobre produtos de mídia para público infantil."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Vida Pública",
+        "objeto": "Produção de texto oral",
+        "codigo": "EF05LP19",
+        "descricao": "Argumentar oralmente sobre acontecimentos de interesse social, com base em conhecimentos sobre fatos divulgados em mídias."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Vida Pública",
+        "objeto": "Análise linguística/semiótica",
+        "codigo": "EF05LP20",
+        "descricao": "Analisar a validade e força de argumentos em argumentações sobre produtos de mídia para público infantil."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Vida Pública",
+        "objeto": "Análise linguística/semiótica",
+        "codigo": "EF05LP21",
+        "descricao": "Analisar o padrão entonacional, a expressão facial e corporal e as escolhas de variedade e registro linguísticos de vloggers."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Práticas de Estudo",
+        "objeto": "Compreensão em leitura",
+        "codigo": "EF05LP22",
+        "descricao": "Ler e compreender verbetes de dicionário, identificando a estrutura, as informações gramaticais e as informações semânticas."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Práticas de Estudo",
+        "objeto": "Imagens analíticas em textos",
+        "codigo": "EF05LP23",
+        "descricao": "Comparar informações apresentadas em gráficos ou tabelas."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Práticas de Estudo",
+        "objeto": "Produção de textos",
+        "codigo": "EF05LP24",
+        "descricao": "Planejar e produzir texto sobre tema de interesse, organizando resultados de pesquisa em fontes de informação, incluindo gráficos e tabelas."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Práticas de Estudo",
+        "objeto": "Escrita autônoma",
+        "codigo": "EF05LP25",
+        "descricao": "Planejar e produzir, com certa autonomia, verbetes de dicionário, digitais ou impressos."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Práticas de Estudo",
+        "objeto": "Conhecimentos linguísticos",
+        "codigo": "EF05LP26",
+        "descricao": "Utilizar, ao produzir o texto, conhecimentos linguísticos e gramaticais: regras sintáticas de concordância nominal e verbal, citações e pontuação."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Práticas de Estudo",
+        "objeto": "Coesão e articuladores",
+        "codigo": "EF05LP27",
+        "descricao": "Utilizar, ao produzir o texto, recursos de coesão pronominal e articuladores de relações de sentido."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Artístico-Literário",
+        "objeto": "Textos poéticos visuais",
+        "codigo": "EF05LP28",
+        "descricao": "Observar, em ciberpoemas e minicontos infantis em mídia digital, os recursos multissemióticos presentes nesses textos."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Números",
+        "objeto": "Sistema de numeração decimal",
+        "codigo": "EF05MA01",
+        "descricao": "Ler, escrever e ordenar números naturais até a ordem das centenas de milhar com compreensão das principais características do sistema de numeração decimal."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Números",
+        "objeto": "Números racionais na representação decimal e fracionária",
+        "codigo": "EF05MA02",
+        "descricao": "Ler, escrever e ordenar números racionais na forma decimal com compreensão das características do sistema de numeração decimal."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Números",
+        "objeto": "Representação fracionária e decimal",
+        "codigo": "EF05MA03",
+        "descricao": "Identificar frações equivalentes e comparar frações de mesma unidade ou de unidades de tamanhos diferentes."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Números",
+        "objeto": "Representação fracionária: significado",
+        "codigo": "EF05MA04",
+        "descricao": "Identificar frações associadas às ideias de parte de um todo e resultado de uma divisão, ordenando e representando-as na reta numérica."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Números",
+        "objeto": "Comparação de números racionais decimais",
+        "codigo": "EF05MA05",
+        "descricao": "Comparar e ordenar números racionais positivos em representação decimal e fracionária, relacionando-os a pontos na reta numérica."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Números",
+        "objeto": "Operações com números naturais e decimais",
+        "codigo": "EF05MA06",
+        "descricao": "Associar as representações 10%, 25%, 50%, 75% e 100% respectivamente à décima parte, quarta parte, metade, três quartos e um inteiro."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Números",
+        "objeto": "Cálculo de porcentagens simples",
+        "codigo": "EF05MA07",
+        "descricao": "Resolver e elaborar problemas de adição e subtração com números naturais e com números racionais em representação decimal finita."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Números",
+        "objeto": "Problemas de contagem e combinação",
+        "codigo": "EF05MA08",
+        "descricao": "Resolver e elaborar problemas de multiplicação e divisão com números naturais e com números racionais cuja representação decimal seja finita."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Números",
+        "objeto": "Problemas com arredondamento e estimativa",
+        "codigo": "EF05MA09",
+        "descricao": "Resolver e elaborar problemas simples de contagem envolvendo o princípio multiplicativo, como a determinação do número de agrupamentos possíveis."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Álgebra",
+        "objeto": "Propriedade da igualdade e noção de equivalência",
+        "codigo": "EF05MA10",
+        "descricao": "Concluir que a relação de igualdade existente entre duas grandezas não se altera ao adicionar, subtrair, multiplicar ou dividir cada membro por um mesmo número."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Álgebra",
+        "objeto": "Grandezas diretamente proporcionais",
+        "codigo": "EF05MA11",
+        "descricao": "Resolver e elaborar problemas cuja conversão em sentença matemática envolva uma igualdade com uma operação em que falte um dos termos."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Álgebra",
+        "objeto": "Relações entre grandezas",
+        "codigo": "EF05MA12",
+        "descricao": "Resolver problemas que envolvam variação de proporcionalidade direta entre duas grandezas para associar a quantidade de um produto ao seu valor."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Geometria",
+        "objeto": "Plano cartesiano e coordenadas",
+        "codigo": "EF05MA13",
+        "descricao": "Resolver problemas envolvendo a partição de uma quantidade em duas partes desiguais, tais como dividir uma quantidade em partes proporcionais."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Geometria",
+        "objeto": "Figuras geométricas espaciais",
+        "codigo": "EF05MA14",
+        "descricao": "Utilizar e compreender locomoção e localização no plano cartesiano (primeiro quadrante), utilizando coordenadas cartesianas."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Geometria",
+        "objeto": "Figuras geométricas planas",
+        "codigo": "EF05MA15",
+        "descricao": "Reconhecer, nomear e comparar figuras geométricas espaciais (prismas e pirâmides), relacionando suas representações planas às suas planificações."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Geometria",
+        "objeto": "Ampliação e redução de figuras",
+        "codigo": "EF05MA16",
+        "descricao": "Associar figuras geométricas espaciais às suas planificações (prismas, pirâmides, cilindros e cones) e analisar suas características."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Geometria",
+        "objeto": "Transformações geométricas",
+        "codigo": "EF05MA17",
+        "descricao": "Reconhecer, nomear e comparar polígonos, considerando o número de lados, vértices e ângulos, e classificá-los em regulares e não regulares."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Grandezas e Medidas",
+        "objeto": "Medidas de comprimento, área, massa e capacidade",
+        "codigo": "EF05MA18",
+        "descricao": "Reconhecer a congruência dos ângulos e a proporcionalidade entre os lados correspondentes de figuras poligonais em ampliações e reduções."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Grandezas e Medidas",
+        "objeto": "Noções de volume",
+        "codigo": "EF05MA19",
+        "descricao": "Resolver e elaborar problemas envolvendo medidas de comprimento, massa, tempo, temperatura e capacidade, recorrendo a transformações entre unidades mais usuais."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Grandezas e Medidas",
+        "objeto": "Área e perímetro de figuras planas",
+        "codigo": "EF05MA20",
+        "descricao": "Concluir que figuras de perímetros iguais podem ter áreas diferentes e que figuras com a mesma área podem ter perímetros diferentes."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Estatística e Probabilidade",
+        "objeto": "Cálculo de probabilidade em eventos equiprováveis",
+        "codigo": "EF05MA21",
+        "descricao": "Reconhecer volume como grandeza associada a sólidos geométricos e medir volumes por meio de contagem de cubos de unidade de medida."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Estatística e Probabilidade",
+        "objeto": "Leitura e interpretação de tabelas e gráficos",
+        "codigo": "EF05MA22",
+        "descricao": "Apresentar todos os possíveis resultados de um experimento aleatório, estimando se esses resultados são igualmente prováveis ou não."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Estatística e Probabilidade",
+        "objeto": "Pesquisa estatística e representação de dados",
+        "codigo": "EF05MA23",
+        "descricao": "Interpretar dados estatísticos apresentados em textos, tabelas e gráficos (colunas ou linhas), referentes a outras áreas do conhecimento."
+      }
+    ],
+    "nonoAno": [
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Jornalístico-Midiático",
+        "objeto": "Práticas da cultura digital / Fake news",
+        "codigo": "EF09LP01",
+        "descricao": "Analisar o fenômeno da disseminação de notícias falsas nas redes sociais e desenvolver estratégias para reconhecê-las, a partir da verificação e checagem de fontes."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Jornalístico-Midiático",
+        "objeto": "Relação entre textos / Curadoria",
+        "codigo": "EF09LP02",
+        "descricao": "Analisar e comentar a cobertura da imprensa sobre fatos de relevância social, comparando diferentes enfoques por meio do uso de ferramentas de curadoria."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Jornalístico-Midiático",
+        "objeto": "Textualização de textos argumentativos",
+        "codigo": "EF09LP03",
+        "descricao": "Produzir artigos de opinião, tendo em vista o contexto de produção dado, assumindo posição diante de tema polêmico e utilizando diferentes tipos de argumentos."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Fono-ortografia",
+        "codigo": "EF09LP04",
+        "descricao": "Escrever textos corretamente, de acordo com a norma-padrão, com estruturas sintáticas complexas no nível da oração e do período."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Morfossintaxe",
+        "codigo": "EF09LP05",
+        "descricao": "Identificar, em textos lidos e em produções próprias, orações com a estrutura sujeito-verbo de ligação-predicativo."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Morfossintaxe",
+        "codigo": "EF09LP06",
+        "descricao": "Diferenciar, em textos lidos e em produções próprias, o efeito de sentido do uso dos verbos de ligação 'ser', 'estar', 'ficar', 'parecer' e 'permanecer'."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Morfossintaxe",
+        "codigo": "EF09LP07",
+        "descricao": "Comparar o uso de regência verbal e regência nominal na norma-padrão com seu uso no português brasileiro coloquial oral."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Morfossintaxe",
+        "codigo": "EF09LP08",
+        "descricao": "Identificar, em textos lidos e em produções próprias, a relação que conjunções (e locuções conjuntivas) coordenativas e subordinativas estabelecem entre as orações."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Elementos notacionais / Morfossintaxe",
+        "codigo": "EF09LP09",
+        "descricao": "Identificar efeitos de sentido do uso de orações adjetivas restritivas e explicativas em um período composto."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Coesão",
+        "codigo": "EF09LP10",
+        "descricao": "Comparar as regras de colocação pronominal na norma-padrão com o seu uso no português brasileiro coloquial."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Coesão",
+        "codigo": "EF09LP11",
+        "descricao": "Inferir efeitos de sentido decorrentes do uso de recursos de coesão sequencial (conjunções e articuladores textuais)."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "Todos os Campos",
+        "objeto": "Variação linguística",
+        "codigo": "EF09LP12",
+        "descricao": "Identificar estrangeirismos, caracterizando-os segundo a conservação, ou não, de sua forma gráfica de origem, avaliando a pertinência do seu uso."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "6º ao 9º Ano (Bloco)",
+        "objeto": "Apreciação e réplica",
+        "codigo": "EF69LP01",
+        "descricao": "Diferenciar liberdade de expressão de discursos de ódio, posicionando-se contrariamente a esse tipo de discurso e vislumbrando possibilidades de denúncia."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "6º ao 9º Ano (Bloco)",
+        "objeto": "Análise de peças publicitárias",
+        "codigo": "EF69LP02",
+        "descricao": "Analisar e comparar peças publicitárias variadas em diferentes mídias, percebendo a articulação e a construção composicional."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "6º ao 9º Ano (Bloco)",
+        "objeto": "Estratégia de leitura",
+        "codigo": "EF69LP03",
+        "descricao": "Identificar, em notícias, o fato central; em reportagens o tema e perspectiva; em entrevistas as teses defendidas; em tirinhas/memes/charges a crítica e humor."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "8º e 9º Anos (Bloco)",
+        "objeto": "Análise do campo jornalístico",
+        "codigo": "EF89LP01",
+        "descricao": "Analisar os interesses que movem o campo jornalístico, os efeitos das novas tecnologias e as condições que fazem da informação uma mercadoria."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "8º e 9º Anos (Bloco)",
+        "objeto": "Cultura digital",
+        "codigo": "EF89LP02",
+        "descricao": "Analisar diferentes práticas (curtir, compartilhar, comentar, curar) e gêneros da cultura digital envolvidos no trato com a informação e opinião."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "8º e 9º Anos (Bloco)",
+        "objeto": "Textos de opinião",
+        "codigo": "EF89LP03",
+        "descricao": "Analisar textos de opinião e posicionar-se de forma crítica, fundamentada, ética e respeitosa frente a fatos e opiniões."
+      },
+      {
+        "disciplina": "Língua Portuguesa",
+        "campo": "8º e 9º Anos (Bloco)",
+        "objeto": "Identificação de teses e argumentos",
+        "codigo": "EF89LP04",
+        "descricao": "Identificar e avaliar teses/opiniões, argumentos e contra-argumentos em textos argumentativos do campo jornalístico-midiático."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Números",
+        "objeto": "Demonstrações matemáticas",
+        "codigo": "EF09MA01",
+        "descricao": "Reconhecer que uma demonstração de uma propriedade matemática é diferente de uma verificação por meio de exemplos ou casos particulares."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Números",
+        "objeto": "Números reais e irracionais",
+        "codigo": "EF09MA02",
+        "descricao": "Reconhecer um número irracional como um número real cuja representação decimal é infinita e não periódica, e estimar a localização de alguns deles na reta numérica."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Números",
+        "objeto": "Notação científica e potências",
+        "codigo": "EF09MA03",
+        "descricao": "Efetuar cálculos com números reais, inclusive potências com expoentes fracionários."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Números",
+        "objeto": "Radicais e propriedades das potências",
+        "codigo": "EF09MA04",
+        "descricao": "Resolver e elaborar problemas com números reais, inclusive em notação científica, envolvendo diferentes operações."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Números",
+        "objeto": "Porcentagens: juros simples e compostos",
+        "codigo": "EF09MA05",
+        "descricao": "Resolver e elaborar problemas que envolvam porcentagens, com a ideia de aplicação de percentuais sucessivos e determinação de taxas (juros simples e compostos)."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Álgebra",
+        "objeto": "Funções: representação algébrica e gráfica",
+        "codigo": "EF09MA06",
+        "descricao": "Compreender as funções como relações de dependência unívoca entre duas variáveis e suas representações numérica, algébrica e gráfica."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Álgebra",
+        "objeto": "Razão entre grandezas de espécies diferentes",
+        "codigo": "EF09MA07",
+        "descricao": "Resolver problemas que envolvam a razão entre duas grandezas de espécies diferentes (como velocidade média e densidade demográfica)."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Álgebra",
+        "objeto": "Proporcionalidade direta e inversa",
+        "codigo": "EF09MA08",
+        "descricao": "Resolver e elaborar problemas que envolvam relações de proporcionalidade direta e inversa entre duas ou mais grandezas."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Álgebra",
+        "objeto": "Equações polinomiais do 2º grau",
+        "codigo": "EF09MA09",
+        "descricao": "Compreender a ideia de equação polinomial do 2º grau e suas resoluções por meio de fatoração, conclusão de quadrados e fórmula de Bhaskara."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Geometria",
+        "objeto": "Relações entre ângulos e paralelas",
+        "codigo": "EF09MA10",
+        "descricao": "Demonstrar relações entre ângulos formados por retas paralelas cortadas por uma transversal."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Geometria",
+        "objeto": "Semelhança de triângulos e Teorema de Tales",
+        "codigo": "EF09MA11",
+        "descricao": "Resolver problemas por meio de relações de semelhança de triângulos e aplicação do Teorema de Tales."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Geometria",
+        "objeto": "Relações métricas e Teorema de Pitágoras",
+        "codigo": "EF09MA12",
+        "descricao": "Demonstrar o Teorema de Pitágoras e utilizá-lo na resolução de problemas métricos."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Geometria",
+        "objeto": "Polígonos regulares e construções",
+        "codigo": "EF09MA13",
+        "descricao": "Descrever e construir polígonos regulares utilizando régua e compasso ou softwares de geometria dinâmica."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Geometria",
+        "objeto": "Aplicações do Teorema de Pitágoras",
+        "codigo": "EF09MA14",
+        "descricao": "Resolver e elaborar problemas de aplicação do Teorema de Pitágoras ou das relações de semelhança."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Geometria",
+        "objeto": "Círculo e circunferência",
+        "codigo": "EF09MA15",
+        "descricao": "Descrever as relações entre ângulos centrais e inscritos na circunferência e aplicar em problemas."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Grandezas e Medidas",
+        "objeto": "Área de superfícies planas",
+        "codigo": "EF09MA16",
+        "descricao": "Determinar a medida da área de superfícies planas por meio de decomposição em figuras conhecidas ou utilizando expressões de cálculo de área."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Grandezas e Medidas",
+        "objeto": "Volume de prismas e cilindros",
+        "codigo": "EF09MA17",
+        "descricao": "Calcular o volume de prismas e cilindros retos e resolver problemas práticos de capacidade."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Grandezas e Medidas",
+        "objeto": "Unidades de armazenamento digital",
+        "codigo": "EF09MA18",
+        "descricao": "Reconhecer e empregar unidades de medida de capacidade de armazenamento digital (Bytes, KB, MB, GB, TB, PB)."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Estatística e Probabilidade",
+        "objeto": "Análise de probabilidade estocástica",
+        "codigo": "EF09MA19",
+        "descricao": "Calcular a probabilidade de eventos estocásticos independentes e dependentes em espaço amostral finito."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Estatística e Probabilidade",
+        "objeto": "Interpretação e representação de dados",
+        "codigo": "EF09MA20",
+        "descricao": "Analisar e interpretar dados em tabelas de dupla entrada e gráficos de colunas, linhas, setores e histogramas."
+      },
+      {
+        "disciplina": "Matemática",
+        "campo": "Estatística e Probabilidade",
+        "objeto": "Medidas de tendência central e dispersão",
+        "codigo": "EF09MA21",
+        "descricao": "Calcular e interpretar média aritmética, mediana, moda e amplitude em conjuntos de dados numéricos."
+      }
+    ]
+  }
+};
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = window.MATRIZES_DESCRITORES_BNCC_DATA;
+}
