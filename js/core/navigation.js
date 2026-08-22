@@ -137,6 +137,7 @@
             } else if (resolvedId === 'biblioteca-recursos') {
                 if (typeof global.renderPedagogicLibrary === 'function') global.renderPedagogicLibrary();
             } else if (resolvedId === 'admin-panel') {
+                if (typeof global.renderUsersList === 'function') global.renderUsersList();
                 if (typeof global.loadUsersList === 'function') global.loadUsersList();
             }
 

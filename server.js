@@ -608,52 +608,100 @@ app.post('/api/auth/login', (req, res) => {
     }
 });
 
-// GET /api/users - Listar usuários cadastrados
+// Helper para validação de Grupos RBAC
+function isConfigurationGroup(user) {
+    if (!user || !user.role) return false;
+    const roleNorm = user.role.toLowerCase();
+    return roleNorm.includes('admin') || roleNorm.includes('gestor') || roleNorm.includes('semed');
+}
+
+function isVisualizationGroup(user) {
+    if (!user || !user.role) return false;
+    const roleNorm = user.role.toLowerCase();
+    return roleNorm.includes('diretor') || roleNorm.includes('professor') || roleNorm.includes('coordenador');
+}
+
+// GET /api/users - Listar usuários cadastrados (escopado por RBAC)
 app.get('/api/users', (req, res) => {
     try {
         const user = authenticateRequest(req);
-        if (!user || (user.role !== 'Master Admin' && user.role !== 'Gestor da Rede')) {
-            return res.status(403).json({ error: 'Acesso restrito a administradores e gestores da rede.' });
+        if (!user) {
+            return res.status(401).json({ error: 'Não autenticado.' });
         }
-        const users = getUsers().map(u => {
+
+        const allUsers = getUsers().map(u => {
             const { password, ...rest } = u;
             return rest;
         });
-        res.json(users);
+
+        // Grupo CONFIGURAÇÃO (Admin / SEMED) - Visão global de toda a rede
+        if (isConfigurationGroup(user)) {
+            return res.json(allUsers);
+        }
+
+        // Grupo VISUALIZAÇÃO (Diretor / Professor) - Visão escopada exclusivamente à sua escola
+        if (isVisualizationGroup(user)) {
+            const userSchool = (user.escola || '').toLowerCase().trim();
+            const scopedUsers = allUsers.filter(u => {
+                if (!userSchool) return false;
+                const targetSchool = (u.escola || '').toLowerCase().trim();
+                return targetSchool === userSchool || targetSchool.includes(userSchool) || userSchool.includes(targetSchool);
+            });
+            return res.json(scopedUsers);
+        }
+
+        return res.status(403).json({ error: 'Acesso negado ao módulo de usuários.' });
     } catch (err) {
         console.error('Error in GET /api/users:', err);
         res.status(500).json({ error: 'Erro ao listar usuários.' });
     }
 });
 
-// POST /api/users - Cadastrar novo usuário
+// POST /api/users - Cadastrar novo usuário (exclusivo para grupo CONFIGURAÇÃO)
 app.post('/api/users', (req, res) => {
     try {
         const user = authenticateRequest(req);
-        if (!user || (user.role !== 'Master Admin' && user.role !== 'Gestor da Rede')) {
-            return res.status(403).json({ error: 'Acesso restrito a administradores e gestores da rede.' });
+        if (!user || !isConfigurationGroup(user)) {
+            return res.status(403).json({ 
+                error: 'Permissão negada. Apenas usuários do grupo CONFIGURAÇÃO (Admin/SEMED) podem cadastrar membros da equipe.' 
+            });
         }
-        const { nome, email, password, role, escola, turma } = req.body || {};
+
+        const { nome, email, password, role, escola, turma, telefone, cpf } = req.body || {};
         if (!nome || !email || !role) {
-            return res.status(400).json({ error: 'Nome, e-mail e perfil são obrigatórios.' });
+            return res.status(400).json({ error: 'Nome, e-mail e perfil/cargo são obrigatórios.' });
         }
+
+        // Modelo restrito à equipe/staff (nunca aluno)
+        const roleNorm = role.toLowerCase();
+        if (roleNorm.includes('aluno')) {
+            return res.status(400).json({ error: 'O cadastro de Usuários é exclusivo para a equipe escolar (Gestores, Diretores e Professores). Para cadastrar alunos, utilize a tela de Alunos.' });
+        }
+
         const users = getUsers();
         const existing = users.find(u => u.email.toLowerCase() === email.trim().toLowerCase());
         if (existing) {
             return res.status(409).json({ error: 'Já existe um usuário com este e-mail.' });
         }
+
         const newUser = {
             id: 'usr_' + Date.now(),
             nome: nome.trim(),
             email: email.trim().toLowerCase(),
             password: password || '123456',
-            role,
-            escola: escola || null,
+            role: role.trim(),
+            tipo: role.trim(),
+            cpf: cpf || '-',
+            telefone: telefone || '-',
+            escola: escola || 'Todas as Escolas (SEMED)',
             turma: turma || null,
+            status: 'Ativo',
             created_at: new Date().toISOString()
         };
+
         users.push(newUser);
         saveUsers(users);
+
         const { password: _, ...clean } = newUser;
         res.json({ success: true, user: clean });
     } catch (err) {
@@ -662,13 +710,63 @@ app.post('/api/users', (req, res) => {
     }
 });
 
-// DELETE /api/users/:id - Excluir usuário
+// PUT /api/users/:id - Atualizar dados do usuário (exclusivo para grupo CONFIGURAÇÃO)
+app.put('/api/users/:id', (req, res) => {
+    try {
+        const user = authenticateRequest(req);
+        if (!user || !isConfigurationGroup(user)) {
+            return res.status(403).json({ 
+                error: 'Permissão negada. Apenas usuários do grupo CONFIGURAÇÃO (Admin/SEMED) podem alterar dados da equipe.' 
+            });
+        }
+
+        const { id } = req.params;
+        const { nome, email, password, role, escola, turma, telefone, cpf, status } = req.body || {};
+
+        let users = getUsers();
+        const userIndex = users.findIndex(u => u.id === id);
+        if (userIndex === -1) {
+            return res.status(404).json({ error: 'Usuário não encontrado.' });
+        }
+
+        if (role && role.toLowerCase().includes('aluno')) {
+            return res.status(400).json({ error: 'Perfil inválido. O módulo de Usuários aceita apenas funções de equipe.' });
+        }
+
+        if (nome) users[userIndex].nome = nome.trim();
+        if (email) users[userIndex].email = email.trim().toLowerCase();
+        if (password) users[userIndex].password = password;
+        if (role) {
+            users[userIndex].role = role.trim();
+            users[userIndex].tipo = role.trim();
+        }
+        if (escola !== undefined) users[userIndex].escola = escola;
+        if (turma !== undefined) users[userIndex].turma = turma;
+        if (telefone !== undefined) users[userIndex].telefone = telefone;
+        if (cpf !== undefined) users[userIndex].cpf = cpf;
+        if (status !== undefined) users[userIndex].status = status;
+        users[userIndex].updated_at = new Date().toISOString();
+
+        saveUsers(users);
+
+        const { password: _, ...clean } = users[userIndex];
+        res.json({ success: true, user: clean });
+    } catch (err) {
+        console.error('Error in PUT /api/users/:id:', err);
+        res.status(500).json({ error: 'Erro ao atualizar usuário.' });
+    }
+});
+
+// DELETE /api/users/:id - Excluir usuário (exclusivo para grupo CONFIGURAÇÃO)
 app.delete('/api/users/:id', (req, res) => {
     try {
         const user = authenticateRequest(req);
-        if (!user || (user.role !== 'Master Admin' && user.role !== 'Gestor da Rede')) {
-            return res.status(403).json({ error: 'Acesso restrito a administradores e gestores da rede.' });
+        if (!user || !isConfigurationGroup(user)) {
+            return res.status(403).json({ 
+                error: 'Permissão negada. Apenas usuários do grupo CONFIGURAÇÃO (Admin/SEMED) podem excluir membros da equipe.' 
+            });
         }
+
         const { id } = req.params;
         let users = getUsers();
         const initialLen = users.length;
