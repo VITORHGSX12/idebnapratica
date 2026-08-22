@@ -13,11 +13,11 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <link rel="stylesheet" href="styles.css?v=7b79aed6bd_mt4o8k0d">
+    <link rel="stylesheet" href="styles.css?v=96c9e27624_mt4om8nh">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lexend:wght@600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Mermaid.js for ERD -->
@@ -324,78 +324,90 @@
 </head>
 <body>
     <!-- Login Screen Split-Screen -->
-    <!-- Login Screen Split-Screen -->
     <div id="login-screen" class="login-screen">
         <div class="login-split-container">
-            <!-- Left Panel (Institutional Storytelling & Cinematic Motion Canvas) -->
+            <!-- Left Panel (Institutional Storytelling & IDEB Animated Chart) -->
             <div class="login-left-panel">
-                <div class="login-left-content">
-                    <div class="login-logo-row">
-                        <div class="login-logo-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-graduation-cap"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>
-                        </div>
-                        <div class="login-logo-text">
-                            <h2>IDEB na Prática</h2>
-                            <span>GESTÃO & AVALIAÇÃO PEDAGÓGICA</span>
-                        </div>
-                    </div>
-                    
-                    <div class="login-headline-container">
-                        <h1 id="rotating-headline" class="login-headline">Cada décimo do IDEB planejado e conquistado.</h1>
-                    </div>
+                <div class="dots"></div>
+                <div class="ring r1"></div>
+                <div class="ring r2"></div>
 
-                    <!-- Cinematic Video Animation Canvas Card -->
-                    <div class="login-motion-card">
-                        <div class="login-motion-header">
-                            <div style="display:flex; align-items:center; gap:8px;">
-                                <span class="pulse-dot"></span>
-                                <span class="login-motion-tag">Evolução do IDEB (Escala 0 a 10)</span>
-                            </div>
-                            <span class="badge badge-success" id="login-card-target-badge" style="background:#2563eb; color:#ffffff; font-weight:700;">Meta Pactuada 2025 • 6.5</span>
-                        </div>
-                        <div class="login-canvas-wrapper" id="login-canvas-container" style="position: relative; width: 100%; height: 205px; border-radius: 12px; overflow: hidden; background: #0f172a; display: flex; align-items: center; justify-content: center;">
-                            <video id="login-video-player" src="login.mp4" autoplay loop muted playsinline preload="auto" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.24); transform-origin: center center; display: block; pointer-events: none;"></video>
-                        </div>
-                        <div class="login-motion-caption">
-                            <span id="login-card-caption-text">Série Histórica INEP (2019-2023) • Meta Pactuada pela Rede 2025</span>
-                        </div>
+                <div class="brand">
+                    <div class="brand-mark">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>
                     </div>
+                    <div class="brand-text">
+                        <div class="name">IDEB na Prática</div>
+                        <div class="tag">GESTÃO &amp; AVALIAÇÃO PEDAGÓGICA</div>
+                    </div>
+                </div>
 
-                    <!-- Seal of official data -->
-                    <div class="login-official-badge">
-                        <i data-lucide="shield-check" style="width: 15px; height: 15px; color: #2563eb;"></i>
-                        <span>Dados oficiais INEP/SAEB (2019-2023) com metas municipais pactuadas</span>
+                <h1 class="headline" id="rotating-headline">Cada <span class="accent-indigo">décimo</span> do IDEB <span class="accent-teal">planejado e conquistado.</span></h1>
+
+                <!-- Chart Card (IDEB Animated Graphic) -->
+                <div class="chart-card">
+                    <div class="chart-head">
+                        <div class="chart-title">
+                            <span class="dot"></span>
+                            <span class="label">Evolução do IDEB (Escala 0 a 10)</span>
+                        </div>
+                        <div class="badge-meta" id="login-card-target-badge">Meta Pactuada 2025 · 6.5</div>
                     </div>
+                    <div class="chart-plot">
+                        <div class="goal-line"></div>
+                        <div class="bar b1"><span>4.2</span></div>
+                        <div class="bar b2"><span>4.6</span></div>
+                        <div class="bar b3"><span>5.1</span></div>
+                        <div class="bar b4"><span>5.6</span></div>
+                        <div class="bar b5"><span>6.5*</span></div>
+                    </div>
+                    <div class="chart-foot">
+                        <span>2019</span><span>2020</span><span>2021</span><span>2023</span><span>2025*</span>
+                    </div>
+                </div>
+
+                <div class="pill-note">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+                    <span>Dados oficiais INEP/SAEB (2019–2023) com metas municipais pactuadas</span>
+                </div>
+
+                <div class="spacer"></div>
+
+                <div class="left-footer">
+                    <img class="footer-logo-img" src="assets/logo-prefeitura-semed.png" alt="Prefeitura de Gonçalves Dias e SEMED - Secretaria Municipal de Educação">
                 </div>
             </div>
 
-            <!-- Right Panel (Exact Match to Reference Image) -->
+            <!-- Right Panel (Login Card & Quick Access) -->
             <div class="login-right-panel">
-                <div class="login-form-container">
-                    <div class="login-form-header">
-                        <h2>Bem-vindo de volta</h2>
-                        <p class="text-muted">Insira suas credenciais para acessar o sistema.</p>
-                    </div>
+                <div class="badge-top">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>
+                    <span>Gestão &amp; Avaliação Pedagógica</span>
+                </div>
+
+                <div class="card login-form-container">
+                    <h1>Bem-vindo de volta</h1>
+                    <p class="sub">Insira suas credenciais institucionais para continuar.</p>
 
                     <form id="login-form" class="login-form-body" onsubmit="event.preventDefault(); if(window.executeSystemLogin) window.executeSystemLogin(); return false;">
                         <!-- Input Email -->
-                        <div class="login-input-group">
-                            <i data-lucide="mail" class="login-input-icon"></i>
+                        <div class="field login-input-group">
+                            <svg class="icon login-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>
                             <input type="email" id="login-email" class="login-input-field" placeholder="E-mail institucional" required autocomplete="email" value="" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); if(window.executeSystemLogin) window.executeSystemLogin(); }">
                         </div>
 
                         <!-- Input Senha -->
-                        <div class="login-input-group">
-                            <i data-lucide="lock" class="login-input-icon"></i>
+                        <div class="field login-input-group">
+                            <svg class="icon login-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                             <input type="password" id="login-password" class="login-input-field" placeholder="Sua senha" required autocomplete="current-password" value="" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); if(window.executeSystemLogin) window.executeSystemLogin(); }">
-                            <button type="button" id="btn-toggle-login-password" class="login-password-toggle" title="Mostrar/ocultar senha">
-                                <i data-lucide="eye" style="width: 18px; height: 18px;"></i>
+                            <button type="button" id="btn-toggle-login-password" class="eye login-password-toggle" title="Mostrar/ocultar senha">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
                             </button>
                         </div>
 
                         <!-- Options Row: Lembrar-me & Esqueci a senha -->
-                        <div class="login-options-row">
-                            <label class="login-checkbox-label">
+                        <div class="row-between login-options-row">
+                            <label class="remember login-checkbox-label">
                                 <input type="checkbox" id="login-remember-me" checked>
                                 <span>Lembrar-me</span>
                             </label>
@@ -403,41 +415,46 @@
                         </div>
 
                         <!-- Submit Button -->
-                        <button type="button" id="btn-login-submit" class="btn-login-primary" onclick="if(window.executeSystemLogin) window.executeSystemLogin();">
+                        <button type="button" id="btn-login-submit" class="btn-primary btn-login-primary" onclick="if(window.executeSystemLogin) window.executeSystemLogin();">
                             <span>Entrar no Sistema</span>
-                            <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
                         </button>
                     </form>
 
                     <!-- Container de Credenciais de Teste -->
                     <div id="login-test-credentials-container" style="display: block;">
-                        <div class="login-divider">
-                            <span>AMBIENTE DE TESTES (Clique para entrar)</span>
+                        <div class="divider login-divider">
+                            <span>AMBIENTE DE TESTES · CLIQUE PARA ENTRAR</span>
                         </div>
-                        <div class="test-accounts-grid">
-                            <div class="test-account-card" onclick="if(window.executeSystemLogin) window.executeSystemLogin('professor@goncalvesdias.ma.gov.br', '123');" data-email="professor@goncalvesdias.ma.gov.br" data-pass="123" data-role="Professor" style="cursor: pointer;">
-                                <span class="test-role-title">PROFESSOR</span>
-                                <span class="test-role-email">professor@goncalvesdias.ma.gov.br</span>
+                        <div class="quick-grid test-accounts-grid">
+                            <div class="quick-card test-account-card qc-professor" onclick="if(window.executeSystemLogin) window.executeSystemLogin('professor@goncalvesdias.ma.gov.br', '123');" data-email="professor@goncalvesdias.ma.gov.br" data-pass="123" data-role="Professor" style="cursor: pointer;">
+                                <div class="quick-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg></div>
+                                <div class="quick-text"><div class="t1 test-role-title">PROFESSOR</div><div class="t2 test-role-email">professor@goncalvesdias.ma.gov.br</div></div>
                             </div>
-                            <div class="test-account-card" onclick="if(window.executeSystemLogin) window.executeSystemLogin('diretor@goncalvesdias.ma.gov.br', '123');" data-email="diretor@goncalvesdias.ma.gov.br" data-pass="123" data-role="Diretor Escola" style="cursor: pointer;">
-                                <span class="test-role-title">DIRETOR</span>
-                                <span class="test-role-email">diretor@goncalvesdias.ma.gov.br</span>
+                            <div class="quick-card test-account-card qc-diretor" onclick="if(window.executeSystemLogin) window.executeSystemLogin('diretor@goncalvesdias.ma.gov.br', '123');" data-email="diretor@goncalvesdias.ma.gov.br" data-pass="123" data-role="Diretor Escola" style="cursor: pointer;">
+                                <div class="quick-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 4.5-9 4.5-9-4.5 9-4.5Z"/><path d="M3 6.5v6c0 3 4 5.5 9 5.5s9-2.5 9-5.5v-6"/></svg></div>
+                                <div class="quick-text"><div class="t1 test-role-title">DIRETOR</div><div class="t2 test-role-email">diretor@goncalvesdias.ma.gov.br</div></div>
                             </div>
-                            <div class="test-account-card" onclick="if(window.executeSystemLogin) window.executeSystemLogin('admin@goncalvesdias.ma.gov.br', 'admin');" data-email="admin@goncalvesdias.ma.gov.br" data-pass="admin" data-role="Master Admin" style="cursor: pointer;">
-                                <span class="test-role-title">ADMIN</span>
-                                <span class="test-role-email">admin@goncalvesdias.ma.gov.br</span>
+                            <div class="quick-card test-account-card qc-admin" onclick="if(window.executeSystemLogin) window.executeSystemLogin('admin@goncalvesdias.ma.gov.br', 'admin');" data-email="admin@goncalvesdias.ma.gov.br" data-pass="admin" data-role="Master Admin" style="cursor: pointer;">
+                                <div class="quick-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg></div>
+                                <div class="quick-text"><div class="t1 test-role-title">ADMIN</div><div class="t2 test-role-email">admin@goncalvesdias.ma.gov.br</div></div>
                             </div>
-                            <div class="test-account-card" onclick="if(window.executeSystemLogin) window.executeSystemLogin('semed@goncalvesdias.ma.gov.br', 'admin');" data-email="semed@goncalvesdias.ma.gov.br" data-pass="admin" data-role="Gestor da Rede" style="cursor: pointer;">
-                                <span class="test-role-title">SEMED</span>
-                                <span class="test-role-email">semed@goncalvesdias.ma.gov.br</span>
+                            <div class="quick-card test-account-card qc-semed" onclick="if(window.executeSystemLogin) window.executeSystemLogin('semed@goncalvesdias.ma.gov.br', 'admin');" data-email="semed@goncalvesdias.ma.gov.br" data-pass="admin" data-role="Gestor da Rede" style="cursor: pointer;">
+                                <div class="quick-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5 12 4l10 5.5-10 5.5-10-5.5Z"/><path d="M6 12v5.5c0 1.5 2.7 3.5 6 3.5s6-2 6-3.5V12"/></svg></div>
+                                <div class="quick-text"><div class="t1 test-role-title">SEMED</div><div class="t2 test-role-email">semed@goncalvesdias.ma.gov.br</div></div>
                             </div>
                         </div>
                     </div>
+
+                    <div class="secure login-secure-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        <span>Ambiente seguro e confiável</span>
+                    </div>
                 </div>
-                
-                <div class="login-footer" style="text-align: center; margin-top: 24px; font-size: 0.75rem; color: var(--text-muted); line-height: 1.5;">
-                    <span style="font-weight: 600; color: var(--text-secondary); display: block;">© 2026 IDEB na Prática · Desenvolvido por I6 Sistems</span>
-                    <span style="font-size: 0.72rem; color: var(--text-muted); display: block;">Secretaria Municipal de Educação de Gonçalves Dias - MA</span>
+
+                <div class="foot-copy login-footer">
+                    <span class="copy-author">© 2026 IDEB na Prática · Desenvolvido por Ió Sistems</span>
+                    <a href="#" class="copy-org">Secretaria Municipal de Educação de Gonçalves Dias — MA</a>
                 </div>
             </div>
         </div>
@@ -6490,26 +6507,26 @@
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=98c393313d_mt4o8k0d"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=3b2cc05144_mt4o8k0d"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mt4o8k0d"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=98c393313d_mt4om8nh"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=3b2cc05144_mt4om8nh"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mt4om8nh"></script>
     <script src="bncc_habilidades_oficial.js?v=mt23gn8s"></script>
-    <script src="ideb_publico_db.js?v=246d2c1cd5_mt4o8k0d"></script>
-    <script src="alunos_db.js?v=ed6641ae07_mt4o8k0d"></script>
+    <script src="ideb_publico_db.js?v=246d2c1cd5_mt4om8nh"></script>
+    <script src="alunos_db.js?v=ed6641ae07_mt4om8nh"></script>
 
     <!-- Módulos do Core -->
-    <script src="js/core/helpers.js?v=3e1fa864ae_mt4o8k0d"></script>
-    <script src="js/core/theme-toast.js?v=5efe74db0d_mt4o8k0d"></script>
-    <script src="js/core/user-profile.js?v=bad21cc2ae_mt4o8k0d"></script>
-    <script src="js/core/auth.js?v=7175a7eff7_mt4o8k0d"></script>
-    <script src="js/core/navigation.js?v=20cdf608c8_mt4o8k0d"></script>
+    <script src="js/core/helpers.js?v=3e1fa864ae_mt4om8nh"></script>
+    <script src="js/core/theme-toast.js?v=5efe74db0d_mt4om8nh"></script>
+    <script src="js/core/user-profile.js?v=bad21cc2ae_mt4om8nh"></script>
+    <script src="js/core/auth.js?v=7175a7eff7_mt4om8nh"></script>
+    <script src="js/core/navigation.js?v=20cdf608c8_mt4om8nh"></script>
 
     <!-- Módulos de Domínio -->
-    <script src="js/modules/escolas/escolas.js?v=5feaf5ca33_mt4o8k0d"></script>
-    <script src="js/modules/matrizes/matrizes.js?v=a1651b7a53_mt4o8k0d"></script>
-    <script src="js/modules/cronograma/cronograma.js?v=dff321d534_mt4o8k0d"></script>
+    <script src="js/modules/escolas/escolas.js?v=5feaf5ca33_mt4om8nh"></script>
+    <script src="js/modules/matrizes/matrizes.js?v=a1651b7a53_mt4om8nh"></script>
+    <script src="js/modules/cronograma/cronograma.js?v=dff321d534_mt4om8nh"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=81d0b33544_mt4o8k0d"></script>
+    <script src="app.js?v=81d0b33544_mt4om8nh"></script>
 </body>
 </html>
