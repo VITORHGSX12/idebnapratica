@@ -1,0 +1,677 @@
+// =========================================================================
+// DASHBOARD CHARTS ENGINE
+// Responsabilidade: Renderização de gráficos comparativos históricos (Chart.js),
+// Anos Iniciais vs Anos Finais, metas INEP de Gonçalves Dias e Maranhão,
+// tooltips interativas e fallbacks de canvas nativo.
+// =========================================================================
+
+(function(global) {
+    'use strict';
+
+    // Instâncias Globais de Gráficos do Dashboard
+    var dashGoncalvesDiasChartInstance = null;
+    var dashIniciaisChartInstance = null;
+    var dashFinaisChartInstance = null;
+    var dashComparativoChartInstance = null;
+
+    // Registrar o plugin datalabels globalmente se a biblioteca estiver carregada
+    if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined') {
+        try { Chart.register(ChartDataLabels); } catch(e) {}
+    }
+
+    /**
+     * Configuração Global de Tooltips Interativas Dark Theme para todos os Gráficos
+     */
+    function configureGlobalChartTooltips() {
+        if (typeof Chart === 'undefined') return;
+        try {
+            Chart.defaults.interaction = Chart.defaults.interaction || {};
+            Chart.defaults.interaction.mode = 'index';
+            Chart.defaults.interaction.intersect = false;
+
+            Chart.defaults.plugins = Chart.defaults.plugins || {};
+            Chart.defaults.plugins.tooltip = Chart.defaults.plugins.tooltip || {};
+            Chart.defaults.plugins.tooltip.enabled = true;
+            Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(15, 23, 42, 0.94)';
+            Chart.defaults.plugins.tooltip.titleColor = '#FFFFFF';
+            Chart.defaults.plugins.tooltip.titleFont = { size: 13, weight: '800' };
+            Chart.defaults.plugins.tooltip.bodyColor = '#F8FAFC';
+            Chart.defaults.plugins.tooltip.bodyFont = { size: 12, weight: '600' };
+            Chart.defaults.plugins.tooltip.padding = 12;
+            Chart.defaults.plugins.tooltip.cornerRadius = 8;
+            Chart.defaults.plugins.tooltip.usePointStyle = true;
+            Chart.defaults.plugins.tooltip.boxWidth = 8;
+            Chart.defaults.plugins.tooltip.boxHeight = 8;
+            Chart.defaults.plugins.tooltip.boxPadding = 6;
+            Chart.defaults.plugins.tooltip.borderColor = 'rgba(255, 255, 255, 0.12)';
+            Chart.defaults.plugins.tooltip.borderWidth = 1;
+            Chart.defaults.plugins.tooltip.caretSize = 6;
+            Chart.defaults.plugins.tooltip.caretPadding = 6;
+            Chart.defaults.plugins.tooltip.callbacks = {
+                title: function(context) {
+                    if (!context || !context.length) return '';
+                    var lbl = context[0].label;
+                    return lbl.toString().toLowerCase().includes('ano') ? lbl : ('Ciclo ' + lbl);
+                },
+                label: function(context) {
+                    var label = context.dataset.label || '';
+                    var val = context.raw;
+                    if (val === null || val === undefined) return null;
+                    var formatted = typeof val === 'number' ? (val >= 50 ? val.toFixed(1) + ' pts' : val.toFixed(1) + ' ★') : val;
+                    return ' ' + label + ': ' + formatted;
+                }
+            };
+        } catch(e) {}
+    }
+    configureGlobalChartTooltips();
+
+    /**
+     * Helper de renderização Canvas Nativa de Fallback
+     */
+    function drawCanvasFallbackChart(canvas, labels, datasets, minY, maxY) {
+        if (!canvas || !canvas.getContext) return;
+        var ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        
+        var parentW = canvas.parentElement ? canvas.parentElement.clientWidth : 600;
+        var parentH = canvas.parentElement ? canvas.parentElement.clientHeight : 280;
+        var width = parentW > 0 ? parentW : 600;
+        var height = parentH > 0 ? parentH : 280;
+        
+        canvas.width = width;
+        canvas.height = height;
+        ctx.clearRect(0, 0, width, height);
+        
+        var paddingLeft = 35;
+        var paddingRight = 15;
+        var paddingTop = 32;
+        var paddingBottom = 35;
+        var chartW = width - paddingLeft - paddingRight;
+        var chartH = height - paddingTop - paddingBottom;
+        
+        // Desenhando Legenda no topo
+        var legendX = paddingLeft;
+        datasets.forEach(function(ds) {
+            if (!ds.label) return;
+            var color = ds.borderColor || (typeof ds.backgroundColor === 'string' ? ds.backgroundColor : '#6366f1');
+            
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(legendX + 5, 12, 4, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#475569';
+            ctx.font = 'bold 10.5px sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText(ds.label, legendX + 13, 15);
+            
+            legendX += ctx.measureText(ds.label).width + 30;
+        });
+
+        // Linhas de grade
+        ctx.strokeStyle = 'rgba(226, 232, 240, 0.6)';
+        ctx.lineWidth = 1;
+        var steps = 4;
+        for (var i = 0; i <= steps; i++) {
+            var y = paddingTop + (chartH * i) / steps;
+            ctx.beginPath();
+            ctx.moveTo(paddingLeft, y);
+            ctx.lineTo(width - paddingRight, y);
+            ctx.stroke();
+            
+            var val = (maxY - ((maxY - minY) * i) / steps).toFixed(1);
+            ctx.fillStyle = '#64748b';
+            ctx.font = '10px sans-serif';
+            ctx.textAlign = 'right';
+            ctx.fillText(val, paddingLeft - 6, y + 3);
+        }
+        
+        var n = labels.length;
+        var stepX = chartW / n;
+        
+        datasets.forEach(function(ds) {
+            if (ds.type === 'bar') {
+                var barW = Math.min(stepX * 0.35, 20);
+                ds.data.forEach(function(val, idx) {
+                    if (val === null || val === undefined) return;
+                    var x = paddingLeft + idx * stepX + stepX / 2 - barW / 2;
+                    var norm = (val - minY) / (maxY - minY);
+                    var h = Math.max(0, norm * chartH);
+                    var y = paddingTop + chartH - h;
+                    
+                    ctx.fillStyle = typeof ds.backgroundColor === 'string' ? ds.backgroundColor : '#6366f1';
+                    ctx.fillRect(x, y, barW, h);
+                    
+                    ctx.fillStyle = '#475569';
+                    ctx.font = 'bold 10px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(val.toFixed(1), x + barW / 2, y - 4);
+                });
+            } else if (ds.type === 'line') {
+                ctx.beginPath();
+                var first = true;
+                ds.data.forEach(function(val, idx) {
+                    if (val === null || val === undefined) return;
+                    var x = paddingLeft + idx * stepX + stepX / 2;
+                    var norm = (val - minY) / (maxY - minY);
+                    var y = paddingTop + chartH - norm * chartH;
+                    if (first) { ctx.moveTo(x, y); first = false; }
+                    else { ctx.lineTo(x, y); }
+                });
+                ctx.strokeStyle = ds.borderColor || '#10b981';
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+                
+                ds.data.forEach(function(val, idx) {
+                    if (val === null || val === undefined) return;
+                    var x = paddingLeft + idx * stepX + stepX / 2;
+                    var norm = (val - minY) / (maxY - minY);
+                    var y = paddingTop + chartH - norm * chartH;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 4, 0, Math.PI * 2);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fill();
+                    ctx.strokeStyle = ds.borderColor || '#10b981';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                });
+            }
+        });
+        
+        labels.forEach(function(lbl, idx) {
+            var x = paddingLeft + idx * stepX + stepX / 2;
+            ctx.fillStyle = '#334155';
+            ctx.font = 'bold 11px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(lbl, x, height - 10);
+        });
+    }
+
+    /**
+     * Gráfico Histórico de Gonçalves Dias vs Meta INEP
+     */
+    function renderDashboardGoncalvesDiasChart() {
+        var ctxGd = document.getElementById('dashChartGoncalvesDias');
+        if (!ctxGd) return;
+
+        var anos = ['2015', '2017', '2019', '2021', '2023', '2025'];
+        var iniciaisGd = [4.1, 4.3, 4.7, 4.5, 4.9, 5.0];
+        var finaisGd   = [3.4, 3.6, 4.4, 4.2, 4.8, 5.1];
+        var metaInep   = [4.3, 4.6, 4.9, 5.2, 5.2, 5.5];
+
+        if (typeof Chart === 'undefined') {
+            drawCanvasFallbackChart(ctxGd, anos, [
+                { type: 'line', label: 'Anos Iniciais', data: iniciaisGd, borderColor: '#8B5CF6' },
+                { type: 'line', label: 'Anos Finais', data: finaisGd, borderColor: '#0EA5E9' },
+                { type: 'line', label: 'Meta INEP', data: metaInep, borderColor: '#F59E0B' }
+            ], 2, 6);
+            return;
+        }
+
+        try {
+            if (dashGoncalvesDiasChartInstance) dashGoncalvesDiasChartInstance.destroy();
+
+            dashGoncalvesDiasChartInstance = new Chart(ctxGd, {
+                type: 'line',
+                data: {
+                    labels: anos,
+                    datasets: [
+                        {
+                            type: 'line',
+                            label: 'Anos Iniciais (Gonçalves Dias)',
+                            data: iniciaisGd,
+                            borderColor: '#8B5CF6',
+                            backgroundColor: 'rgba(139, 92, 246, 0.12)',
+                            pointBackgroundColor: '#FFFFFF',
+                            pointBorderColor: '#8B5CF6',
+                            pointBorderWidth: 2.5,
+                            pointRadius: 4.5,
+                            borderWidth: 2.5,
+                            tension: 0.35,
+                            fill: true,
+                            datalabels: {
+                                display: true,
+                                align: 'top',
+                                color: '#8B5CF6',
+                                font: { weight: '800', size: 10.5 },
+                                formatter: function(v) { return v ? v.toFixed(1) : ''; }
+                            }
+                        },
+                        {
+                            type: 'line',
+                            label: 'Anos Finais (Gonçalves Dias)',
+                            data: finaisGd,
+                            borderColor: '#0EA5E9',
+                            backgroundColor: 'rgba(14, 165, 233, 0.12)',
+                            pointBackgroundColor: '#FFFFFF',
+                            pointBorderColor: '#0EA5E9',
+                            pointBorderWidth: 2.5,
+                            pointRadius: 4.5,
+                            borderWidth: 2.5,
+                            tension: 0.35,
+                            fill: true,
+                            datalabels: {
+                                display: true,
+                                align: 'bottom',
+                                color: '#0EA5E9',
+                                font: { weight: '800', size: 10.5 },
+                                formatter: function(v) { return v ? v.toFixed(1) : ''; }
+                            }
+                        },
+                        {
+                            type: 'line',
+                            label: 'Meta Projetada INEP (Municipal)',
+                            data: metaInep,
+                            borderColor: '#F59E0B',
+                            backgroundColor: '#F59E0B',
+                            pointBackgroundColor: '#FFFFFF',
+                            pointBorderColor: '#F59E0B',
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            borderWidth: 2,
+                            borderDash: [5, 4],
+                            tension: 0.35,
+                            fill: false,
+                            datalabels: {
+                                display: true,
+                                align: 'top',
+                                color: '#D97706',
+                                font: { weight: '800', size: 10 },
+                                formatter: function(v) { return v ? v.toFixed(1) : ''; }
+                            }
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: { padding: { top: 26, bottom: 8, left: 4, right: 4 } },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, font: { size: 11.5, weight: '600' } }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 2,
+                            max: 6,
+                            grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                            ticks: { stepSize: 1, font: { size: 11, weight: '600' }, color: 'var(--text-secondary)' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 11, weight: '700' }, color: 'var(--text-primary)' }
+                        }
+                    }
+                }
+            });
+        } catch(err) {
+            console.error('[dashChartGoncalvesDias Error]', err);
+            drawCanvasFallbackChart(ctxGd, anos, [
+                { type: 'line', label: 'Anos Iniciais', data: iniciaisGd, borderColor: '#8B5CF6' },
+                { type: 'line', label: 'Anos Finais', data: finaisGd, borderColor: '#0EA5E9' },
+                { type: 'line', label: 'Meta INEP', data: metaInep, borderColor: '#F59E0B' }
+            ], 2, 6);
+        }
+    }
+
+    /**
+     * Gráficos de Etapas: Anos Iniciais vs Anos Finais (Maranhão vs INEP)
+     */
+    function renderDashboardEtapasCharts() {
+        var ctxInc = document.getElementById('dashChartIniciais');
+        var ctxFin = document.getElementById('dashChartFinais');
+        if (!ctxInc || !ctxFin) return;
+
+        var anos = ['2007','2009','2011','2013','2015','2017','2019','2021','2023','2025'];
+        var iniciaisData = {
+            observado: [3.5, 3.7, 3.9, 3.9, 4.4, 4.5, 4.7, 4.7, 5.1, 5.5],
+            projetado: [2.8, 3.1, 3.5, 3.8, 4.1, 4.4, 4.7, 5.0, 5.0, null]
+        };
+        var finaisData = {
+            observado: [3.2, 3.3, 3.4, 3.4, 3.7, 3.7, 4.0, 4.2, 4.3, 4.5],
+            projetado: [2.9, 3.0, 3.3, 3.7, 4.1, 4.3, 4.6, 4.9, 4.9, null]
+        };
+
+        if (typeof Chart === 'undefined') {
+            drawCanvasFallbackChart(ctxInc, anos, [
+                { type: 'bar', label: 'Maranhão (Observado)', data: iniciaisData.observado, backgroundColor: '#6366F1' },
+                { type: 'line', label: 'Meta Projetada (INEP)', data: iniciaisData.projetado, borderColor: '#10B981' }
+            ], 0, 10);
+
+            drawCanvasFallbackChart(ctxFin, anos, [
+                { type: 'bar', label: 'Maranhão (Observado)', data: finaisData.observado, backgroundColor: '#0284C7' },
+                { type: 'line', label: 'Meta Projetada (INEP)', data: finaisData.projetado, borderColor: '#10B981' }
+            ], 0, 10);
+            return;
+        }
+
+        try {
+            if (dashIniciaisChartInstance) dashIniciaisChartInstance.destroy();
+            if (dashFinaisChartInstance) dashFinaisChartInstance.destroy();
+
+            // Canvas 1 (Anos Iniciais) Gradient
+            var bgGradInc = '#3B82F6';
+            try {
+                var g = ctxInc.getContext('2d').createLinearGradient(0, 0, 0, 260);
+                g.addColorStop(0, '#6366F1');
+                g.addColorStop(1, '#3B82F6');
+                bgGradInc = g;
+            } catch(e) {}
+
+            dashIniciaisChartInstance = new Chart(ctxInc, {
+                type: 'bar',
+                data: {
+                    labels: anos,
+                    datasets: [
+                        {
+                            type: 'bar',
+                            label: 'Maranhão (Observado)',
+                            data: iniciaisData.observado,
+                            backgroundColor: bgGradInc,
+                            borderRadius: 8,
+                            borderSkipped: false,
+                            barPercentage: 0.65,
+                            categoryPercentage: 0.8,
+                            datalabels: {
+                                display: true,
+                                anchor: 'end',
+                                align: 'top',
+                                color: '#6366F1',
+                                font: { weight: '800', size: 11 },
+                                formatter: function(v) { return v ? v.toFixed(1) : ''; }
+                            }
+                        },
+                        {
+                            type: 'line',
+                            label: 'Meta Projetada (INEP)',
+                            data: iniciaisData.projetado,
+                            borderColor: '#10B981',
+                            backgroundColor: '#10B981',
+                            pointBackgroundColor: '#FFFFFF',
+                            pointBorderColor: '#10B981',
+                            pointBorderWidth: 2.5,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            borderWidth: 2.5,
+                            borderDash: [5, 4],
+                            tension: 0.3,
+                            datalabels: {
+                                display: true,
+                                align: 'center',
+                                anchor: 'center',
+                                color: '#FFFFFF',
+                                backgroundColor: '#10B981',
+                                borderRadius: 6,
+                                font: { weight: '800', size: 10, family: 'var(--font-mono)' },
+                                padding: { top: 3, bottom: 3, left: 6, right: 6 },
+                                formatter: function(v) { return v ? v.toFixed(1) : ''; }
+                            }
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: { padding: { top: 28, bottom: 8, left: 4, right: 4 } },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, font: { size: 11.5, weight: '600' } }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleFont: { size: 12, weight: '800' },
+                            bodyFont: { size: 11 },
+                            padding: 10,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    return ' ' + context.dataset.label + ': ' + (context.raw ? context.raw.toFixed(1) : 'N/A');
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 10,
+                            grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                            ticks: { stepSize: 1, font: { size: 11, weight: '600' }, color: 'var(--text-secondary)' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 11, weight: '700' }, color: 'var(--text-primary)' }
+                        }
+                    }
+                }
+            });
+
+            // Canvas 2 (Anos Finais) Gradient
+            var bgGradFin = '#0EA5E9';
+            try {
+                var g2 = ctxFin.getContext('2d').createLinearGradient(0, 0, 0, 260);
+                g2.addColorStop(0, '#0284C7');
+                g2.addColorStop(1, '#38BDF8');
+                bgGradFin = g2;
+            } catch(e) {}
+
+            dashFinaisChartInstance = new Chart(ctxFin, {
+                type: 'bar',
+                data: {
+                    labels: anos,
+                    datasets: [
+                        {
+                            type: 'bar',
+                            label: 'Maranhão (Observado)',
+                            data: finaisData.observado,
+                            backgroundColor: bgGradFin,
+                            borderRadius: 8,
+                            borderSkipped: false,
+                            barPercentage: 0.65,
+                            categoryPercentage: 0.8,
+                            datalabels: {
+                                display: true,
+                                anchor: 'end',
+                                align: 'top',
+                                color: '#0284C7',
+                                font: { weight: '800', size: 11 },
+                                formatter: function(v) { return v ? v.toFixed(1) : ''; }
+                            }
+                        },
+                        {
+                            type: 'line',
+                            label: 'Meta Projetada (INEP)',
+                            data: finaisData.projetado,
+                            borderColor: '#10B981',
+                            backgroundColor: '#10B981',
+                            pointBackgroundColor: '#FFFFFF',
+                            pointBorderColor: '#10B981',
+                            pointBorderWidth: 2.5,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            borderWidth: 2.5,
+                            borderDash: [5, 4],
+                            tension: 0.3,
+                            datalabels: {
+                                display: true,
+                                align: 'center',
+                                anchor: 'center',
+                                color: '#FFFFFF',
+                                backgroundColor: '#10B981',
+                                borderRadius: 6,
+                                font: { weight: '800', size: 10, family: 'var(--font-mono)' },
+                                padding: { top: 3, bottom: 3, left: 6, right: 6 },
+                                formatter: function(v) { return v ? v.toFixed(1) : ''; }
+                            }
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: { padding: { top: 28, bottom: 8, left: 4, right: 4 } },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, font: { size: 11.5, weight: '600' } }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleFont: { size: 12, weight: '800' },
+                            bodyFont: { size: 11 },
+                            padding: 10,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    return ' ' + context.dataset.label + ': ' + (context.raw ? context.raw.toFixed(1) : 'N/A');
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 10,
+                            grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                            ticks: { stepSize: 1, font: { size: 11, weight: '600' }, color: 'var(--text-secondary)' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 11, weight: '700' }, color: 'var(--text-primary)' }
+                        }
+                    }
+                }
+            });
+        } catch(err) {
+            console.error('[renderDashboardEtapasCharts Error]', err);
+            drawCanvasFallbackChart(ctxInc, anos, [
+                { type: 'bar', label: 'Maranhão (Observado)', data: iniciaisData.observado, backgroundColor: '#6366F1' },
+                { type: 'line', label: 'Meta Projetada (INEP)', data: iniciaisData.projetado, borderColor: '#10B981' }
+            ], 0, 10);
+
+            drawCanvasFallbackChart(ctxFin, anos, [
+                { type: 'bar', label: 'Maranhão (Observado)', data: finaisData.observado, backgroundColor: '#0284C7' },
+                { type: 'line', label: 'Meta Projetada (INEP)', data: finaisData.projetado, borderColor: '#10B981' }
+            ], 0, 10);
+        }
+    }
+
+    /**
+     * Gráfico Comparativo: Anos Iniciais vs Anos Finais
+     */
+    function renderDashboardComparativoChart() {
+        var ctxComp = document.getElementById('dashChartComparativo');
+        if (!ctxComp) return;
+
+        var anos = ['2007','2009','2011','2013','2015','2017','2019','2021','2023','2025'];
+        var iniciaisData = [3.4, 3.7, 3.9, 3.9, 4.1, 4.1, 4.6, 4.6, 5.0, 5.5];
+        var finaisData   = [3.0, 3.2, 3.3, 3.3, 3.6, 3.6, 4.0, 4.2, 4.3, 4.5];
+
+        if (typeof Chart === 'undefined') {
+            drawCanvasFallbackChart(ctxComp, anos, [
+                { type: 'line', label: 'Anos Iniciais', data: iniciaisData, borderColor: '#6366F1' },
+                { type: 'line', label: 'Anos Finais', data: finaisData, borderColor: '#0EA5E9' }
+            ], 2, 6);
+            return;
+        }
+
+        try {
+            if (dashComparativoChartInstance) dashComparativoChartInstance.destroy();
+
+            dashComparativoChartInstance = new Chart(ctxComp, {
+                type: 'line',
+                data: {
+                    labels: anos,
+                    datasets: [
+                        {
+                            label: 'Anos Iniciais',
+                            data: iniciaisData,
+                            borderColor: '#6366F1',
+                            backgroundColor: 'rgba(99, 102, 241, 0.12)',
+                            pointBackgroundColor: '#FFFFFF',
+                            pointBorderColor: '#6366F1',
+                            pointBorderWidth: 2.5,
+                            pointRadius: 4.5,
+                            borderWidth: 2.5,
+                            tension: 0.3,
+                            fill: true,
+                            datalabels: {
+                                display: true,
+                                align: 'top',
+                                color: '#6366F1',
+                                font: { weight: '800', size: 10 },
+                                formatter: function(v) { return v ? v.toFixed(1) : ''; }
+                            }
+                        },
+                        {
+                            label: 'Anos Finais',
+                            data: finaisData,
+                            borderColor: '#0EA5E9',
+                            backgroundColor: 'rgba(14, 165, 233, 0.12)',
+                            pointBackgroundColor: '#FFFFFF',
+                            pointBorderColor: '#0EA5E9',
+                            pointBorderWidth: 2.5,
+                            pointRadius: 4.5,
+                            borderWidth: 2.5,
+                            tension: 0.3,
+                            fill: true,
+                            datalabels: {
+                                display: true,
+                                align: 'bottom',
+                                color: '#0EA5E9',
+                                font: { weight: '800', size: 10 },
+                                formatter: function(v) { return v ? v.toFixed(1) : ''; }
+                            }
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: { padding: { top: 26, bottom: 8, left: 4, right: 4 } },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, font: { size: 11.5, weight: '600' } }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleFont: { size: 12, weight: '800' },
+                            bodyFont: { size: 11 },
+                            padding: 10,
+                            cornerRadius: 8
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 2,
+                            max: 6,
+                            grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                            ticks: { stepSize: 1, font: { size: 11, weight: '600' }, color: 'var(--text-secondary)' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 11, weight: '700' }, color: 'var(--text-primary)' }
+                        }
+                    }
+                }
+            });
+        } catch(err) {
+            console.error('[dashChartComparativo Error]', err);
+            drawCanvasFallbackChart(ctxComp, anos, [
+                { type: 'line', label: 'Anos Iniciais', data: iniciaisData, borderColor: '#6366F1' },
+                { type: 'line', label: 'Anos Finais', data: finaisData, borderColor: '#0EA5E9' }
+            ], 2, 6);
+        }
+    }
+
+    // Exposição Global
+    global.configureGlobalChartTooltips = configureGlobalChartTooltips;
+    global.drawCanvasFallbackChart = drawCanvasFallbackChart;
+    global.renderDashboardGoncalvesDiasChart = renderDashboardGoncalvesDiasChart;
+    global.renderDashboardEtapasCharts = renderDashboardEtapasCharts;
+    global.renderDashboardComparativoChart = renderDashboardComparativoChart;
+
+})(typeof window !== 'undefined' ? window : this);
