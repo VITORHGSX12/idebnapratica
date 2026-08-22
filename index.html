@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <link rel="stylesheet" href="styles.css?v=96c9e27624_mt4om8nh">
+    <link rel="stylesheet" href="styles.css?v=7312f3f6a4_mt4pdiny">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3700,7 +3700,7 @@
                                     </button>
                                     <span style="display: block; font-size: 0.72rem; color: rgba(255,255,255,0.8); margin-top: 4px;">Combine vários simulados filtrados em um único caderno para impressão</span>
                                 </div>
-                                <button class="btn btn-outline" id="btn-bib-upload-new" onclick="alert('Funcionalidade: Upload e Catalogação de Novo Material Aberta!');" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: #ffffff; font-weight: 600; padding: 10px 18px; display: flex; align-items: center; gap: 8px;">
+                                <button class="btn btn-outline" id="btn-bib-upload-new" onclick="openUploadPedagogicModal(); return false;" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: #ffffff; font-weight: 600; padding: 10px 18px; display: flex; align-items: center; gap: 8px; cursor: pointer;">
                                     <i data-lucide="upload-cloud" style="width:16px; height:16px;"></i>
                                     <span>Adicionar Livro / Material</span>
                                 </button>
@@ -5143,54 +5143,124 @@
         </div>
     </div>
 
-    <!-- Upload Pedagogic File Modal -->
-    <div id="upload-pedagogic-modal" class="modal-overlay hidden">
-        <div class="modal-content" style="max-width: 520px;">
-            <div class="modal-header">
-                <h3>Adicionar Material à Biblioteca</h3>
-                <button class="btn btn-icon" id="close-upload-pedagogic-modal-btn"><i data-lucide="x"></i></button>
+    <!-- Upload Pedagogic File Modal (PDF / Word / Capas) -->
+    <div id="upload-pedagogic-modal" class="modal-overlay hidden" style="display:none; align-items:center; justify-content:center;">
+        <div class="modal-content" style="max-width: 640px; width: 95%; max-height: 90vh; overflow-y: auto; padding: 24px; border-radius: var(--radius-lg);">
+            <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 14px; margin-bottom: 18px;">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <div style="width:40px; height:40px; border-radius:10px; background:linear-gradient(135deg, #4f46e5, #3b82f6); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(79,70,229,0.3);">
+                        <i data-lucide="upload-cloud" style="width:20px; height:20px;"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin:0; font-size:1.15rem; font-weight:800; color:var(--text-primary);">Adicionar Material à Biblioteca</h3>
+                        <p style="margin:2px 0 0 0; font-size:0.75rem; color:var(--text-muted);">Faça upload de arquivos PDF ou Word do computador e personalize a capa visual</p>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-icon" id="close-upload-pedagogic-modal-btn" onclick="closeUploadPedagogicModal();" style="cursor:pointer;"><i data-lucide="x"></i></button>
             </div>
+            
             <div class="modal-body">
-                <form id="upload-pedagogic-form" style="display:flex; flex-direction:column; gap:14px;">
+                <form id="upload-pedagogic-form" style="display:flex; flex-direction:column; gap:16px;">
+                    
+                    <!-- Área de Arquivo Principal do Computador (PDF / Word) -->
                     <div class="form-group">
-                        <label for="new-material-title">Título do Material / Documento *</label>
-                        <input type="text" id="new-material-title" class="form-input-text" required placeholder="Ex: Simulado SAEB 2026 - 5º Ano Língua Portuguesa">
+                        <label style="font-size:0.8rem; font-weight:700; color:var(--text-primary); display:flex; justify-content:space-between; margin-bottom:6px;">
+                            <span>📁 Arquivo do Computador (PDF, Word, etc.) *</span>
+                            <span style="font-size:0.7rem; color:var(--text-muted);">Formatos aceitos: .pdf, .docx, .doc, .xlsx, .png, .jpg</span>
+                        </label>
+                        <div class="file-upload-dropzone" onclick="document.getElementById('new-material-file-input').click();" style="border: 2px dashed #6366f1; background: rgba(99,102,241,0.04); border-radius: 12px; padding: 18px; text-align: center; cursor: pointer; transition: all 0.2s ease;">
+                            <input type="file" id="new-material-file-input" accept=".pdf,.docx,.doc,.xlsx,.xls,.png,.jpg,.jpeg" style="display:none;">
+                            <div style="font-size: 1.8rem; margin-bottom: 4px;">📥</div>
+                            <strong style="font-size: 0.85rem; color: #4f46e5; display: block;">Clique para selecionar arquivo do computador</strong>
+                            <span style="font-size: 0.72rem; color: var(--text-muted);">ou arraste e solte o arquivo aqui</span>
+                        </div>
+                        <div id="file-upload-preview" style="margin-top: 8px;"></div>
                     </div>
-                    <div class="grid-2">
+
+                    <!-- Informações Básicas do Material -->
+                    <div class="form-group">
+                        <label for="new-material-title" style="font-size:0.8rem; font-weight:700; color:var(--text-primary); margin-bottom:4px; display:block;">Título do Material / Documento *</label>
+                        <input type="text" id="new-material-title" class="form-input-text" required placeholder="Ex: Simulado Diagnóstico SAEB 2026 - 5º Ano Língua Portuguesa" style="height:40px; font-size:0.85rem;">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="new-material-sub" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); margin-bottom:4px; display:block;">Subtítulo / Foco Pedagógico</label>
+                        <input type="text" id="new-material-sub" class="form-input-text" placeholder="Ex: Caderno Específico de Inferência e Leitura Crítica" style="height:38px; font-size:0.82rem;">
+                    </div>
+
+                    <div class="grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                         <div class="form-group">
-                            <label for="new-material-comp">Componente</label>
-                            <select id="new-material-comp" class="form-select">
-                                <option value="Língua Portuguesa">Língua Portuguesa</option>
-                                <option value="Matemática">Matemática</option>
-                                <option value="Multidisciplinar">Multidisciplinar / Geral</option>
+                            <label for="new-material-comp" style="font-size:0.75rem; font-weight:600; color:var(--text-secondary); margin-bottom:4px; display:block;">Disciplina / Componente</label>
+                            <select id="new-material-comp" class="form-select" style="height:38px; font-size:0.82rem;">
+                                <option value="Língua Portuguesa">Língua Portuguesa (Leitura)</option>
+                                <option value="Matemática">Matemática (Problemas)</option>
+                                <option value="Integrado">Multidisciplinar / Geral</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="new-material-etapa">Etapa / Ano</label>
-                            <select id="new-material-etapa" class="form-select">
-                                <option value="2º Ano">2º Ano</option>
-                                <option value="5º Ano" selected>5º Ano</option>
-                                <option value="9º Ano">9º Ano</option>
-                                <option value="Todas">Todas as Etapas</option>
+                            <label for="new-material-etapa" style="font-size:0.75rem; font-weight:600; color:var(--text-secondary); margin-bottom:4px; display:block;">Etapa / Ano Escolar</label>
+                            <select id="new-material-etapa" class="form-select" style="height:38px; font-size:0.82rem;">
+                                <option value="2º Ano">2º Ano (Alfabetização / SEAMA)</option>
+                                <option value="5º Ano" selected>5º Ano (Anos Iniciais / SAEB)</option>
+                                <option value="9º Ano">9º Ano (Anos Finais / SAEB)</option>
+                                <option value="Docente">Formação Docente / Gestão</option>
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="new-material-tipo">Tipo de Recurso</label>
-                        <select id="new-material-tipo" class="form-select">
-                            <option value="Simulado">Caderno de Prova / Simulado</option>
-                            <option value="Matriz">Matriz & Descritores</option>
-                            <option value="Intervencao">Plano de Intervenção Pedagógica</option>
-                            <option value="Gabarito">Gabarito / Resoluções</option>
-                        </select>
+
+                    <div class="grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                        <div class="form-group">
+                            <label for="new-material-tipo" style="font-size:0.75rem; font-weight:600; color:var(--text-secondary); margin-bottom:4px; display:block;">Tipo de Recurso</label>
+                            <select id="new-material-tipo" class="form-select" style="height:38px; font-size:0.82rem;">
+                                <option value="Simulado">Caderno de Prova / Simulado</option>
+                                <option value="Reforco">Caderno de Reforço & Fluência</option>
+                                <option value="Matriz">Matriz Curricular & Descritores</option>
+                                <option value="Guia">Guia Pedagógico do Professor</option>
+                                <option value="Intervencao">Plano de Intervenção Pedagógica</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-material-color" style="font-size:0.75rem; font-weight:600; color:var(--text-secondary); margin-bottom:4px; display:block;">Tema Visual da Capa</label>
+                            <select id="new-material-color" class="form-select" style="height:38px; font-size:0.82rem;">
+                                <option value="#4f46e5">Indigo Institucional (#4F46E5)</option>
+                                <option value="#2563eb">Azul Escolar (#2563EB)</option>
+                                <option value="#0d9488">Teal / Verde Água (#0D9488)</option>
+                                <option value="#f59e0b">Âmbar / Fluência (#F59E0B)</option>
+                                <option value="#8b5cf6">Roxo Matrizes (#8B5CF6)</option>
+                                <option value="#dc2626">Vermelho Destaque (#DC2626)</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="new-material-desc">Descrição / Instruções de Aplicação</label>
-                        <textarea id="new-material-desc" class="form-input-text" style="height:60px; font-size:0.8rem; padding:8px;" placeholder="Orientações pedagógicas para os professores..."></textarea>
+
+                    <!-- Upload Opcional de Imagem de Capa (Thumbnail Personalizada) -->
+                    <div class="form-group" style="background: var(--bg-tertiary); padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                        <label style="font-size:0.78rem; font-weight:700; color:var(--text-primary); display:flex; justify-content:space-between; margin-bottom:4px;">
+                            <span>🖼️ Capa Personalizada / Thumbnail (Opcional)</span>
+                            <span style="font-size:0.7rem; color:var(--text-muted);">PNG, JPG ou JPEG</span>
+                        </label>
+                        <div style="display:flex; gap:10px; align-items:center; margin-top:6px;">
+                            <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('new-material-cover-input').click();" style="font-size:0.75rem; display:flex; align-items:center; gap:6px;">
+                                <i data-lucide="image"></i>
+                                <span>Selecionar Imagem de Capa</span>
+                            </button>
+                            <input type="file" id="new-material-cover-input" accept="image/png,image/jpeg,image/jpg,image/webp" style="display:none;">
+                            <span style="font-size:0.72rem; color:var(--text-muted);">Deixe vazio para gerar a capa automática</span>
+                        </div>
+                        <div id="cover-upload-preview" style="margin-top:6px;">
+                            <span style="font-size:0.75rem; color:var(--text-muted);">Nenhuma capa personalizada enviada (será gerada automaticamente).</span>
+                        </div>
                     </div>
-                    <div class="modal-footer flex-end" style="gap: 8px; margin-top: 12px;">
-                        <button type="button" class="btn btn-outline" id="btn-cancel-upload-pedagogic">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Adicionar ao Acervo</button>
+
+                    <div class="form-group">
+                        <label for="new-material-desc" style="font-size:0.75rem; font-weight:600; color:var(--text-secondary); margin-bottom:4px; display:block;">Descrição & Instruções aos Docentes</label>
+                        <textarea id="new-material-desc" class="form-input-text" style="height:65px; font-size:0.8rem; padding:8px; resize:vertical;" placeholder="Orientações de aplicação em sala de aula, objetivos de aprendizagem e descritores contemplados..."></textarea>
+                    </div>
+
+                    <div class="modal-footer flex-end" style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px; border-top:1px solid var(--border-color); padding-top:14px;">
+                        <button type="button" class="btn btn-outline" id="btn-cancel-upload-pedagogic" onclick="closeUploadPedagogicModal();">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" style="font-weight:700; background:linear-gradient(135deg, #4f46e5, #2563eb); border:none; padding:10px 20px;">
+                            💾 Salvar e Catalogar no Acervo
+                        </button>
                     </div>
                 </form>
             </div>
@@ -6507,26 +6577,27 @@
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=98c393313d_mt4om8nh"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=3b2cc05144_mt4om8nh"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mt4om8nh"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=98c393313d_mt4pdiny"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=3b2cc05144_mt4pdiny"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mt4pdiny"></script>
     <script src="bncc_habilidades_oficial.js?v=mt23gn8s"></script>
-    <script src="ideb_publico_db.js?v=246d2c1cd5_mt4om8nh"></script>
-    <script src="alunos_db.js?v=ed6641ae07_mt4om8nh"></script>
+    <script src="ideb_publico_db.js?v=246d2c1cd5_mt4pdiny"></script>
+    <script src="alunos_db.js?v=ed6641ae07_mt4pdiny"></script>
 
     <!-- Módulos do Core -->
-    <script src="js/core/helpers.js?v=3e1fa864ae_mt4om8nh"></script>
-    <script src="js/core/theme-toast.js?v=5efe74db0d_mt4om8nh"></script>
-    <script src="js/core/user-profile.js?v=bad21cc2ae_mt4om8nh"></script>
-    <script src="js/core/auth.js?v=7175a7eff7_mt4om8nh"></script>
-    <script src="js/core/navigation.js?v=20cdf608c8_mt4om8nh"></script>
+    <script src="js/core/helpers.js?v=3e1fa864ae_mt4pdiny"></script>
+    <script src="js/core/theme-toast.js?v=5efe74db0d_mt4pdiny"></script>
+    <script src="js/core/user-profile.js?v=bad21cc2ae_mt4pdiny"></script>
+    <script src="js/core/auth.js?v=7175a7eff7_mt4pdiny"></script>
+    <script src="js/core/navigation.js?v=20cdf608c8_mt4pdiny"></script>
 
     <!-- Módulos de Domínio -->
-    <script src="js/modules/escolas/escolas.js?v=5feaf5ca33_mt4om8nh"></script>
-    <script src="js/modules/matrizes/matrizes.js?v=a1651b7a53_mt4om8nh"></script>
-    <script src="js/modules/cronograma/cronograma.js?v=dff321d534_mt4om8nh"></script>
+    <script src="js/modules/escolas/escolas.js?v=5feaf5ca33_mt4pdiny"></script>
+    <script src="js/modules/matrizes/matrizes.js?v=a1651b7a53_mt4pdiny"></script>
+    <script src="js/modules/cronograma/cronograma.js?v=dff321d534_mt4pdiny"></script>
+    <script src="js/modules/biblioteca/biblioteca.js?v=40a97951f9_mt4pdiny"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=81d0b33544_mt4om8nh"></script>
+    <script src="app.js?v=c68a48e84a_mt4pdiny"></script>
 </body>
 </html>
