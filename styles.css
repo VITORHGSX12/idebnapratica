@@ -6442,3 +6442,87 @@ body.collapsed-sidebar .sidebar-collapse-toggle svg {
   .prof-cycles { grid-template-columns: 1fr; }
 }
 
+/* =============================================================================
+   ESTILOS DO LEITOR DIGITAL INTEGRADO (PDF.JS + MAMMOTH.JS)
+   ============================================================================= */
+#modal-biblioteca-reader .modal-content {
+    animation: readerModalIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes readerModalIn {
+    from {
+        opacity: 0;
+        transform: scale(0.96) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+#reader-viewport::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+#reader-viewport::-webkit-scrollbar-track {
+    background: #0f172a;
+}
+
+#reader-viewport::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 5px;
+}
+
+#reader-viewport::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
+
+#reader-pdf-canvas-wrapper {
+    transition: transform 0.15s ease-out;
+    margin: 0 auto;
+}
+
+/* Estilos de Documento Word Formatado */
+#reader-word-html-container {
+    box-sizing: border-box;
+    min-height: 100%;
+}
+
+.word-content-body h1, .word-content-body h2, .word-content-body h3 {
+    color: #0f172a;
+    font-weight: 700;
+    margin-top: 1.2em;
+    margin-bottom: 0.6em;
+}
+
+.word-content-body p {
+    margin-bottom: 1em;
+    color: #334155;
+    line-height: 1.75;
+}
+
+.word-content-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+}
+
+.word-content-body th, .word-content-body td {
+    border: 1px solid #cbd5e1;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+.word-content-body th {
+    background: #f1f5f9;
+    font-weight: 700;
+}
+
+.word-content-body img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin: 1em 0;
+}
+

@@ -1,8 +1,8 @@
 // =========================================================================
 // BIBLIOTECA PEDAGÓGICA & ACERVO DIGITAL (MODULAR ENGINE)
 // Responsabilidade: Gestão do acervo de provas, livros didáticos, simulados,
-// cadernos A4, upload de arquivos do computador (PDF / Word) e renderização
-// de capas/thumbnails personalizadas com leitor e download.
+// upload atômico em storage de até 100MB (PDF/Word) com barra de progresso,
+// leitor integrado in-app (PDF.js + Mammoth.js) e controle de permissões.
 // =========================================================================
 
 (function(global) {
@@ -10,242 +10,74 @@
 
     var STORAGE_KEY = 'gd_pedagogic_library_db';
 
-    // Acervo padrão inicial institucional da SEMED Gonçalves Dias
-    var INITIAL_LIBRARY_DATABASE = [
-        {
-            id: 'BOOK_07',
-            titulo: 'Simulado Diagnóstico 5º Ano • Língua Portuguesa (Foco D1, D3, D4)',
-            subtitulo: 'Caderno Específico de Inferência e Informações Explícitas',
-            etapa: '5º Ano',
-            componente: 'Língua Portuguesa',
-            categoria: 'Simulados',
-            tipo: 'Simulado',
-            descritores: ['D01', 'D03', 'D04', 'D06'],
-            formato: 'Caderno A4 com Gabarito',
-            formatoArquivo: 'PDF',
-            paginas: 16,
-            ano: 2026,
-            versao: 'v1.2 (2026)',
-            data_publicacao: 'Mar/2026',
-            viewsCount: 425,
-            downloadsCount: 210,
-            corTema: '#3b82f6',
-            capaBadge: 'Simulado Língua Portuguesa',
-            capaUrl: '',
-            fileName: 'Simulado_5Ano_Portugues_SEMED_2026.pdf',
-            fileSize: '2.4 MB',
-            fileType: 'application/pdf',
-            descricao: 'Avaliação direcionada aos descritores de maior defasagem apurados no 1º Simulado Diagnóstico da rede municipal.'
-        },
-        {
-            id: 'BOOK_08',
-            titulo: 'Simulado Diagnóstico 5º Ano • Matemática (Foco D13, D26, D28)',
-            subtitulo: 'Caderno Específico de Geometria, Espaço & Forma e Operações',
-            etapa: '5º Ano',
-            componente: 'Matemática',
-            categoria: 'Simulados',
-            tipo: 'Simulado',
-            descritores: ['D13', 'D19', 'D26', 'D28'],
-            formato: 'Caderno A4 com Gabarito',
-            formatoArquivo: 'PDF',
-            paginas: 18,
-            ano: 2026,
-            versao: 'v1.2 (2026)',
-            data_publicacao: 'Mar/2026',
-            viewsCount: 395,
-            downloadsCount: 188,
-            corTema: '#2563eb',
-            capaBadge: 'Simulado Matemática',
-            capaUrl: '',
-            fileName: 'Simulado_5Ano_Matematica_SEMED_2026.pdf',
-            fileSize: '2.8 MB',
-            fileType: 'application/pdf',
-            descricao: '20 itens calibrados de resolução de problemas cotidianos com frações, áreas, perímetros e gráficos.'
-        },
-        {
-            id: 'BOOK_06',
-            titulo: 'Oficinas de Cálculo Mental & Resolução de Problemas',
-            subtitulo: 'Caderno de Atividades Práticas para 4º e 5º Anos',
-            etapa: '5º Ano',
-            componente: 'Matemática',
-            categoria: 'Reforco',
-            tipo: 'Reforco',
-            descritores: ['D13', 'D14', 'D16', 'D20'],
-            formato: 'Caderno de Atividades',
-            formatoArquivo: 'DOCX',
-            paginas: 24,
-            ano: 2026,
-            versao: 'v2.0 (2026)',
-            data_publicacao: 'Mar/2026',
-            viewsCount: 340,
-            downloadsCount: 155,
-            corTema: '#f59e0b',
-            capaBadge: 'Matemática Prática',
-            capaUrl: '',
-            fileName: 'Oficinas_Calculo_Mental_Atividades.docx',
-            fileSize: '1.6 MB',
-            fileType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            descricao: 'Jogos matemáticos, desafios relâmpago e situações cotidianas contextualizadas na realidade de Gonçalves Dias.'
-        },
-        {
-            id: 'BOOK_01',
-            titulo: 'Caderno de Simulado Oficial SAEB • 5º Ano EF',
-            subtitulo: 'Língua Portuguesa (Leitura) & Matemática (Problemas)',
-            etapa: '5º Ano',
-            componente: 'Integrado',
-            categoria: 'Simulados',
-            tipo: 'Simulado',
-            descritores: ['D01', 'D03', 'D04', 'D13', 'D14', 'D28'],
-            formato: 'Caderno A4 com Gabarito',
-            formatoArquivo: 'PDF',
-            paginas: 28,
-            ano: 2026,
-            versao: 'v2.4 (2026)',
-            data_publicacao: 'Fev/2026',
-            viewsCount: 512,
-            downloadsCount: 245,
-            corTema: '#4f46e5',
-            capaBadge: 'Simulado Oficial',
-            capaUrl: '',
-            fileName: 'Simulado_Oficial_SAEB_5Ano.pdf',
-            fileSize: '3.5 MB',
-            fileType: 'application/pdf',
-            descricao: 'Caderno completo de 44 itens padrão SAEB/INEP diagramado para aplicação em sala de aula, com folha de respostas e gabarito desmembrável.'
-        },
-        {
-            id: 'BOOK_03',
-            titulo: 'Caderno de Simulado Prova Brasil • 9º Ano EF',
-            subtitulo: 'Língua Portuguesa & Matemática (Anos Finais)',
-            etapa: '9º Ano',
-            componente: 'Integrado',
-            categoria: 'Simulados',
-            tipo: 'Simulado',
-            descritores: ['D01', 'D05', 'D07', 'D16', 'D19', 'D35'],
-            formato: 'Caderno A4 com Gabarito',
-            formatoArquivo: 'PDF',
-            paginas: 36,
-            ano: 2026,
-            versao: 'v2.1 (2026)',
-            data_publicacao: 'Fev/2026',
-            viewsCount: 380,
-            downloadsCount: 190,
-            corTema: '#3b82f6',
-            capaBadge: 'Simulado Oficial',
-            capaUrl: '',
-            fileName: 'Simulado_9Ano_Prova_Brasil.pdf',
-            fileSize: '4.1 MB',
-            fileType: 'application/pdf',
-            descricao: '52 questões calibradas nos descritores críticos do 9º ano, incluindo álgebra, geometria e interpretação de gêneros diversos.'
-        },
-        {
-            id: 'BOOK_05',
-            titulo: 'Matriz Curricular de Descritores Comentada • SAEB 2026',
-            subtitulo: 'Escala de Proficiência, Habilidades BNCC e Exemplos de Itens',
-            etapa: 'Docente',
-            componente: 'Integrado',
-            categoria: 'Matrizes',
-            tipo: 'Matriz',
-            descritores: ['Todos os Descritores SAEB/SEAMA'],
-            formato: 'Documento Técnico PDF',
-            formatoArquivo: 'PDF',
-            paginas: 52,
-            ano: 2026,
-            versao: 'v1.5 (2026)',
-            data_publicacao: 'Fev/2026',
-            viewsCount: 290,
-            downloadsCount: 115,
-            corTema: '#8b5cf6',
-            capaBadge: 'Matriz Oficial',
-            capaUrl: '',
-            fileName: 'Matriz_Curricular_Descritores_Comentada_2026.pdf',
-            fileSize: '5.2 MB',
-            fileType: 'application/pdf',
-            descricao: 'Detalhamento técnico de todos os níveis de proficiência (0 a 5) do SAEB e correspondência com as matrizes BNCC e SEAMA.'
-        },
-        {
-            id: 'BOOK_02',
-            titulo: 'Caderno de Fluência Leitora & Alfabetização • 2º Ano EF',
-            subtitulo: 'Avaliação Diagnóstica SEAMA / Compromisso Criança Alfabetizada',
-            etapa: '2º Ano',
-            componente: 'Língua Portuguesa',
-            categoria: 'Reforco',
-            tipo: 'Reforco',
-            descritores: ['EF02LP01', 'EF02LP04', 'EF02LP08'],
-            formato: 'Guia de Aplicação & Fichas',
-            formatoArquivo: 'DOCX',
-            paginas: 20,
-            ano: 2026,
-            versao: 'v1.8 (2026)',
-            data_publicacao: 'Jan/2026',
-            viewsCount: 420,
-            downloadsCount: 165,
-            corTema: '#f59e0b',
-            capaBadge: 'Fluência & Leitura',
-            capaUrl: '',
-            fileName: 'Guia_Fluencia_Leitora_2Ano.docx',
-            fileSize: '1.9 MB',
-            fileType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            descricao: 'Conjunto de textos curtos, parlendas e itens de consciência fonológica para monitoramento individual da leitura no 2º ano.'
-        },
-        {
-            id: 'BOOK_04',
-            titulo: 'Guia de Intervenção Pedagógica & Nivelamento (SEMED)',
-            subtitulo: 'Orientações Práticas para Gestores e Professores de Gonçalves Dias',
-            etapa: 'Docente',
-            componente: 'Integrado',
-            categoria: 'Guias',
-            tipo: 'Guia',
-            descritores: ['D01', 'D03', 'D13', 'D28'],
-            formato: 'Manual do Professor',
-            formatoArquivo: 'PDF',
-            paginas: 44,
-            ano: 2026,
-            versao: 'v3.0 (Oficial)',
-            data_publicacao: 'Jan/2026',
-            viewsCount: 310,
-            downloadsCount: 125,
-            corTema: '#0d9488',
-            capaBadge: 'Guia do Professor',
-            capaUrl: '',
-            fileName: 'Guia_Intervencao_Pedagogica_SEMED.pdf',
-            fileSize: '3.8 MB',
-            fileType: 'application/pdf',
-            descricao: 'Sequências didáticas ativas para recuperação de descritores críticos com rotinas semanais estruturadas e oficinas em grupo.'
-        }
-    ];
+    // Inicialização do Worker do PDF.js
+    if (global.pdfjsLib) {
+        global.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
 
-    // Carregar acervo do localStorage ou inicializar
-    function loadLibraryDatabase() {
+    var libraryItems = [];
+    var currentActiveCategory = 'all';
+    var searchDebounceTimer = null;
+
+    // Estado do Leitor Ativo
+    var activeReaderState = {
+        book: null,
+        pdfDoc: null,
+        currentPage: 1,
+        totalPages: 1,
+        scale: 1.2,
+        isRendering: false,
+        pageNumPending: null
+    };
+
+    // Obter Token de Autenticação Atual
+    function getAuthToken() {
+        return sessionStorage.getItem('authToken') || localStorage.getItem('authToken') || (function() {
+            var email = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail') || 'admin@goncalvesdias.ma.gov.br';
+            try { return btoa(email); } catch(e) { return ''; }
+        })();
+    }
+
+    // -------------------------------------------------------------------------
+    // 1. CARREGAMENTO E SINCRONIZAÇÃO DO ACERVO
+    // -------------------------------------------------------------------------
+    async function loadLibraryDatabase() {
+        var token = getAuthToken();
+        try {
+            var response = await fetch('/api/library', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (response.ok) {
+                var data = await response.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    libraryItems = data;
+                    global.PEDAGOGIC_LIBRARY_DATABASE = libraryItems;
+                    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(libraryItems)); } catch(e) {}
+                    renderPedagogicLibrary();
+                    return;
+                }
+            }
+        } catch(err) {
+            console.warn('[Biblioteca Module] Falha ao sincronizar com backend, tentando cache local:', err);
+        }
+
+        // Fallback local caso o backend esteja offline
         try {
             var raw = localStorage.getItem(STORAGE_KEY);
             if (raw) {
                 var parsed = JSON.parse(raw);
                 if (Array.isArray(parsed) && parsed.length > 0) {
-                    return parsed;
+                    libraryItems = parsed;
+                    global.PEDAGOGIC_LIBRARY_DATABASE = libraryItems;
+                    renderPedagogicLibrary();
+                    return;
                 }
             }
-        } catch(e) {
-            console.warn('[Biblioteca Module] Falha ao carregar do localStorage, usando acervo inicial.', e);
-        }
-        return INITIAL_LIBRARY_DATABASE.slice();
+        } catch(e) {}
     }
-
-    function saveLibraryDatabase(data) {
-        try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        } catch(e) {
-            console.error('[Biblioteca Module] Erro ao salvar acervo no localStorage:', e);
-        }
-    }
-
-    var libraryItems = loadLibraryDatabase();
-    global.PEDAGOGIC_LIBRARY_DATABASE = libraryItems;
-
-    var currentActiveCategory = 'all';
-    var searchDebounceTimer = null;
 
     // -------------------------------------------------------------------------
-    // 1. ATUALIZAR CONTADORES DAS CATEGORIAS
+    // 2. ATUALIZAR CONTADORES DAS CATEGORIAS
     // -------------------------------------------------------------------------
     function updateCategoryPillCounters() {
         var total = libraryItems.length;
@@ -268,7 +100,7 @@
     }
 
     // -------------------------------------------------------------------------
-    // 2. SELEÇÃO DE CATEGORIA (PILLS)
+    // 3. SELEÇÃO DE CATEGORIA (PILLS)
     // -------------------------------------------------------------------------
     function handleCategoryPillClick(btn, cat) {
         currentActiveCategory = cat;
@@ -292,7 +124,7 @@
     }
 
     // -------------------------------------------------------------------------
-    // 3. AUTOCOMPLETE DE BUSCA
+    // 4. AUTOCOMPLETE E FILTROS DE BUSCA
     // -------------------------------------------------------------------------
     function handleLibrarySearchInput(input) {
         clearTimeout(searchDebounceTimer);
@@ -390,14 +222,14 @@
     }
 
     // -------------------------------------------------------------------------
-    // 4. GERADOR DE THUMBNAIL / CAPA VISUAL
+    // 5. GERADOR DE THUMBNAIL / CAPA VISUAL
     // -------------------------------------------------------------------------
     function generateCoverThumbnailHtml(book) {
         var isPdf = (book.formatoArquivo === 'PDF') || (book.fileName && book.fileName.toLowerCase().endsWith('.pdf')) || (book.fileType === 'application/pdf');
         var isWord = (book.formatoArquivo === 'DOCX' || book.formatoArquivo === 'DOC') || (book.fileName && (book.fileName.toLowerCase().endsWith('.docx') || book.fileName.toLowerCase().endsWith('.doc'))) || (book.fileType && book.fileType.indexOf('word') !== -1);
-        var hasCustomCover = !!(book.capaUrl && book.capaUrl.startsWith('data:image'));
+        var hasCustomCover = !!(book.capaUrl && (book.capaUrl.startsWith('data:image') || book.capaUrl.startsWith('/api/')));
 
-        var corTema = book.corTema || (isWord ? '#2b579a' : (isPdf ? '#dc2626' : '#4f46e5'));
+        var corTema = book.corTema || (isWord ? '#2563eb' : (isPdf ? '#dc2626' : '#4f46e5'));
         var formatBadgeText = isWord ? 'DOCX / Word' : (isPdf ? 'PDF Digital' : (book.formatoArquivo || 'Documento'));
         var formatBadgeClass = isWord ? 'badge-docx' : (isPdf ? 'badge-pdf' : 'badge-general');
 
@@ -412,7 +244,6 @@
             '</div>';
         }
 
-        // Capa Estilizada de Documento Word
         if (isWord) {
             return '<div class="mec-book-cover is-word-doc" style="background: linear-gradient(145deg, #185abd 0%, #103f84 100%);">' +
                 '<div class="cover-top-bar">' +
@@ -436,7 +267,6 @@
             '</div>';
         }
 
-        // Capa Estilizada de Documento PDF
         if (isPdf) {
             return '<div class="mec-book-cover is-pdf-doc" style="background: linear-gradient(145deg, #b91c1c 0%, #7f1d1d 100%);">' +
                 '<div class="cover-top-bar">' +
@@ -456,7 +286,6 @@
             '</div>';
         }
 
-        // Capa Editorial Padrão (Estilo MEC Vitrine)
         return '<div class="mec-book-cover is-editorial" style="background: linear-gradient(145deg, ' + corTema + ' 0%, #1e1b4b 100%);">' +
             '<div class="cover-top-bar">' +
                 '<span class="cover-format-chip badge-general">📚 ' + formatBadgeText + '</span>' +
@@ -477,7 +306,7 @@
     }
 
     // -------------------------------------------------------------------------
-    // 5. RENDERIZADOR PRINCIPAL DA VITRINE DA BIBLIOTECA
+    // 6. RENDERIZADOR DA VITRINE DA BIBLIOTECA
     // -------------------------------------------------------------------------
     function renderPedagogicLibrary() {
         updateCategoryPillCounters();
@@ -499,69 +328,69 @@
                 (b.subtitulo || '').toLowerCase().indexOf(searchVal) !== -1 ||
                 (b.descricao || '').toLowerCase().indexOf(searchVal) !== -1 ||
                 (b.descritores && b.descritores.some(function(d) { return d.toLowerCase().indexOf(searchVal) !== -1; }));
-
             return matchCat && matchEtapa && matchComp && matchSearch;
         });
 
-        // Contador de Resultados e Botão Limpar Filtros
         var counterText = document.getElementById('bib-results-counter-text');
-        var clearBtn = document.getElementById('btn-bib-clear-filters');
         if (counterText) {
             counterText.innerHTML = 'Exibindo <strong>' + filtered.length + ' de ' + libraryItems.length + '</strong> materiais';
         }
 
-        var isFiltered = currentActiveCategory !== 'all' || etapaFilter !== 'all' || compFilter !== 'all' || searchVal !== '';
-        if (clearBtn) {
-            clearBtn.style.display = isFiltered ? 'inline-flex' : 'none';
-            if (isFiltered) clearBtn.classList.remove('hidden'); else clearBtn.classList.add('hidden');
+        var btnClear = document.getElementById('btn-bib-clear-filters');
+        if (btnClear) {
+            var hasFilters = currentActiveCategory !== 'all' || etapaFilter !== 'all' || compFilter !== 'all' || !!searchVal;
+            btnClear.style.display = hasFilters ? 'inline-flex' : 'none';
         }
 
         if (filtered.length === 0) {
-            grid.innerHTML = '<div class="bib-empty-state" style="grid-column: 1 / -1; padding: 48px 20px; text-align: center; color: var(--text-muted); background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px dashed var(--border-color);">' +
-                '<div style="font-size: 2.5rem; margin-bottom: 8px;">📚</div>' +
-                '<h4 style="margin: 0 0 4px 0; color: var(--text-primary); font-size: 1.1rem; font-weight: 700;">Nenhum material didático encontrado</h4>' +
-                '<p style="margin: 0 0 16px 0; font-size: 0.85rem;">Tente ajustar a etapa, disciplina ou o termo pesquisado.</p>' +
-                '<button type="button" onclick="clearLibraryFilters();" class="btn btn-primary btn-sm" style="font-weight: 700;">Limpar Filtros e Ver Todos</button>' +
+            grid.innerHTML = '<div style="grid-column: 1 / -1; padding: 48px 24px; text-align: center; background: var(--bg-secondary); border-radius: var(--radius-md); border: 1px dashed var(--border-color);">' +
+                '<div style="font-size: 2.4rem; margin-bottom: 8px;">📚</div>' +
+                '<h4 style="color: var(--text-primary); margin: 0 0 6px 0;">Nenhum material encontrado</h4>' +
+                '<p style="color: var(--text-muted); font-size: 0.82rem; margin: 0 0 16px 0;">Tente ajustar os filtros de busca ou selecione outra categoria.</p>' +
+                '<button type="button" class="btn btn-outline btn-sm" onclick="clearLibraryFilters();">Limpar Filtros</button>' +
             '</div>';
-            if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
             return;
         }
 
         grid.innerHTML = filtered.map(function(book) {
             var coverHtml = generateCoverThumbnailHtml(book);
-            var isSimulado = book.tipo === 'Simulado';
-            var hasAttachedFile = !!(book.fileData || book.fileUrl);
+            var isWord = (book.formatoArquivo === 'DOCX' || book.formatoArquivo === 'DOC') || (book.fileName && (book.fileName.toLowerCase().endsWith('.docx') || book.fileName.toLowerCase().endsWith('.doc')));
+            var formatLabel = isWord ? 'DOCX' : (book.formatoArquivo || 'PDF');
 
-            return '<div class="mec-book-card" id="card-bib-' + book.id + '">' +
-                '<div class="book-cover-wrapper">' +
+            return '<div class="mec-book-card" data-book-id="' + book.id + '">' +
+                '<div class="mec-book-card-cover" onclick="trackAndViewBook(\'' + book.id + '\');">' +
                     coverHtml +
-                '</div>' +
-                '<div class="book-card-body">' +
-                    '<div class="book-meta-top">' +
-                        '<span class="book-date">📅 ' + (book.data_publicacao || '2026') + '</span>' +
-                        '<span class="book-version">' + (book.versao || 'v1.0') + '</span>' +
-                    '</div>' +
-                    '<h4 class="book-title" title="' + (book.titulo || '') + '">' + (book.titulo || '') + '</h4>' +
-                    '<p class="book-desc">' + (book.descricao || 'Material pedagógico oficial da SEMED Gonçalves Dias.') + '</p>' +
-                    '<div class="book-badges-row">' +
-                        '<span class="badge badge-purple">' + (book.etapa || '5º Ano') + '</span>' +
-                        '<span class="badge badge-outline">' + (book.componente || 'Geral') + '</span>' +
-                        '<span class="badge badge-success">👁️ ' + (book.viewsCount || 0) + ' acessos</span>' +
-                    '</div>' +
-                    '<div class="book-actions-footer">' +
-                        (isSimulado ? 
-                            '<button type="button" onclick="trackAndPrintExam(\'' + book.id + '\');" class="btn btn-primary btn-sm btn-action-primary" title="Imprimir Caderno A4">' +
-                                '<i data-lucide="printer"></i> Imprimir A4' +
-                            '</button>' :
-                            '<button type="button" onclick="trackAndDownloadBookPdf(\'' + book.id + '\');" class="btn btn-primary btn-sm btn-action-download" title="Baixar Arquivo ' + (book.formatoArquivo || 'PDF') + '">' +
-                                '<i data-lucide="download"></i> Baixar ' + (book.formatoArquivo || 'PDF') +
-                            '</button>'
-                        ) +
-                        '<button type="button" onclick="trackAndViewBook(\'' + book.id + '\');" class="btn btn-outline btn-sm" title="Visualizar / Ler Online">' +
-                            '<i data-lucide="eye"></i> Abrir' +
+                    '<div class="cover-hover-actions">' +
+                        '<button type="button" class="btn-hover-read" onclick="event.stopPropagation(); trackAndViewBook(\'' + book.id + '\');">' +
+                            '<span>📖 Ler no Sistema</span>' +
                         '</button>' +
-                        '<button type="button" onclick="handleDeleteLibraryMaterial(\'' + book.id + '\');" class="btn btn-outline btn-sm btn-delete-material" title="Excluir Material">' +
-                            '<i data-lucide="trash-2"></i>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="mec-book-card-body">' +
+                    '<div class="book-card-header-meta">' +
+                        '<span class="book-meta-badge ' + (book.tipo === 'Simulado' ? 'badge-blue' : (book.tipo === 'Reforco' ? 'badge-amber' : 'badge-purple')) + '">' +
+                            (book.tipo || 'Pedagógico') +
+                        '</span>' +
+                        '<span class="book-meta-etapa">' + (book.etapa || 'Geral') + '</span>' +
+                    '</div>' +
+                    '<h3 class="book-card-title" title="' + (book.titulo || '') + '" onclick="trackAndViewBook(\'' + book.id + '\');">' +
+                        (book.titulo || '') +
+                    '</h3>' +
+                    '<p class="book-card-sub">' + (book.subtitulo || book.descricao || '') + '</p>' +
+                    '<div class="book-card-info-chips">' +
+                        '<span class="info-chip">📄 ' + (book.paginas ? book.paginas + ' pág.' : (book.fileSize || formatLabel)) + '</span>' +
+                        '<span class="info-chip">💾 ' + (book.fileSize || formatLabel) + '</span>' +
+                        '<span class="info-chip">👁️ ' + (book.viewsCount || 0) + ' acessos</span>' +
+                    '</div>' +
+                    '<div class="book-card-actions">' +
+                        '<button type="button" onclick="trackAndViewBook(\'' + book.id + '\');" class="btn btn-primary btn-sm btn-read-book">' +
+                            '📖 Ler Agora' +
+                        '</button>' +
+                        '<button type="button" onclick="trackAndDownloadBookPdf(\'' + book.id + '\');" class="btn btn-outline btn-sm btn-download-book" title="Baixar Arquivo">' +
+                            '📥' +
+                        '</button>' +
+                        '<button type="button" onclick="handleDeleteLibraryMaterial(\'' + book.id + '\');" class="btn btn-icon btn-sm btn-delete-book" title="Excluir Material">' +
+                            '🗑️' +
                         '</button>' +
                     '</div>' +
                 '</div>' +
@@ -571,9 +400,6 @@
         if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
     }
 
-    // -------------------------------------------------------------------------
-    // 6. SEÇÃO DE DESTAQUES (MAIS ACESSADOS)
-    // -------------------------------------------------------------------------
     function renderSpotlightSection() {
         var row = document.getElementById('bib-spotlight-cards-row');
         if (!row) return;
@@ -599,147 +425,328 @@
     }
 
     // -------------------------------------------------------------------------
-    // 7. DOWNLOAD E VISUALIZAÇÃO DE ARQUIVOS REAIS DO COMPUTADOR
+    // 7. LEITOR INTEGRADO IN-APP (PDF.JS + MAMMOTH.JS)
     // -------------------------------------------------------------------------
-    function trackAndDownloadBookPdf(bookId) {
+    function openBibliotecaReader(book) {
+        if (!book) return;
+        activeReaderState.book = book;
+
+        var modal = document.getElementById('modal-biblioteca-reader');
+        if (!modal) return;
+
+        // Resetar UI
+        var titleEl = document.getElementById('reader-doc-title');
+        var badgeEl = document.getElementById('reader-doc-format-badge');
+        var metaEl = document.getElementById('reader-doc-meta');
+        var iconEl = document.getElementById('reader-doc-icon');
+        var spinner = document.getElementById('reader-loading-spinner');
+        var errorBanner = document.getElementById('reader-error-banner');
+        var pdfWrapper = document.getElementById('reader-pdf-canvas-wrapper');
+        var wordWrapper = document.getElementById('reader-word-html-container');
+        var toolbar = document.getElementById('reader-toolbar-container');
+
+        var isWord = (book.formatoArquivo === 'DOCX' || book.formatoArquivo === 'DOC') || (book.fileName && (book.fileName.toLowerCase().endsWith('.docx') || book.fileName.toLowerCase().endsWith('.doc')));
+        var formatText = isWord ? 'DOCX / Word' : 'PDF Digital';
+
+        if (titleEl) titleEl.textContent = book.titulo;
+        if (badgeEl) badgeEl.textContent = formatText;
+        if (metaEl) metaEl.textContent = (book.etapa || 'SEMED') + ' • ' + (book.componente || 'Pedagógico') + ' • ' + (book.fileSize || '');
+        if (iconEl) iconEl.textContent = isWord ? '📝' : '📄';
+
+        var btnDownload = document.getElementById('btn-reader-download-original');
+        if (btnDownload) {
+            btnDownload.onclick = function() { trackAndDownloadBookPdf(book.id); };
+        }
+
+        if (spinner) spinner.style.display = 'flex';
+        if (errorBanner) { errorBanner.style.display = 'none'; errorBanner.classList.add('hidden'); }
+        if (pdfWrapper) pdfWrapper.style.display = 'none';
+        if (wordWrapper) { wordWrapper.style.display = 'none'; wordWrapper.classList.add('hidden'); }
+
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+
+        var token = getAuthToken();
+        var targetFileId = book.fileName || book.id;
+        var fileUrl = '/api/library/files/' + encodeURIComponent(targetFileId);
+
+        if (isWord) {
+            // Renderizador DOCX via Mammoth.js
+            if (toolbar) toolbar.style.display = 'none';
+            fetch(fileUrl, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+            .then(function(res) {
+                if (!res.ok) throw new Error('Falha na resposta do servidor (HTTP ' + res.status + ')');
+                return res.arrayBuffer();
+            })
+            .then(function(arrayBuffer) {
+                if (!global.mammoth) {
+                    throw new Error('Biblioteca Mammoth.js não está carregada.');
+                }
+                return global.mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
+            })
+            .then(function(result) {
+                if (spinner) spinner.style.display = 'none';
+                if (wordWrapper) {
+                    wordWrapper.innerHTML = `
+                        <div style="border-bottom: 2px solid #e2e8f0; padding-bottom: 16px; margin-bottom: 24px;">
+                            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+                                <span class="badge badge-purple">Documento Word (.docx)</span>
+                                <span style="font-size:0.75rem; color:#64748b;">Convertido com Mammoth.js</span>
+                            </div>
+                            <h2 style="color: #0f172a; margin: 0 0 4px 0; font-size: 1.4rem;">${book.titulo}</h2>
+                            <p style="color: #64748b; margin: 0; font-size: 0.85rem;">${book.subtitulo || ''}</p>
+                        </div>
+                        <div class="word-content-body">
+                            ${result.value}
+                        </div>
+                    `;
+                    wordWrapper.style.display = 'block';
+                    wordWrapper.classList.remove('hidden');
+                }
+            })
+            .catch(function(err) {
+                console.error('[Mammoth Reader Error]', err);
+                if (spinner) spinner.style.display = 'none';
+                showReaderError('Não foi possível renderizar o arquivo Word.', err.message || 'Verifique as permissões de acesso ou utilize o botão de download.');
+            });
+
+        } else {
+            // Renderizador PDF página por página via PDF.js
+            if (toolbar) toolbar.style.display = 'flex';
+            activeReaderState.currentPage = 1;
+            activeReaderState.scale = 1.2;
+
+            if (!global.pdfjsLib) {
+                if (spinner) spinner.style.display = 'none';
+                showReaderError('Leitor PDF não disponível.', 'A biblioteca PDF.js não pôde ser carregada.');
+                return;
+            }
+
+            var loadingTask = global.pdfjsLib.getDocument({
+                url: fileUrl,
+                httpHeaders: { 'Authorization': 'Bearer ' + token }
+            });
+
+            loadingTask.promise.then(function(pdfDoc) {
+                activeReaderState.pdfDoc = pdfDoc;
+                activeReaderState.totalPages = pdfDoc.numPages;
+
+                var totalPagesEl = document.getElementById('pdf-total-pages');
+                if (totalPagesEl) totalPagesEl.textContent = String(pdfDoc.numPages);
+
+                renderPdfPage(activeReaderState.currentPage);
+            }).catch(function(err) {
+                console.error('[PDF.js Loading Error]', err);
+                if (spinner) spinner.style.display = 'none';
+                showReaderError('Erro ao abrir o documento PDF.', err.message || 'Arquivo indisponível no storage ou permissão insuficiente.');
+            });
+        }
+    }
+
+    function renderPdfPage(num) {
+        if (!activeReaderState.pdfDoc) return;
+        activeReaderState.isRendering = true;
+
+        var spinner = document.getElementById('reader-loading-spinner');
+        if (spinner) spinner.style.display = 'flex';
+
+        activeReaderState.pdfDoc.getPage(num).then(function(page) {
+            var canvas = document.getElementById('reader-pdf-canvas');
+            var wrapper = document.getElementById('reader-pdf-canvas-wrapper');
+            if (!canvas || !wrapper) return;
+
+            var viewport = page.getViewport({ scale: activeReaderState.scale });
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            var ctx = canvas.getContext('2d');
+            var renderContext = {
+                canvasContext: ctx,
+                viewport: viewport
+            };
+
+            var renderTask = page.render(renderContext);
+            renderTask.promise.then(function() {
+                activeReaderState.isRendering = false;
+                if (spinner) spinner.style.display = 'none';
+                wrapper.style.display = 'block';
+
+                if (activeReaderState.pageNumPending !== null) {
+                    renderPdfPage(activeReaderState.pageNumPending);
+                    activeReaderState.pageNumPending = null;
+                }
+            });
+        });
+
+        var currentPageEl = document.getElementById('pdf-current-page');
+        if (currentPageEl) currentPageEl.textContent = String(num);
+
+        var zoomLevelEl = document.getElementById('pdf-zoom-level');
+        if (zoomLevelEl) zoomLevelEl.textContent = Math.round(activeReaderState.scale * 100) + '%';
+    }
+
+    function queueRenderPdfPage(num) {
+        if (activeReaderState.isRendering) {
+            activeReaderState.pageNumPending = num;
+        } else {
+            renderPdfPage(num);
+        }
+    }
+
+    function onPdfPrevPage() {
+        if (activeReaderState.currentPage <= 1) return;
+        activeReaderState.currentPage--;
+        queueRenderPdfPage(activeReaderState.currentPage);
+    }
+
+    function onPdfNextPage() {
+        if (!activeReaderState.pdfDoc || activeReaderState.currentPage >= activeReaderState.totalPages) return;
+        activeReaderState.currentPage++;
+        queueRenderPdfPage(activeReaderState.currentPage);
+    }
+
+    function onPdfZoomIn() {
+        if (activeReaderState.scale >= 3.0) return;
+        activeReaderState.scale += 0.2;
+        queueRenderPdfPage(activeReaderState.currentPage);
+    }
+
+    function onPdfZoomOut() {
+        if (activeReaderState.scale <= 0.6) return;
+        activeReaderState.scale -= 0.2;
+        queueRenderPdfPage(activeReaderState.currentPage);
+    }
+
+    function onPdfZoomReset() {
+        activeReaderState.scale = 1.2;
+        queueRenderPdfPage(activeReaderState.currentPage);
+    }
+
+    function showReaderError(title, desc) {
+        var errorBanner = document.getElementById('reader-error-banner');
+        var errTitle = document.getElementById('reader-error-title');
+        var errDesc = document.getElementById('reader-error-desc');
+        if (errTitle) errTitle.textContent = title;
+        if (errDesc) errDesc.textContent = desc;
+        if (errorBanner) {
+            errorBanner.classList.remove('hidden');
+            errorBanner.style.display = 'block';
+        }
+    }
+
+    function closeBibliotecaReader() {
+        var modal = document.getElementById('modal-biblioteca-reader');
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.style.display = 'none';
+        }
+        activeReaderState.pdfDoc = null;
+        activeReaderState.book = null;
+    }
+
+    // -------------------------------------------------------------------------
+    // 8. DOWNLOAD DE ARQUIVOS REAIS
+    // -------------------------------------------------------------------------
+    async function trackAndDownloadBookPdf(bookId) {
         var book = libraryItems.find(function(b) { return b.id === bookId; });
         if (!book) return;
 
         book.viewsCount = (book.viewsCount || 0) + 1;
         book.downloadsCount = (book.downloadsCount || 0) + 1;
-        saveLibraryDatabase(libraryItems);
         renderSpotlightSection();
 
-        // Se o material possui arquivo real anexado via upload em Base64
-        if (book.fileData) {
-            var downloadLink = document.createElement('a');
-            downloadLink.href = book.fileData;
-            downloadLink.download = book.fileName || (book.titulo + '.' + (book.formatoArquivo || 'pdf').toLowerCase());
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
-            document.body.removeChild(downloadLink);
+        var token = getAuthToken();
+        var targetFileId = book.fileName || book.id;
+        var fileUrl = '/api/library/files/' + encodeURIComponent(targetFileId);
+
+        try {
+            var res = await fetch(fileUrl, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!res.ok) throw new Error('Não foi possível baixar o arquivo.');
+
+            var blob = await res.blob();
+            var downloadUrl = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = book.originalFileName || book.fileName || (book.titulo + '.' + (book.formatoArquivo || 'pdf').toLowerCase());
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(downloadUrl);
 
             if (typeof global.showToast === 'function') {
-                global.showToast('Download do arquivo "' + (book.fileName || book.titulo) + '" iniciado com sucesso!', 'check');
+                global.showToast('Download do arquivo "' + (book.titulo) + '" concluído com sucesso!', 'check');
             }
-            return;
-        }
-
-        // Se possui fileUrl (arquivo do servidor/projeto)
-        if (book.fileUrl) {
-            var link = document.createElement('a');
-            link.href = book.fileUrl;
-            link.download = book.fileName || book.fileUrl.split('/').pop() || 'documento.pdf';
-            link.target = '_blank';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            if (typeof global.showToast === 'function') {
-                global.showToast('Baixando PDF oficial...', 'check');
-            }
-            return;
-        }
-
-        // Fallback: Gerar impressão / PDF institucional
-        if (typeof global.generateA4PrintableExam === 'function') {
-            global.generateA4PrintableExam(book);
-        } else {
-            if (typeof global.showToast === 'function') {
-                global.showToast('Iniciando visualizador para download de ' + book.titulo, 'info');
-            }
+        } catch(e) {
+            console.error('[Download Error]', e);
+            alert('Falha ao baixar arquivo. Verifique sua conexão e tente novamente.');
         }
     }
 
     function trackAndViewBook(bookId) {
         var book = libraryItems.find(function(b) { return b.id === bookId; });
         if (!book) return;
-
-        book.viewsCount = (book.viewsCount || 0) + 1;
-        saveLibraryDatabase(libraryItems);
-        renderSpotlightSection();
-
-        // Se for um arquivo de imagem ou PDF com dataURL, podemos abrir no leitor ou nova aba
-        if (book.fileData && book.fileType && book.fileType.indexOf('image') !== -1) {
-            var imageWindow = window.open('');
-            if (imageWindow) {
-                imageWindow.document.write('<html><head><title>' + book.titulo + '</title></head><body style="margin:0; background:#0f172a; display:flex; align-items:center; justify-content:center; height:100vh;"><img src="' + book.fileData + '" style="max-width:95vw; max-height:95vh; object-fit:contain; border-radius:8px; box-shadow:0 10px 30px rgba(0,0,0,0.5);"></body></html>');
-            }
-            return;
-        }
-
-        // Abrir Leitor Digital / Simulado A4
-        if (typeof global.generateA4PrintableExam === 'function') {
-            global.generateA4PrintableExam(book);
-        } else {
-            alert('📖 Visualizando material: ' + book.titulo + ' (' + (book.versao || '2026') + ')');
-        }
+        openBibliotecaReader(book);
     }
 
     function trackAndPrintExam(bookId) {
         var book = libraryItems.find(function(b) { return b.id === bookId; });
         if (!book) return;
-
-        book.viewsCount = (book.viewsCount || 0) + 1;
-        book.downloadsCount = (book.downloadsCount || 0) + 1;
-        saveLibraryDatabase(libraryItems);
-        renderSpotlightSection();
-
         if (typeof global.generateA4PrintableExam === 'function') {
             global.generateA4PrintableExam(book);
         } else {
-            window.print();
+            trackAndViewBook(bookId);
         }
     }
 
     // -------------------------------------------------------------------------
-    // 8. EXCLUSÃO DE MATERIAL
+    // 9. EXCLUSÃO DE MATERIAL
     // -------------------------------------------------------------------------
-    function handleDeleteLibraryMaterial(bookId) {
+    async function handleDeleteLibraryMaterial(bookId) {
         if (!confirm('Deseja realmente remover este material da Biblioteca de Recursos?')) {
             return;
         }
 
-        var index = libraryItems.findIndex(function(b) { return b.id === bookId; });
-        if (index !== -1) {
-            var removed = libraryItems.splice(index, 1)[0];
-            saveLibraryDatabase(libraryItems);
-            renderPedagogicLibrary();
-
-            if (typeof global.showToast === 'function') {
-                global.showToast('Material "' + (removed.titulo || '') + '" excluído da biblioteca.', 'info');
+        var token = getAuthToken();
+        try {
+            var res = await fetch('/api/library/' + encodeURIComponent(bookId), {
+                method: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (res.ok) {
+                var index = libraryItems.findIndex(function(b) { return b.id === bookId; });
+                if (index !== -1) {
+                    var removed = libraryItems.splice(index, 1)[0];
+                    renderPedagogicLibrary();
+                    if (typeof global.showToast === 'function') {
+                        global.showToast('Material "' + (removed.titulo || '') + '" excluído da biblioteca.', 'info');
+                    }
+                }
+            } else {
+                var errData = await res.json();
+                alert(errData.error || 'Erro ao excluir material.');
             }
+        } catch(e) {
+            console.error('[Delete Error]', e);
+            alert('Erro de rede ao tentar excluir material.');
         }
     }
 
     // -------------------------------------------------------------------------
-    // 9. MODAL DE UPLOAD DE ARQUIVOS DO COMPUTADOR (PDF, WORD, IMAGENS)
+    // 10. UPLOAD ATÔMICO COM PROGRESSO EM TEMPO REAL (ATÉ 100MB)
     // -------------------------------------------------------------------------
-    var uploadedFileState = {
-        fileData: null,
-        fileName: '',
-        fileSize: '',
-        fileType: '',
-        formatoArquivo: 'PDF'
-    };
-
-    var uploadedCoverState = {
-        coverData: null
-    };
+    var uploadedMainFile = null;
+    var uploadedCoverFile = null;
 
     function openUploadPedagogicModal() {
         var modal = document.getElementById('upload-pedagogic-modal');
         if (!modal) return;
 
-        // Resetar estados e campos
-        uploadedFileState = {
-            fileData: null,
-            fileName: '',
-            fileSize: '',
-            fileType: '',
-            formatoArquivo: 'PDF'
-        };
-        uploadedCoverState = { coverData: null };
+        uploadedMainFile = null;
+        uploadedCoverFile = null;
 
         var form = document.getElementById('upload-pedagogic-form');
         if (form) form.reset();
@@ -751,6 +758,15 @@
         if (coverPreview) {
             coverPreview.innerHTML = '<span style="font-size:0.75rem; color:var(--text-muted);">Nenhuma capa personalizada enviada (será gerada automaticamente).</span>';
         }
+
+        var progressContainer = document.getElementById('upload-progress-container');
+        if (progressContainer) {
+            progressContainer.classList.add('hidden');
+            progressContainer.style.display = 'none';
+        }
+
+        var btnSubmit = document.getElementById('btn-submit-upload-pedagogic');
+        if (btnSubmit) btnSubmit.disabled = false;
 
         modal.classList.remove('hidden');
         modal.style.display = 'flex';
@@ -769,47 +785,48 @@
         var file = e.target.files && e.target.files[0];
         if (!file) return;
 
-        var preview = document.getElementById('file-upload-preview');
-        var fileName = file.name;
+        var MAX_SIZE = 100 * 1024 * 1024; // 100MB
+        if (file.size > MAX_SIZE) {
+            var sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+            alert('⚠️ O arquivo selecionado possui ' + sizeMb + ' MB e excede o limite máximo permitido de 100 MB.');
+            e.target.value = '';
+            return;
+        }
+
+        var ext = file.name.split('.').pop().toLowerCase();
+        var allowed = ['pdf', 'doc', 'docx'];
+        if (!allowed.includes(ext)) {
+            alert('⚠️ Formato não permitido (. ' + ext + '). Selecione um arquivo em formato PDF (.pdf) ou Word (.doc, .docx).');
+            e.target.value = '';
+            return;
+        }
+
+        uploadedMainFile = file;
         var fileSizeMb = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
-        var ext = fileName.split('.').pop().toUpperCase();
-        var isWord = ext === 'DOCX' || ext === 'DOC';
-        var isPdf = ext === 'PDF';
+        var isWord = ext === 'docx' || ext === 'doc';
+        var isPdf = ext === 'pdf';
 
-        uploadedFileState.fileName = fileName;
-        uploadedFileState.fileSize = fileSizeMb;
-        uploadedFileState.fileType = file.type;
-        uploadedFileState.formatoArquivo = isWord ? 'DOCX' : (isPdf ? 'PDF' : ext);
-
-        // Preencher automaticamente o título caso o usuário ainda não tenha digitado
         var titleInput = document.getElementById('new-material-title');
         if (titleInput && !titleInput.value) {
-            var rawTitle = fileName.replace(/\.[^/.]+$/, "").replace(/[_-]/g, " ");
+            var rawTitle = file.name.replace(/\.[^/.]+$/, "").replace(/[_-]/g, " ");
             titleInput.value = rawTitle.charAt(0).toUpperCase() + rawTitle.slice(1);
         }
 
-        // Leitura via FileReader
-        var reader = new FileReader();
-        reader.onload = function(evt) {
-            uploadedFileState.fileData = evt.target.result;
-            if (preview) {
-                preview.innerHTML = '<div class="attached-file-badge">' +
-                    '<div class="file-icon-box ' + (isWord ? 'doc-word' : (isPdf ? 'doc-pdf' : 'doc-general')) + '">' +
-                        (isWord ? '📝' : (isPdf ? '📄' : '📁')) +
-                    '</div>' +
-                    '<div class="file-meta-box">' +
-                        '<strong>' + fileName + '</strong>' +
-                        '<span>' + fileSizeMb + ' • Formato ' + uploadedFileState.formatoArquivo + ' pronto para acervo</span>' +
-                    '</div>' +
-                    '<button type="button" class="btn btn-icon btn-xs" onclick="clearAttachedFile();" title="Remover arquivo">✕</button>' +
-                '</div>';
-            }
-        };
-        reader.readAsDataURL(file);
+        var preview = document.getElementById('file-upload-preview');
+        if (preview) {
+            preview.innerHTML = '<div class="attached-file-badge" style="display:flex; align-items:center; gap:12px; background:var(--bg-secondary); border:1px solid var(--border-color); padding:10px 14px; border-radius:8px; margin-top:8px;">' +
+                '<div style="font-size:1.6rem;">' + (isWord ? '📝' : (isPdf ? '📄' : '📁')) + '</div>' +
+                '<div style="flex:1; min-width:0;">' +
+                    '<strong style="font-size:0.85rem; color:var(--text-primary); display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + file.name + '</strong>' +
+                    '<span style="font-size:0.74rem; color:#4f46e5; font-weight:600;">' + fileSizeMb + ' • Formato ' + ext.toUpperCase() + ' pronto para upload</span>' +
+                '</div>' +
+                '<button type="button" class="btn btn-icon btn-xs" onclick="clearAttachedFile();" title="Remover arquivo" style="color:#ef4444;">✕</button>' +
+            '</div>';
+        }
     }
 
     function clearAttachedFile() {
-        uploadedFileState = { fileData: null, fileName: '', fileSize: '', fileType: '', formatoArquivo: 'PDF' };
+        uploadedMainFile = null;
         var fileInput = document.getElementById('new-material-file-input');
         if (fileInput) fileInput.value = '';
         var preview = document.getElementById('file-upload-preview');
@@ -819,11 +836,11 @@
     function handleCoverFileUpload(e) {
         var file = e.target.files && e.target.files[0];
         if (!file) return;
+        uploadedCoverFile = file;
 
         var preview = document.getElementById('cover-upload-preview');
         var reader = new FileReader();
         reader.onload = function(evt) {
-            uploadedCoverState.coverData = evt.target.result;
             if (preview) {
                 preview.innerHTML = '<div style="display:flex; align-items:center; gap:12px; margin-top:8px;">' +
                     '<img src="' + evt.target.result + '" style="width:54px; height:72px; object-fit:cover; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,0.15); border:1px solid var(--border-color);">' +
@@ -838,7 +855,7 @@
     }
 
     function clearCoverFile() {
-        uploadedCoverState.coverData = null;
+        uploadedCoverFile = null;
         var coverInput = document.getElementById('new-material-cover-input');
         if (coverInput) coverInput.value = '';
         var preview = document.getElementById('cover-upload-preview');
@@ -849,6 +866,11 @@
 
     function saveNewPedagogicMaterial(e) {
         if (e) e.preventDefault();
+
+        if (!uploadedMainFile) {
+            alert('Por favor, selecione um arquivo (PDF ou Word) do seu computador.');
+            return;
+        }
 
         var title = (document.getElementById('new-material-title') || {}).value || '';
         if (!title.trim()) {
@@ -863,51 +885,87 @@
         var desc = (document.getElementById('new-material-desc') || {}).value || '';
         var corTema = (document.getElementById('new-material-color') || {}).value || '#4f46e5';
 
-        // Mapear categoria a partir do tipo
         var categoria = 'Simulados';
         if (tipo === 'Reforco' || tipo === 'Intervencao') categoria = 'Reforco';
         else if (tipo === 'Matriz') categoria = 'Matrizes';
         else if (tipo === 'Guia' || tipo === 'Gabarito') categoria = 'Guias';
 
-        var newBook = {
-            id: 'BOOK_' + Date.now(),
-            titulo: title.trim(),
-            subtitulo: subtitulo.trim() || ('Material Pedagógico • ' + comp),
-            etapa: etapa,
-            componente: comp,
-            categoria: categoria,
-            tipo: tipo,
-            descritores: ['Matriz BNCC / SAEB'],
-            formato: uploadedFileState.formatoArquivo ? (uploadedFileState.formatoArquivo + ' Digital') : 'Caderno Digital A4',
-            formatoArquivo: uploadedFileState.formatoArquivo || 'PDF',
-            paginas: 12,
-            ano: new Date().getFullYear(),
-            versao: 'v1.0 (' + new Date().getFullYear() + ')',
-            data_publicacao: 'Recente',
-            viewsCount: 1,
-            downloadsCount: 0,
-            corTema: corTema,
-            capaBadge: tipo === 'Simulado' ? 'Simulado Oficial' : (tipo === 'Reforco' ? 'Reforço Escolar' : (tipo === 'Matriz' ? 'Matriz Curricular' : 'Guia Prático')),
-            capaUrl: uploadedCoverState.coverData || '',
-            fileName: uploadedFileState.fileName || (title.replace(/\s+/g, '_') + '.' + (uploadedFileState.formatoArquivo || 'pdf').toLowerCase()),
-            fileSize: uploadedFileState.fileSize || '1.5 MB',
-            fileType: uploadedFileState.fileType || 'application/pdf',
-            fileData: uploadedFileState.fileData || null,
-            descricao: desc.trim() || 'Material pedagógico adicionado ao acervo municipal da SEMED Gonçalves Dias.'
+        var formData = new FormData();
+        formData.append('file', uploadedMainFile);
+        if (uploadedCoverFile) formData.append('cover', uploadedCoverFile);
+        formData.append('titulo', title.trim());
+        formData.append('subtitulo', subtitulo.trim());
+        formData.append('componente', comp);
+        formData.append('etapa', etapa);
+        formData.append('tipo', tipo);
+        formData.append('categoria', categoria);
+        formData.append('corTema', corTema);
+        formData.append('descricao', desc.trim());
+
+        // UI Progresso
+        var progressContainer = document.getElementById('upload-progress-container');
+        var progressBar = document.getElementById('upload-progress-bar');
+        var progressPercent = document.getElementById('upload-progress-percent');
+        var progressBytes = document.getElementById('upload-progress-bytes');
+        var btnSubmit = document.getElementById('btn-submit-upload-pedagogic');
+
+        if (progressContainer) {
+            progressContainer.classList.remove('hidden');
+            progressContainer.style.display = 'flex';
+        }
+        if (btnSubmit) btnSubmit.disabled = true;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/library/upload', true);
+        xhr.setRequestHeader('Authorization', 'Bearer ' + getAuthToken());
+
+        xhr.upload.onprogress = function(evt) {
+            if (evt.lengthComputable) {
+                var percentComplete = Math.round((evt.loaded / evt.total) * 100);
+                var loadedMb = (evt.loaded / (1024 * 1024)).toFixed(1);
+                var totalMb = (evt.total / (1024 * 1024)).toFixed(1);
+
+                if (progressBar) progressBar.style.width = percentComplete + '%';
+                if (progressPercent) progressPercent.textContent = percentComplete + '%';
+                if (progressBytes) progressBytes.textContent = loadedMb + ' MB de ' + totalMb + ' MB transferidos';
+            }
         };
 
-        libraryItems.unshift(newBook);
-        saveLibraryDatabase(libraryItems);
-        closeUploadPedagogicModal();
-        renderPedagogicLibrary();
+        xhr.onload = function() {
+            if (btnSubmit) btnSubmit.disabled = false;
+            if (xhr.status === 200) {
+                try {
+                    var res = JSON.parse(xhr.responseText);
+                    if (res.success && res.item) {
+                        libraryItems.unshift(res.item);
+                        closeUploadPedagogicModal();
+                        renderPedagogicLibrary();
+                        if (typeof global.showToast === 'function') {
+                            global.showToast('Material "' + res.item.titulo + '" salvo no acervo com sucesso!', 'check');
+                        }
+                        return;
+                    }
+                } catch(e) {}
+            }
 
-        if (typeof global.showToast === 'function') {
-            global.showToast('Material "' + newBook.titulo + '" catalogado na Biblioteca com sucesso!', 'check');
-        }
+            var errMessage = 'Erro no envio do arquivo.';
+            try {
+                var errObj = JSON.parse(xhr.responseText);
+                if (errObj.error) errMessage = errObj.error;
+            } catch(e) {}
+            alert('❌ ' + errMessage);
+        };
+
+        xhr.onerror = function() {
+            if (btnSubmit) btnSubmit.disabled = false;
+            alert('❌ Erro de conexão durante o upload do arquivo.');
+        };
+
+        xhr.send(formData);
     }
 
     // -------------------------------------------------------------------------
-    // 10. INICIALIZADOR DE EVENTOS DO MÓDULO
+    // 11. INICIALIZADOR DE EVENTOS DO MÓDULO & ATALHOS DE TECLADO
     // -------------------------------------------------------------------------
     function initPedagogicLibrary() {
         // Fechar sugestões de busca ao clicar fora
@@ -920,7 +978,44 @@
             }
         });
 
-        // Eventos do Modal de Upload
+        // Atalhos de teclado (Esc para fechar leitor, Setas para paginação PDF)
+        document.addEventListener('keydown', function(e) {
+            var readerModal = document.getElementById('modal-biblioteca-reader');
+            if (readerModal && !readerModal.classList.contains('hidden') && readerModal.style.display !== 'none') {
+                if (e.key === 'Escape') {
+                    closeBibliotecaReader();
+                } else if (e.key === 'ArrowLeft') {
+                    onPdfPrevPage();
+                } else if (e.key === 'ArrowRight') {
+                    onPdfNextPage();
+                }
+            }
+        });
+
+        // Controles de toolbar do leitor
+        var btnPrev = document.getElementById('btn-pdf-prev-page');
+        if (btnPrev) btnPrev.onclick = onPdfPrevPage;
+
+        var btnNext = document.getElementById('btn-pdf-next-page');
+        if (btnNext) btnNext.onclick = onPdfNextPage;
+
+        var btnZoomIn = document.getElementById('btn-pdf-zoom-in');
+        if (btnZoomIn) btnZoomIn.onclick = onPdfZoomIn;
+
+        var btnZoomOut = document.getElementById('btn-pdf-zoom-out');
+        if (btnZoomOut) btnZoomOut.onclick = onPdfZoomOut;
+
+        var btnZoomReset = document.getElementById('btn-pdf-zoom-reset');
+        if (btnZoomReset) btnZoomReset.onclick = onPdfZoomReset;
+
+        var btnRetry = document.getElementById('btn-reader-error-retry');
+        if (btnRetry) {
+            btnRetry.onclick = function() {
+                if (activeReaderState.book) openBibliotecaReader(activeReaderState.book);
+            };
+        }
+
+        // Modal de Upload
         var btnUploadNew = document.getElementById('btn-bib-upload-new');
         if (btnUploadNew) {
             btnUploadNew.onclick = function() { openUploadPedagogicModal(); };
@@ -951,12 +1046,13 @@
             coverInput.onchange = handleCoverFileUpload;
         }
 
-        // Renderizar na inicialização
-        renderPedagogicLibrary();
+        // Sincronizar dados da biblioteca
+        loadLibraryDatabase();
     }
 
     // Exportar para o escopo global
     global.renderPedagogicLibrary = renderPedagogicLibrary;
+    global.loadLibraryDatabase = loadLibraryDatabase;
     global.handleCategoryPillClick = handleCategoryPillClick;
     global.handleLibrarySearchInput = handleLibrarySearchInput;
     global.applySuggestionSearch = applySuggestionSearch;
@@ -965,6 +1061,8 @@
     global.trackAndDownloadBookPdf = trackAndDownloadBookPdf;
     global.trackAndViewBook = trackAndViewBook;
     global.trackAndPrintExam = trackAndPrintExam;
+    global.openBibliotecaReader = openBibliotecaReader;
+    global.closeBibliotecaReader = closeBibliotecaReader;
     global.openUploadPedagogicModal = openUploadPedagogicModal;
     global.closeUploadPedagogicModal = closeUploadPedagogicModal;
     global.clearAttachedFile = clearAttachedFile;
@@ -978,4 +1076,4 @@
         initPedagogicLibrary();
     }
 
-})(typeof window !== 'undefined' ? window : global);
+})(window);

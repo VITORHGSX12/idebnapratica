@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <link rel="stylesheet" href="styles.css?v=7499998764_mt4qzhre">
+    <link rel="stylesheet" href="styles.css?v=a0ce5e9f89_mt4rt0vf">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3796,31 +3796,100 @@
                     </div>
                 </section>
 
-                <!-- Modal Leitor Digital de Livro / Caderno da Biblioteca -->
-                <div id="modal-read-book-online" class="modal-overlay hidden">
-                    <div class="modal-content" style="max-width: 860px; width: 92%; max-height: 92vh; overflow-y: auto; padding: 24px;">
-                        <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px; display:flex; justify-content:space-between; align-items:center;">
-                            <div style="display:flex; align-items:center; gap:12px;">
-                                <div style="width:40px; height:40px; border-radius:8px; background:var(--purple); color:#fff; display:flex; align-items:center; justify-content:center;">
-                                    <i data-lucide="book-open"></i>
+                <!-- Modal Leitor Digital Integrado de PDF & Word (pdf.js + mammoth.js) -->
+                <div id="modal-biblioteca-reader" class="modal-overlay hidden" style="display:none; align-items:center; justify-content:center; z-index:99999; backdrop-filter:blur(6px); background:rgba(15,23,42,0.8);">
+                    <div class="modal-content" style="max-width: 1020px; width: 95%; height: 92vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; border-radius: var(--radius-lg); box-shadow: 0 25px 60px -15px rgba(0,0,0,0.6); background: var(--bg-primary);">
+                        
+                        <!-- Header do Leitor -->
+                        <div class="reader-header" style="background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-shrink: 0;">
+                            <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
+                                <div id="reader-doc-icon" style="width: 38px; height: 38px; border-radius: 8px; background: #4f46e5; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">
+                                    📄
                                 </div>
-                                <div>
-                                    <h3 id="modal-read-book-title" style="margin:0; font-size:1.1rem;">Visualizador de Material Pedagógico</h3>
-                                    <p class="text-sm text-muted" id="modal-read-book-meta" style="margin:2px 0 0 0;">SEMED Gonçalves Dias - MA • Edição 2026</p>
+                                <div style="min-width: 0;">
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <h3 id="reader-doc-title" style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 480px;">
+                                            Visualizador Pedagógico
+                                        </h3>
+                                        <span id="reader-doc-format-badge" class="badge badge-purple" style="font-size: 0.68rem; font-weight: 700;">PDF</span>
+                                    </div>
+                                    <span id="reader-doc-meta" style="font-size: 0.72rem; color: var(--text-muted); display: block;">
+                                        SEMED Gonçalves Dias • Acervo Digital 2026
+                                    </span>
                                 </div>
                             </div>
-                            <button class="btn btn-icon" id="btn-close-read-book-modal" style="cursor:pointer;"><i data-lucide="x"></i></button>
-                        </div>
-                        <div class="modal-body" id="modal-read-book-content-body" style="padding-top: 18px;">
-                            <!-- Preenchido dinamicamente com as páginas diagramadas do caderno -->
-                        </div>
-                        <div class="modal-footer flex-between" style="margin-top: 18px; border-top: 1px solid var(--border-color); padding-top: 14px;">
-                            <span class="text-sm text-muted">Formato Oficial para Impressão Escolar</span>
-                            <div style="display:flex; gap:8px;">
-                                <button class="btn btn-outline" id="btn-print-active-book"><i data-lucide="printer"></i> Imprimir Caderno</button>
-                                <button class="btn btn-primary" id="btn-download-active-book-pdf"><i data-lucide="download"></i> Baixar PDF</button>
+
+                            <!-- Ações e Fechar -->
+                            <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                                <button type="button" id="btn-reader-download-original" class="btn btn-outline btn-sm" style="font-size: 0.75rem; display: flex; align-items: center; gap: 6px; padding: 6px 12px;">
+                                    <i data-lucide="download" style="width: 14px; height: 14px;"></i>
+                                    <span>Baixar Arquivo</span>
+                                </button>
+                                <button type="button" id="btn-close-biblioteca-reader" onclick="closeBibliotecaReader();" class="btn btn-icon btn-sm" style="cursor: pointer; width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border-color); display:flex; align-items:center; justify-content:center;" title="Fechar leitor (Esc)">
+                                    ✕
+                                </button>
                             </div>
                         </div>
+
+                        <!-- Barra de Ferramentas de Visualização (Paginação e Zoom para PDF) -->
+                        <div id="reader-toolbar-container" style="background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color); padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; flex-shrink: 0; flex-wrap: wrap; gap: 10px;">
+                            <!-- Controles de Paginação -->
+                            <div id="reader-pdf-pagination" style="display: flex; align-items: center; gap: 6px;">
+                                <button type="button" id="btn-pdf-prev-page" class="btn btn-outline btn-xs" style="padding: 4px 10px; font-weight: 600;" title="Página Anterior (Seta Esquerda)">
+                                    ◀ Anterior
+                                </button>
+                                <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); margin: 0 4px;">
+                                    Página <strong id="pdf-current-page" style="color: var(--text-primary);">1</strong> de <strong id="pdf-total-pages" style="color: var(--text-primary);">1</strong>
+                                </span>
+                                <button type="button" id="btn-pdf-next-page" class="btn btn-outline btn-xs" style="padding: 4px 10px; font-weight: 600;" title="Próxima Página (Seta Direita)">
+                                    Próxima ▶
+                                </button>
+                            </div>
+
+                            <!-- Controles de Zoom -->
+                            <div id="reader-pdf-zoom" style="display: flex; align-items: center; gap: 6px;">
+                                <button type="button" id="btn-pdf-zoom-out" class="btn btn-outline btn-xs" style="padding: 4px 8px;" title="Reduzir Zoom (-)">
+                                    🔍 -
+                                </button>
+                                <span id="pdf-zoom-level" style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); min-width: 44px; text-align: center;">100%</span>
+                                <button type="button" id="btn-pdf-zoom-in" class="btn btn-outline btn-xs" style="padding: 4px 8px;" title="Aumentar Zoom (+)">
+                                    🔍 +
+                                </button>
+                                <button type="button" id="btn-pdf-zoom-reset" class="btn btn-outline btn-xs" style="padding: 4px 8px;" title="Ajustar">
+                                    Ajustar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Área Principal de Leitura -->
+                        <div id="reader-viewport" style="flex: 1; overflow: auto; position: relative; background: #0f172a; display: flex; align-items: flex-start; justify-content: center; padding: 20px;">
+                            
+                            <!-- Estado de Carregamento -->
+                            <div id="reader-loading-spinner" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 12px; color: #fff; z-index: 10;">
+                                <div style="width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.2); border-top-color: #6366f1; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+                                <span id="reader-loading-text" style="font-size: 0.85rem; font-weight: 600;">Carregando documento seguro...</span>
+                            </div>
+
+                            <!-- Banner de Erro -->
+                            <div id="reader-error-banner" class="hidden" style="display: none; max-width: 500px; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; border-radius: 10px; padding: 20px; color: #fecaca; text-align: center; margin: auto;">
+                                <div style="font-size: 2rem; margin-bottom: 8px;">⚠️</div>
+                                <strong id="reader-error-title" style="display: block; font-size: 1rem; color: #fff; margin-bottom: 6px;">Não foi possível carregar o arquivo</strong>
+                                <p id="reader-error-desc" style="font-size: 0.8rem; margin: 0 0 14px 0; color: #fca5a5;">O arquivo pode estar indisponível ou você não possui permissão de visualização.</p>
+                                <button type="button" id="btn-reader-error-retry" class="btn btn-outline btn-sm" style="border-color: #fca5a5; color: #fff;">Tentar Novamente</button>
+                            </div>
+
+                            <!-- Canvas Container para PDF (pdf.js) -->
+                            <div id="reader-pdf-canvas-wrapper" style="display: none; box-shadow: 0 10px 40px rgba(0,0,0,0.6); background: #ffffff; border-radius: 4px; line-height: 0; max-width: 100%;">
+                                <canvas id="reader-pdf-canvas" style="display: block; width: 100%; height: auto;"></canvas>
+                            </div>
+
+                            <!-- Container de Leitura para Word / DOCX (mammoth.js HTML) -->
+                            <div id="reader-word-html-container" class="hidden" style="display: none; width: 100%; max-width: 820px; background: #ffffff; color: #1e293b; padding: 48px 56px; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 0.95rem; line-height: 1.7;">
+                                <!-- Conteúdo HTML convertido do Word -->
+                            </div>
+
+                        </div>
+
                     </div>
                 </div>
 
@@ -5004,14 +5073,14 @@
                     <!-- Área de Arquivo Principal do Computador (PDF / Word) -->
                     <div class="form-group">
                         <label style="font-size:0.8rem; font-weight:700; color:var(--text-primary); display:flex; justify-content:space-between; margin-bottom:6px;">
-                            <span>📁 Arquivo do Computador (PDF, Word, etc.) *</span>
-                            <span style="font-size:0.7rem; color:var(--text-muted);">Formatos aceitos: .pdf, .docx, .doc, .xlsx, .png, .jpg</span>
+                            <span>📁 Arquivo do Computador (PDF ou Word) *</span>
+                            <span style="font-size:0.7rem; color:#4f46e5; font-weight:700;">Formatos: .pdf, .docx, .doc • Máx: 100MB</span>
                         </label>
                         <div class="file-upload-dropzone" onclick="document.getElementById('new-material-file-input').click();" style="border: 2px dashed #6366f1; background: rgba(99,102,241,0.04); border-radius: 12px; padding: 18px; text-align: center; cursor: pointer; transition: all 0.2s ease;">
-                            <input type="file" id="new-material-file-input" accept=".pdf,.docx,.doc,.xlsx,.xls,.png,.jpg,.jpeg" style="display:none;">
+                            <input type="file" id="new-material-file-input" accept=".pdf,.docx,.doc" style="display:none;">
                             <div style="font-size: 1.8rem; margin-bottom: 4px;">📥</div>
                             <strong style="font-size: 0.85rem; color: #4f46e5; display: block;">Clique para selecionar arquivo do computador</strong>
-                            <span style="font-size: 0.72rem; color: var(--text-muted);">ou arraste e solte o arquivo aqui</span>
+                            <span style="font-size: 0.72rem; color: var(--text-muted);">PDF ou Word até 100MB com upload atômico e seguro</span>
                         </div>
                         <div id="file-upload-preview" style="margin-top: 8px;"></div>
                     </div>
@@ -5095,9 +5164,21 @@
                         <textarea id="new-material-desc" class="form-input-text" style="height:65px; font-size:0.8rem; padding:8px; resize:vertical;" placeholder="Orientações de aplicação em sala de aula, objetivos de aprendizagem e descritores contemplados..."></textarea>
                     </div>
 
+                    <!-- Barra de Progresso em Tempo Real (Upload Atômico) -->
+                    <div id="upload-progress-container" class="hidden" style="display:none; background: var(--bg-tertiary); padding: 14px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); flex-direction: column; gap: 8px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.78rem;">
+                            <span id="upload-progress-status" style="font-weight:700; color:var(--text-primary);">Enviando arquivo com segurança para o storage...</span>
+                            <span id="upload-progress-percent" style="font-family:var(--font-mono); font-weight:700; color:#4f46e5;">0%</span>
+                        </div>
+                        <div style="width:100%; height:8px; background:rgba(0,0,0,0.1); border-radius:4px; overflow:hidden;">
+                            <div id="upload-progress-bar" style="width:0%; height:100%; background:linear-gradient(90deg, #4f46e5, #3b82f6); transition:width 0.15s ease; border-radius:4px;"></div>
+                        </div>
+                        <span id="upload-progress-bytes" style="font-size:0.7rem; color:var(--text-muted);">0 MB de 0 MB transferidos</span>
+                    </div>
+
                     <div class="modal-footer flex-end" style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px; border-top:1px solid var(--border-color); padding-top:14px;">
                         <button type="button" class="btn btn-outline" id="btn-cancel-upload-pedagogic" onclick="closeUploadPedagogicModal();">Cancelar</button>
-                        <button type="submit" class="btn btn-primary" style="font-weight:700; background:linear-gradient(135deg, #4f46e5, #2563eb); border:none; padding:10px 20px;">
+                        <button type="submit" id="btn-submit-upload-pedagogic" class="btn btn-primary" style="font-weight:700; background:linear-gradient(135deg, #4f46e5, #2563eb); border:none; padding:10px 20px;">
                             💾 Salvar e Catalogar no Acervo
                         </button>
                     </div>
@@ -6414,29 +6495,31 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=98c393313d_mt4qzhre"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=3b2cc05144_mt4qzhre"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mt4qzhre"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=98c393313d_mt4rt0vf"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=3b2cc05144_mt4rt0vf"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mt4rt0vf"></script>
     <script src="bncc_habilidades_oficial.js?v=mt23gn8s"></script>
-    <script src="ideb_publico_db.js?v=246d2c1cd5_mt4qzhre"></script>
-    <script src="alunos_db.js?v=ed6641ae07_mt4qzhre"></script>
+    <script src="ideb_publico_db.js?v=246d2c1cd5_mt4rt0vf"></script>
+    <script src="alunos_db.js?v=ed6641ae07_mt4rt0vf"></script>
 
     <!-- Módulos do Core -->
-    <script src="js/core/helpers.js?v=3e1fa864ae_mt4qzhre"></script>
-    <script src="js/core/theme-toast.js?v=5efe74db0d_mt4qzhre"></script>
-    <script src="js/core/user-profile.js?v=bad21cc2ae_mt4qzhre"></script>
-    <script src="js/core/auth.js?v=7175a7eff7_mt4qzhre"></script>
-    <script src="js/core/navigation.js?v=56e32953aa_mt4qzhre"></script>
+    <script src="js/core/helpers.js?v=3e1fa864ae_mt4rt0vf"></script>
+    <script src="js/core/theme-toast.js?v=5efe74db0d_mt4rt0vf"></script>
+    <script src="js/core/user-profile.js?v=bad21cc2ae_mt4rt0vf"></script>
+    <script src="js/core/auth.js?v=7175a7eff7_mt4rt0vf"></script>
+    <script src="js/core/navigation.js?v=56e32953aa_mt4rt0vf"></script>
 
     <!-- Módulos de Domínio -->
-    <script src="js/modules/escolas/escolas.js?v=5feaf5ca33_mt4qzhre"></script>
-    <script src="js/modules/matrizes/matrizes.js?v=a1651b7a53_mt4qzhre"></script>
-    <script src="js/modules/cronograma/cronograma.js?v=dff321d534_mt4qzhre"></script>
-    <script src="js/modules/biblioteca/biblioteca.js?v=40a97951f9_mt4qzhre"></script>
+    <script src="js/modules/escolas/escolas.js?v=5feaf5ca33_mt4rt0vf"></script>
+    <script src="js/modules/matrizes/matrizes.js?v=a1651b7a53_mt4rt0vf"></script>
+    <script src="js/modules/cronograma/cronograma.js?v=dff321d534_mt4rt0vf"></script>
+    <script src="js/modules/biblioteca/biblioteca.js?v=93816f840e_mt4rt0vf"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=fc8a13584b_mt4qzhre"></script>
+    <script src="app.js?v=fc8a13584b_mt4rt0vf"></script>
 </body>
 </html>
