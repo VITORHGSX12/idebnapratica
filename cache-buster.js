@@ -34,7 +34,8 @@ if (fs.existsSync(indexHtmlPath)) {
         'js/core/user-profile.js',
         'js/core/auth.js',
         'js/core/navigation.js',
-        'js/modules/escolas/escolas.js'
+        'js/modules/escolas/escolas.js',
+        'js/modules/matrizes/matrizes.js'
     ];
     jsFiles.forEach(file => {
         const filePath = path.join(__dirname, file);
