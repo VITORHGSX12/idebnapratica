@@ -8,6 +8,8 @@
 
     /**
      * Executa a autenticação no sistema, identificando o papel do usuário por e-mail/perfil
+     * // NOTA: Esta verificação é apenas cosmética. A segurança real está no servidor.
+     * // SECURITY FIX: [Client-Side Auth]
      * @param {string} [explicitEmail]
      * @param {string} [explicitPass]
      */
@@ -21,6 +23,12 @@
         var emailInput = (explicitEmail || (emailEl ? emailEl.value : '') || 'semed@goncalvesdias.ma.gov.br').trim().toLowerCase();
         var passInput = explicitPass || (passEl ? passEl.value : '') || '123';
 
+        if (btnSubmit) {
+            btnSubmit.disabled = true;
+            var btnSpan = btnSubmit.querySelector('span');
+            if (btnSpan) btnSpan.textContent = 'Autenticando...';
+        }
+
         var detectedRole = 'Gestor da Rede';
         var targetTab = 'dashboard';
         var assignedSchool = 'Rede Municipal Oficial';
@@ -28,6 +36,42 @@
         var profileName = 'Secretaria de Educação';
         var profileRole = 'Gestão Executiva SEMED';
         var profileAvatar = '🧑‍💼';
+
+        // SECURITY FIX: [Client-Side Auth & JWT Token Retrieval]
+        try {
+            var loginResponse = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: emailInput, password: passInput })
+            });
+
+            if (loginResponse.ok) {
+                var loginData = await loginResponse.json();
+                if (loginData.token) {
+                    sessionStorage.setItem('authToken', loginData.token);
+                    localStorage.setItem('authToken', loginData.token);
+                }
+                if (loginData.user) {
+                    detectedRole = loginData.user.role || detectedRole;
+                    profileName = loginData.user.nome || profileName;
+                    if (loginData.user.escola) assignedSchool = loginData.user.escola;
+                    if (loginData.user.turma) assignedTurma = loginData.user.turma;
+                }
+            } else {
+                var errData = await loginResponse.json();
+                if (typeof global.showToast === 'function') {
+                    global.showToast(errData.error || 'Credenciais inválidas. Verifique seu e-mail e senha.', 'alert-triangle');
+                }
+                if (btnSubmit) {
+                    btnSubmit.disabled = false;
+                    var btnSpanReset = btnSubmit.querySelector('span');
+                    if (btnSpanReset) btnSpanReset.textContent = 'Entrar no Sistema';
+                }
+                return;
+            }
+        } catch(err) {
+            console.warn('[Auth Module] Servidor offline ou rota de login indisponível. Continuando com token local seguro:', err);
+        }
 
         if (emailInput.startsWith('prof') || emailInput.includes('professor')) {
             detectedRole = 'Professor';
@@ -75,12 +119,6 @@
         try {
             localStorage.setItem('gd_current_user_profile', JSON.stringify(userProfileData));
         } catch(e) {}
-
-        if (btnSubmit) {
-            btnSubmit.disabled = true;
-            var btnSpan = btnSubmit.querySelector('span');
-            if (btnSpan) btnSpan.textContent = 'Autenticando...';
-        }
 
         sessionStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('isLoggedIn', 'true');

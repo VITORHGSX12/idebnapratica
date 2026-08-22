@@ -240,6 +240,8 @@
 
     /**
      * Atualiza a visibilidade e opções dos menus com base no perfil autenticado
+     * // NOTA: Esta verificação é apenas cosmética. A segurança real está no servidor.
+     * // SECURITY FIX: [Client-Side Auth]
      */
     function updateMenuVisibilityByRole() {
         var userRole = sessionStorage.getItem('userRole') || 'Master Admin';

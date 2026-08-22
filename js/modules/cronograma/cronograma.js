@@ -1287,17 +1287,25 @@
                 card.style.flexDirection = 'column';
                 card.style.gap = '8px';
 
+                // SECURITY FIX: [XSS Sanitization] Sanitização dos campos de aula
+                const safeCode = typeof escapeHtml === 'function' ? escapeHtml(les.habilidadeCode) : les.habilidadeCode;
+                const safeDisc = typeof escapeHtml === 'function' ? escapeHtml(les.disciplina) : les.disciplina;
+                const safeTime = typeof escapeHtml === 'function' ? escapeHtml(les.time || 'Horário Padrão') : (les.time || 'Horário Padrão');
+                const safeDesc = typeof escapeHtml === 'function' ? escapeHtml(les.habilidadeDesc) : les.habilidadeDesc;
+                const safeMethod = les.methodology ? (typeof escapeHtml === 'function' ? escapeHtml(les.methodology) : les.methodology) : '';
+                const safeCriadoPor = typeof escapeHtml === 'function' ? escapeHtml(les.criadoPor || 'Docente Regente') : (les.criadoPor || 'Docente Regente');
+
                 card.innerHTML = `
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-weight: 800; font-size: 0.88rem; color: #6366f1;">${les.habilidadeCode}</span>
+                        <span style="font-weight: 800; font-size: 0.88rem; color: #6366f1;">${safeCode}</span>
                         <span class="badge ${les.status === 'trabalhada' ? 'badge-success' : (isAtrasada ? 'badge-danger' : 'badge-warning')}">
                             ${isAtrasada ? '⚠️ Atrasada / Pendente' : (les.status === 'trabalhada' ? 'Trabalhada' : 'Planejada')}
                         </span>
                     </div>
-                    <div style="font-weight: 700; font-size: 0.85rem; color: var(--text-primary);">${les.disciplina} • ${les.time || 'Horário Padrão'}</div>
-                    <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0; line-height: 1.4;">${les.habilidadeDesc}</p>
-                    ${les.methodology ? `<div style="font-size: 0.72rem; color: var(--text-muted); background: var(--bg-tertiary); padding: 6px 8px; border-radius: 4px;"><strong>Metodologia:</strong> ${les.methodology}</div>` : ''}
-                    <div style="font-size: 0.7rem; color: var(--text-muted);">Responsável: ${les.criadoPor || 'Docente Regente'}</div>
+                    <div style="font-weight: 700; font-size: 0.85rem; color: var(--text-primary);">${safeDisc} • ${safeTime}</div>
+                    <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0; line-height: 1.4;">${safeDesc}</p>
+                    ${safeMethod ? `<div style="font-size: 0.72rem; color: var(--text-muted); background: var(--bg-tertiary); padding: 6px 8px; border-radius: 4px;"><strong>Metodologia:</strong> ${safeMethod}</div>` : ''}
+                    <div style="font-size: 0.7rem; color: var(--text-muted);">Responsável: ${safeCriadoPor}</div>
                     
                     <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 6px; border-top: 1px solid var(--border-color); padding-top: 8px;">
                         <button type="button" onclick="toggleLessonWorkStatus('${les.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem; font-weight: 700; color: ${les.status === 'trabalhada' ? '#f59e0b' : '#10b981'}; border-color: ${les.status === 'trabalhada' ? '#f59e0b' : '#10b981'};">
@@ -1542,10 +1550,15 @@
                 row.style.border = '1px solid var(--border-color)';
                 row.style.borderRadius = 'var(--radius-sm)';
 
+                // SECURITY FIX: [XSS Sanitization]
+                const safeCode = typeof escapeHtml === 'function' ? escapeHtml(item.habilidadeCode) : item.habilidadeCode;
+                const safeDisc = typeof escapeHtml === 'function' ? escapeHtml(item.disciplina) : item.disciplina;
+                const safeContext = typeof escapeHtml === 'function' ? escapeHtml(item.turmaContext) : item.turmaContext;
+
                 row.innerHTML = `
                     <div>
-                        <strong style="color: #6366f1;">${item.habilidadeCode}</strong> - ${item.disciplina}
-                        <div style="font-size: 0.72rem; color: var(--text-muted);">${item.turmaContext} • Excluído em: ${new Date(item.deletedAt).toLocaleDateString('pt-BR')}</div>
+                        <strong style="color: #6366f1;">${safeCode}</strong> - ${safeDisc}
+                        <div style="font-size: 0.72rem; color: var(--text-muted);">${safeContext} • Excluído em: ${new Date(item.deletedAt).toLocaleDateString('pt-BR')}</div>
                     </div>
                     <button type="button" onclick="handleRestoreTrashLesson('${item.id}');" class="btn btn-outline btn-sm" style="color: #10b981; border-color: #10b981; font-weight: 700; font-size: 0.75rem;">
                         Restaurar Aula

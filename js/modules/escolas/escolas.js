@@ -147,6 +147,14 @@
             var statusBg = statusLabel === 'Ativa' ? 'rgba(34, 197, 94, 0.12)' : (statusLabel === 'Em manutenção' ? 'rgba(245, 158, 11, 0.12)' : 'rgba(239, 68, 68, 0.12)');
             var statusBorder = statusLabel === 'Ativa' ? 'rgba(34, 197, 94, 0.25)' : (statusLabel === 'Em manutenção' ? 'rgba(245, 158, 11, 0.25)' : 'rgba(239, 68, 68, 0.25)');
 
+            // SECURITY FIX: [XSS Sanitization] Sanitização de campos com escapeHtml
+            var safeName = typeof escapeHtml === 'function' ? escapeHtml(sch.name) : sch.name;
+            var safeInep = typeof escapeHtml === 'function' ? escapeHtml(sch.inep) : sch.inep;
+            var safeCity = typeof escapeHtml === 'function' ? escapeHtml(sch.city || 'Gonçalves Dias - MA') : (sch.city || 'Gonçalves Dias - MA');
+            var safeZone = typeof escapeHtml === 'function' ? escapeHtml(sch.zone) : sch.zone;
+            var safeAlunosCount = typeof escapeHtml === 'function' ? escapeHtml(sch.alunosCount || 200) : (sch.alunosCount || 200);
+            var safeStatusLabel = typeof escapeHtml === 'function' ? escapeHtml(statusLabel) : statusLabel;
+
             return `
                 <tr style="border-bottom: 1px solid var(--border-color); height: 64px; transition: background-color 0.15s ease;">
                     <td style="padding: 12px 20px;">
@@ -155,27 +163,27 @@
                                 ${zoneIcon}
                             </div>
                             <div>
-                                <strong style="font-size: 0.9rem; color: var(--text-primary); display: block; line-height: 1.3;">${sch.name}</strong>
+                                <strong style="font-size: 0.9rem; color: var(--text-primary); display: block; line-height: 1.3;">${safeName}</strong>
                                 <span style="font-size: 0.74rem; color: var(--text-muted); margin-top: 2px; display: block;">
-                                    ${sch.city || 'Gonçalves Dias - MA'} • ${sch.alunosCount || 200} estudantes
+                                    ${safeCity} • ${safeAlunosCount} estudantes
                                 </span>
                             </div>
                         </div>
                     </td>
 
                     <td style="padding: 12px 16px; font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-secondary); font-weight: 700;">
-                        ${sch.inep}
+                        ${safeInep}
                     </td>
 
                     <td style="padding: 12px 16px;">
                         <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color);">
-                            <span>${zoneIcon}</span> <span>${sch.zone}</span>
+                            <span>${zoneIcon}</span> <span>${safeZone}</span>
                         </span>
                     </td>
 
                     <td style="padding: 12px 16px; text-align: center;">
                         <span style="display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 20px; font-size: 0.74rem; font-weight: 800; background: ${statusBg}; color: ${statusColor}; border: 1px solid ${statusBorder};">
-                            ● ${statusLabel.toUpperCase()}
+                            ● ${safeStatusLabel.toUpperCase()}
                         </span>
                     </td>
 
@@ -186,7 +194,7 @@
                             </button>
                             
                             ${isAdminOrSemed ? `
-                                <button type="button" onclick="openEditSchoolModal('${sch.inep}');" class="btn btn-outline btn-sm" style="font-size: 0.76rem; font-weight: 600; color: var(--text-primary); border: 1px solid var(--border-color); background: var(--bg-tertiary); padding: 6px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; transition: all 0.15s ease;" title="Editar Dados da Escola (Admin/SEMED)">
+                                <button type="button" onclick="openEditSchoolModal('${safeInep}');" class="btn btn-outline btn-sm" style="font-size: 0.76rem; font-weight: 600; color: var(--text-primary); border: 1px solid var(--border-color); background: var(--bg-tertiary); padding: 6px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; transition: all 0.15s ease;" title="Editar Dados da Escola (Admin/SEMED)">
                                     ✏️ Editar
                                 </button>
                             ` : ''}
@@ -238,7 +246,9 @@
         
         if (nameEl) nameEl.textContent = schoolObj.name;
         if (badgeEl) {
-            badgeEl.innerHTML = `<span>${isRural ? '🌾' : '🏫'}</span> <span>${schoolObj.zone || 'Rede Municipal'}</span>`;
+            // SECURITY FIX: [XSS Sanitization]
+            var safeZone = typeof escapeHtml === 'function' ? escapeHtml(schoolObj.zone || 'Rede Municipal') : (schoolObj.zone || 'Rede Municipal');
+            badgeEl.innerHTML = `<span>${isRural ? '🌾' : '🏫'}</span> <span>${safeZone}</span>`;
             badgeEl.style.background = isRural ? 'rgba(245, 158, 11, 0.15)' : 'rgba(99, 102, 241, 0.15)';
             badgeEl.style.color = isRural ? '#d97706' : '#6366f1';
         }

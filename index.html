@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <link rel="stylesheet" href="styles.css?v=a0ce5e9f89_mt4rt0vf">
+    <link rel="stylesheet" href="styles.css?v=a0ce5e9f89_mt4s47e8">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -201,12 +201,19 @@
 
             var rows = filtered.map(function(s) {
                 var badgeClass = s.status === 'Essencial' ? 'badge-green' : (s.status === 'Prioritária' ? 'badge-purple' : 'badge-blue');
+                // SECURITY FIX: [XSS Sanitization] Sanitização dos campos BNCC
+                var safeCode = typeof escapeHtml === 'function' ? escapeHtml(s.code) : s.code;
+                var safeStage = typeof escapeHtml === 'function' ? escapeHtml(s.stage) : s.stage;
+                var safeSubject = typeof escapeHtml === 'function' ? escapeHtml(s.subject) : s.subject;
+                var safeDesc = typeof escapeHtml === 'function' ? escapeHtml(s.desc) : s.desc;
+                var safeStatus = typeof escapeHtml === 'function' ? escapeHtml(s.status) : s.status;
+
                 return '<tr style="border-bottom: 1px solid var(--border-color); height: 50px;">' +
-                    '<td style="padding: 10px 16px; font-weight: 800; color: #6366f1; font-family: var(--font-mono);">' + s.code + '</td>' +
-                    '<td style="padding: 10px 16px; font-weight: 600; color: var(--text-primary);">' + s.stage + '</td>' +
-                    '<td style="padding: 10px 16px; font-weight: 600; color: var(--text-secondary);">' + s.subject + '</td>' +
-                    '<td style="padding: 10px 16px; color: var(--text-primary); font-size: 0.84rem;">' + s.desc + '</td>' +
-                    '<td style="padding: 10px 16px;"><span class="badge ' + badgeClass + '" style="font-weight: 700;">' + s.status + '</span></td>' +
+                    '<td style="padding: 10px 16px; font-weight: 800; color: #6366f1; font-family: var(--font-mono);">' + safeCode + '</td>' +
+                    '<td style="padding: 10px 16px; font-weight: 600; color: var(--text-primary);">' + safeStage + '</td>' +
+                    '<td style="padding: 10px 16px; font-weight: 600; color: var(--text-secondary);">' + safeSubject + '</td>' +
+                    '<td style="padding: 10px 16px; color: var(--text-primary); font-size: 0.84rem;">' + safeDesc + '</td>' +
+                    '<td style="padding: 10px 16px;"><span class="badge ' + badgeClass + '" style="font-weight: 700;">' + safeStatus + '</span></td>' +
                     '</tr>';
             });
             tbody.innerHTML = rows.join('');
@@ -6499,27 +6506,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=98c393313d_mt4rt0vf"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=3b2cc05144_mt4rt0vf"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mt4rt0vf"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=98c393313d_mt4s47e8"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=3b2cc05144_mt4s47e8"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mt4s47e8"></script>
     <script src="bncc_habilidades_oficial.js?v=mt23gn8s"></script>
-    <script src="ideb_publico_db.js?v=246d2c1cd5_mt4rt0vf"></script>
-    <script src="alunos_db.js?v=ed6641ae07_mt4rt0vf"></script>
+    <script src="ideb_publico_db.js?v=246d2c1cd5_mt4s47e8"></script>
+    <script src="alunos_db.js?v=ed6641ae07_mt4s47e8"></script>
 
     <!-- Módulos do Core -->
-    <script src="js/core/helpers.js?v=3e1fa864ae_mt4rt0vf"></script>
-    <script src="js/core/theme-toast.js?v=5efe74db0d_mt4rt0vf"></script>
-    <script src="js/core/user-profile.js?v=bad21cc2ae_mt4rt0vf"></script>
-    <script src="js/core/auth.js?v=7175a7eff7_mt4rt0vf"></script>
-    <script src="js/core/navigation.js?v=56e32953aa_mt4rt0vf"></script>
+    <script src="js/core/security.js"></script>
+    <script src="js/core/helpers.js?v=3e1fa864ae_mt4s47e8"></script>
+    <script src="js/core/theme-toast.js?v=5efe74db0d_mt4s47e8"></script>
+    <script src="js/core/user-profile.js?v=bad21cc2ae_mt4s47e8"></script>
+    <script src="js/core/auth.js?v=337f6ad3d6_mt4s47e8"></script>
+    <script src="js/core/navigation.js?v=8c1fedad5e_mt4s47e8"></script>
 
     <!-- Módulos de Domínio -->
-    <script src="js/modules/escolas/escolas.js?v=5feaf5ca33_mt4rt0vf"></script>
-    <script src="js/modules/matrizes/matrizes.js?v=a1651b7a53_mt4rt0vf"></script>
-    <script src="js/modules/cronograma/cronograma.js?v=dff321d534_mt4rt0vf"></script>
-    <script src="js/modules/biblioteca/biblioteca.js?v=93816f840e_mt4rt0vf"></script>
+    <script src="js/modules/escolas/escolas.js?v=edc98403d1_mt4s47e8"></script>
+    <script src="js/modules/matrizes/matrizes.js?v=a1651b7a53_mt4s47e8"></script>
+    <script src="js/modules/cronograma/cronograma.js?v=84edd8bacb_mt4s47e8"></script>
+    <script src="js/modules/biblioteca/biblioteca.js?v=1899b27a85_mt4s47e8"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=fc8a13584b_mt4rt0vf"></script>
+    <script src="app.js?v=fc8a13584b_mt4s47e8"></script>
 </body>
 </html>

@@ -357,6 +357,14 @@
             var isWord = (book.formatoArquivo === 'DOCX' || book.formatoArquivo === 'DOC') || (book.fileName && (book.fileName.toLowerCase().endsWith('.docx') || book.fileName.toLowerCase().endsWith('.doc')));
             var formatLabel = isWord ? 'DOCX' : (book.formatoArquivo || 'PDF');
 
+            // SECURITY FIX: [XSS Sanitization] Sanitização dos metadados exibidos
+            var safeTitulo = typeof escapeHtml === 'function' ? escapeHtml(book.titulo) : (book.titulo || '');
+            var safeSub = typeof escapeHtml === 'function' ? escapeHtml(book.subtitulo || book.descricao || '') : (book.subtitulo || book.descricao || '');
+            var safeTipo = typeof escapeHtml === 'function' ? escapeHtml(book.tipo || 'Pedagógico') : (book.tipo || 'Pedagógico');
+            var safeEtapa = typeof escapeHtml === 'function' ? escapeHtml(book.etapa || 'Geral') : (book.etapa || 'Geral');
+            var safeFileSize = typeof escapeHtml === 'function' ? escapeHtml(book.fileSize || formatLabel) : (book.fileSize || formatLabel);
+            var safePaginas = book.paginas ? escapeHtml(String(book.paginas)) + ' pág.' : safeFileSize;
+
             return '<div class="mec-book-card" data-book-id="' + book.id + '">' +
                 '<div class="mec-book-card-cover" onclick="trackAndViewBook(\'' + book.id + '\');">' +
                     coverHtml +
@@ -369,17 +377,17 @@
                 '<div class="mec-book-card-body">' +
                     '<div class="book-card-header-meta">' +
                         '<span class="book-meta-badge ' + (book.tipo === 'Simulado' ? 'badge-blue' : (book.tipo === 'Reforco' ? 'badge-amber' : 'badge-purple')) + '">' +
-                            (book.tipo || 'Pedagógico') +
+                            safeTipo +
                         '</span>' +
-                        '<span class="book-meta-etapa">' + (book.etapa || 'Geral') + '</span>' +
+                        '<span class="book-meta-etapa">' + safeEtapa + '</span>' +
                     '</div>' +
-                    '<h3 class="book-card-title" title="' + (book.titulo || '') + '" onclick="trackAndViewBook(\'' + book.id + '\');">' +
-                        (book.titulo || '') +
+                    '<h3 class="book-card-title" title="' + safeTitulo + '" onclick="trackAndViewBook(\'' + book.id + '\');">' +
+                        safeTitulo +
                     '</h3>' +
-                    '<p class="book-card-sub">' + (book.subtitulo || book.descricao || '') + '</p>' +
+                    '<p class="book-card-sub">' + safeSub + '</p>' +
                     '<div class="book-card-info-chips">' +
-                        '<span class="info-chip">📄 ' + (book.paginas ? book.paginas + ' pág.' : (book.fileSize || formatLabel)) + '</span>' +
-                        '<span class="info-chip">💾 ' + (book.fileSize || formatLabel) + '</span>' +
+                        '<span class="info-chip">📄 ' + safePaginas + '</span>' +
+                        '<span class="info-chip">💾 ' + safeFileSize + '</span>' +
                         '<span class="info-chip">👁️ ' + (book.viewsCount || 0) + ' acessos</span>' +
                     '</div>' +
                     '<div class="book-card-actions">' +
@@ -410,13 +418,17 @@
 
         row.innerHTML = top4.map(function(item) {
             var icon = item.tipo === 'Simulado' ? 'file-check-2' : (item.tipo === 'Matriz' ? 'layers' : (item.tipo === 'Reforco' ? 'target' : 'book-open'));
+            var safeTitulo = typeof escapeHtml === 'function' ? escapeHtml(item.titulo) : item.titulo;
+            var safeEtapa = typeof escapeHtml === 'function' ? escapeHtml(item.etapa || '') : (item.etapa || '');
+            var safeFormato = typeof escapeHtml === 'function' ? escapeHtml(item.formatoArquivo || 'PDF') : (item.formatoArquivo || 'PDF');
+
             return '<div class="bib-spotlight-card" onclick="trackAndViewBook(\'' + item.id + '\');">' +
                 '<div style="width: 36px; height: 36px; border-radius: 8px; background: ' + (item.corTema || '#4f46e5') + '; color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">' +
                     '<i data-lucide="' + icon + '" style="width: 18px; height: 18px;"></i>' +
                 '</div>' +
                 '<div style="flex: 1; min-width: 0;">' +
-                    '<strong style="font-size: 0.78rem; color: var(--text-primary); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">' + item.titulo + '</strong>' +
-                    '<span style="font-size: 0.68rem; color: var(--text-muted); display: block;">' + (item.etapa || '') + ' • 👁️ ' + (item.viewsCount || 0) + ' acessos • ' + (item.formatoArquivo || 'PDF') + '</span>' +
+                    '<strong style="font-size: 0.78rem; color: var(--text-primary); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">' + safeTitulo + '</strong>' +
+                    '<span style="font-size: 0.68rem; color: var(--text-muted); display: block;">' + safeEtapa + ' • 👁️ ' + (item.viewsCount || 0) + ' acessos • ' + safeFormato + '</span>' +
                 '</div>' +
             '</div>';
         }).join('');
