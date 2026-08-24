@@ -10,9 +10,14 @@ let useLocalFallback = false;
 if (connectionString) {
     try {
         console.log('Connecting to PostgreSQL using DATABASE_URL...');
+        const isInternalOrLocal = !connectionString || 
+            connectionString.includes('localhost') || 
+            connectionString.includes('railway.internal') || 
+            connectionString.includes('127.0.0.1');
+
         pool = new Pool({
             connectionString,
-            ssl: connectionString.includes('localhost') ? false : { rejectUnauthorized: false }
+            ssl: isInternalOrLocal ? false : { rejectUnauthorized: false }
         });
         pool.on('error', (err) => {
             console.error('[PG Pool Error]', err ? err.message : err);
@@ -71,20 +76,27 @@ async function runMigrations() {
         }
 
         const files = fs.readdirSync(migrationsDir).filter(f => f.endsWith('.sql')).sort();
+        
         for (const file of files) {
-            const alreadyRun = await client.query('SELECT 1 FROM _migrations WHERE name = $1', [file]);
-            if (alreadyRun.rows.length === 0) {
-                console.log(`Running migration: ${file}...`);
-                let sql = fs.readFileSync(path.join(migrationsDir, file), 'utf8');
-                
-                // Execute migration
-                await client.query(sql);
-                await client.query('INSERT INTO _migrations (name) VALUES ($1)', [file]);
-                console.log(`Migration ${file} complete.`);
+            const res = await client.query('SELECT 1 FROM _migrations WHERE name = $1', [file]);
+            if (res.rows.length === 0) {
+                console.log(`Running migration: ${file}`);
+                const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf8');
+                try {
+                    await client.query('BEGIN');
+                    await client.query(sql);
+                    await client.query('INSERT INTO _migrations (name) VALUES ($1)', [file]);
+                    await client.query('COMMIT');
+                    console.log(`Migration ${file} executed successfully.`);
+                } catch (mErr) {
+                    await client.query('ROLLBACK');
+                    console.error(`Migration ${file} failed:`, mErr.message);
+                }
             }
         }
+        console.log('All migrations checked and up to date.');
     } catch (err) {
-        console.error('Error running migrations (continuing in fallback mode):', err.message);
+        console.error('Error executing database migrations (continuing in fallback mode):', err.message);
     } finally {
         if (client) {
             try { client.release(); } catch(e) {}
@@ -92,128 +104,80 @@ async function runMigrations() {
     }
 }
 
-// Seed Initial Data (Municipios and Alunos)
+// Auto-seed Reference & Initial Data
 async function seedDatabase() {
     if (useLocalFallback || !pool) return;
 
     let client = null;
     try {
         client = await pool.connect();
-        // 1. Seed municipios_ma
-        const hasMunicipios = await client.query('SELECT 1 FROM municipios_ma LIMIT 1');
-        if (hasMunicipios.rows.length === 0) {
-            console.log('Seeding municipios_ma from ideb_publico_db.js...');
-            const publicDbPath = path.join(__dirname, 'ideb_publico_db.js');
-            if (fs.existsSync(publicDbPath)) {
-                const content = fs.readFileSync(publicDbPath, 'utf8');
-                const startIdx = content.indexOf('[');
-                const endIdx = content.lastIndexOf(']');
-                if (startIdx > -1 && endIdx > -1) {
-                    const rawData = JSON.parse(content.substring(startIdx, endIdx + 1));
-                    const municipiosSet = new Set();
-                    const insertValues = [];
-                    
-                    rawData.forEach(item => {
-                        if (item.uf === 'MA' && item.municipio && item.codigo_ibge && item.municipio !== 'Maranhão (Estado)') {
-                            if (!municipiosSet.has(item.codigo_ibge)) {
-                                municipiosSet.add(item.codigo_ibge);
-                                insertValues.push(`('${item.codigo_ibge}', '${item.municipio.replace(/'/g, "''")}', 'MA')`);
-                            }
-                        }
-                    });
-
-                    if (insertValues.length > 0) {
-                        // Insert in chunks of 50 to avoid limits
-                        for (let i = 0; i < insertValues.length; i += 50) {
-                            const chunk = insertValues.slice(i, i + 50);
-                            await client.query(`INSERT INTO municipios_ma (codigo_ibge, nome, uf) VALUES ${chunk.join(', ')} ON CONFLICT (codigo_ibge) DO NOTHING`);
-                        }
-                        console.log(`Successfully seeded ${municipiosSet.size} MA municipalities.`);
-                    }
-                }
-            }
-        }
-
-        // 2. Seed ideb_publico_referencia
-        const hasRefs = await client.query('SELECT 1 FROM ideb_publico_referencia LIMIT 1');
-        if (hasRefs.rows.length === 0) {
-            console.log('Seeding ideb_publico_referencia from ideb_publico_db.js...');
-            const publicDbPath = path.join(__dirname, 'ideb_publico_db.js');
-            if (fs.existsSync(publicDbPath)) {
-                const content = fs.readFileSync(publicDbPath, 'utf8');
-                const startIdx = content.indexOf('[');
-                const endIdx = content.lastIndexOf(']');
-                if (startIdx > -1 && endIdx > -1) {
-                    const rawData = JSON.parse(content.substring(startIdx, endIdx + 1));
-                    const insertValues = [];
-                    rawData.forEach(item => {
-                        insertValues.push(`('${item.uf}', '${item.municipio.replace(/'/g, "''")}', '${item.codigo_ibge}', ${item.ano}, '${item.etapa}', ${item.ideb_observado || 'NULL'}, ${item.meta_projetada || 'NULL'})`);
-                    });
-
-                    if (insertValues.length > 0) {
-                        for (let i = 0; i < insertValues.length; i += 100) {
-                            const chunk = insertValues.slice(i, i + 100);
-                            await client.query(`INSERT INTO ideb_publico_referencia (uf, municipio, codigo_ibge, ano, etapa, ideb_observado, meta_projetada) VALUES ${chunk.join(', ')}`);
-                        }
-                        console.log(`Successfully seeded ${rawData.length} IDEB reference records.`);
-                    }
-                }
-            }
-        }
-
-        // 3. Seed default Tenant, Schools and Students if empty
-        const hasTenants = await client.query('SELECT 1 FROM tenants LIMIT 1');
+        
+        // 1. Seed Tenant Gonçalves Dias
         let defaultTenantId = null;
-        if (hasTenants.rows.length === 0) {
-            console.log('Seeding default Tenant...');
-            const res = await client.query(`INSERT INTO tenants (nome, cnpj, slug) VALUES ('Município de Gonçalves Dias', '12.345.678/0001-99', 'gd') RETURNING id`);
-            defaultTenantId = res.rows[0].id;
-        } else {
-            const res = await client.query('SELECT id FROM tenants LIMIT 1');
-            defaultTenantId = res.rows[0].id;
-        }
+        const tenantRes = await client.query(`
+            INSERT INTO tenants (nome, cnpj, slug)
+            VALUES ('Secretaria Municipal de Educação de Gonçalves Dias', '12.345.678/0001-99', 'gd')
+            ON CONFLICT (slug) DO UPDATE SET nome = EXCLUDED.nome
+            RETURNING id;
+        `);
+        defaultTenantId = tenantRes.rows[0].id;
 
+        // 2. Seed official schools, classes and students from official_students_seed.js
         const hasEscolas = await client.query('SELECT 1 FROM escolas LIMIT 1');
         if (hasEscolas.rows.length === 0) {
-            console.log('Seeding schools and students from alunos_db.js...');
-            const alunosDbPath = path.join(__dirname, 'alunos_db.js');
-            if (fs.existsSync(alunosDbPath)) {
-                const content = fs.readFileSync(alunosDbPath, 'utf8');
-                const startIdx = content.indexOf('[');
-                const endIdx = content.lastIndexOf(']');
+            console.log('Seeding official schools and students from official_students_seed.js...');
+            const seedPath = path.join(__dirname, 'js', 'data', 'official_students_seed.js');
+            if (fs.existsSync(seedPath)) {
+                const content = fs.readFileSync(seedPath, 'utf8');
+                const startIdx = content.indexOf('{');
+                const endIdx = content.lastIndexOf('}');
                 if (startIdx > -1 && endIdx > -1) {
-                    const students = JSON.parse(content.substring(startIdx, endIdx + 1));
-                    const schoolNames = Array.from(new Set(students.map(s => s.escola)));
+                    const seedData = JSON.parse(content.substring(startIdx, endIdx + 1));
+                    const schools = seedData.escolas || [];
+                    const classes = seedData.turmas || [];
+                    const students = seedData.alunos || [];
+
+                    // Inserir Escolas
                     const schoolMap = {};
-                    
-                    for (const sName of schoolNames) {
-                        const inep = (10000000 + Math.floor(Math.random() * 90000000)).toString();
-                        const res = await client.query(
-                            `INSERT INTO escolas (tenant_id, nome, codigo_inep) VALUES ($1, $2, $3) ON CONFLICT (codigo_inep) DO NOTHING RETURNING id`,
-                            [defaultTenantId, sName, inep]
-                        );
-                        if (res.rows.length > 0) {
-                            schoolMap[sName] = res.rows[0].id;
+                    for (const sc of schools) {
+                        const res = await client.query(`
+                            INSERT INTO escolas (tenant_id, nome, codigo_inep, zona)
+                            VALUES ($1, $2, $3, $4)
+                            ON CONFLICT (codigo_inep) DO UPDATE SET nome = EXCLUDED.nome
+                            RETURNING id, nome;
+                        `, [defaultTenantId, sc.name, sc.inep, sc.zone]);
+                        schoolMap[sc.name] = res.rows[0].id;
+                    }
+                    console.log(`Successfully seeded ${schools.length} official schools.`);
+
+                    // Inserir Turmas
+                    const classMap = {};
+                    for (const cl of classes) {
+                        const schoolId = schoolMap[cl.escola] || null;
+                        const res = await client.query(`
+                            INSERT INTO turmas (tenant_id, escola_id, nome, serie, turno, ano_letivo)
+                            VALUES ($1, $2, $3, $4, $5, $6)
+                            RETURNING id, nome;
+                        `, [defaultTenantId, schoolId, cl.nome, cl.serie, cl.turno, 2026]);
+                        classMap[cl.nome] = res.rows[0].id;
+                    }
+                    console.log(`Successfully seeded ${classes.length} official classes.`);
+
+                    // Inserir Estudantes
+                    let insertedStudents = 0;
+                    for (let i = 0; i < students.length; i += 50) {
+                        const chunk = students.slice(i, i + 50);
+                        for (const st of chunk) {
+                            const turmaId = classMap[st.turma] || null;
+                            await client.query(`
+                                INSERT INTO alunos (tenant_id, nome, matricula, turma_id, cpf, nascimento)
+                                VALUES ($1, $2, $3, $4, $5, $6)
+                                ON CONFLICT (matricula) DO NOTHING;
+                            `, [defaultTenantId, st.nome, st.matricula, turmaId, st.cpf || '', st.dataNascimento || null]);
+                            insertedStudents++;
                         }
                     }
-
-                    // Seed students in chunks
-                    console.log(`Seeding ${students.length} students...`);
-                    const studentValues = [];
-                    students.forEach(st => {
-                        const parseDate = (dStr) => {
-                            if (!dStr) return '2019-01-01';
-                            const p = dStr.split('/');
-                            return `${p[2]}-${p[1]}-${p[0]}`;
-                        };
-                        studentValues.push(`('${st.matricula}', '${st.nome.replace(/'/g, "''")}', '${parseDate(st.nascimento)}', '${st.mae ? st.mae.replace(/'/g, "''") : ''}')`);
-                    });
-
-                    for (let i = 0; i < studentValues.length; i += 100) {
-                        const chunk = studentValues.slice(i, i + 100);
-                        await client.query(`INSERT INTO alunos (codigo_matricula, nome, data_nascimento, nome_responsavel) VALUES ${chunk.join(', ')} ON CONFLICT (codigo_matricula) DO NOTHING`);
-                    }
-                    console.log('Seeding of initial schools and students completed successfully.');
+                    console.log(`Successfully seeded ${insertedStudents} official students.`);
                 }
             }
         }
