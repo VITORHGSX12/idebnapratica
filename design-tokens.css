@@ -34,15 +34,21 @@
     --color-text-inverse:       #FFFFFF; /* Texto em fundos escuros e botões de destaque */
 
     /* ---------------------------------------------------------------------
-       4. COR DE DESTAQUE INSTITUCIONAL ÚNICA (ÍNDIGO AUTORAL — SEMED)
+       4. COR DE DESTAQUE INSTITUCIONAL ÚNICA (PALETA INDIGO APROVADA PELO USUÁRIO)
        --------------------------------------------------------------------- */
-    --color-accent-primary:     #4F46E5; /* Índigo 600: Ação primária, nav ativo, ponteiro da Régua */
-    --color-accent-primary-hover:#4338CA;/* Índigo 700: Hover de botões primários */
-    --color-accent-hover:       #4338CA;
-    --color-accent-soft:        #EEF2FF; /* Índigo 50: Fundo tonal para ícones em bolha e estados sutis */
-    --color-accent-soft-border: #C7D2FE; /* Índigo 200: Borda sutil sobre fundo accent-soft */
-    --color-accent-subtle:      #EEF2FF; /* Alias para compatibilidade */
-    --color-accent-border:      #C7D2FE; /* Alias para compatibilidade */
+    --color-accent-100:         #5C6BC0; /* Tom base da família — para elementos decorativos */
+    --color-accent-200:         #7986CB;
+    --color-accent-300:         #9FA8DA;
+    --color-accent-400:         #C5CAE9;
+    --color-accent-50:          #E8EAF6;
+
+    --color-accent-primary:     #4C5AB0; /* Tom escurecido com contraste AA (6.18:1 vs branco, 5.91:1 vs canvas) */
+    --color-accent-primary-hover:#3F4C99;/* Hover com contraste AAA (7.76:1) */
+    --color-accent-hover:       #3F4C99;
+    --color-accent-soft:        #E8EAF6; /* = --color-accent-50, fundo tonal de ícones em bolha */
+    --color-accent-soft-border: #C5CAE9; /* = --color-accent-400 */
+    --color-accent-subtle:      #E8EAF6; /* Alias para compatibilidade */
+    --color-accent-border:      #C5CAE9; /* Alias para compatibilidade */
 
     /* ---------------------------------------------------------------------
        5. SISTEMA SEMÂNTICO SAEB / IDEB (PADRÃO MEC / INEP)
