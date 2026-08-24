@@ -89,27 +89,28 @@
     function getOfficialExcelCityData(cityName, etapa) {
         try {
             if (!cityName) return null;
-            var clean = cityName.trim().toLowerCase();
+            var clean = (cityName || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
 
-            // 1. Dataset Oficial Ativo
-            var dbMaranhao = global.IDEB_MARANHAO_MUNICIPIOS;
+            var dbMaranhao = global.IDEB_MARANHAO_MUNICIPIOS || (typeof window !== 'undefined' ? window.IDEB_MARANHAO_MUNICIPIOS : null);
             if (dbMaranhao) {
                 var list = (etapa === 'Anos Finais') ? dbMaranhao.finais : dbMaranhao.iniciais;
                 if (Array.isArray(list)) {
                     var found = list.find(function(item) {
-                        return item && item.municipio && item.municipio.trim().toLowerCase() === clean;
+                        if (!item || !item.municipio) return false;
+                        var itemClean = item.municipio.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+                        return itemClean === clean || itemClean.includes(clean) || clean.includes(itemClean);
                     });
                     if (found) return found;
                 }
             }
 
-            // 2. Fallback: idebPublicoReferencia
             var refList = global.idebPublicoReferencia;
             if (Array.isArray(refList)) {
                 var etapaName = (etapa === 'Anos Finais') ? 'finais' : 'iniciais';
                 var foundRef = refList.find(function(item) {
-                    return item && item.municipio && item.municipio.trim().toLowerCase() === clean &&
-                        (item.etapa || '').toLowerCase().includes(etapaName);
+                    if (!item || !item.municipio) return false;
+                    var itemClean = item.municipio.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+                    return (itemClean === clean || itemClean.includes(clean)) && (item.etapa || '').toLowerCase().includes(etapaName);
                 });
                 if (foundRef) {
                     var anosObj = foundRef.anos || {};
@@ -124,22 +125,17 @@
                     };
                 }
             }
-
-            // 3. Fallback: OFFICIAL_MARANHAO_IDEB_EXCEL
-            var dbExcel = global.OFFICIAL_MARANHAO_IDEB_EXCEL;
-            if (dbExcel) {
-                var collection = (etapa === 'Anos Finais') ? dbExcel.anosFinais : dbExcel.anosIniciais;
-                if (collection) {
-                    var keys = Object.keys(collection);
-                    var foundKey = keys.find(function(k) { return k.trim().toLowerCase() === clean; });
-                    if (foundKey) return collection[foundKey];
-                }
-            }
         } catch(e) {
             console.error('[getOfficialExcelCityData Error]', e);
         }
         return null;
     }
+
+    function getMaranhaoCityIdebData(cityName, etapa) {
+        return getOfficialExcelCityData(cityName, etapa);
+    }
+    global.getMaranhaoCityIdebData = getMaranhaoCityIdebData;
+    global.getOfficialExcelCityData = getOfficialExcelCityData;
 
     // -------------------------------------------------------------------------
     // 3. VISUALIZADOR & GRÁFICO HISTÓRICO SVG DO COMPARATIVO
@@ -607,19 +603,18 @@
         }
 
         if (elLabelRank) elLabelRank.textContent = 'Posição no Ranking MA (' + activeYear + ')';
-        var dbCollection = (activeStage === 'Anos Finais') 
-            ? (global.OFFICIAL_MARANHAO_IDEB_EXCEL && global.OFFICIAL_MARANHAO_IDEB_EXCEL.anosFinais)
-            : (global.OFFICIAL_MARANHAO_IDEB_EXCEL && global.OFFICIAL_MARANHAO_IDEB_EXCEL.anosIniciais);
+        var dbMun = global.IDEB_MARANHAO_MUNICIPIOS || (typeof window !== 'undefined' ? window.IDEB_MARANHAO_MUNICIPIOS : null);
+        var allMunList = dbMun ? ((activeStage === 'Anos Finais') ? dbMun.finais : dbMun.iniciais) : [];
 
-        if (dbCollection) {
-            var listRank = Object.values(dbCollection).filter(function(c) {
+        if (Array.isArray(allMunList) && allMunList.length > 0) {
+            var listRank = allMunList.filter(function(c) {
                 if (!c || !c.municipio) return false;
                 var m = c.municipio.trim().toLowerCase();
-                return !m.includes('município') && !m.includes('código') && c[currKey] !== null;
+                return !m.includes('município') && !m.includes('código') && c[currKey] !== null && c[currKey] !== undefined;
             }).sort(function(a,b) { return (b[currKey] || 0) - (a[currKey] || 0); });
 
             var rankIndex = listRank.findIndex(function(c) {
-                return c.municipio.trim().toLowerCase() === global.currentSelectedCity.trim().toLowerCase();
+                return (c.municipio || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim() === global.currentSelectedCity.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
             });
             if (elRank) {
                 elRank.textContent = (rankIndex !== -1) ? '#' + (rankIndex + 1) : "—";
@@ -665,10 +660,10 @@
             var ureSum = 0;
             var ureCount = 0;
             var targetUreObj = getOfficial19UresList().find(function(u) { return u.name === ureName; });
-            if (targetUreObj && targetUreObj.cities && dbCollection) {
+            if (targetUreObj && targetUreObj.cities) {
                 targetUreObj.cities.forEach(function(c) {
                     var cData = getOfficialExcelCityData(c, activeStage);
-                    if (cData && cData[currKey] !== null && cData[currKey] >= 0 && cData[currKey] <= 10) {
+                    if (cData && cData[currKey] !== null && cData[currKey] !== undefined && cData[currKey] >= 0 && cData[currKey] <= 10) {
                         ureSum += cData[currKey];
                         ureCount++;
                     }
@@ -678,9 +673,9 @@
 
             var maSum = 0;
             var maCount = 0;
-            if (dbCollection) {
-                Object.values(dbCollection).forEach(function(c) {
-                    if (c && c[currKey] !== null && c[currKey] >= 0 && c[currKey] <= 10) {
+            if (Array.isArray(allMunList) && allMunList.length > 0) {
+                allMunList.forEach(function(c) {
+                    if (c && c[currKey] !== null && c[currKey] !== undefined && c[currKey] >= 0 && c[currKey] <= 10) {
                         maSum += c[currKey];
                         maCount++;
                     }
@@ -1199,7 +1194,7 @@
     }
 
     function filterSchoolRankingTable() {
-        var rawDb = global.ESCOLAS_MARANHAO_IDEB || global.OFFICIAL_MARANHAO_ESCOLAS_EXCEL || [];
+        var rawDb = global.ESCOLAS_MARANHAO_OFICIAL || (typeof window !== 'undefined' ? window.ESCOLAS_MARANHAO_OFICIAL : []) || [];
         var activeStage = global.currentIdebStage || 'Anos Iniciais';
         var isAnosIniciais = (activeStage === 'Anos Iniciais');
         var activeYear = global.currentIdebYear || 2025;
@@ -1220,29 +1215,12 @@
             var id = sch.inep || sch.codigoEscola || sch.id || '';
             var name = sch.nome || sch.nomeEscola || '';
             var city = sch.municipio || '';
-            var network = sch.localizacao || (sch.rede === 'Estadual' || sch.rede === 'Municipal' ? sch.rede : 'Municipal');
+            var network = sch.rede || sch.localizacao || 'Municipal';
             var ure = sch.ure || getUreForCity(city);
 
-            var scoreCurr = null;
-            var scorePrev = null;
-
-            if (isAnosIniciais) {
-                if (activeYear === 2025) {
-                    scoreCurr = (sch.iniciais2025 !== undefined && sch.iniciais2025 !== null) ? sch.iniciais2025 : (sch.ai ? sch.ai.y2025 : null);
-                    scorePrev = (sch.ai && sch.ai.y2023 !== undefined) ? sch.ai.y2023 : null;
-                } else if (sch.ai) {
-                    scoreCurr = (sch.ai[currKey] !== undefined) ? sch.ai[currKey] : null;
-                    scorePrev = (activeYear === 2015) ? null : ((sch.ai[prevKey] !== undefined) ? sch.ai[prevKey] : null);
-                }
-            } else {
-                if (activeYear === 2025) {
-                    scoreCurr = (sch.finais2025 !== undefined && sch.finais2025 !== null) ? sch.finais2025 : (sch.af ? sch.af.y2025 : null);
-                    scorePrev = (sch.af && sch.af.y2023 !== undefined) ? sch.af.y2023 : null;
-                } else if (sch.af) {
-                    scoreCurr = (sch.af[currKey] !== undefined) ? sch.af[currKey] : null;
-                    scorePrev = (activeYear === 2015) ? null : ((sch.af[prevKey] !== undefined) ? sch.af[prevKey] : null);
-                }
-            }
+            var prefix = isAnosIniciais ? 'ai_' : 'af_';
+            var scoreCurr = sch[prefix + activeYear] !== undefined ? sch[prefix + activeYear] : (isAnosIniciais ? (sch.ai ? sch.ai[currKey] : null) : (sch.af ? sch.af[currKey] : null));
+            var scorePrev = (activeYear === 2015) ? null : (sch[prefix + prevYear] !== undefined ? sch[prefix + prevYear] : (isAnosIniciais ? (sch.ai ? sch.ai[prevKey] : null) : (sch.af ? sch.af[prevKey] : null)));
 
             schoolsData.push({
                 id: id,
@@ -1287,7 +1265,7 @@
                 var cleanSchoolCity = (sch.city || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
                 if (cleanSchoolCity !== cleanCityFilter) return false;
             }
-            if (redeFilter !== 'all' && sch.network !== redeFilter) return false;
+            if (redeFilter !== 'all' && sch.network.toLowerCase() !== redeFilter.toLowerCase()) return false;
             if (query) {
                 var full = (sch.name + ' ' + sch.city + ' ' + sch.ure).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 if (!full.includes(query)) return false;
@@ -1380,22 +1358,21 @@
     }
 
     function openSchoolIdebDetailModalById(schoolId) {
-        var rawDb = global.ESCOLAS_MARANHAO_IDEB || global.OFFICIAL_MARANHAO_ESCOLAS_EXCEL || [];
-        var sch = rawDb.find(function(s) { return (s.inep === schoolId || s.codigoEscola === schoolId || s.id === schoolId); }) || rawDb[0];
+        var rawDb = global.ESCOLAS_MARANHAO_OFICIAL || (typeof window !== 'undefined' ? window.ESCOLAS_MARANHAO_OFICIAL : []) || [];
+        var sch = rawDb.find(function(s) { return (String(s.inep) === String(schoolId) || String(s.id) === String(schoolId) || String(s.codigoEscola) === String(schoolId)); }) || rawDb[0];
         if (!sch) return;
 
         var schoolName = sch.nome || sch.nomeEscola || 'Unidade Escolar';
         var schoolCity = sch.municipio || 'Gonçalves Dias';
-        var schoolRede = sch.localizacao || (sch.rede === 'Estadual' || sch.rede === 'Municipal' ? sch.rede : 'Municipal');
+        var schoolRede = sch.rede || sch.localizacao || 'Municipal';
         var schoolUre = sch.ure || getUreForCity(schoolCity);
 
         var activeStage = global.currentIdebStage || 'Anos Iniciais';
         var isAnosIniciais = (activeStage === 'Anos Iniciais');
         var activeYear = global.currentIdebYear || 2025;
 
-        var currentScore = isAnosIniciais 
-            ? ((sch.iniciais2025 !== undefined && sch.iniciais2025 !== null) ? sch.iniciais2025 : (sch.ai ? sch.ai.y2025 : 5.0))
-            : ((sch.finais2025 !== undefined && sch.finais2025 !== null) ? sch.finais2025 : (sch.af ? sch.af.y2025 : 4.5));
+        var prefix = isAnosIniciais ? 'ai_' : 'af_';
+        var currentScore = sch[prefix + activeYear] !== undefined && sch[prefix + activeYear] !== null ? sch[prefix + activeYear] : 5.0;
 
         var modal = document.getElementById('modal-school-ideb-detail');
         var nameEl = document.getElementById('school-detail-modal-name');
@@ -1410,14 +1387,8 @@
             var cycles = [2015, 2017, 2019, 2021, 2023, 2025];
             historyGrid.innerHTML = cycles.map(function(cyc) {
                 var isSelected = (cyc === activeYear);
-                var score = '-';
-                if (cyc === 2025 && currentScore !== null) {
-                    score = Number(currentScore).toFixed(1);
-                } else if (isAnosIniciais && sch.ai && sch.ai['y' + cyc] !== undefined) {
-                    score = Number(sch.ai['y' + cyc]).toFixed(1);
-                } else if (!isAnosIniciais && sch.af && sch.af['y' + cyc] !== undefined) {
-                    score = Number(sch.af['y' + cyc]).toFixed(1);
-                }
+                var rawVal = sch[prefix + cyc];
+                var score = (rawVal !== undefined && rawVal !== null) ? Number(rawVal).toFixed(1) : '-';
                 return [
                     '<div style="background:var(--bg-secondary); padding:8px 6px; border-radius:var(--radius-sm); border:' + (isSelected ? '2px solid #6366f1' : '1px solid var(--border-color)') + ';">',
                     '    <div style="font-size:0.68rem; font-weight:700; color:var(--text-muted);">' + cyc + '</div>',
