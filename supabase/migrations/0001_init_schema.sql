@@ -10,8 +10,15 @@ CREATE OR REPLACE FUNCTION auth.uid() RETURNS uuid AS $$
     SELECT gen_random_uuid();
 $$ LANGUAGE sql STABLE;
 
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "vector"; -- Suporte para IA pgvector no banco de questões
+DO $$ BEGIN
+    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+EXCEPTION WHEN OTHERS THEN NULL;
+END $$;
+
+DO $$ BEGIN
+    CREATE EXTENSION IF NOT EXISTS "vector";
+EXCEPTION WHEN OTHERS THEN NULL;
+END $$;
 
 -- 1. Tabela de Tenants (Redes de Ensino / Mantenedoras)
 CREATE TABLE tenants (
