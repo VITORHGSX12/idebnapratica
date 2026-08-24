@@ -26,64 +26,124 @@
         var isDirector = userRole === 'Diretor Escola';
         var isTeacher = userRole === 'Professor' || userRole === 'Professor AEE';
 
+        // Checagem rigorosa: existem respostas ou notas de simulados já lançadas?
+        var hasEvaluations = false;
+        try {
+            var savedRespostas = localStorage.getItem('gd_simulado_respostas_db');
+            if (savedRespostas && savedRespostas !== '{}' && savedRespostas !== '[]') {
+                hasEvaluations = true;
+            }
+        } catch(e) {}
+
         // 1. VISÃO DO DIRETOR ESCOLAR (Escopo: Unidade Escolar)
         if (isDirector) {
-            container.innerHTML = `
-                <!-- Card 1: IDEB Projetado vs Meta -->
-                <div class="metric-card">
-                    <div class="metric-card-header">
-                        <div>
-                            <span class="metric-label">IDEB Projetado</span>
-                            <div class="metric-value" style="margin-top: 6px;">5.4</div>
+            if (!hasEvaluations) {
+                container.innerHTML = `
+                    <!-- Card 1: IDEB Oficial da Unidade -->
+                    <div class="metric-card">
+                        <div class="metric-card-header">
+                            <div>
+                                <span class="metric-label">IDEB Oficial da Escola</span>
+                                <div class="metric-value" style="margin-top: 6px;">5.4</div>
+                            </div>
+                            <div class="metric-icon-bubble">
+                                <i data-lucide="target"></i>
+                            </div>
                         </div>
-                        <div class="metric-icon-bubble">
-                            <i data-lucide="target"></i>
+                        <div class="metric-sub">
+                            <span class="badge-status-advanced" style="font-size: var(--text-xs); padding: 2px 8px;">Base INEP</span>
+                            <span style="margin-left: auto; font-size: var(--text-xs); color: var(--color-text-secondary);">Meta 2026: <strong style="color: var(--color-brand-primary);">5.8</strong></span>
                         </div>
                     </div>
-                    <div class="metric-sub">
-                        <span class="badge-status-warning" style="font-size: var(--text-xs); padding: 2px 8px;">GAP -0.4</span>
-                        <span style="margin-left: auto; font-size: var(--text-xs); color: var(--color-text-secondary);">Meta: <strong style="color: var(--color-brand-primary);">5.8</strong></span>
-                    </div>
-                </div>
 
-                <!-- Card 2: Proficiência Média (LP / MAT) -->
-                <div class="metric-card">
-                    <div class="metric-card-header">
-                        <div>
-                            <span class="metric-label">Proficiência Média</span>
-                            <div class="metric-value" style="margin-top: 6px;">231.3 <span style="font-size: 0.95rem; font-weight: 600; color: var(--color-text-muted);">pts</span></div>
+                    <!-- Card 2: Proficiência Média dos Simulados (Aguardando) -->
+                    <div class="metric-card">
+                        <div class="metric-card-header">
+                            <div>
+                                <span class="metric-label">Proficiência em Simulados</span>
+                                <div class="metric-value" style="margin-top: 6px; color: var(--color-text-muted);">-- <span style="font-size: 0.95rem; font-weight: 600;">pts</span></div>
+                            </div>
+                            <div class="metric-icon-bubble">
+                                <i data-lucide="book-open"></i>
+                            </div>
                         </div>
-                        <div class="metric-icon-bubble status-advanced">
-                            <i data-lucide="book-open"></i>
+                        <div class="metric-sub">
+                            <span class="badge-status-warning" style="font-size: var(--text-xs); padding: 2px 8px;">Aguardando Dados</span>
+                            <span style="margin-left: auto; font-size: var(--text-xs); color: var(--color-text-secondary);">Após 1ª Avaliação</span>
                         </div>
                     </div>
-                    <div class="metric-sub">
-                        <span>LP: <strong style="color: var(--color-brand-primary);">224.5</strong> • MAT: <strong style="color: var(--color-brand-primary);">238.1</strong></span>
-                    </div>
-                </div>
 
-                <!-- Card 3: Taxa de Domínio de Descritores com Anel de Progresso -->
-                <div class="metric-card">
-                    <div class="metric-card-header">
-                        <div>
-                            <span class="metric-label">Domínio de Descritores</span>
-                            <div class="metric-value" style="margin-top: 6px;">64.8%</div>
+                    <!-- Card 3: Domínio de Descritores (Aguardando) -->
+                    <div class="metric-card">
+                        <div class="metric-card-header">
+                            <div>
+                                <span class="metric-label">Domínio de Descritores</span>
+                                <div class="metric-value" style="margin-top: 6px; color: var(--color-text-muted);">-- <span style="font-size: 0.95rem; font-weight: 600;">%</span></div>
+                            </div>
+                            <div class="metric-icon-bubble">
+                                <i data-lucide="pie-chart"></i>
+                            </div>
                         </div>
-                        <div class="progress-ring-container">
-                            <svg class="progress-ring-svg" viewBox="0 0 72 72">
-                                <circle class="progress-ring-bg" cx="36" cy="36" r="30" />
-                                <circle class="progress-ring-fill" cx="36" cy="36" r="30" 
-                                        stroke-dasharray="188.4" 
-                                        stroke-dashoffset="${188.4 - (188.4 * 64.8 / 100)}" />
-                            </svg>
-                            <span class="progress-ring-value">65%</span>
+                        <div class="metric-sub">
+                            <span>Média de acertos consolidada pós-provas</span>
                         </div>
                     </div>
-                    <div class="metric-sub">
-                        <span>Média global de acertos em itens SAEB</span>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="metric-card">
+                        <div class="metric-card-header">
+                            <div>
+                                <span class="metric-label">IDEB Projetado</span>
+                                <div class="metric-value" style="margin-top: 6px;">5.4</div>
+                            </div>
+                            <div class="metric-icon-bubble">
+                                <i data-lucide="target"></i>
+                            </div>
+                        </div>
+                        <div class="metric-sub">
+                            <span class="badge-status-warning" style="font-size: var(--text-xs); padding: 2px 8px;">GAP -0.4</span>
+                            <span style="margin-left: auto; font-size: var(--text-xs); color: var(--color-text-secondary);">Meta: <strong style="color: var(--color-brand-primary);">5.8</strong></span>
+                        </div>
                     </div>
-                </div>
-            `;
+
+                    <div class="metric-card">
+                        <div class="metric-card-header">
+                            <div>
+                                <span class="metric-label">Proficiência Média</span>
+                                <div class="metric-value" style="margin-top: 6px;">231.3 <span style="font-size: 0.95rem; font-weight: 600; color: var(--color-text-muted);">pts</span></div>
+                            </div>
+                            <div class="metric-icon-bubble status-advanced">
+                                <i data-lucide="book-open"></i>
+                            </div>
+                        </div>
+                        <div class="metric-sub">
+                            <span>LP: <strong style="color: var(--color-brand-primary);">224.5</strong> • MAT: <strong style="color: var(--color-brand-primary);">238.1</strong></span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-card-header">
+                            <div>
+                                <span class="metric-label">Domínio de Descritores</span>
+                                <div class="metric-value" style="margin-top: 6px;">64.8%</div>
+                            </div>
+                            <div class="progress-ring-container">
+                                <svg class="progress-ring-svg" viewBox="0 0 72 72">
+                                    <circle class="progress-ring-bg" cx="36" cy="36" r="30" />
+                                    <circle class="progress-ring-fill" cx="36" cy="36" r="30" 
+                                            stroke-dasharray="188.4" 
+                                            stroke-dashoffset="${188.4 - (188.4 * 64.8 / 100)}" />
+                                </svg>
+                                <span class="progress-ring-value">65%</span>
+                            </div>
+                        </div>
+                        <div class="metric-sub">
+                            <span>Média global de acertos em itens SAEB</span>
+                        </div>
+                    </div>
+                `;
+            }
             if (window.lucide && typeof lucide.createIcons === 'function') {
                 try { lucide.createIcons(); } catch(e) {}
             }
@@ -92,62 +152,113 @@
 
         // 2. VISÃO DO PROFESSOR (Escopo: Turma sob regência)
         if (isTeacher) {
-            container.innerHTML = `
-                <!-- Card 1: Desempenho Médio da Turma -->
-                <div class="metric-card">
-                    <div class="metric-card-header">
-                        <div>
-                            <span class="metric-label">Desempenho da Turma</span>
-                            <div class="metric-value" style="margin-top: 6px;">68.2%</div>
+            if (!hasEvaluations) {
+                container.innerHTML = `
+                    <!-- Card 1: Desempenho Diagnóstico da Turma -->
+                    <div class="metric-card">
+                        <div class="metric-card-header">
+                            <div>
+                                <span class="metric-label">Desempenho da Turma</span>
+                                <div class="metric-value" style="margin-top: 6px; color: var(--color-text-muted);">-- <span style="font-size: 0.95rem; font-weight: 600;">%</span></div>
+                            </div>
+                            <div class="metric-icon-bubble">
+                                <i data-lucide="bar-chart-2"></i>
+                            </div>
                         </div>
-                        <div class="metric-icon-bubble">
-                            <i data-lucide="users"></i>
+                        <div class="metric-sub">
+                            <span class="badge-status-warning" style="font-size: var(--text-xs); padding: 2px 8px;">Aguardando Dados</span>
+                            <span style="margin-left: auto; font-size: var(--text-xs); color: var(--color-text-secondary);">1ª Avaliação</span>
                         </div>
                     </div>
-                    <div class="metric-sub">
-                        <span class="badge-status-success" style="font-size: var(--text-xs); padding: 2px 8px;">+4.5%</span>
-                        <span style="margin-left: auto; font-size: var(--text-xs); color: var(--color-text-secondary);">vs. Diagnóstico Inicial</span>
-                    </div>
-                </div>
 
-                <!-- Card 2: Alunos em Nível Crítico / Recomposição -->
-                <div class="metric-card">
-                    <div class="metric-card-header">
-                        <div>
-                            <span class="metric-label">Foco de Recomposição</span>
-                            <div class="metric-value" style="margin-top: 6px; color: var(--color-status-critical-text);">6 <span style="font-size: 0.95rem; font-weight: 600; color: var(--color-text-muted);">alunos</span></div>
+                    <!-- Card 2: Foco de Recomposição -->
+                    <div class="metric-card">
+                        <div class="metric-card-header">
+                            <div>
+                                <span class="metric-label">Foco de Recomposição</span>
+                                <div class="metric-value" style="margin-top: 6px; color: var(--color-text-muted);">-- <span style="font-size: 0.95rem; font-weight: 600;">alunos</span></div>
+                            </div>
+                            <div class="metric-icon-bubble">
+                                <i data-lucide="users"></i>
+                            </div>
                         </div>
-                        <div class="metric-icon-bubble status-critical">
-                            <i data-lucide="alert-triangle"></i>
+                        <div class="metric-sub">
+                            <span>Cálculo automático após 1ª avaliação</span>
                         </div>
                     </div>
-                    <div class="metric-sub">
-                        <span>Nível Insuficiente em Descritores Prioritários</span>
-                    </div>
-                </div>
 
-                <!-- Card 3: Execução do Cronograma com Anel de Progresso -->
-                <div class="metric-card">
-                    <div class="metric-card-header">
-                        <div>
-                            <span class="metric-label">Execução do Cronograma</span>
-                            <div class="metric-value" style="margin-top: 6px;">82.5%</div>
+                    <!-- Card 3: Cronograma de Aulas 40 Semanas -->
+                    <div class="metric-card">
+                        <div class="metric-card-header">
+                            <div>
+                                <span class="metric-label">Cronograma Curricular</span>
+                                <div class="metric-value" style="margin-top: 6px; color: var(--color-brand-primary);">40 <span style="font-size: 0.95rem; font-weight: 600; color: var(--color-text-muted);">Semanas</span></div>
+                            </div>
+                            <div class="metric-icon-bubble status-advanced">
+                                <i data-lucide="calendar-check"></i>
+                            </div>
                         </div>
-                        <div class="progress-ring-container">
-                            <svg class="progress-ring-svg" viewBox="0 0 72 72">
-                                <circle class="progress-ring-bg" cx="36" cy="36" r="30" />
-                                <circle class="progress-ring-fill" cx="36" cy="36" r="30" 
-                                        stroke-dasharray="188.4" 
-                                        stroke-dashoffset="${188.4 - (188.4 * 82.5 / 100)}" />
-                            </svg>
-                            <span class="progress-ring-value">83%</span>
+                        <div class="metric-sub">
+                            <i data-lucide="check-circle" style="width: 14px; height: 14px; color: var(--color-status-success);"></i>
+                            <span>Matriz BNCC & SAEB Ativa</span>
                         </div>
                     </div>
-                    <div class="metric-sub">
-                        <span>33 de 40 habilidades SAEB trabalhadas</span>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="metric-card">
+                        <div class="metric-card-header">
+                            <div>
+                                <span class="metric-label">Desempenho da Turma</span>
+                                <div class="metric-value" style="margin-top: 6px;">68.2%</div>
+                            </div>
+                            <div class="metric-icon-bubble">
+                                <i data-lucide="users"></i>
+                            </div>
+                        </div>
+                        <div class="metric-sub">
+                            <span class="badge-status-success" style="font-size: var(--text-xs); padding: 2px 8px;">+4.5%</span>
+                            <span style="margin-left: auto; font-size: var(--text-xs); color: var(--color-text-secondary);">vs. Diagnóstico Inicial</span>
+                        </div>
                     </div>
-                </div>
-            `;
+
+                    <div class="metric-card">
+                        <div class="metric-card-header">
+                            <div>
+                                <span class="metric-label">Foco de Recomposição</span>
+                                <div class="metric-value" style="margin-top: 6px; color: var(--color-status-critical-text);">6 <span style="font-size: 0.95rem; font-weight: 600; color: var(--color-text-muted);">alunos</span></div>
+                            </div>
+                            <div class="metric-icon-bubble status-critical">
+                                <i data-lucide="alert-triangle"></i>
+                            </div>
+                        </div>
+                        <div class="metric-sub">
+                            <span>Nível Insuficiente em Descritores Prioritários</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-card-header">
+                            <div>
+                                <span class="metric-label">Execução do Cronograma</span>
+                                <div class="metric-value" style="margin-top: 6px;">82.5%</div>
+                            </div>
+                            <div class="progress-ring-container">
+                                <svg class="progress-ring-svg" viewBox="0 0 72 72">
+                                    <circle class="progress-ring-bg" cx="36" cy="36" r="30" />
+                                    <circle class="progress-ring-fill" cx="36" cy="36" r="30" 
+                                            stroke-dasharray="188.4" 
+                                            stroke-dashoffset="${188.4 - (188.4 * 82.5 / 100)}" />
+                                </svg>
+                                <span class="progress-ring-value">83%</span>
+                            </div>
+                        </div>
+                        <div class="metric-sub">
+                            <span>33 de 40 habilidades SAEB trabalhadas</span>
+                        </div>
+                    </div>
+                `;
+            }
             if (window.lucide && typeof lucide.createIcons === 'function') {
                 try { lucide.createIcons(); } catch(e) {}
             }
