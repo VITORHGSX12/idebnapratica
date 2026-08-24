@@ -126,9 +126,12 @@ async function seedDatabase() {
         const escCountRes = await client.query('SELECT count(*) as total FROM escolas');
         const currentEscCount = parseInt(escCountRes.rows[0].total) || 0;
 
-        // Se tiver mais de 5 escolas (base antiga dummy de 40 escolas) ou 0 escolas, faz o reset limpo
-        if (currentEscCount === 0 || currentEscCount > 5) {
-            console.log('Clearing old dummy records and seeding official 5 schools and 388 students...');
+        const alnCountRes = await client.query('SELECT count(*) as total FROM alunos');
+        const currentAlnCount = parseInt(alnCountRes.rows[0].total) || 0;
+
+        // Se tiver contagem diferente de 5 escolas ou 0 alunos, faz a carga oficial completa
+        if (currentEscCount !== 5 || currentAlnCount === 0) {
+            console.log('Seeding official 5 schools, 21 classes and 388 students...');
             try {
                 await client.query('DELETE FROM alunos;');
                 await client.query('DELETE FROM turmas;');
