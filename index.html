@@ -1067,25 +1067,26 @@
                         </div>
                     </div>
 
-                    <!-- VIEW 2: VISÃO INTERNA DA ESCOLA (IMAGEM 2) - SÓ APARECE EM ESCOLAS -> VER ESCOLA -->
+                    <!-- VIEW 2: VISÃO INTERNA DA ESCOLA (DETALHE COMPLETO COM TURMAS, DOCENTES E ALUNOS) -->
                     <div id="school-detail-view" class="hidden" style="display: none;">
                         <!-- Header Superior da Escola -->
-                        <div class="card margin-bottom-md" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 18px 24px; border-radius: var(--radius-lg);">
+                        <div class="card margin-bottom-md" style="background: var(--color-surface-card); border: 1px solid var(--color-border-subtle); padding: 18px 24px; border-radius: var(--radius-card); box-shadow: var(--shadow-card);">
                             <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
                                 <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
-                                    <button class="btn btn-icon" id="btn-back-from-school-detail" onclick="backToSchoolsList()" style="width: 40px; height: 40px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-tertiary); cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Voltar para Lista de Escolas">
-                                        <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+                                    <button class="btn btn-outline" id="btn-back-from-school-detail" onclick="backToSchoolsList()" style="height: 38px; padding: 0 14px; border-radius: var(--radius-pill); cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: var(--text-xs); font-weight: 700;" title="Voltar para Lista de Escolas">
+                                        <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+                                        <span>Voltar para Lista de Escolas</span>
                                     </button>
                                     <div>
                                         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
-                                            <h2 id="school-detail-name" style="font-size: 1.45rem; font-weight: 800; color: var(--text-primary); margin: 0;">UI BASILIO ALVES</h2>
-                                            <span id="school-detail-badge" style="background: rgba(99, 102, 241, 0.15); color: #6366f1; border: 1px solid rgba(99, 102, 241, 0.3); font-size: 0.72rem; font-weight: 700; padding: 2px 10px; border-radius: 12px; text-transform: uppercase;">Zona Rural</span>
+                                            <h2 id="school-detail-name" style="font-size: 1.35rem; font-weight: 800; color: var(--color-brand-primary); margin: 0;">UI ALDENORA DE ARAÚJO CRUZ</h2>
+                                            <span id="school-detail-badge" class="badge badge-neutral" style="font-size: var(--text-xs); font-weight: 700; text-transform: uppercase;">Sede Urbana</span>
                                         </div>
-                                        <p id="school-detail-meta" style="font-size: 0.84rem; color: var(--text-secondary); margin: 0;">INEP: 21128120 • Direção: Profa. Maria Jose • Fone: 9935-6218</p>
+                                        <p id="school-detail-meta" style="font-size: var(--text-xs); color: var(--color-text-secondary); margin: 0;">Código INEP: 21286973 • Direção: Gestão Escolar • Telefone: (99) 9935-6200</p>
                                     </div>
                                 </div>
                                 <div>
-                                    <button onclick="openEditSchoolModal()" class="btn btn-outline" style="font-size: 0.82rem; font-weight: 700; color: #6366f1; border-color: #6366f1; display: flex; align-items: center; gap: 6px; background: var(--bg-tertiary);">
+                                    <button onclick="openEditSchoolModal()" class="btn btn-outline" style="font-size: var(--text-xs); font-weight: 700; height: 36px; border-radius: var(--radius-pill); display: flex; align-items: center; gap: 6px;">
                                         <i data-lucide="edit" style="width:14px; height:14px;"></i>
                                         <span>Editar Dados da Escola</span>
                                     </button>
@@ -1093,24 +1094,24 @@
                             </div>
                         </div>
 
-                        <!-- Layout com Sub-Sidebar à Esquerda (220px) + Painel de Conteúdo à Direita (IMAGEM 2) -->
+                        <!-- Layout com Sub-Sidebar à Esquerda (220px) + Painel de Conteúdo à Direita -->
                         <div style="display: grid; grid-template-columns: 220px 1fr; gap: 20px; align-items: start;">
                             <!-- Sub-Sidebar da Escola -->
-                            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 12px 8px; display: flex; flex-direction: column; gap: 6px;">
-                                <button class="school-nav-tab-btn" data-tab="visao-geral" onclick="switchSchoolInnerTab('visao-geral')" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-md); font-size: 0.88rem; font-weight: 600; color: var(--text-secondary); background: transparent; border: none; cursor: pointer; text-align: left; transition: all 0.2s;">
-                                    <i data-lucide="layout-dashboard" style="width:18px; height:18px;"></i>
+                            <div class="card" style="background: var(--color-surface-card); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); padding: 10px 8px; display: flex; flex-direction: column; gap: 4px;">
+                                <button class="school-nav-tab-btn" data-tab="visao-geral" onclick="switchSchoolInnerTab('visao-geral')" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-sm); font-size: var(--text-xs); font-weight: 600; color: var(--color-text-secondary); background: transparent; border: none; cursor: pointer; text-align: left; transition: all 0.15s ease;">
+                                    <i data-lucide="layout-dashboard" style="width:16px; height:16px;"></i>
                                     <span>Visão Geral</span>
                                 </button>
-                                <button class="school-nav-tab-btn" data-tab="professores" onclick="switchSchoolInnerTab('professores')" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-md); font-size: 0.88rem; font-weight: 600; color: var(--text-secondary); background: transparent; border: none; cursor: pointer; text-align: left; transition: all 0.2s;">
-                                    <i data-lucide="graduation-cap" style="width:18px; height:18px;"></i>
-                                    <span>Professores</span>
-                                </button>
-                                <button class="school-nav-tab-btn active" data-tab="turmas" onclick="switchSchoolInnerTab('turmas')" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-md); font-size: 0.88rem; font-weight: 700; color: #10b981; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.25); cursor: pointer; text-align: left; transition: all 0.2s;">
-                                    <i data-lucide="book-open" style="width:18px; height:18px;"></i>
+                                <button class="school-nav-tab-btn active" data-tab="turmas" onclick="switchSchoolInnerTab('turmas')" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-sm); font-size: var(--text-xs); font-weight: 700; color: #FFFFFF; background: var(--color-accent-primary); border: none; cursor: pointer; text-align: left; transition: all 0.15s ease;">
+                                    <i data-lucide="book-open" style="width:16px; height:16px;"></i>
                                     <span>Turmas</span>
                                 </button>
-                                <button class="school-nav-tab-btn" data-tab="alunos" onclick="switchSchoolInnerTab('alunos')" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-md); font-size: 0.88rem; font-weight: 600; color: var(--text-secondary); background: transparent; border: none; cursor: pointer; text-align: left; transition: all 0.2s;">
-                                    <i data-lucide="users" style="width:18px; height:18px;"></i>
+                                <button class="school-nav-tab-btn" data-tab="professores" onclick="switchSchoolInnerTab('professores')" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-sm); font-size: var(--text-xs); font-weight: 600; color: var(--color-text-secondary); background: transparent; border: none; cursor: pointer; text-align: left; transition: all 0.15s ease;">
+                                    <i data-lucide="graduation-cap" style="width:16px; height:16px;"></i>
+                                    <span>Professores</span>
+                                </button>
+                                <button class="school-nav-tab-btn" data-tab="alunos" onclick="switchSchoolInnerTab('alunos')" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-sm); font-size: var(--text-xs); font-weight: 600; color: var(--color-text-secondary); background: transparent; border: none; cursor: pointer; text-align: left; transition: all 0.15s ease;">
+                                    <i data-lucide="users" style="width:16px; height:16px;"></i>
                                     <span>Alunos</span>
                                 </button>
                             </div>
@@ -6500,6 +6501,258 @@
         </div>
     </div>
 
+    <!-- =========================================================================
+         MODAIS INSTITUCIONAIS: GESTÃO DE ESCOLA, TURMAS, PROFESSORES E ALUNOS
+         ========================================================================= -->
+
+    <!-- Modal 1: Criar Nova Turma -->
+    <div id="modal-create-class" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; padding: 16px;">
+        <div class="card" style="background: var(--color-surface-card); border-radius: var(--radius-card); max-width: 480px; width: 100%; padding: 24px; box-shadow: var(--shadow-modal); border: 1px solid var(--color-border-subtle);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--color-border-subtle);">
+                <h3 style="font-size: var(--text-title-sm); font-weight: 700; color: var(--color-brand-primary); margin: 0;">Criar Nova Turma</h3>
+                <button type="button" onclick="closeCreateClassModal();" style="background: none; border: none; cursor: pointer; color: var(--color-text-muted);">
+                    <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+                </button>
+            </div>
+            <form onsubmit="handleSaveCreateClass(event);">
+                <input type="hidden" id="create-class-school-name" value="">
+                <div style="margin-bottom: 14px;">
+                    <label style="font-size: var(--text-xs); font-weight: 700; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Identificação da Turma *</label>
+                    <input type="text" id="create-class-name" required placeholder="Ex: 5º ANO &quot;A&quot; - MATUTINO" style="width: 100%; padding: 10px 12px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-body); outline: none;">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px;">
+                    <div>
+                        <label style="font-size: var(--text-xs); font-weight: 700; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Etapa / Série *</label>
+                        <select id="create-class-stage" style="width: 100%; padding: 10px 12px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-xs); background: var(--color-surface-card); font-weight: 600;">
+                            <option value="1º Ano">1º Ano EF</option>
+                            <option value="2º Ano" selected>2º Ano EF (Alfabetização)</option>
+                            <option value="3º Ano">3º Ano EF</option>
+                            <option value="4º Ano">4º Ano EF</option>
+                            <option value="5º Ano">5º Ano EF (SAEB)</option>
+                            <option value="6º Ano">6º Ano EF</option>
+                            <option value="7º Ano">7º Ano EF</option>
+                            <option value="8º Ano">8º Ano EF</option>
+                            <option value="9º Ano">9º Ano EF (SAEB)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size: var(--text-xs); font-weight: 700; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Turno *</label>
+                        <select id="create-class-shift" style="width: 100%; padding: 10px 12px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-xs); background: var(--color-surface-card); font-weight: 600;">
+                            <option value="Matutino" selected>Matutino</option>
+                            <option value="Vespertino">Vespertino</option>
+                            <option value="Integral">Integral</option>
+                            <option value="Noturno">Noturno</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 8px; padding-top: 14px; border-top: 1px solid var(--color-border-subtle);">
+                    <button type="button" onclick="closeCreateClassModal();" class="btn btn-outline" style="font-size: var(--text-xs); padding: 8px 16px;">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" style="font-size: var(--text-xs); padding: 8px 18px;">Salvar Turma</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 2: Ver Alunos da Turma -->
+    <div id="modal-view-class-students" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; padding: 16px;">
+        <div class="card" style="background: var(--color-surface-card); border-radius: var(--radius-card); max-width: 640px; width: 100%; padding: 24px; box-shadow: var(--shadow-modal); border: 1px solid var(--color-border-subtle); max-height: 85vh; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--color-border-subtle);">
+                <div>
+                    <h3 id="view-class-title" style="font-size: var(--text-title-sm); font-weight: 700; color: var(--color-brand-primary); margin: 0;">Alunos da Turma</h3>
+                    <p id="view-class-subtitle" style="font-size: var(--text-xs); color: var(--color-text-secondary); margin: 2px 0 0 0;"></p>
+                </div>
+                <button type="button" onclick="closeViewClassStudentsModal();" style="background: none; border: none; cursor: pointer; color: var(--color-text-muted);">
+                    <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+                </button>
+            </div>
+            <div class="table-responsive" style="overflow-y: auto; flex: 1; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card);">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: var(--text-body);">
+                    <thead style="background: var(--color-brand-secondary); color: #FFFFFF; font-size: var(--text-xs); position: sticky; top: 0; z-index: 2;">
+                        <tr>
+                            <th style="padding: 10px 14px;">#</th>
+                            <th style="padding: 10px 14px;">Matrícula</th>
+                            <th style="padding: 10px 14px;">Nome do Estudante</th>
+                            <th style="padding: 10px 14px;">Nascimento</th>
+                        </tr>
+                    </thead>
+                    <tbody id="view-class-students-tbody">
+                    </tbody>
+                </table>
+            </div>
+            <div style="display: flex; justify-content: flex-end; padding-top: 14px; margin-top: 12px; border-top: 1px solid var(--color-border-subtle);">
+                <button type="button" onclick="closeViewClassStudentsModal();" class="btn btn-primary" style="font-size: var(--text-xs); padding: 8px 18px;">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 3: Vincular / Cadastrar Professor -->
+    <div id="modal-create-teacher" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; padding: 16px;">
+        <div class="card" style="background: var(--color-surface-card); border-radius: var(--radius-card); max-width: 480px; width: 100%; padding: 24px; box-shadow: var(--shadow-modal); border: 1px solid var(--color-border-subtle);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--color-border-subtle);">
+                <h3 style="font-size: var(--text-title-sm); font-weight: 700; color: var(--color-brand-primary); margin: 0;">Vincular Professor</h3>
+                <button type="button" onclick="closeCreateTeacherModal();" style="background: none; border: none; cursor: pointer; color: var(--color-text-muted);">
+                    <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+                </button>
+            </div>
+            <form onsubmit="handleSaveCreateTeacher(event);">
+                <input type="hidden" id="create-teacher-school-name" value="">
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: var(--text-xs); font-weight: 700; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Nome Completo do Docente *</label>
+                    <input type="text" id="create-teacher-name" required placeholder="Ex: Profª Maria da Silva" style="width: 100%; padding: 10px 12px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-body); outline: none;">
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: var(--text-xs); font-weight: 700; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">E-mail Institucional *</label>
+                    <input type="email" id="create-teacher-email" required placeholder="docente@goncalvesdias.ma.gov.br" style="width: 100%; padding: 10px 12px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-body); outline: none;">
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: var(--text-xs); font-weight: 700; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Componente Curricular *</label>
+                    <select id="create-teacher-subject" style="width: 100%; padding: 10px 12px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-xs); background: var(--color-surface-card); font-weight: 600;">
+                        <option value="Língua Portuguesa" selected>Língua Portuguesa</option>
+                        <option value="Matemática">Matemática</option>
+                        <option value="Polivalente (Anos Iniciais)">Polivalente (Anos Iniciais / Alfabetização)</option>
+                        <option value="Ciências da Natureza">Ciências da Natureza</option>
+                        <option value="História & Geografia">História & Geografia</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 18px;">
+                    <label style="font-size: var(--text-xs); font-weight: 700; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Turmas Atribuídas (Ctrl + Clique para selecionar várias)</label>
+                    <select id="create-teacher-turmas" multiple style="width: 100%; height: 90px; padding: 6px 10px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-xs); background: var(--color-surface-card);">
+                    </select>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 8px; padding-top: 14px; border-top: 1px solid var(--color-border-subtle);">
+                    <button type="button" onclick="closeCreateTeacherModal();" class="btn btn-outline" style="font-size: var(--text-xs); padding: 8px 16px;">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" style="font-size: var(--text-xs); padding: 8px 18px;">Salvar Docente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 4: Cadastrar Aluno Manualmente -->
+    <div id="modal-create-student" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; padding: 16px;">
+        <div class="card" style="background: var(--color-surface-card); border-radius: var(--radius-card); max-width: 500px; width: 100%; padding: 24px; box-shadow: var(--shadow-modal); border: 1px solid var(--color-border-subtle);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--color-border-subtle);">
+                <h3 style="font-size: var(--text-title-sm); font-weight: 700; color: var(--color-brand-primary); margin: 0;">Cadastrar Estudante</h3>
+                <button type="button" onclick="closeCreateStudentModal();" style="background: none; border: none; cursor: pointer; color: var(--color-text-muted);">
+                    <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+                </button>
+            </div>
+            <form onsubmit="handleSaveCreateStudent(event);">
+                <input type="hidden" id="create-student-school" value="">
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: var(--text-xs); font-weight: 700; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Nome Completo do Estudante *</label>
+                    <input type="text" id="create-student-name" required placeholder="Ex: Lucas Gabriel da Silva" style="width: 100%; padding: 10px 12px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-body); outline: none;">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                    <div>
+                        <label style="font-size: var(--text-xs); font-weight: 700; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Matrícula (opcional)</label>
+                        <input type="text" id="create-student-matricula" placeholder="Auto-gerado se vazio" style="width: 100%; padding: 9px 12px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-xs);">
+                    </div>
+                    <div>
+                        <label style="font-size: var(--text-xs); font-weight: 700; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Data de Nascimento</label>
+                        <input type="text" id="create-student-birth" placeholder="DD/MM/AAAA" style="width: 100%; padding: 9px 12px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-xs);">
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px;">
+                    <div>
+                        <label style="font-size: var(--text-xs); font-weight: 700; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Turma de Ingresso</label>
+                        <select id="create-student-turma" style="width: 100%; padding: 9px 12px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-xs); background: var(--color-surface-card); font-weight: 600;">
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size: var(--text-xs); font-weight: 700; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">CPF (LGPD seguro)</label>
+                        <input type="text" id="create-student-cpf" placeholder="000.000.000-00" style="width: 100%; padding: 9px 12px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-xs);">
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 8px; padding-top: 14px; border-top: 1px solid var(--color-border-subtle);">
+                    <button type="button" onclick="closeCreateStudentModal();" class="btn btn-outline" style="font-size: var(--text-xs); padding: 8px 16px;">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" style="font-size: var(--text-xs); padding: 8px 18px;">Cadastrar Aluno</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 5: Alterar / Vincular Turma do Aluno -->
+    <div id="modal-change-student-class" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; padding: 16px;">
+        <div class="card" style="background: var(--color-surface-card); border-radius: var(--radius-card); max-width: 420px; width: 100%; padding: 22px; box-shadow: var(--shadow-modal); border: 1px solid var(--color-border-subtle);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--color-border-subtle);">
+                <h3 style="font-size: var(--text-title-sm); font-weight: 700; color: var(--color-brand-primary); margin: 0;">Vincular / Alterar Turma</h3>
+                <button type="button" onclick="closeChangeStudentClassModal();" style="background: none; border: none; cursor: pointer; color: var(--color-text-muted);">
+                    <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+                </button>
+            </div>
+            <form onsubmit="handleSaveChangeStudentClass(event);">
+                <input type="hidden" id="change-student-class-id" value="">
+                <input type="hidden" id="change-student-class-school" value="">
+                <p style="font-size: var(--text-sm); color: var(--color-brand-primary); margin: 0 0 12px 0;">
+                    Estudante: <strong id="change-student-class-name"></strong>
+                </p>
+                <div style="margin-bottom: 16px;">
+                    <label style="font-size: var(--text-xs); font-weight: 700; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Selecione a Nova Turma</label>
+                    <select id="change-student-class-select" style="width: 100%; padding: 10px 12px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-xs); background: var(--color-surface-card); font-weight: 600;">
+                    </select>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 8px; padding-top: 12px; border-top: 1px solid var(--color-border-subtle);">
+                    <button type="button" onclick="closeChangeStudentClassModal();" class="btn btn-outline" style="font-size: var(--text-xs); padding: 7px 14px;">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" style="font-size: var(--text-xs); padding: 7px 16px;">Salvar Vínculo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 6: Editar Dados Cadastrais da Escola -->
+    <div id="modal-edit-school" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; padding: 16px;">
+        <div class="card" style="background: var(--color-surface-card); border-radius: var(--radius-card); max-width: 520px; width: 100%; padding: 24px; box-shadow: var(--shadow-modal); border: 1px solid var(--color-border-subtle);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--color-border-subtle);">
+                <h3 style="font-size: var(--text-title-sm); font-weight: 700; color: var(--color-brand-primary); margin: 0;">Editar Dados da Escola</h3>
+                <button type="button" onclick="closeEditSchoolModal();" style="background: none; border: none; cursor: pointer; color: var(--color-text-muted);">
+                    <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+                </button>
+            </div>
+            <form onsubmit="handleSaveEditSchool(event);">
+                <input type="hidden" id="edit-school-id" value="">
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: var(--text-xs); font-weight: 700; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Nome da Unidade Escolar *</label>
+                    <input type="text" id="edit-school-name" required style="width: 100%; padding: 9px 12px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-body); outline: none;">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                    <div>
+                        <label style="font-size: var(--text-xs); font-weight: 700; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Código INEP *</label>
+                        <input type="text" id="edit-school-inep" required style="width: 100%; padding: 9px 12px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-xs);">
+                    </div>
+                    <div>
+                        <label style="font-size: var(--text-xs); font-weight: 700; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Localização</label>
+                        <select id="edit-school-zone" style="width: 100%; padding: 9px 12px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-xs); background: var(--color-surface-card);">
+                            <option value="Zona Rural">Zona Rural</option>
+                            <option value="Sede Urbana">Sede Urbana</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                    <div>
+                        <label style="font-size: var(--text-xs); font-weight: 700; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Direção Escolar</label>
+                        <input type="text" id="edit-school-director" placeholder="Nome do(a) Gestor(a)" style="width: 100%; padding: 9px 12px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-xs);">
+                    </div>
+                    <div>
+                        <label style="font-size: var(--text-xs); font-weight: 700; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Telefone</label>
+                        <input type="text" id="edit-school-phone" placeholder="(99) 9999-9999" style="width: 100%; padding: 9px 12px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-xs);">
+                    </div>
+                </div>
+                <div style="margin-bottom: 18px;">
+                    <label style="font-size: var(--text-xs); font-weight: 700; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Status da Escola</label>
+                    <select id="edit-school-status" style="width: 100%; padding: 9px 12px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-xs); background: var(--color-surface-card); font-weight: 600;">
+                        <option value="Ativa">Ativa</option>
+                        <option value="Em manutenção">Em manutenção</option>
+                        <option value="Inativa">Inativa</option>
+                    </select>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 8px; padding-top: 14px; border-top: 1px solid var(--color-border-subtle);">
+                    <button type="button" onclick="closeEditSchoolModal();" class="btn btn-outline" style="font-size: var(--text-xs); padding: 8px 16px;">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" style="font-size: var(--text-xs); padding: 8px 18px;">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Script de Limpeza de Cache de Service Workers Antigos -->
     <script>
         if ('serviceWorker' in navigator) {
@@ -6526,6 +6779,7 @@
     <script src="bncc_habilidades_oficial.js?v=mt23gn8s"></script>
     <script src="ideb_publico_db.js?v=246d2c1cd5_mt78c012"></script>
     <script src="alunos_db.js?v=ed6641ae07_mt78c012"></script>
+    <script src="js/data/official_students_seed.js?v=2026_alunos_real"></script>
 
     <!-- Módulos do Core -->
     <script src="js/core/security.js"></script>
