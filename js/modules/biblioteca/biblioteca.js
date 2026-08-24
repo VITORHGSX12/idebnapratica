@@ -1062,6 +1062,110 @@
         loadLibraryDatabase();
     }
 
+    // -------------------------------------------------------------------------
+    // 8. MODAL E MOTOR: GERAR CADERNO A4 COMBINADO
+    // -------------------------------------------------------------------------
+    function openCombinedCadernoModal() {
+        var modal = document.getElementById('modal-combine-caderno-a4');
+        var listContainer = document.getElementById('modal-combine-simulados-list');
+        if (!modal || !listContainer) return;
+
+        var etapaFilter = (document.getElementById('filter-bib-etapa') && document.getElementById('filter-bib-etapa').value) || 'all';
+        var compFilter = (document.getElementById('filter-bib-componente') && document.getElementById('filter-bib-componente').value) || 'all';
+        var searchVal = (document.getElementById('search-bib-input') && document.getElementById('search-bib-input').value.toLowerCase().trim()) || '';
+
+        var allDb = global.PEDAGOGIC_LIBRARY_DATABASE || [];
+        var simulados = allDb.filter(function(b) {
+            if (b.categoria !== 'Simulados' && b.tipo !== 'Simulado') return false;
+            var matchEtapa = etapaFilter === 'all' || b.etapa === etapaFilter;
+            var matchComp = compFilter === 'all' || b.componente === compFilter || b.componente === 'Integrado';
+            var matchSearch = !searchVal || 
+                b.titulo.toLowerCase().includes(searchVal) || 
+                (b.subtitulo && b.subtitulo.toLowerCase().includes(searchVal)) ||
+                (b.descritores && b.descritores.some(function(d) { return d.toLowerCase().includes(searchVal); }));
+            return matchEtapa && matchComp && matchSearch;
+        });
+
+        if (simulados.length === 0) {
+            simulados = allDb.filter(function(b) { return b.categoria === 'Simulados' || b.tipo === 'Simulado'; });
+        }
+
+        listContainer.innerHTML = simulados.map(function(sim) {
+            return [
+                '<label style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); cursor: pointer; transition: all 0.15s ease;">',
+                '    <input type="checkbox" class="chk-combine-simulado" data-id="' + sim.id + '" onchange="updateCombinedSimuladoSelectionCount();" checked style="width: 18px; height: 18px; margin-top: 2px; accent-color: #6366f1;">',
+                '    <div style="flex: 1;">',
+                '        <div style="display: flex; justify-content: space-between; align-items: center;">',
+                '            <strong style="font-size: 0.88rem; color: var(--text-primary);">' + sim.titulo + '</strong>',
+                '            <span style="font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono);">' + (sim.versao || '2026') + '</span>',
+                '        </div>',
+                '        <span style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin: 2px 0;">' + (sim.subtitulo || '') + '</span>',
+                '        <div style="display: flex; gap: 6px; margin-top: 4px;">',
+                '            <span class="badge badge-purple" style="font-size: 0.65rem;">' + sim.etapa + '</span>',
+                '            <span class="badge badge-outline" style="font-size: 0.65rem;">' + sim.componente + '</span>',
+                '            <span class="badge badge-outline" style="font-size: 0.65rem;">' + (sim.paginas || 4) + ' páginas</span>',
+                '            <span class="badge badge-success" style="font-size: 0.65rem;">' + (sim.formato || 'PDF') + '</span>',
+                '        </div>',
+                '    </div>',
+                '</label>'
+            ].join('\n');
+        }).join('\n');
+
+        updateCombinedSimuladoSelectionCount();
+        modal.style.display = 'flex';
+        modal.classList.remove('hidden');
+        if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
+    }
+
+    function closeCombinedCadernoModal() {
+        var modal = document.getElementById('modal-combine-caderno-a4');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+        }
+    }
+
+    function updateCombinedSimuladoSelectionCount() {
+        var checked = document.querySelectorAll('.chk-combine-simulado:checked');
+        var countText = document.getElementById('modal-combine-selected-count');
+        if (countText) {
+            countText.textContent = checked.length + ' simulados selecionados para o caderno';
+        }
+    }
+
+    function executeGenerateCombinedA4Booklet() {
+        var checked = Array.from(document.querySelectorAll('.chk-combine-simulado:checked')).map(function(c) {
+            return c.getAttribute('data-id');
+        });
+        if (checked.length === 0) {
+            alert('Por favor, selecione pelo menos 1 simulado para gerar o caderno.');
+            return;
+        }
+
+        var selectedBooks = (global.PEDAGOGIC_LIBRARY_DATABASE || []).filter(function(b) { return checked.includes(b.id); });
+        closeCombinedCadernoModal();
+
+        if (typeof global.showToast === 'function') {
+            global.showToast('Gerando Caderno A4 Unificado com ' + selectedBooks.length + ' simulados...', 'sparkles');
+        }
+
+        setTimeout(function() {
+            var combinedObj = {
+                titulo: 'Caderno Unificado de Simulados SAEB/SEAMA (' + selectedBooks.length + ' Provas)',
+                componente: 'Multidisciplinar Integrado',
+                etapa: '5º e 9º Anos',
+                formato: 'Caderno A4 Completo com Folha de Respostas Unificada',
+                descricao: 'Compilado oficial de ' + selectedBooks.map(function(s) { return s.titulo; }).join(', ') + '. Gabaritos agrupados ao final do caderno.'
+            };
+
+            if (typeof global.generateA4PrintableExam === 'function') {
+                global.generateA4PrintableExam(combinedObj);
+            } else {
+                window.print();
+            }
+        }, 400);
+    }
+
     // Exportar para o escopo global
     global.renderPedagogicLibrary = renderPedagogicLibrary;
     global.loadLibraryDatabase = loadLibraryDatabase;
@@ -1080,6 +1184,10 @@
     global.clearAttachedFile = clearAttachedFile;
     global.clearCoverFile = clearCoverFile;
     global.initPedagogicLibrary = initPedagogicLibrary;
+    global.openCombinedCadernoModal = openCombinedCadernoModal;
+    global.closeCombinedCadernoModal = closeCombinedCadernoModal;
+    global.updateCombinedSimuladoSelectionCount = updateCombinedSimuladoSelectionCount;
+    global.executeGenerateCombinedA4Booklet = executeGenerateCombinedA4Booklet;
 
     // Auto-inicializar quando o DOM estiver pronto
     if (document.readyState === 'loading') {
