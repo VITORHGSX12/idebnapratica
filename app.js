@@ -11043,18 +11043,12 @@ if (document.readyState === 'loading') {
     ];
 
     function getStoredStudents() {
-        try {
-            const saved = localStorage.getItem('gestao_alunos_db');
-            if (saved) return JSON.parse(saved);
-        } catch(e) {}
-        localStorage.setItem('gestao_alunos_db', JSON.stringify(DEFAULT_STUDENTS_LIST));
-        return DEFAULT_STUDENTS_LIST;
+        try { localStorage.removeItem('gestao_alunos_db'); } catch(e) {}
+        return getMasterStudentsDatabase();
     }
 
     function saveStoredStudents(list) {
-        try {
-            localStorage.setItem('gestao_alunos_db', JSON.stringify(list));
-        } catch(e) {}
+        // Sincronização oficial feita via dbAlunos e nuvem
     }
 
     // TAREFA 2.1 — Botão "Novo Aluno" (Modal de Cadastro)
@@ -11328,48 +11322,19 @@ if (document.readyState === 'loading') {
     // =========================================================================
 
     function getMasterStudentsDatabase() {
-        try {
-            const stored = localStorage.getItem('gestao_alunos_db');
-            if (stored) {
-                const parsed = JSON.parse(stored);
-                if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-            }
-        } catch(e) {}
-
-        // Base de dados padrão rica com 1.758 alunos da rede
-        const defaultStudents = [];
-        const sampleSchools = [
-            "UI JOSE CORREA LIMA", "UI EMILIO MURAD", "UE VEREADOR LEONARDO FERREIRA LIMA",
-            "U I BASILIO ALVES", "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ", "UE RAIMUNDO DOS REIS DA SILVA",
-            "UNIDADE INTEGRADA JOSE GONCALVES DIAS", "UNIDADE ESCOLAR ANISIO GOMES", "UE ANITA FURTADO"
-        ];
-        const stages = ["2º Ano", "3º Ano", "4º Ano", "5º Ano", "6º Ano", "7º Ano", "8º Ano", "9º Ano"];
-        const firstNames = ["Ana", "Carlos", "Beatriz", "Gabriel", "Julia", "Lucas", "Mariana", "Pedro", "Sofia", "Matheus", "Laura", "Enzo", "Valentina", "Guilherme"];
-        const lastNames = ["Silva", "Santos", "Oliveira", "Souza", "Rodrigues", "Ferreira", "Alves", "Pereira", "Lima", "Gomes", "Costa", "Ribeiro", "Martins"];
-
-        for (let i = 1; i <= 150; i++) {
-            const fn = firstNames[i % firstNames.length];
-            const ln1 = lastNames[(i * 3) % lastNames.length];
-            const ln2 = lastNames[(i * 7) % lastNames.length];
-            const sch = sampleSchools[i % sampleSchools.length];
-            const stg = stages[i % stages.length];
-            const mat = '2026' + String(1000 + i);
-
-            defaultStudents.push({
-                matricula: mat,
-                nome: `${fn} ${ln1} ${ln2}`,
-                cpf: `${100 + (i%800)}.${200 + (i%700)}.${300 + (i%600)}-01`,
-                escola: sch,
-                etapa: stg,
-                turma: `${stg} A`,
-                mae: `Maria ${ln2}`,
-                data_nascimento: '2014-05-12',
-                nee: i % 15 === 0 ? 'Baixa Visão' : null,
-                avg_score: 180 + (i % 120)
-            });
+        if (window.OFFICIAL_IMPORTED_STUDENTS_SEED && Array.isArray(window.OFFICIAL_IMPORTED_STUDENTS_SEED.alunos) && window.OFFICIAL_IMPORTED_STUDENTS_SEED.alunos.length > 0) {
+            return window.OFFICIAL_IMPORTED_STUDENTS_SEED.alunos;
         }
-        try { localStorage.setItem('gestao_alunos_db', JSON.stringify(defaultStudents)); } catch(e) {}
-        return defaultStudents;
+        if (window.ALUNOS_DATABASE && Array.isArray(window.ALUNOS_DATABASE) && window.ALUNOS_DATABASE.length > 0) {
+            return window.ALUNOS_DATABASE;
+        }
+        if (window.dbAlunos && Array.isArray(window.dbAlunos) && window.dbAlunos.length > 0) {
+            return window.dbAlunos;
+        }
+        if (window.loadedStudents && Array.isArray(window.loadedStudents) && window.loadedStudents.length > 0) {
+            return window.loadedStudents;
+        }
+        return [];
     }
 
     // [REFERENCED FROM TOP] currentAlunosPage
