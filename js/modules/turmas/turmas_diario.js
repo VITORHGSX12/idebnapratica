@@ -570,11 +570,11 @@
                 '    </td>',
                 '    <td style="padding: 12px 20px; text-align: center;">',
                 '        <div style="display: inline-flex; align-items: center; gap: 8px; justify-content: center;">',
-                '            <button type="button" onclick="openTurmaJournalModal(\'' + t.id + '\', \'' + t.nome.replace(/'/g, "\\'") + '\', \'' + t.escola.replace(/'/g, "\\'") + '\');" class="btn btn-outline btn-sm" style="font-size: 0.76rem; font-weight: 700; color: #10b981; border-color: #10b981; background: rgba(16, 185, 129, 0.08); padding: 5px 12px; display: inline-flex; align-items: center; gap: 5px;" title="Abrir Diário da Turma e Lista de Alunos">',
-                '                <i data-lucide="book-open" style="width: 14px; height: 14px;"></i> Ver Diário',
+                '            <button type="button" onclick="openTurmaJournalModal(\'' + t.id + '\', \'' + t.nome.replace(/'/g, "\\'") + '\', \'' + t.escola.replace(/'/g, "\\'") + '\');" class="btn btn-outline" style="font-size: var(--text-xs); padding: 5px 12px; height: 30px;" title="Abrir Diário da Turma e Lista de Alunos">',
+                '                <i data-lucide="book-open" style="width: 14px; height: 14px;"></i> <span>Ver Diário</span>',
                 '            </button>',
-                '            <button type="button" onclick="openEditTurmaModal(\'' + t.id + '\');" class="btn btn-outline btn-sm" style="font-size: 0.75rem; padding: 5px 8px; color: var(--text-primary);" title="Editar Turma">✏️ Editar</button>',
-                '            <button type="button" onclick="handleDeleteTurma(\'' + t.id + '\');" class="btn btn-outline btn-sm" style="font-size: 0.75rem; padding: 5px 8px; color: #ef4444; border-color: #fca5a5;" title="Excluir Turma">🗑️</button>',
+                '            <button type="button" onclick="openEditTurmaModal(\'' + t.id + '\');" class="btn btn-outline" style="font-size: var(--text-xs); padding: 5px 8px; height: 30px;" title="Editar Turma"><i data-lucide="edit-3" style="width: 13px; height: 13px;"></i></button>',
+                '            <button type="button" onclick="handleDeleteTurma(\'' + t.id + '\');" class="btn btn-outline" style="font-size: var(--text-xs); padding: 5px 8px; height: 30px; color: var(--color-status-critical-text);" title="Excluir Turma"><i data-lucide="trash-2" style="width: 13px; height: 13px;"></i></button>',
                 '        </div>',
                 '    </td>',
                 '</tr>'
@@ -974,8 +974,8 @@
                     '                <td style="padding: 10px 14px; text-align: center;"><span class="badge ' + badgeClass + '" style="font-size: 0.7rem;">' + profText + '</span></td>',
                     '                <td style="padding: 10px 14px; text-align: center;">',
                     '                    <div style="display: inline-flex; gap: 8px;">',
-                    '                        <button type="button" onclick="openStudentProgressModal(\'' + aId + '\', \'' + aNome.replace(/'/g, "\\'") + '\', \'' + className.replace(/'/g, "\\'") + '\', \'' + school.replace(/'/g, "\\'") + '\');" class="btn btn-outline btn-sm" style="font-size: 0.72rem; font-weight: 700; color: #6366f1; border-color: #6366f1; display: inline-flex; align-items: center; gap: 4px;">📊 Ver Progressão Histórica</button>',
-                    '                        <button type="button" onclick="openStudentProficiencyCalcModal(\'' + aId + '\', \'' + aNome.replace(/'/g, "\\'") + '\', \'' + className.replace(/'/g, "\\'") + '\', \'' + school.replace(/'/g, "\\'") + '\');" class="btn btn-outline btn-sm" style="font-size: 0.72rem; font-weight: 700; color: #10b981; border-color: #10b981; display: inline-flex; align-items: center; gap: 4px;">🎯 Nível de Proficiência</button>',
+                    '                        <button type="button" onclick="openStudentProgressModal(\'' + aId + '\', \'' + aNome.replace(/'/g, "\\'") + '\', \'' + className.replace(/'/g, "\\'") + '\', \'' + school.replace(/'/g, "\\'") + '\');" class="btn btn-outline" style="font-size: var(--text-xs); padding: 4px 8px;" title="Ver Progressão Histórica">Progressão</button>',
+                    '                        <button type="button" onclick="openStudentProficiencyCalcModal(\'' + aId + '\', \'' + aNome.replace(/'/g, "\\'") + '\', \'' + className.replace(/'/g, "\\'") + '\', \'' + school.replace(/'/g, "\\'") + '\');" class="btn btn-outline" style="font-size: var(--text-xs); padding: 4px 8px;" title="Nível de Proficiência">Proficiência</button>',
                     '                    </div>',
                     '                </td>',
                     '            </tr>'
@@ -1028,7 +1028,7 @@
             { aval: '1º Simulado Municipal SAEB (Abr/2026)', lp: '60.0%', mat: '55.0%', geral: '57.5%', status: 'Básico', badge: 'badge-warning' },
             { aval: '2º Simulado Intermediário (Jun/2026)', lp: '75.0%', mat: '70.0%', geral: '72.5%', status: 'Adequado', badge: 'badge-success' },
             { aval: '3º Simulado Formativo (Ago/2026)', lp: '85.0%', mat: '82.0%', geral: '83.5%', status: 'Adequado', badge: 'badge-success' },
-            { aval: 'Somativa Final / Projeção SAEB (Out/2026)', lp: '90.0%', mat: '88.0%', geral: '89.0%', status: 'Avançado ⭐', badge: 'badge-success' }
+            { aval: 'Somativa Final / Projeção SAEB (Out/2026)', lp: '90.0%', mat: '88.0%', geral: '89.0%', status: 'Avançado', badge: 'badge-success' }
         ];
 
         if (tbody) {

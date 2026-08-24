@@ -472,8 +472,8 @@
         var btn = document.getElementById('btn-ure-sort-toggle');
         if (btn) {
             btn.innerHTML = global.currentUreSortOrder === 'media' 
-                ? '<span>↕️ Alternar Ordenação</span>' 
-                : '<span>🔤 Ordem Alfabética (A-Z)</span>';
+                ? '<span>Alternar Ordenação</span>' 
+                : '<span>Ordem Alfabética (A-Z)</span>';
         }
         render19UresPanel();
     }
@@ -506,7 +506,7 @@
 
         var optionsHtml = [
             '<option value="">Selecione um município...</option>',
-            '<option value="Gonçalves Dias" selected>Gonçalves Dias ⭐ (Sua Rede)</option>'
+            '<option value="Gonçalves Dias" selected>Gonçalves Dias (Rede Municipal)</option>'
         ].concat(sortedCities.filter(function(c) { return c !== 'Gonçalves Dias'; }).map(function(c) {
             return '<option value="' + c + '">' + c + '</option>';
         })).join('');
@@ -553,37 +553,30 @@
         var ureName = getUreForCity(global.currentSelectedCity);
         if (ureBadge) ureBadge.innerHTML = '<span class="badge badge-purple" style="font-size:0.78rem; padding:6px 12px;">' + ureName + '</span>';
 
-        var activeYear = global.currentIdebYear || 2025;
-        var prevYear = getPreviousCycleYear(activeYear);
-        var activeStage = global.currentIdebStage || 'Anos Iniciais';
-
-        var excelDataAI = getOfficialExcelCityData(global.currentSelectedCity, 'Anos Iniciais');
-        var excelDataAF = getOfficialExcelCityData(global.currentSelectedCity, 'Anos Finais');
-        var currentStageData = (activeStage === 'Anos Finais') ? excelDataAF : excelDataAI;
+        var activeStage = global.currentGlobalIdebStage || "Anos Iniciais";
+        var activeYear = global.currentGlobalIdebYear || 2025;
+        var prevYear = activeYear > 2015 ? (activeYear - 2) : 2015;
 
         var currKey = 'y' + activeYear;
         var prevKey = 'y' + prevYear;
 
-        var rawCurr = currentStageData && currentStageData[currKey] !== null ? currentStageData[currKey] : null;
-        var rawPrev = (activeYear === 2015) ? null : (currentStageData && currentStageData[prevKey] !== null ? currentStageData[prevKey] : null);
+        var excelDataAI = getMaranhaoCityIdebData(global.currentSelectedCity, 'Anos Iniciais');
+        var excelDataAF = getMaranhaoCityIdebData(global.currentSelectedCity, 'Anos Finais');
+        var currentStageData = (activeStage === 'Anos Finais') ? excelDataAF : excelDataAI;
 
-        var valCurr = (rawCurr !== null && rawCurr >= 0 && rawCurr <= 10) ? Number(rawCurr).toFixed(1) : "—";
-        var valPrev = (rawPrev !== null && rawPrev >= 0 && rawPrev <= 10) ? Number(rawPrev).toFixed(1) : "—";
+        var valCurr = (currentStageData && currentStageData[currKey] !== null) ? Number(currentStageData[currKey]).toFixed(1) : "—";
+        var valPrev = (currentStageData && currentStageData[prevKey] !== null) ? Number(currentStageData[prevKey]).toFixed(1) : "—";
 
         var diffVal = null;
-        if (valCurr !== "—" && valPrev !== "—") {
+        if (valCurr !== "—" && valPrev !== "—" && activeYear !== 2015) {
             diffVal = Number((parseFloat(valCurr) - parseFloat(valPrev)).toFixed(1));
         }
 
-        var targetVal = (valPrev !== "—") ? Number((parseFloat(valPrev) + 0.3).toFixed(1)) : (valCurr !== "—" ? Number(valCurr).toFixed(1) : "5.0");
+        var targetVal = (activeStage === 'Anos Finais') ? "5.0" : "5.5";
 
         if (elLabelCurr) elLabelCurr.textContent = 'IDEB ' + activeYear + ' (' + (activeStage === 'Anos Iniciais' ? '5º Ano' : '9º Ano') + ')';
         if (elCurr) {
-            if (valCurr !== "—" && parseFloat(valCurr) >= parseFloat(targetVal)) {
-                elCurr.innerHTML = valCurr + ' ⭐';
-            } else {
-                elCurr.textContent = valCurr;
-            }
+            elCurr.textContent = valCurr;
         }
         if (elCurrSub) {
             elCurrSub.textContent = (valCurr !== "—") ? 'Oficial INEP • ' + global.currentSelectedCity : "Sem dado divulgado";
@@ -607,9 +600,9 @@
         if (elTarget) elTarget.textContent = targetVal;
         if (elStatusBadge) {
             if (valCurr !== "—" && parseFloat(valCurr) >= parseFloat(targetVal)) {
-                elStatusBadge.innerHTML = '<span style="color:#10b981; font-weight:700;">Meta Atingida / Superada 🟢</span>';
+                elStatusBadge.innerHTML = '<span class="badge badge-status-success">Meta Atingida</span>';
             } else {
-                elStatusBadge.innerHTML = '<span style="color:#f59e0b; font-weight:700;">Em Desenvolvimento 🟡</span>';
+                elStatusBadge.innerHTML = '<span class="badge badge-status-warning">Em Desenvolvimento</span>';
             }
         }
 
@@ -656,9 +649,9 @@
                 }
 
                 return [
-                    '<div class="ideb-timeline-cycle-card ' + (isActive ? 'is-active-year' : '') + '" onclick="switchGlobalIdebYear(' + cyc + ')" style="cursor: pointer;" title="Clique para selecionar o ciclo de ' + cyc + '">',
-                    '    <div class="ideb-timeline-cycle-year">' + cyc + ' ' + (isActive ? '📍' : '') + '</div>',
-                    '    <div class="ideb-timeline-cycle-score" style="color: ' + (isActive ? '#6366f1' : 'var(--text-primary)') + ';">' + cScore + '</div>',
+                    '<div class="ideb-timeline-cycle-card ' + (isActive ? 'is-active-year' : '') + '" onclick="switchGlobalIdebYear(' + cyc + ')" style="cursor: pointer;" title="Ciclo ' + cyc + '">',
+                    '    <div class="ideb-timeline-cycle-year">' + cyc + '</div>',
+                    '    <div class="ideb-timeline-cycle-score" style="color: ' + (isActive ? 'var(--color-accent-primary)' : 'var(--color-brand-primary)') + ';">' + cScore + '</div>',
                     '    <div>' + diffMarkup + '</div>',
                     '</div>'
                 ].join('\n');
@@ -851,7 +844,7 @@
 
                     return [
                         '<button class="ure-city-chip ' + (c.isGD ? 'is-rede-destaque' : '') + '" onclick="selectCityFromUre(\'' + c.name.replace(/'/g, "\\'") + '\')" title="Ver ' + c.name + ' no Painel Geral (' + activeYear + ')">',
-                        '    <span>' + c.name + ' ' + (c.isGD ? '⭐' : '') + '</span>',
+                        '    <span>' + c.name + ' ' + (c.isGD ? '(Sua Rede)' : '') + '</span>',
                         '    <span class="ure-city-score-badge ' + scoreClass + '">' + c.displayScore + '</span>',
                         '</button>'
                     ].join('\n');
@@ -859,18 +852,18 @@
 
                 return [
                     '<div class="ure-card-item">',
-                    '    <div class="flex-between flex-wrap gap-md" style="margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">',
+                    '    <div class="flex-between flex-wrap gap-md" style="margin-bottom: 12px; border-bottom: 1px solid var(--color-border-subtle); padding-bottom: 10px;">',
                     '        <div style="display: flex; align-items: center; gap: 10px;">',
-                    '            <span style="font-size: 1.25rem;">🏛️</span>',
+                    '            <div style="width:32px;height:32px;border-radius:var(--radius-sm);background:var(--color-status-advanced-bg);display:flex;align-items:center;justify-content:center;color:var(--color-brand-primary);"><i data-lucide="building-2" style="width:16px;height:16px;"></i></div>',
                     '            <div>',
-                    '                <h4 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: var(--text-primary);">' + ure.name + '</h4>',
-                    '                <span style="font-size: 0.72rem; color: var(--text-muted);">Sede: ' + (ure.sede || 'Maranhão') + '</span>',
+                    '                <h4 style="margin: 0; font-size: var(--text-title-sm); font-weight: 700; color: var(--color-brand-primary);">' + ure.name + '</h4>',
+                    '                <span style="font-size: var(--text-xs); color: var(--color-text-secondary);">Sede: ' + (ure.sede || 'Maranhão') + '</span>',
                     '            </div>',
-                    '            <span class="badge badge-purple" style="font-size: 0.72rem; margin-left: 4px;">' + ure.count + ' Municípios</span>',
+                    '            <span class="badge badge-neutral" style="font-size: var(--text-xs); margin-left: 4px;">' + ure.count + ' Municípios</span>',
                     '        </div>',
                     '        <div style="display: flex; align-items: center; gap: 10px;">',
-                    '            <div style="font-size: 0.84rem; font-weight: 700; color: var(--text-secondary);">',
-                    '                Média da URE (' + activeYear + '): <strong style="color: #6366f1; font-size: 1.05rem; font-family: var(--font-mono);">' + ure.displayAvg + '</strong>',
+                    '            <div style="font-size: var(--text-xs); font-weight: 600; color: var(--color-text-secondary);">',
+                    '                Média da URE (' + activeYear + '): <strong style="color: var(--color-brand-primary); font-size: var(--text-body); font-family: var(--font-display); font-variant-numeric: tabular-nums;">' + ure.displayAvg + '</strong>',
                     '            </div>',
                     '        </div>',
                     '    </div>',
@@ -880,6 +873,151 @@
                     '</div>'
                 ].join('\n');
             }).join('\n');
+        }
+    }
+
+    function render217MunicipalitiesRankingTable() {
+        var tbody = document.getElementById('ranking-217-tbody');
+        if (!tbody) return;
+
+        var activeStage = global.currentGlobalIdebStage || "Anos Iniciais";
+        var activeYear = global.currentGlobalIdebYear || 2025;
+        var prevYear = activeYear > 2015 ? (activeYear - 2) : 2015;
+
+        var currKey = 'y' + activeYear;
+        var prevKey = 'y' + prevYear;
+
+        var rawDb = (activeStage === 'Anos Finais')
+            ? (global.OFFICIAL_MARANHAO_IDEB_EXCEL && global.OFFICIAL_MARANHAO_IDEB_EXCEL.anosFinais)
+            : (global.OFFICIAL_MARANHAO_IDEB_EXCEL && global.OFFICIAL_MARANHAO_IDEB_EXCEL.anosIniciais);
+
+        if (!rawDb) return;
+
+        var list = Object.values(rawDb).filter(function(c) {
+            if (!c || !c.municipio) return false;
+            var m = c.municipio.trim().toLowerCase();
+            return !m.includes('município') && !m.includes('código');
+        }).sort(function(a, b) {
+            return (b[currKey] || 0) - (a[currKey] || 0);
+        });
+
+        tbody.innerHTML = list.map(function(c, idx) {
+            var isGD = (c.municipio || '').trim().toLowerCase() === 'gonçalves dias';
+            var ureName = getUreForCity(c.municipio);
+            var rawCurr = c[currKey] !== null ? c[currKey] : null;
+            var rawPrev = c[prevKey] !== null ? c[prevKey] : null;
+
+            var displayCurr = (rawCurr !== null && rawCurr >= 0 && rawCurr <= 10) ? Number(rawCurr).toFixed(1) : '—';
+            var displayPrev = (rawPrev !== null && rawPrev >= 0 && rawPrev <= 10) ? Number(rawPrev).toFixed(1) : '—';
+
+            var diffBadge = '—';
+            if (rawCurr !== null && rawPrev !== null && activeYear !== 2015) {
+                var d = Number((parseFloat(displayCurr) - parseFloat(displayPrev)).toFixed(1));
+                if (d > 0) diffBadge = '<span class="diff-up">+' + d + '</span>';
+                else if (d < 0) diffBadge = '<span class="diff-down">' + d + '</span>';
+                else diffBadge = '<span class="diff-eq">= 0.0</span>';
+            }
+
+            return [
+                '<tr style="border-bottom: 1px solid var(--color-border-subtle); height: 48px; ' + (isGD ? 'background: var(--color-accent-subtle);' : '') + '">',
+                '    <td style="padding: 10px 14px; font-weight: 700; color: ' + (idx < 3 ? 'var(--color-status-warning-text)' : 'var(--color-text-secondary)') + '; font-family: var(--font-display); font-variant-numeric: tabular-nums;">',
+                '        #' + (idx + 1),
+                '    </td>',
+                '    <td style="padding: 10px 14px; font-weight: 600; color: ' + (isGD ? 'var(--color-accent-primary)' : 'var(--color-text-primary)') + ';">',
+                '        <a href="javascript:void(0)" onclick="selectCityFromUre(\'' + (c.municipio||'').replace(/'/g, "\\'") + '\')" style="color:inherit; text-decoration:none;">',
+                '            ' + c.municipio + ' ' + (isGD ? '(Sua Rede)' : '') + '',
+                '        </a>',
+                '    </td>',
+                '    <td style="padding: 10px 14px; font-size: var(--text-xs); color: var(--color-text-secondary);">' + ureName + '</td>',
+                '    <td style="padding: 10px 14px; text-align: center; font-size: var(--text-sm); font-family: var(--font-display); font-variant-numeric: tabular-nums;">' + displayPrev + '</td>',
+                '    <td style="padding: 10px 14px; text-align: center; font-weight: 700; font-size: var(--text-sm); color: var(--color-brand-primary); font-family: var(--font-display); font-variant-numeric: tabular-nums;">' + displayCurr + '</td>',
+                '    <td style="padding: 10px 14px; text-align: center;">' + diffBadge + '</td>',
+                '    <td style="padding: 10px 14px; text-align: center;">',
+                '        <span class="badge ' + (rawCurr !== null && rawCurr >= 5.0 ? 'badge-status-success' : 'badge-status-warning') + '" style="font-size: var(--text-xs);">',
+                '            ' + (rawCurr !== null && rawCurr >= 5.0 ? 'Alto Desempenho' : 'Em Desenvolvimento') + '',
+                '        </span>',
+                '    </td>',
+                '</tr>'
+            ].join('\n');
+        }).join('\n');
+    }
+
+    function renderSchoolsStateRankingTable() {
+        var tbody = document.getElementById('ranking-escolas-tbody');
+        if (!tbody) return;
+
+        var rawDb = global.ESCOLAS_MARANHAO_IDEB || global.OFFICIAL_MARANHAO_ESCOLAS_EXCEL || [];
+        var activeYear = global.currentGlobalIdebYear || 2025;
+        var prevYear = activeYear > 2015 ? (activeYear - 2) : 2015;
+
+        tbody.innerHTML = rawDb.map(function(sch, idx) {
+            var isGD = (sch.city || '').trim().toLowerCase() === 'gonçalves dias';
+            var displayCurr = sch.scoreCurr !== null ? Number(sch.scoreCurr).toFixed(1) : '—';
+            var displayPrev = sch.scorePrev !== null ? Number(sch.scorePrev).toFixed(1) : '—';
+
+            var diffMarkup = '—';
+            if (sch.scoreCurr !== null && sch.scorePrev !== null && activeYear !== 2015) {
+                var d = Number((parseFloat(displayCurr) - parseFloat(displayPrev)).toFixed(1));
+                if (d > 0) diffMarkup = '<span class="diff-up">+' + d + '</span>';
+                else if (d < 0) diffMarkup = '<span class="diff-down">' + d + '</span>';
+                else diffMarkup = '<span class="diff-eq">= 0.0</span>';
+            }
+
+            return [
+                '<tr style="border-bottom: 1px solid var(--color-border-subtle); height: 50px; ' + (isGD ? 'background: var(--color-accent-subtle);' : '') + '">',
+                '    <td style="padding: 10px 14px; font-weight: 700; font-family: var(--font-display); font-variant-numeric: tabular-nums; color: var(--color-brand-primary);">#' + sch.globalRank + '</td>',
+                '    <td style="padding: 10px 14px; font-weight: 700; font-family: var(--font-display); font-variant-numeric: tabular-nums; color: var(--color-status-warning-text);">#' + sch.localRank + ' de ' + sch.localTotal + '</td>',
+                '    <td style="padding: 10px 14px; font-weight: 600; color: var(--color-brand-primary); font-size: var(--text-sm);">' + sch.name + ' ' + (isGD ? '(Sua Rede)' : '') + '</td>',
+                '    <td style="padding: 10px 14px; font-size: var(--text-xs); color: var(--color-text-secondary);">' + sch.city + ' • <span style="color:var(--color-text-muted);">' + sch.ure + '</span></td>',
+                '    <td style="padding: 10px 14px;"><span class="badge badge-neutral" style="font-size:var(--text-xs);">' + sch.network + '</span></td>',
+                '    <td style="padding: 10px 14px; text-align: center; font-size: var(--text-sm); font-family: var(--font-display); font-variant-numeric: tabular-nums;">' + displayPrev + '</td>',
+                '    <td style="padding: 10px 14px; text-align: center;">',
+                '        <div style="font-weight: 700; font-size: var(--text-sm); color: var(--color-status-success-text); font-family: var(--font-display); font-variant-numeric: tabular-nums;">' + displayCurr + '</div>',
+                '        <div style="font-size: var(--text-xs); margin-top: 1px;">' + diffMarkup + '</div>',
+                '    </td>',
+                '    <td style="padding: 10px 14px; text-align: center;">',
+                '        <button onclick="openSchoolIdebDetailModalById(\'' + sch.id + '\')" class="btn btn-outline" style="font-size: var(--text-xs); padding: 4px 8px;" title="Ver Detalhes e Comparativo">Ver Detalhes</button>',
+                '    </td>',
+                '</tr>'
+            ].join('\n');
+        }).join('\n');
+    }
+
+    function renderCityMiniSummary(cityFilter, schoolsList, year) {
+        var summaryContainer = document.getElementById('school-ranking-city-summary');
+        if (!summaryContainer) return;
+
+        if (cityFilter === 'all' || schoolsList.length === 0) {
+            summaryContainer.innerHTML = '<div style="grid-column: span 4; text-align: center; font-size: var(--text-xs); color: var(--color-text-secondary);">Selecione um município específico no filtro acima para visualizar a síntese local de escolas no ciclo ' + (year || 2025) + '.</div>';
+            return;
+        }
+
+        var validScores = schoolsList.filter(function(s) { return s.scoreCurr !== null; });
+        var total = schoolsList.length;
+        var avg = (validScores.length > 0) ? (validScores.reduce(function(acc, s) { return acc + s.scoreCurr; }, 0) / validScores.length).toFixed(1) : '—';
+        var best = validScores[0] || schoolsList[0];
+        var worst = validScores[validScores.length - 1] || schoolsList[schoolsList.length - 1];
+
+        summaryContainer.innerHTML = [
+            '<div style="background:var(--color-surface-card); padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--color-border-subtle); text-align:center;">',
+            '    <div style="font-size:var(--text-xs); font-weight:600; color:var(--color-text-secondary);">Total de Escolas</div>',
+            '    <div style="font-size:var(--text-title-sm); font-weight:700; color:var(--color-brand-primary); margin-top:2px;">' + total + ' Unidades</div>',
+            '</div>',
+            '<div style="background:var(--color-surface-card); padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--color-border-subtle); text-align:center;">',
+            '    <div style="font-size:var(--text-xs); font-weight:600; color:var(--color-text-secondary);">Média no Ciclo ' + (year || 2025) + '</div>',
+            '    <div style="font-size:var(--text-title-sm); font-weight:700; color:var(--color-accent-primary); margin-top:2px;">' + avg + ' IDEB</div>',
+            '</div>',
+            '<div style="background:var(--color-status-success-bg); padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--color-status-success-border); text-align:center;">',
+            '    <div style="font-size:var(--text-xs); font-weight:700; color:var(--color-status-success-text);">Melhor Escola (' + (year || 2025) + ')</div>',
+            '    <div style="font-size:var(--text-sm); font-weight:700; color:var(--color-brand-primary); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="' + (best ? best.name : '') + '">' + (best ? best.name : '—') + '</div>',
+            '    <div style="font-size:var(--text-xs); font-weight:700; color:var(--color-status-success-text);">' + (best && best.scoreCurr !== null ? best.scoreCurr : '—') + ' IDEB</div>',
+            '</div>',
+            '<div style="background:var(--color-status-critical-bg); padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--color-status-critical-border); text-align:center;">',
+            '    <div style="font-size:var(--text-xs); font-weight:700; color:var(--color-status-critical-text);">Acompanhamento Prioritário (' + (year || 2025) + ')</div>',
+            '    <div style="font-size:var(--text-sm); font-weight:700; color:var(--color-brand-primary); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="' + (worst ? worst.name : '') + '">' + (worst ? worst.name : '—') + '</div>',
+            '    <div style="font-size:var(--text-xs); font-weight:700; color:var(--color-status-critical-text);">' + (worst && worst.scoreCurr !== null ? worst.scoreCurr : '—') + ' IDEB</div>',
+            '</div>'
+        ].join('\n');
 
         } catch(err) {
             console.error('Error rendering 19 UREs:', err);

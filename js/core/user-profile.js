@@ -111,16 +111,12 @@
         // Saudação dinâmica por horário
         var hour = new Date().getHours();
         var greeting = 'Olá';
-        var emojiGreeting = '👋';
         if (hour >= 5 && hour < 12) {
             greeting = 'Bom dia';
-            emojiGreeting = '☀️';
         } else if (hour >= 12 && hour < 18) {
             greeting = 'Boa tarde';
-            emojiGreeting = '🌤️';
         } else {
             greeting = 'Boa noite';
-            emojiGreeting = '🌙';
         }
 
         // Data atual formatada em português
@@ -130,38 +126,43 @@
 
         var avatarContent = profile.avatarPhoto 
             ? '<img src="' + profile.avatarPhoto + '" alt="' + profile.name + '">' 
-            : '<span>' + (profile.avatarIcon || '🧑‍💼') + '</span>';
+            : '<div style="width: 100%; height: 100%; background: var(--color-brand-primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem;">' + (profile.name ? profile.name.slice(0,2).toUpperCase() : 'SE') + '</div>';
 
         banner.innerHTML = `
             <div class="welcome-banner-left">
-                <div class="welcome-user-avatar" onclick="openUserProfileModal();" style="cursor: pointer;" title="Clique para editar seu avatar e dados">
+                <div class="welcome-user-avatar" onclick="openUserProfileModal();" style="cursor: pointer;" title="Clique para editar dados do perfil">
                     ${avatarContent}
                 </div>
                 <div>
                     <h2 class="welcome-user-title">
-                        <span>${greeting}, <span id="welcome-user-display-name" style="color: #6366f1;">${profile.name}</span>!</span>
-                        <span>${emojiGreeting}</span>
+                        <span>${greeting}, <span id="welcome-user-display-name" style="color: var(--color-brand-primary);">${profile.name}</span></span>
                     </h2>
                     <p class="welcome-user-subtitle">
-                        <span style="font-weight: 700; color: #6366f1; background: rgba(99, 102, 241, 0.1); padding: 2px 8px; border-radius: 10px; font-size: 0.74rem;">
-                            ● ${profile.role}
+                        <span class="badge badge-status-advanced">
+                            ${profile.role}
                         </span>
                         <span>•</span>
                         <span>${capitalizedToday}</span>
                         <span>•</span>
-                        <span style="color: var(--text-muted);">SEMED Gonçalves Dias - MA</span>
+                        <span style="color: var(--color-text-muted);">SEMED Gonçalves Dias — MA</span>
                     </p>
                 </div>
             </div>
             <div class="welcome-banner-actions">
-                <button type="button" onclick="openUserProfileModal();" class="btn btn-outline btn-sm" style="font-size: 0.8rem; font-weight: 700; background: var(--bg-secondary); border-color: var(--border-color); color: var(--text-primary); display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
-                    <span>👤 Meu Perfil</span>
+                <button type="button" onclick="openUserProfileModal();" class="btn btn-outline" style="font-size: var(--text-sm);">
+                    <i data-lucide="user" style="width: 14px; height: 14px;"></i>
+                    <span>Meu Perfil</span>
                 </button>
-                <button type="button" onclick="switchTab('sec-criar-avaliacoes');" class="btn btn-primary btn-sm" style="font-size: 0.8rem; font-weight: 700; background: linear-gradient(135deg, #4f46e5, #6366f1); border: none; display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);">
-                    <span>+ Nova Avaliação</span>
+                <button type="button" onclick="switchTab('sec-criar-avaliacoes');" class="btn btn-primary" style="font-size: var(--text-sm);">
+                    <i data-lucide="plus" style="width: 14px; height: 14px;"></i>
+                    <span>Nova Avaliação</span>
                 </button>
             </div>
         `;
+
+        if (window.lucide && typeof lucide.createIcons === 'function') {
+            try { lucide.createIcons(); } catch(e) {}
+        }
     }
 
     /**

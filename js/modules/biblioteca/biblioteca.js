@@ -463,7 +463,10 @@
         if (titleEl) titleEl.textContent = book.titulo;
         if (badgeEl) badgeEl.textContent = formatText;
         if (metaEl) metaEl.textContent = (book.etapa || 'SEMED') + ' • ' + (book.componente || 'Pedagógico') + ' • ' + (book.fileSize || '');
-        if (iconEl) iconEl.textContent = isWord ? '📝' : '📄';
+        if (iconEl) {
+            iconEl.innerHTML = '<i data-lucide="' + (isWord ? 'file-text' : 'file') + '" style="width: 20px; height: 20px;"></i>';
+            if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
+        }
 
         var btnDownload = document.getElementById('btn-reader-download-original');
         if (btnDownload) {
@@ -826,14 +829,15 @@
 
         var preview = document.getElementById('file-upload-preview');
         if (preview) {
-            preview.innerHTML = '<div class="attached-file-badge" style="display:flex; align-items:center; gap:12px; background:var(--bg-secondary); border:1px solid var(--border-color); padding:10px 14px; border-radius:8px; margin-top:8px;">' +
-                '<div style="font-size:1.6rem;">' + (isWord ? '📝' : (isPdf ? '📄' : '📁')) + '</div>' +
+            preview.innerHTML = '<div class="attached-file-badge" style="display:flex; align-items:center; gap:12px; background:var(--color-surface-card); border:1px solid var(--color-border-subtle); padding:10px 14px; border-radius:var(--radius-sm); margin-top:8px;">' +
+                '<div style="width:36px;height:36px;border-radius:var(--radius-xs);background:var(--color-status-advanced-bg);display:flex;align-items:center;justify-content:center;color:var(--color-brand-primary);"><i data-lucide="' + (isWord ? 'file-text' : 'file') + '" style="width:18px;height:18px;"></i></div>' +
                 '<div style="flex:1; min-width:0;">' +
-                    '<strong style="font-size:0.85rem; color:var(--text-primary); display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + file.name + '</strong>' +
-                    '<span style="font-size:0.74rem; color:#4f46e5; font-weight:600;">' + fileSizeMb + ' • Formato ' + ext.toUpperCase() + ' pronto para upload</span>' +
+                    '<strong style="font-size:var(--text-sm); color:var(--color-brand-primary); display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + file.name + '</strong>' +
+                    '<span style="font-size:var(--text-xs); color:var(--color-accent-primary); font-weight:600;">' + fileSizeMb + ' • Formato ' + ext.toUpperCase() + ' pronto para upload</span>' +
                 '</div>' +
-                '<button type="button" class="btn btn-icon btn-xs" onclick="clearAttachedFile();" title="Remover arquivo" style="color:#ef4444;">✕</button>' +
+                '<button type="button" class="btn btn-icon btn-xs" onclick="clearAttachedFile();" title="Remover arquivo" style="color:var(--color-status-critical-text);">✕</button>' +
             '</div>';
+            if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
         }
     }
 

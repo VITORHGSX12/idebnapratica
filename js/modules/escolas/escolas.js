@@ -141,11 +141,10 @@
 
         tbody.innerHTML = filtered.map(function(sch) {
             var isUrban = sch.zone && sch.zone.includes('Urbana');
-            var zoneIcon = isUrban ? '🏫' : '🌾';
             var statusLabel = sch.status || 'Ativa';
-            var statusColor = statusLabel === 'Ativa' ? '#16a34a' : (statusLabel === 'Em manutenção' ? '#d97706' : '#ef4444');
-            var statusBg = statusLabel === 'Ativa' ? 'rgba(34, 197, 94, 0.12)' : (statusLabel === 'Em manutenção' ? 'rgba(245, 158, 11, 0.12)' : 'rgba(239, 68, 68, 0.12)');
-            var statusBorder = statusLabel === 'Ativa' ? 'rgba(34, 197, 94, 0.25)' : (statusLabel === 'Em manutenção' ? 'rgba(245, 158, 11, 0.25)' : 'rgba(239, 68, 68, 0.25)');
+            var isAtiva = statusLabel === 'Ativa';
+            var isManutencao = statusLabel === 'Em manutenção';
+            var badgeClass = isAtiva ? 'badge-status-success' : (isManutencao ? 'badge-status-warning' : 'badge-status-critical');
 
             // SECURITY FIX: [XSS Sanitization] Sanitização de campos com escapeHtml
             var safeName = typeof escapeHtml === 'function' ? escapeHtml(sch.name) : sch.name;
@@ -156,46 +155,46 @@
             var safeStatusLabel = typeof escapeHtml === 'function' ? escapeHtml(statusLabel) : statusLabel;
 
             return `
-                <tr style="border-bottom: 1px solid var(--border-color); height: 64px; transition: background-color 0.15s ease;">
+                <tr style="border-bottom: 1px solid var(--color-border-subtle); height: 60px; transition: background-color 0.15s ease;">
                     <td style="padding: 12px 20px;">
                         <div style="display: flex; align-items: center; gap: 12px;">
-                            <div style="width: 38px; height: 38px; border-radius: 8px; background: rgba(99, 102, 241, 0.1); color: #6366f1; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.15rem;">
-                                ${zoneIcon}
+                            <div style="width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--color-status-advanced-bg); color: var(--color-brand-primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                <i data-lucide="school" style="width: 18px; height: 18px;"></i>
                             </div>
                             <div>
-                                <strong style="font-size: 0.9rem; color: var(--text-primary); display: block; line-height: 1.3;">${safeName}</strong>
-                                <span style="font-size: 0.74rem; color: var(--text-muted); margin-top: 2px; display: block;">
+                                <strong style="font-size: var(--text-sm); font-weight: 700; color: var(--color-brand-primary); display: block; line-height: 1.3;">${safeName}</strong>
+                                <span style="font-size: var(--text-xs); color: var(--color-text-secondary); margin-top: 2px; display: block;">
                                     ${safeCity} • ${safeAlunosCount} estudantes
                                 </span>
                             </div>
                         </div>
                     </td>
 
-                    <td style="padding: 12px 16px; font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-secondary); font-weight: 700;">
+                    <td style="padding: 12px 16px; font-family: var(--font-body); font-size: var(--text-sm); color: var(--color-text-secondary); font-weight: 600;">
                         ${safeInep}
                     </td>
 
                     <td style="padding: 12px 16px;">
-                        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color);">
-                            <span>${zoneIcon}</span> <span>${safeZone}</span>
+                        <span class="badge badge-neutral" style="font-size: var(--text-xs); font-weight: 600;">
+                            ${safeZone}
                         </span>
                     </td>
 
                     <td style="padding: 12px 16px; text-align: center;">
-                        <span style="display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 20px; font-size: 0.74rem; font-weight: 800; background: ${statusBg}; color: ${statusColor}; border: 1px solid ${statusBorder};">
+                        <span class="badge ${badgeClass}" style="font-size: var(--text-xs); font-weight: 700;">
                             ● ${safeStatusLabel.toUpperCase()}
                         </span>
                     </td>
 
                     <td style="padding: 12px 20px; text-align: center;">
                         <div style="display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
-                            <button type="button" onclick="openSchoolWorkspace('${sch.name.replace(/'/g, "\\\'")}');" class="btn btn-outline btn-sm" style="font-size: 0.76rem; font-weight: 700; color: #6366f1; border: 1px solid #6366f1; background: rgba(99, 102, 241, 0.08); padding: 6px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 1px 2px rgba(99, 102, 241, 0.08); cursor: pointer; transition: all 0.15s ease;">
-                                <span>Ver Escola</span> <span style="font-size: 0.85rem;">→</span>
+                            <button type="button" onclick="openSchoolWorkspace('${sch.name.replace(/'/g, "\\\'")}');" class="btn btn-outline" style="font-size: var(--text-xs); padding: 5px 10px; height: 30px;">
+                                <span>Ver Escola</span>
                             </button>
                             
                             ${isAdminOrSemed ? `
-                                <button type="button" onclick="openEditSchoolModal('${safeInep}');" class="btn btn-outline btn-sm" style="font-size: 0.76rem; font-weight: 600; color: var(--text-primary); border: 1px solid var(--border-color); background: var(--bg-tertiary); padding: 6px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; transition: all 0.15s ease;" title="Editar Dados da Escola (Admin/SEMED)">
-                                    ✏️ Editar
+                                <button type="button" onclick="openEditSchoolModal('${safeInep}');" class="btn btn-outline" style="font-size: var(--text-xs); padding: 5px 8px; height: 30px;" title="Editar Dados da Escola (Admin/SEMED)">
+                                    <i data-lucide="edit-3" style="width: 13px; height: 13px;"></i>
                                 </button>
                             ` : ''}
                         </div>
@@ -248,9 +247,10 @@
         if (badgeEl) {
             // SECURITY FIX: [XSS Sanitization]
             var safeZone = typeof escapeHtml === 'function' ? escapeHtml(schoolObj.zone || 'Rede Municipal') : (schoolObj.zone || 'Rede Municipal');
-            badgeEl.innerHTML = `<span>${isRural ? '🌾' : '🏫'}</span> <span>${safeZone}</span>`;
-            badgeEl.style.background = isRural ? 'rgba(245, 158, 11, 0.15)' : 'rgba(99, 102, 241, 0.15)';
-            badgeEl.style.color = isRural ? '#d97706' : '#6366f1';
+            badgeEl.className = 'badge badge-neutral';
+            badgeEl.innerHTML = `<span>${safeZone}</span>`;
+            badgeEl.style.background = '';
+            badgeEl.style.color = '';
         }
         if (metaEl) {
             metaEl.textContent = `INEP: ${schoolObj.inep} • Direção: ${schoolObj.director || 'Gestão Escolar'} • Fone: ${schoolObj.phone || '-'}`;
@@ -296,13 +296,13 @@
             var dt = btn.getAttribute('data-tab');
             if (dt === tabName) {
                 btn.classList.add('active');
-                btn.style.color = '#10b981';
-                btn.style.background = 'rgba(16, 185, 129, 0.12)';
-                btn.style.border = '1px solid rgba(16, 185, 129, 0.25)';
+                btn.style.color = 'var(--color-accent-primary)';
+                btn.style.background = 'var(--color-accent-subtle)';
+                btn.style.border = '1px solid var(--color-accent-primary)';
                 btn.style.fontWeight = '700';
             } else {
                 btn.classList.remove('active');
-                btn.style.color = 'var(--text-secondary)';
+                btn.style.color = 'var(--color-text-secondary)';
                 btn.style.background = 'transparent';
                 btn.style.border = 'none';
                 btn.style.fontWeight = '600';
@@ -317,20 +317,21 @@
         if (tabName === 'professores') {
             var teachers = (typeof global.getSchoolTeachers === 'function') ? global.getSchoolTeachers(school) : [];
             container.innerHTML = `
-                <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px;">
+                <div class="card" style="background: var(--color-surface-card); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); padding: 20px;">
                     <div class="flex-between flex-wrap gap-md" style="margin-bottom: 16px;">
                         <div>
-                            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0;">Professores da Escola</h3>
-                            <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">Corpo docente vinculado a ${school} (${teachers.length} docentes cadastrados)</p>
+                            <h3 style="font-size: var(--text-title-sm); font-weight: 700; color: var(--color-brand-primary); margin: 0;">Professores da Escola</h3>
+                            <p style="font-size: var(--text-xs); color: var(--color-text-secondary); margin: 2px 0 0 0;">Corpo docente vinculado a ${school} (${teachers.length} docentes cadastrados)</p>
                         </div>
-                        <button type="button" onclick="openCreateTeacherModal('${school.replace(/'/g, "\\\'")}');" class="btn btn-primary" style="display:flex; align-items:center; gap:6px; font-size:0.82rem; font-weight:700; background:linear-gradient(135deg, #4f46e5, #6366f1); border:none; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);">
-                            + Vincular Professor
+                        <button type="button" onclick="openCreateTeacherModal('${school.replace(/'/g, "\\\'")}');" class="btn btn-primary">
+                            <i data-lucide="user-plus" style="width: 14px; height: 14px;"></i>
+                            <span>Vincular Professor</span>
                         </button>
                     </div>
 
                     ${teachers.length === 0 ? `
-                        <div style="padding: 36px 20px; text-align: center; color: var(--text-muted); background: var(--bg-tertiary); border-radius: var(--radius-md);">
-                            <div style="font-size: 1.8rem; margin-bottom: 8px;">👨‍🏫</div>
+                        <div style="padding: 36px 20px; text-align: center; color: var(--color-text-muted); background: var(--color-surface-subtle); border-radius: var(--radius-sm);">
+                            <div style="margin-bottom: 8px; color: var(--color-text-muted);"><i data-lucide="users" style="width: 32px; height: 32px;"></i></div>
                             <p style="margin: 0; font-weight: 600;">Nenhum professor vinculado a esta escola no momento.</p>
                         </div>
                     ` : `

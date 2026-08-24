@@ -558,25 +558,25 @@
 
         if (filteredSaeb.length > 0) {
             html += `
-                <div style="padding: 6px 12px; background: rgba(99, 102, 241, 0.1); font-size: 0.7rem; font-weight: 800; color: #6366f1; text-transform: uppercase; letter-spacing: 0.5px;">
-                    📊 DESCRITORES SAEB / SEAMA (MATRIZ DE REFERÊNCIA)
+                <div style="padding: 6px 12px; background: var(--color-surface-subtle); font-size: var(--text-xs); font-weight: 700; color: var(--color-brand-primary); text-transform: uppercase; letter-spacing: 0.5px;">
+                    DESCRITORES SAEB / SEAMA (MATRIZ DE REFERÊNCIA)
                 </div>
             `;
             filteredSaeb.slice(0, 8).forEach(item => {
                 const isSelected = plannerSelectedItems.some(sel => sel.code === item.code);
                 html += `
-                    <div style="padding: 10px 14px; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.15s ease; display: flex; justify-content: space-between; align-items: center; ${isSelected ? 'background: rgba(99,102,241,0.08);' : ''}" 
-                         onmouseover="this.style.background='rgba(99, 102, 241, 0.15)';" 
-                         onmouseout="this.style.background='${isSelected ? 'rgba(99,102,241,0.08)' : 'transparent'}';"
+                    <div style="padding: 10px 14px; border-bottom: 1px solid var(--color-border-subtle); cursor: pointer; transition: background 0.15s ease; display: flex; justify-content: space-between; align-items: center; ${isSelected ? 'background: var(--color-accent-subtle);' : ''}" 
+                         onmouseover="this.style.background='var(--color-surface-subtle)';" 
+                         onmouseout="this.style.background='${isSelected ? 'var(--color-accent-subtle)' : 'transparent'}';"
                          onclick="selectPlannerSkillItem('SAEB', '${item.code}', '${item.desc.replace(/'/g, "\\'")}', '${item.disciplina}');">
                         <div style="flex: 1; padding-right: 10px;">
                             <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
-                                <span class="badge badge-purple" style="font-size: 0.7rem; font-weight: 800;">${item.code} · SAEB</span>
-                                <span style="font-size: 0.72rem; color: var(--text-muted);">${item.disciplina}</span>
+                                <span class="badge badge-status-advanced" style="font-size: var(--text-xs); font-weight: 700;">${item.code} · SAEB</span>
+                                <span style="font-size: var(--text-xs); color: var(--color-text-secondary);">${item.disciplina}</span>
                             </div>
-                            <div style="font-size: 0.78rem; color: var(--text-primary); line-height: 1.3;">${item.desc}</div>
+                            <div style="font-size: var(--text-xs); color: var(--color-text-primary); line-height: 1.3;">${item.desc}</div>
                         </div>
-                        <span style="font-size: 0.75rem; font-weight: 700; color: #6366f1;">${isSelected ? '✓ Adicionado' : '+ Selecionar'}</span>
+                        <span style="font-size: var(--text-xs); font-weight: 700; color: var(--color-accent-primary);">${isSelected ? '✓ Adicionado' : '+ Selecionar'}</span>
                     </div>
                 `;
             });
@@ -584,8 +584,8 @@
 
         if (filteredBncc.length > 0) {
             html += `
-                <div style="padding: 6px 12px; background: rgba(16, 185, 129, 0.1); font-size: 0.7rem; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px;">
-                    🌱 HABILIDADES BNCC (BASE NACIONAL COMUM CURRICULAR)
+                <div style="padding: 6px 12px; background: var(--color-surface-subtle); font-size: var(--text-xs); font-weight: 700; color: var(--color-status-success-text); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px;">
+                    HABILIDADES BNCC (BASE NACIONAL COMUM CURRICULAR)
                 </div>
             `;
             filteredBncc.slice(0, 10).forEach(item => {
@@ -1111,13 +1111,13 @@
                                                 <button type="button" onclick="event.stopPropagation(); toggleLessonWorkStatus('${les.id}');" 
                                                         class="badge ${les.status === 'trabalhada' ? 'badge-success' : (isAtrasada ? 'badge-danger' : 'badge-warning')}" 
                                                         style="font-size: 0.65rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 3px;" title="Clique para alternar Trabalhada / Planejada">
-                                                    ${isAtrasada ? '⚠️ Atrasada' : (les.status === 'trabalhada' ? '✓ Trabalhada' : '🟡 Planejada')}
+                                                    ${isAtrasada ? 'Atrasada' : (les.status === 'trabalhada' ? 'Trabalhada' : 'Planejada')}
                                                 </button>
                                             </div>
                                             <div style="font-weight: 600; color: var(--text-primary); font-size: 0.72rem; line-height: 1.3;">${les.disciplina}</div>
                                             <div style="display: flex; gap: 4px; justify-content: flex-end; margin-top: 4px;">
-                                                <button type="button" onclick="event.stopPropagation(); openNewSchedulePlanModal(null, null, '${les.id}');" style="background: none; border: none; font-size: 11px; cursor: pointer; color: var(--text-muted);" title="Editar Planejamento">✏️</button>
-                                                <button type="button" onclick="event.stopPropagation(); handleDeleteLessonWithTrash('${les.id}');" style="background: none; border: none; font-size: 11px; cursor: pointer; color: #ef4444;" title="Mover para Lixeira">🗑️</button>
+                                                <button type="button" onclick="event.stopPropagation(); openNewSchedulePlanModal(null, null, '${les.id}');" style="background: none; border: none; font-size: 11px; cursor: pointer; color: var(--text-muted);" title="Editar Planejamento">Editar</button>
+                                                <button type="button" onclick="event.stopPropagation(); handleDeleteLessonWithTrash('${les.id}');" style="background: none; border: none; font-size: 11px; cursor: pointer; color: #ef4444;" title="Mover para Lixeira">Excluir</button>
                                             </div>
                                         </div>
                                     `;
@@ -1193,7 +1193,7 @@
                         
                         <div>
                             <div style="display: flex; justify-content: space-between; font-size: 0.72rem; font-weight: 600; margin-bottom: 2px;">
-                                <span>📖 Língua Portuguesa</span>
+                                <span>Língua Portuguesa</span>
                                 <strong>${lpTrab} aulas trabalhadas</strong>
                             </div>
                             <div class="progress-bar-container" style="height: 8px; margin: 0;">
@@ -1203,7 +1203,7 @@
 
                         <div>
                             <div style="display: flex; justify-content: space-between; font-size: 0.72rem; font-weight: 600; margin-bottom: 2px;">
-                                <span>📐 Matemática</span>
+                                <span>Matemática</span>
                                 <strong>${mtTrab} aulas trabalhadas</strong>
                             </div>
                             <div class="progress-bar-container" style="height: 8px; margin: 0;">
@@ -1213,7 +1213,7 @@
 
                         <div>
                             <div style="display: flex; justify-content: space-between; font-size: 0.72rem; font-weight: 600; margin-bottom: 2px;">
-                                <span>🌱 Ciências da Natureza</span>
+                                <span>Ciências da Natureza</span>
                                 <strong>${ciTrab} aulas trabalhadas</strong>
                             </div>
                             <div class="progress-bar-container" style="height: 8px; margin: 0;">
@@ -1309,13 +1309,13 @@
                     
                     <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 6px; border-top: 1px solid var(--border-color); padding-top: 8px;">
                         <button type="button" onclick="toggleLessonWorkStatus('${les.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem; font-weight: 700; color: ${les.status === 'trabalhada' ? '#f59e0b' : '#10b981'}; border-color: ${les.status === 'trabalhada' ? '#f59e0b' : '#10b981'};">
-                            ${les.status === 'trabalhada' ? 'Marcar como Planejada' : '✓ Concluir / Trabalhada'}
+                            ${les.status === 'trabalhada' ? 'Marcar como Planejada' : 'Concluir / Trabalhada'}
                         </button>
                         <button type="button" onclick="openDuplicateLessonModal('${les.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem;" title="Duplicar para outra turma">
-                            📋 Duplicar
+                            Duplicar
                         </button>
                         <button type="button" onclick="handleDeleteLessonWithTrash('${les.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem; color: #ef4444; border-color: #fca5a5;" title="Excluir aula">
-                            🗑️
+                            Excluir
                         </button>
                     </div>
                 `;

@@ -1,0 +1,192 @@
+/* =========================================================================
+   DESIGN TOKENS INSTITUCIONAIS — IDEB NA PRÁTICA (SEMED / GOVERNO MUNICIPAL)
+   Tokens padronizados para o domínio de Gestão Educacional, INEP e SAEB.
+   Nenhuma cor, fonte ou raio deve ser hardcoded fora deste arquivo.
+   ========================================================================= */
+
+:root {
+    /* ---------------------------------------------------------------------
+       1. SUPERFÍCIES E ESTRUTURA (PALETA INSTITUCIONAL SLATE / PETRÓLEO)
+       --------------------------------------------------------------------- */
+    --color-brand-primary:      #0F172A; /* Slate 900: Sidebar, títulos principais, texto de alto contraste */
+    --color-brand-secondary:    #1E293B; /* Slate 800: Cabeçalhos estruturais de tabelas e ênfase */
+    --color-brand-subtle:       #334155; /* Slate 700: Bordas ativas e rótulos secundários */
+    
+    --color-surface-canvas:     #F8FAFC; /* Slate 50: Fundo geral de toda a aplicação */
+    --color-surface-card:       #FFFFFF; /* Superfície principal dos cartões e módulos */
+    --color-surface-subtle:     #F1F5F9; /* Slate 100: Fundos de filtros, linhas zebradas e inputs */
+    --color-surface-muted:      #E2E8F0; /* Slate 200: Fundo de trilhos e separadores */
+    --color-surface-overlay:    rgba(15, 23, 42, 0.65); /* Fundo de modais com foco institucional */
+    
+    /* ---------------------------------------------------------------------
+       2. BORDAS E DIVISORES DE ALTA PRECISÃO
+       --------------------------------------------------------------------- */
+    --color-border-subtle:      #E2E8F0; /* Slate 200: Linhas divisórias finas e contornos de cartões */
+    --color-border-strong:      #CBD5E1; /* Slate 300: Contornos de campos de formulário e separadores */
+    --color-border-focus:       #1D4ED8; /* Blue 700: Foco acessível em elementos interativos */
+
+    /* ---------------------------------------------------------------------
+       3. TIPOGRAFIA & CONTRASTE
+       --------------------------------------------------------------------- */
+    --color-text-primary:       #0F172A; /* Títulos, métricas e dados principais (100% contraste) */
+    --color-text-secondary:     #475569; /* Slate 600: Descrições, rótulos de colunas e textos de apoio */
+    --color-text-muted:         #94A3B8; /* Slate 400: Metadados, datas, placeholders e unidades */
+    --color-text-inverse:       #FFFFFF; /* Texto em fundos escuros e botões de destaque */
+
+    /* ---------------------------------------------------------------------
+       4. COR DE DESTAQUE INSTITUCIONAL ÚNICA (ÍNDIGO AUTORAL — SEMED)
+       --------------------------------------------------------------------- */
+    --color-accent-primary:     #4F46E5; /* Índigo 600: Ação primária, nav ativo, ponteiro da Régua */
+    --color-accent-primary-hover:#4338CA;/* Índigo 700: Hover de botões primários */
+    --color-accent-hover:       #4338CA;
+    --color-accent-soft:        #EEF2FF; /* Índigo 50: Fundo tonal para ícones em bolha e estados sutis */
+    --color-accent-soft-border: #C7D2FE; /* Índigo 200: Borda sutil sobre fundo accent-soft */
+    --color-accent-subtle:      #EEF2FF; /* Alias para compatibilidade */
+    --color-accent-border:      #C7D2FE; /* Alias para compatibilidade */
+
+    /* ---------------------------------------------------------------------
+       5. SISTEMA SEMÂNTICO SAEB / IDEB (PADRÃO MEC / INEP)
+       --------------------------------------------------------------------- */
+    /* Abaixo do Básico / Crítico (Proficiência < 200 / Abaixo da Meta) */
+    --color-status-critical:        #DC2626; /* Red 600 */
+    --color-status-critical-bg:     #FEF2F2; /* Red 50 */
+    --color-status-critical-border: #FCA5A5; /* Red 300 */
+    --color-status-critical-text:   #991B1B; /* Red 800 */
+
+    /* Básico / Alerta / Em Risco (Atenção para Recomposição) */
+    --color-status-warning:         #D97706; /* Amber 600 */
+    --color-status-warning-bg:      #FFFBEB; /* Amber 50 */
+    --color-status-warning-border:  #FCD34D; /* Amber 300 */
+    --color-status-warning-text:    #92400E; /* Amber 800 */
+
+    /* Proficiente / Na Meta / Adequado */
+    --color-status-success:         #059669; /* Emerald 600 */
+    --color-status-success-bg:      #ECFDF5; /* Emerald 50 */
+    --color-status-success-border:  #6EE7B7; /* Emerald 300 */
+    --color-status-success-text:    #065F46; /* Emerald 800 */
+
+    /* Avançado / Superou a Meta (Excelência) */
+    --color-status-advanced:        #2563EB; /* Blue 600 */
+    --color-status-advanced-bg:     #EFF6FF; /* Blue 50 */
+    --color-status-advanced-border: #93C5FD; /* Blue 300 */
+    --color-status-advanced-text:   #1E40AF; /* Blue 800 */
+
+    /* ---------------------------------------------------------------------
+       6. FONTES E FAMÍLIAS TIPOGRÁFICAS
+       --------------------------------------------------------------------- */
+    --font-display: 'Lexend', 'Plus Jakarta Sans', -apple-system, sans-serif;
+    --font-body:    'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono:    'JetBrains Mono', 'SF Mono', Consolas, Courier, monospace;
+
+    /* ---------------------------------------------------------------------
+       7. ESCALA TIPOGRÁFICA INSTITUCIONAL
+       --------------------------------------------------------------------- */
+    --text-hero-stat:    2.25rem;  /* 36px - Números de destaque do IDEB e SAEB */
+    --text-title-lg:     1.5rem;   /* 24px - Títulos de telas */
+    --text-title-md:     1.25rem;  /* 20px - Títulos de seções e cartões */
+    --text-title-sm:     1.05rem;  /* 16.8px - Subtítulos */
+    --text-body:         0.875rem; /* 14px - Texto geral e células de tabelas */
+    --text-sm:           0.78rem;  /* 12.5px - Rótulos secundários e metadados */
+    --text-xs:           0.6875rem;/* 11px - Badges e rótulos de eixo */
+
+    /* ---------------------------------------------------------------------
+       8. MEDIDAS ESTATÍSTICAS E GEOMETRIA (BORDER RADIUS REGRAS V3)
+       --------------------------------------------------------------------- */
+    --radius-xs: 4px;
+    --radius-sm: 6px;
+    --radius-md: 8px; /* Cards de dado, tabelas, painéis */
+    --radius-card: 8px;
+    --radius-btn: 9999px; /* Botões arredondados / pills */
+    --radius-btn-rect: 12px; /* Botões quando retangulares */
+    --radius-pill: 9999px; /* Badges, avatar, ícones em bolha */
+    --radius-lg: 12px;
+    --radius-full: 9999px;
+
+    /* ---------------------------------------------------------------------
+       9. SOMBRAS INSTITUCIONAIS SUTIS (SEM SOMBRA DIFUSA)
+       --------------------------------------------------------------------- */
+    --shadow-subtle: 0 1px 2px rgba(15, 23, 42, 0.04);
+    --shadow-card:   0 1px 2px rgba(15, 23, 42, 0.04);
+    --shadow-dropdown: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+    --shadow-modal:  0 10px 25px -5px rgba(15, 23, 42, 0.18), 0 8px 10px -6px rgba(15, 23, 42, 0.08);
+
+    /* ---------------------------------------------------------------------
+       10. TRANSIÇÕES CONTROLADAS
+       --------------------------------------------------------------------- */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* ---------------------------------------------------------------------
+       11. RETROCOMPATIBILIDADE MAPEADA (ALIASES)
+       --------------------------------------------------------------------- */
+    --bg-primary:    var(--color-surface-canvas);
+    --bg-secondary:  var(--color-surface-card);
+    --bg-tertiary:   var(--color-surface-subtle);
+    --border-color:  var(--color-border-subtle);
+    --font-sans:     var(--font-body);
+    --purple:        var(--color-accent-primary);
+    --purple-light:  var(--color-accent-primary);
+    --blue:          var(--color-status-advanced);
+    --blue-light:    var(--color-status-advanced);
+    --green:         var(--color-status-success);
+    --green-light:   var(--color-status-success);
+    --red:           var(--color-status-critical);
+    --red-light:     var(--color-status-critical);
+    --orange:        var(--color-status-warning);
+    --orange-light:  var(--color-status-warning);
+}
+
+/* =========================================================================
+   DARK MODE INSTITUCIONAL (SLATE 950 / ALTO CONTRASTE TÉCNICO)
+   ========================================================================= */
+body.dark-mode {
+    --color-brand-primary:      #F8FAFC;
+    --color-brand-secondary:    #E2E8F0;
+    --color-brand-subtle:       #94A3B8;
+
+    --color-surface-canvas:     #090D16; /* Slate 950 */
+    --color-surface-card:       #111827; /* Slate 900 */
+    --color-surface-subtle:     #1E293B; /* Slate 800 */
+    --color-surface-muted:      #334155; /* Slate 700 */
+    --color-surface-overlay:    rgba(0, 0, 0, 0.75);
+
+    --color-border-subtle:      #1E293B;
+    --color-border-strong:      #334155;
+    --color-border-focus:       #3B82F6;
+
+    --color-text-primary:       #F8FAFC;
+    --color-text-secondary:     #94A3B8;
+    --color-text-muted:         #64748B;
+    --color-text-inverse:       #0F172A;
+
+    --color-accent-primary:     #3B82F6;
+    --color-accent-hover:       #2563EB;
+    --color-accent-subtle:      #1E293B;
+    --color-accent-border:      #334155;
+
+    /* Semântica Dark Mode */
+    --color-status-critical:        #EF4444;
+    --color-status-critical-bg:     rgba(239, 68, 68, 0.12);
+    --color-status-critical-border: rgba(239, 68, 68, 0.3);
+    --color-status-critical-text:   #FCA5A5;
+
+    --color-status-warning:         #F59E0B;
+    --color-status-warning-bg:      rgba(245, 158, 11, 0.12);
+    --color-status-warning-border:  rgba(245, 158, 11, 0.3);
+    --color-status-warning-text:    #FCD34D;
+
+    --color-status-success:         #10B981;
+    --color-status-success-bg:      rgba(16, 185, 129, 0.12);
+    --color-status-success-border:  rgba(16, 185, 129, 0.3);
+    --color-status-success-text:    #6EE7B7;
+
+    --color-status-advanced:        #3B82F6;
+    --color-status-advanced-bg:     rgba(59, 130, 246, 0.12);
+    --color-status-advanced-border: rgba(59, 130, 246, 0.3);
+    --color-status-advanced-text:   #93C5FD;
+
+    --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-card:   0 1px 3px 0 rgba(0, 0, 0, 0.4);
+    --shadow-dropdown: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
+    --shadow-modal:  0 10px 25px 0 rgba(0, 0, 0, 0.6);
+}
