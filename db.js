@@ -129,9 +129,9 @@ async function seedDatabase() {
         const alnCountRes = await client.query('SELECT count(*) as total FROM alunos');
         const currentAlnCount = parseInt(alnCountRes.rows[0].total) || 0;
 
-        // Se tiver contagem diferente de 5 escolas ou 0 alunos, faz a carga oficial completa
-        if (currentEscCount !== 5 || currentAlnCount === 0) {
-            console.log('Seeding official 5 schools, 21 classes and 388 students...');
+        // Se tiver contagem diferente de 9 escolas ou 0 alunos, faz a carga oficial completa
+        if (currentEscCount !== 9 || currentAlnCount === 0) {
+            console.log('Seeding official 9 schools of SAEB, 32 classes and 526 students...');
             try {
                 await client.query('DELETE FROM alunos;');
                 await client.query('DELETE FROM turmas;');

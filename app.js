@@ -1195,11 +1195,15 @@ CREATE INDEX idx_respostas_aluno_evento ON respostas_aluno(evento_id);
     async function loadDatabaseState() {
         var seed = window.OFFICIAL_IMPORTED_STUDENTS_SEED || {};
         var officialSchools = seed.escolas && seed.escolas.length > 0 ? seed.escolas : [
-            { id: 'esc_1', name: 'UE ANITA FURTADO', inep: '21192544', zone: 'Sede Urbana', director: 'Profª Ana Rita Anita Furtado', phone: '(99) 98112-4401', ideb2025: '5.4' },
-            { id: 'esc_2', name: 'UI ALDENORA DE ARAÚJO CRUZ', inep: '21286973', zone: 'Sede Urbana', director: 'Profª Aldenora Araújo Cruz', phone: '(99) 9935-6200', ideb2025: '5.2' },
-            { id: 'esc_3', name: 'UE ANISIO GOMES', inep: '21128774', zone: 'Zona Rural', director: 'Profª Francisca Anísio Gomes', phone: '(99) 98450-1122', ideb2025: '4.8' },
-            { id: 'esc_4', name: 'UI ANTONIO GONÇALVES DIAS', inep: '21286990', zone: 'Zona Rural', director: 'Prof. Raimundo José Dias', phone: '(99) 98221-7788', ideb2025: '4.9' },
-            { id: 'esc_5', name: 'U I BASILIO ALVES', inep: '21128120', zone: 'Zona Rural', director: 'Prof. José Basílio Alves', phone: '(99) 98830-5544', ideb2025: '5.0' }
+            { id: 'esc_1', name: 'UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ', inep: '21286973', zone: 'Sede Urbana', director: 'Profª Aldenora Araújo Cruz', phone: '(99) 9998-2055', ideb2025: '5.4' },
+            { id: 'esc_2', name: 'UI JOSE CORREA LIMA', inep: '21128723', zone: 'Zona Rural', director: 'Prof. José Correa Lima', phone: '(99) 9935-6218', ideb2025: '4.9' },
+            { id: 'esc_3', name: 'UI EMILIO MURAD', inep: '21128146', zone: 'Zona Rural', director: 'Prof. Emílio Murad', phone: '(99) 9935-6250', ideb2025: '5.2' },
+            { id: 'esc_4', name: 'UE VEREADOR LEONARDO FERREIRA LIMA', inep: '21128740', zone: 'Sede Urbana', director: 'Prof. Leonardo Ferreira Lima', phone: '(99) 9981-4371', ideb2025: '5.6' },
+            { id: 'esc_5', name: 'U I BASILIO ALVES', inep: '21128120', zone: 'Zona Rural', director: 'Prof. José Basílio Alves', phone: '(99) 9935-6218', ideb2025: '5.1' },
+            { id: 'esc_6', name: 'UE RAIMUNDO DOS REIS DA SILVA', inep: '21128758', zone: 'Zona Rural', director: 'Prof. Raimundo dos Reis', phone: '(99) 98450-3321', ideb2025: '4.8' },
+            { id: 'esc_7', name: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS', inep: '21286990', zone: 'Zona Rural', director: 'Prof. Raimundo José Dias', phone: '(99) 9998-2055', ideb2025: '5.1' },
+            { id: 'esc_8', name: 'UNIDADE ESCOLAR ANISIO GOMES', inep: '21128774', zone: 'Zona Rural', director: 'Profª Francisca Anísio Gomes', phone: '(99) 99817-0566', ideb2025: '5.0' },
+            { id: 'esc_9', name: 'UE ANITA FURTADO', inep: '21192544', zone: 'Sede Urbana', director: 'Profª Ana Rita Anita Furtado', phone: '(99) 9935-6210', ideb2025: '5.5' }
         ];
 
         var officialClasses = seed.turmas || [];
