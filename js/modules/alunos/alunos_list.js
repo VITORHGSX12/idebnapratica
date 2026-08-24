@@ -34,22 +34,33 @@
         btnDbStudentsPrev = document.getElementById('btn-db-students-prev');
         btnDbStudentsNext = document.getElementById('btn-db-students-next');
 
+        var userRole = (sessionStorage.getItem('userRole') || localStorage.getItem('userRole') || 'Gestor da Rede').toLowerCase();
+        var userEscola = sessionStorage.getItem('userEscola') || localStorage.getItem('userEscola') || '';
+        var isTeacher = userRole.includes('professor');
+        var isDirector = userRole.includes('diretor');
+
         if (dbStudentSchoolFilter) {
-            dbStudentSchoolFilter.innerHTML = '<option value="all">Filtrar por Escola (Todas as Escolas)</option>';
-            var targetSchools = (schools && schools.length > 0) ? schools : (global.uniqueSchoolsList || []);
-            targetSchools.forEach(function(sch) {
-                var opt = document.createElement('option');
-                opt.value = sch;
-                opt.textContent = sch.replace(/\s+/g, ' ');
-                dbStudentSchoolFilter.appendChild(opt);
-            });
+            if (isTeacher || isDirector) {
+                // Diretor ou Professor: trava na escola do usuário
+                dbStudentSchoolFilter.innerHTML = '<option value="' + (userEscola || 'UI JOSE CORREA LIMA') + '">' + (userEscola || 'UI JOSE CORREA LIMA') + '</option>';
+                dbStudentSchoolFilter.disabled = true;
+            } else {
+                dbStudentSchoolFilter.disabled = false;
+                dbStudentSchoolFilter.innerHTML = '<option value="all">Filtrar por Escola (Todas as Escolas)</option>';
+                var targetSchools = (schools && schools.length > 0) ? schools : (global.uniqueSchoolsList || []);
+                targetSchools.forEach(function(sch) {
+                    var opt = document.createElement('option');
+                    opt.value = sch;
+                    opt.textContent = sch.replace(/\s+/g, ' ');
+                    dbStudentSchoolFilter.appendChild(opt);
+                });
+            }
         }
 
         var loaded = (global.loadedStudents && global.loadedStudents.length > 0) ? global.loadedStudents : ((global.dbAlunos && global.dbAlunos.length > 0) ? global.dbAlunos : (global.ALUNOS_DATABASE || []));
         global.loadedStudents = loaded;
-        global.dbFilteredStudents = loaded.slice();
         global.dbCurrentPage = 1;
-        renderDbStudents();
+        applyDbFilters();
         if (typeof global.updateAiGenDescriptors === 'function') global.updateAiGenDescriptors();
         if (typeof global.renderPedagogicLibrary === 'function') global.renderPedagogicLibrary();
     }
@@ -62,6 +73,12 @@
         dbStudentSchoolFilter = document.getElementById('db-student-school-filter');
         dbStudentStageFilter = document.getElementById('db-student-stage-filter');
 
+        var userRole = (sessionStorage.getItem('userRole') || localStorage.getItem('userRole') || 'Gestor da Rede').toLowerCase();
+        var userEscola = (sessionStorage.getItem('userEscola') || localStorage.getItem('userEscola') || '').trim();
+        var userTurma = (sessionStorage.getItem('userTurma') || localStorage.getItem('userTurma') || '').trim();
+        var isTeacher = userRole.includes('professor');
+        var isDirector = userRole.includes('diretor');
+
         var query = dbStudentSearch ? dbStudentSearch.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : '';
         var schoolFilter = dbStudentSchoolFilter ? dbStudentSchoolFilter.value : 'all';
         var stageFilter = dbStudentStageFilter ? dbStudentStageFilter.value : 'all';
@@ -71,10 +88,29 @@
             var nameNorm = (s.nome || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             var cpfNorm = (s.cpf || '').replace(/\D/g, '');
             var matchQuery = !query || nameNorm.includes(query) || (s.matricula && s.matricula.includes(query)) || cpfNorm.includes(query);
-            var matchSchool = schoolFilter === 'all' || s.escola === schoolFilter;
+
+            // Isolamento RBAC por Escola
+            var matchSchool = true;
+            if (isTeacher || isDirector) {
+                var sSch = (s.escola || '').toLowerCase().trim();
+                var uSch = userEscola.toLowerCase().trim();
+                matchSchool = !uSch || sSch === uSch || sSch.includes(uSch) || uSch.includes(sSch);
+            } else if (schoolFilter !== 'all') {
+                matchSchool = s.escola === schoolFilter;
+            }
+
+            // Isolamento RBAC por Turma para Professor
+            var matchTeacherTurma = true;
+            if (isTeacher && userTurma && userTurma !== 'Todas as Turmas') {
+                var sTurma = (s.turma || '').toLowerCase().trim();
+                var sEtapa = (s.etapa || '').toLowerCase().trim();
+                var uTurma = userTurma.toLowerCase().trim();
+                matchTeacherTurma = sTurma.includes(uTurma) || uTurma.includes(sTurma) || sEtapa.includes(uTurma) || uTurma.includes(sEtapa);
+            }
+
             var matchStage = stageFilter === 'all' || (s.etapa && s.etapa.includes(stageFilter)) || (s.turma && s.turma.includes(stageFilter));
 
-            return matchQuery && matchSchool && matchStage;
+            return matchQuery && matchSchool && matchTeacherTurma && matchStage;
         });
 
         global.dbCurrentPage = 1;

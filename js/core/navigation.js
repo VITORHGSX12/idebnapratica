@@ -268,7 +268,7 @@
         // 1. VISÃO DO PROFESSOR
         if (userRole === 'Professor' || userRole === 'Professor AEE') {
             if (activeNetworkLabel) activeNetworkLabel.textContent = '👨‍🏫 ' + userTurma + ' • ' + userEscola;
-            if (userProfileName) userProfileName.textContent = 'Prof. Carlos Eduardo';
+            if (userProfileName) userProfileName.textContent = sessionStorage.getItem('userName') || 'Prof. Carlos Eduardo';
             if (userProfileRole) userProfileRole.textContent = 'Visão de Docente • ' + userTurma;
             if (userProfileAvatar) {
                 userProfileAvatar.textContent = 'PR';
@@ -277,7 +277,7 @@
 
             sidebarMenu.innerHTML = `
                 <div class="menu-group">
-                    <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Diagnóstico Pedagógico</span>
+                    <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Diagnóstico & Turma</span>
                     <div style="display: flex; flex-direction: column; gap: 4px;">
                         <a href="javascript:void(0)" onclick="switchTab('dashboard'); return false;" class="menu-item ${currentTab === 'dashboard' ? 'active' : ''}" data-target="dashboard">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
@@ -287,6 +287,10 @@
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                             <span>Diagnóstico por Aluno</span>
                         </a>
+                        <a href="javascript:void(0)" onclick="switchTab('cronograma-habilidades'); return false;" class="menu-item ${currentTab === 'cronograma-habilidades' ? 'active' : ''}" data-target="cronograma-habilidades">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="m9 16 2 2 4-4"/></svg>
+                            <span>Cronograma & Plano de Aulas</span>
+                        </a>
                         <a href="javascript:void(0)" onclick="switchTab('matriz-descritores'); return false;" class="menu-item ${currentTab === 'matriz-descritores' ? 'active' : ''}" data-target="matriz-descritores">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
                             <span>Habilidades a Recompor</span>
@@ -294,6 +298,10 @@
                         <a href="javascript:void(0)" onclick="switchTab('sec-aplicacao-provas'); return false;" class="menu-item ${currentTab === 'sec-aplicacao-provas' || currentTab === 'aplicacao-provas' ? 'active' : ''}" data-target="aplicacao-provas">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
                             <span>Desempenho em Simulados</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="switchTab('biblioteca-recursos'); return false;" class="menu-item ${currentTab === 'biblioteca-recursos' ? 'active' : ''}" data-target="biblioteca-recursos">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
+                            <span>Recursos & Materiais</span>
                         </a>
                     </div>
                 </div>
