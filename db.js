@@ -188,6 +188,9 @@ async function seedDatabase() {
                     // Inserir Estudantes
                     try {
                         await client.query(`
+                            ALTER TABLE alunos ADD COLUMN IF NOT EXISTS turma_id UUID;
+                            ALTER TABLE alunos ALTER COLUMN codigo_matricula DROP NOT NULL;
+                            ALTER TABLE alunos ALTER COLUMN data_nascimento DROP NOT NULL;
                             ALTER TABLE alunos ADD COLUMN IF NOT EXISTS matricula VARCHAR(50);
                             ALTER TABLE alunos ADD COLUMN IF NOT EXISTS cpf VARCHAR(20);
                             ALTER TABLE alunos ADD COLUMN IF NOT EXISTS nascimento VARCHAR(30);
@@ -204,10 +207,10 @@ async function seedDatabase() {
                         for (const st of chunk) {
                             const turmaId = classMap[st.turma] || null;
                             await client.query(`
-                                INSERT INTO alunos (nome, matricula, turma_id, cpf)
-                                VALUES ($1, $2, $3, $4)
-                                ON CONFLICT (matricula) DO NOTHING;
-                            `, [st.nome, st.matricula, turmaId, st.cpf || '']);
+                                INSERT INTO alunos (nome, matricula, codigo_matricula, turma_id, cpf)
+                                VALUES ($1, $2, $3, $4, $5)
+                                ON CONFLICT DO NOTHING;
+                            `, [st.nome, st.matricula, st.matricula, turmaId, st.cpf || '']);
                             insertedStudents++;
                         }
                     }
