@@ -78,9 +78,45 @@
         };
     }
 
+    // Safe JSON Parse Helper
+    function safeJsonParse(data, fallbackValue) {
+        if (data === null || data === undefined || data === '') return fallbackValue;
+        if (typeof data !== 'string') return data;
+        try {
+            var parsed = JSON.parse(data);
+            return parsed !== null ? parsed : fallbackValue;
+        } catch (err) {
+            console.warn('[Safe JSON Parse] Falha ao processar JSON:', err);
+            return fallbackValue;
+        }
+    }
+
+    // Máscara e formatador seguro de CPF
+    function formatCPF(cpf) {
+        if (!cpf) return '';
+        var clean = String(cpf).replace(/\D/g, '');
+        if (clean.length !== 11) return cpf;
+        return clean.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    }
+
+    // Máscara de Telefone
+    function formatPhone(phone) {
+        if (!phone) return '';
+        var clean = String(phone).replace(/\D/g, '');
+        if (clean.length === 11) {
+            return clean.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+        } else if (clean.length === 10) {
+            return clean.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+        }
+        return phone;
+    }
+
     // Exposição global
     global._memoryStorage = _memoryStorage;
     global.safeStorage = safeStorage;
+    global.safeJsonParse = safeJsonParse;
+    global.formatCPF = formatCPF;
+    global.formatPhone = formatPhone;
     global.safeEl = safeEl;
     global.safeSetProp = safeSetProp;
     global.safeGetProp = safeGetProp;
@@ -89,3 +125,4 @@
     global.debounce = debounce;
 
 })(typeof window !== 'undefined' ? window : this);
+

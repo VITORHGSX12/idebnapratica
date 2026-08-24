@@ -1515,12 +1515,16 @@
 
     function initGdMetasDatabase() {
         try {
+            var parseFn = (typeof global.safeJsonParse === 'function') ? global.safeJsonParse : JSON.parse;
             var savedTargets = localStorage.getItem('gd_school_targets_db');
-            if (savedTargets) gdSchoolTargetsMap = JSON.parse(savedTargets);
+            if (savedTargets) gdSchoolTargetsMap = parseFn(savedTargets, {}) || {};
 
             var savedPde = localStorage.getItem('gd_school_pde_plans_db');
-            if (savedPde) gdSchoolPdePlansMap = JSON.parse(savedPde);
-        } catch(e) {}
+            if (savedPde) gdSchoolPdePlansMap = parseFn(savedPde, {}) || {};
+        } catch(e) {
+            gdSchoolTargetsMap = {};
+            gdSchoolPdePlansMap = {};
+        }
     }
 
     function checkPossuiAvaliacaoRealizada(schName, selectedYear) {

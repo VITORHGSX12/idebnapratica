@@ -256,37 +256,53 @@
                     avg_score: 75
                 };
 
-                loaded.push(newStudent);
+                var submitBtn = createStudentForm.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Salvando Estudante...';
+                }
 
-                dbAln.push({
-                    id: `aln_${dbAln.length + 1}_${Date.now()}`,
-                    turma_id: classObj.id,
-                    nome: name,
-                    matricula: matricula,
-                    nee: nee,
-                    avg_score: 75
-                });
-                
-                if (typeof global.recalculateNetworkStats === 'function') global.recalculateNetworkStats();
-                
-                var metricStud = document.getElementById('metric-students-eval');
-                if (metricStud) metricStud.textContent = `${loaded.length.toLocaleString('pt-BR')} alunos avaliados`;
-                
-                var badgeCount = document.getElementById('badge-count-students');
-                if (badgeCount) badgeCount.textContent = loaded.length.toLocaleString('pt-BR');
-                
-                var schools = Array.from(new Set(loaded.map(function(s) { return s.escola; }))).sort();
-                if (typeof global.initAlunosTab === 'function') global.initAlunosTab(schools);
-                if (typeof global.populateSchoolPanelSelector === 'function') global.populateSchoolPanelSelector(schools);
-                
-                if (typeof global.initStudentSearch === 'function') global.initStudentSearch();
-                if (typeof global.renderRiskGoalsTable === 'function') global.renderRiskGoalsTable();
-                if (typeof global.renderHeatmapGrid === 'function') global.renderHeatmapGrid();
-                if (typeof global.saveDatabaseState === 'function') global.saveDatabaseState();
+                try {
+                    loaded.push(newStudent);
 
-                if (typeof global.showToast === 'function') global.showToast(`Aluno ${name} cadastrado com sucesso!`, 'check-circle');
-                createStudentForm.reset();
-                if (createStudentModal) createStudentModal.classList.add('hidden');
+                    dbAln.push({
+                        id: `aln_${dbAln.length + 1}_${Date.now()}`,
+                        turma_id: classObj.id,
+                        nome: name,
+                        matricula: matricula,
+                        nee: nee,
+                        avg_score: 75
+                    });
+                    
+                    if (typeof global.recalculateNetworkStats === 'function') global.recalculateNetworkStats();
+                    
+                    var metricStud = document.getElementById('metric-students-eval');
+                    if (metricStud) metricStud.textContent = `${loaded.length.toLocaleString('pt-BR')} alunos avaliados`;
+                    
+                    var badgeCount = document.getElementById('badge-count-students');
+                    if (badgeCount) badgeCount.textContent = loaded.length.toLocaleString('pt-BR');
+                    
+                    var schools = Array.from(new Set(loaded.map(function(s) { return s.escola; }))).sort();
+                    if (typeof global.initAlunosTab === 'function') global.initAlunosTab(schools);
+                    if (typeof global.populateSchoolPanelSelector === 'function') global.populateSchoolPanelSelector(schools);
+                    
+                    if (typeof global.initStudentSearch === 'function') global.initStudentSearch();
+                    if (typeof global.renderRiskGoalsTable === 'function') global.renderRiskGoalsTable();
+                    if (typeof global.renderHeatmapGrid === 'function') global.renderHeatmapGrid();
+                    if (typeof global.saveDatabaseState === 'function') global.saveDatabaseState();
+
+                    if (typeof global.showToast === 'function') global.showToast(`Aluno ${name} cadastrado com sucesso!`, 'check-circle');
+                    createStudentForm.reset();
+                    if (createStudentModal) createStudentModal.classList.add('hidden');
+                } catch(err) {
+                    console.error('[Student Registration Error]', err);
+                    if (typeof global.showToast === 'function') global.showToast('Erro ao salvar aluno.', 'x');
+                } finally {
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Cadastrar Aluno';
+                    }
+                }
             });
         }
     }

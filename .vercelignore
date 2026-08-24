@@ -1,0 +1,6 @@
+scratch/
+test_*.js
+scripts/
+*.log
+.git/
+.gemini/

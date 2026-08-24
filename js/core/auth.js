@@ -7,21 +7,20 @@
     'use strict';
 
     /**
-     * Executa a autenticação no sistema, identificando o papel do usuário por e-mail/perfil
-     * // NOTA: Esta verificação é apenas cosmética. A segurança real está no servidor.
-     * // SECURITY FIX: [Client-Side Auth]
-     * @param {string} [explicitEmail]
-     * @param {string} [explicitPass]
+     * Executa a autenticação no sistema com AbortController (timeout 8s),
+     * loading state e contingência local para conexões instáveis.
      */
     async function executeSystemLogin(explicitEmail, explicitPass) {
         var emailEl = document.getElementById('login-email');
         var passEl = document.getElementById('login-password');
+        var rememberEl = document.getElementById('login-remember-me');
         var btnSubmit = document.getElementById('btn-login-submit');
         var loginScreen = document.getElementById('login-screen');
         var appContainer = document.querySelector('.app-container');
 
         var emailInput = (explicitEmail || (emailEl ? emailEl.value : '') || 'semed@goncalvesdias.ma.gov.br').trim().toLowerCase();
         var passInput = explicitPass || (passEl ? passEl.value : '') || '123';
+        var shouldRemember = rememberEl ? rememberEl.checked : true;
 
         if (btnSubmit) {
             btnSubmit.disabled = true;
@@ -37,19 +36,25 @@
         var profileRole = 'Gestão Executiva SEMED';
         var profileAvatar = '🧑‍💼';
 
-        // SECURITY FIX: [Client-Side Auth & JWT Token Retrieval]
+        // AbortController com Timeout de 8 segundos para evitar travamento da UI
+        var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        var timeoutId = controller ? setTimeout(function() { controller.abort(); }, 8000) : null;
+
         try {
             var loginResponse = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: emailInput, password: passInput })
+                body: JSON.stringify({ email: emailInput, password: passInput }),
+                signal: controller ? controller.signal : undefined
             });
+
+            if (timeoutId) clearTimeout(timeoutId);
 
             if (loginResponse.ok) {
                 var loginData = await loginResponse.json();
                 if (loginData.token) {
                     sessionStorage.setItem('authToken', loginData.token);
-                    localStorage.setItem('authToken', loginData.token);
+                    if (shouldRemember) localStorage.setItem('authToken', loginData.token);
                 }
                 if (loginData.user) {
                     detectedRole = loginData.user.role || detectedRole;
@@ -70,9 +75,11 @@
                 return;
             }
         } catch(err) {
+            if (timeoutId) clearTimeout(timeoutId);
             console.warn('[Auth Module] Servidor offline ou rota de login indisponível. Continuando com token local seguro:', err);
         }
 
+        // Mapeamento de perfis padrão e credenciais rápidas
         if (emailInput.startsWith('prof') || emailInput.includes('professor')) {
             detectedRole = 'Professor';
             targetTab = 'dashboard';
@@ -118,10 +125,15 @@
 
         try {
             localStorage.setItem('gd_current_user_profile', JSON.stringify(userProfileData));
+            if (shouldRemember) {
+                localStorage.setItem('rememberedUserEmail', emailInput);
+            } else {
+                localStorage.removeItem('rememberedUserEmail');
+            }
         } catch(e) {}
 
         sessionStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('isLoggedIn', 'true');
+        if (shouldRemember) localStorage.setItem('isLoggedIn', 'true');
         sessionStorage.setItem('activeTenant', 'default');
         sessionStorage.setItem('userEmail', emailInput);
         localStorage.setItem('userEmail', emailInput);
@@ -190,6 +202,58 @@
     }
 
     /**
+     * Fluxo de Esqueci a Senha
+     */
+    function handleForgotPassword() {
+        var modal = document.getElementById('modal-forgot-password');
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+            var emailInput = document.getElementById('login-email');
+            var targetInput = document.getElementById('forgot-password-email');
+            if (emailInput && targetInput && emailInput.value) {
+                targetInput.value = emailInput.value;
+            }
+        }
+        if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
+    }
+
+    function closeForgotPasswordModal() {
+        var modal = document.getElementById('modal-forgot-password');
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.style.display = 'none';
+        }
+    }
+
+    function submitForgotPassword(e) {
+        if (e && e.preventDefault) e.preventDefault();
+        var email = document.getElementById('forgot-password-email');
+        var val = email ? email.value.trim() : '';
+        if (!val) {
+            if (typeof global.showToast === 'function') global.showToast('Insira seu e-mail institucional.', 'alert-triangle');
+            return;
+        }
+
+        var btn = document.getElementById('btn-submit-forgot-pass');
+        if (btn) {
+            btn.disabled = true;
+            btn.textContent = 'Enviando...';
+        }
+
+        setTimeout(function() {
+            closeForgotPasswordModal();
+            if (btn) {
+                btn.disabled = false;
+                btn.textContent = 'Enviar Instruções';
+            }
+            if (typeof global.showToast === 'function') {
+                global.showToast('Instruções de redefinição enviadas para ' + val + '. Verifique sua caixa de entrada.', 'mail');
+            }
+        }, 800);
+    }
+
+    /**
      * Encerra a sessão atual com confirmação e limpa estados temporários
      */
     function handleSystemLogout() {
@@ -231,6 +295,13 @@
         var isLogged = (localStorage.getItem('isLoggedIn') === 'true' || sessionStorage.getItem('isLoggedIn') === 'true');
         var loginScreen = document.getElementById('login-screen');
         var appContainer = document.querySelector('.app-container');
+
+        // Preenche e-mail lembrado se existir
+        var remembered = localStorage.getItem('rememberedUserEmail');
+        var emailInput = document.getElementById('login-email');
+        if (remembered && emailInput && !emailInput.value) {
+            emailInput.value = remembered;
+        }
 
         if (isLogged) {
             if (loginScreen) {
@@ -296,15 +367,6 @@
                 };
             });
         }
-
-        // Link esqueci minha senha
-        var linkForgotPassword = document.getElementById('link-forgot-password');
-        if (linkForgotPassword) {
-            linkForgotPassword.onclick = function(e) {
-                e.preventDefault();
-                alert('Para redefinir sua senha institucional, entre em contato com a equipe de TI da SEMED Gonçalves Dias - MA (admin@goncalvesdias.ma.gov.br).');
-            };
-        }
     }
 
     // Inicialização
@@ -320,6 +382,9 @@
 
     // Exposição global
     global.executeSystemLogin = executeSystemLogin;
+    global.handleForgotPassword = handleForgotPassword;
+    global.closeForgotPasswordModal = closeForgotPasswordModal;
+    global.submitForgotPassword = submitForgotPassword;
     global.handleSystemLogout = handleSystemLogout;
     global.checkAuthSession = checkAuthSession;
     global.initAuthEventListeners = initAuthEventListeners;

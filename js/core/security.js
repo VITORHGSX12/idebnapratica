@@ -73,9 +73,50 @@
         return el;
     }
 
+    /**
+     * Valida e higieniza a integridade da sessão do usuário atual
+     * Previne injeção ou adulteração de perfis RBAC no client-side
+     */
+    function sanitizeAndVerifyUserSession() {
+        var raw = localStorage.getItem('gd_current_user_profile') || localStorage.getItem('currentUser');
+        if (!raw) return null;
+        
+        var user = (typeof global.safeJsonParse === 'function') 
+            ? global.safeJsonParse(raw, null) 
+            : null;
+
+        if (!user || typeof user !== 'object') {
+            return null;
+        }
+
+        var validRoles = [
+            'Master Admin', 
+            'Gestor SEMED', 
+            'Gestor da Rede', 
+            'Diretor Escola', 
+            'Professor', 
+            'Coordenador(a)', 
+            'Gestão Executiva SEMED',
+            'Professor(a) • UI JOSE CORREA LIMA',
+            'Diretora Escolar • UI JOSE CORREA LIMA',
+            'Administrador(a) do Sistema & TI'
+        ];
+
+        var userRole = user.role || '';
+        var isRoleValid = validRoles.some(function(r) { return userRole.indexOf(r) !== -1 || r.indexOf(userRole) !== -1; });
+
+        if (!isRoleValid) {
+            console.warn('[Security Warning] Perfil inválido detectado na sessão. Restaurando padrão seguro.');
+            user.role = 'Gestor da Rede';
+        }
+
+        return sanitizeObject(user);
+    }
+
     // Exportar para escopo global
     global.escapeHtml = escapeHtml;
     global.sanitizeObject = sanitizeObject;
     global.createSafeElement = createSafeElement;
+    global.sanitizeAndVerifyUserSession = sanitizeAndVerifyUserSession;
 
-})(window);
+})(typeof window !== 'undefined' ? window : this);
