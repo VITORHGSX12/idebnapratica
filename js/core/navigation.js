@@ -71,6 +71,13 @@
             if (mainContent) mainContent.scrollTop = 0;
             if (typeof window.scrollTo === 'function') window.scrollTo(0, 0);
 
+            // Fecha qualquer modal ativo ao trocar de rota/aba
+            var openModals = document.querySelectorAll('.modal-overlay');
+            openModals.forEach(function(modal) {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+            });
+
             // 1. Ocultar todas as seções .tab-content
             var allSections = document.querySelectorAll('.tab-content');
             allSections.forEach(function(sec) {

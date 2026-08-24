@@ -55,6 +55,27 @@
     --sidebar-width: 270px;
 }
 
+/* Utility & Modal Visibility Classes */
+.hidden {
+    display: none !important;
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.modal-overlay.hidden {
+    display: none !important;
+}
+
 /* Dark Mode Overrides - Soft Premium Slate Mode */
 body.dark-mode {
     --bg-primary: #0a0b10;

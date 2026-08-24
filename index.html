@@ -263,6 +263,13 @@
 
                 localStorage.setItem('lastActiveTab', targetTab);
                 
+                // Fecha qualquer modal ativo ao trocar de rota/aba
+                var openModals = document.querySelectorAll('.modal-overlay');
+                for (var m = 0; m < openModals.length; m++) {
+                    openModals[m].classList.add('hidden');
+                    openModals[m].style.display = 'none';
+                }
+
                 // Hide all main tab contents
                 var allTabs = document.querySelectorAll('.tab-content');
                 for (var i = 0; i < allTabs.length; i++) {
@@ -4192,109 +4199,116 @@
                         </div>
                     </div>
 
-                <div class="grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; background:var(--bg-tertiary); padding:12px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
-                    <div class="form-group">
-                        <label for="new-user-email" style="font-size:0.75rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Login (E-mail)</label>
-                        <input type="email" id="new-user-email" class="form-input-text" required placeholder="email@goncalvesdias.ma.gov.br" style="width:100%; height:36px; font-size:0.8rem;">
-                    </div>
-                    <div class="form-group">
-                        <label for="new-user-password" style="font-size:0.75rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Senha de Acesso</label>
-                        <input type="text" id="new-user-password" class="form-input-text" required value="Gondias@2026" style="width:100%; height:36px; font-size:0.8rem; font-family:var(--font-mono);">
+    <!-- Modal Ficha Cadastral e Progressão do Aluno -->
+    <div id="student-modal" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; padding: 16px;">
+        <div class="modal-content" style="max-width: 800px; width: 95%; max-height: 90vh; overflow-y: auto; background: var(--color-surface-card); border-radius: var(--radius-card); border: 1px solid var(--color-border-subtle); padding: 24px; box-shadow: var(--shadow-modal);">
+            <div class="modal-header flex-between" style="border-bottom: 1px solid var(--color-border-subtle); padding-bottom: 14px; margin-bottom: 16px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div id="modal-student-avatar-circle" style="width: 44px; height: 44px; border-radius: 50%; background: var(--color-accent-soft); color: var(--color-accent-primary); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; border: 1px solid var(--color-accent-soft-border);">A</div>
+                    <div>
+                        <h3 id="modal-student-name" style="margin: 0; font-size: 1.25rem; font-weight: 800; color: var(--color-brand-primary);">Nome do Aluno</h3>
+                        <p id="modal-student-header-meta" style="margin: 2px 0 0 0; font-size: var(--text-xs); color: var(--color-text-secondary);">Turma • Escola • Turno</p>
                     </div>
                 </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span id="modal-student-proficiency-badge" class="badge badge-status-success">Adequado</span>
+                    <button type="button" class="btn btn-icon" id="close-student-modal-btn" onclick="document.getElementById('student-modal').classList.add('hidden'); document.getElementById('student-modal').style.display='none';">
+                        <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Navigation Tabs: Cadastral vs Progressão -->
+            <div style="display: flex; gap: 12px; border-bottom: 1px solid var(--color-border-subtle); margin-bottom: 16px;">
+                <button type="button" id="btn-tab-student-cadastral" class="btn btn-outline" style="border-radius: var(--radius-sm); font-size: var(--text-xs); font-weight: 700; padding: 6px 14px;">Ficha Cadastral</button>
+                <button type="button" id="btn-tab-student-progressao" class="btn btn-outline" style="border-radius: var(--radius-sm); font-size: var(--text-xs); font-weight: 700; padding: 6px 14px;">Histórico &amp; Progressão</button>
+            </div>
 
-                <div class="modal-footer flex-end" style="gap: 8px; margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 12px;">
-                    <button type="button" class="btn btn-outline" onclick="closeModal('create-user-modal')">Cancelar</button>
-                    <button type="submit" class="btn btn-primary" style="font-weight:700;">Cadastrar Usuário</button>
-                </div>
-            </form>
-        </div>
-    </div>
+            <div class="modal-body" style="padding: 0;">
+                <div id="panel-student-cadastral">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                        <!-- Card 1: Pessoal -->
+                        <div style="background: var(--color-surface-subtle); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-sm); padding: 14px;">
+                            <h5 style="margin: 0 0 10px 0; font-size: var(--text-xs); font-weight: 700; color: var(--color-accent-primary); text-transform: uppercase; letter-spacing: 0.5px;">
+                                Identificação Pessoal
+                            </h5>
+                            <div style="display: flex; flex-direction: column; gap: 6px; font-size: var(--text-xs);">
+                                <div><span style="color: var(--color-text-muted);">CPF:</span> <strong id="modal-student-cpf">-</strong></div>
+                                <div><span style="color: var(--color-text-muted);">Sexo:</span> <strong id="modal-student-sexo">-</strong></div>
+                                <div><span style="color: var(--color-text-muted);">Data Nasc.:</span> <strong id="modal-student-nascimento">-</strong></div>
+                                <div><span style="color: var(--color-text-muted);">Cor / Raça:</span> <strong id="modal-student-cor">-</strong></div>
+                            </div>
+                        </div>
 
                         <!-- Card 2: Vínculo Escolar -->
-                        <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
-                            <h5 style="margin: 0 0 10px 0; font-size: 0.85rem; font-weight: 700; color: var(--blue-light); text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px;">
-                                <i data-lucide="graduation-cap" style="width: 14px; height: 14px;"></i> Vínculo Escolar
+                        <div style="background: var(--color-surface-subtle); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-sm); padding: 14px;">
+                            <h5 style="margin: 0 0 10px 0; font-size: var(--text-xs); font-weight: 700; color: var(--color-status-advanced); text-transform: uppercase; letter-spacing: 0.5px;">
+                                Vínculo Escolar
                             </h5>
-                            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.82rem;">
-                                <div><span style="color: var(--text-muted);">Escola:</span> <strong id="modal-student-escola">-</strong></div>
-                                <div><span style="color: var(--text-muted);">Etapa:</span> <strong id="modal-student-etapa">-</strong></div>
-                                <div><span style="color: var(--text-muted);">Turma / Turno:</span> <strong id="modal-student-turma-turno">-</strong></div>
-                                <div><span style="color: var(--text-muted);">Data Matrícula:</span> <strong id="modal-student-inicio">-</strong></div>
+                            <div style="display: flex; flex-direction: column; gap: 6px; font-size: var(--text-xs);">
+                                <div><span style="color: var(--color-text-muted);">Escola:</span> <strong id="modal-student-escola">-</strong></div>
+                                <div><span style="color: var(--color-text-muted);">Etapa:</span> <strong id="modal-student-etapa">-</strong></div>
+                                <div><span style="color: var(--color-text-muted);">Turma / Turno:</span> <strong id="modal-student-turma-turno">-</strong></div>
+                                <div><span style="color: var(--color-text-muted);">Data Matrícula:</span> <strong id="modal-student-inicio">-</strong></div>
                             </div>
                         </div>
 
                         <!-- Card 3: Família & Endereço -->
-                        <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
-                            <h5 style="margin: 0 0 10px 0; font-size: 0.85rem; font-weight: 700; color: var(--green-light); text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px;">
-                                <i data-lucide="home" style="width: 14px; height: 14px;"></i> Família & Contato
+                        <div style="background: var(--color-surface-subtle); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-sm); padding: 14px;">
+                            <h5 style="margin: 0 0 10px 0; font-size: var(--text-xs); font-weight: 700; color: var(--color-status-success); text-transform: uppercase; letter-spacing: 0.5px;">
+                                Família &amp; Contato
                             </h5>
-                            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.82rem;">
-                                <div><span style="color: var(--text-muted);">Mãe:</span> <strong id="modal-student-mae">-</strong></div>
-                                <div><span style="color: var(--text-muted);">Pai:</span> <strong id="modal-student-pai">-</strong></div>
-                                <div><span style="color: var(--text-muted);">Endereço:</span> <strong id="modal-student-endereco">-</strong></div>
-                                <div><span style="color: var(--text-muted);">CEP:</span> <strong id="modal-student-cep">-</strong></div>
+                            <div style="display: flex; flex-direction: column; gap: 6px; font-size: var(--text-xs);">
+                                <div><span style="color: var(--color-text-muted);">Mãe:</span> <strong id="modal-student-mae">-</strong></div>
+                                <div><span style="color: var(--color-text-muted);">Pai:</span> <strong id="modal-student-pai">-</strong></div>
+                                <div><span style="color: var(--color-text-muted);">Endereço:</span> <strong id="modal-student-endereco">-</strong></div>
+                                <div><span style="color: var(--color-text-muted);">CEP:</span> <strong id="modal-student-cep">-</strong></div>
                             </div>
                         </div>
 
-                        <!-- Card 4: Acessibilidade & Desempenho Atual -->
-                        <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
-                            <h5 style="margin: 0 0 10px 0; font-size: 0.85rem; font-weight: 700; color: var(--amber-light); text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px;">
-                                <i data-lucide="award" style="width: 14px; height: 14px;"></i> Desempenho & Acessibilidade
+                        <!-- Card 4: Desempenho & Acessibilidade -->
+                        <div style="background: var(--color-surface-subtle); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-sm); padding: 14px;">
+                            <h5 style="margin: 0 0 10px 0; font-size: var(--text-xs); font-weight: 700; color: var(--color-status-warning); text-transform: uppercase; letter-spacing: 0.5px;">
+                                Desempenho &amp; Acessibilidade
                             </h5>
-                            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.82rem;">
-                                <div><span style="color: var(--text-muted);">Proficiência Média:</span> <strong id="modal-student-score" style="color: var(--purple-light); font-size: 1rem;">-</strong></div>
-                                <div><span style="color: var(--text-muted);">Língua Portuguesa:</span> <strong id="modal-student-score-lp">-</strong> | <span style="color: var(--text-muted);">Matemática:</span> <strong id="modal-student-score-mat">-</strong></div>
-                                <div><span style="color: var(--text-muted);">Frequência:</span> <strong id="modal-student-freq">98%</strong></div>
-                                <div><span style="color: var(--text-muted);">NEE / Deficiência:</span> <strong id="modal-student-nee">Nenhuma</strong></div>
+                            <div style="display: flex; flex-direction: column; gap: 6px; font-size: var(--text-xs);">
+                                <div><span style="color: var(--color-text-muted);">Proficiência Média:</span> <strong id="modal-student-score">-</strong></div>
+                                <div><span style="color: var(--color-text-muted);">LP:</span> <strong id="modal-student-score-lp">-</strong> | <span style="color: var(--color-text-muted);">MAT:</span> <strong id="modal-student-score-mat">-</strong></div>
+                                <div><span style="color: var(--color-text-muted);">Frequência:</span> <strong id="modal-student-freq">98%</strong></div>
+                                <div><span style="color: var(--color-text-muted);">NEE / Deficiência:</span> <strong id="modal-student-nee">Nenhuma</strong></div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- TAB 2: HISTÓRICO DE PROGRESSÃO LONGITUDINAL (SIMULADO A SIMULADO) -->
-                <div id="panel-student-progressao" class="hidden">
-                    <div style="background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: var(--radius-md); padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
-                        <i data-lucide="sparkles" style="color: var(--purple-light); width: 20px; height: 20px; flex-shrink: 0;"></i>
-                        <div style="font-size: 0.82rem; color: var(--text-primary);">
-                            <strong>Trajetória Longitudinal do Aluno:</strong> Acompanhe o ganho de proficiência escala SAEB (0-500) e a evolução do domínio de habilidades entre as avaliações diagnósticas e bimestrais.
+                <!-- Tab 2: Progressão -->
+                <div id="panel-student-progressao" class="hidden" style="display: none;">
+                    <div style="background: var(--color-accent-soft); border: 1px solid var(--color-accent-soft-border); border-radius: var(--radius-sm); padding: 12px 16px; margin-bottom: 16px;">
+                        <div style="font-size: var(--text-xs); color: var(--color-brand-primary);">
+                            <strong>Trajetória Longitudinal do Aluno:</strong> Acompanhe o ganho de proficiência escala SAEB (0-500) e a evolução do domínio de habilidades.
                         </div>
                     </div>
-
-                    <!-- 3 Simulado Milestone Cards -->
                     <div id="student-progression-milestones-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 18px;">
-                        <!-- Injetado dinamicamente via JS -->
                     </div>
-
-                    <!-- Performance Breakdown by Discipline & Skills -->
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
-                        <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
-                            <h5 style="margin: 0 0 8px 0; font-size: 0.82rem; color: var(--green-light); display: flex; align-items: center; gap: 6px;">
-                                <i data-lucide="check-circle" style="width: 14px; height: 14px;"></i> Habilidades Consolidadas (Acertos > 70%)
-                            </h5>
-                            <ul id="student-consolidated-skills-list" style="margin: 0; padding-left: 18px; font-size: 0.8rem; line-height: 1.5; color: var(--text-primary);">
-                                <!-- Injetado via JS -->
-                            </ul>
+                        <div style="background: var(--color-surface-subtle); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-sm); padding: 14px;">
+                            <h5 style="margin: 0 0 8px 0; font-size: var(--text-xs); color: var(--color-status-success);">Habilidades Consolidadas</h5>
+                            <ul id="student-consolidated-skills-list" style="margin: 0; padding-left: 18px; font-size: var(--text-xs); line-height: 1.5;"></ul>
                         </div>
-
-                        <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
-                            <h5 style="margin: 0 0 8px 0; font-size: 0.82rem; color: var(--red-light); display: flex; align-items: center; gap: 6px;">
-                                <i data-lucide="alert-circle" style="width: 14px; height: 14px;"></i> Habilidades Críticas a Desenvolver
-                            </h5>
-                            <ul id="student-focus-skills-list" style="margin: 0; padding-left: 18px; font-size: 0.8rem; line-height: 1.5; color: var(--text-primary);">
-                                <!-- Injetado via JS -->
-                            </ul>
+                        <div style="background: var(--color-surface-subtle); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-sm); padding: 14px;">
+                            <h5 style="margin: 0 0 8px 0; font-size: var(--text-xs); color: var(--color-status-critical);">Habilidades Críticas a Desenvolver</h5>
+                            <ul id="student-focus-skills-list" style="margin: 0; padding-left: 18px; font-size: var(--text-xs); line-height: 1.5;"></ul>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="modal-footer flex-between" style="margin-top: 18px; border-top: 1px solid var(--border-color); padding-top: 12px;">
-                <button class="btn btn-outline" id="btn-print-student-record" style="display: flex; align-items: center; gap: 6px;">
-                    <i data-lucide="printer" style="width: 15px; height: 15px;"></i>
+            <div class="modal-footer flex-between" style="margin-top: 18px; border-top: 1px solid var(--color-border-subtle); padding-top: 12px;">
+                <button class="btn btn-outline" id="btn-print-student-record" style="font-size: var(--text-xs); padding: 6px 14px; border-radius: var(--radius-pill);">
+                    <i data-lucide="printer" style="width: 14px; height: 14px;"></i>
                     <span>Imprimir Ficha do Aluno</span>
                 </button>
-                <button class="btn btn-primary" id="btn-close-student-modal-action">Fechar Ficha</button>
+                <button class="btn btn-primary" id="btn-close-student-modal-action" onclick="document.getElementById('student-modal').classList.add('hidden'); document.getElementById('student-modal').style.display='none';" style="font-size: var(--text-xs); padding: 6px 18px; border-radius: var(--radius-pill);">Fechar Ficha</button>
             </div>
         </div>
     </div>
