@@ -792,6 +792,12 @@
 
         allClasses.push(newClass);
         saveOfficialClassesState(allClasses);
+
+        // Sincronização em nuvem em segundo plano
+        if (typeof global.enqueueSyncAction === 'function') {
+            global.enqueueSyncAction('turma', 'CREATE', newClass);
+        }
+
         closeCreateClassModal();
         renderSchoolClassesTab(schoolName);
 
@@ -903,8 +909,7 @@
             return;
         }
 
-        var allTeachers = getOfficialTeachersState();
-        allTeachers.push({
+        var newTeacher = {
             id: 'prof_' + Date.now(),
             nome: name,
             email: email,
@@ -912,9 +917,16 @@
             escola: schoolName,
             turmas: selected.length > 0 ? selected : ['Geral'],
             status: 'Ativo'
-        });
+        };
+        allTeachers.push(newTeacher);
 
         saveOfficialTeachersState(allTeachers);
+
+        // Sincronização em nuvem em segundo plano
+        if (typeof global.enqueueSyncAction === 'function') {
+            global.enqueueSyncAction('professor', 'CREATE', newTeacher);
+        }
+
         closeCreateTeacherModal();
         renderSchoolTeachersTab(schoolName);
 
@@ -981,6 +993,12 @@
 
         allStudents.push(newStudent);
         saveOfficialStudentsState(allStudents);
+
+        // Sincronização em nuvem em segundo plano
+        if (typeof global.enqueueSyncAction === 'function') {
+            global.enqueueSyncAction('aluno', 'CREATE', newStudent);
+        }
+
         closeCreateStudentModal();
         renderSchoolStudentsTab(schoolName);
 
@@ -1038,6 +1056,11 @@
         if (index !== -1) {
             allStudents[index].turma = newTurma || 'Sem turma';
             saveOfficialStudentsState(allStudents);
+
+            // Sincronização em nuvem em segundo plano
+            if (typeof global.enqueueSyncAction === 'function') {
+                global.enqueueSyncAction('aluno', 'UPDATE', { id: studentId, turma: newTurma, escola: schoolName });
+            }
         }
 
         closeChangeStudentClassModal();

@@ -4,3 +4,4 @@ scripts/
 *.log
 .git/
 .gemini/
+local_db_state.json

@@ -571,7 +571,137 @@ app.post('/api/alunos/reveal', authMiddleware, async (req, res) => {
 });
 
 // =============================================================================
-// ROTAS DE AUTENTICAÇÃO E LOGIN (SECURITY FIX: Bcrypt + JWT)
+// ROTAS REST DE SINCRONIZAÇÃO EM NUVEM (ENTIDADES RELACIONAIS)
+// =============================================================================
+
+// POST /api/classes - Criar nova turma
+app.post('/api/classes', authMiddleware, async (req, res) => {
+    try {
+        const { nome, serie, etapa, turno, escola, escola_id } = req.body || {};
+        if (!nome) return res.status(400).json({ error: 'Nome da turma é obrigatório.' });
+
+        const activeTenant = req.tenant.slug;
+        const tenantDbId = req.tenant.id || activeTenant;
+
+        const newClass = {
+            id: `tur_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+            nome,
+            serie: serie || etapa || 'Ensino Fundamental',
+            etapa: etapa || serie || 'Ensino Fundamental',
+            turno: turno || 'Matutino',
+            escola: escola || 'Rede Municipal',
+            escola_id: escola_id || 'esc_1',
+            ano_letivo: 2026,
+            created_at: new Date().toISOString()
+        };
+
+        if (db.useLocalFallback) {
+            let fileState = {};
+            if (fs.existsSync(db.LOCAL_DB_FILE)) {
+                try { fileState = JSON.parse(fs.readFileSync(db.LOCAL_DB_FILE, 'utf8')); } catch(e) {}
+            }
+            if (!fileState[activeTenant]) fileState[activeTenant] = {};
+            if (!fileState[activeTenant].dbTurmas) fileState[activeTenant].dbTurmas = [];
+            fileState[activeTenant].dbTurmas.push(newClass);
+            fs.writeFileSync(db.LOCAL_DB_FILE, JSON.stringify(fileState, null, 2));
+        } else {
+            await db.queryWithTenant(tenantDbId, `
+                INSERT INTO turmas (tenant_id, escola_id, nome, serie, turno, ano_letivo)
+                VALUES ($1, $2, $3, $4, $5, $6)
+            `, [tenantDbId, newClass.escola_id, newClass.nome, newClass.serie, newClass.turno, 2026]);
+        }
+
+        return res.status(201).json({ success: true, class: newClass });
+    } catch(err) {
+        console.error('Error in POST /api/classes:', err);
+        res.status(500).json({ error: 'Falha ao sincronizar turma na nuvem.' });
+    }
+});
+
+// POST /api/teachers - Criar / Vincular Professor
+app.post('/api/teachers', authMiddleware, async (req, res) => {
+    try {
+        const { nome, email, disciplina, escola, turmas } = req.body || {};
+        if (!nome || !email) return res.status(400).json({ error: 'Nome e e-mail são obrigatórios.' });
+
+        const activeTenant = req.tenant.slug;
+        const tenantDbId = req.tenant.id || activeTenant;
+
+        const newTeacher = {
+            id: `prof_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+            nome,
+            email,
+            disciplina: disciplina || 'Polivalente',
+            escola: escola || 'Rede Municipal',
+            turmas: turmas || [],
+            created_at: new Date().toISOString()
+        };
+
+        if (db.useLocalFallback) {
+            let fileState = {};
+            if (fs.existsSync(db.LOCAL_DB_FILE)) {
+                try { fileState = JSON.parse(fs.readFileSync(db.LOCAL_DB_FILE, 'utf8')); } catch(e) {}
+            }
+            if (!fileState[activeTenant]) fileState[activeTenant] = {};
+            if (!fileState[activeTenant].dbProfessores) fileState[activeTenant].dbProfessores = [];
+            fileState[activeTenant].dbProfessores.push(newTeacher);
+            fs.writeFileSync(db.LOCAL_DB_FILE, JSON.stringify(fileState, null, 2));
+        } else {
+            await db.queryWithTenant(tenantDbId, `
+                INSERT INTO professores (tenant_id, nome, email, disciplina)
+                VALUES ($1, $2, $3, $4)
+            `, [tenantDbId, newTeacher.nome, newTeacher.email, newTeacher.disciplina]);
+        }
+
+        return res.status(201).json({ success: true, teacher: newTeacher });
+    } catch(err) {
+        console.error('Error in POST /api/teachers:', err);
+        res.status(500).json({ error: 'Falha ao sincronizar professor na nuvem.' });
+    }
+});
+
+// POST /api/students - Cadastrar Estudante
+app.post('/api/students', authMiddleware, async (req, res) => {
+    try {
+        const studentData = req.body || {};
+        if (!studentData.nome || !studentData.matricula) {
+            return res.status(400).json({ error: 'Nome e matrícula são obrigatórios.' });
+        }
+
+        const activeTenant = req.tenant.slug;
+        const tenantDbId = req.tenant.id || activeTenant;
+
+        const newStudent = {
+            ...studentData,
+            id: `aln_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+            created_at: new Date().toISOString()
+        };
+
+        if (db.useLocalFallback) {
+            let fileState = {};
+            if (fs.existsSync(db.LOCAL_DB_FILE)) {
+                try { fileState = JSON.parse(fs.readFileSync(db.LOCAL_DB_FILE, 'utf8')); } catch(e) {}
+            }
+            if (!fileState[activeTenant]) fileState[activeTenant] = {};
+            if (!fileState[activeTenant].dbAlunos) fileState[activeTenant].dbAlunos = [];
+            fileState[activeTenant].dbAlunos.push(newStudent);
+            fs.writeFileSync(db.LOCAL_DB_FILE, JSON.stringify(fileState, null, 2));
+        } else {
+            await db.queryWithTenant(tenantDbId, `
+                INSERT INTO alunos (tenant_id, nome, matricula, turma_id, cpf, nascimento)
+                VALUES ($1, $2, $3, $4, $5, $6)
+            `, [tenantDbId, newStudent.nome, newStudent.matricula, newStudent.turma_id || null, encryptText(newStudent.cpf), newStudent.nascimento || null]);
+        }
+
+        return res.status(201).json({ success: true, student: newStudent });
+    } catch(err) {
+        console.error('Error in POST /api/students:', err);
+        res.status(500).json({ error: 'Falha ao sincronizar aluno na nuvem.' });
+    }
+});
+
+// =============================================================================
+// ROTAS DE AUTENTICAÇÃO E LOGIN (SECURITY FIX: Bcryptjs + JWT)
 // =============================================================================
 app.post(['/api/auth/login', '/api/login'], async (req, res) => {
     try {
