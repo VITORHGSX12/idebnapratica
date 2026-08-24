@@ -186,6 +186,18 @@ async function seedDatabase() {
                     console.log(`Successfully seeded ${classes.length} official classes.`);
 
                     // Inserir Estudantes
+                    try {
+                        await client.query(`
+                            ALTER TABLE alunos ADD COLUMN IF NOT EXISTS matricula VARCHAR(50);
+                            ALTER TABLE alunos ADD COLUMN IF NOT EXISTS cpf VARCHAR(20);
+                            ALTER TABLE alunos ADD COLUMN IF NOT EXISTS nascimento VARCHAR(30);
+                            DO $$ BEGIN
+                                ALTER TABLE alunos ADD CONSTRAINT alunos_matricula_key UNIQUE (matricula);
+                            EXCEPTION WHEN OTHERS THEN NULL;
+                            END $$;
+                        `);
+                    } catch(e) {}
+
                     let insertedStudents = 0;
                     for (let i = 0; i < students.length; i += 50) {
                         const chunk = students.slice(i, i + 50);
