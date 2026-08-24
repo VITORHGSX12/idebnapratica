@@ -168,15 +168,15 @@ async function seedDatabase() {
                     // Inserir Turmas
                     const classMap = {};
                     for (const cl of classes) {
-                        const schoolId = schoolMap[cl.escola] || null;
                         const res = await client.query(`
-                            INSERT INTO turmas (tenant_id, escola_id, nome)
-                            VALUES ($1, $2, $3)
+                            INSERT INTO turmas (nome)
+                            VALUES ($1)
                             RETURNING id, nome;
-                        `, [defaultTenantId, schoolId, cl.nome]);
+                        `, [cl.nome]);
                         classMap[cl.nome] = res.rows[0].id;
                         try {
-                            await client.query(`UPDATE turmas SET serie = $1, turno = $2, ano_letivo = $3 WHERE id = $4;`, [cl.serie, cl.turno, 2026, res.rows[0].id]);
+                            const schoolId = schoolMap[cl.escola] || null;
+                            await client.query(`UPDATE turmas SET escola_id = $1, serie = $2, turno = $3, ano_letivo = $4 WHERE id = $5;`, [schoolId, cl.serie, cl.turno, 2026, res.rows[0].id]);
                         } catch(e) {}
                     }
                     console.log(`Successfully seeded ${classes.length} official classes.`);
@@ -188,10 +188,10 @@ async function seedDatabase() {
                         for (const st of chunk) {
                             const turmaId = classMap[st.turma] || null;
                             await client.query(`
-                                INSERT INTO alunos (tenant_id, nome, matricula, turma_id, cpf, nascimento)
-                                VALUES ($1, $2, $3, $4, $5, $6)
+                                INSERT INTO alunos (nome, matricula, turma_id, cpf)
+                                VALUES ($1, $2, $3, $4)
                                 ON CONFLICT (matricula) DO NOTHING;
-                            `, [defaultTenantId, st.nome, st.matricula, turmaId, st.cpf || '', st.dataNascimento || null]);
+                            `, [st.nome, st.matricula, turmaId, st.cpf || '']);
                             insertedStudents++;
                         }
                     }
