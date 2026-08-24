@@ -6505,14 +6505,14 @@ body.collapsed-sidebar .sidebar-collapse-toggle svg {
 }
 
 .avatar-option-btn:hover {
-    border-color: #6366f1;
+    border-color: var(--color-accent-primary);
     transform: scale(1.08);
 }
 
 .avatar-option-btn.active {
-    border-color: #6366f1;
-    background: rgba(99, 102, 241, 0.15);
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+    border-color: var(--color-accent-primary);
+    background: var(--color-accent-soft);
+    box-shadow: 0 0 0 2px var(--color-accent-soft-border);
 }
 
 .header-user-btn {
@@ -6520,7 +6520,7 @@ body.collapsed-sidebar .sidebar-collapse-toggle svg {
     align-items: center;
     gap: 8px;
     padding: 4px 10px 4px 6px;
-    border-radius: 20px;
+    border-radius: var(--radius-pill);
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
     cursor: pointer;
@@ -6529,7 +6529,7 @@ body.collapsed-sidebar .sidebar-collapse-toggle svg {
 }
 
 .header-user-btn:hover {
-    border-color: #6366f1;
+    border-color: var(--color-accent-primary);
     background: var(--bg-tertiary);
 }
 
@@ -6537,8 +6537,8 @@ body.collapsed-sidebar .sidebar-collapse-toggle svg {
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-    color: white;
+    background: var(--color-accent-primary);
+    color: #FFFFFF;
     display: flex;
     align-items: center;
     justify-content: center;

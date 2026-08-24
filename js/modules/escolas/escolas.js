@@ -322,7 +322,7 @@
             var dt = btn.getAttribute('data-tab');
             if (dt === tabName) {
                 btn.classList.add('active');
-                btn.style.color = '#FFFFFF';
+                btn.style.color = 'var(--color-surface-card)';
                 btn.style.backgroundColor = 'var(--color-accent-primary)';
                 btn.style.fontWeight = '700';
             } else {
