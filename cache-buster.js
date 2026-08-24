@@ -40,6 +40,7 @@ if (fs.existsSync(indexHtmlPath)) {
         'js/modules/alunos/alunos_list.js',
         'js/modules/alunos/alunos_forms.js',
         'js/modules/turmas/turmas_diario.js',
+        'js/modules/metas/metas_ideb.js',
         'js/modules/escolas/escolas.js',
         'js/modules/matrizes/matrizes.js',
         'js/modules/cronograma/cronograma.js',
