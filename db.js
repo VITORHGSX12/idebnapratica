@@ -166,6 +166,10 @@ async function seedDatabase() {
                     console.log(`Successfully seeded ${schools.length} official schools.`);
 
                     // Inserir Turmas
+                    try {
+                        await client.query('ALTER TABLE turmas ALTER COLUMN ano_letivo_id DROP NOT NULL; ALTER TABLE turmas ALTER COLUMN turno_id DROP NOT NULL;');
+                    } catch(e) {}
+
                     const classMap = {};
                     for (const cl of classes) {
                         const res = await client.query(`
