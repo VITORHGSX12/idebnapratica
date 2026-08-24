@@ -1,0 +1,13 @@
+-- Migration: 0008_escolas_turmas_fields.sql
+-- Descrição: Adiciona colunas complementares para escolas e turmas
+
+ALTER TABLE IF EXISTS public.escolas ADD COLUMN IF NOT EXISTS zona VARCHAR(50) DEFAULT 'Zona Rural';
+ALTER TABLE IF EXISTS public.escolas ADD COLUMN IF NOT EXISTS telefone VARCHAR(50);
+ALTER TABLE IF EXISTS public.escolas ADD COLUMN IF NOT EXISTS diretor VARCHAR(255);
+
+ALTER TABLE IF EXISTS public.turmas ADD COLUMN IF NOT EXISTS serie VARCHAR(50);
+ALTER TABLE IF EXISTS public.turmas ADD COLUMN IF NOT EXISTS turno VARCHAR(50);
+ALTER TABLE IF EXISTS public.turmas ADD COLUMN IF NOT EXISTS ano_letivo INTEGER DEFAULT 2026;
+
+ALTER TABLE IF EXISTS public.alunos ADD COLUMN IF NOT EXISTS cpf VARCHAR(20);
+ALTER TABLE IF EXISTS public.alunos ADD COLUMN IF NOT EXISTS nascimento VARCHAR(30);
