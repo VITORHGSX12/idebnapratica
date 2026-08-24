@@ -150,12 +150,15 @@ async function seedDatabase() {
                     const schoolMap = {};
                     for (const sc of schools) {
                         const res = await client.query(`
-                            INSERT INTO escolas (tenant_id, nome, codigo_inep, zona)
+                            INSERT INTO escolas (tenant_id, nome, codigo_inep, endereco)
                             VALUES ($1, $2, $3, $4)
                             ON CONFLICT (codigo_inep) DO UPDATE SET nome = EXCLUDED.nome
                             RETURNING id, nome;
                         `, [defaultTenantId, sc.name, sc.inep, sc.zone]);
                         schoolMap[sc.name] = res.rows[0].id;
+                        try {
+                            await client.query(`UPDATE escolas SET zona = $1 WHERE id = $2;`, [sc.zone, res.rows[0].id]);
+                        } catch(e) {}
                     }
                     console.log(`Successfully seeded ${schools.length} official schools.`);
 
@@ -164,11 +167,14 @@ async function seedDatabase() {
                     for (const cl of classes) {
                         const schoolId = schoolMap[cl.escola] || null;
                         const res = await client.query(`
-                            INSERT INTO turmas (tenant_id, escola_id, nome, serie, turno, ano_letivo)
-                            VALUES ($1, $2, $3, $4, $5, $6)
+                            INSERT INTO turmas (tenant_id, escola_id, nome)
+                            VALUES ($1, $2, $3)
                             RETURNING id, nome;
-                        `, [defaultTenantId, schoolId, cl.nome, cl.serie, cl.turno, 2026]);
+                        `, [defaultTenantId, schoolId, cl.nome]);
                         classMap[cl.nome] = res.rows[0].id;
+                        try {
+                            await client.query(`UPDATE turmas SET serie = $1, turno = $2, ano_letivo = $3 WHERE id = $4;`, [cl.serie, cl.turno, 2026, res.rows[0].id]);
+                        } catch(e) {}
                     }
                     console.log(`Successfully seeded ${classes.length} official classes.`);
 
