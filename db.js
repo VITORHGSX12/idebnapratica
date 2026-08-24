@@ -123,9 +123,18 @@ async function seedDatabase() {
         defaultTenantId = tenantRes.rows[0].id;
 
         // 2. Seed official schools, classes and students from official_students_seed.js
-        const hasEscolas = await client.query('SELECT 1 FROM escolas LIMIT 1');
-        if (hasEscolas.rows.length === 0) {
-            console.log('Seeding official schools and students from official_students_seed.js...');
+        const escCountRes = await client.query('SELECT count(*) as total FROM escolas');
+        const currentEscCount = parseInt(escCountRes.rows[0].total) || 0;
+
+        // Se tiver mais de 5 escolas (base antiga dummy de 40 escolas) ou 0 escolas, faz o reset limpo
+        if (currentEscCount === 0 || currentEscCount > 5) {
+            console.log('Clearing old dummy records and seeding official 5 schools and 388 students...');
+            try {
+                await client.query('DELETE FROM alunos;');
+                await client.query('DELETE FROM turmas;');
+                await client.query('DELETE FROM escolas;');
+            } catch(e) {}
+
             const seedPath = path.join(__dirname, 'js', 'data', 'official_students_seed.js');
             if (fs.existsSync(seedPath)) {
                 const content = fs.readFileSync(seedPath, 'utf8');

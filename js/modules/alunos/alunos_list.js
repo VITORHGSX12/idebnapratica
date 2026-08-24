@@ -35,7 +35,7 @@
         btnDbStudentsNext = document.getElementById('btn-db-students-next');
 
         if (dbStudentSchoolFilter) {
-            dbStudentSchoolFilter.innerHTML = '<option value="all">Filtrar por Escola (Todas as 9 Escolas)</option>';
+            dbStudentSchoolFilter.innerHTML = '<option value="all">Filtrar por Escola (Todas as Escolas)</option>';
             var targetSchools = (schools && schools.length > 0) ? schools : (global.uniqueSchoolsList || []);
             targetSchools.forEach(function(sch) {
                 var opt = document.createElement('option');
@@ -45,7 +45,8 @@
             });
         }
 
-        var loaded = global.loadedStudents || [];
+        var loaded = (global.loadedStudents && global.loadedStudents.length > 0) ? global.loadedStudents : ((global.dbAlunos && global.dbAlunos.length > 0) ? global.dbAlunos : (global.ALUNOS_DATABASE || []));
+        global.loadedStudents = loaded;
         global.dbFilteredStudents = loaded.slice();
         global.dbCurrentPage = 1;
         renderDbStudents();

@@ -67,6 +67,13 @@ async function runCloudSeed() {
         const tenantId = tenantRes.rows[0].id;
         console.log(`✅ Tenant Gonçalves Dias registrado com ID: ${tenantId}`);
 
+        // Limpar dados anteriores
+        try {
+            await client.query('DELETE FROM alunos WHERE tenant_id = $1;', [tenantId]);
+            await client.query('DELETE FROM turmas WHERE tenant_id = $1;', [tenantId]);
+            await client.query('DELETE FROM escolas WHERE tenant_id = $1;', [tenantId]);
+        } catch(e) {}
+
         // Inserir Escolas
         const schoolMap = {};
         for (const sc of schools) {
