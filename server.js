@@ -12,7 +12,7 @@ const path = require('path');
 const crypto = require('crypto');
 const multer = require('multer');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const db = require('./db');
 const { resolveTenant, validateTenantAccessDB, isBypassLoginAllowed } = require('./middleware_tenant_subdominio');
 
