@@ -127,6 +127,59 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+// Endpoint de Diagnóstico e Métricas do Banco de Dados
+app.get('/api/db/stats', async (req, res) => {
+    try {
+        if (db.useLocalFallback) {
+            return res.json({
+                databaseMode: 'local-json',
+                message: 'Servidor operando em modo de contingência local.'
+            });
+        }
+
+        const tables = ['tenants', 'escolas', 'turmas', 'alunos', 'usuarios', 'tenant_state', 'ideb_publico_referencia'];
+        const counts = {};
+
+        for (const t of tables) {
+            try {
+                const queryRes = await db.query(`SELECT count(*) as total FROM ${t}`);
+                counts[t] = parseInt(queryRes.rows[0].total);
+            } catch(e) {
+                counts[t] = 0;
+            }
+        }
+
+        let sampleSchools = [];
+        try {
+            const esc = await db.query('SELECT nome, codigo_inep, zona FROM escolas ORDER BY nome LIMIT 10');
+            sampleSchools = esc.rows;
+        } catch(e) {}
+
+        let sampleTurmas = [];
+        try {
+            const tur = await db.query('SELECT nome, serie, turno FROM turmas ORDER BY nome LIMIT 10');
+            sampleTurmas = tur.rows;
+        } catch(e) {}
+
+        let sampleAlunos = [];
+        try {
+            const aln = await db.query('SELECT matricula, nome, nascimento FROM alunos ORDER BY nome LIMIT 10');
+            sampleAlunos = aln.rows;
+        } catch(e) {}
+
+        return res.json({
+            databaseMode: 'postgres',
+            counts,
+            schools: sampleSchools,
+            classes: sampleTurmas,
+            students: sampleAlunos,
+            timestamp: new Date()
+        });
+    } catch(err) {
+        return res.status(500).json({ error: err.message });
+    }
+});
+
 // Endpoint para consulta do Tenant Atual
 app.get('/api/tenant/current', (req, res) => {
     res.json({
