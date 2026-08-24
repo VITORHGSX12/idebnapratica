@@ -1552,20 +1552,19 @@
         var filterStage = (document.getElementById('pde-filter-stage') && document.getElementById('pde-filter-stage').value) || 'ai';
         var isAnosIniciais = (filterStage === 'ai');
 
-        var schoolsEvaluated = [
-            { id: '21051287', nome: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS', inep2023: 5.8, score2025: 6.1, af2023: 5.2, af2025: 5.5, profLP: 218.4, profMAT: 226.1 },
-            { id: '21051295', nome: 'U I BASILIO ALVES', inep2023: 5.5, score2025: 5.8, af2023: 4.0, af2025: 4.3, profLP: 212.0, profMAT: 219.5 },
-            { id: '21051309', nome: 'UI JOSE CORREA LIMA', inep2023: 5.2, score2025: 5.5, af2023: null, af2025: null, profLP: 208.5, profMAT: 215.2 },
-            { id: '21051317', nome: 'UNIDADE INTEGRADA ALDENORA ARAUJO CRUZ', inep2023: 5.0, score2025: 5.3, af2023: 4.9, af2025: 5.2, profLP: 205.1, profMAT: 211.8 },
-            { id: '21051325', nome: 'UI EMILIO MURAD', inep2023: 4.9, score2025: 5.2, af2023: 5.1, af2025: 5.4, profLP: 204.0, profMAT: 210.5 },
-            { id: '21051333', nome: 'UE ANITA FURTADO', inep2023: 4.6, score2025: 4.8, af2023: null, af2025: null, profLP: 198.2, profMAT: 204.6 },
-            { id: '21051341', nome: 'UI ANTONIO GONCALVES DIAS', inep2023: 4.5, score2025: 4.8, af2023: 4.1, af2025: 4.4, profLP: 196.4, profMAT: 203.0 },
-            { id: '21051350', nome: 'UNIDADE ESCOLAR ANISIO GOMES', inep2023: 4.4, score2025: 4.7, af2023: 3.9, af2025: 4.2, profLP: 194.0, profMAT: 201.2 },
-            { id: '21051368', nome: 'UE VEREADOR LEONARDO FERREIRA LIMA', inep2023: 4.3, score2025: 4.6, af2023: null, af2025: null, profLP: 192.5, profMAT: 199.0 },
-            { id: '21051376', nome: 'UE RAIMUNDO DOS REIS DA SILVA', inep2023: 4.2, score2025: 4.5, af2023: null, af2025: null, profLP: 190.0, profMAT: 197.5 },
-            { id: '21051384', nome: 'UE PREFEITA ROSITA SOUSA DIAS', inep2023: 4.1, score2025: 4.4, af2023: null, af2025: null, profLP: 188.0, profMAT: 195.0 },
-            { id: '21051392', nome: 'U I ROSA FRANCISCA DE MELO', inep2023: 4.0, score2025: 4.3, af2023: null, af2025: null, profLP: 186.0, profMAT: 193.0 }
-        ];
+        var officialSource = window.ESCOLAS_MARANHAO_OFICIAL || (window.OFFICIAL_IMPORTED_STUDENTS_SEED && window.OFFICIAL_IMPORTED_STUDENTS_SEED.escolas) || [];
+        var schoolsEvaluated = officialSource.map(function(s) {
+            return {
+                id: s.inep || s.id,
+                nome: s.nome || s.name,
+                inep2023: s.ideb_2023 || 5.0,
+                score2025: s.ideb_2025_observado || 5.2,
+                af2023: s.ideb_2023 || 4.8,
+                af2025: s.ideb_2025_observado || 5.0,
+                profLP: s.saeb_lp_5ano || 205.0,
+                profMAT: s.saeb_mt_5ano || 212.0
+            };
+        });
 
         var totalTarget = 0;
         var totalScore = 0;

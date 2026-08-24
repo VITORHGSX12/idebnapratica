@@ -23,15 +23,15 @@
     }
 
     function getOfficialSchoolsState() {
+        var seed = getSeedData();
         try {
             var saved = localStorage.getItem(STORAGE_KEY_OFFICIAL_SCHOOLS);
             if (saved) {
                 var parsed = JSON.parse(saved);
-                if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                if (Array.isArray(parsed) && parsed.length === (seed.escolas ? seed.escolas.length : 9)) return parsed;
             }
         } catch(e) {}
 
-        var seed = getSeedData();
         if (seed.escolas && seed.escolas.length > 0) {
             saveOfficialSchoolsState(seed.escolas);
             return seed.escolas;
@@ -47,15 +47,15 @@
     }
 
     function getOfficialStudentsState() {
+        var seed = getSeedData();
         try {
             var saved = localStorage.getItem(STORAGE_KEY_OFFICIAL_STUDENTS);
             if (saved) {
                 var parsed = JSON.parse(saved);
-                if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                if (Array.isArray(parsed) && parsed.length === (seed.alunos ? seed.alunos.length : 526)) return parsed;
             }
         } catch(e) {}
 
-        var seed = getSeedData();
         if (seed.alunos && seed.alunos.length > 0) {
             saveOfficialStudentsState(seed.alunos);
             return seed.alunos;
