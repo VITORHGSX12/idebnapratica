@@ -138,6 +138,7 @@
             } else if (resolvedId === 'banco-questoes') {
                 if (typeof global.renderQuestions === 'function') global.renderQuestions();
             } else if (resolvedId === 'relatorios-monitoramento') {
+                if (typeof global.runDiagnosticoCalculation === 'function') global.runDiagnosticoCalculation();
                 if (typeof global.renderAiGenDescriptors === 'function') global.renderAiGenDescriptors();
             } else if (resolvedId === 'gestao-pedagogica') {
                 if (typeof global.renderPedagogicInterventions === 'function') global.renderPedagogicInterventions();
