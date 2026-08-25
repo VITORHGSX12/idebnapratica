@@ -285,7 +285,7 @@
     }
 
     /**
-     * Finaliza a inicialização de sessão e exibe o dashboard principal
+     * Finaliza a inicialização de sessão e exibe o dashboard principal com transição Wipe
      */
     async function completeLoginFlow(authenticatedUser, shouldRemember) {
         if (!authenticatedUser) return;
@@ -293,6 +293,40 @@
         var loginScreen = document.getElementById('login-screen');
         var appContainer = document.querySelector('.app-container');
         var btnSubmit = document.getElementById('btn-login-submit');
+        var transitionScreen = document.getElementById('login-transition-screen');
+        var videoEl = document.getElementById('login-transition-video');
+        var progressBar = document.getElementById('login-transition-progress-bar');
+        var statusText = document.getElementById('login-transition-status-text');
+        var percentText = document.getElementById('login-transition-status-percent');
+
+        // 1. Ativa imediatamente a Tela de Transição / Carregamento
+        if (transitionScreen) {
+            transitionScreen.classList.remove('hidden', 'wipe-animating', 'wipe-fade-out');
+            transitionScreen.style.display = 'flex';
+            transitionScreen.style.opacity = '1';
+            if (progressBar) progressBar.style.width = '25%';
+            if (percentText) percentText.textContent = '25%';
+            if (statusText) statusText.textContent = 'Autenticando credenciais institucionais...';
+
+            if (videoEl) {
+                try {
+                    videoEl.currentTime = 0;
+                    var p = videoEl.play();
+                    if (p && p.catch) p.catch(function() {});
+                } catch(e) {}
+            }
+        }
+
+        // 2. Oculta o formulário de login por trás
+        if (loginScreen) {
+            loginScreen.style.display = 'none';
+            loginScreen.style.pointerEvents = 'none';
+            if (btnSubmit) {
+                btnSubmit.disabled = false;
+                var btnSpanReset = btnSubmit.querySelector('span');
+                if (btnSpanReset) btnSpanReset.textContent = 'Entrar no Sistema';
+            }
+        }
 
         var emailInput = authenticatedUser.email || '';
         var detectedRole = authenticatedUser.role || 'Gestor da Rede';
@@ -329,6 +363,11 @@
         sessionStorage.setItem('userEscola', assignedSchool);
         sessionStorage.setItem('userTurma', assignedTurma);
 
+        // Atualização de progresso
+        if (progressBar) progressBar.style.width = '60%';
+        if (percentText) percentText.textContent = '60%';
+        if (statusText) statusText.textContent = 'Sincronizando turmas, matrizes e dados pedagógicos...';
+
         try {
             if (typeof global.loadDatabaseState === 'function') {
                 await global.loadDatabaseState();
@@ -349,7 +388,7 @@
             console.warn('[IDEB Engine] Warning in UI updates:', err);
         }
 
-        // Exibição Imediata da Aplicação Principal
+        // Renderiza appContainer em background
         if (appContainer) {
             appContainer.style.display = 'flex';
         }
@@ -365,27 +404,42 @@
             console.warn('[IDEB Engine] Warning in switchTab:', err);
         }
 
-        // Ocultação fluida da tela de login
-        if (loginScreen) {
-            loginScreen.classList.add('fade-out');
-            loginScreen.style.display = 'none';
-            loginScreen.style.pointerEvents = 'none';
-            if (btnSubmit) {
-                btnSubmit.disabled = false;
-                var btnSpanReset = btnSubmit.querySelector('span');
-                if (btnSpanReset) btnSpanReset.textContent = 'Entrar no Sistema';
-            }
-        }
-
         if (typeof global.safeCreateIcons === 'function') {
             global.safeCreateIcons();
         }
 
-        if (typeof global.showToast === 'function') {
-            global.showToast('Bem-vindo ao IDEB na Prática! Painel ' + detectedRole + ' carregado.', 'check');
-        }
+        // Progresso concluído
+        if (progressBar) progressBar.style.width = '100%';
+        if (percentText) percentText.textContent = '100%';
+        if (statusText) statusText.textContent = 'Ambiente pronto! Entrando no sistema...';
 
-        window.scrollTo(0, 0);
+        // 3. Intervalo suave para leitura visual + Disparo da Varredura Wipe (280ms)
+        await new Promise(function(resolve) { setTimeout(resolve, 850); });
+
+        if (transitionScreen) {
+            // Dispara animação de Varredura / Cortina Wipe (280ms)
+            transitionScreen.classList.add('wipe-animating', 'wipe-fade-out');
+
+            setTimeout(function() {
+                transitionScreen.classList.add('hidden');
+                transitionScreen.style.display = 'none';
+                transitionScreen.classList.remove('wipe-animating', 'wipe-fade-out');
+
+                if (videoEl) {
+                    try { videoEl.pause(); } catch(e) {}
+                }
+
+                if (typeof global.showToast === 'function') {
+                    global.showToast('Bem-vindo ao IDEB na Prática! Painel ' + detectedRole + ' carregado.', 'check');
+                }
+                window.scrollTo(0, 0);
+            }, 280);
+        } else {
+            if (typeof global.showToast === 'function') {
+                global.showToast('Bem-vindo ao IDEB na Prática! Painel ' + detectedRole + ' carregado.', 'check');
+            }
+            window.scrollTo(0, 0);
+        }
     }
 
     /**
