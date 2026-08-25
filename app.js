@@ -7172,13 +7172,6 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        // Configuração de exibição das credenciais de teste (false = Produção)
-        const SHOW_TEST_CREDENTIALS = false;
-        const testCredsContainer = document.getElementById('login-test-credentials-container');
-        if (testCredsContainer) {
-            testCredsContainer.style.display = SHOW_TEST_CREDENTIALS ? 'block' : 'none';
-        }
-
         // Synchronize DOM elements with unified config
         const targetBadgeEl = document.getElementById('login-card-target-badge');
         const captionEl = document.getElementById('login-card-caption-text');

@@ -12,8 +12,8 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="stylesheet" href="design-tokens.css?v=20260824">
-    <link rel="stylesheet" href="styles.css?v=a0ce5e9f89_mt78c012">
+    <link rel="stylesheet" href="design-tokens.css?v=20260825_v2">
+    <link rel="stylesheet" href="styles.css?v=20260825_clean_prod_v2">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -450,31 +450,6 @@
                         </button>
                     </form>
 
-                    <!-- Container de Credenciais de Teste -->
-                    <div id="login-test-credentials-container" style="display: block;">
-                        <div class="divider login-divider">
-                            <span>AMBIENTE DE TESTES · CLIQUE PARA ENTRAR</span>
-                        </div>
-                        <div class="quick-grid test-accounts-grid">
-                            <div class="quick-card test-account-card qc-professor" onclick="if(window.executeSystemLogin) window.executeSystemLogin('professor@goncalvesdias.ma.gov.br', '123');" data-email="professor@goncalvesdias.ma.gov.br" data-pass="123" data-role="Professor" style="cursor: pointer;">
-                                <div class="quick-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg></div>
-                                <div class="quick-text"><div class="t1 test-role-title">PROFESSOR</div><div class="t2 test-role-email">professor@goncalvesdias.ma.gov.br</div></div>
-                            </div>
-                            <div class="quick-card test-account-card qc-diretor" onclick="if(window.executeSystemLogin) window.executeSystemLogin('diretor@goncalvesdias.ma.gov.br', '123');" data-email="diretor@goncalvesdias.ma.gov.br" data-pass="123" data-role="Diretor Escola" style="cursor: pointer;">
-                                <div class="quick-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 4.5-9 4.5-9-4.5 9-4.5Z"/><path d="M3 6.5v6c0 3 4 5.5 9 5.5s9-2.5 9-5.5v-6"/></svg></div>
-                                <div class="quick-text"><div class="t1 test-role-title">DIRETOR</div><div class="t2 test-role-email">diretor@goncalvesdias.ma.gov.br</div></div>
-                            </div>
-                            <div class="quick-card test-account-card qc-admin" onclick="if(window.executeSystemLogin) window.executeSystemLogin('admin@goncalvesdias.ma.gov.br', 'admin');" data-email="admin@goncalvesdias.ma.gov.br" data-pass="admin" data-role="Master Admin" style="cursor: pointer;">
-                                <div class="quick-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg></div>
-                                <div class="quick-text"><div class="t1 test-role-title">ADMIN</div><div class="t2 test-role-email">admin@goncalvesdias.ma.gov.br</div></div>
-                            </div>
-                            <div class="quick-card test-account-card qc-semed" onclick="if(window.executeSystemLogin) window.executeSystemLogin('semed@goncalvesdias.ma.gov.br', 'admin');" data-email="semed@goncalvesdias.ma.gov.br" data-pass="admin" data-role="Gestor da Rede" style="cursor: pointer;">
-                                <div class="quick-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5 12 4l10 5.5-10 5.5-10-5.5Z"/><path d="M6 12v5.5c0 1.5 2.7 3.5 6 3.5s6-2 6-3.5V12"/></svg></div>
-                                <div class="quick-text"><div class="t1 test-role-title">SEMED</div><div class="t2 test-role-email">semed@goncalvesdias.ma.gov.br</div></div>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="secure login-secure-badge">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                         <span>Ambiente seguro e confiável</span>
@@ -512,6 +487,67 @@
                 <div style="display: flex; justify-content: flex-end; gap: 8px; padding-top: 12px; border-top: 1px solid var(--color-border-subtle);">
                     <button type="button" onclick="closeForgotPasswordModal();" class="btn btn-outline" style="font-size: var(--text-xs); padding: 8px 16px;">Cancelar</button>
                     <button type="submit" id="btn-submit-forgot-pass" class="btn btn-primary" style="font-size: var(--text-xs); padding: 8px 18px;">Enviar Instruções</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Troca Obrigatória de Senha (Primeiro Acesso / Redefinição Forçada) -->
+    <div id="modal-force-change-password" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(6px); z-index: 10000; align-items: center; justify-content: center; padding: 16px;">
+        <div class="card" style="background: var(--color-surface-card, #ffffff); border-radius: 16px; max-width: 480px; width: 100%; padding: 28px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid var(--color-border-subtle, #e2e8f0);">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px; padding-bottom: 14px; border-bottom: 1px solid var(--color-border-subtle, #e2e8f0);">
+                <div style="width: 40px; height: 40px; border-radius: 10px; background: #eff6ff; display: flex; align-items: center; justify-content: center; color: #2563eb;">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <div>
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--color-brand-primary, #0f172a); margin: 0;">Troca Obrigatória de Senha</h3>
+                    <span style="font-size: 0.75rem; color: #64748b; font-weight: 500;">Primeiro Acesso · Segurança Institucional</span>
+                </div>
+            </div>
+
+            <div style="background: #fef3c7; border: 1px solid #fde68a; border-radius: 8px; padding: 10px 14px; margin-bottom: 18px; display: flex; gap: 10px; align-items: flex-start;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <p style="font-size: 0.8rem; color: #92400e; margin: 0; line-height: 1.4;">
+                    Por exigência de segurança, você está utilizando uma senha temporária e precisa cadastrar uma nova senha pessoal antes de acessar o sistema.
+                </p>
+            </div>
+
+            <form id="form-force-change-password" onsubmit="if(window.submitForceChangePassword) window.submitForceChangePassword(event); return false;">
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 0.75rem; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">E-mail Institucional</label>
+                    <input type="email" id="force-change-email" readonly style="width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; color: #334155; font-size: 0.85rem; outline: none; font-weight: 600;">
+                </div>
+
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 0.75rem; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Senha Atual / Temporária *</label>
+                    <input type="password" id="force-change-current-pass" required placeholder="Digite a senha temporária utilizada no login" style="width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.85rem; outline: none;">
+                </div>
+
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 0.75rem; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Nova Senha Definitiva *</label>
+                    <input type="password" id="force-change-new-pass" required placeholder="Mínimo 10 caracteres (maiúscula, minúscula, número)" style="width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.85rem; outline: none;">
+                </div>
+
+                <div style="margin-bottom: 14px;">
+                    <label style="font-size: 0.75rem; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Confirmar Nova Senha *</label>
+                    <input type="password" id="force-change-confirm-pass" required placeholder="Repita a nova senha exatamente igual" style="width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.85rem; outline: none;">
+                </div>
+
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; margin-bottom: 18px;">
+                    <span style="font-size: 0.75rem; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Requisitos da Nova Senha:</span>
+                    <ul style="margin: 0; padding-left: 18px; font-size: 0.72rem; color: #64748b; line-height: 1.4;">
+                        <li>No mínimo 10 caracteres</li>
+                        <li>Pelo menos uma letra maiúscula (A-Z)</li>
+                        <li>Pelo menos uma letra minúscula (a-z)</li>
+                        <li>Pelo menos um número (0-9)</li>
+                    </ul>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding-top: 14px; border-top: 1px solid #e2e8f0;">
+                    <button type="button" onclick="if(window.cancelForceChangePassword) window.cancelForceChangePassword();" class="btn btn-outline" style="font-size: 0.8rem; padding: 9px 16px; color: #64748b; border: 1px solid #cbd5e1; border-radius: 8px; background: transparent; cursor: pointer;">Cancelar / Sair</button>
+                    <button type="submit" id="btn-submit-force-change" class="btn btn-primary" style="font-size: 0.8rem; padding: 9px 20px; font-weight: 700; border-radius: 8px; background: #2563eb; color: #ffffff; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <span>Salvar Nova Senha e Acessar</span>
+                    </button>
                 </div>
             </form>
         </div>

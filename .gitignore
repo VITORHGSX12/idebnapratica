@@ -3,9 +3,12 @@ node_modules/
 .env.local
 .env.*.local
 users.json
+credenciais_temporarias.csv
+*.csv
 local_db_state.json
 scratch/
 local_db_state_backup.json
 *.log
 
 .vercel
+

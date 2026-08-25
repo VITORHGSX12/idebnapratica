@@ -57,27 +57,18 @@ function authMiddleware(req, res, next) {
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
+        
+        // Bloqueia tokens limitados de primeiro acesso em rotas restritas do sistema
+        if (decoded.scope === 'FORCE_PASSWORD_CHANGE' && req.path !== '/api/auth/change-password' && req.path !== '/api/change-password') {
+            return res.status(403).json({
+                error: 'Troca de senha obrigatória pendente. Conclua a redefinição da sua senha antes de acessar o sistema.',
+                requirePasswordChange: true
+            });
+        }
+
         req.user = decoded;
         return next();
     } catch (err) {
-        // Fallback transitório para autenticação legada base64 em desenvolvimento
-        try {
-            const email = Buffer.from(token, 'base64').toString('utf8').trim().toLowerCase();
-            const allUsers = getUsers();
-            const found = allUsers.find(u => u.email.toLowerCase() === email);
-            if (found) {
-                req.user = {
-                    id: found.id,
-                    email: found.email,
-                    nome: found.nome,
-                    role: found.role,
-                    escola: found.escola || null,
-                    turma: found.turma || null,
-                    org_id: found.tenant_id || req.tenant?.slug || 'semed_goncalves_dias'
-                };
-                return next();
-            }
-        } catch(e) {}
         return res.status(401).json({ error: 'Token inválido ou expirado' });
     }
 }
@@ -807,80 +798,238 @@ app.post('/api/students', authMiddleware, async (req, res) => {
 });
 
 // =============================================================================
-// ROTAS DE AUTENTICAÇÃO E LOGIN (SECURITY FIX: Bcryptjs + JWT)
 // =============================================================================
+// RATE LIMITING & AUTENTICAÇÃO SEGURA (Strict Bcrypt + Rate Limit + JWT)
+// =============================================================================
+const loginFailedAttempts = new Map();
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // 15 minutos
+const MAX_FAILED_ATTEMPTS = 5;
+
+// Limpeza periódica do cache de rate limit a cada 15 minutos
+setInterval(() => {
+    const now = Date.now();
+    for (const [key, record] of loginFailedAttempts.entries()) {
+        if (now - record.firstAttempt > RATE_LIMIT_WINDOW_MS) {
+            loginFailedAttempts.delete(key);
+        }
+    }
+}, RATE_LIMIT_WINDOW_MS);
+
+// Helper para carregar e sincronizar usuários do Banco / JSON
+async function findUserByEmail(cleanEmail) {
+    if (!db.useLocalFallback) {
+        try {
+            const res = await db.query('SELECT * FROM public.usuarios WHERE email = $1', [cleanEmail]);
+            if (res.rows && res.rows.length > 0) {
+                const row = res.rows[0];
+                return {
+                    id: row.id,
+                    nome: row.nome,
+                    email: row.email,
+                    password: row.password,
+                    role: row.role,
+                    tipo: row.tipo || row.role,
+                    escola: row.escola,
+                    turma: row.turma,
+                    telefone: row.telefone,
+                    cpf: row.cpf,
+                    status: row.status || 'Ativo',
+                    mustChangePassword: row.must_change_password !== undefined ? row.must_change_password : true,
+                    tenant_id: row.tenant_id
+                };
+            }
+        } catch(e) {
+            console.error('[DB findUserByEmail Error]:', e.message);
+        }
+    }
+    const users = getUsers();
+    return users.find(u => u.email.toLowerCase() === cleanEmail);
+}
+
+async function updateUserPasswordInDb(userId, email, newHash) {
+    if (!db.useLocalFallback) {
+        try {
+            await db.query(`
+                UPDATE public.usuarios 
+                SET password = $1, must_change_password = FALSE, updated_at = CURRENT_TIMESTAMP 
+                WHERE email = $2 OR id = $3
+            `, [newHash, email, userId]);
+            return true;
+        } catch(e) {
+            console.error('[DB updateUserPasswordInDb Error]:', e.message);
+        }
+    }
+    const users = getUsers();
+    const u = users.find(x => x.email.toLowerCase() === email.toLowerCase() || x.id === userId);
+    if (u) {
+        u.password = newHash;
+        u.mustChangePassword = false;
+        u.updated_at = new Date().toISOString();
+        saveUsers(users);
+        return true;
+    }
+    return false;
+}
+
+async function fetchAllUsersFromDb() {
+    if (!db.useLocalFallback) {
+        try {
+            const res = await db.query(`
+                SELECT id, nome, email, role, tipo, escola, turma, telefone, cpf, status, must_change_password, created_at, updated_at 
+                FROM public.usuarios 
+                ORDER BY nome ASC
+            `);
+            if (res.rows && res.rows.length > 0) {
+                return res.rows.map(r => ({
+                    id: r.id,
+                    nome: r.nome,
+                    email: r.email,
+                    role: r.role,
+                    tipo: r.tipo || r.role,
+                    escola: r.escola,
+                    turma: r.turma,
+                    telefone: r.telefone,
+                    cpf: r.cpf,
+                    status: r.status || 'Ativo',
+                    mustChangePassword: r.must_change_password,
+                    created_at: r.created_at,
+                    updated_at: r.updated_at
+                }));
+            }
+        } catch(e) {
+            console.error('[DB fetchAllUsersFromDb Error]:', e.message);
+        }
+    }
+    return getUsers();
+}
+
+async function insertUserInDb(newUser) {
+    if (!db.useLocalFallback) {
+        try {
+            await db.query(`
+                INSERT INTO public.usuarios (
+                    id, tenant_id, nome, email, password, role, tipo, escola, turma, telefone, cpf, status, must_change_password
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+            `, [
+                newUser.id,
+                newUser.tenant_id || null,
+                newUser.nome,
+                newUser.email,
+                newUser.password,
+                newUser.role,
+                newUser.tipo || newUser.role,
+                newUser.escola || null,
+                newUser.turma || null,
+                newUser.telefone || null,
+                newUser.cpf || null,
+                newUser.status || 'Ativo',
+                newUser.mustChangePassword !== undefined ? newUser.mustChangePassword : true
+            ]);
+            return true;
+        } catch(e) {
+            console.error('[DB insertUserInDb Error]:', e.message);
+        }
+    }
+    const users = getUsers();
+    users.push(newUser);
+    saveUsers(users);
+    return true;
+}
+
 app.post(['/api/auth/login', '/api/login'], async (req, res) => {
     try {
         const { email, password } = req.body || {};
         if (!email || !password) {
             return res.status(400).json({ error: 'E-mail e senha são obrigatórios.' });
         }
+
         const cleanEmail = email.trim().toLowerCase();
-        const users = getUsers();
-        const user = users.find(u => u.email.toLowerCase() === cleanEmail);
+        const now = Date.now();
+
+        // 1. Verificação de Rate Limit (Máx 5 falhas a cada 15 min por e-mail)
+        const attemptRecord = loginFailedAttempts.get(cleanEmail);
+        if (attemptRecord) {
+            if (now - attemptRecord.firstAttempt > RATE_LIMIT_WINDOW_MS) {
+                loginFailedAttempts.delete(cleanEmail);
+            } else if (attemptRecord.count >= MAX_FAILED_ATTEMPTS) {
+                const remainingMinutes = Math.ceil((RATE_LIMIT_WINDOW_MS - (now - attemptRecord.firstAttempt)) / 60000);
+                return res.status(429).json({
+                    error: `Muitas tentativas incorretas. Conta bloqueada temporariamente. Tente novamente em ${remainingMinutes} minuto(s).`
+                });
+            }
+        }
+
+        // 2. Busca estrita do usuário cadastrado (Banco de Dados / Fallback)
+        const user = await findUserByEmail(cleanEmail);
         
-        if (user) {
-            // SECURITY FIX: [Password Hashing] Comparação com bcrypt
-            let isValid = false;
-            if (user.password && (user.password.startsWith('$2b$') || user.password.startsWith('$2a$'))) {
-                isValid = await bcrypt.compare(password, user.password);
-            } else if (user.password) {
-                // Suporte transitório se ainda não migrado
-                isValid = (user.password === password || password === 'admin' || password === '123');
-                if (isValid) {
-                    user.password = await bcrypt.hash(password, 12);
-                    saveUsers(users);
-                }
-            }
+        let isValid = false;
+        if (user && user.password && (user.password.startsWith('$2b$') || user.password.startsWith('$2a$'))) {
+            // Comparação estrita de senha exclusivamente no backend via bcrypt
+            isValid = await bcrypt.compare(password, user.password);
+        }
 
-            if (!isValid) {
-                return res.status(401).json({ error: 'Senha incorreta.' });
-            }
+        if (!isValid) {
+            // Registra tentativa falha para o Rate Limiter
+            const currentRecord = loginFailedAttempts.get(cleanEmail) || { count: 0, firstAttempt: now };
+            currentRecord.count += 1;
+            loginFailedAttempts.set(cleanEmail, currentRecord);
 
-            // SECURITY FIX: [Server-Side JWT] Assinatura do Token JWT com 8h de validade
-            const token = jwt.sign(
+            const remainingAttempts = Math.max(0, MAX_FAILED_ATTEMPTS - currentRecord.count);
+            return res.status(401).json({ 
+                error: remainingAttempts > 0 
+                    ? `Credenciais inválidas. E-mail ou senha incorreta. (${remainingAttempts} tentativa(s) restante(s))`
+                    : 'Muitas tentativas incorretas. Conta bloqueada temporariamente por 15 minutos.'
+            });
+        }
+
+        // 3. Sucesso na autenticação: Limpa histórico de tentativas falhas
+        loginFailedAttempts.delete(cleanEmail);
+
+        const mustChange = !!user.mustChangePassword;
+
+        // 4. Se mustChangePassword for true: emite token de escopo limitado (apenas troca de senha)
+        if (mustChange) {
+            const tempToken = jwt.sign(
                 {
                     id: user.id,
                     email: user.email,
-                    nome: user.nome,
                     role: user.role,
-                    escola: user.escola,
-                    turma: user.turma,
-                    org_id: user.tenant_id || req.tenant?.slug || 'semed_goncalves_dias'
+                    scope: 'FORCE_PASSWORD_CHANGE',
+                    mustChangePassword: true
                 },
                 JWT_SECRET,
-                { expiresIn: '8h' }
+                { expiresIn: '1h' }
             );
 
             return res.json({
                 success: true,
-                token,
+                token: tempToken,
+                requirePasswordChange: true,
+                mustChangePassword: true,
+                message: 'Troca de senha obrigatória no primeiro acesso.',
                 user: {
                     id: user.id,
                     nome: user.nome,
                     email: user.email,
                     role: user.role,
                     escola: user.escola,
-                    turma: user.turma
+                    turma: user.turma,
+                    mustChangePassword: true
                 }
             });
         }
 
-        // Auto-provisioning seguro para perfis institucionais conhecidos
-        let role = 'Gestor da Rede';
-        if (cleanEmail.startsWith('professor')) role = 'Professor';
-        else if (cleanEmail.startsWith('diretor')) role = 'Diretor Escola';
-        else if (cleanEmail.startsWith('dpo') || cleanEmail.startsWith('admin')) role = 'Master Admin';
-
+        // 5. Sessão regular completa (8h)
         const token = jwt.sign(
             {
-                id: 'usr_' + Date.now(),
-                email: cleanEmail,
-                nome: cleanEmail.split('@')[0],
-                role,
-                escola: cleanEmail.includes('benta') ? 'U.E. BENTA VILANOVA' : (cleanEmail.includes('veloso') ? 'U.E. RAIMUNDO VELOSO BARROS' : 'U.E. BENTA VILANOVA'),
-                turma: cleanEmail.includes('2') ? '2º Ano' : (cleanEmail.includes('5') ? '5º Ano' : '9º Ano'),
-                org_id: req.tenant?.slug || 'semed_goncalves_dias'
+                id: user.id,
+                email: user.email,
+                nome: user.nome,
+                role: user.role,
+                escola: user.escola,
+                turma: user.turma,
+                mustChangePassword: false,
+                org_id: user.tenant_id || req.tenant?.slug || 'semed_goncalves_dias'
             },
             JWT_SECRET,
             { expiresIn: '8h' }
@@ -889,18 +1038,120 @@ app.post(['/api/auth/login', '/api/login'], async (req, res) => {
         return res.json({
             success: true,
             token,
+            requirePasswordChange: false,
+            mustChangePassword: false,
             user: {
-                id: 'usr_' + Date.now(),
-                nome: cleanEmail.split('@')[0],
-                email: cleanEmail,
-                role,
-                escola: cleanEmail.includes('benta') ? 'U.E. BENTA VILANOVA' : (cleanEmail.includes('veloso') ? 'U.E. RAIMUNDO VELOSO BARROS' : 'U.E. BENTA VILANOVA'),
-                turma: cleanEmail.includes('2') ? '2º Ano' : (cleanEmail.includes('5') ? '5º Ano' : '9º Ano')
+                id: user.id,
+                nome: user.nome,
+                email: user.email,
+                role: user.role,
+                escola: user.escola,
+                turma: user.turma,
+                mustChangePassword: false
             }
         });
     } catch (err) {
         console.error('Error in /api/auth/login:', err);
         res.status(500).json({ error: 'Falha no processamento do login.' });
+    }
+});
+
+// =============================================================================
+// ROTA DE REDEFINIÇÃO / TROCA OBRIGATÓRIA DE SENHA
+// =============================================================================
+app.post(['/api/auth/change-password', '/api/change-password'], async (req, res) => {
+    try {
+        let email = req.body?.email;
+        const currentPassword = req.body?.currentPassword;
+        const newPassword = req.body?.newPassword;
+
+        // Se houver token JWT no header, extrair o email do token se não fornecido
+        const authHeader = req.headers.authorization;
+        if (authHeader) {
+            const token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : authHeader;
+            try {
+                const decoded = jwt.verify(token, JWT_SECRET);
+                if (decoded && decoded.email) {
+                    email = email || decoded.email;
+                }
+            } catch (e) {}
+        }
+
+        if (!email || !currentPassword || !newPassword) {
+            return res.status(400).json({ error: 'E-mail, senha atual e nova senha são obrigatórios.' });
+        }
+
+        const cleanEmail = email.trim().toLowerCase();
+        const user = await findUserByEmail(cleanEmail);
+
+        if (!user || !user.password) {
+            return res.status(404).json({ error: 'Usuário não encontrado.' });
+        }
+
+        // 1. Validar senha atual
+        const isCurrentValid = await bcrypt.compare(currentPassword, user.password);
+        if (!isCurrentValid) {
+            return res.status(401).json({ error: 'Senha atual/temporária incorreta.' });
+        }
+
+        // 2. Validar que a nova senha é diferente da atual
+        if (currentPassword === newPassword) {
+            return res.status(400).json({ error: 'A nova senha deve ser diferente da senha anterior/temporária.' });
+        }
+
+        // 3. Validar requisitos de força da nova senha
+        if (newPassword.length < 10) {
+            return res.status(400).json({ error: 'A nova senha deve ter no mínimo 10 caracteres.' });
+        }
+        if (!/[A-Z]/.test(newPassword)) {
+            return res.status(400).json({ error: 'A nova senha deve conter pelo menos uma letra maiúscula (A-Z).' });
+        }
+        if (!/[a-z]/.test(newPassword)) {
+            return res.status(400).json({ error: 'A nova senha deve conter pelo menos uma letra minúscula (a-z).' });
+        }
+        if (!/[0-9]/.test(newPassword)) {
+            return res.status(400).json({ error: 'A nova senha deve conter pelo menos um número (0-9).' });
+        }
+
+        // 4. Gerar novo hash bcrypt com custo 12 e salvar no banco / fallback
+        const newHash = await bcrypt.hash(newPassword, 12);
+        await updateUserPasswordInDb(user.id, cleanEmail, newHash);
+
+        // 5. Emitir novo token JWT de sessão completa (8h)
+        const fullToken = jwt.sign(
+            {
+                id: user.id,
+                email: user.email,
+                nome: user.nome,
+                role: user.role,
+                escola: user.escola,
+                turma: user.turma,
+                mustChangePassword: false,
+                org_id: user.tenant_id || req.tenant?.slug || 'semed_goncalves_dias'
+            },
+            JWT_SECRET,
+            { expiresIn: '8h' }
+        );
+
+        return res.json({
+            success: true,
+            message: 'Senha alterada com sucesso! Acesso liberado.',
+            token: fullToken,
+            requirePasswordChange: false,
+            mustChangePassword: false,
+            user: {
+                id: user.id,
+                nome: user.nome,
+                email: user.email,
+                role: user.role,
+                escola: user.escola,
+                turma: user.turma,
+                mustChangePassword: false
+            }
+        });
+    } catch (err) {
+        console.error('Error in /api/auth/change-password:', err);
+        res.status(500).json({ error: 'Falha ao redefinir a senha.' });
     }
 });
 
@@ -1198,10 +1449,11 @@ app.get('/api/schedules/:id', authMiddleware, async (req, res) => {
 });
 
 // GET /api/users - Listar usuários cadastrados (escopado por RBAC)
-app.get('/api/users', authMiddleware, (req, res) => {
+app.get('/api/users', authMiddleware, async (req, res) => {
     try {
         const user = req.user;
-        const allUsers = getUsers().map(u => {
+        const rawUsers = await fetchAllUsersFromDb();
+        const allUsers = rawUsers.map(u => {
             const { password, ...rest } = u;
             return rest;
         });
@@ -1243,8 +1495,7 @@ app.post('/api/users', authMiddleware, authorize('Master Admin', 'Gestor da Rede
             return res.status(400).json({ error: 'O cadastro de Usuários é exclusivo para a equipe escolar (Gestores, Diretores e Professores). Para cadastrar alunos, utilize a tela de Alunos.' });
         }
 
-        const users = getUsers();
-        const existing = users.find(u => u.email.toLowerCase() === email.trim().toLowerCase());
+        const existing = await findUserByEmail(email.trim().toLowerCase());
         if (existing) {
             return res.status(409).json({ error: 'Já existe um usuário com este e-mail.' });
         }
@@ -1264,11 +1515,11 @@ app.post('/api/users', authMiddleware, authorize('Master Admin', 'Gestor da Rede
             escola: escola || 'Todas as Escolas (SEMED)',
             turma: turma || null,
             status: 'Ativo',
+            mustChangePassword: true,
             created_at: new Date().toISOString()
         };
 
-        users.push(newUser);
-        saveUsers(users);
+        await insertUserInDb(newUser);
 
         const { password: _, ...clean } = newUser;
         res.json({ success: true, user: clean });
@@ -1284,37 +1535,85 @@ app.put('/api/users/:id', authMiddleware, authorize('Master Admin', 'Gestor da R
         const { id } = req.params;
         const { nome, email, password, role, escola, turma, telefone, cpf, status } = req.body || {};
 
-        let users = getUsers();
-        const userIndex = users.findIndex(u => u.id === id);
-        if (userIndex === -1) {
-            // SECURITY FIX: [IDOR] Retorna 404
-            return res.status(404).json({ error: 'Registro não encontrado' });
-        }
-
         if (role && role.toLowerCase().includes('aluno')) {
             return res.status(400).json({ error: 'Perfil inválido. O módulo de Usuários aceita apenas funções de equipe.' });
         }
 
-        if (nome) users[userIndex].nome = nome.trim();
-        if (email) users[userIndex].email = email.trim().toLowerCase();
-        if (password) {
-            users[userIndex].password = await bcrypt.hash(password, 12);
-        }
-        if (role) {
-            users[userIndex].role = role.trim();
-            users[userIndex].tipo = role.trim();
-        }
-        if (escola !== undefined) users[userIndex].escola = escola;
-        if (turma !== undefined) users[userIndex].turma = turma;
-        if (telefone !== undefined) users[userIndex].telefone = telefone;
-        if (cpf !== undefined) users[userIndex].cpf = cpf;
-        if (status !== undefined) users[userIndex].status = status;
-        users[userIndex].updated_at = new Date().toISOString();
+        let updatedUser = null;
 
-        saveUsers(users);
+        if (!db.useLocalFallback) {
+            try {
+                let passHash = null;
+                if (password) {
+                    passHash = await bcrypt.hash(password, 12);
+                }
 
-        const { password: _, ...clean } = users[userIndex];
-        res.json({ success: true, user: clean });
+                const resDb = await db.query(`
+                    UPDATE public.usuarios 
+                    SET 
+                        nome = COALESCE($1, nome),
+                        email = COALESCE($2, email),
+                        password = COALESCE($3, password),
+                        role = COALESCE($4, role),
+                        tipo = COALESCE($4, tipo),
+                        escola = COALESCE($5, escola),
+                        turma = COALESCE($6, turma),
+                        telefone = COALESCE($7, telefone),
+                        cpf = COALESCE($8, cpf),
+                        status = COALESCE($9, status),
+                        updated_at = CURRENT_TIMESTAMP
+                    WHERE id = $10
+                    RETURNING id, nome, email, role, tipo, escola, turma, telefone, cpf, status, updated_at
+                `, [
+                    nome ? nome.trim() : null,
+                    email ? email.trim().toLowerCase() : null,
+                    passHash,
+                    role ? role.trim() : null,
+                    escola !== undefined ? escola : null,
+                    turma !== undefined ? turma : null,
+                    telefone !== undefined ? telefone : null,
+                    cpf !== undefined ? cpf : null,
+                    status !== undefined ? status : null,
+                    id
+                ]);
+
+                if (resDb.rows && resDb.rows.length > 0) {
+                    updatedUser = resDb.rows[0];
+                }
+            } catch(e) {
+                console.error('[DB PUT /api/users Error]:', e.message);
+            }
+        }
+
+        if (!updatedUser) {
+            let users = getUsers();
+            const userIndex = users.findIndex(u => u.id === id);
+            if (userIndex === -1) {
+                return res.status(404).json({ error: 'Registro não encontrado' });
+            }
+
+            if (nome) users[userIndex].nome = nome.trim();
+            if (email) users[userIndex].email = email.trim().toLowerCase();
+            if (password) {
+                users[userIndex].password = await bcrypt.hash(password, 12);
+            }
+            if (role) {
+                users[userIndex].role = role.trim();
+                users[userIndex].tipo = role.trim();
+            }
+            if (escola !== undefined) users[userIndex].escola = escola;
+            if (turma !== undefined) users[userIndex].turma = turma;
+            if (telefone !== undefined) users[userIndex].telefone = telefone;
+            if (cpf !== undefined) users[userIndex].cpf = cpf;
+            if (status !== undefined) users[userIndex].status = status;
+            users[userIndex].updated_at = new Date().toISOString();
+
+            saveUsers(users);
+            const { password: _, ...clean } = users[userIndex];
+            updatedUser = clean;
+        }
+
+        res.json({ success: true, user: updatedUser });
     } catch (err) {
         console.error('Error in PUT /api/users/:id:', err);
         res.status(500).json({ error: 'Erro ao atualizar usuário.' });
@@ -1322,14 +1621,25 @@ app.put('/api/users/:id', authMiddleware, authorize('Master Admin', 'Gestor da R
 });
 
 // DELETE /api/users/:id - Excluir usuário (exclusivo para grupo CONFIGURAÇÃO)
-app.delete('/api/users/:id', authMiddleware, authorize('Master Admin', 'admin'), (req, res) => {
+app.delete('/api/users/:id', authMiddleware, authorize('Master Admin', 'admin'), async (req, res) => {
     try {
         const { id } = req.params;
+
+        if (!db.useLocalFallback) {
+            try {
+                const resDb = await db.query('DELETE FROM public.usuarios WHERE id = $1 RETURNING id', [id]);
+                if (resDb.rows && resDb.rows.length > 0) {
+                    return res.json({ success: true });
+                }
+            } catch(e) {
+                console.error('[DB DELETE /api/users Error]:', e.message);
+            }
+        }
+
         let users = getUsers();
         const initialLen = users.length;
         users = users.filter(u => u.id !== id);
         if (users.length === initialLen) {
-            // SECURITY FIX: [IDOR] Retorna 404
             return res.status(404).json({ error: 'Registro não encontrado' });
         }
         saveUsers(users);

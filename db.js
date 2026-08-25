@@ -114,13 +114,17 @@ async function seedDatabase() {
         
         // 1. Seed Tenant Gonçalves Dias
         let defaultTenantId = null;
-        const tenantRes = await client.query(`
-            INSERT INTO tenants (nome, cnpj, slug)
-            VALUES ('Secretaria Municipal de Educação de Gonçalves Dias', '12.345.678/0001-99', 'gd')
-            ON CONFLICT (slug) DO UPDATE SET nome = EXCLUDED.nome
-            RETURNING id;
-        `);
-        defaultTenantId = tenantRes.rows[0].id;
+        const existingTenant = await client.query('SELECT id FROM tenants LIMIT 1');
+        if (existingTenant.rows.length > 0) {
+            defaultTenantId = existingTenant.rows[0].id;
+        } else {
+            const tenantRes = await client.query(`
+                INSERT INTO tenants (nome, cnpj, slug)
+                VALUES ('Secretaria Municipal de Educação de Gonçalves Dias', '12.345.678/0001-99', 'semed_goncalves_dias')
+                RETURNING id;
+            `);
+            defaultTenantId = tenantRes.rows[0].id;
+        }
 
         // 2. Seed official schools, classes and students from official_students_seed.js
         const escCountRes = await client.query('SELECT count(*) as total FROM escolas');
@@ -216,6 +220,44 @@ async function seedDatabase() {
                     }
                     console.log(`Successfully seeded ${insertedStudents} official students.`);
                 }
+            }
+        }
+
+        // 3. Seed Users from users.json if table is empty or missing users
+        const usersCountRes = await client.query('SELECT count(*) as total FROM public.usuarios');
+        const currentUsersCount = parseInt(usersCountRes.rows[0].total) || 0;
+
+        if (currentUsersCount === 0) {
+            const usersPath = path.join(__dirname, 'users.json');
+            if (fs.existsSync(usersPath)) {
+                console.log('Seeding official registered users from users.json...');
+                const usersData = JSON.parse(fs.readFileSync(usersPath, 'utf8'));
+                for (const u of usersData) {
+                    await client.query(`
+                        INSERT INTO public.usuarios (
+                            id, tenant_id, nome, email, password, role, tipo, escola, turma, telefone, cpf, status, must_change_password
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+                        ON CONFLICT (email) DO UPDATE SET
+                            password = EXCLUDED.password,
+                            role = EXCLUDED.role,
+                            must_change_password = EXCLUDED.must_change_password;
+                    `, [
+                        u.id || `usr_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+                        defaultTenantId,
+                        u.nome,
+                        u.email.toLowerCase().trim(),
+                        u.password,
+                        u.role,
+                        u.tipo || u.role,
+                        u.escola || null,
+                        u.turma || null,
+                        u.telefone || null,
+                        u.cpf || null,
+                        u.status || 'Ativo',
+                        u.mustChangePassword !== undefined ? !!u.mustChangePassword : true
+                    ]);
+                }
+                console.log(`Successfully seeded ${usersData.length} users into public.usuarios.`);
             }
         }
     } catch (err) {
