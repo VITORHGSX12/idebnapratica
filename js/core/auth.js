@@ -190,7 +190,7 @@
 
         // 1. Autenticação estrita exclusivamente via API do Servidor (/api/auth/login)
         var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-        var timeoutId = controller ? setTimeout(function() { controller.abort(); }, 6000) : null;
+        var timeoutId = controller ? setTimeout(function() { controller.abort(); }, 30000) : null;
 
         try {
             var loginResponse = await fetch('/api/auth/login', {

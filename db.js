@@ -10,14 +10,13 @@ let useLocalFallback = false;
 if (connectionString) {
     try {
         console.log('Connecting to PostgreSQL using DATABASE_URL...');
-        const isInternalOrLocal = !connectionString || 
+        const isLocal = !connectionString || 
             connectionString.includes('localhost') || 
-            connectionString.includes('railway.internal') || 
             connectionString.includes('127.0.0.1');
 
         pool = new Pool({
             connectionString,
-            ssl: isInternalOrLocal ? false : { rejectUnauthorized: false }
+            ssl: isLocal ? false : { rejectUnauthorized: false }
         });
         pool.on('error', (err) => {
             console.error('[PG Pool Error]', err ? err.message : err);

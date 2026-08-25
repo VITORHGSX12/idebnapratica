@@ -817,16 +817,17 @@ setInterval(() => {
 
 // Helper para carregar e sincronizar usuários do Banco / JSON
 async function findUserByEmail(cleanEmail) {
+    const normalized = (cleanEmail || '').toLowerCase().trim();
     if (!db.useLocalFallback) {
         try {
-            const res = await db.query('SELECT * FROM public.usuarios WHERE email = $1', [cleanEmail]);
+            const res = await db.query('SELECT * FROM public.usuarios WHERE LOWER(TRIM(email)) = $1 LIMIT 1', [normalized]);
             if (res.rows && res.rows.length > 0) {
                 const row = res.rows[0];
                 return {
                     id: row.id,
                     nome: row.nome,
                     email: row.email,
-                    password: row.password,
+                    password: row.password || row.senha_hash,
                     role: row.role,
                     tipo: row.tipo || row.role,
                     escola: row.escola,
@@ -843,7 +844,14 @@ async function findUserByEmail(cleanEmail) {
         }
     }
     const users = getUsers();
-    return users.find(u => u.email.toLowerCase() === cleanEmail);
+    const local = users.find(u => (u.email || '').toLowerCase().trim() === normalized);
+    if (local) {
+        return {
+            ...local,
+            password: local.password || local.senha_hash
+        };
+    }
+    return null;
 }
 
 async function updateUserPasswordInDb(userId, email, newHash) {
