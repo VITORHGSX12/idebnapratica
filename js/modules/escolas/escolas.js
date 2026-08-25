@@ -1152,12 +1152,70 @@
         }
     }
 
+    function exportSchoolsList() {
+        var schools = getOfficialSchoolsState();
+        if (!schools || schools.length === 0) {
+            if (typeof global.showToast === 'function') global.showToast('Nenhuma escola encontrada para exportar.', 'alert');
+            return;
+        }
+
+        var csvRows = [
+            ['UNIDADE ESCOLAR', 'CODIGO INEP', 'LOCALIZACAO', 'STATUS', 'DIRECAO', 'TELEFONE']
+        ];
+
+        schools.forEach(function(s) {
+            csvRows.push([
+                '"' + (s.name || '').replace(/"/g, '""') + '"',
+                '"' + (s.inep || s.codigo_inep || '') + '"',
+                '"' + (s.zone || 'Zona Rural') + '"',
+                '"' + (s.status || 'Ativa') + '"',
+                '"' + (s.director || 'Gestão Escolar') + '"',
+                '"' + (s.phone || '(99) 9935-6200') + '"'
+            ]);
+        });
+
+        var csvContent = '\uFEFF' + csvRows.map(function(r) { return r.join(';'); }).join('\r\n');
+        var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'escolas_rede_municipal_goncalves_dias.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        if (typeof global.showToast === 'function') {
+            global.showToast('Lista de escolas exportada com sucesso (CSV)!', 'check');
+        }
+    }
+
+    function refreshSchoolsList() {
+        renderDbSchools();
+        if (typeof global.showToast === 'function') {
+            global.showToast('Lista de escolas atualizada com sucesso!', 'check');
+        }
+    }
+
     // Inicialização
     function initSchoolsEventListeners() {
         var searchInput = document.getElementById('db-school-search');
         if (searchInput) {
             searchInput.oninput = function() {
                 renderDbSchools();
+            };
+        }
+
+        var exportBtn = document.getElementById('btn-export-schools-list');
+        if (exportBtn) {
+            exportBtn.onclick = function() {
+                exportSchoolsList();
+            };
+        }
+
+        var refreshBtn = document.getElementById('btn-refresh-schools-list');
+        if (refreshBtn) {
+            refreshBtn.onclick = function() {
+                refreshSchoolsList();
             };
         }
     }
@@ -1167,6 +1225,9 @@
     } else {
         initSchoolsEventListeners();
     }
+
+    global.exportSchoolsList = exportSchoolsList;
+    global.refreshSchoolsList = refreshSchoolsList;
 
     // Exposição global
     global.getOfficialSchoolsState = getOfficialSchoolsState;

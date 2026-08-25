@@ -1139,10 +1139,10 @@
                                 <p>Gestão e Acompanhamento das 9 Unidades Escolares de Gonçalves Dias - MA</p>
                             </div>
                             <div class="schools-header-actions">
-                                <button class="btn-export-outline" id="btn-export-schools-list">
+                                <button class="btn-export-outline" id="btn-export-schools-list" onclick="if(window.exportSchoolsList) window.exportSchoolsList();">
                                     <i data-lucide="file-spreadsheet" style="width:16px; height:16px;"></i> Exportar Lista
                                 </button>
-                                <button class="btn-refresh-circle" id="btn-refresh-schools-list" title="Recarregar Escolas">
+                                <button class="btn-refresh-circle" id="btn-refresh-schools-list" onclick="if(window.refreshSchoolsList) window.refreshSchoolsList();" title="Recarregar Escolas">
                                     <i data-lucide="rotate-cw" style="width:16px; height:16px;"></i>
                                 </button>
                             </div>
