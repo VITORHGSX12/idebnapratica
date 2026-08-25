@@ -238,7 +238,9 @@
                 }
             } else {
                 // Erro retornado pelo servidor (ex: 401 Credenciais Inválidas, 429 Rate Limit)
-                var errorMessage = (loginData && loginData.error) ? loginData.error : 'Credenciais inválidas. Verifique seu e-mail e senha.';
+                var errorMessage = (loginData && loginData.error) ? loginData.error : 'Credenciais inválidas. E-mail ou senha incorreta.';
+                showLoginErrorAlert(errorMessage);
+
                 if (typeof global.showToast === 'function') {
                     global.showToast(errorMessage, 'alert-triangle');
                 }
@@ -256,8 +258,10 @@
         } catch(err) {
             if (timeoutId) clearTimeout(timeoutId);
             console.error('[Auth Error]', err);
+            var connErr = 'Erro de conexão com o servidor. Verifique sua rede ou contate o suporte.';
+            showLoginErrorAlert(connErr);
             if (typeof global.showToast === 'function') {
-                global.showToast('Erro de conexão com o servidor. Verifique sua rede e tente novamente.', 'alert-triangle');
+                global.showToast(connErr, 'alert-triangle');
             }
             if (btnSubmit) {
                 btnSubmit.disabled = false;
@@ -538,18 +542,47 @@
     }
 
     /**
-     * Fluxo de Esqueci a Senha
+     * Exibe o alerta inline de erro de login
+     */
+    function showLoginErrorAlert(msg) {
+        var alertEl = document.getElementById('login-error-alert');
+        var textEl = document.getElementById('login-error-text');
+        var emailEl = document.getElementById('login-email');
+        var passEl = document.getElementById('login-password');
+
+        if (textEl && msg) textEl.textContent = msg;
+        if (alertEl) {
+            alertEl.classList.remove('hidden');
+            alertEl.style.display = 'flex';
+        }
+        if (passEl) passEl.classList.add('input-error');
+        if (emailEl) emailEl.classList.add('input-error');
+    }
+
+    /**
+     * Limpa o alerta inline de erro e remove bordas de erro
+     */
+    function clearLoginErrorAlert() {
+        var alertEl = document.getElementById('login-error-alert');
+        var emailEl = document.getElementById('login-email');
+        var passEl = document.getElementById('login-password');
+
+        if (alertEl) {
+            alertEl.classList.add('hidden');
+            alertEl.style.display = 'none';
+        }
+        if (passEl) passEl.classList.remove('input-error');
+        if (emailEl) emailEl.classList.remove('input-error');
+    }
+
+    /**
+     * Fluxo de Esqueci a Senha / Suporte Técnico
      */
     function handleForgotPassword() {
         var modal = document.getElementById('modal-forgot-password');
         if (modal) {
             modal.classList.remove('hidden');
             modal.style.display = 'flex';
-            var emailInput = document.getElementById('login-email');
-            var targetInput = document.getElementById('forgot-password-email');
-            if (emailInput && targetInput && emailInput.value) {
-                targetInput.value = emailInput.value;
-            }
         }
         if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
     }
@@ -562,31 +595,48 @@
         }
     }
 
-    function submitForgotPassword(e) {
-        if (e && e.preventDefault) e.preventDefault();
-        var email = document.getElementById('forgot-password-email');
-        var val = email ? email.value.trim() : '';
-        if (!val) {
-            if (typeof global.showToast === 'function') global.showToast('Insira seu e-mail institucional.', 'alert-triangle');
-            return;
-        }
+    /**
+     * Copia o número de suporte para a área de transferência
+     */
+    function copySupportPhoneNumber() {
+        var phone = '(99) 98528-0205';
+        var cleanPhone = '99985280205';
+        var btn = document.getElementById('btn-copy-support-phone');
 
-        var btn = document.getElementById('btn-submit-forgot-pass');
-        if (btn) {
-            btn.disabled = true;
-            btn.textContent = 'Enviando...';
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(phone).then(function() {
+                if (btn) {
+                    var originalHtml = btn.innerHTML;
+                    btn.innerHTML = '<span>✓ Copiado!</span>';
+                    btn.style.background = '#dcfce7';
+                    setTimeout(function() {
+                        btn.innerHTML = originalHtml;
+                        btn.style.background = 'white';
+                    }, 2000);
+                }
+                if (typeof global.showToast === 'function') {
+                    global.showToast('Número do suporte (' + phone + ') copiado com sucesso!', 'check');
+                }
+            }).catch(function() {
+                fallbackCopyText(phone);
+            });
+        } else {
+            fallbackCopyText(phone);
         }
+    }
 
-        setTimeout(function() {
-            closeForgotPasswordModal();
-            if (btn) {
-                btn.disabled = false;
-                btn.textContent = 'Enviar Instruções';
-            }
+    function fallbackCopyText(text) {
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
             if (typeof global.showToast === 'function') {
-                global.showToast('Instruções de redefinição enviadas para ' + val + '. Verifique sua caixa de entrada.', 'mail');
+                global.showToast('Número do suporte (' + text + ') copiado!', 'check');
             }
-        }, 800);
+        } catch (err) {}
+        document.body.removeChild(textArea);
     }
 
     /**
@@ -690,9 +740,11 @@
 
     // Exposição global
     global.executeSystemLogin = executeSystemLogin;
+    global.showLoginErrorAlert = showLoginErrorAlert;
+    global.clearLoginErrorAlert = clearLoginErrorAlert;
+    global.copySupportPhoneNumber = copySupportPhoneNumber;
     global.handleForgotPassword = handleForgotPassword;
     global.closeForgotPasswordModal = closeForgotPasswordModal;
-    global.submitForgotPassword = submitForgotPassword;
     global.showForceChangePasswordModal = showForceChangePasswordModal;
     global.closeForceChangePasswordModal = closeForceChangePasswordModal;
     global.cancelForceChangePassword = cancelForceChangePassword;
