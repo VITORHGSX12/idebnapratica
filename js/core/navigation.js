@@ -420,6 +420,30 @@
     }
 
     /**
+     * Filtro em tempo real de busca no menu da Sidebar
+     */
+    function filterSidebarMenuItems(query) {
+        var q = (query || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+        var items = document.querySelectorAll('.sidebar-menu .menu-item');
+        var dividers = document.querySelectorAll('.sidebar-menu .sidebar-divider');
+        
+        items.forEach(function(item) {
+            var text = (item.textContent || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            var tooltip = (item.getAttribute('data-tooltip') || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            if (!q || text.includes(q) || tooltip.includes(q)) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+
+        // Oculta divisores se o usuário estiver buscando ativamente
+        dividers.forEach(function(div) {
+            div.style.display = q ? 'none' : '';
+        });
+    }
+
+    /**
      * Alternador da barra lateral para dispositivos móveis (drawer)
      */
     function toggleMobileSidebar(forceState) {
@@ -519,6 +543,7 @@
     global.renderFullNetworkSidebar = renderFullNetworkSidebar;
     global.updateMenuVisibilityByRole = updateMenuVisibilityByRole;
     global.toggleSidebarCollapse = toggleSidebarCollapse;
+    global.filterSidebarMenuItems = filterSidebarMenuItems;
     global.toggleMobileSidebar = toggleMobileSidebar;
     global.closeMobileSidebar = closeMobileSidebar;
     global.handleGlobalBackNavigation = handleGlobalBackNavigation;
