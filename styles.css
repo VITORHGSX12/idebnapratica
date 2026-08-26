@@ -16,7 +16,7 @@
     
     --purple: var(--color-accent-primary);
     --purple-light: var(--color-accent-primary);
-    --purple-glow: rgba(29, 78, 216, 0.08);
+    --purple-glow: rgba(26, 45, 66, 0.08);
     --blue: var(--color-status-advanced);
     --blue-light: var(--color-status-advanced);
     --blue-glow: rgba(37, 99, 235, 0.08);
@@ -33,7 +33,7 @@
     /* Institutional & Login Theme Palette */
     --indigo: var(--color-accent-primary);
     --indigo-dark: var(--color-accent-hover);
-    --teal: #0D9488;
+    --teal: #2E4156;
     --ink: var(--color-brand-primary);
     --slate: var(--color-text-secondary);
     --slate-light: var(--color-text-muted);
@@ -63,7 +63,7 @@
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(15, 23, 42, 0.6);
+    background: rgba(26, 45, 66, 0.65);
     backdrop-filter: blur(4px);
     z-index: 9999;
     display: flex;
@@ -78,17 +78,17 @@
 
 /* Dark Mode Overrides - Soft Premium Slate Mode */
 body.dark-mode {
-    --bg-primary: #0a0b10;
-    --bg-secondary: #11131c;
-    --bg-tertiary: #171a26;
-    --border-color: #202436;
-    --text-primary: #e6e9f5;
-    --text-secondary: #8e94b3;
-    --text-muted: #5e6485;
+    --bg-primary: #1A2D42;
+    --bg-secondary: #2E4156;
+    --bg-tertiary: #1A2D42;
+    --border-color: #AAB7B7;
+    --text-primary: #D4D8DD;
+    --text-secondary: #C0C8CA;
+    --text-muted: #AAB7B7;
     
-    --purple: #907efc;
-    --purple-light: #b4a7ff;
-    --purple-glow: rgba(144, 126, 252, 0.12);
+    --purple: #D4D8DD;
+    --purple-light: #C0C8CA;
+    --purple-glow: rgba(212, 216, 221, 0.12);
     --blue: #4f96fc;
     --blue-light: #7cb3ff;
     --blue-glow: rgba(79, 150, 252, 0.12);
@@ -103,7 +103,7 @@ body.dark-mode {
     --orange-glow: rgba(242, 167, 59, 0.12);
     
     --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
-    --glass-bg: rgba(17, 19, 28, 0.7);
+    --glass-bg: rgba(46, 65, 86, 0.7);
 }
 
 * {
@@ -2312,7 +2312,7 @@ h4 svg, h4 i,
 .login-left-panel {
     position: relative;
     padding: 56px 64px;
-    background: linear-gradient(145deg, #1E1B4B 0%, #312E81 25%, #3F4C99 60%, #4C5AB0 100%);
+    background: linear-gradient(145deg, #1A2D42 0%, #1A2D42 45%, #2E4156 100%);
     color: #FFFFFF;
     overflow: hidden;
     display: flex;
@@ -2409,7 +2409,7 @@ h4 svg, h4 i,
     font-size: 11px;
     font-weight: 700;
     letter-spacing: .06em;
-    color: var(--color-accent-400);
+    color: #C0C8CA;
 }
 
 .login-left-panel .headline,
@@ -2429,7 +2429,7 @@ h4 svg, h4 i,
 .login-headline .accent-teal,
 .accent-teal { color: #6EE7B7; }
 .login-headline .accent-indigo,
-.accent-indigo { color: var(--color-accent-400); }
+.accent-indigo { color: #D4D8DD; }
 
 /* Card Gráfico IDEB (Real e Flutuante) */
 .chart-card,
@@ -2803,14 +2803,14 @@ h4 svg, h4 i,
     justify-content: center;
     gap: 8px;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    box-shadow: 0 4px 12px rgba(26, 45, 66, 0.25);
     transition: var(--transition-fast);
 }
 
 .btn-primary.btn-login-primary:hover,
 .btn-primary:hover {
     background-color: var(--color-accent-primary-hover);
-    box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+    box-shadow: 0 6px 16px rgba(26, 45, 66, 0.35);
     transform: translateY(-1px);
 }
 
@@ -7266,12 +7266,12 @@ body.collapsed-sidebar .sidebar-collapse-toggle svg {
     width: 44px;
     height: 44px;
     border-radius: 12px;
-    background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    background: linear-gradient(135deg, #1A2D42, #2E4156);
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 8px 16px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 8px 16px rgba(26, 45, 66, 0.3);
     flex-shrink: 0;
 }
 
@@ -7283,7 +7283,7 @@ body.collapsed-sidebar .sidebar-collapse-toggle svg {
     font-family: 'Lexend', 'Inter', sans-serif;
     font-size: 19px;
     font-weight: 800;
-    color: #0f172a;
+    color: var(--color-brand-primary);
     margin: 0;
     letter-spacing: -0.5px;
     line-height: 1.2;
@@ -7292,7 +7292,7 @@ body.collapsed-sidebar .sidebar-collapse-toggle svg {
 .login-transition-subtitle {
     font-size: 11px;
     font-weight: 600;
-    color: #64748b;
+    color: var(--color-text-secondary);
     display: block;
     margin-top: 2px;
 }
@@ -7304,7 +7304,7 @@ body.collapsed-sidebar .sidebar-collapse-toggle svg {
 .login-transition-bar-bg {
     width: 100%;
     height: 8px;
-    background: #e2e8f0;
+    background: var(--color-surface-subtle);
     border-radius: 999px;
     overflow: hidden;
     position: relative;
@@ -7313,7 +7313,7 @@ body.collapsed-sidebar .sidebar-collapse-toggle svg {
 .login-transition-bar-fill {
     height: 100%;
     width: 0%;
-    background: linear-gradient(90deg, #2563eb, #10b981);
+    background: linear-gradient(90deg, #1A2D42, #2E4156);
     border-radius: 999px;
     transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -7325,13 +7325,13 @@ body.collapsed-sidebar .sidebar-collapse-toggle svg {
     margin-top: 10px;
     font-size: 11.5px;
     font-weight: 600;
-    color: #475569;
+    color: var(--color-text-secondary);
 }
 
 .login-transition-percent {
     font-family: 'JetBrains Mono', monospace;
     font-weight: 700;
-    color: #2563eb;
+    color: var(--color-brand-primary);
 }
 
 /* =========================================================================
@@ -7342,7 +7342,7 @@ body.collapsed-sidebar .sidebar-collapse-toggle svg {
     inset: -20%;
     width: 140%;
     height: 140%;
-    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%);
+    background: linear-gradient(135deg, #1A2D42 0%, #1A2D42 50%, #2E4156 100%);
     z-index: 10;
     transform: translateX(-150%) skewX(-15deg);
     pointer-events: none;

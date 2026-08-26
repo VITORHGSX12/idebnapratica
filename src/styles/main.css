@@ -1,22 +1,22 @@
 :root {
-  --bg: #F3F4FA;
+  --bg: #D4D8DD;
   --card: #FFFFFF;
-  --border: #EBEDF5;
-  --text: #1C2130;
-  --text2: #767C90;
-  --text3: #9AA0B4;
-  --purple: #5B4FE9;
-  --purple-deep: #4338CA;
-  --purple-bg: #EEECFE;
-  --green: #17B26A;
-  --green-bg: #E4FAEF;
-  --blue: #3B82F6;
-  --blue-bg: #EAF2FE;
-  --amber: #F59E0B;
-  --amber-bg: #FEF3E2;
-  --teal: #0EA5A5;
+  --border: #AAB7B7;
+  --text: #1A2D42;
+  --text2: #2E4156;
+  --text3: #AAB7B7;
+  --purple: #1A2D42;
+  --purple-deep: #2E4156;
+  --purple-bg: #C0C8CA;
+  --green: #059669;
+  --green-bg: #ECFDF5;
+  --blue: #2563EB;
+  --blue-bg: #EFF6FF;
+  --amber: #D97706;
+  --amber-bg: #FFFBEB;
+  --teal: #2E4156;
   --radius: 18px;
-  --shadow: 0 1px 2px rgba(16,24,40,.04), 0 6px 20px -8px rgba(16,24,40,.08);
+  --shadow: 0 1px 2px rgba(26,45,66,.04), 0 6px 20px -8px rgba(26,45,66,.08);
 }
 
 * {
@@ -64,7 +64,7 @@ body {
   width: 52px;
   height: 52px;
   border-radius: 16px;
-  background: linear-gradient(135deg, #8B7CF6, #5B4FE9);
+  background: linear-gradient(135deg, #2E4156, #1A2D42);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -96,7 +96,7 @@ body {
 .pill {
   font-size: 12px;
   font-weight: 600;
-  color: var(--purple-deep);
+  color: #1A2D42;
   background: var(--purple-bg);
   padding: 3px 10px;
   border-radius: 20px;
@@ -129,7 +129,7 @@ body {
 }
 
 .btn:hover {
-  background: #f8f9fc;
+  background: #C0C8CA;
 }
 
 .btn-primary {

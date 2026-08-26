@@ -1,81 +1,77 @@
 /* =========================================================================
-   DESIGN TOKENS INSTITUCIONAIS — IDEB NA PRÁTICA (SEMED / GOVERNO MUNICIPAL)
-   Tokens padronizados para o domínio de Gestão Educacional, INEP e SAEB.
-   Nenhuma cor, fonte ou raio deve ser hardcoded fora deste arquivo.
+   DESIGN TOKENS INSTITUCIONAIS — NOVA PALETA OFICIAL EXECUTIVA
+   =========================================================================
+   PALETA DEFINIDA:
+   - #1A2D42 : Azul-marinho mais escuro (Primária / Destaque / Header / Títulos / CTA / Ícones Ativos)
+   - #2E4156 : Azul acinzentado escuro (Secundária / Hover / Focus / Subtítulos / Botões secundários / Bordas ativas)
+   - #AAB7B7 : Cinza-azulado médio (Neutra intermediária / Textos secundários / Placeholders / Divisores / Bordas de inputs e cards)
+   - #C0C8CA : Cinza claro (Fundo suave de cards alternados / Backgrounds de inputs / Banners / Tags neutras)
+   - #D4D8DD : Cinza muito claro (Fundo base geral da página/app / Containers / Superfícies de maior área)
    ========================================================================= */
 
 :root {
     /* ---------------------------------------------------------------------
-       1. SUPERFÍCIES E ESTRUTURA (PALETA INSTITUCIONAL SLATE / PETRÓLEO)
+       1. SUPERFÍCIES E ESTRUTURA
        --------------------------------------------------------------------- */
-    --color-brand-primary:      #0F172A; /* Slate 900: Sidebar, títulos principais, texto de alto contraste */
-    --color-brand-secondary:    #1E293B; /* Slate 800: Cabeçalhos estruturais de tabelas e ênfase */
-    --color-brand-subtle:       #334155; /* Slate 700: Bordas ativas e rótulos secundários */
+    --color-brand-primary:      #1A2D42; /* Azul-marinho mais escuro: Header, navbar, títulos principais, botões CTA */
+    --color-brand-secondary:    #2E4156; /* Azul acinzentado escuro: Subtítulos, botões secundários, bordas ativas */
+    --color-brand-subtle:       #2E4156; /* Elementos de suporte */
     
-    --color-surface-canvas:     #F8FAFC; /* Slate 50: Fundo geral de toda a aplicação */
-    --color-surface-card:       #FFFFFF; /* Superfície principal dos cartões e módulos */
-    --color-surface-subtle:     #F1F5F9; /* Slate 100: Fundos de filtros, linhas zebradas e inputs */
-    --color-surface-muted:      #E2E8F0; /* Slate 200: Fundo de trilhos e separadores */
-    --color-surface-overlay:    rgba(15, 23, 42, 0.65); /* Fundo de modais com foco institucional */
+    --color-surface-canvas:     #D4D8DD; /* Cinza muito claro: Fundo base geral da aplicação e containers */
+    --color-surface-card:       #FFFFFF; /* Superfície nítida de cartões sobre o canvas */
+    --color-surface-subtle:     #C0C8CA; /* Cinza claro: Fundo suave de cards, inputs, tags neutras e seções alternadas */
+    --color-surface-muted:      #C0C8CA; /* Trilhos e divisores */
+    --color-surface-overlay:    rgba(26, 45, 66, 0.75); /* Fundo de modais com foco (#1A2D42 com transparência) */
     
     /* ---------------------------------------------------------------------
        2. BORDAS E DIVISORES DE ALTA PRECISÃO
        --------------------------------------------------------------------- */
-    --color-border-subtle:      #E2E8F0; /* Slate 200: Linhas divisórias finas e contornos de cartões */
-    --color-border-strong:      #CBD5E1; /* Slate 300: Contornos de campos de formulário e separadores */
-    --color-border-focus:       #1D4ED8; /* Blue 700: Foco acessível em elementos interativos */
+    --color-border-subtle:      #AAB7B7; /* Cinza-azulado médio: Divisores, separadores, bordas padrão de inputs e cards */
+    --color-border-strong:      #AAB7B7; /* Contornos padrão */
+    --color-border-focus:       #1A2D42; /* Foco acessível em elementos interativos */
 
     /* ---------------------------------------------------------------------
-       3. TIPOGRAFIA & CONTRASTE
+       3. TIPOGRAFIA & CONTRASTE (WCAG AA / AAA)
        --------------------------------------------------------------------- */
-    --color-text-primary:       #0F172A; /* Títulos, métricas e dados principais (100% contraste) */
-    --color-text-secondary:     #475569; /* Slate 600: Descrições, rótulos de colunas e textos de apoio */
-    --color-text-muted:         #94A3B8; /* Slate 400: Metadados, datas, placeholders e unidades */
-    --color-text-inverse:       #FFFFFF; /* Texto em fundos escuros e botões de destaque */
+    --color-text-primary:       #1A2D42; /* Azul-marinho mais escuro: Títulos e métricas principais (13.8:1 de contraste) */
+    --color-text-secondary:     #2E4156; /* Azul acinzentado escuro: Subtítulos e textos de apoio (7.2:1 de contraste) */
+    --color-text-muted:         #2E4156; /* Metadados e rótulos */
+    --color-text-placeholder:   #AAB7B7; /* Cinza-azulado médio para placeholders */
+    --color-text-inverse:       #FFFFFF; /* Texto sobre fundos escuros (#1A2D42, #2E4156) */
 
     /* ---------------------------------------------------------------------
-       4. COR DE DESTAQUE INSTITUCIONAL ÚNICA (PALETA INDIGO APROVADA PELO USUÁRIO)
+       4. COR DE DESTAQUE INSTITUCIONAL (CTA / INTERAÇÃO)
        --------------------------------------------------------------------- */
-    --color-accent-100:         #5C6BC0; /* Tom base da família — para elementos decorativos */
-    --color-accent-200:         #7986CB;
-    --color-accent-300:         #9FA8DA;
-    --color-accent-400:         #C5CAE9;
-    --color-accent-50:          #E8EAF6;
-
-    --color-accent-primary:     #4C5AB0; /* Tom escurecido com contraste AA (6.18:1 vs branco, 5.91:1 vs canvas) */
-    --color-accent-primary-hover:#3F4C99;/* Hover com contraste AAA (7.76:1) */
-    --color-accent-hover:       #3F4C99;
-    --color-accent-soft:        #E8EAF6; /* = --color-accent-50, fundo tonal de ícones em bolha */
-    --color-accent-soft-border: #C5CAE9; /* = --color-accent-400 */
-    --color-accent-subtle:      #E8EAF6; /* Alias para compatibilidade */
-    --color-accent-border:      #C5CAE9; /* Alias para compatibilidade */
+    --color-accent-primary:     #1A2D42; /* Primária de destaque / CTA */
+    --color-accent-primary-hover:#2E4156;/* Hover / Focus */
+    --color-accent-hover:       #2E4156;
+    --color-accent-soft:        #C0C8CA; /* Fundo suave */
+    --color-accent-soft-border: #AAB7B7;
+    --color-accent-subtle:      #C0C8CA;
+    --color-accent-border:      #AAB7B7;
 
     /* ---------------------------------------------------------------------
-       5. SISTEMA SEMÂNTICO SAEB / IDEB (PADRÃO MEC / INEP)
+       5. SISTEMA SEMÂNTICO SAEB / IDEB (PRESERVADO)
        --------------------------------------------------------------------- */
-    /* Abaixo do Básico / Crítico (Proficiência < 200 / Abaixo da Meta) */
-    --color-status-critical:        #DC2626; /* Red 600 */
-    --color-status-critical-bg:     #FEF2F2; /* Red 50 */
-    --color-status-critical-border: #FCA5A5; /* Red 300 */
-    --color-status-critical-text:   #991B1B; /* Red 800 */
+    --color-status-critical:        #DC2626;
+    --color-status-critical-bg:     #FEF2F2;
+    --color-status-critical-border: #FCA5A5;
+    --color-status-critical-text:   #991B1B;
 
-    /* Básico / Alerta / Em Risco (Atenção para Recomposição) */
-    --color-status-warning:         #D97706; /* Amber 600 */
-    --color-status-warning-bg:      #FFFBEB; /* Amber 50 */
-    --color-status-warning-border:  #FCD34D; /* Amber 300 */
-    --color-status-warning-text:    #92400E; /* Amber 800 */
+    --color-status-warning:         #D97706;
+    --color-status-warning-bg:      #FFFBEB;
+    --color-status-warning-border:  #FCD34D;
+    --color-status-warning-text:    #92400E;
 
-    /* Proficiente / Na Meta / Adequado */
-    --color-status-success:         #059669; /* Emerald 600 */
-    --color-status-success-bg:      #ECFDF5; /* Emerald 50 */
-    --color-status-success-border:  #6EE7B7; /* Emerald 300 */
-    --color-status-success-text:    #065F46; /* Emerald 800 */
+    --color-status-success:         #059669;
+    --color-status-success-bg:      #ECFDF5;
+    --color-status-success-border:  #6EE7B7;
+    --color-status-success-text:    #065F46;
 
-    /* Avançado / Superou a Meta (Excelência) */
-    --color-status-advanced:        #2563EB; /* Blue 600 */
-    --color-status-advanced-bg:     #EFF6FF; /* Blue 50 */
-    --color-status-advanced-border: #93C5FD; /* Blue 300 */
-    --color-status-advanced-text:   #1E40AF; /* Blue 800 */
+    --color-status-advanced:        #2563EB;
+    --color-status-advanced-bg:     #EFF6FF;
+    --color-status-advanced-border: #93C5FD;
+    --color-status-advanced-text:   #1E40AF;
 
     /* ---------------------------------------------------------------------
        6. FONTES E FAMÍLIAS TIPOGRÁFICAS
@@ -87,34 +83,34 @@
     /* ---------------------------------------------------------------------
        7. ESCALA TIPOGRÁFICA INSTITUCIONAL
        --------------------------------------------------------------------- */
-    --text-hero-stat:    2.25rem;  /* 36px - Números de destaque do IDEB e SAEB */
-    --text-title-lg:     1.5rem;   /* 24px - Títulos de telas */
-    --text-title-md:     1.25rem;  /* 20px - Títulos de seções e cartões */
-    --text-title-sm:     1.05rem;  /* 16.8px - Subtítulos */
-    --text-body:         0.875rem; /* 14px - Texto geral e células de tabelas */
-    --text-sm:           0.78rem;  /* 12.5px - Rótulos secundários e metadados */
-    --text-xs:           0.6875rem;/* 11px - Badges e rótulos de eixo */
+    --text-hero-stat:    2.25rem;
+    --text-title-lg:     1.5rem;
+    --text-title-md:     1.25rem;
+    --text-title-sm:     1.05rem;
+    --text-body:         0.875rem;
+    --text-sm:           0.78rem;
+    --text-xs:           0.6875rem;
 
     /* ---------------------------------------------------------------------
-       8. MEDIDAS ESTATÍSTICAS E GEOMETRIA (BORDER RADIUS REGRAS V3)
+       8. MEDIDAS E GEOMETRIA
        --------------------------------------------------------------------- */
     --radius-xs: 4px;
     --radius-sm: 6px;
-    --radius-md: 8px; /* Cards de dado, tabelas, painéis */
+    --radius-md: 8px;
     --radius-card: 8px;
-    --radius-btn: 9999px; /* Botões arredondados / pills */
-    --radius-btn-rect: 12px; /* Botões quando retangulares */
-    --radius-pill: 9999px; /* Badges, avatar, ícones em bolha */
+    --radius-btn: 9999px;
+    --radius-btn-rect: 12px;
+    --radius-pill: 9999px;
     --radius-lg: 12px;
     --radius-full: 9999px;
 
     /* ---------------------------------------------------------------------
-       9. SOMBRAS INSTITUCIONAIS SUTIS (SEM SOMBRA DIFUSA)
+       9. SOMBRAS SUTIS
        --------------------------------------------------------------------- */
-    --shadow-subtle: 0 1px 2px rgba(15, 23, 42, 0.04);
-    --shadow-card:   0 1px 2px rgba(15, 23, 42, 0.04);
-    --shadow-dropdown: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
-    --shadow-modal:  0 10px 25px -5px rgba(15, 23, 42, 0.18), 0 8px 10px -6px rgba(15, 23, 42, 0.08);
+    --shadow-subtle: 0 1px 2px rgba(26, 45, 66, 0.06);
+    --shadow-card:   0 1px 3px rgba(26, 45, 66, 0.08);
+    --shadow-dropdown: 0 4px 6px -1px rgba(26, 45, 66, 0.12), 0 2px 4px -2px rgba(26, 45, 66, 0.06);
+    --shadow-modal:  0 10px 25px -5px rgba(26, 45, 66, 0.25), 0 8px 10px -6px rgba(26, 45, 66, 0.12);
 
     /* ---------------------------------------------------------------------
        10. TRANSIÇÕES CONTROLADAS
@@ -143,56 +139,30 @@
 }
 
 /* =========================================================================
-   DARK MODE INSTITUCIONAL (SLATE 950 / ALTO CONTRASTE TÉCNICO)
+   DARK MODE COMPATIBILIDADE
    ========================================================================= */
 body.dark-mode {
-    --color-brand-primary:      #F8FAFC;
-    --color-brand-secondary:    #E2E8F0;
-    --color-brand-subtle:       #94A3B8;
+    --color-brand-primary:      #D4D8DD;
+    --color-brand-secondary:    #C0C8CA;
+    --color-brand-subtle:       #AAB7B7;
 
-    --color-surface-canvas:     #090D16; /* Slate 950 */
-    --color-surface-card:       #111827; /* Slate 900 */
-    --color-surface-subtle:     #1E293B; /* Slate 800 */
-    --color-surface-muted:      #334155; /* Slate 700 */
-    --color-surface-overlay:    rgba(0, 0, 0, 0.75);
+    --color-surface-canvas:     #1A2D42;
+    --color-surface-card:       #2E4156;
+    --color-surface-subtle:     #1A2D42;
+    --color-surface-muted:      #2E4156;
+    --color-surface-overlay:    rgba(10, 18, 28, 0.85);
 
-    --color-border-subtle:      #1E293B;
-    --color-border-strong:      #334155;
-    --color-border-focus:       #3B82F6;
+    --color-border-subtle:      #AAB7B7;
+    --color-border-strong:      #C0C8CA;
+    --color-border-focus:       #D4D8DD;
 
-    --color-text-primary:       #F8FAFC;
-    --color-text-secondary:     #94A3B8;
-    --color-text-muted:         #64748B;
-    --color-text-inverse:       #0F172A;
+    --color-text-primary:       #D4D8DD;
+    --color-text-secondary:     #C0C8CA;
+    --color-text-muted:         #AAB7B7;
+    --color-text-inverse:       #1A2D42;
 
-    --color-accent-primary:     #3B82F6;
-    --color-accent-hover:       #2563EB;
-    --color-accent-subtle:      #1E293B;
-    --color-accent-border:      #334155;
-
-    /* Semântica Dark Mode */
-    --color-status-critical:        #EF4444;
-    --color-status-critical-bg:     rgba(239, 68, 68, 0.12);
-    --color-status-critical-border: rgba(239, 68, 68, 0.3);
-    --color-status-critical-text:   #FCA5A5;
-
-    --color-status-warning:         #F59E0B;
-    --color-status-warning-bg:      rgba(245, 158, 11, 0.12);
-    --color-status-warning-border:  rgba(245, 158, 11, 0.3);
-    --color-status-warning-text:    #FCD34D;
-
-    --color-status-success:         #10B981;
-    --color-status-success-bg:      rgba(16, 185, 129, 0.12);
-    --color-status-success-border:  rgba(16, 185, 129, 0.3);
-    --color-status-success-text:    #6EE7B7;
-
-    --color-status-advanced:        #3B82F6;
-    --color-status-advanced-bg:     rgba(59, 130, 246, 0.12);
-    --color-status-advanced-border: rgba(59, 130, 246, 0.3);
-    --color-status-advanced-text:   #93C5FD;
-
-    --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-    --shadow-card:   0 1px 3px 0 rgba(0, 0, 0, 0.4);
-    --shadow-dropdown: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
-    --shadow-modal:  0 10px 25px 0 rgba(0, 0, 0, 0.6);
+    --color-accent-primary:     #D4D8DD;
+    --color-accent-hover:       #C0C8CA;
+    --color-accent-subtle:      #2E4156;
+    --color-accent-border:      #AAB7B7;
 }
