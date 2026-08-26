@@ -366,15 +366,14 @@
 
         var isAhead = gap >= 0;
         var gapText = isAhead ? `+${Math.abs(gap)} pts (Meta superada)` : `${gap} pts para a meta`;
-        var gapBadgeClass = isAhead ? 'badge-status-success' : 'badge-status-warning';
 
         container.innerHTML = `
             <div class="ideb-trajectory-card">
                 <div class="ideb-trajectory-header">
                     <div class="ideb-trajectory-title-group">
-                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                            <span class="badge ${gapBadgeClass}">
-                                <i data-lucide="compass" style="width: 12px; height: 12px;"></i>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                            <span class="ideb-trajectory-pde-badge">
+                                <i data-lucide="compass" style="width: 13px; height: 13px;"></i>
                                 PACTUAÇÃO PDE & MONITORAMENTO DO CICLO
                             </span>
                         </div>
@@ -382,49 +381,76 @@
                         <p>Acompanhamento de calibração entre a base oficial INEP (2023), resultados observados e meta 2025/2026.</p>
                     </div>
 
-                    <div style="text-align: right;">
-                        <div style="font-size: var(--text-xs); font-weight: 700; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Distância da Meta</div>
-                        <div style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; color: ${isAhead ? 'var(--color-status-success-text)' : 'var(--color-status-warning-text)'}; font-variant-numeric: tabular-nums;">
+                    <div class="ideb-trajectory-gap-box">
+                        <div class="ideb-trajectory-gap-label">Distância da Meta</div>
+                        <div class="ideb-trajectory-gap-val ${isAhead ? 'ahead' : 'gap'}">
                             ${gapText}
                         </div>
                     </div>
                 </div>
 
-                <!-- Régua Calibrada -->
+                <!-- Régua Calibrada com Marcadores e Callouts Deslocados -->
                 <div class="ideb-trajectory-gauge-wrapper">
-                    <div class="ideb-gauge-track">
-                        <!-- Preenchimento do Progresso -->
-                        <div class="ideb-gauge-fill" style="width: ${currentPct}%;"></div>
+                    <!-- Faixa Superior de Callouts Anti-Colisão -->
+                    <div class="ideb-gauge-track-container">
+                        <div class="ideb-gauge-track">
+                            <!-- Preenchimento do Progresso Real -->
+                            <div class="ideb-gauge-fill" style="width: ${currentPct}%;"></div>
 
-                        <!-- Pin 1: Base Histórica 2023 -->
-                        <div class="ideb-gauge-pin baseline" style="left: ${baselinePct}%;">
-                            <div class="ideb-gauge-pin-label-top">2023: ${baselineScore}</div>
-                            <div class="ideb-gauge-pin-marker"></div>
-                            <div class="ideb-gauge-pin-label-bottom">Base INEP</div>
-                        </div>
-
-                        <!-- Pin 2: Desempenho Observado Atual -->
-                        <div class="ideb-gauge-pin current" style="left: ${currentPct}%;">
-                            <div class="ideb-gauge-pin-label-top" style="background-color: var(--color-accent-primary); color: #ffffff; border-color: var(--color-accent-primary);">
-                                Atual: ${currentScore}
+                            <!-- Pin 1: Base Histórica 2023 -->
+                            <div class="ideb-gauge-pin baseline" style="left: ${baselinePct}%;">
+                                <div class="ideb-gauge-callout tier-low">
+                                    <span class="callout-tag">2023</span>
+                                    <span class="callout-num">${baselineScore}</span>
+                                </div>
+                                <div class="ideb-gauge-pin-marker"></div>
                             </div>
-                            <div class="ideb-gauge-pin-marker"></div>
-                            <div class="ideb-gauge-pin-label-bottom" style="font-weight: 700; color: var(--color-accent-primary);">Observado</div>
+
+                            <!-- Pin 2: Desempenho Observado Atual (Elevado para não colidir) -->
+                            <div class="ideb-gauge-pin current" style="left: ${currentPct}%;">
+                                <div class="ideb-gauge-callout tier-hero">
+                                    <span class="callout-tag">Atual</span>
+                                    <span class="callout-num">${currentScore}</span>
+                                    <div class="callout-stem"></div>
+                                </div>
+                                <div class="ideb-gauge-pin-marker"></div>
+                            </div>
+
+                            <!-- Pin 3: Meta Pactuada -->
+                            <div class="ideb-gauge-pin target" style="left: ${targetPct}%;">
+                                <div class="ideb-gauge-callout tier-low">
+                                    <span class="callout-tag">Meta</span>
+                                    <span class="callout-num">${targetScore}</span>
+                                </div>
+                                <div class="ideb-gauge-pin-marker"></div>
+                            </div>
                         </div>
 
-                        <!-- Pin 3: Meta Pactuada -->
-                        <div class="ideb-gauge-pin target" style="left: ${targetPct}%;">
-                            <div class="ideb-gauge-pin-label-top">Meta: ${targetScore}</div>
-                            <div class="ideb-gauge-pin-marker"></div>
-                            <div class="ideb-gauge-pin-label-bottom">Pactuado</div>
+                        <!-- Legenda Descritiva Horizontal Padronizada (Zero sobreposição) -->
+                        <div class="ideb-gauge-legend-row">
+                            <div class="ideb-legend-item">
+                                <span class="ideb-legend-marker baseline"></span>
+                                <span class="ideb-legend-title">Base INEP:</span>
+                                <strong class="ideb-legend-score">${baselineScore}</strong>
+                            </div>
+                            <div class="ideb-legend-item active">
+                                <span class="ideb-legend-marker current"></span>
+                                <span class="ideb-legend-title">Observado Atual:</span>
+                                <strong class="ideb-legend-score">${currentScore}</strong>
+                            </div>
+                            <div class="ideb-legend-item">
+                                <span class="ideb-legend-marker target"></span>
+                                <span class="ideb-legend-title">Pactuado (Meta):</span>
+                                <strong class="ideb-legend-score">${targetScore}</strong>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="ideb-trajectory-footer">
-                    <div style="display: flex; align-items: center; gap: 16px; font-size: var(--text-xs); color: var(--color-text-secondary);">
+                    <div style="display: flex; align-items: center; gap: 16px; font-size: var(--text-xs); color: var(--color-text-secondary); flex-wrap: wrap;">
                         <span style="display: inline-flex; align-items: center; gap: 6px;">
-                            <span style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--color-accent-primary);"></span>
+                            <span style="width: 8px; height: 8px; border-radius: 50%; background-color: #1A2D42;"></span>
                             <strong>${progressPct}%</strong> da escala total alcançada
                         </span>
                         <span>•</span>
@@ -432,9 +458,9 @@
                     </div>
 
                     <div>
-                        <a href="javascript:void(0)" onclick="switchTab('metas-ideb'); return false;" class="btn btn-outline" style="font-size: var(--text-xs); padding: 4px 10px; height: 28px;">
+                        <a href="javascript:void(0)" onclick="switchTab('metas-ideb'); return false;" class="btn btn-outline" style="font-size: var(--text-xs); padding: 5px 12px; height: 30px; font-weight: 600;">
                             <span>Ver Plano de Metas por Escola</span>
-                            <i data-lucide="arrow-right" style="width: 12px; height: 12px;"></i>
+                            <i data-lucide="arrow-right" style="width: 13px; height: 13px;"></i>
                         </a>
                     </div>
                 </div>

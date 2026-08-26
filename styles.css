@@ -1149,38 +1149,128 @@ body.dark-mode .app-container {
     border-bottom: 1px solid var(--color-border-subtle);
 }
 
+.ideb-trajectory-card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 22px 24px;
+    margin-top: 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+}
+
+body.dark-mode .ideb-trajectory-card {
+    background-color: #1A2D42;
+    border-color: #2E4156;
+}
+
+.ideb-trajectory-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
 .ideb-trajectory-title-group h3 {
-    font-family: var(--font-body);
-    font-size: var(--text-title-md);
-    font-weight: 700;
-    color: var(--color-brand-primary);
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text-primary);
     margin: 0;
 }
 
 .ideb-trajectory-title-group p {
-    font-size: var(--text-sm);
-    color: var(--color-text-secondary);
+    font-size: 0.82rem;
+    color: var(--text-secondary);
     margin: 4px 0 0 0;
 }
 
+.ideb-trajectory-pde-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    border-radius: 6px;
+    background-color: rgba(26, 45, 66, 0.08);
+    border: 1px solid rgba(26, 45, 66, 0.20);
+    color: #1A2D42;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+body.dark-mode .ideb-trajectory-pde-badge {
+    background-color: #2E4156;
+    border-color: #AAB7B7;
+    color: #FFFFFF;
+}
+
+.ideb-trajectory-gap-box {
+    text-align: right;
+}
+
+.ideb-trajectory-gap-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+}
+
+.ideb-trajectory-gap-val {
+    font-size: 1.35rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.ideb-trajectory-gap-val.ahead {
+    color: #10b981;
+}
+
+.ideb-trajectory-gap-val.gap {
+    color: #1A2D42;
+}
+
+body.dark-mode .ideb-trajectory-gap-val.gap {
+    color: #D4D8DD;
+}
+
+/* Régua Calibrada & Anti-Colisão */
 .ideb-trajectory-gauge-wrapper {
     position: relative;
-    padding: 30px 12px 10px 12px;
+    padding: 48px 12px 10px 12px;
+}
+
+.ideb-gauge-track-container {
+    position: relative;
+    width: 100%;
 }
 
 .ideb-gauge-track {
     position: relative;
-    height: 10px;
-    background-color: var(--color-surface-muted);
-    border-radius: var(--radius-full);
+    height: 12px;
+    background-color: #D4D8DD;
+    border-radius: 9999px;
     overflow: visible;
+    border: 1px solid rgba(0,0,0,0.06);
+}
+
+body.dark-mode .ideb-gauge-track {
+    background-color: #2E4156;
+    border-color: rgba(255,255,255,0.08);
 }
 
 .ideb-gauge-fill {
     height: 100%;
-    background-color: var(--color-accent-primary);
-    border-radius: var(--radius-full);
+    background: linear-gradient(90deg, #2E4156 0%, #1A2D42 100%);
+    border-radius: 9999px;
     transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.dark-mode .ideb-gauge-fill {
+    background: linear-gradient(90deg, #2E4156 0%, #AAB7B7 100%);
 }
 
 .ideb-gauge-pin {
@@ -1190,54 +1280,190 @@ body.dark-mode .app-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    z-index: 10;
     cursor: default;
 }
 
-.ideb-gauge-pin-marker {
+/* Marcadores Geométricos Distintos */
+.ideb-gauge-pin.baseline .ideb-gauge-pin-marker {
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    border: 2px solid var(--color-surface-card);
-    box-shadow: 0 0 0 1px var(--color-border-strong);
-}
-
-.ideb-gauge-pin.baseline .ideb-gauge-pin-marker {
-    background-color: var(--color-text-secondary);
-}
-
-.ideb-gauge-pin.target .ideb-gauge-pin-marker {
-    background-color: var(--color-brand-primary);
-    border-radius: 2px;
-    transform: rotate(45deg);
+    background-color: #FFFFFF;
+    border: 2.5px solid #2E4156;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
 }
 
 .ideb-gauge-pin.current .ideb-gauge-pin-marker {
-    background-color: var(--color-accent-primary);
     width: 18px;
     height: 18px;
-    box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.2);
+    border-radius: 50%;
+    background-color: #1A2D42;
+    border: 3px solid #FFFFFF;
+    box-shadow: 0 0 0 2px #1A2D42, 0 3px 8px rgba(0,0,0,0.35);
+    z-index: 12;
 }
 
-.ideb-gauge-pin-label-top {
+body.dark-mode .ideb-gauge-pin.current .ideb-gauge-pin-marker {
+    background-color: #2E4156;
+    border-color: #FFFFFF;
+    box-shadow: 0 0 0 2px #AAB7B7, 0 3px 8px rgba(0,0,0,0.5);
+}
+
+.ideb-gauge-pin.target .ideb-gauge-pin-marker {
+    width: 13px;
+    height: 13px;
+    transform: rotate(45deg);
+    background-color: #2E4156;
+    border: 2.5px solid #FFFFFF;
+    box-shadow: 0 0 0 1.5px #2E4156, 0 1px 4px rgba(0,0,0,0.2);
+}
+
+/* Callouts Escalados (Anti-Colisão) */
+.ideb-gauge-callout {
     position: absolute;
-    bottom: 20px;
     white-space: nowrap;
-    font-size: var(--text-xs);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border-radius: 6px;
+    font-size: 0.72rem;
     font-weight: 700;
-    padding: 2px 8px;
-    border-radius: var(--radius-xs);
-    border: 1px solid var(--color-border-subtle);
-    background-color: var(--color-surface-card);
-    color: var(--color-text-primary);
+    pointer-events: none;
+    transition: all 0.2s ease;
 }
 
-.ideb-gauge-pin-label-bottom {
+.ideb-gauge-callout.tier-low {
+    bottom: 18px;
+    padding: 2px 7px;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+body.dark-mode .ideb-gauge-callout.tier-low {
+    background-color: #1A2D42;
+    border-color: #2E4156;
+    color: #FFFFFF;
+}
+
+.ideb-gauge-callout.tier-hero {
+    bottom: 42px;
+    background-color: #1A2D42;
+    border: 1px solid #2E4156;
+    color: #FFFFFF;
+    padding: 4px 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(15, 28, 42, 0.35);
+    z-index: 15;
+}
+
+body.dark-mode .ideb-gauge-callout.tier-hero {
+    background-color: #2E4156;
+    border-color: #AAB7B7;
+    color: #FFFFFF;
+}
+
+.ideb-gauge-callout.tier-hero .callout-stem {
     position: absolute;
-    top: 20px;
-    white-space: nowrap;
-    font-size: var(--text-xs);
-    color: var(--color-text-muted);
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1.5px;
+    height: 18px;
+    background-color: #1A2D42;
+}
+
+body.dark-mode .ideb-gauge-callout.tier-hero .callout-stem {
+    background-color: #2E4156;
+}
+
+.callout-tag {
+    font-size: 0.68rem;
+    opacity: 0.85;
+    text-transform: uppercase;
+}
+
+.callout-num {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 0.78rem;
+}
+
+/* Legenda Horizontal Inferior Padronizada */
+.ideb-gauge-legend-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 24px;
+    padding: 10px 16px;
+    background-color: rgba(26, 45, 66, 0.04);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    flex-wrap: wrap;
+}
+
+body.dark-mode .ideb-gauge-legend-row {
+    background-color: rgba(26, 45, 66, 0.4);
+    border-color: #2E4156;
+}
+
+.ideb-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+.ideb-legend-item.active {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.ideb-legend-marker {
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.ideb-legend-marker.baseline {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 2px solid #2E4156;
+}
+
+.ideb-legend-marker.current {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #1A2D42;
+    border: 1.5px solid #FFFFFF;
+}
+
+body.dark-mode .ideb-legend-marker.current {
+    background: #2E4156;
+    border-color: #AAB7B7;
+}
+
+.ideb-legend-marker.target {
+    width: 9px;
+    height: 9px;
+    transform: rotate(45deg);
+    background: #2E4156;
+    border: 1.5px solid #FFFFFF;
+}
+
+.ideb-legend-title {
     font-weight: 500;
+}
+
+.ideb-legend-score {
+    font-weight: 800;
+    color: var(--text-primary);
 }
 
 .ideb-trajectory-footer {
@@ -1246,9 +1472,9 @@ body.dark-mode .app-container {
     align-items: center;
     flex-wrap: wrap;
     gap: 12px;
-    margin-top: 36px;
+    margin-top: 20px;
     padding-top: 14px;
-    border-top: 1px solid var(--color-surface-subtle);
+    border-top: 1px solid var(--border-color);
     font-size: var(--text-sm);
 }
 
@@ -7281,81 +7507,6 @@ body.collapsed-sidebar .sidebar-collapse-toggle svg {
     color: var(--color-brand-primary);
     font-variant-numeric: tabular-nums;
     text-align: center;
-}
-
-/* 4. RÉGUA CALIBRADA DE TRAJETÓRIA MUNICIPAL */
-.ideb-trajectory-card {
-    background-color: var(--color-surface-subtle);
-    border: 1px solid var(--color-border-subtle);
-    border-radius: var(--radius-sm);
-    padding: 14px 16px;
-    margin-top: 10px;
-}
-
-.ideb-gauge-track {
-    position: relative;
-    height: 10px;
-    background-color: var(--color-surface-muted);
-    border-radius: var(--radius-pill);
-    margin: 18px 0 10px 0;
-    overflow: visible;
-}
-
-.ideb-gauge-fill {
-    height: 100%;
-    background-color: var(--color-accent-primary);
-    border-radius: var(--radius-pill);
-    transition: width 0.6s ease;
-}
-
-.ideb-gauge-pin {
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 18px;
-    height: 18px;
-    background-color: var(--color-accent-primary);
-    border: 3px solid #FFFFFF;
-    border-radius: 50%;
-    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.3);
-    z-index: 5;
-}
-
-.ideb-gauge-pin-label {
-    position: absolute;
-    bottom: 22px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--color-brand-primary);
-    color: #FFFFFF;
-    font-size: var(--text-xs);
-    font-weight: 700;
-    font-family: var(--font-display);
-    font-variant-numeric: tabular-nums;
-    padding: 2px 6px;
-    border-radius: var(--radius-xs);
-    white-space: nowrap;
-}
-
-.ideb-gauge-target-marker {
-    position: absolute;
-    top: -6px;
-    bottom: -6px;
-    width: 2px;
-    background: var(--color-brand-primary);
-    border-left: 2px dashed var(--color-status-success);
-    z-index: 4;
-}
-
-.ideb-gauge-target-label {
-    position: absolute;
-    top: 18px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: var(--color-status-success-text);
-    font-size: var(--text-xs);
-    font-weight: 700;
-    white-space: nowrap;
 }
 
 /* 5. TABELAS INSTITUCIONAIS */
