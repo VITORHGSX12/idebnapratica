@@ -562,9 +562,9 @@ function initApp() {
         }
 
         // Update titles
-        if (tabMeta[targetTab]) {
-            if (pageTitle) pageTitle.textContent = tabMeta[targetTab].title;
-            if (pageSubtitle) pageSubtitle.textContent = tabMeta[targetTab].subtitle;
+        if (pageTitle) pageTitle.textContent = 'IDEB na Prática';
+        if (tabMeta[targetTab] && pageSubtitle) {
+            pageSubtitle.textContent = tabMeta[targetTab].subtitle;
         }
 
         // Trigger specific actions when switching tabs

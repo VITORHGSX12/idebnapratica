@@ -102,7 +102,37 @@
                 }
             }
 
-            // 3. Atualizar realce visual nos menus da Sidebar
+            // 3. Atualizar realce visual nos menus da Sidebar e Título do Header
+            var pageTitle = document.getElementById('page-title');
+            var pageSubtitle = document.getElementById('page-subtitle');
+            if (pageTitle) pageTitle.textContent = 'IDEB na Prática';
+            
+            var TAB_SUBTITLES = {
+                'dashboard': 'Visão geral do desempenho pedagógico e estatísticas operacionais da rede.',
+                'escolas-panel': 'Painel geral de escolas, total de alunos cadastrados e estatísticas de proficiência de exames externos.',
+                'alunos-panel': 'Consulta de fichas cadastrais completas, dados de contato e acessibilidade da rede.',
+                'metas-ideb': 'Acompanhamento de metas pactuadas e planos de ação direcionados para escolas com desvio de aprendizagem.',
+                'ideb-comparativo': 'Resultados históricos oficiais e metas projetadas do IDEB por estados e municípios (Fonte: MEC / INEP).',
+                'matriz-descritores': 'Lista de descritores cognitivos de competências do SAEB e do SEAMA.',
+                'cronograma-habilidades': 'Planejamento e pactuação semanal de habilidades (SEMED ↔ Docentes) para acelerar a recomposição de aprendizagem.',
+                'sec-criar-avaliacoes': 'Criação de instrumentos pedagógicos focados na preparação para o IDEB (SAEB) e SEAMA.',
+                'criar-avaliacoes': 'Criação de instrumentos pedagógicos focados na preparação para o IDEB (SAEB) e SEAMA.',
+                'sec-aplicacao-provas': 'Monitoramento da presença dos alunos e digitação de cartões-resposta em tempo real.',
+                'aplicacao-provas': 'Monitoramento da presença dos alunos e digitação de cartões-resposta em tempo real.',
+                'banco-questoes': 'Pesquisa avançada, montagem de itens de teste e exportação de exames com descritores e habilidades.',
+                'questions': 'Pesquisa avançada, montagem de itens de teste e exportação de exames com descritores e habilidades.',
+                'relatorios-monitoramento': 'Acompanhamento longitudinal de alunos e geração de diagnósticos pedagógicos focados em avaliações externas.',
+                'ai-playground': 'Acompanhamento longitudinal de alunos e geração de diagnósticos pedagógicos focados em avaliações externas.',
+                'gestao-pedagogica': 'Acompanhamento de planos de ação pedagógica e alertas preditivos de desvios de metas.',
+                'doc-tecnica': 'Especificação técnica dos módulos, modelo relacional ERD, script DDL SQL e APIs do sistema.',
+                'biblioteca-recursos': 'Acervo oficial da SEMED Gonçalves Dias - MA. Simulados, matrizes e provas formatadas para impressão A4.',
+                'admin-panel': 'Gestão de usuários (RBAC), controle de acessos da SEMED e ferramentas de manutenção do sistema.'
+            };
+
+            if (pageSubtitle && (TAB_SUBTITLES[resolvedId] || TAB_SUBTITLES[safeTarget])) {
+                pageSubtitle.textContent = TAB_SUBTITLES[resolvedId] || TAB_SUBTITLES[safeTarget];
+            }
+
             var menuItems = document.querySelectorAll('.menu-item');
             menuItems.forEach(function(item) {
                 var dt = item.getAttribute('data-target');

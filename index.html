@@ -824,7 +824,7 @@
                         <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
                     </button>
                     <div>
-                        <h2 id="page-title">Dashboard & Métricas</h2>
+                        <h2 id="page-title">IDEB na Prática</h2>
                         <p id="page-subtitle" class="text-muted">Visão geral do desempenho pedagógico e estatísticas operacionais da rede.</p>
                     </div>
                 </div>
@@ -836,14 +836,14 @@
                     </div>
 
                     <!-- Botão de Perfil do Usuário no Topo -->
-                    <button type="button" class="header-user-btn" id="btn-header-user-profile" onclick="openUserProfileModal();" title="Ver e Editar Meu Perfil">
-                        <div class="header-user-avatar" id="header-user-avatar" style="background-color: var(--color-brand-primary); color: #fff; font-weight: 700; font-size: 0.8rem;">SE</div>
-                        <span class="header-user-name" id="header-user-name">Gestor da Rede</span>
+                    <button type="button" class="header-user-btn" id="btn-header-user-profile" onclick="if(typeof openUserProfileModal==='function') openUserProfileModal();" title="Ver e Editar Meu Perfil">
+                        <div class="header-user-avatar" id="header-user-avatar">SE</div>
+                        <span class="header-user-name" id="header-user-name">Secretaria Municipal de Educação (SEMED)</span>
                     </button>
 
                     <!-- Notification Button & Dropdown -->
                     <div style="position: relative;">
-                        <button class="btn btn-icon" id="notification-btn" title="Notificações e Alertas" style="position: relative; width: 38px; height: 38px;">
+                        <button class="btn btn-icon" id="notification-btn" onclick="const dd=document.getElementById('notifications-dropdown'); if(dd) dd.classList.toggle('hidden');" title="Notificações e Alertas" style="position: relative; width: 38px; height: 38px;">
                             <i data-lucide="bell"></i>
                             <span class="badge badge-danger" id="notification-badge" style="position: absolute; top: -3px; right: -3px; font-size: 0.55rem; padding: 2px 5px; border-radius: 50%;">3</span>
                         </button>
@@ -860,7 +860,7 @@
                     </div>
 
                     <!-- Theme Toggle -->
-                    <button class="btn btn-icon" id="theme-toggle" title="Alternar Tema" style="width: 38px; height: 38px;">
+                    <button class="btn btn-icon" id="theme-toggle" onclick="if(typeof toggleThemeMode==='function') toggleThemeMode();" title="Alternar Tema" style="width: 38px; height: 38px;">
                         <i data-lucide="moon"></i>
                     </button>
 

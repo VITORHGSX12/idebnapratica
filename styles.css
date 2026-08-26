@@ -5934,8 +5934,10 @@ html, body {
     border-bottom: 1px solid var(--border-color);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     flex-shrink: 0;
-    z-index: 90;
+    z-index: 100;
     box-sizing: border-box;
+    position: relative;
+    pointer-events: auto;
 }
 
 .navbar-left, .navbar-right {
@@ -5943,6 +5945,13 @@ html, body {
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
+    pointer-events: auto;
+}
+
+.navbar-right button,
+.navbar-left button {
+    pointer-events: auto !important;
+    cursor: pointer !important;
 }
 
 /* Toast Container Floating Notification */
@@ -6851,21 +6860,21 @@ body.collapsed-sidebar .sidebar-collapse-toggle svg {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 4px 12px 4px 6px;
-    height: 38px;
-    max-width: 220px;
-    border-radius: var(--radius-pill);
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
+    padding: 8px 16px;
+    min-height: 38px;
+    border-radius: 24px;
+    background: var(--bg-secondary, #FFFFFF);
+    border: 1px solid var(--border-color, #E2E8F0);
     cursor: pointer;
     transition: all 0.2s ease;
     color: var(--text-primary);
     flex-shrink: 0;
     box-sizing: border-box;
+    pointer-events: auto;
 }
 
 .header-user-btn:hover {
-    border-color: var(--color-brand-primary);
+    border-color: var(--color-brand-primary, #1A2D42);
     background: var(--bg-tertiary);
 }
 
@@ -6874,7 +6883,7 @@ body.collapsed-sidebar .sidebar-collapse-toggle svg {
     height: 28px;
     min-width: 28px;
     border-radius: 50%;
-    background: var(--color-brand-primary);
+    background: var(--color-brand-primary, #1A2D42);
     color: #FFFFFF;
     display: flex;
     align-items: center;
@@ -6882,16 +6891,18 @@ body.collapsed-sidebar .sidebar-collapse-toggle svg {
     font-size: 0.8rem;
     font-weight: 700;
     flex-shrink: 0;
+    margin-right: 8px;
 }
 
 .header-user-name {
     font-size: 0.78rem;
     font-weight: 700;
-    max-width: 140px;
+    max-width: 260px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     display: inline-block;
+    color: var(--text-primary);
 }
 
 /* ---------- Distribuição de Proficiência e Indicador Executivo ---------- */
