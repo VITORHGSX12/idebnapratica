@@ -3332,34 +3332,50 @@ body.collapsed-sidebar .sidebar {
     min-width: 76px !important;
     max-width: 76px !important;
     margin: 14px 0 14px 14px !important;
+    height: calc(100vh - 28px) !important;
     border-radius: 22px !important;
-    overflow-x: hidden !important;
+    background: linear-gradient(175deg, rgba(26, 45, 66, 0.95) 0%, rgba(46, 65, 86, 0.90) 100%) !important;
+    backdrop-filter: blur(22px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(22px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 20px 45px -10px rgba(15, 28, 42, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.08) inset !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    position: sticky !important;
+    top: 14px !important;
+    z-index: 100 !important;
+    transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), margin 0.25s ease !important;
 }
 
 body.collapsed-sidebar .sidebar-header {
-    padding: 16px 6px !important;
+    padding: 16px 8px 14px 8px !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
 }
 
 body.collapsed-sidebar .sidebar-header .logo-row {
+    display: flex !important;
     justify-content: center !important;
+    align-items: center !important;
     gap: 0 !important;
     width: 100% !important;
 }
 
 body.collapsed-sidebar .sidebar-header .logo-icon {
-    width: 38px !important;
-    height: 38px !important;
-    min-width: 38px !important;
-    max-width: 38px !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
     border-radius: 12px !important;
     margin: 0 auto !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.08)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: #FFFFFF !important;
 }
 
 body.collapsed-sidebar .sidebar-header .logo-text,
@@ -3369,17 +3385,22 @@ body.collapsed-sidebar .sidebar-header #mobile-menu-close {
 }
 
 body.collapsed-sidebar .sidebar-menu {
-    padding: 12px 6px !important;
+    padding: 12px 8px !important;
+    display: flex !important;
+    flex-direction: column !important;
     align-items: center !important;
-    overflow-x: hidden !important;
+    gap: 10px !important;
+    overflow-x: visible !important;
+    overflow-y: auto !important;
 }
 
 body.collapsed-sidebar .menu-group {
-    margin-bottom: 6px !important;
     width: 100% !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
+    gap: 10px !important;
+    margin-bottom: 2px !important;
 }
 
 body.collapsed-sidebar .menu-group-header {
@@ -3391,14 +3412,14 @@ body.collapsed-sidebar .menu-group > div {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    gap: 6px !important;
+    gap: 10px !important;
 }
 
 body.collapsed-sidebar .menu-item {
-    width: 44px !important;
-    height: 44px !important;
-    min-width: 44px !important;
-    max-width: 44px !important;
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    max-width: 42px !important;
     border-radius: 12px !important;
     padding: 0 !important;
     margin: 0 auto !important;
@@ -3407,6 +3428,25 @@ body.collapsed-sidebar .menu-item {
     justify-content: center !important;
     gap: 0 !important;
     position: relative !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: #FFFFFF !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    cursor: pointer !important;
+}
+
+body.collapsed-sidebar .menu-item:hover {
+    background: rgba(255, 255, 255, 0.16) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    transform: scale(1.06) !important;
+    color: #FFFFFF !important;
+}
+
+body.collapsed-sidebar .menu-item.active {
+    background: rgba(255, 255, 255, 0.24) !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.15) !important;
+    color: #FFFFFF !important;
 }
 
 body.collapsed-sidebar .menu-item i,
@@ -3417,6 +3457,19 @@ body.collapsed-sidebar .menu-item svg {
     min-width: 20px !important;
     min-height: 20px !important;
     margin: 0 !important;
+    color: #FFFFFF !important;
+    stroke: #FFFFFF !important;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45)) !important;
+    opacity: 0.95 !important;
+}
+
+body.collapsed-sidebar .menu-item.active i,
+body.collapsed-sidebar .menu-item.active svg,
+body.collapsed-sidebar .menu-item:hover i,
+body.collapsed-sidebar .menu-item:hover svg {
+    opacity: 1 !important;
+    color: #FFFFFF !important;
+    stroke: #FFFFFF !important;
 }
 
 body.collapsed-sidebar .menu-item span,
@@ -3424,62 +3477,146 @@ body.collapsed-sidebar .menu-item .badge {
     display: none !important;
 }
 
-/* Floating tooltip on hover when collapsed (Brisk Style) */
-body.collapsed-sidebar .menu-item[data-tooltip]:hover::after {
+/* Floating tooltip on hover when collapsed (Brisk Glass Style) */
+body.collapsed-sidebar .menu-item[data-tooltip]::after {
     content: attr(data-tooltip);
     position: absolute;
     left: calc(100% + 14px);
     top: 50%;
-    transform: translateY(-50%);
-    background: rgba(26, 45, 66, 0.94);
+    transform: translateY(-50%) translateX(-6px);
+    background: rgba(26, 45, 66, 0.96);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     color: #FFFFFF;
-    padding: 8px 14px;
-    border-radius: 10px;
+    padding: 7px 14px;
+    border-radius: 8px;
     font-size: 0.78rem;
     font-weight: 700;
     white-space: nowrap;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-    z-index: 999999;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    z-index: 9999999;
     pointer-events: none;
-    animation: tooltipFadeIn 0.15s ease-out forwards;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
 }
 
-@keyframes tooltipFadeIn {
-    from { opacity: 0; transform: translateY(-50%) translateX(-4px); }
-    to { opacity: 1; transform: translateY(-50%) translateX(0); }
+body.collapsed-sidebar .menu-item[data-tooltip]::before {
+    content: "";
+    position: absolute;
+    left: calc(100% + 8px);
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 5px 6px 5px 0;
+    border-style: solid;
+    border-color: transparent rgba(26, 45, 66, 0.96) transparent transparent;
+    z-index: 9999999;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.18s ease, visibility 0.18s;
 }
 
-body.collapsed-sidebar .sidebar-theme-toggle-row {
-    justify-content: center !important;
-    padding: 6px 4px !important;
+body.collapsed-sidebar .menu-item[data-tooltip]:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) translateX(0);
 }
 
-body.collapsed-sidebar .sidebar-theme-toggle-row .theme-toggle-label span {
-    display: none !important;
+body.collapsed-sidebar .menu-item[data-tooltip]:hover::before {
+    opacity: 1;
+    visibility: visible;
 }
 
 body.collapsed-sidebar .sidebar-footer {
-    padding: 12px 6px !important;
+    padding: 12px 8px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
     justify-content: center !important;
+    gap: 10px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+    background: rgba(0, 0, 0, 0.15) !important;
+    border-radius: 0 0 22px 22px !important;
 }
 
-body.collapsed-sidebar .sidebar-footer .user-profile {
-    justify-content: center !important;
-    padding: 4px !important;
-    width: 44px !important;
-    height: 44px !important;
-    border-radius: 12px !important;
+body.collapsed-sidebar .sidebar-theme-toggle-row {
+    width: 42px !important;
+    height: 38px !important;
+    padding: 0 !important;
     margin: 0 auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 12px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    cursor: pointer !important;
 }
 
-body.collapsed-sidebar .sidebar-footer .user-info,
-body.collapsed-sidebar .sidebar-footer i[data-lucide="chevron-up"],
-body.collapsed-sidebar .sidebar-footer svg[class*="chevron-up"],
-body.collapsed-sidebar .sidebar-footer svg.lucide-chevron-up {
+body.collapsed-sidebar .sidebar-theme-toggle-row:hover {
+    background: rgba(255, 255, 255, 0.16) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+body.collapsed-sidebar .sidebar-theme-toggle-row .theme-toggle-label span,
+body.collapsed-sidebar .sidebar-theme-toggle-row .theme-switch {
+    display: none !important;
+}
+
+body.collapsed-sidebar .sidebar-theme-toggle-row .theme-toggle-label {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    cursor: pointer !important;
+}
+
+body.collapsed-sidebar .sidebar-theme-toggle-row .theme-toggle-label svg {
+    width: 18px !important;
+    height: 18px !important;
+    color: #FFFFFF !important;
+    stroke: #FFFFFF !important;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4)) !important;
+}
+
+body.collapsed-sidebar .user-profile {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    max-width: 42px !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 12px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+body.collapsed-sidebar .user-profile:hover {
+    background: rgba(255, 255, 255, 0.16) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+body.collapsed-sidebar .user-profile .avatar {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 0.75rem !important;
+    margin: 0 auto !important;
+    background: rgba(255, 255, 255, 0.22) !important;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    color: #FFFFFF !important;
+}
+
+body.collapsed-sidebar .user-info,
+body.collapsed-sidebar .user-profile i[data-lucide="chevron-up"],
+body.collapsed-sidebar .user-profile svg[class*="chevron-up"],
+body.collapsed-sidebar .user-profile svg.lucide-chevron-up {
     display: none !important;
 }
 
@@ -5200,65 +5337,14 @@ body.collapsed-sidebar .menu-item .badge {
     white-space: nowrap !important;
 }
 
-/* ====================================================
-   COLLAPSED SIDEBAR (ICON-ONLY MODE)
-   ==================================================== */
-body.collapsed-sidebar .sidebar {
-    width: 72px !important;
-    min-width: 72px !important;
-    max-width: 72px !important;
-    overflow-x: hidden !important;
-}
-
-body.collapsed-sidebar .sidebar-menu .menu-item {
-    width: 44px !important;
-    height: 44px !important;
-    min-width: 44px !important;
-    max-width: 44px !important;
-    padding: 0 !important;
-    margin: 0 auto 6px auto !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 0 !important;
-}
-
-body.collapsed-sidebar .sidebar-menu .menu-item svg {
-    display: block !important;
-    width: 20px !important;
-    height: 20px !important;
-    min-width: 20px !important;
-    min-height: 20px !important;
-    margin: 0 !important;
-}
-
-body.collapsed-sidebar .sidebar-menu .menu-item span,
-body.collapsed-sidebar .sidebar-menu .menu-item .badge,
-body.collapsed-sidebar .menu-group-header,
-body.collapsed-sidebar .sidebar-header .logo-text,
-body.collapsed-sidebar .sidebar-header .active-network-badge,
-body.collapsed-sidebar .sidebar-footer .user-info {
-    display: none !important;
-}
-
-
 /* LAYOUT E NAVEGAÇÃO PRINCIPAL RESILIENTE */
-.sidebar {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 260px !important;
-    height: 100vh !important;
-    overflow-y: auto !important;
-    z-index: 100 !important;
-}
-
 .main-content {
-    margin-left: 260px !important;
-    min-height: 100vh !important;
-    overflow-y: auto !important;
-    background-color: var(--bg-primary) !important;
-    position: relative !important;
+    flex-grow: 1;
+    min-width: 0;
+    min-height: 100vh;
+    background-color: var(--bg-primary);
+    position: relative;
+    box-sizing: border-box;
 }
 
 .tab-content {
@@ -5271,79 +5357,6 @@ body.collapsed-sidebar .sidebar-footer .user-info {
 
 .hidden {
     display: none !important;
-}
-
-
-/* ==========================================================================
-   LAYOUT PADRONIZADO E SEM ESPAÇO EM BRANCO NO TOPO (PARTE 4)
-   ========================================================================== */
-.sidebar {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 260px !important;
-    height: 100vh !important;
-    overflow-y: auto !important;
-    z-index: 100 !important;
-}
-
-.main-content {
-    margin-left: 260px !important;
-    min-height: 100vh !important;
-    padding: 24px 32px !important;
-    background-color: var(--bg-primary) !important;
-    position: relative !important;
-    box-sizing: border-box !important;
-}
-
-.tab-content {
-    display: none;
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-}
-
-.tab-content.active {
-    display: block !important;
-}
-
-.hidden {
-    display: none !important;
-}
-
-
-/* ==========================================================================
-   ELIMINAÇÃO ABSOLUTA DE ESPAÇO EM BRANCO NO TOPO E ISOLAMENTO DE ROTAS
-   ========================================================================== */
-html, body {
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow-x: hidden !important;
-}
-
-.main-content {
-    margin-left: 260px !important;
-    min-height: 100vh !important;
-    padding: 20px 28px !important;
-    background-color: var(--bg-primary) !important;
-    position: relative !important;
-    box-sizing: border-box !important;
-}
-
-.content-body {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-}
-
-.tab-content {
-    display: none !important;
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-}
-
-.tab-content.active {
-    display: block !important;
-    margin-top: 0 !important;
-    padding-top: 0 !important;
 }
 
 .hidden {

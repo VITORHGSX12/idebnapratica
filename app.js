@@ -7961,66 +7961,10 @@ if (document.readyState === 'loading') {
         }).join('');
     }
 
-    function renderRankingGeralMaTable() {
-        const tbody = document.getElementById('table-ranking-geral-ma-body');
-        if (!tbody) return;
-
-        tbody.innerHTML = RANKING_GERAL_MA_DATA.map(item => {
-            const isGd = item.isDestaque;
-            const isMedia = item.isMedia;
-
-            return `
-                <tr style="border-bottom: 1px solid var(--border-color); height: 48px; ${isGd ? 'background: rgba(139, 92, 246, 0.12); font-weight: 700;' : (isMedia ? 'background: var(--bg-tertiary); font-weight: 700;' : '')}">
-                    <td style="padding: 10px 14px; font-family: var(--font-mono); ${isGd ? 'color: var(--purple-light); font-weight: 800;' : ''}">
-                        ${isGd ? '⭐ ' : ''}${item.rank}
-                    </td>
-                    <td style="padding: 10px 14px; color: ${isGd ? 'var(--purple-light)' : (isMedia ? 'var(--text-primary)' : 'var(--text-primary)')};">
-                        ${item.cidade}
-                    </td>
-                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${item.ideb2023.toFixed(1)}</td>
-                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--green-light);">${item.ideb2025.toFixed(1)}</td>
-                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: var(--green-light);">+${item.evolucao}</td>
-                    <td style="padding: 10px 14px; text-align: center;">
-                        <span class="badge ${isGd ? 'badge-purple' : (isMedia ? 'badge-info' : 'badge-outline')}" style="font-size:0.72rem;">
-                            ${item.classif}
-                        </span>
-                    </td>
-                </tr>
-            `;
-        }).join('');
-    }
-
-
-    // Direct event delegation on document for regional tab switching
-    document.addEventListener('click', function(e) {
-        const btn = e.target.closest('.ideb-regional-tab-btn');
-        if (!btn) return;
-        
-        const targetTab = btn.getAttribute('data-tab');
-        if (!targetTab) return;
-
-        document.querySelectorAll('.ideb-regional-tab-btn').forEach(b => {
-            b.classList.remove('active');
-            b.style.background = 'transparent';
-            b.style.color = 'var(--text-secondary)';
-            b.style.border = '1px solid var(--border-color)';
-        });
-
-        btn.classList.add('active');
-        btn.style.background = 'var(--purple-light)';
-        btn.style.color = '#ffffff';
-        btn.style.border = 'none';
-
-        document.querySelectorAll('.ideb-regional-tab-content').forEach(c => c.classList.add('hidden'));
-        const activeContent = document.getElementById(`tab-ideb-${targetTab}`);
-        if (activeContent) activeContent.classList.remove('hidden');
-
-        if (targetTab === 'ure-presidente-dutra') renderUrePresidenteDutraTable();
-        if (targetTab === 'regiao-centro-ma') renderRegiaoCentroTable();
-        if (targetTab === 'ranking-geral-ma') renderRankingGeralMaTable();
-
-        safeCreateIcons();
-    });
+    // Ranking and subtab delegation to js/modules/metas/
+    window.renderRankingGeralMaTable = function() {
+        if (typeof global.renderRankingGeralMaTable === 'function') global.renderRankingGeralMaTable();
+    };
 
 
     // ==========================================
@@ -8865,64 +8809,7 @@ if (document.readyState === 'loading') {
     }
     window.renderRegiaoCentroTable = renderRegiaoCentroTable;
 
-    // Dynamic Render for Ranking Geral do Maranhão (All 217 municipalities)
-    function renderRankingGeralMaTable() {
-        const tbody = document.getElementById('table-ranking-geral-ma-body');
-        if (!tbody || !window.idebPublicoReferencia) return;
-
-        const currentCity = (document.getElementById('ideb-city-search')?.value || 'Gonçalves Dias').trim();
-        const currentStage = document.getElementById('ideb-stage-select')?.value || 'Anos Iniciais';
-        const searchInput = document.getElementById('input-search-ranking-ma');
-        const query = searchInput ? searchInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
-
-        // Get unique municipalities from window.idebPublicoReferencia for MA
-        const maRecords2025 = (window.idebPublicoReferencia || []).filter(r => r.uf === 'MA' && r.etapa === currentStage && r.ano === 2025);
-        const maRecords2023 = (window.idebPublicoReferencia || []).filter(r => r.uf === 'MA' && r.etapa === currentStage && r.ano === 2023);
-
-        const list = maRecords2025.map(r25 => {
-            const r23 = maRecords2023.find(r => r.municipio === r25.municipio) || { ideb_observado: 4.8 };
-            const diff = Number((r25.ideb_observado - r23.ideb_observado).toFixed(1));
-            return {
-                cidade: r25.municipio,
-                ideb2023: r23.ideb_observado,
-                ideb2025: r25.ideb_observado,
-                evolucao: diff,
-                classif: r25.ideb_observado >= 5.5 ? 'Alto Desempenho 🟢' : (r25.ideb_observado >= 5.0 ? 'Evolução Positiva 🟡' : 'Atenção Prioritária 🔴')
-            };
-        });
-
-        // Sort descending
-        list.sort((a, b) => b.ideb2025 - a.ideb2025);
-
-        // Filter by search query if any
-        let filtered = list;
-        if (query) {
-            filtered = list.filter(item => item.cidade.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(query));
-        }
-
-        tbody.innerHTML = filtered.map((item, idx) => {
-            const isSelected = item.cidade.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === currentCity.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            return `
-                <tr style="border-bottom: 1px solid var(--border-color); height: 48px; ${isSelected ? 'background: rgba(99, 102, 241, 0.12); font-weight: 700;' : ''}">
-                    <td style="padding: 10px 14px; font-family: var(--font-mono); ${isSelected ? 'color: #6366f1; font-weight: 800;' : ''}">
-                        ${isSelected ? '⭐ ' : ''}${idx + 1}º
-                    </td>
-                    <td style="padding: 10px 14px; color: ${isSelected ? '#6366f1' : 'var(--text-primary)'};">
-                        ${item.cidade} ${isSelected ? '<span class="badge badge-purple" style="font-size:0.68rem; margin-left:6px;">Selecionado</span>' : ''}
-                    </td>
-                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono);">${item.ideb2023.toFixed(1)}</td>
-                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--green-light);">${item.ideb2025.toFixed(1)}</td>
-                    <td style="padding: 10px 14px; text-align: center; font-family: var(--font-mono); color: var(--green-light);">+${item.evolucao}</td>
-                    <td style="padding: 10px 14px; text-align: center;">
-                        <span class="badge ${isSelected ? 'badge-purple' : 'badge-outline'}" style="font-size:0.72rem;">
-                            ${item.classif}
-                        </span>
-                    </td>
-                </tr>
-            `;
-        }).join('');
-    }
-    window.renderRankingGeralMaTable = renderRankingGeralMaTable;
+    // Delegated to js/modules/metas/metas_regional.js
 
     // Modal creation openers
     function openCreateClassModal() {

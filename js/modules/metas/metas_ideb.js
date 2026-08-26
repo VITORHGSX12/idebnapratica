@@ -43,15 +43,15 @@
             document.querySelectorAll('.ideb-regional-tab-btn').forEach(function(btn) {
                 if (btn.getAttribute('data-tab') === targetTab) {
                     btn.classList.add('active');
-                    btn.style.background = 'var(--color-accent-primary, #6366f1)';
+                    btn.style.background = '#1A2D42';
                     btn.style.color = '#ffffff';
                     btn.style.border = 'none';
                     btn.style.fontWeight = '700';
                 } else {
                     btn.classList.remove('active');
-                    btn.style.background = 'var(--color-surface-card, #ffffff)';
-                    btn.style.color = 'var(--color-text-secondary, #64748b)';
-                    btn.style.border = '1px solid var(--color-border-subtle, #e2e8f0)';
+                    btn.style.background = '#D4D8DD';
+                    btn.style.color = '#1A2D42';
+                    btn.style.border = '1px solid #C0C8CA';
                     btn.style.fontWeight = '600';
                 }
             });
@@ -72,8 +72,10 @@
             } else if (targetTab === 'painel-ures') {
                 if (typeof global.render19UresPanel === 'function') global.render19UresPanel();
             } else if (targetTab === 'ranking-geral-ma') {
+                if (typeof global.populateRankingMaUreFilter === 'function') global.populateRankingMaUreFilter();
                 if (typeof global.renderRankingGeralMaTable === 'function') global.renderRankingGeralMaTable();
             } else if (targetTab === 'ranking-escolas-ma') {
+                if (typeof global.populateSchoolCitySelectDropdown === 'function') global.populateSchoolCitySelectDropdown();
                 if (typeof global.filterSchoolRankingTable === 'function') global.filterSchoolRankingTable();
             }
         } catch(e) {
