@@ -406,8 +406,58 @@
         }
     }
 
+    function initAvaliacoesSubtabs() {
+        var buttons = document.querySelectorAll('.eval-subtab-btn');
+        buttons.forEach(function(btn) {
+            btn.onclick = function(e) {
+                e.preventDefault();
+                var subtabId = this.getAttribute('data-subtab');
+                switchAvaliacoesSubtab(subtabId);
+            };
+        });
+    }
+
+    function switchAvaliacoesSubtab(subtabId) {
+        var buttons = document.querySelectorAll('.eval-subtab-btn');
+        var contents = document.querySelectorAll('.eval-subtab-content');
+
+        buttons.forEach(function(b) {
+            if (b.getAttribute('data-subtab') === subtabId) {
+                b.classList.add('active');
+                b.style.color = 'var(--purple-light)';
+                b.style.fontWeight = '700';
+                b.style.borderBottom = '2px solid var(--purple)';
+            } else {
+                b.classList.remove('active');
+                b.style.color = 'var(--text-secondary)';
+                b.style.fontWeight = '500';
+                b.style.borderBottom = 'none';
+            }
+        });
+
+        contents.forEach(function(c) {
+            if (c.id === subtabId) {
+                c.classList.remove('hidden');
+                c.style.display = 'block';
+            } else {
+                c.classList.add('hidden');
+                c.style.display = 'none';
+            }
+        });
+
+        if (subtabId === 'criar-evento-sub') {
+            renderEventosTable();
+        } else if (subtabId === 'lancar-notas-sub') {
+            if (typeof global.initEspelhoSelectors === 'function') global.initEspelhoSelectors();
+        } else if (subtabId === 'resultados-dash-sub') {
+            if (typeof global.initAnalyticsSelectors === 'function') global.initAnalyticsSelectors();
+        }
+    }
+
     // Inicialização de Listeners
     function initEventosListeners() {
+        initAvaliacoesSubtabs();
+
         var btnShowList = document.getElementById('btn-show-created-events');
         var btnShowWizard = document.getElementById('btn-show-new-event-wizard');
 
@@ -443,6 +493,8 @@
     }
 
     // Exposição Global
+    global.initAvaliacoesSubtabs = initAvaliacoesSubtabs;
+    global.switchAvaliacoesSubtab = switchAvaliacoesSubtab;
     global.filterEventosList = filterEventosList;
     global.renderEventosTable = renderEventosTable;
     global.handleEncerrarEvento = handleEncerrarEvento;
