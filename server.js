@@ -15,19 +15,11 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const db = require('./db');
 const { resolveTenant, validateTenantAccessDB, isBypassLoginAllowed } = require('./middleware_tenant_subdominio');
-
-// SECURITY FIX: [Hardcode & Secrets] Leitura de variáveis de ambiente com fallback seguro
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || 'edu_saas_default_secure_enc_key_32b_2026';
-const JWT_SECRET = process.env.JWT_SECRET || 'edu_saas_jwt_default_secret_key_2026';
-
-const keyBuffer = Buffer.isBuffer(ENCRYPTION_KEY) 
-    ? ENCRYPTION_KEY 
-    : (ENCRYPTION_KEY.length === 64 ? Buffer.from(ENCRYPTION_KEY, 'hex') : Buffer.alloc(32, ENCRYPTION_KEY));
+const { JWT_SECRET, authMiddleware, authorize, ownershipCheck } = require('./middleware/auth');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// SECURITY FIX: [Content-Security-Policy] Proteção contra XSS e injeções de script
 app.use((req, res, next) => {
     res.setHeader(
         "Content-Security-Policy",
@@ -39,74 +31,6 @@ app.use((req, res, next) => {
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(resolveTenant);
-
-// =============================================================================
-// MIDDLEWARES DE SEGURANÇA (SECURITY FIX: Server-Side Auth & Authorization)
-// =============================================================================
-
-// SECURITY FIX: [Server-Side Auth] Middleware de validação estrita de tokens JWT
-function authMiddleware(req, res, next) {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-        return res.status(401).json({ error: 'Token ausente' });
-    }
-    const token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : authHeader;
-    if (!token) {
-        return res.status(401).json({ error: 'Token ausente' });
-    }
-
-    try {
-        const decoded = jwt.verify(token, JWT_SECRET);
-        
-        // Bloqueia tokens limitados de primeiro acesso em rotas restritas do sistema
-        if (decoded.scope === 'FORCE_PASSWORD_CHANGE' && req.path !== '/api/auth/change-password' && req.path !== '/api/change-password') {
-            return res.status(403).json({
-                error: 'Troca de senha obrigatória pendente. Conclua a redefinição da sua senha antes de acessar o sistema.',
-                requirePasswordChange: true
-            });
-        }
-
-        req.user = decoded;
-        return next();
-    } catch (err) {
-        return res.status(401).json({ error: 'Token inválido ou expirado' });
-    }
-}
-
-// SECURITY FIX: [Server-Side Role Authorization] Middleware de autorização por papel (RBAC)
-function authorize(...allowedRoles) {
-    return (req, res, next) => {
-        if (!req.user || !req.user.role) {
-            return res.status(401).json({ error: 'Não autenticado' });
-        }
-        const userRole = (req.user.role || '').toLowerCase();
-        const isAllowed = allowedRoles.some(r => {
-            const rNorm = r.toLowerCase();
-            return userRole === rNorm || userRole.includes(rNorm) || rNorm.includes(userRole);
-        });
-        if (!isAllowed) {
-            return res.status(403).json({ error: 'Acesso negado: Permissão insuficiente para executar esta ação.' });
-        }
-        next();
-    };
-}
-
-// SECURITY FIX: [IDOR Protection] Helper reutilizável de verificação de propriedade/tenant
-async function ownershipCheck(table, recordId, userOrgId) {
-    if (!recordId) return false;
-    if (db.useLocalFallback) {
-        return true;
-    }
-    try {
-        const result = await db.query(
-            `SELECT id FROM ${table} WHERE id = $1 AND (tenant_id = $2 OR org_id = $2)`,
-            [recordId, userOrgId]
-        );
-        return result.rows && result.rows.length > 0;
-    } catch(e) {
-        return false;
-    }
-}
 
 // Health Check
 app.get('/api/health', (req, res) => {
