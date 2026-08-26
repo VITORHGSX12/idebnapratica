@@ -814,280 +814,71 @@ body.dark-mode .app-container {
 .margin-top-lg { margin-top: 24px; }
 .margin-bottom-md { margin-bottom: 16px; }
 
-/* =========================================================================
-   SISTEMA DE BOTÕES PADRONIZADO (DESIGN SYSTEM & MICRO-INTERAÇÕES)
-   ========================================================================= */
-
-/* 1. Base Universal para Botões */
-.btn,
-button.btn,
-a.btn {
+.btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 10px 18px;
-    min-height: 38px;
-    font-family: var(--font-body, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
-    font-size: 0.875rem; /* 14px */
+    padding: 8px 16px;
+    font-size: 0.84rem;
     font-weight: 600;
-    line-height: 1.25;
-    border-radius: var(--radius-btn, 8px);
+    font-family: var(--font-body);
+    border-radius: var(--radius-md);
     cursor: pointer;
-    text-decoration: none;
-    white-space: nowrap;
-    user-select: none;
+    transition: var(--transition-fast);
     border: 1px solid transparent;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-sizing: border-box;
-    vertical-align: middle;
+    text-decoration: none;
+    line-height: 1.25;
 }
 
-/* Ícones dentro dos botões */
-.btn svg,
-.btn i,
-button.btn svg,
-button.btn i {
-    width: 16px !important;
-    height: 16px !important;
-    min-width: 16px;
-    min-height: 16px;
-    flex-shrink: 0;
-    display: inline-block;
-    vertical-align: middle;
-    transition: transform 0.2s ease;
+.btn-icon {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: var(--radius-md);
 }
 
-/* 2. Escala de Tamanhos Consistente */
-/* Botões Pequenos (tags, badges, ações em tabelas e cards compactos) */
-.btn-sm,
-.btn-small,
-button.btn-sm,
-a.btn-sm {
-    padding: 6px 12px !important;
-    min-height: 32px !important;
-    height: 32px !important;
-    font-size: 0.8125rem !important; /* 13px */
-    gap: 6px !important;
-    border-radius: var(--radius-btn, 8px) !important;
+.btn-primary {
+    background-color: var(--color-accent-primary);
+    color: var(--color-text-inverse);
+    border-color: var(--color-accent-primary);
 }
 
-.btn-sm svg,
-.btn-sm i {
-    width: 14px !important;
-    height: 14px !important;
-    min-width: 14px;
-    min-height: 14px;
+.btn-primary:hover {
+    background-color: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
+    transform: none;
+    box-shadow: var(--shadow-subtle);
 }
 
-/* Botões Médios / Padrão */
-.btn-md,
-.btn-medium {
-    padding: 10px 18px;
-    min-height: 38px;
-    font-size: 0.875rem;
-    gap: 8px;
+.btn-outline {
+    background-color: var(--color-surface-card);
+    border: 1px solid var(--color-border-strong);
+    color: var(--color-text-primary);
 }
 
-/* Botões Grandes / Destaque / Modais Principais */
-.btn-lg,
-.btn-large,
-button.btn-lg {
-    padding: 12px 24px !important;
-    min-height: 44px !important;
-    font-size: 0.95rem !important; /* 15px */
-    gap: 10px !important;
-    border-radius: var(--radius-btn, 8px) !important;
+.btn-outline:hover {
+    background-color: var(--color-surface-subtle);
+    border-color: var(--color-brand-subtle);
 }
 
-.btn-lg svg,
-.btn-lg i {
-    width: 18px !important;
-    height: 18px !important;
-    min-width: 18px;
-    min-height: 18px;
+.btn-secondary {
+    background-color: var(--color-surface-subtle);
+    border: 1px solid var(--color-border-subtle);
+    color: var(--color-text-primary);
 }
 
-/* 3. Botões Apenas com Ícone (Icon-Only) */
-.btn-icon,
-button.btn-icon {
-    width: 38px !important;
-    height: 38px !important;
-    min-width: 38px !important;
-    min-height: 38px !important;
-    padding: 0 !important;
-    border-radius: var(--radius-btn, 8px);
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    background: var(--color-surface-card, #FFFFFF);
-    border: 1px solid var(--color-border-subtle, #AAB7B7);
-    color: var(--color-brand-primary, #1A2D42);
-    box-shadow: 0 1px 2px rgba(26, 45, 66, 0.05);
+.btn-secondary:hover {
+    background-color: var(--color-surface-muted);
 }
 
-.btn-icon.btn-sm {
-    width: 32px !important;
-    height: 32px !important;
-    min-width: 32px !important;
-    min-height: 32px !important;
-}
-
-.btn-icon.btn-circle,
-.btn-icon.btn-rounded {
-    border-radius: 50% !important;
-}
-
-.btn-icon:hover {
-    background: var(--color-surface-subtle, #C0C8CA);
-    border-color: var(--color-brand-secondary, #2E4156);
-    color: var(--color-brand-primary, #1A2D42);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(26, 45, 66, 0.10);
-}
-
-/* 4. Variantes de Cores e Acabamento (Cores Originais Preservadas) */
-
-/* Primário (CTA Principal) */
-.btn-primary,
-button.btn-primary {
-    background-color: var(--color-brand-primary, #1A2D42) !important;
-    color: var(--color-text-inverse, #FFFFFF) !important;
-    border: 1px solid var(--color-brand-primary, #1A2D42) !important;
-    box-shadow: 0 2px 6px rgba(26, 45, 66, 0.16);
-}
-
-.btn-primary:hover,
-button.btn-primary:hover {
-    background-color: var(--color-brand-secondary, #2E4156) !important;
-    border-color: var(--color-brand-secondary, #2E4156) !important;
-    color: var(--color-text-inverse, #FFFFFF) !important;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(26, 45, 66, 0.22);
-}
-
-.btn-primary svg,
-.btn-primary i {
-    color: #FFFFFF !important;
-}
-
-/* Secundário */
-.btn-secondary,
-button.btn-secondary {
-    background-color: var(--color-surface-subtle, #C0C8CA) !important;
-    border: 1px solid var(--color-border-subtle, #AAB7B7) !important;
-    color: var(--color-brand-primary, #1A2D42) !important;
-    box-shadow: 0 1px 2px rgba(26, 45, 66, 0.05);
-}
-
-.btn-secondary:hover,
-button.btn-secondary:hover {
-    background-color: var(--color-surface-muted, #D4D8DD) !important;
-    border-color: var(--color-brand-secondary, #2E4156) !important;
-    color: var(--color-brand-primary, #1A2D42) !important;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(26, 45, 66, 0.08);
-}
-
-/* Outline */
-.btn-outline,
-button.btn-outline {
-    background-color: var(--color-surface-card, #FFFFFF) !important;
-    border: 1px solid var(--color-border-subtle, #AAB7B7) !important;
-    color: var(--color-brand-primary, #1A2D42) !important;
-    box-shadow: 0 1px 2px rgba(26, 45, 66, 0.04);
-}
-
-.btn-outline:hover,
-button.btn-outline:hover {
-    background-color: var(--color-surface-subtle, #C0C8CA) !important;
-    border-color: var(--color-brand-secondary, #2E4156) !important;
-    color: var(--color-brand-primary, #1A2D42) !important;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(26, 45, 66, 0.08);
-}
-
-/* Danger / Excluir */
-.btn-danger,
-.btn-delete,
-button.btn-danger {
-    background-color: #DC2626 !important;
-    border: 1px solid #B91C1C !important;
-    color: #FFFFFF !important;
-    box-shadow: 0 2px 6px rgba(220, 38, 38, 0.20);
-}
-
-.btn-danger:hover,
-.btn-delete:hover,
-button.btn-danger:hover {
-    background-color: #B91C1C !important;
-    border-color: #991B1B !important;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(220, 38, 38, 0.28);
-}
-
-/* Outline Danger */
-.btn-outline-danger,
-button.btn-outline-danger {
-    background-color: transparent !important;
-    border: 1px solid rgba(220, 38, 38, 0.35) !important;
-    color: #DC2626 !important;
-}
-
-.btn-outline-danger:hover,
-button.btn-outline-danger:hover {
-    background-color: rgba(220, 38, 38, 0.08) !important;
-    border-color: #DC2626 !important;
-    transform: translateY(-1px);
-}
-
-/* Ghost / Sem Borda */
-.btn-ghost,
-button.btn-ghost {
-    background-color: transparent !important;
-    border-color: transparent !important;
-    color: var(--color-brand-primary, #1A2D42) !important;
-}
-
-.btn-ghost:hover,
-button.btn-ghost:hover {
-    background-color: var(--color-surface-subtle, #C0C8CA) !important;
-}
-
-/* 5. Micro-Interações e Estados Globais (Active / Disabled / Focus) */
-.btn:active,
-button:active {
-    transform: scale(0.97) !important;
-}
-
-.btn:disabled,
-.btn[disabled],
-.btn.disabled,
-button:disabled,
-button[disabled] {
-    opacity: 0.55 !important;
-    cursor: not-allowed !important;
-    pointer-events: none !important;
-    box-shadow: none !important;
-    transform: none !important;
-}
-
-.btn:focus-visible,
-button:focus-visible {
-    outline: 2px solid var(--color-brand-secondary, #2E4156) !important;
-    outline-offset: 2px !important;
-}
-
-/* 6. Utilitários de Layout para Botões */
 .btn-full {
-    width: 100% !important;
+    width: 100%;
 }
 
 .btn-group {
-    display: inline-flex;
-    align-items: center;
+    display: flex;
     gap: 8px;
-    flex-wrap: wrap;
 }
 
 /* =========================================================================
@@ -3266,15 +3057,15 @@ h4 svg, h4 i,
     text-decoration: underline;
 }
 
-/* Botão de Login */
-.btn-login-primary,
-.login-card .btn-primary,
-.login-form .btn-primary {
+/* Botão de Login: Formato Pill Sólido Índigo (Sem Gradiente) */
+.btn-primary.btn-login-primary,
+.btn-primary {
     margin-top: 20px;
     width: 100%;
     padding: 12px 18px;
-    border-radius: var(--radius-btn, 8px);
-    background-color: var(--color-brand-primary, #1A2D42);
+    border: none;
+    border-radius: var(--radius-pill);
+    background-color: var(--color-accent-primary);
     color: #FFFFFF;
     font-family: var(--font-body);
     font-size: var(--text-body);
@@ -3288,12 +3079,16 @@ h4 svg, h4 i,
     transition: var(--transition-fast);
 }
 
-.btn-login-primary:hover,
-.login-card .btn-primary:hover,
-.login-form .btn-primary:hover {
-    background-color: var(--color-brand-secondary, #2E4156);
+.btn-primary.btn-login-primary:hover,
+.btn-primary:hover {
+    background-color: var(--color-accent-primary-hover);
     box-shadow: 0 6px 16px rgba(26, 45, 66, 0.35);
     transform: translateY(-1px);
+}
+
+.btn-primary svg {
+    width: 15px;
+    height: 15px;
 }
 
 .divider,

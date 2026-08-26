@@ -98,8 +98,8 @@
     --radius-sm: 6px;
     --radius-md: 8px;
     --radius-card: 8px;
-    --radius-btn: 8px;
-    --radius-btn-rect: 8px;
+    --radius-btn: 9999px;
+    --radius-btn-rect: 12px;
     --radius-pill: 9999px;
     --radius-lg: 12px;
     --radius-full: 9999px;
