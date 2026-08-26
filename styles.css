@@ -4249,9 +4249,9 @@ body.collapsed-sidebar .sidebar-footer .user-dropdown-menu {
     align-items: center;
     gap: 6px;
     padding: 8px 16px;
-    background-color: #f0fdf4;
-    border: 1px solid #86efac;
-    color: #16a34a;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
     font-weight: 600;
     font-size: 0.82rem;
     border-radius: var(--radius-md);
@@ -4260,8 +4260,21 @@ body.collapsed-sidebar .sidebar-footer .user-dropdown-menu {
 }
 
 .btn-export-outline:hover {
-    background-color: #dcfce7;
-    border-color: #4ade80;
+    background-color: var(--bg-tertiary);
+    border-color: #AAB7B7;
+    color: var(--text-primary);
+}
+
+body.dark-mode .btn-export-outline {
+    background-color: rgba(46, 65, 86, 0.4);
+    border-color: rgba(170, 183, 183, 0.35);
+    color: #D4D8DD;
+}
+
+body.dark-mode .btn-export-outline:hover {
+    background-color: #2E4156;
+    border-color: #C0C8CA;
+    color: #FFFFFF;
 }
 
 .btn-refresh-circle {
@@ -4336,7 +4349,7 @@ body.collapsed-sidebar .sidebar-footer .user-dropdown-menu {
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-lg);
-    padding: 16px 20px;
+    padding: 18px 22px;
     display: flex;
     align-items: center;
     gap: 16px;
@@ -4345,41 +4358,82 @@ body.collapsed-sidebar .sidebar-footer .user-dropdown-menu {
 
 .school-kpi-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.06);
 }
 
 .school-kpi-icon-wrap {
     width: 48px;
     height: 48px;
-    border-radius: var(--radius-md);
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    transition: all 0.2s ease;
 }
 
-.school-kpi-icon-wrap.blue {
-    background-color: #eff6ff;
-    color: #2563eb;
-    border: 1px solid #bfdbfe;
+/* Card 1: Total de Escolas (Paleta #1A2D42) */
+.school-kpi-icon-wrap.blue,
+.school-kpi-icon-wrap.schools {
+    background-color: rgba(26, 45, 66, 0.08);
+    color: #1A2D42;
+    border: 1px solid rgba(26, 45, 66, 0.20);
 }
 
-.school-kpi-icon-wrap.green {
-    background-color: #f0fdf4;
-    color: #16a34a;
-    border: 1px solid #bbf7d0;
+/* Card 2: Total de Alunos (Paleta #2E4156) */
+.school-kpi-icon-wrap.green,
+.school-kpi-icon-wrap.students {
+    background-color: rgba(46, 65, 86, 0.08);
+    color: #2E4156;
+    border: 1px solid rgba(46, 65, 86, 0.20);
+}
+
+/* Card 3: IDEB Médio da Rede (Paleta #AAB7B7 / #1A2D42) */
+.school-kpi-icon-wrap.purple,
+.school-kpi-icon-wrap.ideb {
+    background-color: rgba(170, 183, 183, 0.22);
+    color: #1A2D42;
+    border: 1px solid rgba(170, 183, 183, 0.40);
 }
 
 .school-kpi-icon-wrap.amber {
-    background-color: #fffbeb;
-    color: #d97706;
-    border: 1px solid #fde68a;
+    background-color: rgba(170, 183, 183, 0.15);
+    color: #1A2D42;
+    border: 1px solid rgba(170, 183, 183, 0.30);
 }
 
-.school-kpi-icon-wrap.purple {
-    background-color: #f5f3ff;
-    color: #7c3aed;
-    border: 1px solid #ddd6fe;
+/* Dark Mode Harmonization */
+body.dark-mode .school-kpi-icon-wrap.blue,
+body.dark-mode .school-kpi-icon-wrap.schools {
+    background-color: #1A2D42;
+    color: #FFFFFF;
+    border: 1px solid #2E4156;
+}
+
+body.dark-mode .school-kpi-icon-wrap.green,
+body.dark-mode .school-kpi-icon-wrap.students {
+    background-color: #2E4156;
+    color: #FFFFFF;
+    border: 1px solid #AAB7B7;
+}
+
+body.dark-mode .school-kpi-icon-wrap.purple,
+body.dark-mode .school-kpi-icon-wrap.ideb {
+    background-color: #1A2D42;
+    color: #D4D8DD;
+    border: 1px solid rgba(170, 183, 183, 0.4);
+}
+
+body.dark-mode .school-kpi-icon-wrap.amber {
+    background-color: #2E4156;
+    color: #FFFFFF;
+    border: 1px solid #AAB7B7;
+}
+
+body.dark-mode .school-kpi-icon-wrap svg,
+body.dark-mode .school-kpi-icon-wrap i {
+    color: #FFFFFF !important;
+    stroke: #FFFFFF !important;
 }
 
 .school-kpi-label {
@@ -4408,13 +4462,19 @@ body.collapsed-sidebar .sidebar-footer .user-dropdown-menu {
     width: 40px;
     height: 40px;
     border-radius: var(--radius-md);
-    background-color: #eff6ff;
-    color: #2563eb;
-    border: 1px solid #dbeafe;
+    background-color: rgba(26, 45, 66, 0.08);
+    color: #1A2D42;
+    border: 1px solid rgba(26, 45, 66, 0.18);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+}
+
+body.dark-mode .school-row-icon {
+    background-color: #1A2D42;
+    color: #FFFFFF;
+    border-color: #2E4156;
 }
 
 .school-row-meta {
