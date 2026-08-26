@@ -589,10 +589,11 @@ function initApp() {
             if (typeof renderDbSchools === 'function') renderDbSchools();
         } else if (targetTab === 'biblioteca-recursos') {
             if (typeof renderPedagogicLibrary === 'function') renderPedagogicLibrary();
-        } else if (targetTab === 'criar-avaliacoes') {
-            if (typeof renderCreatedEvents === 'function') renderCreatedEvents();
+        } else if (targetTab === 'criar-avaliacoes' || targetTab === 'sec-criar-avaliacoes') {
+            if (typeof renderEventosTable === 'function') renderEventosTable();
             if (typeof populateWizardSchools === 'function') populateWizardSchools();
-        } else if (targetTab === 'aplicacao-provas') {
+            if (typeof initAvaliacoesSubtabs === 'function') initAvaliacoesSubtabs();
+        } else if (targetTab === 'aplicacao-provas' || targetTab === 'sec-aplicacao-provas') {
             if (typeof renderOngoingAssessments === 'function') renderOngoingAssessments();
             if (typeof populateScoreSchoolSelect === 'function') populateScoreSchoolSelect();
         } else if (targetTab === 'matriz-descritores') {
@@ -9282,146 +9283,47 @@ if (document.readyState === 'loading') {
             window.showToast('Simulado/Avaliação excluído do banco de dados com sucesso.', 'info');
         }
     }
-    window.handleDeleteCreatedEvent = handleDeleteCreatedEvent;
-
-    function renderCreatedEventsTable() {
-        const tbody = document.getElementById('created-events-table-body');
-        updateEventFilterBadges();
-        if (!tbody) return;
-
-        const all = getStoredEvents();
-        const events = all.filter(ev => {
-            if (currentEventFilter === 'ativos') return ev.status === 'ativos';
-            if (currentEventFilter === 'rascunhos') return ev.status === 'rascunhos';
-            if (currentEventFilter === 'finalizados') return ev.status === 'finalizados';
-            return true;
-        });
-
-        if (events.length === 0) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="7" style="padding: 36px 20px; text-align: center; color: var(--text-secondary);">
-                        <div style="font-size: 1.8rem; margin-bottom: 6px;">📋</div>
-                        <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">Nenhum evento de avaliação encontrado nesta categoria.</div>
-                        <div style="font-size: 0.8rem; color: var(--text-muted);">Clique em "+ Novo Evento" para agendar uma nova avaliação.</div>
-                    </td>
-                </tr>
-            `;
-            return;
+    window.handleDeleteCreatedEvent = function(eventId) {
+        if (typeof global.handleExcluirEvento === 'function') {
+            global.handleExcluirEvento(eventId);
         }
+    };
 
-        tbody.innerHTML = events.map(ev => `
-            <tr style="border-bottom: 1px solid var(--border-color); height: 56px;">
-                <td style="padding: 12px 16px;">
-                    <div style="font-weight: 700; color: var(--text-primary); font-size: 0.9rem;">${ev.nome || ev.titulo}</div>
-                    <div style="font-size: 0.74rem; color: var(--text-secondary); margin-top: 2px;">
-                        LP: ${ev.questoesLP || 11} Questões • MAT: ${ev.questoesMT || 11} Questões
-                    </div>
-                </td>
-                <td style="padding: 12px 16px; color: var(--text-secondary); font-size: 0.82rem;">${ev.escola}</td>
-                <td style="padding: 12px 16px; font-size: 0.82rem;">${ev.janela}</td>
-                <td style="padding: 12px 16px;"><span class="badge badge-purple" style="font-size: 0.7rem;">${ev.tipo}</span></td>
-                <td style="padding: 12px 16px; font-size: 0.82rem; font-weight: 600;">${ev.etapa}</td>
-                <td style="padding: 12px 16px; text-align: center;">
-                    <span class="badge badge-success" style="font-size: 0.72rem;">${ev.gabaritoStatus || 'Gabarito Ativo'}</span>
-                </td>
-                <td style="padding: 12px 16px; text-align: center;">
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
-                        <button type="button" onclick="openLancarNotasForEvent('${ev.id}')" class="btn btn-outline btn-sm" style="font-weight: 700; font-size: 0.75rem; padding: 4px 8px; color: #6366f1;" title="Lançar Notas">
-                            📝 Lançar Notas
-                        </button>
-                        <button type="button" onclick="openPrintModalForEvent('${ev.id}')" class="btn btn-outline btn-sm" style="font-weight: 600; font-size: 0.75rem; padding: 4px 8px;" title="Imprimir Caderno">
-                            🖨️ Caderno A4
-                        </button>
-                        <button type="button" onclick="handleDeleteCreatedEvent('${ev.id}')" class="btn btn-outline btn-sm" style="font-weight: 600; font-size: 0.75rem; padding: 4px 6px; color: #ef4444; border-color: #fca5a5;" title="Excluir Simulado do Banco">
-                            🗑️
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        `).join('');
-    }
-    window.renderCreatedEventsTable = renderCreatedEventsTable;
-    window.renderCreatedEvents = renderCreatedEventsTable;
-
-
-    // Wizard Step Navigation
-    function goToWizardStep(step) {
-        currentWizardStep = step;
-        for (let i = 1; i <= 4; i++) {
-            const stepContent = document.getElementById('step-content-' + i);
-            const stepInd = document.getElementById('step-ind-' + i);
-            if (stepContent) {
-                if (i === step) stepContent.classList.remove('hidden');
-                else stepContent.classList.add('hidden');
-            }
-            if (stepInd) {
-                if (i === step) {
-                    stepInd.classList.add('active');
-                    stepInd.style.color = 'var(--purple-light)';
-                } else if (i < step) {
-                    stepInd.classList.remove('active');
-                    stepInd.style.color = 'var(--green-light)';
-                } else {
-                    stepInd.classList.remove('active');
-                    stepInd.style.color = 'var(--text-muted)';
-                }
-            }
-        }
-    }
-    window.goToWizardStep = goToWizardStep;
-
-    function handleFinishWizard() {
-        const title = document.getElementById('wizard-event-name')?.value || 'Novo Simulado Oficial 2026';
-        const type = document.getElementById('wizard-event-type')?.value || 'Simulado Diagnóstico';
-        const stage = document.getElementById('wizard-stage-select')?.value || '5º Ano (Anos Iniciais)';
-        const start = document.getElementById('wizard-date-start')?.value || '01/10/2026';
-        const end = document.getElementById('wizard-date-end')?.value || '15/10/2026';
-
-        const newEvent = {
-            id: 'ev_' + Date.now(),
-            nome: title,
-            escola: 'Todas as 9 Escolas da Rede',
-            janela: start + ' a ' + end,
-            tipo: type,
-            etapa: stage,
-            gabaritoStatus: 'Gabarito Oficial Cadastrado (24 Questões)',
-            status: 'ativos',
-            questoesLP: 12,
-            questoesMT: 12
-        };
-
-        const current = getStoredEvents();
-        current.unshift(newEvent);
-        saveStoredEvents(current);
-        updateEventFilterBadges();
-
-        alert('✅ Avaliação criada com sucesso! O gabarito e os cadernos de prova A4 foram gerados para todas as escolas da rede.');
-
-        const btnShowEvents = document.getElementById('btn-show-created-events');
-        if (btnShowEvents) btnShowEvents.click();
-    }
-    window.handleFinishWizard = handleFinishWizard;
+    // Forward bridge to js/modules/avaliacoes/avaliacoes_events.js
+    window.renderCreatedEvents = function() {
+        if (typeof global.renderEventosTable === 'function') global.renderEventosTable();
+    };
+    window.renderCreatedEventsTable = window.renderCreatedEvents;
 
     // Render Ongoing Assessments in Aplicação de Provas
     function renderOngoingAssessments() {
         const container = document.getElementById('ongoing-assessments-list');
         if (!container) return;
 
-        const events = getStoredEvents().filter(e => e.status === 'ativos');
+        const eventos = typeof global.getEventosState === 'function' ? global.getEventosState() : [];
+        const events = eventos.filter(e => e.status === 'ABERTO');
+
+        if (events.length === 0) {
+            container.innerHTML = `
+                <div class="card" style="padding: 32px; text-align: center; color: var(--color-text-secondary); background: var(--color-surface-card); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md);">
+                    <p style="margin: 0; font-weight: 600;">Nenhuma avaliação aberta em aplicação no momento.</p>
+                </div>
+            `;
+            return;
+        }
 
         container.innerHTML = events.map(ev => `
-            <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 18px 22px; border-radius: var(--radius-lg);">
+            <div class="card" style="background: var(--color-surface-card); border: 1px solid var(--color-border-subtle); padding: 18px 22px; border-radius: var(--radius-md); box-shadow: var(--shadow-subtle);">
                 <div class="flex-between flex-wrap gap-md" style="margin-bottom: 14px;">
                     <div>
                         <div style="display: flex; align-items: center; gap: 8px;">
-                            <h4 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: var(--text-primary);">${ev.nome}</h4>
-                            <span class="badge badge-success" style="font-size: 0.72rem;">Em Aplicação</span>
+                            <h4 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: var(--color-brand-primary);">${ev.titulo || ev.nome}</h4>
+                            <span class="badge badge-status-success" style="font-size: 0.72rem;">● Em Aplicação</span>
                         </div>
-                        <p class="text-sm text-muted" style="margin: 4px 0 0 0;">Janela: ${ev.janela} • Público-Alvo: ${ev.etapa} • 9 Unidades Escolares</p>
+                        <p class="text-sm" style="margin: 4px 0 0 0; color: var(--color-text-secondary);">Janela: ${ev.dataRealizacao || '2026-09-15'} • Público-Alvo: ${ev.etapasAlvo ? ev.etapasAlvo.join(', ') : (ev.etapa || '5º Ano')} • Rede Municipal</p>
                     </div>
                     <div style="display: flex; gap: 8px;">
-                        <button onclick="openLancarNotasForEvent('${ev.id}')" class="btn btn-primary btn-sm" style="font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                        <button onclick="irParaEspelhoLancamento('${ev.id}')" class="btn btn-primary btn-sm" style="font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
                             <span>Digitar Cartões-Resposta</span>
                         </button>
                         <button onclick="switchTab('escolas-panel')" class="btn btn-outline btn-sm" style="font-weight: 600;">
@@ -9432,12 +9334,12 @@ if (document.readyState === 'loading') {
 
                 <!-- Progress Bar -->
                 <div style="margin-top: 10px;">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 6px;">
                         <span>Progresso de Coleta dos Cartões da Rede</span>
-                        <span style="color: var(--green-light);">68% Concluído (1.195 / 1.758 Alunos)</span>
+                        <span style="color: var(--color-status-success);">68% Concluído (1.195 / 1.758 Alunos)</span>
                     </div>
-                    <div style="width: 100%; height: 8px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden;">
-                        <div style="width: 68%; height: 100%; background: linear-gradient(90deg, #6366f1, #10b981); border-radius: 4px;"></div>
+                    <div class="progress-bar-container" style="height: 8px; margin: 0;">
+                        <div class="progress-bar green" style="width: 68%;"></div>
                     </div>
                 </div>
             </div>
@@ -9446,101 +9348,21 @@ if (document.readyState === 'loading') {
     window.renderOngoingAssessments = renderOngoingAssessments;
 
     function openLancarNotasForEvent(eventId) {
-        switchTab('criar-avaliacoes');
-        const subtabBtn = document.querySelector('.eval-subtab-btn[data-subtab="lancar-notas-sub"]');
-        if (subtabBtn) subtabBtn.click();
+        if (typeof global.switchTab === 'function') global.switchTab('sec-criar-avaliacoes');
+        if (typeof global.switchAvaliacoesSubtab === 'function') global.switchAvaliacoesSubtab('lancar-notas-sub');
+        if (typeof global.irParaEspelhoLancamento === 'function') global.irParaEspelhoLancamento(eventId);
     }
     window.openLancarNotasForEvent = openLancarNotasForEvent;
 
     function openPrintModalForEvent(eventId) {
-        const printModal = document.getElementById('print-exam-modal');
-        if (printModal) printModal.classList.remove('hidden');
+        if (typeof global.abrirModalImpressaoLogistica === 'function') {
+            global.abrirModalImpressaoLogistica(eventId);
+        } else {
+            const printModal = document.getElementById('print-exam-modal');
+            if (printModal) printModal.classList.remove('hidden');
+        }
     }
     window.openPrintModalForEvent = openPrintModalForEvent;
-
-    function setupEvalSubtabs() {
-        document.querySelectorAll('.eval-subtab-btn').forEach(btn => {
-            btn.onclick = function(e) {
-                e.preventDefault();
-                const subtab = this.getAttribute('data-subtab');
-                
-                document.querySelectorAll('.eval-subtab-btn').forEach(b => {
-                    b.classList.remove('active');
-                    b.style.color = 'var(--text-secondary)';
-                    b.style.borderBottom = 'none';
-                    b.style.fontWeight = '500';
-                });
-                this.classList.add('active');
-                this.style.color = 'var(--purple-light)';
-                this.style.borderBottom = '2px solid var(--purple)';
-                this.style.fontWeight = '700';
-
-                document.querySelectorAll('.eval-subtab-content').forEach(c => c.classList.add('hidden'));
-                const targetContent = document.getElementById(subtab);
-                if (targetContent) targetContent.classList.remove('hidden');
-
-                if (subtab === 'criar-evento-sub') renderCreatedEventsTable();
-                if (subtab === 'lancar-notas-sub' && typeof renderLancarNotasTable === 'function') renderLancarNotasTable();
-                if (subtab === 'resultados-dash-sub' && typeof renderResultadosDashboard === 'function') renderResultadosDashboard();
-            };
-        });
-    }
-    window.setupEvalSubtabs = setupEvalSubtabs;
-
-    function setupEventWizardToggles() {
-        const btnShowEvents = document.getElementById('btn-show-created-events');
-        const btnShowWizard = document.getElementById('btn-show-new-event-wizard');
-        const panelEvents = document.getElementById('panel-created-events');
-        const panelWizard = document.getElementById('panel-new-event-wizard');
-
-        if (btnShowEvents) {
-            btnShowEvents.onclick = function(e) {
-                e.preventDefault();
-                if (panelEvents) panelEvents.classList.remove('hidden');
-                if (panelWizard) panelWizard.classList.add('hidden');
-                btnShowEvents.className = 'btn btn-primary';
-                if (btnShowWizard) btnShowWizard.className = 'btn btn-outline';
-                renderCreatedEventsTable();
-            };
-        }
-
-        if (btnShowWizard) {
-            btnShowWizard.onclick = function(e) {
-                e.preventDefault();
-                if (panelEvents) panelEvents.classList.add('hidden');
-                if (panelWizard) panelWizard.classList.remove('hidden');
-                btnShowWizard.className = 'btn btn-primary';
-                if (btnShowEvents) btnShowEvents.className = 'btn btn-outline';
-                if (typeof goToWizardStep === 'function') goToWizardStep(1);
-            };
-        }
-
-        // Filter links: Ativos, Rascunhos, Finalizados
-        document.querySelectorAll('.event-filter-link').forEach(link => {
-            link.onclick = function(e) {
-                e.preventDefault();
-                document.querySelectorAll('.event-filter-link').forEach(l => {
-                    l.classList.remove('active');
-                    l.style.color = 'var(--text-muted)';
-                    l.style.fontWeight = 'normal';
-                });
-                this.classList.add('active');
-                this.style.color = 'var(--green-light)';
-                this.style.fontWeight = '700';
-                currentEventFilter = this.getAttribute('data-filter') || 'ativos';
-                renderCreatedEventsTable();
-            };
-        });
-    }
-    window.setupEventWizardToggles = setupEventWizardToggles;
-
-    // Initialize all button listeners on startup
-    document.addEventListener('DOMContentLoaded', () => {
-        setupEvalSubtabs();
-        setupEventWizardToggles();
-        renderCreatedEventsTable();
-        renderOngoingAssessments();
-    });
 
 
     // =========================================================================
