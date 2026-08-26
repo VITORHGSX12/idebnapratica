@@ -138,35 +138,30 @@
         var todayStr = new Date().toLocaleDateString('pt-BR', options);
         var capitalizedToday = todayStr.charAt(0).toUpperCase() + todayStr.slice(1);
 
+        var cleanName = profile.name || 'Gestor(a)';
+        if (cleanName.includes('Secretaria') || cleanName.includes('SEMED')) {
+            cleanName = 'Gestor(a)';
+        }
+
         var avatarContent = profile.avatarPhoto 
-            ? '<img src="' + profile.avatarPhoto + '" alt="' + profile.name + '">' 
-            : '<div style="width: 100%; height: 100%; background: var(--color-brand-primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem;">' + (profile.name ? profile.name.slice(0,2).toUpperCase() : 'SE') + '</div>';
+            ? '<img src="' + profile.avatarPhoto + '" alt="' + cleanName + '" style="width:100%; height:100%; object-fit:cover;">' 
+            : '<div style="width: 100%; height: 100%; background: var(--color-brand-primary, #1A2D42); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;">' + (cleanName ? cleanName.slice(0,2).toUpperCase() : 'SE') + '</div>';
 
         var teacherAlertHtml = '';
         if (isTeacher && !hasEvaluations) {
             teacherAlertHtml = `
-                <div style="margin-top: 16px; padding: 16px 20px; background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(59, 130, 246, 0.06) 100%); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: 12px; display: flex; align-items: flex-start; gap: 14px; width: 100%;">
-                    <div style="width: 38px; height: 38px; border-radius: 50%; background: rgba(99, 102, 241, 0.15); color: var(--color-brand-primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.15rem;">
+                <div style="margin-top: 14px; padding: 14px 18px; background: var(--color-surface-subtle); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); display: flex; align-items: flex-start; gap: 12px; width: 100%;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-surface-card); color: var(--color-brand-primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1rem; border: 1px solid var(--color-border-subtle);">
                         ⏳
                     </div>
                     <div style="flex: 1;">
-                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px;">
-                            <strong style="font-size: 0.95rem; color: var(--color-text-primary);">Aguardando Dados da 1ª Avaliação</strong>
-                            <span class="badge badge-status-warning" style="font-size: 0.68rem; text-transform: uppercase;">Sem dados fictícios</span>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 3px;">
+                            <strong style="font-size: 0.88rem; color: var(--color-text-primary);">Aguardando Dados da 1ª Avaliação</strong>
+                            <span class="badge badge-status-warning" style="font-size: 0.65rem; text-transform: uppercase;">Sem dados fictícios</span>
                         </div>
-                        <p style="margin: 0; font-size: 0.84rem; color: var(--color-text-secondary); line-height: 1.5;">
-                            Seja bem-vindo(a), <strong>${profile.name}</strong>! Os gráficos de proficiência, taxa de acerto por descritores SAEB e mapa de recomposição da sua turma (<strong>${userTurma || '5º Ano A'} — ${userEscola || 'UI JOSE CORREA LIMA'}</strong>) aparecerão aqui automaticamente após a conclusão e lançamento da <strong>1ª Avaliação Diagnóstica</strong>.
+                        <p style="margin: 0; font-size: 0.8rem; color: var(--color-text-secondary); line-height: 1.45;">
+                            Seja bem-vindo(a), <strong>${cleanName}</strong>! Os gráficos de proficiência, taxa de acerto por descritores SAEB e mapa de recomposição da sua turma (<strong>${userTurma || '5º Ano A'} — ${userEscola || 'UI JOSE CORREA LIMA'}</strong>) aparecerão aqui automaticamente após o lançamento da <strong>1ª Avaliação</strong>.
                         </p>
-                        <div style="display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap;">
-                            <button type="button" onclick="switchTab('cronograma-habilidades');" class="btn btn-sm btn-outline" style="font-size: 0.78rem; padding: 6px 12px; height: auto;">
-                                <i data-lucide="calendar" style="width: 13px; height: 13px;"></i>
-                                <span>Acessar Cronograma (40 Semanas)</span>
-                            </button>
-                            <button type="button" onclick="switchTab('alunos-panel');" class="btn btn-sm btn-outline" style="font-size: 0.78rem; padding: 6px 12px; height: auto;">
-                                <i data-lucide="users" style="width: 13px; height: 13px;"></i>
-                                <span>Ver Alunos da Turma</span>
-                            </button>
-                        </div>
                     </div>
                 </div>
             `;
@@ -174,39 +169,37 @@
 
         banner.innerHTML = `
             <div style="display: flex; flex-direction: column; width: 100%;">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
                     <div class="welcome-banner-left">
                         <div class="welcome-user-avatar" onclick="openUserProfileModal();" style="cursor: pointer;" title="Clique para editar dados do perfil">
                             ${avatarContent}
                         </div>
                         <div>
                             <h2 class="welcome-user-title">
-                                <span>${greeting}, <span id="welcome-user-display-name" style="color: var(--color-brand-primary);">${profile.name}</span></span>
+                                <span>${greeting}, <span id="welcome-user-display-name" style="color: var(--color-brand-primary);">${cleanName}</span></span>
                             </h2>
                             <p class="welcome-user-subtitle">
-                                <span class="badge badge-status-advanced">
-                                    ${profile.role}
+                                <span class="badge" style="background: var(--color-surface-subtle); color: var(--color-brand-secondary); border: 1px solid var(--color-border-subtle); font-weight: 600; font-size: 0.72rem; padding: 2px 8px;">
+                                    ${profile.role || 'Gestor da Rede'}
                                 </span>
-                                <span>•</span>
-                                <span>${capitalizedToday}</span>
-                                <span>•</span>
-                                <span style="color: var(--color-text-muted);">SEMED Gonçalves Dias — MA</span>
+                                <span style="color: var(--color-border-strong); font-size: 0.75rem;">•</span>
+                                <span style="color: var(--color-text-secondary); font-size: 0.78rem; font-weight: 500;">${capitalizedToday}</span>
                             </p>
                         </div>
                     </div>
                     <div class="welcome-banner-actions">
-                        <button type="button" onclick="openUserProfileModal();" class="btn btn-outline" style="font-size: var(--text-sm);">
-                            <i data-lucide="user" style="width: 14px; height: 14px;"></i>
+                        <button type="button" onclick="openUserProfileModal();" class="btn btn-outline" style="font-size: var(--text-sm); height: 38px; display: inline-flex; align-items: center; gap: 6px;">
+                            <i data-lucide="user" style="width: 15px; height: 15px;"></i>
                             <span>Meu Perfil</span>
                         </button>
                         ${isTeacher ? `
-                            <button type="button" onclick="switchTab('cronograma-habilidades');" class="btn btn-primary" style="font-size: var(--text-sm);">
-                                <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
+                            <button type="button" onclick="switchTab('cronograma-habilidades');" class="btn btn-primary" style="font-size: var(--text-sm); height: 38px; display: inline-flex; align-items: center; gap: 6px;">
+                                <i data-lucide="calendar" style="width: 15px; height: 15px;"></i>
                                 <span>Meu Cronograma</span>
                             </button>
                         ` : `
-                            <button type="button" onclick="switchTab('sec-criar-avaliacoes');" class="btn btn-primary" style="font-size: var(--text-sm);">
-                                <i data-lucide="plus" style="width: 14px; height: 14px;"></i>
+                            <button type="button" onclick="switchTab('sec-criar-avaliacoes');" class="btn btn-primary" style="font-size: var(--text-sm); height: 38px; display: inline-flex; align-items: center; gap: 6px;">
+                                <i data-lucide="plus" style="width: 15px; height: 15px;"></i>
                                 <span>Nova Avaliação</span>
                             </button>
                         `}
