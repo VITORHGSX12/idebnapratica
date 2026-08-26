@@ -348,7 +348,7 @@
 
     /**
      * ELEMENTO DE ASSINATURA:
-     * Renderiza a Régua Calibrada de Metas IDEB & Trajetória Municipal (PDE)
+     * Renderiza o Gráfico de Linha da Trajetória do IDEB Municipal vs. Meta Pactuada (PDE)
      */
     function renderDashboardPdeProgress() {
         var container = document.getElementById('dashboard-pde-progress-container');
@@ -360,12 +360,116 @@
         var targetScore = pde && pde.metaIdeb ? Number(pde.metaIdeb) : 5.5;
         var gap = (currentScore - targetScore).toFixed(1);
         var progressPct = Math.min(100, Math.max(0, (currentScore / 10) * 100)).toFixed(1);
-        var baselinePct = ((baselineScore / 10) * 100).toFixed(1);
-        var targetPct = ((targetScore / 10) * 100).toFixed(1);
-        var currentPct = ((currentScore / 10) * 100).toFixed(1);
 
         var isAhead = gap >= 0;
         var gapText = isAhead ? `+${Math.abs(gap)} pts (Meta superada)` : `${gap} pts para a meta`;
+
+        // Pontos de Trajetória: Histórico (2017 a 2023), Observado Atual e Meta Pactuada
+        var points = [
+            { label: '2017', year: '2017', score: 3.8, isHistory: true },
+            { label: '2019', year: '2019', score: 4.2, isHistory: true },
+            { label: '2021', year: '2021', score: 4.5, isHistory: true },
+            { label: '2023', year: '2023 (Base INEP)', score: baselineScore, isBase: true },
+            { label: 'Atual', year: 'Atual (Observado)', score: currentScore, isCurrent: true },
+            { label: 'Meta PDE', year: 'Meta Pactuada (PDE)', score: targetScore, isTarget: true }
+        ];
+
+        var width = 640;
+        var height = 210;
+        var paddingLeft = 48;
+        var paddingRight = 40;
+        var paddingTop = 32;
+        var paddingBottom = 34;
+
+        var minScore = 3.0;
+        var maxScore = 6.0;
+
+        var getX = function(idx, total) {
+            return paddingLeft + (idx * ((width - paddingLeft - paddingRight) / (total - 1 || 1)));
+        };
+        var getY = function(val) {
+            return paddingTop + (height - paddingTop - paddingBottom) * (1 - (val - minScore) / (maxScore - minScore));
+        };
+
+        // Trajetória Real (Linha Sólida: 2017 -> 2019 -> 2021 -> 2023 -> Atual)
+        var observedPath = '';
+        var areaPath = '';
+
+        for (var i = 0; i <= 4; i++) {
+            var px = getX(i, points.length);
+            var py = getY(points[i].score);
+            if (i === 0) {
+                observedPath += 'M ' + px + ' ' + py;
+                areaPath += 'M ' + px + ' ' + (height - paddingBottom) + ' L ' + px + ' ' + py;
+            } else {
+                observedPath += ' L ' + px + ' ' + py;
+                areaPath += ' L ' + px + ' ' + py;
+            }
+        }
+        var lastRealX = getX(4, points.length);
+        areaPath += ' L ' + lastRealX + ' ' + (height - paddingBottom) + ' Z';
+
+        // Projeção da Meta Pactuada (Linha Tracejada de 2023 até a Meta)
+        var xBase = getX(3, points.length);
+        var yBase = getY(baselineScore);
+        var xTarget = getX(5, points.length);
+        var yTarget = getY(targetScore);
+        var targetProjectionPath = 'M ' + xBase + ' ' + yBase + ' L ' + xTarget + ' ' + yTarget;
+
+        // Área sombreada do Gap (Triângulo entre Base, Atual e Meta)
+        var xCurrent = getX(4, points.length);
+        var yCurrent = getY(currentScore);
+        var gapAreaPath = 'M ' + xBase + ' ' + yBase + ' L ' + xTarget + ' ' + yTarget + ' L ' + xCurrent + ' ' + yCurrent + ' Z';
+
+        // Marcadores SVG e Rótulos
+        var dotsHtml = '';
+        var labelsHtml = '';
+
+        points.forEach(function(pt, idx) {
+            var cx = getX(idx, points.length);
+            var cy = getY(pt.score);
+
+            if (pt.isCurrent) {
+                // Ponto Atual (Hero / Destaque)
+                dotsHtml += `
+                    <circle cx="${cx}" cy="${cy}" r="6" fill="#1A2D42" stroke="#FFFFFF" stroke-width="2.5" class="trajectory-hero-dot">
+                        <title>${pt.year}: ${pt.score}</title>
+                    </circle>
+                    <g transform="translate(${cx}, ${cy - 12})">
+                        <rect x="-18" y="-16" width="36" height="17" rx="5" fill="#1A2D42" stroke="#2E4156" stroke-width="1" class="trajectory-hero-badge"/>
+                        <text x="0" y="-4" text-anchor="middle" font-size="10.5" font-weight="800" fill="#FFFFFF" font-family="var(--font-display)">${pt.score}</text>
+                    </g>
+                `;
+            } else if (pt.isTarget) {
+                // Ponto Meta (Losango)
+                dotsHtml += `
+                    <rect x="${cx - 5}" y="${cy - 5}" width="10" height="10" transform="rotate(45 ${cx} ${cy})" fill="#2E4156" stroke="#FFFFFF" stroke-width="2">
+                        <title>${pt.year}: ${pt.score}</title>
+                    </rect>
+                    <text x="${cx}" y="${cy - 10}" text-anchor="middle" font-size="10" font-weight="700" fill="#2E4156" font-family="var(--font-display)" class="trajectory-meta-text">${pt.score}</text>
+                `;
+            } else if (pt.isBase) {
+                // Ponto Base INEP 2023
+                dotsHtml += `
+                    <circle cx="${cx}" cy="${cy}" r="5" fill="#FFFFFF" stroke="#2E4156" stroke-width="2.5">
+                        <title>${pt.year}: ${pt.score}</title>
+                    </circle>
+                    <text x="${cx}" y="${cy - 9}" text-anchor="middle" font-size="10" font-weight="700" fill="#1A2D42" font-family="var(--font-display)" class="trajectory-base-text">${pt.score}</text>
+                `;
+            } else {
+                // Pontos Históricos
+                dotsHtml += `
+                    <circle cx="${cx}" cy="${cy}" r="4" fill="#2E4156" stroke="#FFFFFF" stroke-width="1.5">
+                        <title>${pt.year}: ${pt.score}</title>
+                    </circle>
+                    <text x="${cx}" y="${cy - 8}" text-anchor="middle" font-size="9.5" font-weight="600" fill="var(--text-muted)" font-family="var(--font-display)">${pt.score}</text>
+                `;
+            }
+
+            labelsHtml += `
+                <text x="${cx}" y="${height - 8}" text-anchor="middle" font-size="10.5" font-weight="${pt.isCurrent || pt.isTarget ? '700' : '500'}" fill="${pt.isCurrent ? '#1A2D42' : 'var(--text-secondary)'}" class="trajectory-axis-label">${pt.label}</text>
+            `;
+        });
 
         container.innerHTML = `
             <div class="ideb-trajectory-card">
@@ -378,7 +482,7 @@
                             </span>
                         </div>
                         <h3>Trajetória do IDEB Municipal vs. Meta Pactuada</h3>
-                        <p>Acompanhamento de calibração entre a base oficial INEP (2023), resultados observados e meta 2025/2026.</p>
+                        <p>Acompanhamento de calibração entre a série histórica, base oficial INEP (2023), resultados observados e meta 2025/2026.</p>
                     </div>
 
                     <div class="ideb-trajectory-gap-box">
@@ -389,61 +493,64 @@
                     </div>
                 </div>
 
-                <!-- Régua Calibrada com Marcadores e Callouts Deslocados -->
-                <div class="ideb-trajectory-gauge-wrapper">
-                    <!-- Faixa Superior de Callouts Anti-Colisão -->
-                    <div class="ideb-gauge-track-container">
-                        <div class="ideb-gauge-track">
-                            <!-- Preenchimento do Progresso Real -->
-                            <div class="ideb-gauge-fill" style="width: ${currentPct}%;"></div>
+                <!-- Gráfico de Linha Vetorial (Mesmo Padrão da Linha do Tempo) -->
+                <div class="ideb-trajectory-chart-wrapper">
+                    <svg viewBox="0 0 ${width} ${height}" width="100%" height="210" style="overflow: visible; font-family: var(--font-body);">
+                        <defs>
+                            <linearGradient id="idebTrajectoryAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#1A2D42" stop-opacity="0.16"/>
+                                <stop offset="100%" stop-color="#1A2D42" stop-opacity="0.01"/>
+                            </linearGradient>
+                            <linearGradient id="idebGapAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#AAB7B7" stop-opacity="0.25"/>
+                                <stop offset="100%" stop-color="#AAB7B7" stop-opacity="0.08"/>
+                            </linearGradient>
+                        </defs>
 
-                            <!-- Pin 1: Base Histórica 2023 -->
-                            <div class="ideb-gauge-pin baseline" style="left: ${baselinePct}%;">
-                                <div class="ideb-gauge-callout tier-low">
-                                    <span class="callout-tag">2023</span>
-                                    <span class="callout-num">${baselineScore}</span>
-                                </div>
-                                <div class="ideb-gauge-pin-marker"></div>
-                            </div>
+                        <!-- Linhas de Grade Horizontais do Eixo Y -->
+                        <line x1="${paddingLeft}" y1="${getY(6.0)}" x2="${width - paddingRight}" y2="${getY(6.0)}" stroke="var(--border-color)" stroke-dasharray="3,3" stroke-width="1"/>
+                        <text x="${paddingLeft - 10}" y="${getY(6.0) + 3}" fill="var(--text-muted)" font-size="10" font-weight="600" text-anchor="end">6.0</text>
 
-                            <!-- Pin 2: Desempenho Observado Atual (Elevado para não colidir) -->
-                            <div class="ideb-gauge-pin current" style="left: ${currentPct}%;">
-                                <div class="ideb-gauge-callout tier-hero">
-                                    <span class="callout-tag">Atual</span>
-                                    <span class="callout-num">${currentScore}</span>
-                                    <div class="callout-stem"></div>
-                                </div>
-                                <div class="ideb-gauge-pin-marker"></div>
-                            </div>
+                        <line x1="${paddingLeft}" y1="${getY(5.0)}" x2="${width - paddingRight}" y2="${getY(5.0)}" stroke="var(--border-color)" stroke-dasharray="3,3" stroke-width="1"/>
+                        <text x="${paddingLeft - 10}" y="${getY(5.0) + 3}" fill="var(--text-muted)" font-size="10" font-weight="600" text-anchor="end">5.0</text>
 
-                            <!-- Pin 3: Meta Pactuada -->
-                            <div class="ideb-gauge-pin target" style="left: ${targetPct}%;">
-                                <div class="ideb-gauge-callout tier-low">
-                                    <span class="callout-tag">Meta</span>
-                                    <span class="callout-num">${targetScore}</span>
-                                </div>
-                                <div class="ideb-gauge-pin-marker"></div>
-                            </div>
-                        </div>
+                        <line x1="${paddingLeft}" y1="${getY(4.0)}" x2="${width - paddingRight}" y2="${getY(4.0)}" stroke="var(--border-color)" stroke-dasharray="3,3" stroke-width="1"/>
+                        <text x="${paddingLeft - 10}" y="${getY(4.0) + 3}" fill="var(--text-muted)" font-size="10" font-weight="600" text-anchor="end">4.0</text>
 
-                        <!-- Legenda Descritiva Horizontal Padronizada (Zero sobreposição) -->
-                        <div class="ideb-gauge-legend-row">
-                            <div class="ideb-legend-item">
-                                <span class="ideb-legend-marker baseline"></span>
-                                <span class="ideb-legend-title">Base INEP:</span>
-                                <strong class="ideb-legend-score">${baselineScore}</strong>
-                            </div>
-                            <div class="ideb-legend-item active">
-                                <span class="ideb-legend-marker current"></span>
-                                <span class="ideb-legend-title">Observado Atual:</span>
-                                <strong class="ideb-legend-score">${currentScore}</strong>
-                            </div>
-                            <div class="ideb-legend-item">
-                                <span class="ideb-legend-marker target"></span>
-                                <span class="ideb-legend-title">Pactuado (Meta):</span>
-                                <strong class="ideb-legend-score">${targetScore}</strong>
-                            </div>
-                        </div>
+                        <line x1="${paddingLeft}" y1="${getY(3.0)}" x2="${width - paddingRight}" y2="${getY(3.0)}" stroke="var(--border-color)" stroke-dasharray="3,3" stroke-width="1"/>
+                        <text x="${paddingLeft - 10}" y="${getY(3.0) + 3}" fill="var(--text-muted)" font-size="10" font-weight="600" text-anchor="end">3.0</text>
+
+                        <!-- Área de Preenchimento da Linha Real -->
+                        <path d="${areaPath}" fill="url(#idebTrajectoryAreaGrad)"/>
+
+                        <!-- Área sombreada do Gap da Meta -->
+                        <path d="${gapAreaPath}" fill="url(#idebGapAreaGrad)"/>
+
+                        <!-- Linha de Projeção da Meta (Tracejada) -->
+                        <path d="${targetProjectionPath}" fill="none" stroke="#2E4156" stroke-width="2" stroke-dasharray="5,4" class="trajectory-meta-line"/>
+
+                        <!-- Linha Sólida de Trajetória Observada/Real -->
+                        <path d="${observedPath}" fill="none" stroke="#1A2D42" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="trajectory-observed-line"/>
+
+                        <!-- Pontos e Rótulos -->
+                        ${dotsHtml}
+                        ${labelsHtml}
+                    </svg>
+
+                    <!-- Legenda do Gráfico Horizontal -->
+                    <div class="ideb-trajectory-chart-legend">
+                        <span class="legend-item">
+                            <span class="legend-line solid"></span>
+                            <span>IDEB Observado / Real</span>
+                        </span>
+                        <span class="legend-item">
+                            <span class="legend-line dashed"></span>
+                            <span>Meta Pactuada (PDE 2025/26)</span>
+                        </span>
+                        <span class="legend-item">
+                            <span class="legend-gap-box"></span>
+                            <span>Gap Projetado: <strong>${gap} pts</strong></span>
+                        </span>
                     </div>
                 </div>
 
