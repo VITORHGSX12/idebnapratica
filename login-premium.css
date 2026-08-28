@@ -96,111 +96,6 @@
     100% { transform: scale(0.95) translate(-10px, 15px); opacity: 0.6; }
 }
 
-/* Marca d'água estilizada com padrão de 9 níveis SAEB */
-.login-saeb-watermark-bars {
-    position: absolute;
-    top: 10%;
-    right: 6%;
-    display: flex;
-    align-items: flex-end;
-    gap: 6px;
-    height: clamp(120px, 18vh, 180px);
-    opacity: 0.06;
-    pointer-events: none;
-    z-index: 0;
-}
-
-.saeb-w-bar {
-    width: 8px;
-    background: #FFFFFF;
-    border-radius: 4px 4px 0 0;
-    transition: transform 0.6s ease, opacity 0.6s ease;
-    animation: saebBarDrift 8s ease-in-out infinite alternate;
-}
-
-.saeb-w-bar.b1 { height: 20%; animation-delay: 0.1s; }
-.saeb-w-bar.b2 { height: 28%; animation-delay: 0.3s; }
-.saeb-w-bar.b3 { height: 38%; animation-delay: 0.5s; }
-.saeb-w-bar.b4 { height: 48%; animation-delay: 0.7s; }
-.saeb-w-bar.b5 { height: 60%; animation-delay: 0.9s; }
-.saeb-w-bar.b6 { height: 72%; animation-delay: 1.1s; }
-.saeb-w-bar.b7 { height: 82%; animation-delay: 1.3s; }
-.saeb-w-bar.b8 { height: 92%; animation-delay: 1.5s; }
-.saeb-w-bar.b9 { height: 100%; animation-delay: 1.7s; }
-
-@keyframes saebBarDrift {
-    0% { transform: scaleY(0.96); opacity: 0.7; }
-    100% { transform: scaleY(1.04); opacity: 1; }
-}
-
-/* -------------------------------------------------------------------------
-   3. ELEMENTOS FLUTUANTES DECORATIVOS (EDUCACIONAIS)
-   ------------------------------------------------------------------------- */
-.login-floating-chips-container {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 1;
-    overflow: hidden;
-}
-
-.login-floating-chip {
-    position: absolute;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 5px 12px;
-    background: rgba(255, 255, 255, 0.07);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 9999px;
-    font-size: 10.5px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.85);
-    box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.25);
-    letter-spacing: 0.02em;
-    user-select: none;
-}
-
-.login-floating-chip .chip-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #10B981;
-    box-shadow: 0 0 8px #10B981;
-}
-
-.login-floating-chip .chip-val {
-    font-weight: 800;
-    color: #38BDF8;
-    font-family: var(--font-display, 'Lexend', sans-serif);
-}
-
-.login-floating-chip.chip-top-right {
-    top: clamp(40px, 7vh, 72px);
-    right: 36px;
-    animation: floatSlow 11s ease-in-out infinite alternate;
-}
-
-.login-floating-chip.chip-mid-left {
-    top: 50%;
-    left: 20px;
-    animation: floatSlow 14s ease-in-out infinite alternate-reverse;
-}
-
-.login-floating-chip.chip-bottom-mid {
-    bottom: clamp(55px, 8vh, 85px);
-    right: 50px;
-    animation: floatSlow 12s ease-in-out 1s infinite alternate;
-}
-
-@keyframes floatSlow {
-    0% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-7px) rotate(0.5deg); }
-    100% { transform: translateY(5px) rotate(-0.5deg); }
-}
-
 /* -------------------------------------------------------------------------
    4. CURVA ORGÂNICA VIVA ENTRE OS PAINÉIS
    ------------------------------------------------------------------------- */
@@ -464,7 +359,7 @@
     padding: 12px 14px 0;
     gap: 10px;
     position: relative;
-    overflow: visible;
+    overflow: hidden; /* Contém feixe de laser e efeitos 100% dentro do card */
 }
 
 /* Grade de Fundo Sutil */
@@ -490,13 +385,13 @@
     pointer-events: none;
 }
 
-/* Feixe de Luz Percorrendo a Linha da Meta */
+/* Feixe de Luz Percorrendo a Linha da Meta (100% Contido) */
 .goal-line::before {
     content: '';
     position: absolute;
     top: -3px;
     left: -20%;
-    width: 60px;
+    width: 50px;
     height: 4px;
     background: linear-gradient(90deg, transparent 0%, #10B981 50%, #6EE7B7 100%);
     border-radius: 4px;
@@ -506,10 +401,10 @@
 }
 
 @keyframes metaLaserBeam {
-    0% { left: -10%; opacity: 0; }
+    0% { left: -15%; opacity: 0; }
     15% { opacity: 1; }
     85% { opacity: 1; }
-    100% { left: 110%; opacity: 0; }
+    100% { left: 100%; opacity: 0; }
 }
 
 .goal-line::after,
@@ -1246,10 +1141,6 @@
         display: none;
     }
     
-    .login-floating-chips-container {
-        display: none;
-    }
-    
     .login-headline-wrapper {
         min-height: 60px;
         max-height: none;
@@ -1371,9 +1262,7 @@
     }
     
     .login-curve-divider svg,
-    .login-floating-chip,
     .goal-line::before,
-    .saeb-w-bar,
     .bar-radar-beacon .beacon-ring,
     .bar-radar-beacon .beacon-core,
     .bar-shimmer {
