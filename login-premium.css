@@ -288,19 +288,44 @@
     margin-top: 2px;
 }
 
+/* Container estável da Headline Rotativa para ZERO layout shift */
+.login-headline-wrapper {
+    margin-top: clamp(24px, 3.5vw, 40px);
+    min-height: clamp(80px, 9.5vw, 104px);
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+    z-index: 3;
+}
+
 .login-left-panel .headline,
 .login-headline {
-    margin-top: clamp(28px, 4vw, 44px);
+    margin: 0;
     font-family: var(--font-display, 'Lexend', sans-serif);
     font-weight: 800;
-    font-size: clamp(28px, 3.2vw, 38px);
-    line-height: 1.22;
+    font-size: clamp(25px, 2.8vw, 36px);
+    line-height: 1.25;
     letter-spacing: -0.025em;
     max-width: 480px;
     position: relative;
     z-index: 3;
     color: #FFFFFF;
-    animation: loginFadeDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.22s both;
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.login-headline .headline-line-1 {
+    display: block;
+    color: #FFFFFF;
+    font-weight: 800;
+}
+
+.login-headline .headline-line-2 {
+    display: block;
+    background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
 }
 
 .login-headline .accent-teal,
@@ -491,7 +516,7 @@
     z-index: 2;
 }
 
-/* Barras do Gráfico */
+/* Barras do Gráfico — Altura Fluida Controlada pelo Motor Sincronizado */
 .bar,
 .login-bar {
     width: 14%;
@@ -500,14 +525,16 @@
     background: linear-gradient(180deg, #3B82F6 0%, #1D4ED8 100%);
     position: relative;
     z-index: 2;
+    height: 6%;
     transform-origin: bottom center;
-    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease;
+    transition: height 0.75s cubic-bezier(0.34, 1.2, 0.64, 1), transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease, box-shadow 0.25s ease;
     box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+    will-change: height;
 }
 
 .bar:hover {
-    transform: scaleY(1.04) scaleX(1.05);
-    filter: brightness(1.1);
+    transform: scaleY(1.03) scaleX(1.04);
+    filter: brightness(1.08);
 }
 
 .bar span,
@@ -523,21 +550,25 @@
     font-variant-numeric: tabular-nums;
     color: #1E293B;
     white-space: nowrap;
+    transition: opacity 0.25s ease;
 }
 
-/* Alturas e Animação das Barras */
-.b1 { height: 38%; animation: barGrowB1 1s cubic-bezier(0.34, 1.3, 0.64, 1) 0.5s both; }
-.b2 { height: 47%; animation: barGrowB2 1s cubic-bezier(0.34, 1.3, 0.64, 1) 0.6s both; }
-.b3 { height: 58%; animation: barGrowB3 1s cubic-bezier(0.34, 1.3, 0.64, 1) 0.7s both; }
-.b4 { height: 66%; animation: barGrowB4 1s cubic-bezier(0.34, 1.3, 0.64, 1) 0.8s both; }
+/* Alturas Padrão / Fallback */
+.b1.grown { height: 38%; }
+.b2.grown { height: 47%; }
+.b3.grown { height: 58%; }
+.b4.grown { height: 66%; }
 
 /* Barra Meta 2025 com Destaque Verde e Glow */
 .b5,
 .bar.bar-target {
-    height: 78%;
     background: linear-gradient(180deg, #10B981 0%, #059669 100%);
     box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
-    animation: barGrowB5 1.1s cubic-bezier(0.34, 1.3, 0.64, 1) 0.9s both;
+}
+
+.b5.grown,
+.bar.bar-target.grown {
+    height: 78%;
 }
 
 .b5 span,

@@ -312,14 +312,16 @@
             }
         }
 
-        // 2. Oculta o formulário de login por trás
+        // 2. Oculta o formulário de login por trás e desliga o motor narrativo
         if (loginScreen) {
             loginScreen.style.display = 'none';
             loginScreen.style.pointerEvents = 'none';
+            if (typeof global.LoginNarrativeEngine !== 'undefined' && global.LoginNarrativeEngine.stop) {
+                global.LoginNarrativeEngine.stop();
+            }
             if (btnSubmit) {
                 btnSubmit.disabled = false;
-                var btnSpanReset = btnSubmit.querySelector('span');
-                if (btnSpanReset) btnSpanReset.textContent = 'Entrar no Sistema';
+                btnSubmit.innerHTML = '<span>Entrar no Sistema</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>';
             }
         }
 

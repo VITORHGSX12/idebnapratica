@@ -6352,28 +6352,11 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
 
     // ==========================================
     // LÓGICA DE CONTROLE DA TELA DE LOGIN & MOTION
-    // ==========================================
-    const loginHeadlines = [
-        'Cada <span class="accent-indigo">décimo</span> do IDEB <span class="accent-teal">planejado e conquistado.</span>',
-        'Do <span class="accent-indigo">diagnóstico</span> ao plano de ação, <span class="accent-teal">em uma só plataforma.</span>',
-        'Inteligência <span class="accent-indigo">pedagógica</span> guiando a <span class="accent-teal">gestão municipal.</span>'
-    ];
-    let headlineIndex = 0;
-
+    // (A rotação narrativa de headlines e sincronização com o gráfico IDEB agora é gerenciada exclusivamente pelo LoginNarrativeEngine em js/core/login-animation.js)
     function rotateLoginHeadlines() {
-        const headlineEl = document.getElementById('rotating-headline');
-        if (!headlineEl) return;
-        setInterval(() => {
-            headlineEl.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-            headlineEl.style.opacity = '0';
-            headlineEl.style.transform = 'translateY(6px)';
-            setTimeout(() => {
-                headlineIndex = (headlineIndex + 1) % loginHeadlines.length;
-                headlineEl.innerHTML = loginHeadlines[headlineIndex];
-                headlineEl.style.opacity = '1';
-                headlineEl.style.transform = 'translateY(0)';
-            }, 400);
-        }, 6000);
+        if (typeof window.LoginNarrativeEngine !== 'undefined' && window.LoginNarrativeEngine.start) {
+            // Unificado com LoginNarrativeEngine
+        }
     }
 
     // ==========================================
