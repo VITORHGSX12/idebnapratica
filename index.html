@@ -14,6 +14,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="stylesheet" href="design-tokens.css?v=20260826_new_palette">
     <link rel="stylesheet" href="styles.css?v=20260826_new_palette">
+    <link rel="stylesheet" href="login-premium.css?v=20260828_premium">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -375,69 +376,86 @@
                     <span class="saeb-w-bar b8"></span>
                     <span class="saeb-w-bar b9"></span>
                 </div>
+
+                <!-- Floating Decorative Chips (Educacionais) -->
+                <div class="login-floating-chips-container" aria-hidden="true">
+                    <div class="login-floating-chip chip-top-right">
+                        <span class="chip-dot"></span>
+                        <span>Proficiência SAEB 2025</span>
+                    </div>
+                    <div class="login-floating-chip chip-mid-left">
+                        <span class="chip-val">+2.3</span>
+                        <span>Evolução da Rede</span>
+                    </div>
+                    <div class="login-floating-chip chip-bottom-mid">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+                        <span>Meta Pactuada 6.5</span>
+                    </div>
+                </div>
+
                 <!-- Divisor em Curva Orgânica para o Painel de Login -->
                 <div class="login-curve-divider" aria-hidden="true">
                     <svg viewBox="0 0 100 1000" preserveAspectRatio="none">
-                        <path d="M0,0 C65,220 85,420 40,650 C10,820 45,950 0,1000 L100,1000 L100,0 Z" fill="var(--color-surface-canvas)"></path>
+                        <path d="M0,0 C65,220 85,420 40,650 C10,820 45,950 0,1000 L100,1000 L100,0 Z" fill="var(--color-surface-canvas, #F1F5F9)"></path>
                     </svg>
                 </div>
 
-                <div class="brand">
-                    <div class="brand-mark">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="var(--color-surface-card)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>
+                <div class="brand login-brand">
+                    <div class="brand-mark login-brand-mark">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>
                     </div>
-                    <div class="brand-text">
+                    <div class="brand-text login-brand-text">
                         <div class="name">IDEB na Prática</div>
                         <div class="tag">GESTÃO &amp; AVALIAÇÃO PEDAGÓGICA</div>
                     </div>
                 </div>
 
-                <h1 class="headline" id="rotating-headline">Cada <span class="accent-indigo">décimo</span> do IDEB <span class="accent-teal">planejado e conquistado.</span></h1>
+                <h1 class="headline login-headline" id="rotating-headline">Cada <span class="accent-indigo">décimo</span> do IDEB <span class="accent-teal">planejado e conquistado.</span></h1>
 
                 <!-- Chart Card (IDEB Animated Graphic) -->
-                <div class="chart-card">
-                    <div class="chart-head">
-                        <div class="chart-title">
-                            <span class="dot"></span>
+                <div class="chart-card login-chart-card">
+                    <div class="chart-head login-chart-head">
+                        <div class="chart-title login-chart-title">
+                            <span class="dot login-pulse-dot"></span>
                             <span class="label">Evolução do IDEB (Escala 0 a 10)</span>
                         </div>
-                        <div class="badge-meta" id="login-card-target-badge">Meta Pactuada 2025 · 6.5</div>
+                        <div class="badge-meta login-badge-meta" id="login-card-target-badge">Meta Pactuada 2025 · 6.5</div>
                     </div>
-                    <div class="chart-plot">
-                        <div class="goal-line"></div>
-                        <div class="bar b1"><span>4.2</span></div>
-                        <div class="bar b2"><span>4.6</span></div>
-                        <div class="bar b3"><span>5.1</span></div>
-                        <div class="bar b4"><span>5.6</span></div>
-                        <div class="bar b5"><span>6.5*</span></div>
+                    <div class="chart-plot login-chart-plot">
+                        <div class="goal-line login-goal-line"></div>
+                        <div class="bar b1 login-bar"><span id="ideb-bar-val-1">4.2</span></div>
+                        <div class="bar b2 login-bar"><span id="ideb-bar-val-2">4.6</span></div>
+                        <div class="bar b3 login-bar"><span id="ideb-bar-val-3">5.1</span></div>
+                        <div class="bar b4 login-bar"><span id="ideb-bar-val-4">5.6</span></div>
+                        <div class="bar b5 bar-target login-bar"><span id="ideb-bar-val-5">6.5*</span></div>
                     </div>
-                    <div class="chart-foot">
+                    <div class="chart-foot login-chart-foot">
                         <span>2019</span><span>2020</span><span>2021</span><span>2023</span><span>2025*</span>
                     </div>
                 </div>
 
-                <div class="pill-note">
+                <div class="pill-note login-pill-note">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
                     <span>Dados oficiais INEP/SAEB (2019–2023) com metas municipais pactuadas</span>
                 </div>
 
-                <div class="spacer"></div>
+                <div class="spacer login-spacer"></div>
 
-                <div class="left-footer">
-                    <img class="footer-logo-img" src="assets/logo-prefeitura-semed.png" alt="Prefeitura de Gonçalves Dias e SEMED - Secretaria Municipal de Educação">
+                <div class="left-footer login-left-footer">
+                    <img class="footer-logo-img login-footer-logo-img" src="assets/logo-prefeitura-semed.png" alt="Prefeitura de Gonçalves Dias e SEMED - Secretaria Municipal de Educação">
                 </div>
             </div>
 
             <!-- Right Panel (Login Card & Quick Access) -->
             <div class="login-right-panel">
-                <div class="badge-top">
+                <div class="badge-top login-badge-top">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>
                     <span>Gestão &amp; Avaliação Pedagógica</span>
                 </div>
 
                 <div class="card login-form-container">
-                    <h1>Bem-vindo de volta</h1>
-                    <p class="sub">Insira suas credenciais institucionais para continuar.</p>
+                    <h1 class="login-card-title">Bem-vindo de volta</h1>
+                    <p class="sub login-card-sub">Insira suas credenciais institucionais para continuar.</p>
 
                     <form id="login-form" class="login-form-body" onsubmit="event.preventDefault(); if(window.executeSystemLogin) window.executeSystemLogin(); return false;">
                         <!-- Inline Error Alert -->
@@ -6967,6 +6985,7 @@
     <script src="js/core/helpers.js?v=3e1fa864ae_mt78c012"></script>
     <script src="js/core/theme-toast.js?v=5efe74db0d_mt78c012"></script>
     <script src="js/core/user-profile.js?v=bad21cc2ae_mt78c012"></script>
+    <script src="js/core/login-animation.js?v=20260828_premium"></script>
     <script src="js/core/auth.js?v=337f6ad3d6_mt78c012"></script>
     <script src="js/core/navigation.js?v=8c1fedad5e_mt78c012"></script>
     <script src="js/core/sync.js?v=2026_cloud_sync"></script>

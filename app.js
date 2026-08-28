@@ -6354,9 +6354,9 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
     // LÓGICA DE CONTROLE DA TELA DE LOGIN & MOTION
     // ==========================================
     const loginHeadlines = [
-        "Cada décimo do IDEB planejado e conquistado.",
-        "Do diagnóstico ao plano de ação, em uma só plataforma.",
-        "Inteligência pedagógica guiando a gestão municipal."
+        'Cada <span class="accent-indigo">décimo</span> do IDEB <span class="accent-teal">planejado e conquistado.</span>',
+        'Do <span class="accent-indigo">diagnóstico</span> ao plano de ação, <span class="accent-teal">em uma só plataforma.</span>',
+        'Inteligência <span class="accent-indigo">pedagógica</span> guiando a <span class="accent-teal">gestão municipal.</span>'
     ];
     let headlineIndex = 0;
 
@@ -6364,13 +6364,16 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
         const headlineEl = document.getElementById('rotating-headline');
         if (!headlineEl) return;
         setInterval(() => {
-            headlineEl.classList.add('fade');
+            headlineEl.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            headlineEl.style.opacity = '0';
+            headlineEl.style.transform = 'translateY(6px)';
             setTimeout(() => {
                 headlineIndex = (headlineIndex + 1) % loginHeadlines.length;
-                headlineEl.textContent = loginHeadlines[headlineIndex];
-                headlineEl.classList.remove('fade');
-            }, 500);
-        }, 5000);
+                headlineEl.innerHTML = loginHeadlines[headlineIndex];
+                headlineEl.style.opacity = '1';
+                headlineEl.style.transform = 'translateY(0)';
+            }, 400);
+        }, 6000);
     }
 
     // ==========================================

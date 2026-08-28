@@ -182,8 +182,7 @@
 
         if (btnSubmit) {
             btnSubmit.disabled = true;
-            var btnSpan = btnSubmit.querySelector('span');
-            if (btnSpan) btnSpan.textContent = 'Autenticando...';
+            btnSubmit.innerHTML = '<span class="login-spinner"></span> <span>Autenticando...</span>';
         }
 
         var authenticatedUser = null;
@@ -230,8 +229,7 @@
                 if (loginData.requirePasswordChange || (loginData.user && loginData.user.mustChangePassword)) {
                     if (btnSubmit) {
                         btnSubmit.disabled = false;
-                        var btnSpanOk = btnSubmit.querySelector('span');
-                        if (btnSpanOk) btnSpanOk.textContent = 'Entrar no Sistema';
+                        btnSubmit.innerHTML = '<span>Entrar no Sistema</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>';
                     }
                     showForceChangePasswordModal(emailInput, passInput, authenticatedUser);
                     return;
@@ -246,8 +244,7 @@
                 }
                 if (btnSubmit) {
                     btnSubmit.disabled = false;
-                    var btnSpanReset = btnSubmit.querySelector('span');
-                    if (btnSpanReset) btnSpanReset.textContent = 'Entrar no Sistema';
+                    btnSubmit.innerHTML = '<span>Entrar no Sistema</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>';
                 }
                 if (passEl) {
                     passEl.value = '';
@@ -265,8 +262,7 @@
             }
             if (btnSubmit) {
                 btnSubmit.disabled = false;
-                var btnSpanErr = btnSubmit.querySelector('span');
-                if (btnSpanErr) btnSpanErr.textContent = 'Entrar no Sistema';
+                btnSubmit.innerHTML = '<span>Entrar no Sistema</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>';
             }
             return;
         }
@@ -274,8 +270,7 @@
         if (!authenticatedUser) {
             if (btnSubmit) {
                 btnSubmit.disabled = false;
-                var btnSpanReset2 = btnSubmit.querySelector('span');
-                if (btnSpanReset2) btnSpanReset2.textContent = 'Entrar no Sistema';
+                btnSubmit.innerHTML = '<span>Entrar no Sistema</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>';
             }
             return;
         }
