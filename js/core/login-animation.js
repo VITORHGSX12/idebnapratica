@@ -4,6 +4,7 @@
  * Responsabilidade:
  * - Ciclo narrativo sincronizado com 4 mensagens rotativas
  * - Animação sequencial e fluida de subida e reset das barras do gráfico IDEB
+ * - Beacon / Radar pulsante na Meta 6.5 e efeito de varredura luminosa (shimmer)
  * - Count-up em tempo real com preservação exata dos valores oficiais
  * - Prevenção de múltiplos timers e gerenciamento de visibilidade (visibilitychange)
  * - Microinterações acessíveis de formulário e suporte a prefers-reduced-motion
@@ -67,6 +68,7 @@
      */
     function animateChartGrowth() {
         var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var badgeMeta = document.getElementById('login-card-target-badge');
 
         BARS_CONFIG.forEach(function(item, index) {
             var barEl = document.getElementById(item.barId);
@@ -108,6 +110,11 @@
                             narrativeState.activeRafIds.push(rafId);
                         } else {
                             valEl.textContent = targetVal.toFixed(1) + item.suffix;
+                            // Se for a última barra (Meta 6.5), ativa brilho no badge
+                            if (index === BARS_CONFIG.length - 1 && badgeMeta) {
+                                badgeMeta.style.transform = 'scale(1.04)';
+                                badgeMeta.style.boxShadow = '0 0 12px rgba(16, 185, 129, 0.4)';
+                            }
                         }
                     }
 
@@ -123,6 +130,12 @@
      */
     function animateChartReset() {
         var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var badgeMeta = document.getElementById('login-card-target-badge');
+        if (badgeMeta) {
+            badgeMeta.style.transform = 'scale(1)';
+            badgeMeta.style.boxShadow = '0 2px 6px rgba(16, 185, 129, 0.12)';
+        }
+
         if (prefersReducedMotion) return;
 
         BARS_CONFIG.forEach(function(item) {
@@ -154,7 +167,7 @@
         renderHeadlineMessage(currentMsg);
 
         if (headlineEl && !prefersReducedMotion) {
-            headlineEl.style.transition = 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+            headlineEl.style.transition = 'opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
             headlineEl.style.opacity = '1';
             headlineEl.style.transform = 'translateY(0)';
         }
@@ -178,9 +191,9 @@
         setTimeout(function() {
             if (!narrativeState.isRunning || narrativeState.isPaused) return;
             if (headlineEl) {
-                headlineEl.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                headlineEl.style.transition = 'opacity 0.45s ease, transform 0.45s ease';
                 headlineEl.style.opacity = '0';
-                headlineEl.style.transform = 'translateY(-8px)';
+                headlineEl.style.transform = 'translateY(-6px)';
             }
         }, 5400);
 
@@ -201,12 +214,12 @@
             if (headlineEl) {
                 headlineEl.style.transition = 'none';
                 headlineEl.style.opacity = '0';
-                headlineEl.style.transform = 'translateY(8px)';
+                headlineEl.style.transform = 'translateY(6px)';
 
                 // Força reflow para aplicar a transição
                 void headlineEl.offsetWidth;
 
-                headlineEl.style.transition = 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+                headlineEl.style.transition = 'opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
                 headlineEl.style.opacity = '1';
                 headlineEl.style.transform = 'translateY(0)';
             }
