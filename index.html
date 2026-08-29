@@ -682,10 +682,7 @@
             </form>
         </div>
     </div>
-
-    <!-- Layout Principal com Sidebar Glassmorphism -->
-    <div class="app-container">
-        <!-- Sidebar Navigation (Settings Glassmorphism Design) -->
+        <!-- Sidebar Navigation (Refined Slate Redesign) -->
         <div id="mobile-sidebar-backdrop" class="mobile-sidebar-backdrop" onclick="toggleMobileSidebar();"></div>
         <aside class="sidebar" id="main-sidebar">
             <div class="sidebar-header">
@@ -694,18 +691,20 @@
                         <div class="sidebar-logo-icon">
                             <i data-lucide="graduation-cap"></i>
                         </div>
-                        <h1 class="sidebar-brand-title">IDEB na Prática</h1>
+                        <div class="sidebar-brand-text-wrap">
+                            <h1 class="sidebar-brand-title">IDEB na Prática</h1>
+                            <span class="sidebar-brand-subtitle">Painel Municipal</span>
+                        </div>
                     </div>
-                    <button class="sidebar-close-toggle" id="sidebar-collapse-toggle" onclick="toggleSidebarCollapse();" title="Recolher / Expandir Menu" aria-label="Recolher menu">
+                    <button class="sidebar-collapse-btn" id="sidebar-collapse-toggle" onclick="toggleSidebarCollapse();" title="Recolher / Expandir Menu" aria-label="Recolher menu">
                         <svg id="sidebar-toggle-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                            <polyline points="15 18 9 12 15 6"></polyline>
                         </svg>
                     </button>
                 </div>
                 
-                <!-- Pill Search Box -->
-                <div class="sidebar-search-box" id="sidebar-search-box" onclick="if(document.body.classList.contains('collapsed-sidebar')){ toggleSidebarCollapse(); setTimeout(()=>document.getElementById('sidebar-search-input').focus(), 300); }" data-tooltip="Buscar no Menu">
+                <!-- Search Input Box -->
+                <div class="sidebar-search-box" id="sidebar-search-box" onclick="if(document.body.classList.contains('collapsed-sidebar')){ toggleSidebarCollapse(); setTimeout(()=>document.getElementById('sidebar-search-input').focus(), 250); }" data-tooltip="Buscar no Menu">
                     <svg class="sidebar-search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="11" cy="11" r="8"></circle>
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -715,129 +714,127 @@
             </div>
             
             <nav class="sidebar-menu">
-                <!-- GRUPO 1: GESTÃO -->
+                <!-- SEÇÃO 1: VISÃO GERAL -->
                 <div class="menu-group" id="menu-group-gestao">
-                    <a href="javascript:void(0)" onclick="switchTab('dashboard'); return false;" class="menu-item active" data-target="dashboard" data-tooltip="Monitoramento Geral">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-                        <span>Monitoramento Geral</span>
+                    <span class="menu-section-label">VISÃO GERAL</span>
+                    <a href="javascript:void(0)" onclick="switchTab('dashboard'); return false;" class="menu-item active" data-target="dashboard" data-tooltip="Painel Executivo">
+                        <div class="menu-active-indicator"></div>
+                        <i data-lucide="layout-grid"></i>
+                        <span>Painel Executivo</span>
                     </a>
                     <a href="javascript:void(0)" onclick="switchTab('escolas-panel'); return false;" class="menu-item" data-target="escolas-panel" data-tooltip="Escolas da Rede">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 8-4 8 4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="M18 5v17"/><path d="M6 5v17"/></svg>
+                        <div class="menu-active-indicator"></div>
+                        <i data-lucide="school"></i>
                         <span>Escolas da Rede</span>
                     </a>
-                    <a href="javascript:void(0)" onclick="switchTab('alunos-panel'); return false;" class="menu-item" data-target="alunos-panel" data-tooltip="Alunos & Cadastros">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                        <span>Alunos & Cadastros</span>
-                        <span class="badge badge-info" id="badge-count-students" style="margin-left: auto; font-size: 0.65rem; padding: 2px 6px;">1.7k</span>
+                    <a href="javascript:void(0)" onclick="switchTab('alunos-panel'); return false;" class="menu-item" data-target="alunos-panel" data-tooltip="Estudantes &amp; Turmas">
+                        <div class="menu-active-indicator"></div>
+                        <i data-lucide="users"></i>
+                        <span>Estudantes &amp; Turmas</span>
+                        <span class="badge badge-counter" id="badge-count-students">1.7k</span>
                     </a>
                 </div>
 
-                <!-- DIVISOR SUTIL 1 -->
-                <div class="sidebar-divider"></div>
-
-                <!-- GRUPO 2: AVALIAÇÃO & METAS -->
-                <div class="menu-group" id="menu-group-avaliacao">
-                    <a href="javascript:void(0)" onclick="switchTab('metas-ideb'); return false;" class="menu-item" data-target="metas-ideb" data-tooltip="Metas e Planos (PDE)">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                        <span>Metas e Planos (PDE)</span>
+                <!-- SEÇÃO 2: PLANEJAMENTO -->
+                <div class="menu-group" id="menu-group-planejamento">
+                    <span class="menu-section-label">PLANEJAMENTO</span>
+                    <a href="javascript:void(0)" onclick="switchTab('metas-ideb'); return false;" class="menu-item" data-target="metas-ideb" data-tooltip="Metas Municipais (PDE)">
+                        <div class="menu-active-indicator"></div>
+                        <i data-lucide="target"></i>
+                        <span>Metas Municipais (PDE)</span>
                     </a>
                     <a href="javascript:void(0)" onclick="switchTab('ideb-comparativo'); return false;" class="menu-item" data-target="ideb-comparativo" data-tooltip="Comparativo Regional">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                        <div class="menu-active-indicator"></div>
+                        <i data-lucide="globe-2"></i>
                         <span>Comparativo Regional</span>
                     </a>
-                    <a href="javascript:void(0)" onclick="switchTab('matriz-descritores'); return false;" class="menu-item" data-target="matriz-descritores" data-tooltip="Matriz & Descritores">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
-                        <span>Matriz & Descritores</span>
+                    <a href="javascript:void(0)" onclick="switchTab('matriz-descritores'); return false;" class="menu-item" data-target="matriz-descritores" data-tooltip="Matriz &amp; Descritores">
+                        <div class="menu-active-indicator"></div>
+                        <i data-lucide="list-tree"></i>
+                        <span>Matriz &amp; Descritores</span>
                     </a>
                     <a href="javascript:void(0)" onclick="switchTab('cronograma-habilidades'); return false;" class="menu-item" data-target="cronograma-habilidades" data-tooltip="Cronograma de Habilidades">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>
+                        <div class="menu-active-indicator"></div>
+                        <i data-lucide="calendar-clock"></i>
                         <span>Cronograma de Habilidades</span>
-                        <span class="badge badge-success" style="margin-left: auto; font-size: 0.65rem; padding: 2px 6px;">Semanal</span>
+                        <span class="badge badge-counter">Semanal</span>
                     </a>
+                </div>
+
+                <!-- SEÇÃO 3: AVALIAÇÕES -->
+                <div class="menu-group" id="menu-group-avaliacoes">
+                    <span class="menu-section-label">AVALIAÇÕES</span>
                     <a href="javascript:void(0)" onclick="switchTab('sec-criar-avaliacoes'); return false;" class="menu-item" data-target="sec-criar-avaliacoes" data-tooltip="Criar Avaliações">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M12 14v4"/><path d="M10 16h4"/></svg>
+                        <div class="menu-active-indicator"></div>
+                        <i data-lucide="file-plus-2"></i>
                         <span>Criar Avaliações</span>
                     </a>
                     <a href="javascript:void(0)" onclick="switchTab('sec-aplicacao-provas'); return false;" class="menu-item" data-target="sec-aplicacao-provas" data-tooltip="Aplicação de Provas">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
+                        <div class="menu-active-indicator"></div>
+                        <i data-lucide="clipboard-check"></i>
                         <span>Aplicação de Provas</span>
                     </a>
                     <a href="javascript:void(0)" onclick="switchTab('banco-questoes'); return false;" class="menu-item" data-target="banco-questoes" data-tooltip="Banco de Questões">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><circle cx="10" cy="13" r="1"/><path d="M9.1 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3"/></svg>
+                        <div class="menu-active-indicator"></div>
+                        <i data-lucide="book-open"></i>
                         <span>Banco de Questões</span>
-                        <span class="badge badge-purple" id="badge-count-questions" style="margin-left: auto; font-size: 0.65rem; padding: 2px 6px;">12</span>
+                        <span class="badge badge-counter" id="badge-count-questions">12</span>
                     </a>
-                    <a href="javascript:void(0)" onclick="switchTab('relatorios-monitoramento'); return false;" class="menu-item" data-target="relatorios-monitoramento" data-tooltip="Relatórios & Monitoramento">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
-                        <span>Relatórios & Monitoramento</span>
+                    <a href="javascript:void(0)" onclick="switchTab('relatorios-monitoramento'); return false;" class="menu-item" data-target="relatorios-monitoramento" data-tooltip="Relatórios &amp; Monitoramento">
+                        <div class="menu-active-indicator"></div>
+                        <i data-lucide="bar-chart-3"></i>
+                        <span>Relatórios &amp; Monitoramento</span>
                     </a>
                     <a href="javascript:void(0)" onclick="switchTab('gestao-pedagogica'); return false;" class="menu-item" data-target="gestao-pedagogica" data-tooltip="Gestão Pedagógica">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M12 18v4"/><path d="M8 22h8"/></svg>
+                        <div class="menu-active-indicator"></div>
+                        <i data-lucide="sparkles"></i>
                         <span>Gestão Pedagógica</span>
                     </a>
                     <a href="javascript:void(0)" onclick="switchTab('biblioteca-recursos'); return false;" class="menu-item" data-target="biblioteca-recursos" data-tooltip="Biblioteca Pedagógica">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                        <div class="menu-active-indicator"></div>
+                        <i data-lucide="book-marked"></i>
                         <span>Biblioteca Pedagógica</span>
-                        <span class="badge badge-purple" style="margin-left: auto; font-size: 0.65rem; padding: 2px 6px;">A4 / Provas</span>
                     </a>
-                </div>
-
-                <!-- DIVISOR SUTIL 2 -->
-                <div class="sidebar-divider"></div>
-
-                <!-- GRUPO 3: SISTEMA -->
-                <div class="menu-group" id="menu-group-sistema">
                     <a href="javascript:void(0)" onclick="switchTab('doc-tecnica'); return false;" class="menu-item" data-target="doc-tecnica" data-tooltip="Documentação Técnica">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <div class="menu-active-indicator"></div>
+                        <i data-lucide="file-code"></i>
                         <span>Documentação Técnica</span>
                     </a>
                     <a href="javascript:void(0)" onclick="switchTab('admin-panel'); return false;" class="menu-item" data-target="admin-panel" data-tooltip="Área Administrativa">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+                        <div class="menu-active-indicator"></div>
+                        <i data-lucide="shield"></i>
                         <span>Área Administrativa</span>
                     </a>
                 </div>
             </nav>
 
             <div class="sidebar-footer">
-                <!-- Theme Mode Switcher (Brisk style) -->
-                <div class="sidebar-theme-toggle-row" id="sidebar-theme-toggle-container">
-                    <div class="theme-toggle-label">
-                        <svg class="theme-icon-light" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-                        <span>Modo Noturno</span>
-                    </div>
-                    <label class="theme-switch" title="Alternar Modo Escuro / Claro">
-                        <input type="checkbox" id="sidebar-theme-switch" onchange="document.body.classList.toggle('dark-mode'); localStorage.setItem('theme_mode', document.body.classList.contains('dark-mode') ? 'dark' : 'light');">
-                        <span class="theme-slider"></span>
-                    </label>
+                <!-- Segmented Theme Mode Switcher (Claro / Escuro) -->
+                <div class="sidebar-theme-segmented" id="sidebar-theme-segmented">
+                    <button type="button" class="theme-seg-btn active" id="theme-btn-light" onclick="if(typeof setThemeMode==='function') setThemeMode('light');" title="Modo Claro">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                        <span>Claro</span>
+                    </button>
+                    <button type="button" class="theme-seg-btn" id="theme-btn-dark" onclick="if(typeof setThemeMode==='function') setThemeMode('dark');" title="Modo Escuro">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                        <span>Escuro</span>
+                    </button>
                 </div>
+                <button type="button" class="sidebar-theme-collapsed-btn" id="sidebar-theme-collapsed-btn" onclick="if(typeof toggleThemeMode==='function') toggleThemeMode();" title="Alternar Tema" data-tooltip="Alternar Tema">
+                    <svg id="theme-collapsed-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                </button>
 
-                <div class="user-profile" id="user-menu-btn" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 8px 10px; border-radius: var(--radius-md); transition: var(--transition);">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <div class="avatar" style="background: rgba(255, 255, 255, 0.2); color: white; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; border: 1px solid rgba(255, 255, 255, 0.3);">AD</div>
-                        <div class="user-info" style="display: flex; flex-direction: column; text-align: left;">
-                            <span class="user-name" style="font-size: 0.8rem; font-weight: 700; color: #FFFFFF; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">Gestor Rede</span>
-                            <span class="user-role" style="font-size: 0.65rem; color: rgba(255,255,255,0.75); text-shadow: 0 1px 2px rgba(0,0,0,0.4);">Secretaria Exec.</span>
-                        </div>
+                <!-- User Navigation Card (Direct Profile Action) -->
+                <button type="button" class="user-profile-nav-card" id="user-menu-btn" onclick="if(typeof openUserProfileModal==='function') openUserProfileModal();" title="Ver e Editar Meu Perfil" data-tooltip="Meu Perfil">
+                    <div class="user-avatar-circle" id="sidebar-user-avatar">GD</div>
+                    <div class="user-info-text">
+                        <span class="user-name-label" id="sidebar-user-name">Gestor da Rede</span>
+                        <span class="user-role-label" id="sidebar-user-role">Secretaria Exec. · Ver perfil</span>
                     </div>
-                    <i data-lucide="chevron-up" style="width: 14px; height: 14px; color: rgba(255,255,255,0.8);"></i>
-                </div>
-                
-                <!-- Dropdown Menu -->
-                <div class="user-dropdown-menu hidden" id="user-profile-dropdown" style="position: absolute; bottom: 65px; left: 12px; right: 12px; background-color: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: var(--shadow); z-index: 110; display: flex; flex-direction: column; padding: 6px; gap: 2px;">
-                    <a href="#" class="dropdown-item" id="menu-switch-network" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--text-primary); transition: var(--transition);" onclick="const sel = document.getElementById('tenant-selector'); if(sel){ sel.focus(); sel.click(); }; return false;">
-                        <i data-lucide="globe" style="width: 14px; height: 14px; color: var(--purple-light);"></i> Alterar Rede
-                    </a>
-                    <a href="#" class="dropdown-item" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--text-primary); transition: var(--transition);" onclick="alert('Funcionalidade simulada!'); return false;">
-                        <i data-lucide="user" style="width: 14px; height: 14px; color: var(--blue-light);"></i> Minha Conta
-                    </a>
-                    <a href="#" class="dropdown-item" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--text-primary); transition: var(--transition);" onclick="alert('Configurações em modo sandbox.'); return false;">
-                        <i data-lucide="sliders" style="width: 14px; height: 14px; color: var(--orange-light);"></i> Configurações
-                    </a>
-                    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 4px 0;">
-                    <a href="#" class="dropdown-item" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--red-light); transition: var(--transition);" onclick="sessionStorage.clear(); location.reload(); return false;">
-                        <i data-lucide="log-out" style="width: 14px; height: 14px;"></i> Sair
-                    </a>
-                </div>
+                    <svg class="user-chevron-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
             </div>
         </aside>
 
@@ -867,12 +864,6 @@
                         <span id="cloud-sync-text"></span>
                     </div>
 
-                    <!-- Botão de Perfil do Usuário no Topo -->
-                    <button type="button" class="header-user-btn" id="btn-header-user-profile" onclick="if(typeof openUserProfileModal==='function') openUserProfileModal();" title="Ver e Editar Meu Perfil">
-                        <div class="header-user-avatar" id="header-user-avatar">SE</div>
-                        <span class="header-user-name" id="header-user-name">Secretaria Municipal de Educação (SEMED)</span>
-                    </button>
-
                     <!-- Notification Button & Dropdown -->
                     <div style="position: relative;">
                         <button class="btn btn-icon" id="notification-btn" onclick="const dd=document.getElementById('notifications-dropdown'); if(dd) dd.classList.toggle('hidden');" title="Notificações e Alertas" style="position: relative; width: 38px; height: 38px;">
@@ -890,11 +881,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Theme Toggle -->
-                    <button class="btn btn-icon" id="theme-toggle" onclick="if(typeof toggleThemeMode==='function') toggleThemeMode();" title="Alternar Tema" style="width: 38px; height: 38px;">
-                        <i data-lucide="moon"></i>
-                    </button>
 
                     <!-- Botão Deslogar / Sair -->
                     <button type="button" class="btn btn-icon" id="btn-header-logout" onclick="handleSystemLogout();" title="Deslogar do Sistema" style="width: 38px; height: 38px; color: #ef4444; border-color: rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.08);">

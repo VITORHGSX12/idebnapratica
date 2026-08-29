@@ -84,17 +84,22 @@
             }
         }
 
-        // 2. Sidebar Footer
-        var sidebarName = document.querySelector('.sidebar-footer .user-name');
-        var sidebarRole = document.querySelector('.sidebar-footer .user-role');
-        var sidebarAvatar = document.querySelector('.sidebar-footer .avatar');
-        if (sidebarName) sidebarName.textContent = profile.name;
-        if (sidebarRole) sidebarRole.textContent = profile.role;
+        // 2. Sidebar Footer (Novo Card de Navegação de Perfil)
+        var sidebarName = document.getElementById('sidebar-user-name') || document.querySelector('.sidebar-footer .user-name-label') || document.querySelector('.sidebar-footer .user-name');
+        var sidebarRole = document.getElementById('sidebar-user-role') || document.querySelector('.sidebar-footer .user-role-label') || document.querySelector('.sidebar-footer .user-role');
+        var sidebarAvatar = document.getElementById('sidebar-user-avatar') || document.querySelector('.sidebar-footer .user-avatar-circle') || document.querySelector('.sidebar-footer .avatar');
+        
+        if (sidebarName) sidebarName.textContent = profile.name || 'Gestor da Rede';
+        if (sidebarRole) {
+            var displayRole = profile.role || 'Secretaria Exec.';
+            sidebarRole.textContent = displayRole + ' · Ver perfil';
+        }
         if (sidebarAvatar) {
             if (profile.avatarPhoto) {
                 sidebarAvatar.innerHTML = '<img src="' + profile.avatarPhoto + '" alt="' + profile.name + '" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">';
             } else {
-                sidebarAvatar.textContent = profile.avatarIcon || (profile.name.substring(0, 2).toUpperCase());
+                var initials = (profile.name || 'GD').trim().split(/\s+/).map(function(w){ return w[0]; }).slice(0,2).join('').toUpperCase();
+                sidebarAvatar.textContent = initials || 'GD';
             }
         }
     }
