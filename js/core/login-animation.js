@@ -1,36 +1,32 @@
 /**
  * =========================================================================
- * IDEB NA PRÁTICA — NARRATIVE ENGINE & SYNCHRONIZED CHART CONTROLLER (FASE 2)
+ * IDEB NA PRÁTICA — REFINAMENTO VISUAL & COREOGRAFIA DO LOGIN
  * Responsabilidade:
- * - Ciclo narrativo sincronizado com 4 mensagens rotativas
- * - Animação sequencial e fluida de subida e reset das barras do gráfico IDEB
- * - Beacon / Radar pulsante na Meta 6.5 e efeito de varredura luminosa (shimmer)
- * - Count-up em tempo real com preservação exata dos valores oficiais
- * - Prevenção de múltiplos timers e gerenciamento de visibilidade (visibilitychange)
- * - Microinterações acessíveis de formulário e suporte a prefers-reduced-motion
+ * - Carrossel sincronizado de 3 frases institucionais (4.5s de permanência)
+ * - Atualização dos 3 dots indicadores de frase ativa
+ * - Crescimento do gráfico com stagger de 80–100ms e count-up via RAF
+ * - Glow suave na Meta 6.5 e pausa de 2.5s no ápice
+ * - Reset suave com fade-out/fade-in (sem piscar valores em zero)
+ * - Suporte a prefers-reduced-motion e visibilitychange
  * =========================================================================
  */
 
 (function(global) {
     'use strict';
 
-    // 1. Mensagens Narrativas Oficiais em Duas Linhas (Hierarquia: Destaque Branco + Destaque Verde)
+    // 1. Três Frases Institucionais Oficiais
     var NARRATIVE_MESSAGES = [
         {
             line1: 'Cada décimo do IDEB',
             line2: 'planejado e conquistado.'
         },
         {
-            line1: 'Dados que orientam decisões.',
-            line2: 'Resultados que transformam.'
+            line1: 'Dados oficiais,',
+            line2: 'decisões pedagógicas melhores.'
         },
         {
-            line1: 'Planejamento que começa nos dados.',
-            line2: 'Resultados que chegam à escola.'
-        },
-        {
-            line1: 'Acompanhe. Analise. Planeje.',
-            line2: 'Avance.'
+            line1: 'Gestão da educação municipal,',
+            line2: 'em um só lugar.'
         }
     ];
 
@@ -43,7 +39,7 @@
         { barId: 'ideb-bar-5', valId: 'ideb-bar-val-5', target: 6.5, suffix: '*', heightPct: '78%' }
     ];
 
-    // Estado da Máquina de Ciclo Narrativo
+    // Estado da Máquina de Animação
     var narrativeState = {
         currentIndex: 0,
         timerId: null,
@@ -53,18 +49,37 @@
     };
 
     /**
-     * Atualiza o DOM da headline com a mensagem informada
+     * Atualiza os 3 dots indicadores
      */
-    function renderHeadlineMessage(msg) {
+    function updateHeadlineDots(activeIndex) {
+        var dotsContainer = document.getElementById('login-headline-dots');
+        if (!dotsContainer) return;
+
+        var dots = dotsContainer.querySelectorAll('.headline-dot');
+        dots.forEach(function(dot, idx) {
+            if (idx === activeIndex) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+    }
+
+    /**
+     * Renderiza a mensagem no DOM
+     */
+    function renderHeadlineMessage(msg, index) {
         var headlineEl = document.getElementById('rotating-headline');
         if (!headlineEl || !msg) return;
 
         headlineEl.innerHTML = '<span class="headline-line-1">' + msg.line1 + '</span>' +
                                '<span class="headline-line-2">' + msg.line2 + '</span>';
+
+        updateHeadlineDots(index);
     }
 
     /**
-     * Executa a animação de subida das barras e o count-up numérico sincronizado
+     * Executa a subida escalonada (stagger 90ms) e count-up sincronizado via RAF
      */
     function animateChartGrowth() {
         var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -80,7 +95,7 @@
                 return;
             }
 
-            var delay = index * 110; // Subida sequencial elegante
+            var delay = index * 90; // Stagger de 90ms
 
             setTimeout(function() {
                 if (!narrativeState.isRunning || narrativeState.isPaused) return;
@@ -93,13 +108,13 @@
                 if (valEl) {
                     var startVal = 0.0;
                     var targetVal = item.target;
-                    var duration = 750; // ms
+                    var duration = 650; // ms
                     var startTime = null;
 
                     function countStep(timestamp) {
                         if (!startTime) startTime = timestamp;
                         var progress = Math.min(1, (timestamp - startTime) / duration);
-                        // Easing cúbico suave
+                        // Easing cúbico premium
                         var ease = 1 - Math.pow(1 - progress, 3);
                         var current = startVal + (targetVal - startVal) * ease;
 
@@ -110,10 +125,9 @@
                             narrativeState.activeRafIds.push(rafId);
                         } else {
                             valEl.textContent = targetVal.toFixed(1) + item.suffix;
-                            // Se for a última barra (Meta 6.5), ativa brilho no badge
                             if (index === BARS_CONFIG.length - 1 && badgeMeta) {
-                                badgeMeta.style.transform = 'scale(1.04)';
-                                badgeMeta.style.boxShadow = '0 0 12px rgba(16, 185, 129, 0.4)';
+                                badgeMeta.style.transform = 'scale(1.03)';
+                                badgeMeta.style.boxShadow = '0 0 10px rgba(34, 197, 94, 0.4)';
                             }
                         }
                     }
@@ -126,35 +140,48 @@
     }
 
     /**
-     * Executa a descida suave das barras e o retorno dos números (reset orgânico)
+     * Executa o reset suave do gráfico com fade-out -> reset -> fade-in
      */
     function animateChartReset() {
-        var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var chartCard = document.querySelector('.login-chart-card');
         var badgeMeta = document.getElementById('login-card-target-badge');
+
         if (badgeMeta) {
             badgeMeta.style.transform = 'scale(1)';
-            badgeMeta.style.boxShadow = '0 2px 6px rgba(16, 185, 129, 0.12)';
+            badgeMeta.style.boxShadow = '0 2px 6px rgba(34, 197, 94, 0.15)';
         }
 
+        var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (prefersReducedMotion) return;
 
-        BARS_CONFIG.forEach(function(item) {
-            var barEl = document.getElementById(item.barId);
-            var valEl = document.getElementById(item.valId);
+        // Fade out suave do gráfico antes de resetar (sem piscar números em zero)
+        if (chartCard) {
+            chartCard.style.opacity = '0.35';
+        }
 
-            if (barEl) {
-                barEl.classList.remove('grown');
-                barEl.style.height = '6%';
-            }
+        setTimeout(function() {
+            BARS_CONFIG.forEach(function(item) {
+                var barEl = document.getElementById(item.barId);
+                var valEl = document.getElementById(item.valId);
 
-            if (valEl) {
-                valEl.textContent = '0.0';
+                if (barEl) {
+                    barEl.classList.remove('grown');
+                    barEl.style.height = '6%';
+                }
+
+                if (valEl) {
+                    valEl.textContent = '0.0';
+                }
+            });
+
+            if (chartCard) {
+                chartCard.style.opacity = '1';
             }
-        });
+        }, 220);
     }
 
     /**
-     * Executa um ciclo completo sincronizado
+     * Executa um ciclo completo de 3 frases com permanência de 4.5s
      */
     function runNarrativeCycle(isInitial) {
         if (!narrativeState.isRunning || narrativeState.isPaused) return;
@@ -164,10 +191,10 @@
 
         // 1. Entrada da frase atual
         var currentMsg = NARRATIVE_MESSAGES[narrativeState.currentIndex];
-        renderHeadlineMessage(currentMsg);
+        renderHeadlineMessage(currentMsg, narrativeState.currentIndex);
 
         if (headlineEl && !prefersReducedMotion) {
-            headlineEl.style.transition = 'opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+            headlineEl.style.transition = 'opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
             headlineEl.style.opacity = '1';
             headlineEl.style.transform = 'translateY(0)';
         }
@@ -176,32 +203,32 @@
         setTimeout(function() {
             if (!narrativeState.isRunning || narrativeState.isPaused) return;
             animateChartGrowth();
-        }, isInitial ? 350 : 250);
+        }, isInitial ? 300 : 200);
 
-        // 3. Se usuário prefere redução de movimento, mantém estático com intervalo lento
+        // 3. Se usuário prefere redução de movimento, troca estática lenta
         if (prefersReducedMotion) {
             narrativeState.timerId = setTimeout(function() {
                 narrativeState.currentIndex = (narrativeState.currentIndex + 1) % NARRATIVE_MESSAGES.length;
                 runNarrativeCycle(false);
-            }, 8000);
+            }, 6000);
             return;
         }
 
-        // 4. Pausa de leitura no pico -> Saída suave da frase
+        // 4. Pausa de 2.5s no ápice (com tudo estático) -> Saída suave da frase aos 4.5s
         setTimeout(function() {
             if (!narrativeState.isRunning || narrativeState.isPaused) return;
             if (headlineEl) {
-                headlineEl.style.transition = 'opacity 0.45s ease, transform 0.45s ease';
+                headlineEl.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
                 headlineEl.style.opacity = '0';
                 headlineEl.style.transform = 'translateY(-6px)';
             }
-        }, 5400);
+        }, 4500);
 
         // 5. Reset suave do gráfico
         setTimeout(function() {
             if (!narrativeState.isRunning || narrativeState.isPaused) return;
             animateChartReset();
-        }, 5800);
+        }, 4750);
 
         // 6. Preparação e Entrada da Nova Frase
         setTimeout(function() {
@@ -209,38 +236,37 @@
 
             narrativeState.currentIndex = (narrativeState.currentIndex + 1) % NARRATIVE_MESSAGES.length;
             var nextMsg = NARRATIVE_MESSAGES[narrativeState.currentIndex];
-            renderHeadlineMessage(nextMsg);
+            renderHeadlineMessage(nextMsg, narrativeState.currentIndex);
 
             if (headlineEl) {
                 headlineEl.style.transition = 'none';
                 headlineEl.style.opacity = '0';
-                headlineEl.style.transform = 'translateY(6px)';
+                headlineEl.style.transform = 'translateY(8px)';
 
-                // Força reflow para aplicar a transição
-                void headlineEl.offsetWidth;
+                void headlineEl.offsetWidth; // Força reflow
 
-                headlineEl.style.transition = 'opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+                headlineEl.style.transition = 'opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
                 headlineEl.style.opacity = '1';
                 headlineEl.style.transform = 'translateY(0)';
             }
-        }, 6600);
+        }, 5100);
 
         // 7. Disparo do próximo ciclo
         narrativeState.timerId = setTimeout(function() {
             runNarrativeCycle(false);
-        }, 7400);
+        }, 5500);
     }
 
     /**
-     * Inicia o motor narrativo garantindo instância única
+     * Inicia o motor
      */
     function startNarrativeEngine() {
         var loginScreen = document.getElementById('login-screen');
         if (loginScreen && (loginScreen.style.display === 'none' || loginScreen.classList.contains('hidden'))) {
-            return; // Não inicia se o usuário já estiver autenticado no dashboard
+            return;
         }
 
-        stopNarrativeEngine(); // Limpa timers anteriores
+        stopNarrativeEngine();
 
         narrativeState.isRunning = true;
         narrativeState.isPaused = false;
@@ -250,7 +276,7 @@
     }
 
     /**
-     * Interrompe o motor narrativo e limpa todos os timers e requestAnimationFrames
+     * Interrompe o motor e limpa timers e RAFs
      */
     function stopNarrativeEngine() {
         narrativeState.isRunning = false;
@@ -269,7 +295,7 @@
     }
 
     /**
-     * Gerenciamento de Ciclo de Vida e Visibilidade da Aba (Performance)
+     * Listener de Visibilidade de Aba (Performance)
      */
     function initVisibilityListener() {
         document.addEventListener('visibilitychange', function() {
@@ -290,7 +316,7 @@
     }
 
     /**
-     * Microinterações de Senha (Mostrar/Ocultar)
+     * Toggle de Senha com microanimação de scale
      */
     function initPasswordToggle() {
         var btnToggle = document.getElementById('btn-toggle-login-password');
