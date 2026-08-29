@@ -1,44 +1,50 @@
 /* =========================================================================
-   IDEB NA PRÁTICA — REFINAMENTO VISUAL PREMIUM DA TELA DE LOGIN
-   Tokens de Design, Gradient Mesh, GPU-Friendly Animations & Microinteractions
+   IDEB NA PRÁTICA — REFINAMENTO VISUAL PREMIUM DA TELA DE LOGIN (FINAL)
+   Design System Oficial: Tokens Técnicos, Timeline de Abertura em 2 Trilhas,
+   Gradient Mesh + Partículas, Coreografia do Gráfico & Microinterações
    ========================================================================= */
 
 /* -------------------------------------------------------------------------
-   1. PALETA E TOKENS DE DESIGN
+   1. TOKENS DE DESIGN (CONFORME SEÇÃO 1 DO COMANDO)
    ------------------------------------------------------------------------- */
 :root {
-    /* Painel escuro (institucional) */
+    /* Painel esquerdo (institucional) */
     --panel-dark-bg-start: #0B1424;
     --panel-dark-bg-mid:   #0F1D33;
     --panel-dark-bg-end:   #16283F;
 
-    /* Painel claro (formulário) */
-    --panel-light-bg: #E7E9EE;
+    /* Painel direito (formulário) */
+    --panel-light-bg:      #E7E9EE;
+    --panel-light-bg-soft: #F4F6F9;
 
     /* Marca */
-    --brand-accent-green: #22C55E;
+    --brand-accent-green:      #22C55E;
     --brand-accent-green-glow: rgba(34, 197, 94, 0.35);
-    --brand-blue: #2F6FED;
-    --brand-blue-dark: #1E3A8A;
+    --brand-blue:              #2F6FED;
+    --brand-blue-hover:        #3E7DFA;
+    --brand-blue-dark:         #1E3A8A;
+    --brand-red-error:         #EF4444;
+    --brand-red-error-glow:    rgba(239, 68, 68, 0.15);
 
     /* Texto */
-    --text-on-dark-primary: #F8FAFC;
-    --text-on-dark-secondary: #94A3B8;
-    --text-on-light-primary: #0F172A;
+    --text-on-dark-primary:    #F8FAFC;
+    --text-on-dark-secondary:  #94A3B8;
+    --text-on-light-primary:   #0F172A;
     --text-on-light-secondary: #64748B;
 
     /* Superfícies */
-    --card-bg: #FFFFFF;
-    --card-shadow: 0 20px 60px -15px rgba(15, 23, 42, 0.25);
+    --card-bg:            #FFFFFF;
+    --card-shadow:        0 20px 60px -15px rgba(15, 23, 42, 0.25);
     --card-shadow-accent: 0 20px 60px -20px var(--brand-accent-green-glow);
 
     /* Timing */
-    --ease-premium: cubic-bezier(0.16, 1, 0.3, 1); /* saída suave, entrada rápida */
-    --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
-    --duration-fast: 200ms;
-    --duration-base: 400ms;
-    --duration-slow: 900ms;
-    --duration-ambient: 6000ms; /* fundo, respiração */
+    --ease-premium:     cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-soft:        cubic-bezier(0.4, 0, 0.2, 1);
+    --duration-micro:   150ms;   /* foco de input, hover simples */
+    --duration-fast:    250ms;   /* transições de estado curtas */
+    --duration-base:    400ms;   /* entradas de elementos */
+    --duration-slow:    800ms;   /* entrada do card, headline */
+    --duration-ambient: 6000ms;  /* respiração de fundo, glow contínuo */
 }
 
 /* -------------------------------------------------------------------------
@@ -84,7 +90,7 @@
 }
 
 /* -------------------------------------------------------------------------
-   3. PAINEL ESQUERDO — GRADIENT MESH ANIMADO & DOT-GRID
+   3. PAINEL ESQUERDO — GRADIENT MESH, DOT-GRID & 8 PARTÍCULAS (TRILHA A)
    ------------------------------------------------------------------------- */
 .login-left-panel {
     position: relative;
@@ -110,7 +116,7 @@
     overflow: hidden;
 }
 
-/* 3 Blobs Radiais com Animação Desincronizada */
+/* 3 Blobs Radiais com Animação Desincronizada (12-18s) */
 .mesh-blob {
     position: absolute;
     border-radius: 50%;
@@ -163,7 +169,7 @@
     100% { transform: translate(-16px, -12px) scale(1.04); }
 }
 
-/* Textura de Pontos (Dot-Grid) para Profundidade Tátil */
+/* Textura de Pontos (Dot-Grid) com Opacidade de 0.04 */
 .mesh-dot-grid {
     position: absolute;
     inset: 0;
@@ -173,7 +179,7 @@
     pointer-events: none;
 }
 
-/* Glow Desfocado na Borda com Pulsação Lenta */
+/* Glow Desfocado na Borda */
 .mesh-glow-edge {
     position: absolute;
     top: 25%;
@@ -192,8 +198,45 @@
     100% { transform: scale(1); opacity: 0.6; }
 }
 
+/* 8 Partículas Sutis (GPU Transform, Opacidade 0.15-0.35) */
+.mesh-particle {
+    position: absolute;
+    border-radius: 50%;
+    background: #FFFFFF;
+    pointer-events: none;
+    opacity: 0.2;
+    will-change: transform, opacity;
+}
+
+.mesh-particle.p1 { width: 3px; height: 3px; top: 20%; left: 25%; animation: particleFloat1 11s ease-in-out 400ms infinite alternate; }
+.mesh-particle.p2 { width: 4px; height: 4px; top: 45%; left: 75%; background: var(--brand-accent-green); box-shadow: 0 0 6px var(--brand-accent-green); animation: particleFloat2 14s ease-in-out 1s infinite alternate; }
+.mesh-particle.p3 { width: 2.5px; height: 2.5px; top: 70%; left: 35%; animation: particleFloat3 12s ease-in-out 2s infinite alternate; }
+.mesh-particle.p4 { width: 4px; height: 4px; top: 15%; left: 65%; background: var(--brand-blue); box-shadow: 0 0 6px var(--brand-blue); animation: particleFloat1 16s ease-in-out 3s infinite alternate; }
+.mesh-particle.p5 { width: 3px; height: 3px; top: 85%; left: 80%; animation: particleFloat2 13s ease-in-out 1.5s infinite alternate; }
+.mesh-particle.p6 { width: 2px; height: 2px; top: 35%; left: 15%; animation: particleFloat3 15s ease-in-out 4s infinite alternate; }
+.mesh-particle.p7 { width: 3.5px; height: 3.5px; top: 60%; left: 60%; background: var(--brand-accent-green); box-shadow: 0 0 4px var(--brand-accent-green); animation: particleFloat1 17s ease-in-out 2.5s infinite alternate; }
+.mesh-particle.p8 { width: 2px; height: 2px; top: 80%; left: 20%; animation: particleFloat2 10s ease-in-out 5s infinite alternate; }
+
+@keyframes particleFloat1 {
+    0% { transform: translate(0, 0); opacity: 0.15; }
+    50% { opacity: 0.35; }
+    100% { transform: translate(12px, -18px); opacity: 0.15; }
+}
+
+@keyframes particleFloat2 {
+    0% { transform: translate(0, 0); opacity: 0.2; }
+    50% { opacity: 0.35; }
+    100% { transform: translate(-15px, 14px); opacity: 0.18; }
+}
+
+@keyframes particleFloat3 {
+    0% { transform: translate(0, 0); opacity: 0.15; }
+    50% { opacity: 0.30; }
+    100% { transform: translate(10px, 15px); opacity: 0.12; }
+}
+
 /* -------------------------------------------------------------------------
-   4. CURVA CENTRAL ORGÂNICA COM CONECTOR PULSANTE
+   4. CURVA CENTRAL ORGÂNICA COM PONTO DE LUZ SUTIL
    ------------------------------------------------------------------------- */
 .login-curve-divider {
     position: absolute;
@@ -221,8 +264,29 @@
     100% { transform: scaleX(0.97) translateX(1px); }
 }
 
+.login-curve-divider::after {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: 4px;
+    width: 8px;
+    height: 40px;
+    background: radial-gradient(circle, rgba(47, 111, 237, 0.35) 0%, transparent 80%);
+    border-radius: 50%;
+    filter: blur(2px);
+    animation: curveLightSweep 7s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes curveLightSweep {
+    0% { top: -10%; opacity: 0; }
+    20% { opacity: 0.6; }
+    80% { opacity: 0.6; }
+    100% { top: 110%; opacity: 0; }
+}
+
 /* -------------------------------------------------------------------------
-   5. LOGO INSTITUCIONAL & CARROSSEL DE FRASES (3 FRASES)
+   5. LOGOTIPO & CARROSSEL DE FRASES (TRILHA A: 150ms & 300ms)
    ------------------------------------------------------------------------- */
 .login-left-panel .brand,
 .login-brand {
@@ -231,7 +295,18 @@
     gap: 12px;
     position: relative;
     z-index: 3;
-    animation: loginFadeDown var(--duration-base) var(--ease-premium) 0.1s both;
+    animation: logoEntrance var(--duration-base) var(--ease-premium) 150ms both;
+}
+
+@keyframes logoEntrance {
+    0% {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .login-left-panel .brand-mark,
@@ -283,7 +358,7 @@
     margin-top: 2px;
 }
 
-/* Container do Carrossel de 3 Frases (Estabilidade Zero-Shift) */
+/* Container do Carrossel de 3 Frases (Trilha A: 300ms) */
 .login-headline-wrapper {
     margin-top: clamp(8px, 1.6vh, 20px);
     margin-bottom: clamp(6px, 1.4vh, 14px);
@@ -294,6 +369,7 @@
     justify-content: center;
     position: relative;
     z-index: 3;
+    animation: loginFadeDown var(--duration-base) var(--ease-premium) 300ms both;
 }
 
 .login-left-panel .headline,
@@ -308,7 +384,7 @@
     position: relative;
     z-index: 3;
     color: var(--text-on-dark-primary);
-    transition: opacity var(--duration-base) var(--ease-premium), transform var(--duration-base) var(--ease-premium);
+    transition: opacity var(--duration-fast) ease, transform var(--duration-base) var(--ease-premium);
     will-change: opacity, transform;
 }
 
@@ -353,7 +429,7 @@
 }
 
 /* -------------------------------------------------------------------------
-   6. CARD DO GRÁFICO IDEB & COREOGRAFIA DE ANIMAÇÃO
+   6. CARD DO GRÁFICO IDEB & COREOGRAFIA (TRILHA A: 450ms, 600ms, 700ms)
    ------------------------------------------------------------------------- */
 .chart-card,
 .login-chart-card {
@@ -371,7 +447,7 @@
     position: relative;
     z-index: 3;
     color: var(--text-on-light-primary);
-    animation: loginFadeUp var(--duration-base) var(--ease-premium) 0.25s both;
+    animation: loginFadeUp var(--duration-base) var(--ease-premium) 450ms both;
     transition: transform var(--duration-fast) var(--ease-soft), box-shadow var(--duration-fast) var(--ease-soft), opacity var(--duration-fast) ease;
     will-change: transform, opacity;
 }
@@ -691,10 +767,10 @@
     position: relative;
     z-index: 3;
     overflow: hidden;
-    animation: loginFadeUp var(--duration-base) var(--ease-premium) 0.35s both;
+    animation: loginFadeUp var(--duration-base) var(--ease-premium) 480ms both;
 }
 
-/* Shimmer Único na Carga */
+/* Shimmer Único na Carga (1.4s) */
 .pill-note::after,
 .login-pill-note::after {
     content: '';
@@ -736,7 +812,7 @@
     align-items: center;
     position: relative;
     z-index: 3;
-    animation: loginFadeUp var(--duration-base) var(--ease-premium) 0.45s both;
+    animation: loginFadeUp var(--duration-base) var(--ease-premium) 520ms both;
 }
 
 .footer-logo-img,
@@ -755,10 +831,10 @@
 }
 
 /* -------------------------------------------------------------------------
-   7. PAINEL DIREITO — CARD DE LOGIN, FOCO MODERNO & MICROINTERAÇÕES
+   7. PAINEL DIREITO — TIMELINE TRILHA B & MICROINTERAÇÕES
    ------------------------------------------------------------------------- */
 .login-right-panel {
-    background: var(--panel-light-bg);
+    background: linear-gradient(180deg, var(--panel-light-bg-soft) 0%, var(--panel-light-bg) 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -771,7 +847,7 @@
     z-index: 2;
 }
 
-/* Chip "Gestão & Avaliação Pedagógica" (Aparece antes do Card) */
+/* Trilha B: 200ms — Selo "Gestão & Avaliação Pedagógica" */
 .badge-top,
 .login-badge-top {
     display: inline-flex;
@@ -786,7 +862,7 @@
     color: #334155;
     margin-bottom: clamp(10px, 1.8vh, 18px);
     box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.06);
-    animation: chipEntrance var(--duration-base) var(--ease-premium) 0.05s both;
+    animation: chipEntrance var(--duration-base) var(--ease-premium) 200ms both;
 }
 
 @keyframes chipEntrance {
@@ -807,7 +883,7 @@
     color: var(--brand-blue);
 }
 
-/* Card do Formulário com Sombra com Toque Verde (Conversa com o Painel Esquerdo) */
+/* Trilha B: 500ms — Card do Formulário com Sombra com Toque Verde */
 .card.login-form-container,
 .login-right-panel .card {
     width: 100%;
@@ -818,7 +894,7 @@
     padding: clamp(18px, 2.8vh, 28px) clamp(18px, 2.5vw, 26px);
     box-sizing: border-box;
     position: relative;
-    animation: loginCardEntrance var(--duration-slow) var(--ease-premium) 150ms both;
+    animation: loginCardEntrance var(--duration-slow) var(--ease-premium) 500ms both;
     transition: transform var(--duration-fast) var(--ease-soft), box-shadow var(--duration-fast) var(--ease-soft);
 }
 
@@ -838,6 +914,7 @@
     }
 }
 
+/* Trilha B: 700ms — Título */
 .login-right-panel .card h1,
 .login-card-title {
     font-family: var(--font-display, 'Lexend', sans-serif);
@@ -848,8 +925,10 @@
     letter-spacing: -0.02em;
     margin-bottom: 0;
     line-height: 1.2;
+    animation: loginFadeUp var(--duration-base) var(--ease-premium) 700ms both;
 }
 
+/* Trilha B: 800ms — Subtítulo */
 .login-right-panel .card .sub,
 .login-card-sub {
     text-align: center;
@@ -858,6 +937,7 @@
     margin-top: 4px;
     margin-bottom: 0;
     line-height: 1.4;
+    animation: loginFadeUp var(--duration-base) var(--ease-premium) 800ms both;
 }
 
 /* Formulário de Login */
@@ -865,16 +945,17 @@
     margin-top: clamp(12px, 1.8vh, 18px);
 }
 
+/* Trilha B: 850ms & 920ms — Campos de E-mail / Senha */
 .field,
 .login-field,
 .login-input-group {
     margin-top: clamp(10px, 1.6vh, 14px);
     position: relative;
-    animation: loginFadeUp var(--duration-base) var(--ease-premium) 0.2s both;
+    animation: loginFadeUp var(--duration-base) var(--ease-premium) 850ms both;
 }
 
 .field:nth-of-type(2) {
-    animation-delay: 0.28s;
+    animation-delay: 920ms;
 }
 
 .field svg.icon,
@@ -888,7 +969,7 @@
     height: 16px;
     color: #94A3B8;
     pointer-events: none;
-    transition: color var(--duration-fast) ease, transform var(--duration-fast) ease;
+    transition: color var(--duration-micro) ease, transform var(--duration-micro) ease;
 }
 
 /* Inputs com Foco Moderno em --brand-blue + Glow */
@@ -903,7 +984,7 @@
     color: var(--text-on-light-primary);
     outline: none;
     background-color: #F8FAFC;
-    transition: border-color var(--duration-fast) ease, box-shadow var(--duration-fast) ease, background-color var(--duration-fast) ease;
+    transition: border-color var(--duration-micro) var(--ease-soft), box-shadow var(--duration-micro) var(--ease-soft), background-color var(--duration-micro) var(--ease-soft);
     box-sizing: border-box;
 }
 
@@ -941,7 +1022,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 6px;
-    transition: color var(--duration-fast) ease, background-color var(--duration-fast) ease, transform var(--duration-fast) var(--ease-soft);
+    transition: color var(--duration-micro) ease, background-color var(--duration-micro) ease, transform var(--duration-micro) var(--ease-soft);
 }
 
 .field .eye:hover,
@@ -961,7 +1042,7 @@
     height: 16px;
 }
 
-/* Opções: Lembrar-me e Esqueci a Senha */
+/* Trilha B: 1000ms — Lembrar-me e Esqueci a Senha */
 .row-between,
 .login-row-between,
 .login-options-row {
@@ -970,7 +1051,7 @@
     justify-content: space-between;
     margin-top: clamp(10px, 1.5vh, 14px);
     font-size: clamp(11.5px, 1.3vh, 12.5px);
-    animation: loginFadeUp var(--duration-base) var(--ease-premium) 0.35s both;
+    animation: loginFadeUp var(--duration-base) var(--ease-premium) 1000ms both;
 }
 
 .remember,
@@ -983,7 +1064,7 @@
     font-weight: 600;
     cursor: pointer;
     user-select: none;
-    transition: color var(--duration-fast) ease;
+    transition: color var(--duration-micro) ease;
 }
 
 .remember:hover {
@@ -997,6 +1078,12 @@
     height: 15px;
     border-radius: 4px;
     cursor: pointer;
+    transition: transform var(--duration-micro) var(--ease-soft);
+}
+
+.remember input:active,
+.login-checkbox-label input:active {
+    transform: scale(0.8);
 }
 
 .row-between a,
@@ -1006,16 +1093,17 @@
     text-decoration: none;
     font-size: clamp(11.5px, 1.3vh, 12.5px);
     position: relative;
-    transition: color var(--duration-fast) ease;
+    transition: color var(--duration-micro) ease, transform var(--duration-micro) var(--ease-soft);
 }
 
 .row-between a:hover,
 .login-forgot-link:hover {
     color: var(--brand-blue-dark);
     text-decoration: underline;
+    transform: translateX(1.5px);
 }
 
-/* Botão de Login Primário com Hover e Deslizamento da Seta */
+/* Trilha B: 1100ms — Botão de Login Primário */
 .btn-primary.btn-login-primary,
 .btn-primary {
     margin-top: clamp(14px, 2vh, 18px);
@@ -1036,19 +1124,19 @@
     position: relative;
     overflow: hidden;
     box-shadow: 0 5px 15px -2px rgba(15, 29, 46, 0.35);
-    transition: filter var(--duration-fast) var(--ease-soft), transform var(--duration-fast) var(--ease-soft), box-shadow var(--duration-fast) var(--ease-soft);
-    animation: loginFadeUp var(--duration-base) var(--ease-premium) 0.42s both;
+    transition: background var(--duration-micro) var(--ease-soft), filter var(--duration-micro) var(--ease-soft), transform var(--duration-micro) var(--ease-soft), box-shadow var(--duration-micro) var(--ease-soft);
+    animation: loginFadeUp var(--duration-base) var(--ease-premium) 1100ms both;
 }
 
 .btn-primary.btn-login-primary:hover:not(:disabled) {
-    filter: brightness(1.05);
-    box-shadow: 0 8px 22px -2px rgba(15, 29, 46, 0.45);
+    background: var(--brand-blue-hover);
+    box-shadow: 0 8px 22px -2px rgba(47, 111, 237, 0.45);
     transform: translateY(-1px);
 }
 
 .btn-primary.btn-login-primary:active:not(:disabled) {
     transform: scale(0.98);
-    transition: transform var(--duration-fast);
+    transition: transform var(--duration-micro);
 }
 
 .btn-primary.btn-login-primary:disabled {
@@ -1060,14 +1148,14 @@
 .btn-primary svg {
     width: 15px;
     height: 15px;
-    transition: transform var(--duration-fast) var(--ease-soft);
+    transition: transform var(--duration-micro) var(--ease-soft);
 }
 
 .btn-primary:hover:not(:disabled) svg {
     transform: translateX(4px);
 }
 
-/* Selo "Ambiente Seguro" com Ícone Verde e Pulso a cada 8s */
+/* Trilha B: 1200ms — Selo "Ambiente Seguro" com Pulso a cada 8s */
 .secure,
 .login-secure-badge {
     margin-top: clamp(12px, 1.6vh, 16px);
@@ -1078,7 +1166,7 @@
     font-size: clamp(10.5px, 1.3vh, 11.5px);
     color: var(--text-on-light-secondary);
     font-weight: 600;
-    animation: loginFadeUp var(--duration-base) var(--ease-premium) 0.5s both;
+    animation: loginFadeUp var(--duration-base) var(--ease-premium) 1200ms both;
 }
 
 .secure svg,
@@ -1102,7 +1190,7 @@
     font-size: clamp(10.5px, 1.2vh, 11.5px);
     color: var(--text-on-light-secondary);
     line-height: 1.45;
-    animation: loginFadeUp var(--duration-base) var(--ease-premium) 0.58s both;
+    animation: loginFadeUp var(--duration-base) var(--ease-premium) 1250ms both;
 }
 
 .copy-author {
@@ -1126,7 +1214,7 @@
 }
 
 /* -------------------------------------------------------------------------
-   8. ALERTAS E ESTADOS DE ERRO
+   8. ALERTAS E ESTADOS DE ERRO (SEÇÃO 13 — SHAKE SUTIL NO CAMPO)
    ------------------------------------------------------------------------- */
 .login-error-alert {
     display: flex;
@@ -1139,22 +1227,21 @@
     margin-bottom: 12px;
     color: #991B1B;
     font-size: 12px;
-    animation: alertShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    animation: alertShake var(--duration-fast) cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
 @keyframes alertShake {
     0%, 100% { transform: translateX(0); }
-    15% { transform: translateX(-5px); }
-    30% { transform: translateX(4px); }
-    45% { transform: translateX(-3px); }
-    60% { transform: translateX(2px); }
-    75% { transform: translateX(-1px); }
+    20% { transform: translateX(-3px); }
+    40% { transform: translateX(3px); }
+    60% { transform: translateX(-2px); }
+    80% { transform: translateX(2px); }
 }
 
 .login-error-alert svg {
     flex-shrink: 0;
     margin-top: 1px;
-    color: #DC2626;
+    color: var(--brand-red-error);
 }
 
 .login-error-content {
@@ -1174,7 +1261,7 @@
     background: none;
     border: none;
     padding: 0;
-    color: #DC2626;
+    color: var(--brand-red-error);
     font-size: 11.5px;
     font-weight: 700;
     text-decoration: underline;
@@ -1187,10 +1274,19 @@
     color: #7F1D1D;
 }
 
+/* Campo com Erro (Shake Sutil de Atenção <= 4px) */
 .login-input-field.input-error {
-    border-color: #EF4444 !important;
+    border-color: var(--brand-red-error) !important;
     background-color: #FFF5F5 !important;
-    box-shadow: 0 0 0 3.5px rgba(239, 68, 68, 0.15) !important;
+    box-shadow: 0 0 0 3.5px var(--brand-red-error-glow) !important;
+    animation: fieldShake var(--duration-fast) cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes fieldShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    50% { transform: translateX(3px); }
+    75% { transform: translateX(-2px); }
 }
 
 /* -------------------------------------------------------------------------
@@ -1397,12 +1493,14 @@
     }
     
     .login-curve-divider svg,
+    .login-curve-divider::after,
     .goal-line::before,
     .bar-radar-beacon .beacon-ring,
     .bar-radar-beacon .beacon-core,
     .bar-shimmer,
     .mesh-blob,
-    .mesh-glow-edge {
+    .mesh-glow-edge,
+    .mesh-particle {
         animation: none !important;
     }
     

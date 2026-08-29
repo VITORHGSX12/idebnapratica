@@ -199,11 +199,11 @@
             headlineEl.style.transform = 'translateY(0)';
         }
 
-        // 2. Crescimento do Gráfico
+        // 2. Crescimento do Gráfico (Trilha A: 600ms na abertura)
         setTimeout(function() {
             if (!narrativeState.isRunning || narrativeState.isPaused) return;
             animateChartGrowth();
-        }, isInitial ? 300 : 200);
+        }, isInitial ? 600 : 200);
 
         // 3. Se usuário prefere redução de movimento, troca estática lenta
         if (prefersReducedMotion) {
