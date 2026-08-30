@@ -327,7 +327,6 @@
 
     function abrirNovoEventoWizard() {
         wizardEditingEventId = null;
-        wizardCurrentStep = 1;
         
         var panelEvents = document.getElementById('panel-created-events');
         var panelWizard = document.getElementById('panel-new-event-wizard');
@@ -345,7 +344,16 @@
         populateWizardSchools();
         populateWizardClasses();
         initStageChips();
-        renderWizardStep(1);
+
+        if (global.selectedItemsForWizard && global.selectedItemsForWizard.length > 0) {
+            if (numQEl) numQEl.value = global.selectedItemsForWizard.length.toString();
+            if (titleEl) titleEl.value = 'Simulado Especial — Itens Selecionados (' + global.selectedItemsForWizard.length + ' Itens)';
+            wizardCurrentStep = 2;
+            renderWizardStep(2);
+        } else {
+            wizardCurrentStep = 1;
+            renderWizardStep(1);
+        }
     }
 
     function abrirEditarEventoWizard(eventoId) {
@@ -477,13 +485,23 @@
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; max-height: 420px; overflow-y: auto; padding: 4px;">
                 ${Array.from({ length: numQuestions }).map(function(_, idx) {
                     var qNum = idx + 1;
-                    var defaultLetter = optionsLetters[idx % 4];
+                    var selectedQ = (global.selectedItemsForWizard && global.selectedItemsForWizard[idx]) ? global.selectedItemsForWizard[idx] : null;
+
+                    var defaultLetter = selectedQ ? (selectedQ.gabarito || selectedQ.opcoes?.find(o => o.correta)?.letra || 'A') : optionsLetters[idx % 4];
                     
                     // Se for mista, metade é português e metade é matemática
                     var isItemMat = isMatematica || (isMista && qNum > Math.floor(numQuestions / 2));
                     var currentHabList = isItemMat ? habMat : habPort;
-                    var disciplineTag = isItemMat ? 'MAT' : 'LP';
-                    var defaultHab = currentHabList[idx % currentHabList.length] ? currentHabList[idx % currentHabList.length].codigo : (isItemMat ? 'MT01' : 'LP01');
+                    var disciplineTag = selectedQ ? (selectedQ.disciplina?.toUpperCase().includes('MAT') ? 'MAT' : 'LP') : (isItemMat ? 'MAT' : 'LP');
+                    var defaultHab = selectedQ ? (selectedQ.codigo_bncc || 'D01') : (currentHabList[idx % currentHabList.length] ? currentHabList[idx % currentHabList.length].codigo : (isItemMat ? 'MT01' : 'LP01'));
+
+                    var snippetHtml = selectedQ ? `
+                        <div style="margin-top: 6px; padding: 6px 8px; background: var(--color-surface-subtle); border-radius: 4px; border-left: 2px solid var(--color-brand-primary);">
+                            <p style="margin: 0; font-size: 10px; color: var(--color-text-primary); line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                                <strong>Item importado:</strong> ${selectedQ.enunciado.replace(/<[^>]*>?/gm, '')}
+                            </p>
+                        </div>
+                    ` : '';
 
                     return `
                         <div class="card" style="background: var(--color-surface-card); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); padding: 12px; box-shadow: var(--shadow-subtle);">
@@ -502,10 +520,12 @@
                                 <label style="font-size: 10px; color: var(--color-text-secondary); display: block; margin-bottom: 2px;">Descritor SAEB Associado</label>
                                 <select id="gab-hab-${qNum}" style="width: 100%; font-size: 11px; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--color-border-subtle);">
                                     ${currentHabList.map(function(h) {
-                                        return `<option value="${h.codigo}" ${h.codigo === defaultHab ? 'selected' : ''}>${h.codigo} - ${h.nome}</option>`;
+                                        return `<option value="${h.codigo}" ${h.codigo === defaultHab || defaultHab.includes(h.codigo) ? 'selected' : ''}>${h.codigo} - ${h.nome}</option>`;
                                     }).join('')}
+                                    ${selectedQ && !currentHabList.some(h => defaultHab.includes(h.codigo)) ? `<option value="${defaultHab}" selected>${defaultHab}</option>` : ''}
                                 </select>
                             </div>
+                            ${snippetHtml}
                         </div>
                     `;
                 }).join('')}
@@ -812,6 +832,7 @@
     global.handleReabrirEvento = handleReabrirEvento;
     global.handleExcluirEvento = handleExcluirEvento;
     global.abrirNovoEventoWizard = abrirNovoEventoWizard;
+    global.showNewEventWizard = abrirNovoEventoWizard;
     global.abrirEditarEventoWizard = abrirEditarEventoWizard;
     global.fecharWizardEventos = fecharWizardEventos;
     global.renderWizardStep = renderWizardStep;

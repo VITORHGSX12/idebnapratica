@@ -189,6 +189,7 @@
                 if (typeof global.renderEventsListForPrinting === 'function') global.renderEventsListForPrinting();
             } else if (resolvedId === 'banco-questoes') {
                 if (typeof global.renderQuestions === 'function') global.renderQuestions();
+                if (typeof global.initQuestionsListModule === 'function') global.initQuestionsListModule();
             } else if (resolvedId === 'relatorios-monitoramento') {
                 if (typeof global.runDiagnosticoCalculation === 'function') global.runDiagnosticoCalculation();
                 if (typeof global.renderAiGenDescriptors === 'function') global.renderAiGenDescriptors();

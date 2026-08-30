@@ -134,7 +134,11 @@
 
             card.innerHTML = [
                 '<div class="question-header flex-between flex-wrap gap-sm" style="margin-bottom: 12px; display:flex; justify-content:space-between; align-items:center;">',
-                '    <div class="question-badges" style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">',
+                '    <div class="question-badges" style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">',
+                '        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.75rem; font-weight:700; color:var(--purple-light); background:rgba(139,92,246,0.1); padding:2px 8px; border-radius:4px; border:1px solid rgba(139,92,246,0.3);">',
+                '            <input type="checkbox" class="select-q-item-check" data-id="' + q.id + '" style="cursor:pointer; accent-color:var(--purple);" checked />',
+                '            <span>Selecionar Item</span>',
+                '        </label>',
                 '        <span class="badge badge-purple" style="font-weight:700;">' + (q.codigo_bncc || 'BNCC') + '</span>',
                 '        <span class="badge badge-info">' + q.disciplina + '</span>',
                 '        <span class="badge badge-outline">' + (q.etapa || '5º Ano') + '</span>',
@@ -225,10 +229,42 @@
         var btnOpenCreateExam = document.getElementById('btn-open-create-exam-from-q');
         if (btnOpenCreateExam) {
             btnOpenCreateExam.onclick = function() {
+                var checkedBoxes = document.querySelectorAll('.select-q-item-check:checked');
+                var selectedIds = Array.from(checkedBoxes).map(function(cb) { return cb.getAttribute('data-id'); });
+                
+                var selectedQuestions = (global.rawQuestions || []).filter(function(q) {
+                    return selectedIds.includes(q.id);
+                });
+
+                if (selectedQuestions.length === 0) {
+                    selectedQuestions = (global.rawQuestions || []).slice(0, 3);
+                }
+
+                global.selectedItemsForWizard = selectedQuestions;
+
                 if (typeof global.switchTab === 'function') global.switchTab('sec-criar-avaliacoes');
                 if (typeof global.switchAvaliacoesSubtab === 'function') global.switchAvaliacoesSubtab('criar-evento-sub');
                 if (typeof global.showNewEventWizard === 'function') global.showNewEventWizard();
-                if (typeof global.showToast === 'function') global.showToast('Transferindo questões do banco para o criador de avaliações...', 'layers');
+
+                var numQEl = document.getElementById('wizard-num-questions');
+                if (numQEl) {
+                    numQEl.value = selectedQuestions.length.toString();
+                }
+
+                var titleEl = document.getElementById('wizard-title');
+                if (titleEl && !titleEl.value) {
+                    titleEl.value = 'Simulado Especial — Banco de Questões (' + selectedQuestions.length + ' Itens)';
+                }
+
+                if (typeof global.goToWizardStep === 'function') {
+                    global.goToWizardStep(2);
+                } else if (typeof global.renderGabaritoMatrixStep2 === 'function') {
+                    global.renderGabaritoMatrixStep2();
+                }
+
+                if (typeof global.showToast === 'function') {
+                    global.showToast(selectedQuestions.length + ' questões transferidas com sucesso para o Wizard!', 'check-circle');
+                }
             };
         }
 

@@ -36,6 +36,28 @@ ALTER TABLE IF EXISTS public.opcoes_resposta ALTER COLUMN questao_id TYPE VARCHA
 ALTER TABLE IF EXISTS public.itens_avaliacao ALTER COLUMN questao_id TYPE VARCHAR(255);
 ALTER TABLE public.questoes ALTER COLUMN id TYPE VARCHAR(255);
 
+-- Recriar Foreign Keys com integridade referencial atualizada
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint WHERE conname = 'opcoes_resposta_questao_id_fkey'
+    ) THEN
+        ALTER TABLE public.opcoes_resposta 
+            ADD CONSTRAINT opcoes_resposta_questao_id_fkey 
+            FOREIGN KEY (questao_id) REFERENCES public.questoes(id) ON DELETE CASCADE;
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint WHERE conname = 'itens_avaliacao_questao_id_fkey'
+    ) THEN
+        ALTER TABLE public.itens_avaliacao 
+            ADD CONSTRAINT itens_avaliacao_questao_id_fkey 
+            FOREIGN KEY (questao_id) REFERENCES public.questoes(id) ON DELETE CASCADE;
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN NULL;
+END $$;
+
 -- 4. Adicionar colunas necessárias caso tabela tenha sido criada anteriormente
 ALTER TABLE public.questoes ADD COLUMN IF NOT EXISTS tenant_id VARCHAR(255) DEFAULT 'default';
 ALTER TABLE public.questoes ADD COLUMN IF NOT EXISTS matriz VARCHAR(50) NOT NULL DEFAULT 'SAEB';

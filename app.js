@@ -599,8 +599,9 @@ function initApp() {
             if (typeof initEspelhoSelectors === 'function') initEspelhoSelectors();
         } else if (targetTab === 'matriz-descritores') {
             if (typeof renderReferenceMatrix === 'function') renderReferenceMatrix();
-        } else if (targetTab === 'questions') {
+        } else if (targetTab === 'questions' || targetTab === 'banco-questoes') {
             if (typeof renderQuestions === 'function') renderQuestions();
+            if (typeof initQuestionsListModule === 'function') initQuestionsListModule();
             if (typeof populateQuestionCreatorDropdowns === 'function') populateQuestionCreatorDropdowns();
         } else if (targetTab === 'metas-ideb') {
             if (typeof populateIdebGoalsTable === 'function') populateIdebGoalsTable();
