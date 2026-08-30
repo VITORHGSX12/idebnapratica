@@ -13,10 +13,12 @@
 
     var simuladosChartInstance = null;
     var currentComponentFilter = 'geral'; // 'geral' | 'lp' | 'mat'
+    var currentEtapaFilter = 'todas'; // 'todas' | '2º Ano' | '5º Ano' | '9º Ano'
     var currentSortColumn = 'proficiencia';
     var currentSortDirection = 'desc'; // 'asc' | 'desc'
 
     var cachedApiData = null;
+    var cachedDescritores = [];
 
     /**
      * Extrai e calcula os dados consolidados de simulados de cada escola da rede
@@ -81,7 +83,7 @@
             return {
                 id: sch.id || ('esc_' + (index + 1)),
                 name: sch.name || sch.nome || 'Escola Municipal',
-                inep: sch.inep || sch.codigo_inep || '210450' + (index + 1),
+                inep: sch.inep || sch.codigo_inep || null,
                 zone: sch.zone || sch.localizacao || 'Sede Urbana',
                 simuladosCount: qtdSimuladosAplicados,
                 proficienciaGeral: Number(geral),
@@ -94,6 +96,54 @@
                 alunosCount: sch.alunosCount || 100
             };
         });
+    }
+
+    /**
+     * Renderiza os Descritores e Habilidades Críticas da Rede
+     */
+    function renderDescritoresCriticosRede(descritores) {
+        var container = document.getElementById('grid-descritores-criticos-rede');
+        if (!container) return;
+
+        if (!descritores || descritores.length === 0) {
+            container.innerHTML = `
+                <div style="grid-column: 1 / -1; padding: 20px; text-align: center; color: var(--color-text-secondary); font-size: 12px;">
+                    Nenhum descritor computado para a etapa selecionada.
+                </div>
+            `;
+            return;
+        }
+
+        var top10 = descritores.slice(0, 8);
+
+        container.innerHTML = top10.map(function(d) {
+            var badgeBg = d.acertoPercentual < 50 ? '#FEE2E2' : (d.acertoPercentual < 70 ? '#FEF3C7' : '#ECFDF5');
+            var badgeColor = d.acertoPercentual < 50 ? '#991B1B' : (d.acertoPercentual < 70 ? '#92400E' : '#065F46');
+            var barColor = d.acertoPercentual < 50 ? '#EF4444' : (d.acertoPercentual < 70 ? '#F59E0B' : '#10B981');
+
+            return `
+                <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+                        <div>
+                            <strong style="font-size: 13px; color: var(--text-primary);">${d.codigo}</strong>
+                            <span style="font-size: 10px; color: var(--text-secondary); display: block;">${d.componente}</span>
+                        </div>
+                        <span style="background: ${badgeBg}; color: ${badgeColor}; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">
+                            ${d.status}
+                        </span>
+                    </div>
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px;">
+                            <span style="color: var(--text-secondary);">Taxa de Acerto</span>
+                            <strong style="color: var(--text-primary);">${d.acertoPercentual}%</strong>
+                        </div>
+                        <div style="width: 100%; height: 6px; background: rgba(0,0,0,0.08); border-radius: 9999px; overflow: hidden;">
+                            <div style="width: ${d.acertoPercentual}%; height: 100%; background: ${barColor}; border-radius: 9999px;"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
     }
 
     /**
@@ -379,13 +429,38 @@
     }
 
     /**
+     * Alterna o filtro de etapa de ensino (Todas, 2º Ano, 5º Ano, 9º Ano)
+     */
+    function handleEtapaFilterChange(etapa) {
+        currentEtapaFilter = etapa || 'todas';
+        cachedApiData = null;
+
+        var btns = document.querySelectorAll('.btn-filter-etapa-simulado');
+        btns.forEach(function(b) {
+            var e = b.getAttribute('data-etapa');
+            if (e === currentEtapaFilter) {
+                b.classList.add('active');
+                b.style.background = '#0A1931';
+                b.style.color = '#FFFFFF';
+            } else {
+                b.classList.remove('active');
+                b.style.background = 'transparent';
+                b.style.color = 'var(--color-text-secondary)';
+            }
+        });
+
+        renderDashboardSimuladosConsolidados();
+    }
+
+    /**
      * Função Master de Renderização da Seção com carregamento assíncrono do PostgreSQL
      */
     async function renderDashboardSimuladosConsolidados() {
         try {
             var token = localStorage.getItem('auth_token') || localStorage.getItem('token') || '';
             var headers = token ? { 'Authorization': 'Bearer ' + token } : {};
-            var res = await fetch('/api/simulados/dashboard/rede', { headers: headers });
+            var url = '/api/simulados/dashboard/rede' + (currentEtapaFilter !== 'todas' ? ('?etapa=' + encodeURIComponent(currentEtapaFilter)) : '');
+            var res = await fetch(url, { headers: headers });
             if (res.ok) {
                 var json = await res.json();
                 if (json && json.success) {
@@ -394,6 +469,7 @@
                     } else if (json.hasData === false) {
                         cachedApiData = [];
                     }
+                    cachedDescritores = json.descritoresCriticos || [];
                 }
             }
         } catch (e) {
@@ -415,11 +491,13 @@
 
         renderConsolidatedSimuladosChart(data);
         renderConsolidatedSimuladosTable(data);
+        renderDescritoresCriticosRede(cachedDescritores);
     }
 
     // Exposição Global
     global.renderDashboardSimuladosConsolidados = renderDashboardSimuladosConsolidados;
     global.handleSortSimuladosColumn = handleSortSimuladosColumn;
     global.handleComponentFilterChange = handleComponentFilterChange;
+    global.handleEtapaFilterChange = handleEtapaFilterChange;
 
 })(typeof window !== 'undefined' ? window : this);

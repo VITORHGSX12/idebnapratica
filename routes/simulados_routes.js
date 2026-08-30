@@ -559,8 +559,11 @@ router.get(['/simulados/dashboard/rede', '/api/simulados/dashboard/rede'], async
         const userEscola = (user && (user.escola_id || user.escola || user.schoolId) ? user.escola_id || user.escola || user.schoolId : '').toString().toLowerCase();
         const isRestricted = userEscola && !role.includes('MASTER') && !role.includes('ADMIN') && !role.includes('GESTOR') && !role.includes('SEMED') && !role.includes('COORDENADOR_GERAL');
 
+        const selectedEtapa = req.query.etapa || req.query.etapaId || 'todas';
+
         let schoolsAggregated = [];
         let eventosEvolucao = [];
+        let descritoresCriticos = [];
 
         if (!db.useLocalFallback) {
             let sql = `
@@ -587,7 +590,11 @@ router.get(['/simulados/dashboard/rede', '/api/simulados/dashboard/rede'], async
             const params = [];
             if (isRestricted) {
                 params.push(`%${userEscola}%`);
-                sql += ` AND (LOWER(r.escola_id) LIKE $1 OR LOWER(COALESCE(esc.nome, '')) LIKE $1)`;
+                sql += ` AND (LOWER(r.escola_id) LIKE $${params.length} OR LOWER(COALESCE(esc.nome, '')) LIKE $${params.length})`;
+            }
+            if (selectedEtapa && selectedEtapa !== 'todas') {
+                params.push(selectedEtapa);
+                sql += ` AND r.etapa = $${params.length}`;
             }
 
             sql += `
@@ -605,13 +612,43 @@ router.get(['/simulados/dashboard/rede', '/api/simulados/dashboard/rede'], async
                 FROM respostas_simulado r
                 JOIN eventos_simulados e ON r.evento_id = e.id
                 WHERE e.status = 'ENCERRADO'
+            `;
+            const histParams = [];
+            if (selectedEtapa && selectedEtapa !== 'todas') {
+                histParams.push(selectedEtapa);
+                historySql += ` AND r.etapa = $${histParams.length}`;
+            }
+            historySql += `
                 GROUP BY r.escola_id, e.id, e.data_realizacao
                 ORDER BY r.escola_id, e.data_realizacao DESC
             `;
 
-            const [queryRes, histRes] = await Promise.all([
+            // Consulta de descritores e itens para ranking crítico
+            let descSql = `
+                SELECT 
+                    r.respostas_json,
+                    r.gabarito_json,
+                    r.habilidades_json,
+                    r.status_presenca,
+                    r.etapa
+                FROM respostas_simulado r
+                JOIN eventos_simulados e ON r.evento_id = e.id
+                WHERE e.status = 'ENCERRADO'
+            `;
+            const descParams = [];
+            if (isRestricted) {
+                descParams.push(`%${userEscola}%`);
+                descSql += ` AND (LOWER(r.escola_id) LIKE $${descParams.length} OR LOWER(COALESCE(r.escola_id, '')) LIKE $${descParams.length})`;
+            }
+            if (selectedEtapa && selectedEtapa !== 'todas') {
+                descParams.push(selectedEtapa);
+                descSql += ` AND r.etapa = $${descParams.length}`;
+            }
+
+            const [queryRes, histRes, descRes] = await Promise.all([
                 db.query(sql, params),
-                db.query(historySql)
+                db.query(historySql, histParams),
+                db.query(descSql, descParams)
             ]);
 
             // Mapeia histórico de eventos por escola para calcular variação real
@@ -622,6 +659,58 @@ router.get(['/simulados/dashboard/rede', '/api/simulados/dashboard/rede'], async
                     historyBySchool[h.escola_id].push(parseFloat(h.proficiencia_evento) || 0);
                 });
             }
+
+            // Agregação de Descritores Críticos da Rede
+            const descritoresMap = {};
+            if (descRes && descRes.rows) {
+                descRes.rows.forEach(row => {
+                    if (row.status_presenca === 'PRESENTE') {
+                        const resp = Array.isArray(row.respostas_json) ? row.respostas_json : [];
+                        const gab = Array.isArray(row.gabarito_json) ? row.gabarito_json : [];
+                        const hab = Array.isArray(row.habilidades_json) ? row.habilidades_json : [];
+
+                        for (let i = 0; i < gab.length; i++) {
+                            const descCode = hab[i] || `Item ${i+1}`;
+                            if (!descritoresMap[descCode]) {
+                                descritoresMap[descCode] = {
+                                    codigo: descCode,
+                                    etapa: row.etapa || '5º Ano',
+                                    componente: (descCode.startsWith('LP') || descCode.startsWith('D0') || (descCode.startsWith('D1') && parseInt(descCode.slice(1)) <= 15)) ? 'Língua Portuguesa' : 'Matemática',
+                                    totalAvaliados: 0,
+                                    totalAcertos: 0
+                                };
+                            }
+                            descritoresMap[descCode].totalAvaliados++;
+                            if (resp[i] && resp[i].toUpperCase() === gab[i].toUpperCase()) {
+                                descritoresMap[descCode].totalAcertos++;
+                            }
+                        }
+                    }
+                });
+            }
+
+            descritoresCriticos = Object.values(descritoresMap).map(d => {
+                const perc = d.totalAvaliados > 0 ? Number(((d.totalAcertos / d.totalAvaliados) * 100).toFixed(1)) : 0.0;
+                let status = 'ADEQUADO';
+                let statusClass = 'badge-green';
+                if (perc < 50.0) {
+                    status = 'CRÍTICO';
+                    statusClass = 'badge-red';
+                } else if (perc < 70.0) {
+                    status = 'ATENÇÃO';
+                    statusClass = 'badge-orange';
+                }
+
+                return {
+                    codigo: d.codigo,
+                    etapa: d.etapa,
+                    componente: d.componente,
+                    acertoPercentual: perc,
+                    totalAvaliados: d.totalAvaliados,
+                    status: status,
+                    statusClass: statusClass
+                };
+            }).sort((a, b) => a.acertoPercentual - b.acertoPercentual);
 
             const schoolNameMap = {
                 'esc_01': { name: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS', inep: '21286973' },
@@ -694,6 +783,7 @@ router.get(['/simulados/dashboard/rede', '/api/simulados/dashboard/rede'], async
                     COUNT(DISTINCT r.aluno_id) as total_alunos
                 FROM respostas_simulado r
                 JOIN eventos_simulados e ON r.evento_id = e.id
+                WHERE e.status = 'ENCERRADO'
                 GROUP BY e.id, e.titulo, e.data_realizacao
                 ORDER BY e.data_realizacao ASC
             `);
@@ -707,7 +797,10 @@ router.get(['/simulados/dashboard/rede', '/api/simulados/dashboard/rede'], async
         res.json({
             success: true,
             hasData: hasRealData,
+            etapaSelecionada: selectedEtapa,
+            etapasDisponiveis: ['Todas', '2º Ano', '5º Ano', '9º Ano'],
             escolas: schoolsAggregated,
+            descritoresCriticos: descritoresCriticos,
             eventosEvolucao: eventosEvolucao,
             totalEscolasAvaliadas: schoolsAggregated.length,
             mediaRede: schoolsAggregated.length > 0 ? Number((schoolsAggregated.reduce((acc, s) => acc + s.proficienciaGeral, 0) / schoolsAggregated.length).toFixed(1)) : 0

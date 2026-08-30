@@ -1188,29 +1188,42 @@
                                         <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0;">Resultados Consolidados de Simulados por Escola (Rede Completa)</h3>
                                         <p class="card-subtitle" style="font-size: 0.82rem; color: var(--text-secondary); margin: 2px 0 0 0;">Consolidação das proficiências, taxas de adesão e evolução registradas nas avaliações diagnósticas municipais.</p>
                                     </div>
-                                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                                        <!-- Toggle de Componente Curricular -->
+                                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                        <!-- Seletor de Etapa de Ensino (Segmentação Pedagógica) -->
                                         <div style="display: flex; background: var(--bg-tertiary); padding: 3px; border-radius: 10px; gap: 3px; border: 1px solid var(--border-color);">
-                                            <button type="button" class="btn-filter-componente-simulado active" data-component="geral" onclick="handleComponentFilterChange('geral');" style="border: none; background: #4A7FA7; color: #FFFFFF; font-size: 11.5px; font-weight: 700; padding: 6px 12px; border-radius: 7px; cursor: pointer; transition: all 0.15s ease;">
-                                                Geral (Média)
+                                            <button type="button" class="btn-filter-etapa-simulado active" data-etapa="todas" onclick="handleEtapaFilterChange('todas');" style="border: none; background: #0A1931; color: #FFFFFF; font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 7px; cursor: pointer; transition: all 0.15s ease;">
+                                                Todas as Etapas
                                             </button>
-                                            <button type="button" class="btn-filter-componente-simulado" data-component="lp" onclick="handleComponentFilterChange('lp');" style="border: none; background: transparent; color: var(--color-text-secondary); font-size: 11.5px; font-weight: 700; padding: 6px 12px; border-radius: 7px; cursor: pointer; transition: all 0.15s ease;">
-                                                Língua Portuguesa
+                                            <button type="button" class="btn-filter-etapa-simulado" data-etapa="2º Ano" onclick="handleEtapaFilterChange('2º Ano');" style="border: none; background: transparent; color: var(--color-text-secondary); font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 7px; cursor: pointer; transition: all 0.15s ease;">
+                                                2º Ano
                                             </button>
-                                            <button type="button" class="btn-filter-componente-simulado" data-component="mat" onclick="handleComponentFilterChange('mat');" style="border: none; background: transparent; color: var(--color-text-secondary); font-size: 11.5px; font-weight: 700; padding: 6px 12px; border-radius: 7px; cursor: pointer; transition: all 0.15s ease;">
-                                                Matemática
+                                            <button type="button" class="btn-filter-etapa-simulado" data-etapa="5º Ano" onclick="handleEtapaFilterChange('5º Ano');" style="border: none; background: transparent; color: var(--color-text-secondary); font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 7px; cursor: pointer; transition: all 0.15s ease;">
+                                                5º Ano
+                                            </button>
+                                            <button type="button" class="btn-filter-etapa-simulado" data-etapa="9º Ano" onclick="handleEtapaFilterChange('9º Ano');" style="border: none; background: transparent; color: var(--color-text-secondary); font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 7px; cursor: pointer; transition: all 0.15s ease;">
+                                                9º Ano
                                             </button>
                                         </div>
-                                        <button type="button" onclick="switchTab('escolas-panel');" class="btn btn-outline" style="font-size: 12px; font-weight: 700; color: #4A7FA7; border: 1px solid #4A7FA7; border-radius: 8px; padding: 7px 14px; background: transparent; cursor: pointer;">
-                                            Ver Todas as Escolas →
-                                        </button>
+
+                                        <!-- Toggle de Componente Curricular -->
+                                        <div style="display: flex; background: var(--bg-tertiary); padding: 3px; border-radius: 10px; gap: 3px; border: 1px solid var(--border-color);">
+                                            <button type="button" class="btn-filter-componente-simulado active" data-component="geral" onclick="handleComponentFilterChange('geral');" style="border: none; background: #4A7FA7; color: #FFFFFF; font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 7px; cursor: pointer; transition: all 0.15s ease;">
+                                                Geral (Média)
+                                            </button>
+                                            <button type="button" class="btn-filter-componente-simulado" data-component="lp" onclick="handleComponentFilterChange('lp');" style="border: none; background: transparent; color: var(--color-text-secondary); font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 7px; cursor: pointer; transition: all 0.15s ease;">
+                                                LP
+                                            </button>
+                                            <button type="button" class="btn-filter-componente-simulado" data-component="mat" onclick="handleComponentFilterChange('mat');" style="border: none; background: transparent; color: var(--color-text-secondary); font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 7px; cursor: pointer; transition: all 0.15s ease;">
+                                                MAT
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- Estado Vazio Elegante (Caso ainda não haja simulados concluídos) -->
                                 <div id="simulados-empty-state-banner" style="display: none; background: var(--bg-primary); border: 1px dashed var(--border-color); border-radius: var(--radius-md); padding: 42px 24px; text-align: center; margin-top: 15px;">
                                     <div style="font-size: 2.2rem; margin-bottom: 8px;">📊</div>
-                                    <h4 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0 0 6px 0;">Ainda não há simulados concluídos para consolidar</h4>
+                                    <h4 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0 0 6px 0;">Ainda não há simulados concluídos para consolidar nesta etapa</h4>
                                     <p style="font-size: 0.88rem; color: var(--text-secondary); max-width: 520px; margin: 0 auto 18px auto; line-height: 1.5;">
                                         Os dados analíticos e gráficos da rede serão gerados automaticamente conforme os simulados forem aplicados e tiverem seus status marcados como <strong>ENCERRADO</strong>.
                                     </p>
@@ -1239,6 +1252,24 @@
                                         </div>
                                         <div style="height: 280px; position: relative;">
                                             <canvas id="dashChartSimuladosConsolidados"></canvas>
+                                        </div>
+                                    </div>
+
+                                    <!-- Bloco de Descritores & Habilidades Críticas da Rede -->
+                                    <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; margin-bottom: 20px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                                            <div>
+                                                <span style="font-size: 12px; font-weight: 700; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.5px; display: block;">
+                                                    🎯 Descritores Críticos da Rede Municipal (Plano de Intervenção Pedagógica)
+                                                </span>
+                                                <span style="font-size: 11px; color: var(--text-secondary);">Habilidades BNCC/SAEB que demandam reforço imediato na etapa selecionada.</span>
+                                            </div>
+                                            <span class="badge" style="background: rgba(239, 68, 68, 0.15); color: #DC2626; border: 1px solid #FCA5A5; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px;">
+                                                Abaixo de 50% = Crítico
+                                            </span>
+                                        </div>
+                                        <div id="grid-descritores-criticos-rede" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;">
+                                            <!-- Injetado dinamicamente via renderDescritoresCriticosRede() -->
                                         </div>
                                     </div>
 
