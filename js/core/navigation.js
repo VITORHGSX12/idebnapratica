@@ -20,8 +20,8 @@
         'cronograma-habilidades': 'cronograma-habilidades',
         'sec-criar-avaliacoes': 'sec-criar-avaliacoes',
         'criar-avaliacoes': 'sec-criar-avaliacoes',
-        'sec-aplicacao-provas': 'sec-aplicacao-provas',
-        'aplicacao-provas': 'sec-aplicacao-provas',
+        'sec-aplicacao-provas': 'sec-criar-avaliacoes',
+        'aplicacao-provas': 'sec-criar-avaliacoes',
         'banco-questoes': 'banco-questoes',
         'questions': 'banco-questoes',
         'relatorios-monitoramento': 'relatorios-monitoramento',
@@ -133,10 +133,25 @@
                 pageSubtitle.textContent = TAB_SUBTITLES[resolvedId] || TAB_SUBTITLES[safeTarget];
             }
 
+            var isAplicacaoProvas = (safeTarget === 'sec-aplicacao-provas' || safeTarget === 'aplicacao-provas');
+            var isCriarAvaliacoes = (safeTarget === 'sec-criar-avaliacoes' || safeTarget === 'criar-avaliacoes');
+
             var menuItems = document.querySelectorAll('.menu-item');
             menuItems.forEach(function(item) {
                 var dt = item.getAttribute('data-target');
-                if (dt === resolvedId || dt === safeTarget || TAB_MAP[dt] === resolvedId) {
+                if (isAplicacaoProvas) {
+                    if (dt === 'sec-aplicacao-provas' || dt === 'aplicacao-provas') {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                } else if (isCriarAvaliacoes) {
+                    if (dt === 'sec-criar-avaliacoes' || dt === 'criar-avaliacoes') {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                } else if (dt === resolvedId || dt === safeTarget) {
                     item.classList.add('active');
                 } else {
                     item.classList.remove('active');
@@ -144,7 +159,14 @@
             });
 
             // 4. Executar o renderizador sob demanda da aba selecionada
-            if (resolvedId === 'dashboard' || resolvedId === 'sec-dashboard') {
+            if (isAplicacaoProvas) {
+                if (typeof global.switchAvaliacoesSubtab === 'function') global.switchAvaliacoesSubtab('lancar-notas-sub');
+                if (typeof global.initEspelhoSelectors === 'function') global.initEspelhoSelectors();
+            } else if (isCriarAvaliacoes) {
+                if (typeof global.switchAvaliacoesSubtab === 'function') global.switchAvaliacoesSubtab('criar-evento-sub');
+                if (typeof global.populateWizardSchools === 'function') global.populateWizardSchools();
+                if (typeof global.renderEventosTable === 'function') global.renderEventosTable();
+            } else if (resolvedId === 'dashboard' || resolvedId === 'sec-dashboard') {
                 if (typeof global.renderDashboardComplete === 'function') global.renderDashboardComplete();
             } else if (resolvedId === 'escolas-panel') {
                 if (typeof global.renderDbSchools === 'function') global.renderDbSchools();

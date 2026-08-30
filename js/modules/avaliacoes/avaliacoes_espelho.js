@@ -26,11 +26,40 @@
         if (!evalSelect || !schoolSelect || !classSelect) return;
 
         var eventos = typeof global.getEventosState === 'function' ? global.getEventosState() : [];
+        var eventosAbertos = eventos.filter(function(e) { return (e.status || '').toUpperCase() === 'ABERTO'; });
+        
+        // Remove banner de aviso anterior se existir
+        var existingBanner = document.getElementById('espelho-empty-aberto-banner');
+        if (existingBanner) existingBanner.remove();
+
+        if (eventos.length === 0 || eventosAbertos.length === 0) {
+            var scoreCardBody = evalSelect.closest('.card-body');
+            if (scoreCardBody && !document.getElementById('espelho-empty-aberto-banner')) {
+                var banner = document.createElement('div');
+                banner.id = 'espelho-empty-aberto-banner';
+                banner.style.cssText = 'background: var(--bg-primary); border: 1px dashed var(--border-color); border-radius: var(--radius-md); padding: 32px 20px; text-align: center; margin-bottom: 20px;';
+                banner.innerHTML = `
+                    <div style="font-size: 2.2rem; margin-bottom: 8px;">📋</div>
+                    <h4 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0 0 6px 0;">Nenhuma avaliação aberta para lançamento no momento</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); max-width: 520px; margin: 0 auto 16px auto;">Não existem avaliações com status <strong>ABERTO</strong> para digitação de notas. Publique um evento existente ou crie uma nova avaliação para iniciar o lançamento.</p>
+                    <button type="button" onclick="switchTab('sec-criar-avaliacoes'); if(typeof switchAvaliacoesSubtab==='function') switchAvaliacoesSubtab('criar-evento-sub'); if(typeof window.showNewEventWizard==='function') window.showNewEventWizard();" class="btn btn-primary btn-sm" style="font-weight: 700;">
+                        + Criar Nova Avaliação / Abrir Evento
+                    </button>
+                `;
+                scoreCardBody.insertBefore(banner, scoreCardBody.firstChild);
+            }
+        }
+
         evalSelect.innerHTML = eventos.map(function(ev) {
-            return `<option value="${ev.id}">${ev.titulo} (${ev.status})</option>`;
+            var isAberto = (ev.status || '').toUpperCase() === 'ABERTO';
+            var prefix = isAberto ? '🟢 [ABERTO] ' : '🔒 [' + (ev.status || 'RASCUNHO') + '] ';
+            return `<option value="${ev.id}">${prefix}${ev.titulo}</option>`;
         }).join('');
 
-        if (eventos.length > 0) {
+        // Pré-seleciona prioritariamente o evento ABERTO mais recente
+        if (eventosAbertos.length > 0) {
+            evalSelect.value = eventosAbertos[0].id;
+        } else if (eventos.length > 0) {
             evalSelect.value = eventos[0].id;
         }
 
@@ -53,20 +82,41 @@
         var schoolSelect = document.getElementById('score-school-select');
         if (!schoolSelect) return;
 
-        var escolas = global.dbEscolas || [
+        var allEscolas = typeof global.getOfficialSchoolsState === 'function' ? global.getOfficialSchoolsState() : (global.dbEscolas || [
             { id: 'esc_01', nome: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS' },
             { id: 'esc_02', nome: 'U I BASILIO ALVES' },
             { id: 'esc_03', nome: 'UI JOSE CORREA LIMA' },
             { id: 'esc_04', nome: 'UE ANITA FURTADO' },
             { id: 'esc_05', nome: 'UI EMILIO MURAD' }
-        ];
+        ]);
 
-        schoolSelect.innerHTML = escolas.map(function(esc) {
-            return `<option value="${esc.id}">${esc.nome}</option>`;
+        // Validação de RBAC do usuário autenticado
+        var user = global.currentUser;
+        if (!user) {
+            try { user = JSON.parse(localStorage.getItem('user_session') || '{}'); } catch(e) {}
+        }
+        var role = (user && user.role ? user.role : '').toUpperCase();
+        var userEscola = (user && (user.escola_id || user.escola || user.schoolId) ? user.escola_id || user.escola || user.schoolId : '').toString().toLowerCase();
+
+        var filteredEscolas = allEscolas;
+        if (userEscola && !role.includes('ADMIN') && !role.includes('MASTER') && !role.includes('SEMED') && !role.includes('COORDENADOR_GERAL')) {
+            filteredEscolas = allEscolas.filter(function(esc) {
+                var escId = (esc.id || '').toString().toLowerCase();
+                var escNome = (esc.nome || '').toString().toLowerCase();
+                return escId.includes(userEscola) || userEscola.includes(escId) || escNome.includes(userEscola) || userEscola.includes(escNome);
+            });
+            if (filteredEscolas.length === 0) filteredEscolas = allEscolas;
+        }
+
+        schoolSelect.innerHTML = filteredEscolas.map(function(esc) {
+            var nome = esc.nome || esc.name || esc.escola || esc.id;
+            var id = esc.id || esc.codigo_inep || esc.inep || nome;
+            return `<option value="${id}">${nome}</option>`;
         }).join('');
 
-        if (escolas.length > 0) {
-            schoolSelect.value = escolas[0].id;
+        if (filteredEscolas.length > 0) {
+            var firstEsc = filteredEscolas[0];
+            schoolSelect.value = firstEsc.id || firstEsc.codigo_inep || firstEsc.inep || firstEsc.nome || firstEsc.name;
         }
 
         carregarTurmasParaEspelho();

@@ -593,9 +593,10 @@ function initApp() {
             if (typeof renderEventosTable === 'function') renderEventosTable();
             if (typeof populateWizardSchools === 'function') populateWizardSchools();
             if (typeof initAvaliacoesSubtabs === 'function') initAvaliacoesSubtabs();
+            if (typeof switchAvaliacoesSubtab === 'function') switchAvaliacoesSubtab('criar-evento-sub');
         } else if (targetTab === 'aplicacao-provas' || targetTab === 'sec-aplicacao-provas') {
-            if (typeof renderOngoingAssessments === 'function') renderOngoingAssessments();
-            if (typeof populateScoreSchoolSelect === 'function') populateScoreSchoolSelect();
+            if (typeof switchAvaliacoesSubtab === 'function') switchAvaliacoesSubtab('lancar-notas-sub');
+            if (typeof initEspelhoSelectors === 'function') initEspelhoSelectors();
         } else if (targetTab === 'matriz-descritores') {
             if (typeof renderReferenceMatrix === 'function') renderReferenceMatrix();
         } else if (targetTab === 'questions') {
