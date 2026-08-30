@@ -12,9 +12,9 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="stylesheet" href="design-tokens.css?v=20260828_slate_final">
-    <link rel="stylesheet" href="styles.css?v=20260828_slate_final">
-    <link rel="stylesheet" href="login-premium.css?v=20260828_slate_final">
+    <link rel="stylesheet" href="design-tokens.css?v=20260830_v2">
+    <link rel="stylesheet" href="styles.css?v=20260830_v2">
+    <link rel="stylesheet" href="login-premium.css?v=20260830_v2">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,12 +32,18 @@
     <script>
         (function() {
             try {
-                if (localStorage.getItem('theme_mode') === 'dark') {
+                if (window.location.search.includes('preview=sidebar')) {
+                    sessionStorage.setItem('authToken', 'preview_token');
+                    sessionStorage.setItem('userRole', 'Master Admin');
+                    sessionStorage.setItem('userName', 'Administrador TI / DPO');
+                }
+                if (window.location.search.includes('mode=light')) {
+                    document.documentElement.classList.remove('dark-mode');
+                    localStorage.setItem('theme_mode', 'light');
+                } else if (localStorage.getItem('theme_mode') === 'dark') {
                     document.documentElement.classList.add('dark-mode');
                     document.addEventListener('DOMContentLoaded', function() {
                         document.body.classList.add('dark-mode');
-                        var sw = document.getElementById('sidebar-theme-switch');
-                        if (sw) sw.checked = true;
                     });
                 }
                 if (localStorage.getItem('sidebar_collapsed') === 'true') {
@@ -46,6 +52,23 @@
                         document.body.classList.add('collapsed-sidebar');
                         var svg = document.getElementById('sidebar-toggle-svg');
                         if (svg) svg.style.transform = 'rotate(180deg)';
+                    });
+                }
+                if (window.location.search.includes('preview=sidebar')) {
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var loginScreen = document.getElementById('login-screen');
+                        var appContainer = document.querySelector('.app-container');
+                        if (loginScreen) {
+                            loginScreen.classList.add('hidden');
+                            loginScreen.style.display = 'none';
+                        }
+                        if (appContainer) {
+                            appContainer.style.display = 'flex';
+                        }
+                        setTimeout(function() {
+                            if (typeof window.updateUserHeaderUI === 'function') window.updateUserHeaderUI();
+                            if (typeof window.safeCreateIcons === 'function') window.safeCreateIcons();
+                        }, 50);
                     });
                 }
             } catch(e) {}
@@ -682,6 +705,9 @@
             </form>
         </div>
     </div>
+
+    <!-- Layout Principal com Sidebar -->
+    <div class="app-container">
         <!-- Sidebar Navigation (Refined Slate Redesign) -->
         <div id="mobile-sidebar-backdrop" class="mobile-sidebar-backdrop" onclick="toggleMobileSidebar();"></div>
         <aside class="sidebar" id="main-sidebar">
@@ -6954,6 +6980,8 @@
                 </div>
             </form>
         </div>
+    </div>
+        </main>
     </div>
 
     <!-- Script de Limpeza de Cache de Service Workers Antigos -->

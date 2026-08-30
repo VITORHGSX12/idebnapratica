@@ -1,54 +1,54 @@
 /* =========================================================================
-   DESIGN TOKENS INSTITUCIONAIS — NOVA PALETA OFICIAL EXECUTIVA
+   DESIGN TOKENS INSTITUCIONAIS — NOVA PALETA OFICIAL
    =========================================================================
    PALETA DEFINIDA:
-   - #1A2D42 : Azul-marinho mais escuro (Primária / Destaque / Header / Títulos / CTA / Ícones Ativos)
-   - #2E4156 : Azul acinzentado escuro (Secundária / Hover / Focus / Subtítulos / Botões secundários / Bordas ativas)
-   - #AAB7B7 : Cinza-azulado médio (Neutra intermediária / Textos secundários / Placeholders / Divisores / Bordas de inputs e cards)
-   - #C0C8CA : Cinza claro (Fundo suave de cards alternados / Backgrounds de inputs / Banners / Tags neutras)
-   - #D4D8DD : Cinza muito claro (Fundo base geral da página/app / Containers / Superfícies de maior área)
+   - #F6FAFD : Branco levemente azulado (Fundo geral / Canvas do sistema / Texto claro no dark mode)
+   - #0A1931 : Azul marinho escuro (Contraste máximo / Texto principal no modo claro / Fundo geral no dark mode)
+   - #1A3D63 : Azul marinho médio (Apoio escuro / Subtítulos e labels no modo claro / Cards e painéis no dark mode)
+   - #4A7FA7 : Azul médio (Cor de destaque e ação / Botões primários / Links / Ícones ativos / Badges)
+   - #B3CFE5 : Azul claro (Apoio suave / Fundos de cards / Hover / Divisores e bordas / Texto secundário no dark mode)
    ========================================================================= */
 
 :root {
     /* ---------------------------------------------------------------------
        1. SUPERFÍCIES E ESTRUTURA
        --------------------------------------------------------------------- */
-    --color-brand-primary:      #1A2D42; /* Azul-marinho mais escuro: Header, navbar, títulos principais, botões CTA */
-    --color-brand-secondary:    #2E4156; /* Azul acinzentado escuro: Subtítulos, botões secundários, bordas ativas */
-    --color-brand-subtle:       #2E4156; /* Elementos de suporte */
+    --color-brand-primary:      #4A7FA7; /* Azul médio: Ações primárias, links ativos, badges, destaque */
+    --color-brand-secondary:    #1A3D63; /* Azul marinho médio: Subtítulos, apoio escuro, bordas ativas */
+    --color-brand-subtle:       #1A3D63; /* Elementos de suporte */
     
-    --color-surface-canvas:     #D4D8DD; /* Cinza muito claro: Fundo base geral da aplicação e containers */
+    --color-surface-canvas:     #F6FAFD; /* Branco levemente azulado: Fundo base geral da aplicação e containers */
     --color-surface-card:       #FFFFFF; /* Superfície nítida de cartões sobre o canvas */
-    --color-surface-subtle:     #C0C8CA; /* Cinza claro: Fundo suave de cards, inputs, tags neutras e seções alternadas */
-    --color-surface-muted:      #C0C8CA; /* Trilhos e divisores */
-    --color-surface-overlay:    rgba(26, 45, 66, 0.75); /* Fundo de modais com foco (#1A2D42 com transparência) */
+    --color-surface-subtle:     #B3CFE5; /* Azul claro: Fundo suave de cards alternados, hover, tags neutras */
+    --color-surface-muted:      #B3CFE5; /* Trilhos e divisores */
+    --color-surface-overlay:    rgba(10, 25, 49, 0.75); /* Fundo de modais (#0A1931 com opacidade) */
     
     /* ---------------------------------------------------------------------
        2. BORDAS E DIVISORES DE ALTA PRECISÃO
        --------------------------------------------------------------------- */
-    --color-border-subtle:      #AAB7B7; /* Cinza-azulado médio: Divisores, separadores, bordas padrão de inputs e cards */
-    --color-border-strong:      #AAB7B7; /* Contornos padrão */
-    --color-border-focus:       #1A2D42; /* Foco acessível em elementos interativos */
+    --color-border-subtle:      #B3CFE5; /* Azul claro: Divisores, separadores, bordas padrão de inputs e cards */
+    --color-border-strong:      #B3CFE5; /* Contornos padrão */
+    --color-border-focus:       #4A7FA7; /* Foco acessível em elementos interativos */
 
     /* ---------------------------------------------------------------------
        3. TIPOGRAFIA & CONTRASTE (WCAG AA / AAA)
        --------------------------------------------------------------------- */
-    --color-text-primary:       #1A2D42; /* Azul-marinho mais escuro: Títulos e métricas principais (13.8:1 de contraste) */
-    --color-text-secondary:     #2E4156; /* Azul acinzentado escuro: Subtítulos e textos de apoio (7.2:1 de contraste) */
-    --color-text-muted:         #2E4156; /* Metadados e rótulos */
-    --color-text-placeholder:   #AAB7B7; /* Cinza-azulado médio para placeholders */
-    --color-text-inverse:       #FFFFFF; /* Texto sobre fundos escuros (#1A2D42, #2E4156) */
+    --color-text-primary:       #0A1931; /* Azul marinho escuro: Títulos e métricas principais (18.2:1 de contraste) */
+    --color-text-secondary:     #1A3D63; /* Azul marinho médio: Subtítulos e textos de apoio (10.5:1 de contraste) */
+    --color-text-muted:         #1A3D63; /* Metadados e rótulos */
+    --color-text-placeholder:   #4A7FA7; /* Azul médio para placeholders */
+    --color-text-inverse:       #FFFFFF; /* Texto sobre fundos de ação/escuros (#4A7FA7, #0A1931, #1A3D63) */
 
     /* ---------------------------------------------------------------------
        4. COR DE DESTAQUE INSTITUCIONAL (CTA / INTERAÇÃO)
        --------------------------------------------------------------------- */
-    --color-accent-primary:     #1A2D42; /* Primária de destaque / CTA */
-    --color-accent-primary-hover:#2E4156;/* Hover / Focus */
-    --color-accent-hover:       #2E4156;
-    --color-accent-soft:        #C0C8CA; /* Fundo suave */
-    --color-accent-soft-border: #AAB7B7;
-    --color-accent-subtle:      #C0C8CA;
-    --color-accent-border:      #AAB7B7;
+    --color-accent-primary:     #4A7FA7; /* Primária de destaque / CTA / Ação */
+    --color-accent-primary-hover:#1A3D63;/* Hover / Focus */
+    --color-accent-hover:       #1A3D63;
+    --color-accent-soft:        #B3CFE5; /* Fundo suave */
+    --color-accent-soft-border: #B3CFE5;
+    --color-accent-subtle:      #B3CFE5;
+    --color-accent-border:      #B3CFE5;
 
     /* ---------------------------------------------------------------------
        5. SISTEMA SEMÂNTICO SAEB / IDEB (PRESERVADO)
@@ -68,10 +68,10 @@
     --color-status-success-border:  #6EE7B7;
     --color-status-success-text:    #065F46;
 
-    --color-status-advanced:        #2563EB;
-    --color-status-advanced-bg:     #EFF6FF;
-    --color-status-advanced-border: #93C5FD;
-    --color-status-advanced-text:   #1E40AF;
+    --color-status-advanced:        #4A7FA7;
+    --color-status-advanced-bg:     rgba(179, 207, 229, 0.25);
+    --color-status-advanced-border: #B3CFE5;
+    --color-status-advanced-text:   #0A1931;
 
     /* ---------------------------------------------------------------------
        6. FONTES E FAMÍLIAS TIPOGRÁFICAS
@@ -107,10 +107,10 @@
     /* ---------------------------------------------------------------------
        9. SOMBRAS SUTIS
        --------------------------------------------------------------------- */
-    --shadow-subtle: 0 1px 2px rgba(26, 45, 66, 0.06);
-    --shadow-card:   0 1px 3px rgba(26, 45, 66, 0.08);
-    --shadow-dropdown: 0 4px 6px -1px rgba(26, 45, 66, 0.12), 0 2px 4px -2px rgba(26, 45, 66, 0.06);
-    --shadow-modal:  0 10px 25px -5px rgba(26, 45, 66, 0.25), 0 8px 10px -6px rgba(26, 45, 66, 0.12);
+    --shadow-subtle: 0 1px 2px rgba(10, 25, 49, 0.05);
+    --shadow-card:   0 1px 3px rgba(10, 25, 49, 0.08);
+    --shadow-dropdown: 0 4px 6px -1px rgba(10, 25, 49, 0.12), 0 2px 4px -2px rgba(10, 25, 49, 0.06);
+    --shadow-modal:  0 10px 25px -5px rgba(10, 25, 49, 0.25), 0 8px 10px -6px rgba(10, 25, 49, 0.12);
 
     /* ---------------------------------------------------------------------
        10. TRANSIÇÕES CONTROLADAS
@@ -142,27 +142,27 @@
    DARK MODE COMPATIBILIDADE
    ========================================================================= */
 body.dark-mode {
-    --color-brand-primary:      #D4D8DD;
-    --color-brand-secondary:    #C0C8CA;
-    --color-brand-subtle:       #AAB7B7;
+    --color-brand-primary:      #4A7FA7;
+    --color-brand-secondary:    #1A3D63;
+    --color-brand-subtle:       #B3CFE5;
 
-    --color-surface-canvas:     #1A2D42;
-    --color-surface-card:       #2E4156;
-    --color-surface-subtle:     #1A2D42;
-    --color-surface-muted:      #2E4156;
-    --color-surface-overlay:    rgba(10, 18, 28, 0.85);
+    --color-surface-canvas:     #0A1931; /* Fundo geral no modo escuro */
+    --color-surface-card:       #1A3D63; /* Cards e painéis no modo escuro */
+    --color-surface-subtle:     #0E2342; /* Fundo suave alternado */
+    --color-surface-muted:      #1A3D63;
+    --color-surface-overlay:    rgba(5, 12, 24, 0.85);
 
-    --color-border-subtle:      #AAB7B7;
-    --color-border-strong:      #C0C8CA;
-    --color-border-focus:       #D4D8DD;
+    --color-border-subtle:      #1A3D63;
+    --color-border-strong:      #4A7FA7;
+    --color-border-focus:       #B3CFE5;
 
-    --color-text-primary:       #D4D8DD;
-    --color-text-secondary:     #C0C8CA;
-    --color-text-muted:         #AAB7B7;
-    --color-text-inverse:       #1A2D42;
+    --color-text-primary:       #F6FAFD; /* Texto principal claro */
+    --color-text-secondary:     #B3CFE5; /* Texto secundário azul suave */
+    --color-text-muted:         #B3CFE5;
+    --color-text-inverse:       #0A1931;
 
-    --color-accent-primary:     #D4D8DD;
-    --color-accent-hover:       #C0C8CA;
-    --color-accent-subtle:      #2E4156;
-    --color-accent-border:      #AAB7B7;
+    --color-accent-primary:     #4A7FA7;
+    --color-accent-hover:       #689BC2;
+    --color-accent-subtle:      #1A3D63;
+    --color-accent-border:      #4A7FA7;
 }

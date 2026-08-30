@@ -9,28 +9,28 @@
    ------------------------------------------------------------------------- */
 :root {
     /* Painel esquerdo (institucional) */
-    --panel-dark-bg-start: #0B1424;
-    --panel-dark-bg-mid:   #0F1D33;
-    --panel-dark-bg-end:   #16283F;
+    --panel-dark-bg-start: #0A1931;
+    --panel-dark-bg-mid:   #0E2242;
+    --panel-dark-bg-end:   #1A3D63;
 
     /* Painel direito (formulário) */
-    --panel-light-bg:      #E7E9EE;
-    --panel-light-bg-soft: #F4F6F9;
+    --panel-light-bg:      #F6FAFD;
+    --panel-light-bg-soft: #FFFFFF;
 
     /* Marca */
     --brand-accent-green:      #22C55E;
     --brand-accent-green-glow: rgba(34, 197, 94, 0.35);
-    --brand-blue:              #2F6FED;
-    --brand-blue-hover:        #3E7DFA;
-    --brand-blue-dark:         #1E3A8A;
+    --brand-blue:              #4A7FA7;
+    --brand-blue-hover:        #1A3D63;
+    --brand-blue-dark:         #0A1931;
     --brand-red-error:         #EF4444;
     --brand-red-error-glow:    rgba(239, 68, 68, 0.15);
 
     /* Texto */
-    --text-on-dark-primary:    #F8FAFC;
-    --text-on-dark-secondary:  #94A3B8;
-    --text-on-light-primary:   #0F172A;
-    --text-on-light-secondary: #64748B;
+    --text-on-dark-primary:    #F6FAFD;
+    --text-on-dark-secondary:  #B3CFE5;
+    --text-on-light-primary:   #0A1931;
+    --text-on-light-secondary: #1A3D63;
 
     /* Superfícies */
     --card-bg:            #FFFFFF;
