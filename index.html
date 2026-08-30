@@ -1171,33 +1171,97 @@
                             </div>
                         </div>
 
-                        <!-- LISTA / RANKING DE ESCOLAS DA REDE -->
-                        <div class="dashboard-row grid-1" style="margin-top: 20px;">
-                            <div class="card card-full" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-card); padding: 20px;">
-                                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                        <!-- SEÇÃO: RESULTADOS CONSOLIDADOS DE SIMULADOS POR ESCOLA (REDE COMPLETA) -->
+                        <div class="dashboard-row grid-1" style="margin-top: 24px;">
+                            <div class="card card-full" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-card); padding: 24px;">
+                                <!-- Header da Seção com Filtros e Controles -->
+                                <div class="card-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 14px;">
                                     <div>
-                                        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">Desempenho por Escola da Rede (Gonçalves Dias - MA)</h3>
-                                        <p class="card-subtitle" style="font-size: 0.8rem; color: var(--text-secondary);">Resultados obtidos no SAEB/IDEB oficial e evolução da rede municipal.</p>
+                                        <div style="display: inline-flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                                            <span class="badge" style="background: rgba(74, 127, 167, 0.15); color: var(--color-text-primary); border: 1px solid #B3CFE5; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px;">
+                                                📊 RESULTADOS GERAIS DE SIMULADOS
+                                            </span>
+                                            <span id="simulados-network-avg-badge" class="badge" style="background: #ECFDF5; color: #065F46; border: 1px solid #6EE7B7; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px;">
+                                                Média da Rede: 228.4 pts
+                                            </span>
+                                        </div>
+                                        <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0;">Resultados Consolidados de Simulados por Escola (Rede Completa)</h3>
+                                        <p class="card-subtitle" style="font-size: 0.82rem; color: var(--text-secondary); margin: 2px 0 0 0;">Consolidação das proficiências, taxas de adesão e evolução registradas nas avaliações diagnósticas municipais.</p>
                                     </div>
-                                    <button type="button" onclick="switchTab('escolas-panel');" class="btn btn-outline btn-sm" style="font-weight: 700; color: var(--color-accent-primary); border-color: var(--color-accent-primary); border-radius: var(--radius-pill);">
-                                        Ver Todas as Escolas →
-                                    </button>
+                                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                                        <!-- Toggle de Componente Curricular -->
+                                        <div style="display: flex; background: var(--bg-tertiary); padding: 3px; border-radius: 10px; gap: 3px; border: 1px solid var(--border-color);">
+                                            <button type="button" class="btn-filter-componente-simulado active" data-component="geral" onclick="handleComponentFilterChange('geral');" style="border: none; background: #4A7FA7; color: #FFFFFF; font-size: 11.5px; font-weight: 700; padding: 6px 12px; border-radius: 7px; cursor: pointer; transition: all 0.15s ease;">
+                                                Geral (Média)
+                                            </button>
+                                            <button type="button" class="btn-filter-componente-simulado" data-component="lp" onclick="handleComponentFilterChange('lp');" style="border: none; background: transparent; color: var(--color-text-secondary); font-size: 11.5px; font-weight: 700; padding: 6px 12px; border-radius: 7px; cursor: pointer; transition: all 0.15s ease;">
+                                                Língua Portuguesa
+                                            </button>
+                                            <button type="button" class="btn-filter-componente-simulado" data-component="mat" onclick="handleComponentFilterChange('mat');" style="border: none; background: transparent; color: var(--color-text-secondary); font-size: 11.5px; font-weight: 700; padding: 6px 12px; border-radius: 7px; cursor: pointer; transition: all 0.15s ease;">
+                                                Matemática
+                                            </button>
+                                        </div>
+                                        <button type="button" onclick="switchTab('escolas-panel');" class="btn btn-outline" style="font-size: 12px; font-weight: 700; color: #4A7FA7; border: 1px solid #4A7FA7; border-radius: 8px; padding: 7px 14px; background: transparent; cursor: pointer;">
+                                            Ver Todas as Escolas →
+                                        </button>
+                                    </div>
                                 </div>
 
+                                <!-- Gráfico Comparativo Horizontal -->
+                                <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; margin-bottom: 20px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                                        <span style="font-size: 12px; font-weight: 700; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.5px;">
+                                            Comparativo de Proficiência Média entre as Escolas da Rede
+                                        </span>
+                                        <div style="display: flex; gap: 14px; font-size: 11px; font-weight: 600; color: var(--text-secondary);">
+                                            <span style="display: inline-flex; align-items: center; gap: 5px;">
+                                                <span style="width: 10px; height: 10px; border-radius: 2px; background: #4A7FA7; display: inline-block;"></span>
+                                                Acima da Média
+                                            </span>
+                                            <span style="display: inline-flex; align-items: center; gap: 5px;">
+                                                <span style="width: 10px; height: 10px; border-radius: 2px; background: #1A3D63; display: inline-block;"></span>
+                                                Abaixo da Média
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div style="height: 280px; position: relative;">
+                                        <canvas id="dashChartSimuladosConsolidados"></canvas>
+                                    </div>
+                                </div>
+
+                                <!-- Tabela de Resultados Consolidados Ordenável -->
                                 <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow-x: auto; background: var(--bg-primary);">
-                                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem; min-width: 680px;">
-                                        <thead style="background: var(--bg-tertiary); color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase;">
+                                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem; min-width: 820px;">
+                                        <thead style="background: var(--bg-tertiary); color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">
                                             <tr>
-                                                <th style="padding: 12px 16px;">UNIDADE ESCOLAR</th>
-                                                <th style="padding: 12px 16px;">CÓDIGO INEP</th>
-                                                <th style="padding: 12px 16px; text-align: center;">SAEB/IDEB</th>
-                                                <th style="padding: 12px 16px; text-align: center;">LOCALIZAÇÃO</th>
-                                                <th style="padding: 12px 16px; text-align: center;">STATUS</th>
-                                                <th style="padding: 12px 16px; text-align: center;">AÇÃO</th>
+                                                <th class="th-sortable-simulados" data-sort-col="name" onclick="handleSortSimuladosColumn('name');" style="padding: 12px 14px; cursor: pointer; user-select: none;">
+                                                    UNIDADE ESCOLAR <span class="sort-arrow">↕</span>
+                                                </th>
+                                                <th class="th-sortable-simulados" data-sort-col="inep" onclick="handleSortSimuladosColumn('inep');" style="padding: 12px 14px; cursor: pointer; user-select: none;">
+                                                    CÓDIGO INEP <span class="sort-arrow">↕</span>
+                                                </th>
+                                                <th class="th-sortable-simulados" data-sort-col="simulados" onclick="handleSortSimuladosColumn('simulados');" style="padding: 12px 14px; text-align: center; cursor: pointer; user-select: none;">
+                                                    SIMULADOS <span class="sort-arrow">↕</span>
+                                                </th>
+                                                <th class="th-sortable-simulados" data-sort-col="proficiencia" onclick="handleSortSimuladosColumn('proficiencia');" style="padding: 12px 14px; text-align: center; cursor: pointer; user-select: none;">
+                                                    PROFICIÊNCIA MÉDIA <span class="sort-arrow">↕</span>
+                                                </th>
+                                                <th class="th-sortable-simulados" data-sort-col="participacao" onclick="handleSortSimuladosColumn('participacao');" style="padding: 12px 14px; text-align: center; cursor: pointer; user-select: none;">
+                                                    PARTICIPAÇÃO <span class="sort-arrow">↕</span>
+                                                </th>
+                                                <th class="th-sortable-simulados" data-sort-col="variacao" onclick="handleSortSimuladosColumn('variacao');" style="padding: 12px 14px; text-align: center; cursor: pointer; user-select: none;">
+                                                    VARIAÇÃO (Δ) <span class="sort-arrow">↕</span>
+                                                </th>
+                                                <th style="padding: 12px 14px; text-align: center;">
+                                                    STATUS
+                                                </th>
+                                                <th style="padding: 12px 14px; text-align: right;">
+                                                    AÇÕES
+                                                </th>
                                             </tr>
                                         </thead>
-                                        <tbody id="dashboard-schools-ranking-body">
-                                            <!-- Injetado dinamicamente via renderDashboardSchoolsRanking() -->
+                                        <tbody id="table-simulados-consolidados-body">
+                                            <!-- Injetado dinamicamente via renderDashboardSimuladosConsolidados() -->
                                         </tbody>
                                     </table>
                                 </div>
@@ -7027,6 +7091,7 @@
     <script src="js/modules/dashboard/dashboard_charts.js?v=6c9451884b_mt78c012"></script>
     <script src="js/modules/dashboard/dashboard_analytics.js?v=2026_dash_analytics"></script>
     <script src="js/modules/dashboard/dashboard_scales.js?v=d483e1a949_mt78c012"></script>
+    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=20260830_v2"></script>
     <script src="js/modules/alunos/alunos_list.js?v=0e2d9a3dd2_mt78c012"></script>
     <script src="js/modules/alunos/alunos_forms.js?v=c530a61b8b_mt78c012"></script>
     <script src="js/modules/turmas/turmas_crud.js?v=2026_turmas_crud"></script>

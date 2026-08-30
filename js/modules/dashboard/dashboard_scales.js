@@ -592,6 +592,7 @@
         if (typeof global.renderDashboardSaebEvolucaoGoncalvesChart === 'function') global.renderDashboardSaebEvolucaoGoncalvesChart();
         if (typeof global.renderDashboardProficiency === 'function') global.renderDashboardProficiency();
         if (typeof global.renderDashboardSchoolsRanking === 'function') global.renderDashboardSchoolsRanking();
+        if (typeof global.renderDashboardSimuladosConsolidados === 'function') global.renderDashboardSimuladosConsolidados();
     }
 
     // Exposição Global
