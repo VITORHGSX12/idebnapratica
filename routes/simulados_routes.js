@@ -38,21 +38,34 @@ let memoryEventosSimulados = [
 
 let memoryRespostasSimulados = {};
 
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET || 'edu_saas_jwt_default_secret_key_2026';
+
 /**
  * Helper de Fail-Closed (Seção 9.2 da especificação):
- * Bloqueia acessos a escolas/turmas fora do vínculo do usuário
+ * Bloqueia acessos a escolas/turmas fora do vínculo do usuário autenticado
  */
 function validateSchoolAccess(req, targetEscolaId, targetTurmaId) {
-    if (!req.user) return true; // Se chamada anônima ou pública
-    var role = (req.user.role || '').toUpperCase();
-    var userEscola = (req.user.escola_id || req.user.escola || '').toString().toLowerCase();
+    let user = req.user;
+    if (!user && req.headers && req.headers.authorization) {
+        try {
+            const token = req.headers.authorization.replace(/^Bearer\s+/i, '');
+            user = jwt.verify(token, JWT_SECRET);
+            req.user = user;
+        } catch (e) {}
+    }
 
-    // Master Admin e Gestor da Rede possuem acesso a todas as escolas
-    if (role.includes('MASTER') || role.includes('ADMIN') || role.includes('GESTOR') || role.includes('SEMED') || role.includes('COORDENADOR')) {
+    if (!user) return true; // Se chamada anônima ou pública
+
+    var role = (user.role || '').toUpperCase();
+    var userEscola = (user.escola_id || user.escola || user.schoolId || '').toString().toLowerCase();
+
+    // Perfis com escopo em toda a rede (SEMED / Admin / Gestor / Coordenador Geral)
+    if (role.includes('MASTER') || role.includes('ADMIN') || role.includes('GESTOR') || role.includes('SEMED') || role.includes('COORDENADOR_GERAL')) {
         return true;
     }
 
-    // Diretores e Professores só acessam sua própria escola
+    // Diretores e Professores têm restrição estrita: só acessam sua própria escola
     if (targetEscolaId && userEscola) {
         var targetLower = targetEscolaId.toString().toLowerCase();
         if (!targetLower.includes(userEscola) && !userEscola.includes(targetLower)) {
