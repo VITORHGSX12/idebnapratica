@@ -254,10 +254,12 @@
         tbody.innerHTML = sorted.map(function(item, idx) {
             var displayScore = currentComponentFilter === 'lp' ? item.proficienciaLP : (currentComponentFilter === 'mat' ? item.proficienciaMAT : item.proficienciaGeral);
             var safeName = typeof global.escapeHtml === 'function' ? global.escapeHtml(item.name) : item.name;
+            var displayInep = item.inep || '<span style="color:var(--color-text-secondary); font-style:italic;">Não informado</span>';
             
-            var varText = item.variacao > 0 ? ('+' + item.variacao.toFixed(1)) : (item.variacao < 0 ? item.variacao.toFixed(1) : '0.0');
-            var varColor = item.variacao > 0 ? '#059669' : (item.variacao < 0 ? '#DC2626' : '#1A3D63');
-            var varIcon = item.variacao > 0 ? '▲' : (item.variacao < 0 ? '▼' : '▬');
+            var hasVar = item.variacao !== null && item.variacao !== undefined;
+            var varText = hasVar ? (item.variacao > 0 ? ('+' + item.variacao.toFixed(1) + '%') : (item.variacao < 0 ? item.variacao.toFixed(1) + '%' : '0.0%')) : '— (1º ciclo)';
+            var varColor = hasVar ? (item.variacao > 0 ? '#059669' : (item.variacao < 0 ? '#DC2626' : 'var(--color-text-secondary)')) : 'var(--color-text-secondary)';
+            var varIcon = hasVar ? (item.variacao > 0 ? '▲ ' : (item.variacao < 0 ? '▼ ' : '▬ ')) : '';
 
             var badgeStyle = 'background: rgba(74, 127, 167, 0.15); color: #0A1931; border: 1px solid #B3CFE5;';
             if (item.status === 'Meta Atingida') {
@@ -274,11 +276,11 @@
                         </strong>
                         <span style="font-size: 11px; color: var(--color-text-secondary); display: inline-flex; align-items: center; gap: 4px; margin-top: 2px;">
                             <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#4A7FA7;"></span>
-                            ${item.zone}
+                            ${item.zone || 'Rede Municipal'}
                         </span>
                     </td>
                     <td style="padding: 10px 14px; font-family: var(--font-mono, monospace); font-size: 12px; color: var(--color-text-secondary);">
-                        ${item.inep}
+                        ${displayInep}
                     </td>
                     <td style="padding: 10px 14px; text-align: center;">
                         <span style="background: rgba(179, 207, 229, 0.35); color: var(--color-text-primary); font-weight: 700; font-size: 12px; padding: 3px 8px; border-radius: 6px;">
@@ -302,7 +304,7 @@
                         </div>
                     </td>
                     <td style="padding: 10px 14px; text-align: center; font-weight: 700; font-size: 12px; color: ${varColor}; font-family: var(--font-mono, monospace);">
-                        ${varIcon} ${varText}
+                        ${varIcon}${varText}
                     </td>
                     <td style="padding: 10px 14px; text-align: center;">
                         <span class="badge" style="${badgeStyle} font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px;">
@@ -386,8 +388,12 @@
             var res = await fetch('/api/simulados/dashboard/rede', { headers: headers });
             if (res.ok) {
                 var json = await res.json();
-                if (json && json.success && json.hasData && Array.isArray(json.escolas) && json.escolas.length > 0) {
-                    cachedApiData = json.escolas;
+                if (json && json.success) {
+                    if (json.hasData && Array.isArray(json.escolas) && json.escolas.length > 0) {
+                        cachedApiData = json.escolas;
+                    } else if (json.hasData === false) {
+                        cachedApiData = [];
+                    }
                 }
             }
         } catch (e) {
@@ -395,6 +401,18 @@
         }
 
         var data = getConsolidatedSimuladosData();
+        var emptyBanner = document.getElementById('simulados-empty-state-banner');
+        var contentWrap = document.getElementById('simulados-consolidado-content-wrap');
+
+        if (!data || data.length === 0) {
+            if (contentWrap) contentWrap.style.display = 'none';
+            if (emptyBanner) emptyBanner.style.display = 'block';
+            return;
+        } else {
+            if (contentWrap) contentWrap.style.display = 'block';
+            if (emptyBanner) emptyBanner.style.display = 'none';
+        }
+
         renderConsolidatedSimuladosChart(data);
         renderConsolidatedSimuladosTable(data);
     }

@@ -1207,63 +1207,77 @@
                                     </div>
                                 </div>
 
-                                <!-- Gráfico Comparativo Horizontal -->
-                                <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; margin-bottom: 20px;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-                                        <span style="font-size: 12px; font-weight: 700; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.5px;">
-                                            Comparativo de Proficiência Média entre as Escolas da Rede
-                                        </span>
-                                        <div style="display: flex; gap: 14px; font-size: 11px; font-weight: 600; color: var(--text-secondary);">
-                                            <span style="display: inline-flex; align-items: center; gap: 5px;">
-                                                <span style="width: 10px; height: 10px; border-radius: 2px; background: #4A7FA7; display: inline-block;"></span>
-                                                Acima da Média
-                                            </span>
-                                            <span style="display: inline-flex; align-items: center; gap: 5px;">
-                                                <span style="width: 10px; height: 10px; border-radius: 2px; background: #1A3D63; display: inline-block;"></span>
-                                                Abaixo da Média
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div style="height: 280px; position: relative;">
-                                        <canvas id="dashChartSimuladosConsolidados"></canvas>
-                                    </div>
+                                <!-- Estado Vazio Elegante (Caso ainda não haja simulados concluídos) -->
+                                <div id="simulados-empty-state-banner" style="display: none; background: var(--bg-primary); border: 1px dashed var(--border-color); border-radius: var(--radius-md); padding: 42px 24px; text-align: center; margin-top: 15px;">
+                                    <div style="font-size: 2.2rem; margin-bottom: 8px;">📊</div>
+                                    <h4 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0 0 6px 0;">Ainda não há simulados concluídos para consolidar</h4>
+                                    <p style="font-size: 0.88rem; color: var(--text-secondary); max-width: 520px; margin: 0 auto 18px auto; line-height: 1.5;">
+                                        Os dados analíticos e gráficos da rede serão gerados automaticamente conforme os simulados forem aplicados e tiverem seus status marcados como <strong>ENCERRADO</strong>.
+                                    </p>
+                                    <button type="button" onclick="switchTab('sec-criar-avaliacoes')" class="btn btn-primary" style="font-weight: 700; font-size: 0.85rem; padding: 8px 16px;">
+                                        + Criar / Gerenciar Avaliações
+                                    </button>
                                 </div>
 
-                                <!-- Tabela de Resultados Consolidados Ordenável -->
-                                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow-x: auto; background: var(--bg-primary);">
-                                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem; min-width: 820px;">
-                                        <thead style="background: var(--bg-tertiary); color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">
-                                            <tr>
-                                                <th class="th-sortable-simulados" data-sort-col="name" onclick="handleSortSimuladosColumn('name');" style="padding: 12px 14px; cursor: pointer; user-select: none;">
-                                                    UNIDADE ESCOLAR <span class="sort-arrow">↕</span>
-                                                </th>
-                                                <th class="th-sortable-simulados" data-sort-col="inep" onclick="handleSortSimuladosColumn('inep');" style="padding: 12px 14px; cursor: pointer; user-select: none;">
-                                                    CÓDIGO INEP <span class="sort-arrow">↕</span>
-                                                </th>
-                                                <th class="th-sortable-simulados" data-sort-col="simulados" onclick="handleSortSimuladosColumn('simulados');" style="padding: 12px 14px; text-align: center; cursor: pointer; user-select: none;">
-                                                    SIMULADOS <span class="sort-arrow">↕</span>
-                                                </th>
-                                                <th class="th-sortable-simulados" data-sort-col="proficiencia" onclick="handleSortSimuladosColumn('proficiencia');" style="padding: 12px 14px; text-align: center; cursor: pointer; user-select: none;">
-                                                    PROFICIÊNCIA MÉDIA <span class="sort-arrow">↕</span>
-                                                </th>
-                                                <th class="th-sortable-simulados" data-sort-col="participacao" onclick="handleSortSimuladosColumn('participacao');" style="padding: 12px 14px; text-align: center; cursor: pointer; user-select: none;">
-                                                    PARTICIPAÇÃO <span class="sort-arrow">↕</span>
-                                                </th>
-                                                <th class="th-sortable-simulados" data-sort-col="variacao" onclick="handleSortSimuladosColumn('variacao');" style="padding: 12px 14px; text-align: center; cursor: pointer; user-select: none;">
-                                                    VARIAÇÃO (Δ) <span class="sort-arrow">↕</span>
-                                                </th>
-                                                <th style="padding: 12px 14px; text-align: center;">
-                                                    STATUS
-                                                </th>
-                                                <th style="padding: 12px 14px; text-align: right;">
-                                                    AÇÕES
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="table-simulados-consolidados-body">
-                                            <!-- Injetado dinamicamente via renderDashboardSimuladosConsolidados() -->
-                                        </tbody>
-                                    </table>
+                                <div id="simulados-consolidado-content-wrap">
+                                    <!-- Gráfico Comparativo Horizontal -->
+                                    <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; margin-bottom: 20px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                                            <span style="font-size: 12px; font-weight: 700; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.5px;">
+                                                Comparativo de Proficiência Média entre as Escolas da Rede
+                                            </span>
+                                            <div style="display: flex; gap: 14px; font-size: 11px; font-weight: 600; color: var(--text-secondary);">
+                                                <span style="display: inline-flex; align-items: center; gap: 5px;">
+                                                    <span style="width: 10px; height: 10px; border-radius: 2px; background: #4A7FA7; display: inline-block;"></span>
+                                                    Acima da Média
+                                                </span>
+                                                <span style="display: inline-flex; align-items: center; gap: 5px;">
+                                                    <span style="width: 10px; height: 10px; border-radius: 2px; background: #1A3D63; display: inline-block;"></span>
+                                                    Abaixo da Média
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div style="height: 280px; position: relative;">
+                                            <canvas id="dashChartSimuladosConsolidados"></canvas>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tabela de Resultados Consolidados Ordenável -->
+                                    <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow-x: auto; background: var(--bg-primary);">
+                                        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem; min-width: 820px;">
+                                            <thead style="background: var(--bg-tertiary); color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">
+                                                <tr>
+                                                    <th class="th-sortable-simulados" data-sort-col="name" onclick="handleSortSimuladosColumn('name');" style="padding: 12px 14px; cursor: pointer; user-select: none;">
+                                                        UNIDADE ESCOLAR <span class="sort-arrow">↕</span>
+                                                    </th>
+                                                    <th class="th-sortable-simulados" data-sort-col="inep" onclick="handleSortSimuladosColumn('inep');" style="padding: 12px 14px; cursor: pointer; user-select: none;">
+                                                        CÓDIGO INEP <span class="sort-arrow">↕</span>
+                                                    </th>
+                                                    <th class="th-sortable-simulados" data-sort-col="simulados" onclick="handleSortSimuladosColumn('simulados');" style="padding: 12px 14px; text-align: center; cursor: pointer; user-select: none;">
+                                                        SIMULADOS <span class="sort-arrow">↕</span>
+                                                    </th>
+                                                    <th class="th-sortable-simulados" data-sort-col="proficiencia" onclick="handleSortSimuladosColumn('proficiencia');" style="padding: 12px 14px; text-align: center; cursor: pointer; user-select: none;">
+                                                        PROFICIÊNCIA MÉDIA <span class="sort-arrow">↕</span>
+                                                    </th>
+                                                    <th class="th-sortable-simulados" data-sort-col="participacao" onclick="handleSortSimuladosColumn('participacao');" style="padding: 12px 14px; text-align: center; cursor: pointer; user-select: none;">
+                                                        PARTICIPAÇÃO <span class="sort-arrow">↕</span>
+                                                    </th>
+                                                    <th class="th-sortable-simulados" data-sort-col="variacao" onclick="handleSortSimuladosColumn('variacao');" style="padding: 12px 14px; text-align: center; cursor: pointer; user-select: none;">
+                                                        VARIAÇÃO (Δ) <span class="sort-arrow">↕</span>
+                                                    </th>
+                                                    <th style="padding: 12px 14px; text-align: center;">
+                                                        STATUS
+                                                    </th>
+                                                    <th style="padding: 12px 14px; text-align: right;">
+                                                        AÇÕES
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="table-simulados-consolidados-body">
+                                                <!-- Injetado dinamicamente via renderDashboardSimuladosConsolidados() -->
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>

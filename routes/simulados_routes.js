@@ -566,8 +566,8 @@ router.get(['/simulados/dashboard/rede', '/api/simulados/dashboard/rede'], async
             let sql = `
                 SELECT 
                     r.escola_id,
-                    COALESCE(esc.nome, r.escola_id) as escola_nome,
-                    COALESCE(esc.codigo_inep, '21045001') as codigo_inep,
+                    COALESCE(esc.nome, NULL) as escola_nome,
+                    COALESCE(esc.codigo_inep, NULL) as codigo_inep,
                     COUNT(DISTINCT r.evento_id) as total_simulados,
                     COUNT(DISTINCT r.aluno_id) as total_alunos_avaliados,
                     COUNT(r.id) as total_respostas_registradas,
@@ -582,7 +582,7 @@ router.get(['/simulados/dashboard/rede', '/api/simulados/dashboard/rede'], async
                 FROM respostas_simulado r
                 JOIN eventos_simulados e ON r.evento_id = e.id
                 LEFT JOIN escolas esc ON (esc.id::text = r.escola_id)
-                WHERE 1=1
+                WHERE e.status = 'ENCERRADO'
             `;
             const params = [];
             if (isRestricted) {
@@ -595,13 +595,40 @@ router.get(['/simulados/dashboard/rede', '/api/simulados/dashboard/rede'], async
                 ORDER BY proficiencia_media DESC NULLS LAST
             `;
 
+            // Consulta de histórico cronológico por escola para cálculo da variação delta
+            let historySql = `
+                SELECT 
+                    r.escola_id,
+                    e.id as evento_id,
+                    e.data_realizacao,
+                    ROUND(AVG(CASE WHEN r.status_presenca = 'PRESENTE' THEN COALESCE(r.percentual_acertos, 0) ELSE NULL END), 1) as proficiencia_evento
+                FROM respostas_simulado r
+                JOIN eventos_simulados e ON r.evento_id = e.id
+                WHERE e.status = 'ENCERRADO'
+                GROUP BY r.escola_id, e.id, e.data_realizacao
+                ORDER BY r.escola_id, e.data_realizacao DESC
+            `;
+
+            const [queryRes, histRes] = await Promise.all([
+                db.query(sql, params),
+                db.query(historySql)
+            ]);
+
+            // Mapeia histórico de eventos por escola para calcular variação real
+            const historyBySchool = {};
+            if (histRes && histRes.rows) {
+                histRes.rows.forEach(h => {
+                    if (!historyBySchool[h.escola_id]) historyBySchool[h.escola_id] = [];
+                    historyBySchool[h.escola_id].push(parseFloat(h.proficiencia_evento) || 0);
+                });
+            }
+
             const schoolNameMap = {
                 'esc_01': { name: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS', inep: '21286973' },
                 'esc_02': { name: 'U I BASILIO ALVES', inep: '21045012' },
                 'esc_03': { name: 'UI JOSE CORREA LIMA', inep: '21045020' },
                 'esc_04': { name: 'UE ANITA FURTADO', inep: '21045039' },
-                'esc_05': { name: 'UI EMILIO MURAD', inep: '21045047' },
-                'esc_1': { name: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS', inep: '21286973' }
+                'esc_05': { name: 'UI EMILIO MURAD', inep: '21045047' }
             };
 
             if (queryRes && queryRes.rows && queryRes.rows.length > 0) {
@@ -610,6 +637,13 @@ router.get(['/simulados/dashboard/rede', '/api/simulados/dashboard/rede'], async
                     const taxaPart = totalMatr > 0 ? Number(((parseInt(row.total_presentes, 10) / totalMatr) * 100).toFixed(1)) : 100.0;
                     const prof = parseFloat(row.proficiencia_media) || 0;
                     const officialInfo = schoolNameMap[row.escola_id] || {};
+
+                    // Cálculo da variação real em relação ao simulado encerrado anterior
+                    let variacaoCalc = null;
+                    const schoolHist = historyBySchool[row.escola_id] || [];
+                    if (schoolHist.length >= 2) {
+                        variacaoCalc = Number((schoolHist[0] - schoolHist[1]).toFixed(1));
+                    }
 
                     let statusLabel = 'Em Evolução';
                     let statusClass = 'badge-blue';
@@ -629,15 +663,15 @@ router.get(['/simulados/dashboard/rede', '/api/simulados/dashboard/rede'], async
 
                     return {
                         id: row.escola_id,
-                        name: row.escola_nome && row.escola_nome !== row.escola_id ? row.escola_nome : (officialInfo.name || row.escola_id),
-                        inep: row.codigo_inep && row.codigo_inep !== '21045001' ? row.codigo_inep : (officialInfo.inep || '2104500' + (idx+1)),
+                        name: row.escola_nome ? row.escola_nome : (officialInfo.name || row.escola_id),
+                        inep: row.codigo_inep ? row.codigo_inep : (officialInfo.inep || null),
                         simuladosCount: parseInt(row.total_simulados, 10) || 1,
                         alunosCount: parseInt(row.total_alunos_avaliados, 10) || parseInt(row.total_presentes, 10) || 0,
                         participacao: taxaPart,
                         proficienciaGeral: prof,
                         proficienciaLP: Number((prof * 0.98).toFixed(1)),
                         proficienciaMAT: Number((prof * 1.02).toFixed(1)),
-                        variacao: 0.3,
+                        variacao: variacaoCalc,
                         status: statusLabel,
                         statusClass: statusClass,
                         faixas: {
