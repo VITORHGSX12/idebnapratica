@@ -16,10 +16,16 @@
     var currentSortColumn = 'proficiencia';
     var currentSortDirection = 'desc'; // 'asc' | 'desc'
 
+    var cachedApiData = null;
+
     /**
      * Extrai e calcula os dados consolidados de simulados de cada escola da rede
      */
     function getConsolidatedSimuladosData() {
+        if (cachedApiData && cachedApiData.length > 0) {
+            return cachedApiData;
+        }
+
         var schools = typeof global.getOfficialSchoolsState === 'function' ? global.getOfficialSchoolsState() : [];
         var eventos = typeof global.getEventosState === 'function' ? global.getEventosState() : [];
         
@@ -371,9 +377,23 @@
     }
 
     /**
-     * Função Master de Renderização da Seção
+     * Função Master de Renderização da Seção com carregamento assíncrono do PostgreSQL
      */
-    function renderDashboardSimuladosConsolidados() {
+    async function renderDashboardSimuladosConsolidados() {
+        try {
+            var token = localStorage.getItem('auth_token') || localStorage.getItem('token') || '';
+            var headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+            var res = await fetch('/api/simulados/dashboard/rede', { headers: headers });
+            if (res.ok) {
+                var json = await res.json();
+                if (json && json.success && json.hasData && Array.isArray(json.escolas) && json.escolas.length > 0) {
+                    cachedApiData = json.escolas;
+                }
+            }
+        } catch (e) {
+            console.warn('[Consolidated Simulados API Fallback]', e);
+        }
+
         var data = getConsolidatedSimuladosData();
         renderConsolidatedSimuladosChart(data);
         renderConsolidatedSimuladosTable(data);
