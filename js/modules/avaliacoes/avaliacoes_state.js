@@ -120,9 +120,9 @@
     function getEventosState() {
         try {
             var raw = localStorage.getItem(STORAGE_KEY_EVENTOS);
-            if (raw) {
+            if (raw !== null) {
                 var parsed = JSON.parse(raw);
-                if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                if (Array.isArray(parsed)) return parsed;
             }
         } catch(e) {}
 

@@ -41,6 +41,25 @@
         renderEventosTable();
     }
 
+    async function carregarEventosDoBanco() {
+        try {
+            var token = localStorage.getItem('auth_token') || localStorage.getItem('token') || '';
+            var headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+            var res = await fetch('/api/eventos-simulado', { headers: headers });
+            if (res.ok) {
+                var json = await res.json();
+                if (json && json.success && Array.isArray(json.eventos)) {
+                    if (typeof global.saveEventosState === 'function') {
+                        global.saveEventosState(json.eventos);
+                    }
+                    renderEventosTable();
+                }
+            }
+        } catch(e) {
+            console.warn('[Carregar Eventos API Fallback]', e);
+        }
+    }
+
     function renderEventosTable() {
         var tbody = document.getElementById('created-events-table-body');
         if (!tbody) return;
@@ -174,8 +193,23 @@
     // 2. TRANSIÇÕES DE ESTADO (ENCERRAR, REABRIR, EXCLUIR)
     // -------------------------------------------------------------------------
 
-    function handleEncerrarEvento(eventoId) {
+    async function handleEncerrarEvento(eventoId) {
         if (!confirm('Deseja realmente ENCERRAR este evento avaliativo?\n\nIsso bloqueará a inserção e edição de respostas para garantir a auditoria dos dados.')) return;
+
+        try {
+            var token = localStorage.getItem('auth_token') || localStorage.getItem('token') || '';
+            var headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+            var res = await fetch('/api/eventos-simulado/' + encodeURIComponent(eventoId) + '/encerrar', {
+                method: 'PATCH',
+                headers: headers
+            });
+            var json = await res.json();
+            if (!res.ok || !json.success) {
+                throw new Error(json.error || 'Erro ao encerrar evento.');
+            }
+        } catch(e) {
+            console.warn('[Encerrar Evento API]', e);
+        }
 
         var eventos = typeof global.getEventosState === 'function' ? global.getEventosState() : [];
         var idx = eventos.findIndex(function(e) { return e.id === eventoId; });
@@ -187,8 +221,23 @@
         }
     }
 
-    function handleReabrirEvento(eventoId) {
+    async function handleReabrirEvento(eventoId) {
         if (!confirm('Deseja REABRIR este evento avaliativo para correções?')) return;
+
+        try {
+            var token = localStorage.getItem('auth_token') || localStorage.getItem('token') || '';
+            var headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+            var res = await fetch('/api/eventos-simulado/' + encodeURIComponent(eventoId) + '/reabrir', {
+                method: 'PATCH',
+                headers: headers
+            });
+            var json = await res.json();
+            if (!res.ok || !json.success) {
+                throw new Error(json.error || 'Erro ao reabrir evento.');
+            }
+        } catch(e) {
+            console.warn('[Reabrir Evento API]', e);
+        }
 
         var eventos = typeof global.getEventosState === 'function' ? global.getEventosState() : [];
         var idx = eventos.findIndex(function(e) { return e.id === eventoId; });
@@ -200,14 +249,48 @@
         }
     }
 
-    function handleExcluirEvento(eventoId) {
-        if (!confirm('Tem certeza que deseja excluir este evento avaliativo?')) return;
-
+    async function handleExcluirEvento(eventoId) {
         var eventos = typeof global.getEventosState === 'function' ? global.getEventosState() : [];
-        var filtered = eventos.filter(function(e) { return e.id !== eventoId; });
-        if (typeof global.saveEventosState === 'function') global.saveEventosState(filtered);
-        renderEventosTable();
-        if (typeof global.showToast === 'function') global.showToast('Evento excluído com sucesso.', 'check');
+        var ev = eventos.find(function(e) { return e.id === eventoId; });
+
+        if (ev && ev.status !== 'RASCUNHO') {
+            var msg = `Não é permitido excluir eventos com status '${ev.status}'. Apenas eventos em status 'RASCUNHO' podem ser excluídos. Eventos abertos ou encerrados devem ser concluídos ou mantidos para integridade histórica.`;
+            if (typeof global.showToast === 'function') {
+                global.showToast(msg, 'alert-triangle');
+            } else {
+                alert(msg);
+            }
+            return;
+        }
+
+        var nomeEvento = ev ? ev.titulo : eventoId;
+        if (!confirm(`Tem certeza que deseja excluir permanentemente o rascunho:\n\n"${nomeEvento}"?`)) {
+            return;
+        }
+
+        try {
+            var token = localStorage.getItem('auth_token') || localStorage.getItem('token') || '';
+            var headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+            var res = await fetch('/api/eventos-simulado/' + encodeURIComponent(eventoId), {
+                method: 'DELETE',
+                headers: headers
+            });
+            var json = await res.json();
+            if (!res.ok || !json.success) {
+                throw new Error(json.error || 'Falha ao excluir evento no banco de dados.');
+            }
+
+            var filtered = eventos.filter(function(e) { return e.id !== eventoId; });
+            if (typeof global.saveEventosState === 'function') global.saveEventosState(filtered);
+            renderEventosTable();
+            if (typeof global.showToast === 'function') global.showToast('Evento em rascunho excluído com sucesso.', 'check');
+        } catch(err) {
+            console.error('[Excluir Evento Erro]', err);
+            var filtered = eventos.filter(function(e) { return e.id !== eventoId; });
+            if (typeof global.saveEventosState === 'function') global.saveEventosState(filtered);
+            renderEventosTable();
+            if (typeof global.showToast === 'function') global.showToast(err.message || 'Evento excluído localmente.', 'alert-triangle');
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -815,6 +898,7 @@
         });
 
         renderEventosTable();
+        carregarEventosDoBanco();
     }
 
     if (document.readyState === 'loading') {
@@ -824,6 +908,7 @@
     }
 
     // Exposição Global
+    global.carregarEventosDoBanco = carregarEventosDoBanco;
     global.initAvaliacoesSubtabs = initAvaliacoesSubtabs;
     global.switchAvaliacoesSubtab = switchAvaliacoesSubtab;
     global.filterEventosList = filterEventosList;
