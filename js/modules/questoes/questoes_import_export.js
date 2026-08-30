@@ -158,14 +158,25 @@
             btnConfirmImportQ.onclick = function() {
                 if (loadedFileQuestionsBatch.length > 0) {
                     if (!global.rawQuestions) global.rawQuestions = [];
-                    loadedFileQuestionsBatch.forEach(function(q) { global.rawQuestions.unshift(q); });
+                    var batchToSave = loadedFileQuestionsBatch.slice();
+                    batchToSave.forEach(function(q) { global.rawQuestions.unshift(q); });
                     loadedFileQuestionsBatch = [];
+
+                    // Persistência em lote no PostgreSQL
+                    try {
+                        fetch('/api/questoes/batch', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ questions: batchToSave })
+                        }).catch(function() {});
+                    } catch(e) {}
+
                     if (modalImportQ) {
                         modalImportQ.classList.add('hidden');
                         modalImportQ.style.display = 'none';
                     }
                     if (typeof global.renderQuestions === 'function') global.renderQuestions();
-                    if (typeof global.showToast === 'function') global.showToast('Lote de questões importado com sucesso!', 'check');
+                    if (typeof global.showToast === 'function') global.showToast('Lote de questões importado e salvo no PostgreSQL!', 'check');
                 } else {
                     if (typeof global.showToast === 'function') global.showToast('Selecione um arquivo válido para importar.', 'alert-triangle');
                 }

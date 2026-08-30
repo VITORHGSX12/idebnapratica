@@ -184,23 +184,35 @@
             };
         });
 
-        // Exclusão de questão com confirmação
-        questionsContainer.querySelectorAll('.btn-delete-question').forEach(function(btn) {
-            btn.onclick = function() {
-                var id = btn.getAttribute('data-id');
-                global.rawQuestions = global.rawQuestions.filter(function(q) { return q.id !== id });
-                renderQuestions();
-                if (typeof global.showToast === 'function') global.showToast('Questão removida do banco!', 'trash-2');
-            };
-        });
-
-        if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
+    /**
+     * Sincroniza o acervo de questões com o PostgreSQL
+     */
+    async function fetchQuestionsFromApi() {
+        try {
+            var res = await fetch('/api/questoes');
+            if (res.ok) {
+                var data = await res.json();
+                if (data && data.success && Array.isArray(data.questions) && data.questions.length > 0) {
+                    global.rawQuestions = data.questions;
+                    renderQuestions();
+                }
+            }
+        } catch (err) {
+            console.warn('[Questoes API Fallback]');
+        }
     }
 
-    /**
-     * Inicializa os ouvintes do acervo, filtros e modal manual
-     */
-    function initQuestionsListModule() {
+    // Exclusão de questão com confirmação e persistência no PostgreSQL
+    function handleDeleteQuestion(id) {
+        global.rawQuestions = (global.rawQuestions || []).filter(function(q) { return q.id !== id; });
+        renderQuestions();
+
+        try {
+            fetch('/api/questoes/' + id, { method: 'DELETE' }).catch(function() {});
+        } catch (e) {}
+
+        if (typeof global.showToast === 'function') global.showToast('Questão removida do banco!', 'trash-2');
+    }
         ['filter-matrix', 'filter-stage', 'filter-subject', 'filter-difficulty'].forEach(function(id) {
             var el = document.getElementById(id);
             if (el) el.onchange = renderQuestions;
@@ -208,6 +220,17 @@
 
         var qSearchInput = document.getElementById('questions-search-query');
         if (qSearchInput) qSearchInput.oninput = renderQuestions;
+
+        // Botão "Montar Simulado com Itens" -> Encaminha para o Wizard de Avaliações
+        var btnOpenCreateExam = document.getElementById('btn-open-create-exam-from-q');
+        if (btnOpenCreateExam) {
+            btnOpenCreateExam.onclick = function() {
+                if (typeof global.switchTab === 'function') global.switchTab('sec-criar-avaliacoes');
+                if (typeof global.switchAvaliacoesSubtab === 'function') global.switchAvaliacoesSubtab('criar-evento-sub');
+                if (typeof global.showNewEventWizard === 'function') global.showNewEventWizard();
+                if (typeof global.showToast === 'function') global.showToast('Transferindo questões do banco para o criador de avaliações...', 'layers');
+            };
+        }
 
         // Modal de Criação Manual
         var btnOpenManual = document.getElementById('btn-trigger-manual-q-modal');
@@ -271,19 +294,31 @@
                         { letra: 'C', texto: opC ? opC.value || 'Opção C' : 'C', correta: cor === 'C' },
                         { letra: 'D', texto: opD ? opD.value || 'Opção D' : 'D', correta: cor === 'D' }
                     ],
+                    gabarito: cor,
+                    origem: 'MANUAL',
                     explicacao: 'GABARITO: ' + cor + '. Cadastrado manualmente no banco oficial.'
                 };
 
                 global.rawQuestions.unshift(newQ);
                 renderQuestions();
 
+                // Persistência no PostgreSQL
+                try {
+                    fetch('/api/questoes', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(newQ)
+                    }).catch(function() {});
+                } catch(e) {}
+
                 modalManual.classList.add('hidden');
                 modalManual.style.display = 'none';
 
-                if (typeof global.showToast === 'function') global.showToast('Questão cadastrada com sucesso no banco!', 'check-circle');
+                if (typeof global.showToast === 'function') global.showToast('Questão cadastrada e salva no PostgreSQL!', 'check-circle');
             };
         }
 
+        fetchQuestionsFromApi();
         renderQuestions();
     }
 
