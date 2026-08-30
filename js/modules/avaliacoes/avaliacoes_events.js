@@ -205,19 +205,24 @@
             });
             var json = await res.json();
             if (!res.ok || !json.success) {
-                throw new Error(json.error || 'Erro ao encerrar evento.');
+                throw new Error(json.error || 'Erro ao encerrar evento no servidor.');
+            }
+
+            var eventos = typeof global.getEventosState === 'function' ? global.getEventosState() : [];
+            var idx = eventos.findIndex(function(e) { return e.id === eventoId; });
+            if (idx !== -1) {
+                eventos[idx].status = 'ENCERRADO';
+                if (typeof global.saveEventosState === 'function') global.saveEventosState(eventos);
+                renderEventosTable();
+                if (typeof global.showToast === 'function') global.showToast('Evento encerrado com sucesso! Lançamentos bloqueados.', 'check');
             }
         } catch(e) {
-            console.warn('[Encerrar Evento API]', e);
-        }
-
-        var eventos = typeof global.getEventosState === 'function' ? global.getEventosState() : [];
-        var idx = eventos.findIndex(function(e) { return e.id === eventoId; });
-        if (idx !== -1) {
-            eventos[idx].status = 'ENCERRADO';
-            if (typeof global.saveEventosState === 'function') global.saveEventosState(eventos);
-            renderEventosTable();
-            if (typeof global.showToast === 'function') global.showToast('Evento encerrado com sucesso! Lançamentos bloqueados.', 'check');
+            console.error('[Encerrar Evento Erro]', e);
+            if (typeof global.showToast === 'function') {
+                global.showToast('Erro ao encerrar evento: ' + (e.message || 'Falha de conexão com o servidor.'), 'alert-triangle');
+            } else {
+                alert('Erro ao encerrar evento: ' + (e.message || 'Falha de conexão com o servidor.'));
+            }
         }
     }
 
@@ -233,19 +238,24 @@
             });
             var json = await res.json();
             if (!res.ok || !json.success) {
-                throw new Error(json.error || 'Erro ao reabrir evento.');
+                throw new Error(json.error || 'Erro ao reabrir evento no servidor.');
+            }
+
+            var eventos = typeof global.getEventosState === 'function' ? global.getEventosState() : [];
+            var idx = eventos.findIndex(function(e) { return e.id === eventoId; });
+            if (idx !== -1) {
+                eventos[idx].status = 'ABERTO';
+                if (typeof global.saveEventosState === 'function') global.saveEventosState(eventos);
+                renderEventosTable();
+                if (typeof global.showToast === 'function') global.showToast('Evento reaberto para lançamentos!', 'check');
             }
         } catch(e) {
-            console.warn('[Reabrir Evento API]', e);
-        }
-
-        var eventos = typeof global.getEventosState === 'function' ? global.getEventosState() : [];
-        var idx = eventos.findIndex(function(e) { return e.id === eventoId; });
-        if (idx !== -1) {
-            eventos[idx].status = 'ABERTO';
-            if (typeof global.saveEventosState === 'function') global.saveEventosState(eventos);
-            renderEventosTable();
-            if (typeof global.showToast === 'function') global.showToast('Evento reaberto para lançamentos!', 'check');
+            console.error('[Reabrir Evento Erro]', e);
+            if (typeof global.showToast === 'function') {
+                global.showToast('Erro ao reabrir evento: ' + (e.message || 'Falha de conexão com o servidor.'), 'alert-triangle');
+            } else {
+                alert('Erro ao reabrir evento: ' + (e.message || 'Falha de conexão com o servidor.'));
+            }
         }
     }
 
@@ -280,16 +290,19 @@
                 throw new Error(json.error || 'Falha ao excluir evento no banco de dados.');
             }
 
+            // Exclusão confirmada pelo backend: remove do estado local
             var filtered = eventos.filter(function(e) { return e.id !== eventoId; });
             if (typeof global.saveEventosState === 'function') global.saveEventosState(filtered);
             renderEventosTable();
             if (typeof global.showToast === 'function') global.showToast('Evento em rascunho excluído com sucesso.', 'check');
         } catch(err) {
             console.error('[Excluir Evento Erro]', err);
-            var filtered = eventos.filter(function(e) { return e.id !== eventoId; });
-            if (typeof global.saveEventosState === 'function') global.saveEventosState(filtered);
-            renderEventosTable();
-            if (typeof global.showToast === 'function') global.showToast(err.message || 'Evento excluído localmente.', 'alert-triangle');
+            // Em caso de falha no servidor ou rede, o evento PERMANECE na tabela e apenas o erro é exibido
+            if (typeof global.showToast === 'function') {
+                global.showToast('Erro ao excluir evento: ' + (err.message || 'Falha de comunicação com o servidor.'), 'alert-triangle');
+            } else {
+                alert('Erro ao excluir evento: ' + (err.message || 'Falha de comunicação com o servidor.'));
+            }
         }
     }
 
