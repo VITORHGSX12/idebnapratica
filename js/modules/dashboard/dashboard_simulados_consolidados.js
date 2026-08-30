@@ -22,80 +22,13 @@
 
     /**
      * Extrai e calcula os dados consolidados de simulados de cada escola da rede
+     * Retorna estritamente os dados reais do PostgreSQL — sem fallbacks artificiais
      */
     function getConsolidatedSimuladosData() {
-        if (cachedApiData && cachedApiData.length > 0) {
+        if (cachedApiData && Array.isArray(cachedApiData) && cachedApiData.length > 0) {
             return cachedApiData;
         }
-
-        var schools = typeof global.getOfficialSchoolsState === 'function' ? global.getOfficialSchoolsState() : [];
-        var eventos = typeof global.getEventosState === 'function' ? global.getEventosState() : [];
-        
-        // Se ainda não houver escolas carregadas, buscar do seed oficial
-        if (!schools || schools.length === 0) {
-            if (global.OFFICIAL_IMPORTED_STUDENTS_SEED && global.OFFICIAL_IMPORTED_STUDENTS_SEED.escolas) {
-                schools = global.OFFICIAL_IMPORTED_STUDENTS_SEED.escolas;
-            } else {
-                schools = [
-                    { name: 'UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ', inep: '21286973', zone: 'Sede Urbana', taxaParticipacao: '98.5%', saeb_lp_5ano: 228.4, saeb_mt_5ano: 236.2, alunosCount: 232 },
-                    { name: 'UNIDADE INTEGRADA DEPUTADO RENAN CALHEIROS', inep: '21045012', zone: 'Sede Urbana', taxaParticipacao: '97.2%', saeb_lp_5ano: 224.6, saeb_mt_5ano: 232.0, alunosCount: 198 },
-                    { name: 'UNIDADE INTEGRADA VEREADOR RAIMUNDO NONATO', inep: '21045020', zone: 'Sede Urbana', taxaParticipacao: '96.0%', saeb_lp_5ano: 221.8, saeb_mt_5ano: 229.4, alunosCount: 165 },
-                    { name: 'ESCOLA MUNICIPAL SÃO RAIMUNDO', inep: '21045039', zone: 'Zona Rural • Polo I', taxaParticipacao: '95.4%', saeb_lp_5ano: 218.2, saeb_mt_5ano: 225.1, alunosCount: 112 },
-                    { name: 'ESCOLA MUNICIPAL BOA ESPERANÇA', inep: '21045047', zone: 'Zona Rural • Polo II', taxaParticipacao: '94.8%', saeb_lp_5ano: 215.0, saeb_mt_5ano: 222.8, alunosCount: 94 },
-                    { name: 'ESCOLA MUNICIPAL MENINO JESUS', inep: '21045055', zone: 'Sede Urbana', taxaParticipacao: '96.5%', saeb_lp_5ano: 226.0, saeb_mt_5ano: 234.5, alunosCount: 140 },
-                    { name: 'ESCOLA MUNICIPAL SANTA LUZIA', inep: '21045063', zone: 'Zona Rural • Polo III', taxaParticipacao: '93.2%', saeb_lp_5ano: 212.4, saeb_mt_5ano: 219.0, alunosCount: 88 },
-                    { name: 'ESCOLA MUNICIPAL NOSSA SENHORA DAS GRAÇAS', inep: '21045071', zone: 'Zona Rural • Polo IV', taxaParticipacao: '94.0%', saeb_lp_5ano: 216.5, saeb_mt_5ano: 224.2, alunosCount: 76 },
-                    { name: 'ESCOLA MUNICIPAL SÃO JOSÉ', inep: '21045080', zone: 'Zona Rural • Polo V', taxaParticipacao: '92.5%', saeb_lp_5ano: 209.8, saeb_mt_5ano: 217.4, alunosCount: 65 }
-                ];
-            }
-        }
-
-        var qtdSimuladosAplicados = eventos.length > 0 ? eventos.length : 2;
-
-        return schools.map(function(sch, index) {
-            var lp = Number(sch.saeb_lp_5ano || sch.saeb_lp_9ano || (210 + (index * 2.5))).toFixed(1);
-            var mat = Number(sch.saeb_mt_5ano || sch.saeb_mt_9ano || (218 + (index * 2.3))).toFixed(1);
-            var geral = Number(((Number(lp) + Number(mat)) / 2).toFixed(1));
-            
-            var participacao = sch.taxaParticipacao ? parseFloat(sch.taxaParticipacao.replace('%', '')) : (95.0 - (index * 0.6));
-            if (isNaN(participacao)) participacao = 95.0;
-
-            // Variação em relação ao ciclo/simulado anterior
-            var variacao = Number((index % 3 === 0 ? 0.4 : (index % 2 === 0 ? 0.2 : -0.1)).toFixed(1));
-
-            // Status Pedagógico Baseado na Média Geral SAEB
-            var statusLabel = 'Em Evolução';
-            var statusBadgeClass = 'badge-blue';
-            if (geral >= 230.0) {
-                statusLabel = 'Meta Atingida';
-                statusBadgeClass = 'badge-green';
-            } else if (geral >= 220.0) {
-                statusLabel = 'Em Evolução';
-                statusBadgeClass = 'badge-blue';
-            } else if (geral >= 210.0) {
-                statusLabel = 'Atenção / Reforço';
-                statusBadgeClass = 'badge-orange';
-            } else {
-                statusLabel = 'Crítico';
-                statusBadgeClass = 'badge-orange';
-            }
-
-            return {
-                id: sch.id || ('esc_' + (index + 1)),
-                name: sch.name || sch.nome || 'Escola Municipal',
-                inep: sch.inep || sch.codigo_inep || null,
-                zone: sch.zone || sch.localizacao || 'Sede Urbana',
-                simuladosCount: qtdSimuladosAplicados,
-                proficienciaGeral: Number(geral),
-                proficienciaLP: Number(lp),
-                proficienciaMAT: Number(mat),
-                participacao: Number(participacao.toFixed(1)),
-                variacao: variacao,
-                status: statusLabel,
-                statusClass: statusBadgeClass,
-                alunosCount: sch.alunosCount || 100
-            };
-        });
+        return [];
     }
 
     /**

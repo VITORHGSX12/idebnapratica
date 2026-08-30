@@ -155,22 +155,30 @@
         var printWin = window.open('', '_blank');
         if (!printWin) return;
 
-        var alunosMock = [
-            'Ana Clara Silva Santos', 'Lucas Gabriel Oliveira', 'Maria Eduarda Fernandes',
-            'João Pedro Carvalho', 'Beatriz Costa Lima', 'Guilherme Souza Ramos',
-            'Larissa Alves Moreira', 'Matheus Henrique Cruz', 'Yasmin Ribeiro Dias', 'Enzo Gabriel Castro'
-        ];
+        var alunosReais = typeof global.getOfficialStudentsState === 'function' ? global.getOfficialStudentsState() : [];
+        var rowsHtml = '';
 
-        var rowsHtml = alunosMock.map(function(nome, idx) {
-            return `
-                <tr style="height: 32px; border-bottom: 1px solid #cbd5e1; font-size: 11px;">
-                    <td style="text-align:center; font-weight:700;">${idx + 1}</td>
-                    <td style="padding-left:8px;">${nome}</td>
-                    <td style="text-align:center;">[ &nbsp; ] PRESENTE &nbsp; [ &nbsp; ] AUSENTE</td>
-                    <td style="padding-left:8px;">____________________________________</td>
+        if (alunosReais && alunosReais.length > 0) {
+            rowsHtml = alunosReais.map(function(alu, idx) {
+                var nome = alu.nome || alu.name || ('Estudante ' + (idx + 1));
+                return `
+                    <tr style="height: 32px; border-bottom: 1px solid #cbd5e1; font-size: 11px;">
+                        <td style="text-align:center; font-weight:700;">${idx + 1}</td>
+                        <td style="padding-left:8px;">${nome}</td>
+                        <td style="text-align:center;">[ &nbsp; ] PRESENTE &nbsp; [ &nbsp; ] AUSENTE</td>
+                        <td style="padding-left:8px;">____________________________________</td>
+                    </tr>
+                `;
+            }).join('');
+        } else {
+            rowsHtml = `
+                <tr style="height: 48px; border-bottom: 1px solid #cbd5e1; font-size: 11px;">
+                    <td colspan="4" style="text-align:center; color:#64748b; padding:16px;">
+                        Nenhum estudante matriculado nesta turma (aguardando enturmação no módulo oficial).
+                    </td>
                 </tr>
             `;
-        }).join('');
+        }
 
         printWin.document.write(`
             <!DOCTYPE html>
