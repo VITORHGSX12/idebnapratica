@@ -11,4 +11,5 @@ local_db_state_backup.json
 *.log
 
 .vercel
+backups/
 

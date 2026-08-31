@@ -1,0 +1,45 @@
+name: Database Automated Daily Backup
+
+on:
+  schedule:
+    # Executa todos os dias às 04:00 UTC (01:00 BRT)
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+    # Permite acionamento manual a qualquer momento pelo painel do GitHub
+
+jobs:
+  backup:
+    name: Run PostgreSQL Database Backup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Execute Backup Engine
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://postgres:UEYfOJZobXRihZbkwGcKcSftTOnpUODL@crossover.proxy.rlwy.net:57912/railway' }}
+        run: node scripts/db_backup_engine.js
+
+      - name: Persist Backup to database-backups branch
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Verificar se branch database-backups já existe
+          git checkout -B database-backups
+          git add -f backups/
+          
+          TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          git commit -m "chore(backup): automated production database dump [${TIMESTAMP}]" || echo "Sem alterações para commit"
+          git push origin database-backups --force
