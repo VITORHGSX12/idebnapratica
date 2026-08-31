@@ -2464,8 +2464,7 @@
                                     <div class="form-group">
                                         <label>Simulado Selecionado</label>
                                         <select class="form-select" id="dash-eval-select">
-                                            <option value="eval-diag">Avaliação Diagnóstica 2026 - Rede Geral</option>
-                                            <option value="sim-1">1º Simulado Preparatório SAEB - 5º e 9º Ano</option>
+                                            <!-- Carregado dinamicamente via JS -->
                                         </select>
                                     </div>
                                     <div class="form-group">
@@ -2500,8 +2499,8 @@
                                     <p class="card-subtitle">Porcentagem de alunos que realizaram o simulado.</p>
                                 </div>
                                 <div class="card-body text-center">
-                                    <strong style="font-size: 3rem; color: var(--purple-light);" id="results-adhesion-value">94.8%</strong>
-                                    <p class="text-sm text-muted" style="margin-top: 8px;" id="results-adhesion-sub">2.820 de 2.975 alunos avaliados</p>
+                                    <strong style="font-size: 3rem; color: var(--purple-light);" id="results-adhesion-value">0.0%</strong>
+                                    <p class="text-sm text-muted" style="margin-top: 8px;" id="results-adhesion-sub">0 estudantes avaliados</p>
                                 </div>
                             </div>
                             <div class="card" style="background-color: var(--bg-secondary);">
@@ -2510,8 +2509,8 @@
                                     <p class="card-subtitle">Escore geral calculado da rede.</p>
                                 </div>
                                 <div class="card-body text-center">
-                                    <strong style="font-size: 3rem; color: var(--blue-light);" id="results-proficiency-value">248.6</strong>
-                                    <p class="text-sm text-muted" style="margin-top: 8px;" id="results-proficiency-sub">Nível 4 da escala de proficiência SAEB</p>
+                                    <strong style="font-size: 3rem; color: var(--blue-light);" id="results-proficiency-value">—</strong>
+                                    <p class="text-sm text-muted" style="margin-top: 8px;" id="results-proficiency-sub">Nenhum resultado lançado</p>
                                 </div>
                             </div>
                             <div class="card" style="background-color: var(--bg-secondary);">
@@ -2520,8 +2519,8 @@
                                     <p class="card-subtitle">Projeção para a rede.</p>
                                 </div>
                                 <div class="card-body text-center">
-                                    <strong style="font-size: 3rem; color: var(--green-light);" id="results-target-value">260.0</strong>
-                                    <p class="text-sm text-muted" style="margin-top: 8px;" id="results-target-sub">Desvio atual: -11.4 pontos</p>
+                                    <strong style="font-size: 3rem; color: var(--green-light);" id="results-target-value">—</strong>
+                                    <p class="text-sm text-muted" style="margin-top: 8px;" id="results-target-sub">Aguardando lançamento de notas</p>
                                 </div>
                             </div>
                         </div>
@@ -2568,37 +2567,37 @@
                                         <div>
                                             <div class="flex-between text-xs text-muted" style="margin-bottom:4px;">
                                                 <span>Insuficiente (&lt; 175)</span>
-                                                <strong id="badge-pct-insuficiente">12.4%</strong>
+                                                <strong id="badge-pct-insuficiente">0.0% (0 alunos)</strong>
                                             </div>
                                             <div class="progress-bar-container" style="height:12px; margin:0;">
-                                                <div class="progress-bar red" id="bar-pct-insuficiente" style="width: 12.4%;"></div>
+                                                <div class="progress-bar red" id="bar-pct-insuficiente" style="width: 0%;"></div>
                                             </div>
                                         </div>
                                         <div>
                                             <div class="flex-between text-xs text-muted" style="margin-bottom:4px;">
                                                 <span>Básico (175 - 225)</span>
-                                                <strong id="badge-pct-basico">34.6%</strong>
+                                                <strong id="badge-pct-basico">0.0% (0 alunos)</strong>
                                             </div>
                                             <div class="progress-bar-container" style="height:12px; margin:0;">
-                                                <div class="progress-bar orange" id="bar-pct-basico" style="width: 34.6%;"></div>
+                                                <div class="progress-bar orange" id="bar-pct-basico" style="width: 0%;"></div>
                                             </div>
                                         </div>
                                         <div>
                                             <div class="flex-between text-xs text-muted" style="margin-bottom:4px;">
                                                 <span>Adequado (225 - 275)</span>
-                                                <strong id="badge-pct-adequado">42.2%</strong>
+                                                <strong id="badge-pct-adequado">0.0% (0 alunos)</strong>
                                             </div>
                                             <div class="progress-bar-container" style="height:12px; margin:0;">
-                                                <div class="progress-bar purple" id="bar-pct-adequado" style="width: 42.2%;"></div>
+                                                <div class="progress-bar purple" id="bar-pct-adequado" style="width: 0%;"></div>
                                             </div>
                                         </div>
                                         <div>
                                             <div class="flex-between text-xs text-muted" style="margin-bottom:4px;">
                                                 <span>Avançado (&ge; 275)</span>
-                                                <strong id="badge-pct-avancado">10.8%</strong>
+                                                <strong id="badge-pct-avancado">0.0% (0 alunos)</strong>
                                             </div>
                                             <div class="progress-bar-container" style="height:12px; margin:0;">
-                                                <div class="progress-bar green" id="bar-pct-avancado" style="width: 10.8%;"></div>
+                                                <div class="progress-bar green" id="bar-pct-avancado" style="width: 0%;"></div>
                                             </div>
                                         </div>
                                     </div>

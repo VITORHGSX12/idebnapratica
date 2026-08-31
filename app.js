@@ -3705,9 +3705,11 @@ JUSTIFICATIVA: 1.450 + 980 = 2.430. 2.430 - 1.830 = 600 espigas.
             if (target === 'lancar-notas-sub') {
                 populateScoreSchoolSelect();
             } else if (target === 'banco-habilidades-sub') {
-                renderActiveDescriptors();
+                if (typeof window.initBancoHabilidades === 'function') window.initBancoHabilidades();
+                else renderActiveDescriptors();
             } else if (target === 'resultados-dash-sub') {
-                populateDashboardResultsSelectors();
+                if (typeof window.initAnalyticsSelectors === 'function') window.initAnalyticsSelectors();
+                else populateDashboardResultsSelectors();
             }
         });
     });
