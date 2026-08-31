@@ -396,7 +396,7 @@
                 '        #' + (idx + 1) + ' ' + (idx === 0 ? '👑' : '') + '',
                 '    </td>',
                 '    <td style="padding: 10px 14px; font-weight: 700; color: ' + (isGD ? '#10b981' : 'var(--color-brand-primary)') + ';">',
-                '        <a href="javascript:void(0)" onclick="selectCityFromUre(\'' + (c.municipio||'').replace(/'/g, "\\'") + '\')" style="color:inherit; text-decoration:none;">',
+                '        <a href="#" onclick="selectCityFromUre(\'' + (c.municipio||'').replace(/'/g, "\\'") + '\'); return false;" style="color:inherit; text-decoration:none;">',
                 '            ' + c.municipio + ' ' + (isGD ? '⭐ (Sua Rede)' : '') + '',
                 '        </a>',
                 '    </td>',

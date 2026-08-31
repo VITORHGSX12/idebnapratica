@@ -222,17 +222,17 @@
             <!-- SEÇÃO 1: VISÃO GERAL -->
             <div class="menu-group" id="menu-group-gestao">
                 <span class="menu-section-label">VISÃO GERAL</span>
-                <a href="javascript:void(0)" onclick="switchTab('dashboard'); return false;" class="menu-item ${currentTab === 'dashboard' ? 'active' : ''}" data-target="dashboard" data-tooltip="Painel Executivo">
+                <a href="#dashboard" onclick="switchTab('dashboard'); return false;" class="menu-item ${currentTab === 'dashboard' ? 'active' : ''}" data-target="dashboard" data-tooltip="Painel Executivo">
                     <div class="menu-active-indicator"></div>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
                     <span>Painel Executivo</span>
                 </a>
-                <a href="javascript:void(0)" onclick="switchTab('escolas-panel'); return false;" class="menu-item ${currentTab === 'escolas-panel' ? 'active' : ''}" data-target="escolas-panel" data-tooltip="Escolas da Rede">
+                <a href="#escolas-panel" onclick="switchTab('escolas-panel'); return false;" class="menu-item ${currentTab === 'escolas-panel' ? 'active' : ''}" data-target="escolas-panel" data-tooltip="Escolas da Rede">
                     <div class="menu-active-indicator"></div>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 8-4 8 4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="M18 5v17"/><path d="M6 5v17"/></svg>
                     <span>Escolas da Rede</span>
                 </a>
-                <a href="javascript:void(0)" onclick="switchTab('alunos-panel'); return false;" class="menu-item ${currentTab === 'alunos-panel' ? 'active' : ''}" data-target="alunos-panel" data-tooltip="Estudantes &amp; Turmas">
+                <a href="#alunos-panel" onclick="switchTab('alunos-panel'); return false;" class="menu-item ${currentTab === 'alunos-panel' ? 'active' : ''}" data-target="alunos-panel" data-tooltip="Estudantes &amp; Turmas">
                     <div class="menu-active-indicator"></div>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                     <span>Estudantes &amp; Turmas</span>
@@ -243,22 +243,22 @@
             <!-- SEÇÃO 2: PLANEJAMENTO -->
             <div class="menu-group" id="menu-group-planejamento">
                 <span class="menu-section-label">PLANEJAMENTO</span>
-                <a href="javascript:void(0)" onclick="switchTab('metas-ideb'); return false;" class="menu-item ${currentTab === 'metas-ideb' ? 'active' : ''}" data-target="metas-ideb" data-tooltip="Metas Municipais (PDE)">
+                <a href="#metas-ideb" onclick="switchTab('metas-ideb'); return false;" class="menu-item ${currentTab === 'metas-ideb' ? 'active' : ''}" data-target="metas-ideb" data-tooltip="Metas Municipais (PDE)">
                     <div class="menu-active-indicator"></div>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
                     <span>Metas Municipais (PDE)</span>
                 </a>
-                <a href="javascript:void(0)" onclick="switchTab('ideb-comparativo'); return false;" class="menu-item ${currentTab === 'ideb-comparativo' ? 'active' : ''}" data-target="ideb-comparativo" data-tooltip="Comparativo Regional">
+                <a href="#ideb-comparativo" onclick="switchTab('ideb-comparativo'); return false;" class="menu-item ${currentTab === 'ideb-comparativo' ? 'active' : ''}" data-target="ideb-comparativo" data-tooltip="Comparativo Regional">
                     <div class="menu-active-indicator"></div>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
                     <span>Comparativo Regional</span>
                 </a>
-                <a href="javascript:void(0)" onclick="switchTab('matriz-descritores'); return false;" class="menu-item ${currentTab === 'matriz-descritores' ? 'active' : ''}" data-target="matriz-descritores" data-tooltip="Matriz &amp; Descritores">
+                <a href="#matriz-descritores" onclick="switchTab('matriz-descritores'); return false;" class="menu-item ${currentTab === 'matriz-descritores' ? 'active' : ''}" data-target="matriz-descritores" data-tooltip="Matriz &amp; Descritores">
                     <div class="menu-active-indicator"></div>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
                     <span>Matriz &amp; Descritores</span>
                 </a>
-                <a href="javascript:void(0)" onclick="switchTab('cronograma-habilidades'); return false;" class="menu-item ${currentTab === 'cronograma-habilidades' ? 'active' : ''}" data-target="cronograma-habilidades" data-tooltip="Cronograma de Habilidades">
+                <a href="#cronograma-habilidades" onclick="switchTab('cronograma-habilidades'); return false;" class="menu-item ${currentTab === 'cronograma-habilidades' ? 'active' : ''}" data-target="cronograma-habilidades" data-tooltip="Cronograma de Habilidades">
                     <div class="menu-active-indicator"></div>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>
                     <span>Cronograma de Habilidades</span>
@@ -269,43 +269,43 @@
             <!-- SEÇÃO 3: AVALIAÇÕES -->
             <div class="menu-group" id="menu-group-avaliacoes">
                 <span class="menu-section-label">AVALIAÇÕES</span>
-                <a href="javascript:void(0)" onclick="switchTab('sec-criar-avaliacoes'); return false;" class="menu-item ${currentTab === 'sec-criar-avaliacoes' ? 'active' : ''}" data-target="sec-criar-avaliacoes" data-tooltip="Criar Avaliações">
+                <a href="#sec-criar-avaliacoes" onclick="switchTab('sec-criar-avaliacoes'); return false;" class="menu-item ${currentTab === 'sec-criar-avaliacoes' ? 'active' : ''}" data-target="sec-criar-avaliacoes" data-tooltip="Criar Avaliações">
                     <div class="menu-active-indicator"></div>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M12 14v4"/><path d="M10 16h4"/></svg>
                     <span>Criar Avaliações</span>
                 </a>
-                <a href="javascript:void(0)" onclick="switchTab('sec-aplicacao-provas'); return false;" class="menu-item ${currentTab === 'sec-aplicacao-provas' ? 'active' : ''}" data-target="sec-aplicacao-provas" data-tooltip="Aplicação de Provas">
+                <a href="#sec-aplicacao-provas" onclick="switchTab('sec-aplicacao-provas'); return false;" class="menu-item ${currentTab === 'sec-aplicacao-provas' ? 'active' : ''}" data-target="sec-aplicacao-provas" data-tooltip="Aplicação de Provas">
                     <div class="menu-active-indicator"></div>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
                     <span>Aplicação de Provas</span>
                 </a>
-                <a href="javascript:void(0)" onclick="switchTab('banco-questoes'); return false;" class="menu-item ${currentTab === 'banco-questoes' ? 'active' : ''}" data-target="banco-questoes" data-tooltip="Banco de Questões">
+                <a href="#banco-questoes" onclick="switchTab('banco-questoes'); return false;" class="menu-item ${currentTab === 'banco-questoes' ? 'active' : ''}" data-target="banco-questoes" data-tooltip="Banco de Questões">
                     <div class="menu-active-indicator"></div>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><circle cx="10" cy="13" r="1"/><path d="M9.1 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3"/></svg>
                     <span>Banco de Questões</span>
                     <span class="badge badge-counter" id="badge-count-questions">12</span>
                 </a>
-                <a href="javascript:void(0)" onclick="switchTab('relatorios-monitoramento'); return false;" class="menu-item ${currentTab === 'relatorios-monitoramento' ? 'active' : ''}" data-target="relatorios-monitoramento" data-tooltip="Relatórios &amp; Monitoramento">
+                <a href="#relatorios-monitoramento" onclick="switchTab('relatorios-monitoramento'); return false;" class="menu-item ${currentTab === 'relatorios-monitoramento' ? 'active' : ''}" data-target="relatorios-monitoramento" data-tooltip="Relatórios &amp; Monitoramento">
                     <div class="menu-active-indicator"></div>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
                     <span>Relatórios &amp; Monitoramento</span>
                 </a>
-                <a href="javascript:void(0)" onclick="switchTab('gestao-pedagogica'); return false;" class="menu-item ${currentTab === 'gestao-pedagogica' ? 'active' : ''}" data-target="gestao-pedagogica" data-tooltip="Gestão Pedagógica">
+                <a href="#gestao-pedagogica" onclick="switchTab('gestao-pedagogica'); return false;" class="menu-item ${currentTab === 'gestao-pedagogica' ? 'active' : ''}" data-target="gestao-pedagogica" data-tooltip="Gestão Pedagógica">
                     <div class="menu-active-indicator"></div>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M12 18v4"/><path d="M8 22h8"/></svg>
                     <span>Gestão Pedagógica</span>
                 </a>
-                <a href="javascript:void(0)" onclick="switchTab('biblioteca-recursos'); return false;" class="menu-item ${currentTab === 'biblioteca-recursos' ? 'active' : ''}" data-target="biblioteca-recursos" data-tooltip="Biblioteca Pedagógica">
+                <a href="#biblioteca-recursos" onclick="switchTab('biblioteca-recursos'); return false;" class="menu-item ${currentTab === 'biblioteca-recursos' ? 'active' : ''}" data-target="biblioteca-recursos" data-tooltip="Biblioteca Pedagógica">
                     <div class="menu-active-indicator"></div>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                     <span>Biblioteca Pedagógica</span>
                 </a>
-                <a href="javascript:void(0)" onclick="switchTab('doc-tecnica'); return false;" class="menu-item ${currentTab === 'doc-tecnica' ? 'active' : ''}" data-target="doc-tecnica" data-tooltip="Documentação Técnica">
+                <a href="#doc-tecnica" onclick="switchTab('doc-tecnica'); return false;" class="menu-item ${currentTab === 'doc-tecnica' ? 'active' : ''}" data-target="doc-tecnica" data-tooltip="Documentação Técnica">
                     <div class="menu-active-indicator"></div>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
                     <span>Documentação Técnica</span>
                 </a>
-                <a href="javascript:void(0)" onclick="switchTab('admin-panel'); return false;" class="menu-item ${currentTab === 'admin-panel' ? 'active' : ''}" data-target="admin-panel" data-tooltip="Área Administrativa">
+                <a href="#admin-panel" onclick="switchTab('admin-panel'); return false;" class="menu-item ${currentTab === 'admin-panel' ? 'active' : ''}" data-target="admin-panel" data-tooltip="Área Administrativa">
                     <div class="menu-active-indicator"></div>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
                     <span>Área Administrativa</span>
@@ -348,27 +348,27 @@
                 <div class="menu-group">
                     <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Diagnóstico & Turma</span>
                     <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <a href="javascript:void(0)" onclick="switchTab('dashboard'); return false;" class="menu-item ${currentTab === 'dashboard' ? 'active' : ''}" data-target="dashboard">
+                        <a href="#dashboard" onclick="switchTab('dashboard'); return false;" class="menu-item ${currentTab === 'dashboard' ? 'active' : ''}" data-target="dashboard">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
                             <span>Painel da Turma</span>
                         </a>
-                        <a href="javascript:void(0)" onclick="switchTab('alunos-panel'); return false;" class="menu-item ${currentTab === 'alunos-panel' ? 'active' : ''}" data-target="alunos-panel">
+                        <a href="#alunos-panel" onclick="switchTab('alunos-panel'); return false;" class="menu-item ${currentTab === 'alunos-panel' ? 'active' : ''}" data-target="alunos-panel">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                             <span>Diagnóstico por Aluno</span>
                         </a>
-                        <a href="javascript:void(0)" onclick="switchTab('cronograma-habilidades'); return false;" class="menu-item ${currentTab === 'cronograma-habilidades' ? 'active' : ''}" data-target="cronograma-habilidades">
+                        <a href="#cronograma-habilidades" onclick="switchTab('cronograma-habilidades'); return false;" class="menu-item ${currentTab === 'cronograma-habilidades' ? 'active' : ''}" data-target="cronograma-habilidades">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="m9 16 2 2 4-4"/></svg>
                             <span>Cronograma & Plano de Aulas</span>
                         </a>
-                        <a href="javascript:void(0)" onclick="switchTab('matriz-descritores'); return false;" class="menu-item ${currentTab === 'matriz-descritores' ? 'active' : ''}" data-target="matriz-descritores">
+                        <a href="#matriz-descritores" onclick="switchTab('matriz-descritores'); return false;" class="menu-item ${currentTab === 'matriz-descritores' ? 'active' : ''}" data-target="matriz-descritores">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
                             <span>Habilidades a Recompor</span>
                         </a>
-                        <a href="javascript:void(0)" onclick="switchTab('sec-aplicacao-provas'); return false;" class="menu-item ${currentTab === 'sec-aplicacao-provas' || currentTab === 'aplicacao-provas' ? 'active' : ''}" data-target="aplicacao-provas">
+                        <a href="#sec-aplicacao-provas" onclick="switchTab('sec-aplicacao-provas'); return false;" class="menu-item ${currentTab === 'sec-aplicacao-provas' || currentTab === 'aplicacao-provas' ? 'active' : ''}" data-target="aplicacao-provas">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
                             <span>Desempenho em Simulados</span>
                         </a>
-                        <a href="javascript:void(0)" onclick="switchTab('biblioteca-recursos'); return false;" class="menu-item ${currentTab === 'biblioteca-recursos' ? 'active' : ''}" data-target="biblioteca-recursos">
+                        <a href="#biblioteca-recursos" onclick="switchTab('biblioteca-recursos'); return false;" class="menu-item ${currentTab === 'biblioteca-recursos' ? 'active' : ''}" data-target="biblioteca-recursos">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
                             <span>Recursos & Materiais</span>
                         </a>
@@ -390,23 +390,23 @@
                 <div class="menu-group">
                     <span class="menu-group-header" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-left: 12px; display: block; margin-bottom: 8px;">Gestão da Unidade Escolar</span>
                     <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <a href="javascript:void(0)" onclick="switchTab('dashboard'); return false;" class="menu-item ${currentTab === 'dashboard' ? 'active' : ''}" data-target="dashboard">
+                        <a href="#dashboard" onclick="switchTab('dashboard'); return false;" class="menu-item ${currentTab === 'dashboard' ? 'active' : ''}" data-target="dashboard">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
                             <span>Monitoramento da Escola</span>
                         </a>
-                        <a href="javascript:void(0)" onclick="switchTab('escolas-panel'); return false;" class="menu-item ${currentTab === 'escolas-panel' ? 'active' : ''}" data-target="escolas-panel">
+                        <a href="#escolas-panel" onclick="switchTab('escolas-panel'); return false;" class="menu-item ${currentTab === 'escolas-panel' ? 'active' : ''}" data-target="escolas-panel">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 8-4 8 4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="M18 5v17"/><path d="M6 5v17"/></svg>
                             <span>Desempenho por Turma</span>
                         </a>
-                        <a href="javascript:void(0)" onclick="switchTab('relatorios-monitoramento'); return false;" class="menu-item ${currentTab === 'relatorios-monitoramento' ? 'active' : ''}" data-target="relatorios-monitoramento">
+                        <a href="#relatorios-monitoramento" onclick="switchTab('relatorios-monitoramento'); return false;" class="menu-item ${currentTab === 'relatorios-monitoramento' ? 'active' : ''}" data-target="relatorios-monitoramento">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
                             <span>Evolução dos Simulados</span>
                         </a>
-                        <a href="javascript:void(0)" onclick="switchTab('matriz-descritores'); return false;" class="menu-item ${currentTab === 'matriz-descritores' ? 'active' : ''}" data-target="matriz-descritores">
+                        <a href="#matriz-descritores" onclick="switchTab('matriz-descritores'); return false;" class="menu-item ${currentTab === 'matriz-descritores' ? 'active' : ''}" data-target="matriz-descritores">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
                             <span>Matriz de Descritores (BNCC)</span>
                         </a>
-                        <a href="javascript:void(0)" onclick="switchTab('metas-ideb'); return false;" class="menu-item ${currentTab === 'metas-ideb' ? 'active' : ''}" data-target="metas-ideb">
+                        <a href="#metas-ideb" onclick="switchTab('metas-ideb'); return false;" class="menu-item ${currentTab === 'metas-ideb' ? 'active' : ''}" data-target="metas-ideb">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
                             <span>Acompanhamento de Metas (PDE)</span>
                         </a>

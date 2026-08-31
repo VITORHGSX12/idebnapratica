@@ -565,7 +565,7 @@
                     </div>
 
                     <div>
-                        <a href="javascript:void(0)" onclick="switchTab('metas-ideb'); return false;" class="btn btn-outline" style="font-size: var(--text-xs); padding: 5px 12px; height: 30px; font-weight: 600;">
+                        <a href="#metas-ideb" onclick="switchTab('metas-ideb'); return false;" class="btn btn-outline" style="font-size: var(--text-xs); padding: 5px 12px; height: 30px; font-weight: 600;">
                             <span>Ver Plano de Metas por Escola</span>
                             <i data-lucide="arrow-right" style="width: 13px; height: 13px;"></i>
                         </a>

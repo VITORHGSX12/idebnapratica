@@ -122,7 +122,7 @@
        11. GRADIENTES INSTITUCIONAIS
        --------------------------------------------------------------------- */
     --gradient-banner:   linear-gradient(135deg, #1A3D63 0%, #2A5A8A 50%, #4A7FA7 100%);
-    --gradient-kpi-card: linear-gradient(145deg, #FFFFFF 0%, #F0F6FB 60%, #E2EEF7 100%);
+    --gradient-kpi-card: linear-gradient(135deg, #4A7FA7 0%, #B3CFE5 100%);
 
     /* ---------------------------------------------------------------------
        12. RETROCOMPATIBILIDADE MAPEADA (ALIASES)
@@ -173,5 +173,5 @@ body.dark-mode {
     --color-accent-border:      #4A7FA7;
 
     --gradient-banner:   linear-gradient(135deg, #0A1931 0%, #142E4C 50%, #1A3D63 100%);
-    --gradient-kpi-card: linear-gradient(145deg, #1A3D63 0%, #142F4D 60%, #0E243E 100%);
+    --gradient-kpi-card: linear-gradient(135deg, #1A3D63 0%, #4A7FA7 100%);
 }
