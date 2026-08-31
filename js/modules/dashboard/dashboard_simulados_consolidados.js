@@ -109,13 +109,19 @@
             elAvgDisplay.textContent = 'Média da Rede: ' + networkAverage + ' pts';
         }
 
-        // Destacar barras acima/abaixo da média com a nova paleta institucional
+        var t = (global.ChartTheme && global.ChartTheme.getTheme) ? global.ChartTheme.getTheme() : {
+            isDark: false, textPrimary: '#0A1931', textSecondary: '#1A3D63', grid: 'rgba(10, 25, 49, 0.08)',
+            simuladoAcimaMedia: '#0D9488', simuladoAcimaHover: '#0F766E',
+            simuladoAbaixoMedia: '#4A7FA7', simuladoAbaixoHover: '#1A3D63'
+        };
+
+        // Destacar barras acima/abaixo da média com a paleta dinâmica de alto contraste
         var backgroundColors = values.map(function(val) {
-            return val >= networkAverage ? '#4A7FA7' : '#1A3D63';
+            return val >= networkAverage ? t.simuladoAcimaMedia : t.simuladoAbaixoMedia;
         });
 
         var hoverColors = values.map(function(val) {
-            return val >= networkAverage ? '#3A6F97' : '#0A1931';
+            return val >= networkAverage ? t.simuladoAcimaHover : t.simuladoAbaixoHover;
         });
 
         if (typeof Chart === 'undefined') {
@@ -126,9 +132,8 @@
             try { simuladosChartInstance.destroy(); } catch(e) {}
         }
 
-        var isDark = document.body.classList.contains('dark-mode') || document.documentElement.classList.contains('dark-mode');
-        var textColor = isDark ? '#F6FAFD' : '#0A1931';
-        var gridColor = isDark ? 'rgba(179, 207, 229, 0.12)' : 'rgba(10, 25, 49, 0.08)';
+        var textColor = t.textPrimary;
+        var gridColor = t.grid;
 
         try {
             simuladosChartInstance = new Chart(canvas, {
@@ -157,6 +162,12 @@
                     plugins: {
                         legend: { display: false },
                         tooltip: {
+                            backgroundColor: t.tooltipBg || 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#FFFFFF',
+                            bodyColor: '#F8FAFC',
+                            borderColor: t.tooltipBorder || 'rgba(255, 255, 255, 0.15)',
+                            borderWidth: 1,
+                            cornerRadius: 8,
                             callbacks: {
                                 label: function(context) {
                                     var val = context.raw;

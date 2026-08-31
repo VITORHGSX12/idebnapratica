@@ -93,6 +93,16 @@
 
         showToast('Tema alterado para modo ' + (isDark ? 'Escuro' : 'Claro'), isDark ? 'moon' : 'sun');
 
+        // Notificar sistema e atualizar todos os gráficos de forma reativa
+        if (typeof window !== 'undefined' && window.dispatchEvent) {
+            try {
+                window.dispatchEvent(new CustomEvent('themeChanged', { detail: { isDark: isDark } }));
+            } catch(e) {}
+        }
+        if (global.ChartTheme && typeof global.ChartTheme.refreshAll === 'function') {
+            global.ChartTheme.refreshAll();
+        }
+
         var activeTabEl = document.querySelector('.menu-item.active');
         var activeTab = activeTabEl ? activeTabEl.getAttribute('data-target') : '';
         if (activeTab === 'doc-tecnica' && typeof global.renderMermaidDiagram === 'function') {

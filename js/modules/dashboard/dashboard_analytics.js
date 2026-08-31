@@ -56,6 +56,17 @@
         var circlesHtml = '';
         var labelsHtml = '';
 
+        var t = (global.ChartTheme && global.ChartTheme.getTheme) ? global.ChartTheme.getTheme() : {
+            isDark: false, textPrimary: '#0A1931', textSecondary: '#1A3D63', textMuted: '#4A7FA7', grid: 'rgba(10, 25, 49, 0.09)',
+            iniciais: '#2563EB', finais: '#0D9488', meta: '#D97706'
+        };
+
+        var colorObs = t.iniciais;
+        var colorSim = t.finais;
+        var colorMeta = t.meta;
+        var gridStroke = t.grid;
+        var textMuted = t.isDark ? '#B3CFE5' : '#64748B';
+
         historyPoints.forEach(function(pt, idx) {
             var x = getX(idx, historyPoints.length);
             var yObs = getY(pt.score);
@@ -69,46 +80,46 @@
                 targetPath += ' L ' + x + ' ' + yTgt;
             }
 
-            var color = pt.isSim ? '#059669' : '#1D4ED8';
+            var color = pt.isSim ? colorSim : colorObs;
             circlesHtml += `
-                <circle cx="${x}" cy="${yObs}" r="5" fill="${color}" stroke="#FFFFFF" stroke-width="2">
+                <circle cx="${x}" cy="${yObs}" r="5" fill="${color}" stroke="${t.isDark ? '#0A1931' : '#FFFFFF'}" stroke-width="2">
                     <title>${pt.year}: ${pt.score}</title>
                 </circle>
                 <text x="${x}" y="${yObs - 9}" text-anchor="middle" font-size="10" font-weight="700" fill="${color}" font-family="var(--font-display)">${pt.score}</text>
             `;
 
             labelsHtml += `
-                <text x="${x}" y="${height - 10}" text-anchor="middle" font-size="11" font-weight="${pt.isSim ? '700' : '500'}" fill="var(--color-text-secondary)">${pt.year}</text>
+                <text x="${x}" y="${height - 10}" text-anchor="middle" font-size="11" font-weight="${pt.isSim ? '700' : '500'}" fill="${t.textPrimary}">${pt.year}</text>
             `;
         });
 
         container.innerHTML = `
             <svg viewBox="0 0 ${width} ${height}" width="100%" height="210" style="overflow: visible; font-family: var(--font-body);">
-                <line x1="${paddingLeft}" y1="${getY(6.0)}" x2="${width - paddingRight}" y2="${getY(6.0)}" stroke="var(--color-border-subtle)" stroke-dasharray="3,3" stroke-width="1"/>
-                <text x="${paddingLeft - 10}" y="${getY(6.0) + 3}" fill="var(--color-text-muted)" font-size="10" font-weight="600" text-anchor="end">6.0</text>
+                <line x1="${paddingLeft}" y1="${getY(6.0)}" x2="${width - paddingRight}" y2="${getY(6.0)}" stroke="${gridStroke}" stroke-dasharray="3,3" stroke-width="1"/>
+                <text x="${paddingLeft - 10}" y="${getY(6.0) + 3}" fill="${textMuted}" font-size="10" font-weight="600" text-anchor="end">6.0</text>
 
-                <line x1="${paddingLeft}" y1="${getY(5.0)}" x2="${width - paddingRight}" y2="${getY(5.0)}" stroke="var(--color-border-subtle)" stroke-dasharray="3,3" stroke-width="1"/>
-                <text x="${paddingLeft - 10}" y="${getY(5.0) + 3}" fill="var(--color-text-muted)" font-size="10" font-weight="600" text-anchor="end">5.0</text>
+                <line x1="${paddingLeft}" y1="${getY(5.0)}" x2="${width - paddingRight}" y2="${getY(5.0)}" stroke="${gridStroke}" stroke-dasharray="3,3" stroke-width="1"/>
+                <text x="${paddingLeft - 10}" y="${getY(5.0) + 3}" fill="${textMuted}" font-size="10" font-weight="600" text-anchor="end">5.0</text>
 
-                <line x1="${paddingLeft}" y1="${getY(4.0)}" x2="${width - paddingRight}" y2="${getY(4.0)}" stroke="var(--color-border-subtle)" stroke-dasharray="3,3" stroke-width="1"/>
-                <text x="${paddingLeft - 10}" y="${getY(4.0) + 3}" fill="var(--color-text-muted)" font-size="10" font-weight="600" text-anchor="end">4.0</text>
+                <line x1="${paddingLeft}" y1="${getY(4.0)}" x2="${width - paddingRight}" y2="${getY(4.0)}" stroke="${gridStroke}" stroke-dasharray="3,3" stroke-width="1"/>
+                <text x="${paddingLeft - 10}" y="${getY(4.0) + 3}" fill="${textMuted}" font-size="10" font-weight="600" text-anchor="end">4.0</text>
 
-                <line x1="${paddingLeft}" y1="${getY(3.0)}" x2="${width - paddingRight}" y2="${getY(3.0)}" stroke="var(--color-border-subtle)" stroke-dasharray="3,3" stroke-width="1"/>
-                <text x="${paddingLeft - 10}" y="${getY(3.0) + 3}" fill="var(--color-text-muted)" font-size="10" font-weight="600" text-anchor="end">3.0</text>
+                <line x1="${paddingLeft}" y1="${getY(3.0)}" x2="${width - paddingRight}" y2="${getY(3.0)}" stroke="${gridStroke}" stroke-dasharray="3,3" stroke-width="1"/>
+                <text x="${paddingLeft - 10}" y="${getY(3.0) + 3}" fill="${textMuted}" font-size="10" font-weight="600" text-anchor="end">3.0</text>
 
-                <path d="${targetPath}" fill="none" stroke="#475569" stroke-width="1.75" stroke-dasharray="4,4"/>
-                <path d="${observedPath}" fill="none" stroke="#1D4ED8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="${targetPath}" fill="none" stroke="${colorMeta}" stroke-width="1.75" stroke-dasharray="4,4"/>
+                <path d="${observedPath}" fill="none" stroke="${colorObs}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                 
                 ${circlesHtml}
                 ${labelsHtml}
             </svg>
             
             <div style="display: flex; justify-content: center; gap: 20px; margin-top: 10px; font-size: var(--text-xs); font-weight: 600;">
-                <span style="display: flex; align-items: center; gap: 6px; color: #1D4ED8;">
-                    <span style="width: 12px; height: 3px; background: #1D4ED8; border-radius: 2px;"></span> IDEB Observado / Simulado
+                <span style="display: flex; align-items: center; gap: 6px; color: ${colorObs};">
+                    <span style="width: 12px; height: 3px; background: ${colorObs}; border-radius: 2px;"></span> IDEB Observado / Simulado
                 </span>
-                <span style="display: flex; align-items: center; gap: 6px; color: #475569;">
-                    <span style="width: 12px; height: 2px; border-top: 2px dashed #475569;"></span> Meta Projetada INEP
+                <span style="display: flex; align-items: center; gap: 6px; color: ${colorMeta};">
+                    <span style="width: 12px; height: 2px; border-top: 2px dashed ${colorMeta};"></span> Meta Projetada INEP
                 </span>
             </div>
         `;
