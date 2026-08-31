@@ -1,4 +1,8 @@
 
+if (typeof window !== 'undefined' && typeof global === 'undefined') {
+    window.global = window;
+}
+
 // =========================================================
 // FRONTEND: extrai o slug do município a partir do subdomínio
 // e injeta em toda chamada apiFetch pro backend.
@@ -47,6 +51,15 @@ if (typeof window !== 'undefined') {
 // =========================================================================
 // GLOBAL INSTANCES & STATE INITIALIZATION (HOISTED AT TOP OF SCRIPT)
 // =========================================================================
+var activeDiarySchool = 'UI JOSE CORREA LIMA';
+var activeDiaryClass = '5º Ano A';
+if (typeof window !== 'undefined') {
+    window.activeDiarySchool = activeDiarySchool;
+    window.activeDiaryClass = activeDiaryClass;
+    window.getActiveDiarySchool = function() { return window.activeDiarySchool || 'UI JOSE CORREA LIMA'; };
+    window.setActiveDiarySchool = function(s) { window.activeDiarySchool = s || 'UI JOSE CORREA LIMA'; activeDiarySchool = window.activeDiarySchool; };
+}
+
 var dashGoncalvesDiasChartInstance = null;
 var dashIniciaisChartInstance = null;
 var dashFinaisChartInstance = null;
@@ -7952,9 +7965,11 @@ if (document.readyState === 'loading') {
     }
 
     // Ranking and subtab delegation to js/modules/metas/
-    window.renderRankingGeralMaTable = function() {
-        if (typeof global.renderRankingGeralMaTable === 'function') global.renderRankingGeralMaTable();
-    };
+    if (typeof window.renderRankingGeralMaTable !== 'function') {
+        window.renderRankingGeralMaTable = function() {
+            if (typeof renderRankingGeralMaTable === 'function') return renderRankingGeralMaTable();
+        };
+    }
 
 
     // ==========================================

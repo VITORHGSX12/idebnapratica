@@ -227,7 +227,7 @@
                     <g transform="translate(132, 8)">
                         <polygon points="24,4 44,13 24,22 4,13" fill="url(#ill-cap)" />
                         <polygon points="24,18 40,12 40,18 24,24 8,18 8,12" fill="#0A1931" opacity="0.85" />
-                        <circle cx="24, 13" r="1.8" fill="#B3CFE5" />
+                        <circle cx="24" cy="13" r="1.8" fill="#B3CFE5" />
                         <path d="M 24 13 Q 34 16 38 27" fill="none" stroke="#F6FAFD" stroke-width="1.3" />
                         <circle cx="38" cy="28" r="1.8" fill="#5DE4BD" />
                     </g>

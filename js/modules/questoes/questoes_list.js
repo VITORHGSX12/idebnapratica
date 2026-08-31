@@ -188,6 +188,17 @@
             };
         });
 
+        // Botões de exclusão de questão
+        questionsContainer.querySelectorAll('.btn-delete-question').forEach(function(btn) {
+            btn.onclick = function() {
+                var id = btn.getAttribute('data-id');
+                if (id) handleDeleteQuestion(id);
+            };
+        });
+
+        if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
+    }
+
     /**
      * Sincroniza o acervo de questões com o PostgreSQL
      */
@@ -217,6 +228,11 @@
 
         if (typeof global.showToast === 'function') global.showToast('Questão removida do banco!', 'trash-2');
     }
+
+    /**
+     * Inicializador do Módulo de Listagem de Questões
+     */
+    function initQuestionsListModule() {
         ['filter-matrix', 'filter-stage', 'filter-subject', 'filter-difficulty'].forEach(function(id) {
             var el = document.getElementById(id);
             if (el) el.onchange = renderQuestions;
@@ -361,6 +377,12 @@
     // Exposição Global
     global.renderQuestions = renderQuestions;
     global.initQuestionsListModule = initQuestionsListModule;
+    global.handleDeleteQuestion = handleDeleteQuestion;
+    if (typeof window !== 'undefined') {
+        window.renderQuestions = renderQuestions;
+        window.initQuestionsListModule = initQuestionsListModule;
+        window.handleDeleteQuestion = handleDeleteQuestion;
+    }
 
     // Auto-inicialização
     if (document.readyState === 'loading') {
