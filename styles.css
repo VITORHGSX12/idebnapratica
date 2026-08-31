@@ -246,23 +246,30 @@ body.dark-mode {
 .sidebar-logo-icon {
     width: 34px;
     height: 34px;
-    background: #0F172A;
-    border-radius: 10px;
+    background: transparent;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #FFFFFF;
     flex-shrink: 0;
+    overflow: hidden;
+}
+
+.sidebar-logo-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
 }
 
 body.dark-mode .sidebar-logo-icon {
-    background: #3B82F6;
+    background: transparent;
 }
 
 .sidebar-logo-icon i,
 .sidebar-logo-icon svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     color: #FFFFFF;
     stroke: #FFFFFF;
     stroke-width: 2.2;
