@@ -122,22 +122,51 @@
         carregarTurmasParaEspelho();
     }
 
-    function carregarTurmasParaEspelho() {
+    async function carregarTurmasParaEspelho() {
+        var schoolSelect = document.getElementById('score-school-select');
         var classSelect = document.getElementById('score-class-select');
-        if (!classSelect) return;
+        if (!schoolSelect || !classSelect) return;
 
-        var turmas = global.dbTurmas || [
-            { id: 'turma_5a', nome: '5º Ano A — Matutino' },
-            { id: 'turma_5b', nome: '5º Ano B — Vespertino' },
-            { id: 'turma_9a', nome: '9º Ano A — Matutino' }
-        ];
+        var selectedSchoolVal = schoolSelect.value;
+        var selectedSchoolText = schoolSelect.options[schoolSelect.selectedIndex] ? schoolSelect.options[schoolSelect.selectedIndex].text : '';
 
-        classSelect.innerHTML = turmas.map(function(t) {
-            return `<option value="${t.id}">${t.nome}</option>`;
+        var allClasses = typeof global.getOfficialClassesState === 'function' ? global.getOfficialClassesState() : (global.dbTurmas || []);
+        
+        // Se a lista de turmas estiver vazia, busca da API
+        if (allClasses.length === 0) {
+            try {
+                var token = localStorage.getItem('auth_token') || localStorage.getItem('token') || '';
+                var headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+                var res = await fetch('/api/classes', { headers: headers });
+                if (res.ok) {
+                    var data = await res.json();
+                    if (Array.isArray(data)) {
+                        allClasses = data;
+                        if (typeof global.saveOfficialClassesState === 'function') global.saveOfficialClassesState(data);
+                    }
+                }
+            } catch(e) {
+                console.warn('[Espelho Load Classes API Fallback]', e);
+            }
+        }
+
+        var filteredTurmas = allClasses.filter(function(t) {
+            var matchId = (t.escola_id && t.escola_id.toString() === selectedSchoolVal.toString());
+            var matchNome = (t.escola && (t.escola.toUpperCase().includes(selectedSchoolText.toUpperCase()) || selectedSchoolText.toUpperCase().includes(t.escola.toUpperCase())));
+            return matchId || matchNome;
+        });
+
+        if (filteredTurmas.length === 0) {
+            filteredTurmas = allClasses;
+        }
+
+        classSelect.innerHTML = filteredTurmas.map(function(t) {
+            var label = t.nome + (t.serie ? ' (' + t.serie + ')' : '');
+            return `<option value="${t.id}">${label}</option>`;
         }).join('');
 
-        if (turmas.length > 0) {
-            classSelect.value = turmas[0].id;
+        if (filteredTurmas.length > 0) {
+            classSelect.value = filteredTurmas[0].id;
         }
 
         renderEspelhoLancamentoTable();
@@ -161,25 +190,32 @@
         if (btnLancarTab) btnLancarTab.click();
     }
 
-    function getAlunosMockPorTurma(turmaId) {
-        var rawAlunos = global.dbAlunos || [];
-        if (rawAlunos.length > 0) return rawAlunos.slice(0, 15);
+    async function getAlunosReaisPorTurma(turmaId, escolaNome, turmaNome) {
+        // 1. Tentar buscar da API de turma
+        if (turmaId && !turmaId.startsWith('turma_')) {
+            try {
+                var token = localStorage.getItem('auth_token') || localStorage.getItem('token') || '';
+                var headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+                var res = await fetch('/api/classes/' + encodeURIComponent(turmaId) + '/students', { headers: headers });
+                if (res.ok) {
+                    var apiAlunos = await res.json();
+                    if (Array.isArray(apiAlunos) && apiAlunos.length > 0) return apiAlunos;
+                }
+            } catch(e) {}
+        }
 
-        return [
-            { id: 'al_001', matricula: '2026001', nome: 'Ana Clara Silva Santos' },
-            { id: 'al_002', matricula: '2026002', nome: 'Lucas Gabriel Oliveira' },
-            { id: 'al_003', matricula: '2026003', nome: 'Maria Eduarda Fernandes' },
-            { id: 'al_004', matricula: '2026004', nome: 'João Pedro Carvalho' },
-            { id: 'al_005', matricula: '2026005', nome: 'Beatriz Costa Lima' },
-            { id: 'al_006', matricula: '2026006', nome: 'Guilherme Souza Ramos' },
-            { id: 'al_007', matricula: '2026007', nome: 'Larissa Alves Moreira' },
-            { id: 'al_008', matricula: '2026008', nome: 'Matheus Henrique Cruz' },
-            { id: 'al_009', matricula: '2026009', nome: 'Yasmin Ribeiro Dias' },
-            { id: 'al_010', matricula: '2026010', nome: 'Enzo Gabriel Castro' }
-        ];
+        // 2. Buscar do estado local de estudantes
+        var allStudents = typeof global.getOfficialStudentsState === 'function' ? global.getOfficialStudentsState() : (global.dbAlunos || []);
+        var filtered = allStudents.filter(function(st) {
+            var matchTurma = (st.turmaId === turmaId) || (turmaNome && st.turma && st.turma.toUpperCase() === turmaNome.toUpperCase());
+            var matchEscola = !escolaNome || (st.escola && (st.escola.toUpperCase().includes(escolaNome.toUpperCase()) || escolaNome.toUpperCase().includes(st.escola.toUpperCase())));
+            return matchTurma && matchEscola;
+        });
+
+        return filtered;
     }
 
-    function renderEspelhoLancamentoTable() {
+    async function renderEspelhoLancamentoTable() {
         var evalSelect = document.getElementById('score-eval-select');
         var schoolSelect = document.getElementById('score-school-select');
         var classSelect = document.getElementById('score-class-select');
@@ -191,7 +227,9 @@
 
         var eventoId = evalSelect.value;
         var escolaId = schoolSelect.value;
+        var escolaNome = schoolSelect.options[schoolSelect.selectedIndex] ? schoolSelect.options[schoolSelect.selectedIndex].text : '';
         var turmaId = classSelect.value;
+        var turmaNome = classSelect.options[classSelect.selectedIndex] ? classSelect.options[classSelect.selectedIndex].text : '';
 
         if (!eventoId || !escolaId || !turmaId) {
             if (placeholder) placeholder.classList.remove('hidden');
@@ -223,17 +261,20 @@
             gabaritoOficial.push(['A', 'B', 'C', 'D'][gabaritoOficial.length % 4]);
         }
 
-        var alunos = getAlunosMockPorTurma(turmaId);
+        var alunos = await getAlunosReaisPorTurma(turmaId, escolaNome, turmaNome);
         var respostasDb = typeof global.getRespostasState === 'function' ? global.getRespostasState() : {};
         var key = eventoId + '_' + escolaId + '_' + turmaId;
         var turmaRespostas = respostasDb[key] || {};
 
+        if (alunos.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="' + (numQuestoes + 5) + '" style="padding: 32px; text-align: center; color: var(--color-text-muted);">Nenhum estudante matriculado nesta turma para lançamento.</td></tr>';
+            return;
+        }
+
         tbody.innerHTML = alunos.map(function(aluno, aIdx) {
             var alData = turmaRespostas[aluno.id] || {
                 statusPresenca: 'PRESENTE',
-                respostas: Array.from({ length: numQuestoes }).map(function(_, i) {
-                    return (Math.random() < 0.75) ? gabaritoOficial[i] : ['A','B','C','D'][Math.floor(Math.random()*4)];
-                })
+                respostas: Array.from({ length: numQuestoes }).map(function() { return ''; })
             };
 
             var presenca = alData.statusPresenca || 'PRESENTE';

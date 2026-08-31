@@ -31,7 +31,7 @@
         }
     }
 
-    function handleSaveCreateClass(event) {
+    async function handleSaveCreateClass(event) {
         if (event) event.preventDefault();
 
         var schoolName = document.getElementById('create-class-school-name').value;
@@ -42,6 +42,44 @@
         if (!className) {
             alert('Por favor, informe a identificação da turma.');
             return;
+        }
+
+        try {
+            var token = localStorage.getItem('auth_token') || localStorage.getItem('token') || '';
+            var headers = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = 'Bearer ' + token;
+
+            var res = await fetch('/api/classes', {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({
+                    nome: className,
+                    serie: classStage,
+                    etapa: classStage,
+                    turno: classShift,
+                    escola: schoolName
+                })
+            });
+
+            var json = await res.json();
+            if (res.ok && json.success) {
+                var newClass = json.class;
+                var allClasses = typeof global.getOfficialClassesState === 'function' ? global.getOfficialClassesState() : [];
+                allClasses.push(newClass);
+                if (typeof global.saveOfficialClassesState === 'function') {
+                    global.saveOfficialClassesState(allClasses);
+                }
+                closeCreateClassModal();
+                if (typeof global.renderSchoolClassesTab === 'function') {
+                    global.renderSchoolClassesTab(schoolName);
+                }
+                if (typeof global.showToast === 'function') {
+                    global.showToast('Turma "' + className + '" cadastrada com sucesso no banco de dados!', 'check');
+                }
+                return;
+            }
+        } catch(e) {
+            console.warn('[Create Class API Fallback]', e);
         }
 
         var allClasses = typeof global.getOfficialClassesState === 'function' ? global.getOfficialClassesState() : [];
@@ -59,10 +97,6 @@
             global.saveOfficialClassesState(allClasses);
         }
 
-        if (typeof global.enqueueSyncAction === 'function') {
-            global.enqueueSyncAction('turma', 'CREATE', newClass);
-        }
-
         closeCreateClassModal();
         if (typeof global.renderSchoolClassesTab === 'function') {
             global.renderSchoolClassesTab(schoolName);
@@ -73,7 +107,7 @@
         }
     }
 
-    function openViewClassStudentsModal(classId, className, schoolName) {
+    async function openViewClassStudentsModal(classId, className, schoolName) {
         var modal = document.getElementById('modal-view-class-students');
         if (!modal) return;
 
@@ -81,12 +115,37 @@
         var subtitleEl = document.getElementById('view-class-subtitle');
         var tbody = document.getElementById('view-class-students-tbody');
 
-        var allStudents = typeof global.getOfficialStudentsState === 'function' ? global.getOfficialStudentsState() : [];
-        var classStudents = allStudents.filter(function(st) {
-            return st.escola === schoolName && (st.turmaId === classId || st.turma === className);
-        });
-
         if (titleEl) titleEl.textContent = className;
+        if (subtitleEl) subtitleEl.textContent = schoolName + ' • Carregando estudantes...';
+        if (tbody) tbody.innerHTML = '<tr><td colspan="4" style="padding: 24px; text-align: center; color: var(--color-text-muted);">Carregando estudantes da turma...</td></tr>';
+
+        modal.style.display = 'flex';
+        modal.classList.remove('hidden');
+
+        var classStudents = [];
+        try {
+            var token = localStorage.getItem('auth_token') || localStorage.getItem('token') || '';
+            var headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+            if (classId && !classId.startsWith('turma_')) {
+                var res = await fetch('/api/classes/' + encodeURIComponent(classId) + '/students', { headers: headers });
+                if (res.ok) {
+                    var data = await res.json();
+                    if (Array.isArray(data)) classStudents = data;
+                }
+            }
+        } catch(e) {
+            console.warn('[Fetch Class Students Fallback]', e);
+        }
+
+        if (classStudents.length === 0) {
+            var allStudents = typeof global.getOfficialStudentsState === 'function' ? global.getOfficialStudentsState() : [];
+            classStudents = allStudents.filter(function(st) {
+                var matchEscola = (st.escola || '').toUpperCase().includes(schoolName.toUpperCase()) || schoolName.toUpperCase().includes((st.escola || '').toUpperCase());
+                var matchTurma = (st.turmaId === classId) || ((st.turma || '').toUpperCase() === className.toUpperCase());
+                return matchEscola && matchTurma;
+            });
+        }
+
         if (subtitleEl) subtitleEl.textContent = schoolName + ' • ' + classStudents.length + ' alunos matriculados';
 
         if (tbody) {
@@ -106,7 +165,7 @@
                                 <strong style="color: var(--color-brand-primary); font-size: var(--text-sm);">${st.nome}</strong>
                             </td>
                             <td style="padding: 8px 14px; font-size: var(--text-xs); color: var(--color-text-secondary);">
-                                ${st.dataNascimento || '-'}
+                                ${st.dataNascimento || st.nascimento || '-'}
                             </td>
                         </tr>
                     `;
@@ -114,8 +173,9 @@
             }
         }
 
-        modal.style.display = 'flex';
-        modal.classList.remove('hidden');
+        if (window.lucide && typeof lucide.createIcons === 'function') {
+            try { lucide.createIcons(); } catch(e) {}
+        }
     }
 
     function closeViewClassStudentsModal() {

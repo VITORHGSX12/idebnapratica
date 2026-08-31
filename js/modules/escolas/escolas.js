@@ -20,6 +20,9 @@
     // -------------------------------------------------------------------------
 
     function getSeedData() {
+        if (typeof global.officialStudentsSeed !== 'undefined' && global.officialStudentsSeed) {
+            return global.officialStudentsSeed;
+        }
         if (typeof global.OFFICIAL_IMPORTED_STUDENTS_SEED !== 'undefined' && global.OFFICIAL_IMPORTED_STUDENTS_SEED) {
             return global.OFFICIAL_IMPORTED_STUDENTS_SEED;
         }
