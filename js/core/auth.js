@@ -258,6 +258,10 @@
             global.safeCreateIcons();
         }
 
+        if (typeof global.initDashboardScrollReveal === 'function') {
+            global.initDashboardScrollReveal();
+        }
+
         // Progresso concluído
         if (progressBar) progressBar.style.width = '100%';
         if (percentText) percentText.textContent = '100%';
