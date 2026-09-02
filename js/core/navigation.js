@@ -149,6 +149,7 @@
                 if (typeof global.renderEventosTable === 'function') global.renderEventosTable();
             } else if (resolvedId === 'dashboard' || resolvedId === 'sec-dashboard') {
                 if (typeof global.renderDashboardComplete === 'function') global.renderDashboardComplete();
+                if (typeof global.initDashboardScrollReveal === 'function') global.initDashboardScrollReveal();
             } else if (resolvedId === 'escolas-panel') {
                 if (typeof global.renderDbSchools === 'function') global.renderDbSchools();
             } else if (resolvedId === 'alunos-panel') {

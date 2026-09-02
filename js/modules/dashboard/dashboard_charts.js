@@ -29,6 +29,12 @@
             Chart.defaults.interaction.mode = 'index';
             Chart.defaults.interaction.intersect = false;
 
+            // Animação nativa suave no Chart.js
+            Chart.defaults.animation = Chart.defaults.animation || {};
+            var prefersReduced = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            Chart.defaults.animation.duration = prefersReduced ? 0 : 1000;
+            Chart.defaults.animation.easing = 'easeOutQuart';
+
             Chart.defaults.plugins = Chart.defaults.plugins || {};
             Chart.defaults.plugins.tooltip = Chart.defaults.plugins.tooltip || {};
             Chart.defaults.plugins.tooltip.enabled = true;
@@ -72,117 +78,63 @@
         if (!canvas || !canvas.getContext) return;
         var ctx = canvas.getContext('2d');
         if (!ctx) return;
-        
-        var parentW = canvas.parentElement ? canvas.parentElement.clientWidth : 600;
-        var parentH = canvas.parentElement ? canvas.parentElement.clientHeight : 280;
-        var width = parentW > 0 ? parentW : 600;
-        var height = parentH > 0 ? parentH : 280;
-        
-        canvas.width = width;
-        canvas.height = height;
+        var width = (canvas.parentElement && canvas.parentElement.clientWidth > 0) ? canvas.parentElement.clientWidth : 600;
+        var height = (canvas.parentElement && canvas.parentElement.clientHeight > 0) ? canvas.parentElement.clientHeight : 280;
+        canvas.width = width; canvas.height = height;
         ctx.clearRect(0, 0, width, height);
-        
-        var paddingLeft = 35;
-        var paddingRight = 15;
-        var paddingTop = 32;
-        var paddingBottom = 35;
-        var chartW = width - paddingLeft - paddingRight;
-        var chartH = height - paddingTop - paddingBottom;
-        
-        // Desenhando Legenda no topo
-        var legendX = paddingLeft;
+        var pL = 35, pR = 15, pT = 32, pB = 35;
+        var cW = width - pL - pR, cH = height - pT - pB;
+        var legendX = pL;
         datasets.forEach(function(ds) {
             if (!ds.label) return;
             var color = ds.borderColor || (typeof ds.backgroundColor === 'string' ? ds.backgroundColor : '#6366f1');
-            
-            ctx.fillStyle = color;
-            ctx.beginPath();
-            ctx.arc(legendX + 5, 12, 4, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.fillStyle = '#475569';
-            ctx.font = 'bold 10.5px sans-serif';
-            ctx.textAlign = 'left';
+            ctx.fillStyle = color; ctx.beginPath(); ctx.arc(legendX + 5, 12, 4, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#475569'; ctx.font = 'bold 10.5px sans-serif'; ctx.textAlign = 'left';
             ctx.fillText(ds.label, legendX + 13, 15);
-            
-            legendX += ctx.measureText(ds.label).width + 30;
+            legendX += ctx.measureText(ds.label).width + 25;
         });
-
-        // Linhas de grade
-        ctx.strokeStyle = 'rgba(226, 232, 240, 0.6)';
-        ctx.lineWidth = 1;
-        var steps = 4;
-        for (var i = 0; i <= steps; i++) {
-            var y = paddingTop + (chartH * i) / steps;
-            ctx.beginPath();
-            ctx.moveTo(paddingLeft, y);
-            ctx.lineTo(width - paddingRight, y);
-            ctx.stroke();
-            
-            var val = (maxY - ((maxY - minY) * i) / steps).toFixed(1);
-            ctx.fillStyle = '#64748b';
-            ctx.font = '10px sans-serif';
-            ctx.textAlign = 'right';
-            ctx.fillText(val, paddingLeft - 6, y + 3);
+        ctx.strokeStyle = 'rgba(226, 232, 240, 0.6)'; ctx.lineWidth = 1;
+        for (var i = 0; i <= 4; i++) {
+            var y = pT + (cH * i) / 4;
+            ctx.beginPath(); ctx.moveTo(pL, y); ctx.lineTo(width - pR, y); ctx.stroke();
+            var val = (maxY - ((maxY - minY) * i) / 4).toFixed(1);
+            ctx.fillStyle = '#64748b'; ctx.font = '10px sans-serif'; ctx.textAlign = 'right';
+            ctx.fillText(val, pL - 6, y + 3);
         }
-        
-        var n = labels.length;
-        var stepX = chartW / n;
-        
+        var stepX = cW / labels.length;
         datasets.forEach(function(ds) {
             if (ds.type === 'bar') {
                 var barW = Math.min(stepX * 0.35, 20);
                 ds.data.forEach(function(val, idx) {
                     if (val === null || val === undefined) return;
-                    var x = paddingLeft + idx * stepX + stepX / 2 - barW / 2;
-                    var norm = (val - minY) / (maxY - minY);
-                    var h = Math.max(0, norm * chartH);
-                    var y = paddingTop + chartH - h;
-                    
+                    var x = pL + idx * stepX + stepX / 2 - barW / 2;
+                    var h = Math.max(0, ((val - minY) / (maxY - minY)) * cH);
                     ctx.fillStyle = typeof ds.backgroundColor === 'string' ? ds.backgroundColor : '#6366f1';
-                    ctx.fillRect(x, y, barW, h);
-                    
-                    ctx.fillStyle = '#475569';
-                    ctx.font = 'bold 10px sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.fillText(val.toFixed(1), x + barW / 2, y - 4);
+                    ctx.fillRect(x, pT + cH - h, barW, h);
+                    ctx.fillStyle = '#475569'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+                    ctx.fillText(val.toFixed(1), x + barW / 2, pT + cH - h - 4);
                 });
             } else if (ds.type === 'line') {
-                ctx.beginPath();
-                var first = true;
+                ctx.beginPath(); var first = true;
                 ds.data.forEach(function(val, idx) {
                     if (val === null || val === undefined) return;
-                    var x = paddingLeft + idx * stepX + stepX / 2;
-                    var norm = (val - minY) / (maxY - minY);
-                    var y = paddingTop + chartH - norm * chartH;
-                    if (first) { ctx.moveTo(x, y); first = false; }
-                    else { ctx.lineTo(x, y); }
+                    var x = pL + idx * stepX + stepX / 2;
+                    var y = pT + cH - ((val - minY) / (maxY - minY)) * cH;
+                    if (first) { ctx.moveTo(x, y); first = false; } else { ctx.lineTo(x, y); }
                 });
-                ctx.strokeStyle = ds.borderColor || '#10b981';
-                ctx.lineWidth = 2.5;
-                ctx.stroke();
-                
+                ctx.strokeStyle = ds.borderColor || '#10b981'; ctx.lineWidth = 2.5; ctx.stroke();
                 ds.data.forEach(function(val, idx) {
                     if (val === null || val === undefined) return;
-                    var x = paddingLeft + idx * stepX + stepX / 2;
-                    var norm = (val - minY) / (maxY - minY);
-                    var y = paddingTop + chartH - norm * chartH;
-                    ctx.beginPath();
-                    ctx.arc(x, y, 4, 0, Math.PI * 2);
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fill();
-                    ctx.strokeStyle = ds.borderColor || '#10b981';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
+                    var x = pL + idx * stepX + stepX / 2;
+                    var y = pT + cH - ((val - minY) / (maxY - minY)) * cH;
+                    ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
+                    ctx.strokeStyle = ds.borderColor || '#10b981'; ctx.lineWidth = 2; ctx.stroke();
                 });
             }
         });
-        
         labels.forEach(function(lbl, idx) {
-            var x = paddingLeft + idx * stepX + stepX / 2;
-            ctx.fillStyle = '#334155';
-            ctx.font = 'bold 11px sans-serif';
-            ctx.textAlign = 'center';
+            var x = pL + idx * stepX + stepX / 2;
+            ctx.fillStyle = '#334155'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center';
             ctx.fillText(lbl, x, height - 10);
         });
     }

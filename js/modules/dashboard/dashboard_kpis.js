@@ -344,6 +344,9 @@
         if (window.lucide && typeof lucide.createIcons === 'function') {
             try { lucide.createIcons(); } catch(e) {}
         }
+        if (typeof global.initDashboardScrollReveal === 'function') {
+            global.initDashboardScrollReveal();
+        }
     }
 
     /**
@@ -576,6 +579,9 @@
 
         if (window.lucide && typeof lucide.createIcons === 'function') {
             try { lucide.createIcons(); } catch(e) {}
+        }
+        if (typeof global.initDashboardScrollReveal === 'function') {
+            global.initDashboardScrollReveal();
         }
     }
 
