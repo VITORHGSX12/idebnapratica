@@ -10,7 +10,7 @@
 (function(global) {
     'use strict';
 
-    var STORAGE_KEY = 'gd_pedagogic_library_db';
+    var STORAGE_KEY = 'gd_pedagogic_library_db_v2';
     var libraryItems = [];
     var currentActiveCategory = 'all';
     var searchDebounceTimer = null;
@@ -26,6 +26,11 @@
     // 1. CARREGAMENTO E SINCRONIZAÇÃO DO ACERVO
     // -------------------------------------------------------------------------
     async function loadLibraryDatabase() {
+        // Invalidação / Migração de cache anterior com dados fictícios
+        try {
+            localStorage.removeItem('gd_pedagogic_library_db');
+        } catch(e) {}
+
         var token = getAuthToken();
         try {
             var response = await fetch('/api/library', {
@@ -33,11 +38,13 @@
             });
             if (response.ok) {
                 var data = await response.json();
-                if (Array.isArray(data) && data.length > 0) {
+                if (Array.isArray(data)) {
                     libraryItems = data;
                     global.PEDAGOGIC_LIBRARY_DATABASE = libraryItems;
                     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(libraryItems)); } catch(e) {}
+                    updateCategoryPillCounters();
                     renderPedagogicLibrary();
+                    renderSpotlightSection();
                     return;
                 }
             }
@@ -50,20 +57,31 @@
             var raw = localStorage.getItem(STORAGE_KEY);
             if (raw) {
                 var parsed = JSON.parse(raw);
-                if (Array.isArray(parsed) && parsed.length > 0) {
+                if (Array.isArray(parsed)) {
                     libraryItems = parsed;
                     global.PEDAGOGIC_LIBRARY_DATABASE = libraryItems;
+                    updateCategoryPillCounters();
                     renderPedagogicLibrary();
+                    renderSpotlightSection();
                     return;
                 }
             }
         } catch(e) {}
+
+        libraryItems = [];
+        global.PEDAGOGIC_LIBRARY_DATABASE = [];
+        updateCategoryPillCounters();
+        renderPedagogicLibrary();
+        renderSpotlightSection();
     }
 
     // -------------------------------------------------------------------------
     // 2. ATUALIZAR CONTADORES DAS CATEGORIAS
     // -------------------------------------------------------------------------
     function updateCategoryPillCounters() {
+        if (Array.isArray(global.PEDAGOGIC_LIBRARY_DATABASE)) {
+            libraryItems = global.PEDAGOGIC_LIBRARY_DATABASE;
+        }
         var total = libraryItems.length;
         var totalSimulados = libraryItems.filter(function(b) { return b.categoria === 'Simulados' || b.tipo === 'Simulado'; }).length;
         var totalReforco = libraryItems.filter(function(b) { return b.categoria === 'Reforco' || b.tipo === 'Reforco'; }).length;
@@ -293,6 +311,9 @@
     // 6. RENDERIZADOR DA VITRINE DA BIBLIOTECA
     // -------------------------------------------------------------------------
     function renderPedagogicLibrary() {
+        if (Array.isArray(global.PEDAGOGIC_LIBRARY_DATABASE)) {
+            libraryItems = global.PEDAGOGIC_LIBRARY_DATABASE;
+        }
         updateCategoryPillCounters();
         renderSpotlightSection();
 
@@ -326,10 +347,22 @@
             btnClear.style.display = hasFilters ? 'inline-flex' : 'none';
         }
 
+        if (libraryItems.length === 0) {
+            grid.innerHTML = '<div style="grid-column: 1 / -1; padding: 56px 24px; text-align: center; background: var(--bg-primary); border-radius: var(--radius-lg); border: 1px dashed var(--border-color); margin: 12px 0;">' +
+                '<div style="font-size: 3.2rem; margin-bottom: 12px;">📚</div>' +
+                '<h3 style="color: var(--text-primary); margin: 0 0 8px 0; font-size: 1.25rem; font-weight: 800;">Nenhum material cadastrado ainda</h3>' +
+                '<p style="color: var(--text-muted); font-size: 0.88rem; max-width: 500px; margin: 0 auto 20px auto; line-height: 1.5;">Clique em <strong>"Adicionar Material ao Acervo"</strong> para começar a montar a biblioteca pedagógica da rede municipal.</p>' +
+                '<button type="button" class="btn btn-primary" onclick="openUploadPedagogicModal();" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; padding: 10px 20px;">' +
+                    '<span>➕ Adicionar Primeiro Material</span>' +
+                '</button>' +
+            '</div>';
+            return;
+        }
+
         if (filtered.length === 0) {
             grid.innerHTML = '<div style="grid-column: 1 / -1; padding: 48px 24px; text-align: center; background: var(--bg-secondary); border-radius: var(--radius-md); border: 1px dashed var(--border-color);">' +
-                '<div style="font-size: 2.4rem; margin-bottom: 8px;">📚</div>' +
-                '<h4 style="color: var(--text-primary); margin: 0 0 6px 0;">Nenhum material encontrado</h4>' +
+                '<div style="font-size: 2.4rem; margin-bottom: 8px;">🔍</div>' +
+                '<h4 style="color: var(--text-primary); margin: 0 0 6px 0;">Nenhum material encontrado com os filtros ativos</h4>' +
                 '<p style="color: var(--text-muted); font-size: 0.82rem; margin: 0 0 16px 0;">Tente ajustar os filtros de busca ou selecione outra categoria.</p>' +
                 '<button type="button" class="btn btn-outline btn-sm" onclick="clearLibraryFilters();">Limpar Filtros</button>' +
             '</div>';
@@ -341,12 +374,13 @@
             var isWord = (book.formatoArquivo === 'DOCX' || book.formatoArquivo === 'DOC') || (book.fileName && (book.fileName.toLowerCase().endsWith('.docx') || book.fileName.toLowerCase().endsWith('.doc')));
             var formatLabel = isWord ? 'DOCX' : (book.formatoArquivo || 'PDF');
 
-            var safeTitulo = typeof escapeHtml === 'function' ? escapeHtml(book.titulo) : (book.titulo || '');
-            var safeSub = typeof escapeHtml === 'function' ? escapeHtml(book.subtitulo || book.descricao || '') : (book.subtitulo || book.descricao || '');
-            var safeTipo = typeof escapeHtml === 'function' ? escapeHtml(book.tipo || 'Pedagógico') : (book.tipo || 'Pedagógico');
-            var safeEtapa = typeof escapeHtml === 'function' ? escapeHtml(book.etapa || 'Geral') : (book.etapa || 'Geral');
-            var safeFileSize = typeof escapeHtml === 'function' ? escapeHtml(book.fileSize || formatLabel) : (book.fileSize || formatLabel);
-            var safePaginas = book.paginas ? escapeHtml(String(book.paginas)) + ' pág.' : safeFileSize;
+            var safeEscape = function(str) { return typeof global.escapeHtml === 'function' ? global.escapeHtml(str) : String(str || ''); };
+            var safeTitulo = safeEscape(book.titulo);
+            var safeSub = safeEscape(book.subtitulo || book.descricao || '');
+            var safeTipo = safeEscape(book.tipo || 'Pedagógico');
+            var safeEtapa = safeEscape(book.etapa || 'Geral');
+            var safeFileSize = safeEscape(book.fileSize || formatLabel);
+            var safePaginas = book.paginas ? safeEscape(String(book.paginas)) + ' pág.' : safeFileSize;
 
             return '<div class="mec-book-card" data-book-id="' + book.id + '">' +
                 '<div class="mec-book-card-cover" onclick="trackAndViewBook(\'' + book.id + '\');">' +
@@ -393,7 +427,16 @@
 
     function renderSpotlightSection() {
         var row = document.getElementById('bib-spotlight-cards-row');
+        var container = document.getElementById('bib-spotlight-container');
         if (!row) return;
+
+        if (libraryItems.length === 0) {
+            if (container) container.style.display = 'none';
+            row.innerHTML = '';
+            return;
+        }
+
+        if (container) container.style.display = 'flex';
 
         var top4 = libraryItems.slice().sort(function(a, b) {
             return (b.viewsCount || 0) - (a.viewsCount || 0);
@@ -487,6 +530,7 @@
     // Exposição no Escopo Global
     global.renderPedagogicLibrary = renderPedagogicLibrary;
     global.loadLibraryDatabase = loadLibraryDatabase;
+    global.updateCategoryPillCounters = updateCategoryPillCounters;
     global.renderSpotlightSection = renderSpotlightSection;
     global.handleCategoryPillClick = handleCategoryPillClick;
     global.handleLibrarySearchInput = handleLibrarySearchInput;

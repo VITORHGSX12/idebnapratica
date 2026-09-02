@@ -344,7 +344,27 @@
         });
 
         if (simulados.length === 0) {
-            simulados = allDb.filter(function(b) { return b.categoria === 'Simulados' || b.tipo === 'Simulado'; });
+            listContainer.innerHTML = [
+                '<div style="padding: 32px 16px; text-align: center; color: var(--text-muted); background: var(--bg-primary); border-radius: var(--radius-sm); border: 1px dashed var(--border-color);">',
+                '    <div style="font-size: 2rem; margin-bottom: 6px;">📂</div>',
+                '    <strong style="color: var(--text-primary); display: block; margin-bottom: 4px;">Nenhum simulado disponível no acervo</strong>',
+                '    <span style="font-size: 0.78rem;">Cadastre materiais na categoria "Simulados" para habilitar a combinação e impressão do Caderno A4.</span>',
+                '</div>'
+            ].join('\n');
+            var btnConfirm = document.getElementById('btn-confirm-combine-caderno');
+            if (btnConfirm) {
+                btnConfirm.disabled = true;
+                btnConfirm.style.opacity = '0.5';
+            }
+            modal.style.display = 'flex';
+            modal.classList.remove('hidden');
+            return;
+        }
+
+        var btnConfirm = document.getElementById('btn-confirm-combine-caderno');
+        if (btnConfirm) {
+            btnConfirm.disabled = false;
+            btnConfirm.style.opacity = '1';
         }
 
         listContainer.innerHTML = simulados.map(function(sim) {

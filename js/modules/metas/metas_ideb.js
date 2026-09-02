@@ -242,7 +242,11 @@
             diffVal = Number((parseFloat(valCurr) - parseFloat(valPrev)).toFixed(1));
         }
 
-        var targetVal = (activeStage === 'Anos Finais') ? "5.0" : "5.5";
+        var inepTargetsIniciais = { 2015: "4.3", 2017: "4.6", 2019: "4.9", 2021: "5.2", 2023: "5.2", 2025: "5.2" };
+        var inepTargetsFinais   = { 2015: "3.6", 2017: "3.8", 2019: "4.1", 2021: "4.3", 2023: "4.3", 2025: "4.3" };
+        var targetVal = (activeStage === 'Anos Finais') 
+            ? (inepTargetsFinais[activeYear] || "4.3") 
+            : (inepTargetsIniciais[activeYear] || "5.2");
 
         // 1. Card IDEB Observado
         if (elLabelCurr) elLabelCurr.textContent = 'IDEB ' + activeYear + ' (' + (activeStage === 'Anos Iniciais' ? '5º Ano' : '9º Ano') + ')';

@@ -163,29 +163,30 @@
                 var newStudentClassDropdown = document.getElementById('new-student-class');
                 if (!newStudentClassDropdown) return;
 
-                newStudentClassDropdown.innerHTML = '';
-                
-                var dbEsc = global.dbEscolas || [];
-                var dbTur = global.dbTurmas || [];
-                var schoolObj = dbEsc.find(function(e) { return e.nome === selectedSchoolName; });
-                if (!schoolObj) {
-                    newStudentClassDropdown.innerHTML = '<option value="">Selecione primeiro a escola...</option>';
-                    return;
+                if (typeof global.populateTurmasSelect === 'function') {
+                    global.populateTurmasSelect(selectedSchoolName, newStudentClassDropdown);
+                } else {
+                    newStudentClassDropdown.innerHTML = '';
+                    var dbEsc = global.dbEscolas || [];
+                    var dbTur = global.dbTurmas || [];
+                    var schoolObj = dbEsc.find(function(e) { return e.nome === selectedSchoolName; });
+                    if (!schoolObj) {
+                        newStudentClassDropdown.innerHTML = '<option value="">Selecione primeiro a escola...</option>';
+                        return;
+                    }
+                    var classes = dbTur.filter(function(t) { return t.escola_id === schoolObj.id; });
+                    if (classes.length === 0) {
+                        newStudentClassDropdown.innerHTML = '<option value="">Nenhuma turma cadastrada nesta escola</option>';
+                        return;
+                    }
+                    newStudentClassDropdown.innerHTML = '<option value="">Selecione a Turma...</option>';
+                    classes.forEach(function(c) {
+                        var opt = document.createElement('option');
+                        opt.value = c.id;
+                        opt.textContent = `${c.nome} (${c.serie} - ${c.turno})`;
+                        newStudentClassDropdown.appendChild(opt);
+                    });
                 }
-
-                var classes = dbTur.filter(function(t) { return t.escola_id === schoolObj.id; });
-                if (classes.length === 0) {
-                    newStudentClassDropdown.innerHTML = '<option value="">Nenhuma turma cadastrada. Crie uma turma nesta escola primeiro!</option>';
-                    return;
-                }
-
-                newStudentClassDropdown.innerHTML = '<option value="">Selecione a Turma...</option>';
-                classes.forEach(function(c) {
-                    var opt = document.createElement('option');
-                    opt.value = c.id;
-                    opt.textContent = `${c.nome} (${c.serie} - ${c.turno})`;
-                    newStudentClassDropdown.appendChild(opt);
-                });
             });
         }
 

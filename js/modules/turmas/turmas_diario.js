@@ -428,7 +428,7 @@
     // 3. MODAL DE PROGRESSÃO HISTÓRICA E NÍVEL DE PROFICIÊNCIA
     // -------------------------------------------------------------------------
 
-    function openStudentProgressModal(alunoId, alunoNome, turmaNome, escolaNome) {
+    async function openStudentProgressModal(alunoId, alunoNome, turmaNome, escolaNome) {
         var modal = document.getElementById('modal-student-progress-history');
         var avatarEl = document.getElementById('modal-student-avatar');
         var nameEl = document.getElementById('modal-student-name');
@@ -441,46 +441,98 @@
 
         var school = escolaNome || global.currentSelectedSchoolDetail || 'UI JOSE CORREA LIMA';
         var className = turmaNome || '5º Ano A';
-        var name = alunoNome || 'Ana Clara Silva Santos';
+        var name = alunoNome || 'Estudante';
 
         if (avatarEl) avatarEl.textContent = name.charAt(0).toUpperCase();
         if (nameEl) nameEl.textContent = name;
-        if (metaEl) metaEl.textContent = 'Matrícula: 2026-GD-' + (alunoId || '001') + ' • ' + school + ' • ' + className;
-        if (profBadge) profBadge.textContent = 'Adequado (Escore: 254.2 pts)';
-
-        var simuladosHistory = [
-            { aval: 'Avaliação Diagnóstica Inicial (Fev/2026)', lp: '45.0%', mat: '40.0%', geral: '42.5%', status: 'Abaixo do Básico', badge: 'badge-danger' },
-            { aval: '1º Simulado Municipal SAEB (Abr/2026)', lp: '60.0%', mat: '55.0%', geral: '57.5%', status: 'Básico', badge: 'badge-warning' },
-            { aval: '2º Simulado Intermediário (Jun/2026)', lp: '75.0%', mat: '70.0%', geral: '72.5%', status: 'Adequado', badge: 'badge-success' },
-            { aval: '3º Simulado Formativo (Ago/2026)', lp: '85.0%', mat: '82.0%', geral: '83.5%', status: 'Adequado', badge: 'badge-success' },
-            { aval: 'Somativa Final / Projeção SAEB (Out/2026)', lp: '90.0%', mat: '88.0%', geral: '89.0%', status: 'Avançado', badge: 'badge-success' }
-        ];
+        if (metaEl) metaEl.textContent = 'Matrícula: ' + alunoId + ' • ' + school + ' • ' + className;
+        if (profBadge) profBadge.textContent = 'Carregando...';
 
         if (tbody) {
-            tbody.innerHTML = simuladosHistory.map(function(s) {
-                return [
-                    '<tr style="border-bottom: 1px solid var(--border-color);">',
-                    '    <td style="padding: 10px 14px; font-weight: 700; color: var(--text-primary);">' + s.aval + '</td>',
-                    '    <td style="padding: 10px 14px; text-align: center; color: #6366f1; font-weight: 700;">' + s.lp + '</td>',
-                    '    <td style="padding: 10px 14px; text-align: center; color: #3b82f6; font-weight: 700;">' + s.mat + '</td>',
-                    '    <td style="padding: 10px 14px; text-align: center; font-weight: 800; color: var(--text-primary);">' + s.geral + '</td>',
-                    '    <td style="padding: 10px 14px; text-align: center;"><span class="badge ' + s.badge + '" style="font-size: 0.68rem;">' + s.status + '</span></td>',
-                    '</tr>'
-                ].join('\n');
-            }).join('\n');
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--text-secondary);">Carregando histórico de simulados...</td></tr>';
         }
-
         if (descContainer) {
-            descContainer.innerHTML = [
-                '<span style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.74rem; font-weight: 700; padding: 4px 8px; border-radius: 6px;">✓ D01 - Localizar informações explícitas (85%)</span>',
-                '<span style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.74rem; font-weight: 700; padding: 4px 8px; border-radius: 6px;">✓ D13 - Numeração decimal (80%)</span>',
-                '<span style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); font-size: 0.74rem; font-weight: 700; padding: 4px 8px; border-radius: 6px;">⚠️ D03 - Inferir sentido de palavra (60%)</span>',
-                '<span style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); font-size: 0.74rem; font-weight: 700; padding: 4px 8px; border-radius: 6px;">✕ D19 - Resolução de problemas (45%)</span>'
-            ].join('\n');
+            descContainer.innerHTML = '<span style="color:var(--text-muted); font-size:0.78rem;">Carregando descritores...</span>';
         }
 
         modal.style.display = 'flex';
         modal.classList.remove('hidden');
+
+        try {
+            var res = typeof global.apiFetch === 'function'
+                ? await global.apiFetch('/api/alunos/' + encodeURIComponent(alunoId) + '/progressao')
+                : await fetch('/api/alunos/' + encodeURIComponent(alunoId) + '/progressao');
+
+            var data = null;
+            if (res && res.ok) {
+                data = await res.json();
+            }
+
+            var simulados = (data && data.success && Array.isArray(data.simulados)) ? data.simulados : [];
+            var consolidadas = (data && data.success && Array.isArray(data.habilidadesConsolidadas)) ? data.habilidadesConsolidadas : [];
+            var criticas = (data && data.success && Array.isArray(data.habilidadesCriticas)) ? data.habilidadesCriticas : [];
+
+            // -----------------------------------------------------------------
+            // ESTADO VAZIO REAL (SEM MOCKS)
+            // -----------------------------------------------------------------
+            if (simulados.length === 0) {
+                if (profBadge) {
+                    profBadge.textContent = 'Aguardando Avaliações (Sem escore)';
+                    profBadge.style.color = 'var(--text-secondary)';
+                }
+                if (tbody) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="text-align:center; padding:32px 16px; background:var(--bg-tertiary);">
+                                <div style="font-size:1.6rem; margin-bottom:6px;">📊</div>
+                                <strong style="font-size:0.9rem; color:var(--text-primary); display:block; margin-bottom:4px;">Nenhum simulado realizado ainda</strong>
+                                <span style="font-size:0.78rem; color:var(--text-secondary);">Este(a) estudante ainda não realizou nenhum simulado avaliado no sistema.</span>
+                            </td>
+                        </tr>
+                    `;
+                }
+                if (descContainer) {
+                    descContainer.innerHTML = `<span style="color:var(--text-muted); font-size:0.78rem; font-style:italic;">Nenhum descritor computado ainda (aguardando realização de avaliações).</span>`;
+                }
+            } else {
+                // Último escore
+                var ultimo = simulados[simulados.length - 1];
+                if (profBadge) {
+                    profBadge.textContent = `${ultimo.situacao} (Escore SAEB: ${ultimo.escoreSaebGeral} pts)`;
+                    profBadge.style.color = ultimo.percentualAcerto >= 60 ? '#10b981' : (ultimo.percentualAcerto >= 40 ? '#f59e0b' : '#ef4444');
+                }
+
+                if (tbody) {
+                    tbody.innerHTML = simulados.map(function(s) {
+                        var badgeClass = s.percentualAcerto >= 80 ? 'badge-success' : (s.percentualAcerto >= 60 ? 'badge-primary' : (s.percentualAcerto >= 40 ? 'badge-warning' : 'badge-danger'));
+                        return [
+                            '<tr style="border-bottom: 1px solid var(--border-color);">',
+                            '    <td style="padding: 10px 14px; font-weight: 700; color: var(--text-primary);">' + s.titulo + '</td>',
+                            '    <td style="padding: 10px 14px; text-align: center; color: #6366f1; font-weight: 700;">' + (s.lp ? s.lp.percentual + '%' : '—') + '</td>',
+                            '    <td style="padding: 10px 14px; text-align: center; color: #3b82f6; font-weight: 700;">' + (s.mat ? s.mat.percentual + '%' : '—') + '</td>',
+                            '    <td style="padding: 10px 14px; text-align: center; font-weight: 800; color: var(--text-primary);">' + s.percentualAcerto + '%</td>',
+                            '    <td style="padding: 10px 14px; text-align: center;"><span class="badge ' + badgeClass + '" style="font-size: 0.68rem;">' + s.situacao + '</span></td>',
+                            '</tr>'
+                        ].join('\n');
+                    }).join('\n');
+                }
+
+                if (descContainer) {
+                    var badgesHtml = '';
+                    consolidadas.forEach(function(c) {
+                        badgesHtml += '<span style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.74rem; font-weight: 700; padding: 4px 8px; border-radius: 6px;">✓ ' + c.codigo + ' (' + c.percentual + '%)</span> ';
+                    });
+                    criticas.forEach(function(cr) {
+                        badgesHtml += '<span style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); font-size: 0.74rem; font-weight: 700; padding: 4px 8px; border-radius: 6px;">✕ ' + cr.codigo + ' (' + cr.percentual + '%)</span> ';
+                    });
+                    descContainer.innerHTML = badgesHtml || '<span style="color:var(--text-muted); font-size:0.78rem;">Descritores intermediários em evolução.</span>';
+                }
+            }
+        } catch(e) {
+            console.warn('[Turmas Diario Progress Fallback]', e);
+            if (tbody) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--text-secondary);">Nenhum simulado realizado ainda.</td></tr>';
+        }
+
         if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
     }
 

@@ -156,7 +156,7 @@
         populateIdebGoalsTable();
     }
 
-    function openPdeManagerForSchool(schId, schName, targetScore) {
+    async function openPdeManagerForSchool(schId, schName, targetScore) {
         var modal = document.getElementById('modal-pde-manager');
         if (!modal) return;
 
@@ -164,6 +164,8 @@
         var titleEl = document.getElementById('pde-modal-school-title');
         var metaEl = document.getElementById('pde-modal-school-meta');
         var targetInput = document.getElementById('pde-manager-target-score');
+        var diagStatus = document.getElementById('pde-school-diag-status');
+        var diagContent = document.getElementById('pde-school-diagnostic-content');
 
         if (idInput) idInput.value = schId;
         if (titleEl) titleEl.textContent = schName;
@@ -184,7 +186,7 @@
             if (actEl) actEl.value = existing.actions || '';
             if (statEl) statEl.value = existing.status || 'Em Execução';
         } else {
-            if (actEl) actEl.value = '1. Monitoramento quinzenal de fluência leitora e resolução de problemas;\n2. Oficinas práticas semanais nos descritores prioritários com gap;\n3. Plantões pedagógicos para os alunos nos níveis crítico e muito crítico.';
+            if (actEl) actEl.value = '1. Monitoramento contínuo com aplicação dos protocolos diagnósticos;\n2. Aulões focados nos descritores prioritários com maior defasagem;\n3. Acompanhamento individualizado para os alunos em nível crítico.';
             if (respEl) respEl.value = 'Coordenador Pedagógico & Direção';
             if (deadEl) deadEl.value = '2026-11-30';
         }
@@ -192,6 +194,60 @@
         switchPdeModalMode('manual');
         modal.classList.remove('hidden');
         modal.style.display = 'flex';
+
+        // Carregar Diagnóstico Agregado por Descritores da Escola (Camada 4 - Zero Dados Fictícios)
+        if (diagContent) {
+            diagContent.innerHTML = '<span class="loading-spinner" style="display:inline-block; width:14px; height:14px; border:2px solid #4A7FA7; border-top-color:transparent; border-radius:50%; animation:spin 0.8s linear infinite; vertical-align:middle; margin-right:6px;"></span> Carregando dados agregados dos simulados da escola...';
+        }
+        if (diagStatus) diagStatus.textContent = 'Consultando banco...';
+
+        try {
+            var res = typeof global.apiFetch === 'function'
+                ? await global.apiFetch('/api/escolas/' + encodeURIComponent(schId) + '/diagnostico-descritores')
+                : await fetch('/api/escolas/' + encodeURIComponent(schId) + '/diagnostico-descritores');
+
+            var data = null;
+            if (res && res.ok) data = await res.json();
+
+            var prioridades = (data && data.success && Array.isArray(data.descritoresPrioritarios)) ? data.descritoresPrioritarios : [];
+            var totalAlunos = (data && data.totalAlunosAvaliados) || 0;
+
+            if (totalAlunos === 0 || prioridades.length === 0) {
+                if (diagStatus) diagStatus.textContent = 'Sem simulados lançados';
+                if (diagContent) {
+                    diagContent.innerHTML = `
+                        <div style="background:rgba(255,255,255,0.03); border:1px dashed var(--border-color); border-radius:6px; padding:10px 12px; font-style:italic; color:var(--text-muted);">
+                            📈 <strong>Aguardando dados de simulados:</strong> Nenhum simulado com respostas foi lançado para esta escola até o momento. O ranking de descritores críticos será calculado automaticamente após os lançamentos de notas.
+                        </div>
+                    `;
+                }
+            } else {
+                if (diagStatus) diagStatus.textContent = `${totalAlunos} alunos avaliados`;
+                var itemsHtml = prioridades.slice(0, 5).map(function(d) {
+                    var cor = d.prioridadePDE === 'ALTA' ? '#ef4444' : (d.prioridadePDE === 'MEDIA' ? '#f59e0b' : '#10b981');
+                    return `
+                        <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:6px; padding:6px 10px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <strong style="color:${cor};">${d.codigo}</strong> <span style="color:var(--text-secondary); font-size:0.74rem;">— ${d.descricao}</span>
+                                <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">Sugestão: ${d.sugestaoPlanoAcao}</div>
+                            </div>
+                            <span style="font-size:0.72rem; font-weight:800; color:${cor}; white-space:nowrap; margin-left:12px;">${d.alunosEmDefasagem}/${d.totalAlunosAvaliados} alunos (${d.taxaDefasagemPct}%)</span>
+                        </div>
+                    `;
+                }).join('');
+
+                if (diagContent) {
+                    diagContent.innerHTML = `
+                        <div style="margin-bottom:8px;"><strong>Descritores com Maior Taxa de Defasagem na Escola:</strong></div>
+                        ${itemsHtml}
+                    `;
+                }
+            }
+        } catch(e) {
+            console.warn('[PDE School Diag Error]', e);
+            if (diagStatus) diagStatus.textContent = 'Indisponível';
+            if (diagContent) diagContent.innerHTML = '<span style="color:var(--text-muted);">Dados agregados de simulados não disponíveis no momento.</span>';
+        }
     }
 
     function closePdeManagerModal() {
@@ -221,28 +277,28 @@
         if (mode === 'manual') {
             if (btnManual) {
                 btnManual.classList.add('active');
-                btnManual.style.background = '#6366f1';
+                btnManual.style.background = '#4A7FA7';
                 btnManual.style.color = '#fff';
-                btnManual.style.borderColor = '#6366f1';
+                btnManual.style.borderColor = '#4A7FA7';
             }
             if (pdfPanel) pdfPanel.style.display = 'none';
         } else if (mode === 'ai') {
             if (btnAi) {
                 btnAi.classList.add('active');
-                btnAi.style.background = '#6366f1';
+                btnAi.style.background = '#4A7FA7';
                 btnAi.style.color = '#fff';
-                btnAi.style.borderColor = '#6366f1';
+                btnAi.style.borderColor = '#4A7FA7';
             }
             if (pdfPanel) pdfPanel.style.display = 'none';
             if (actionsText) {
-                actionsText.value = '🤖 PLANO DE INTERVENÇÃO GERADO AUTOMATICAMENTE:\n\n• Eixo 1: Recomposição de Habilidades Críticas do SAEB (Foco em D1, D3, D13 e D16)\n• Eixo 2: Ciclo de Simulados Diagnósticos Quinzenais com Devolutiva Pedagógica\n• Eixo 3: Formação Continuada dos Docentes em Matrizes de Referência e BNCC\n• Eixo 4: Tutoria Individualizada para os 15% de alunos com maior defasagem';
+                actionsText.value = '📋 PROPOSTA DE PLANO DE DESENVOLVIMENTO ESCOLAR (PDE):\n\n• Eixo 1: Recomposição nos descritores prioritários diagnosticados nos simulados municipais.\n• Eixo 2: Ciclo de simulados com devolutiva individualizada e oficinas de fluência e raciocínio.\n• Eixo 3: Formação continuada e alinhamento pedagógico com as matrizes SAEB / BNCC.\n• Eixo 4: Monitoramento quinzenal de frequência e plantões pedagógicos para os estudantes em defasagem.';
             }
         } else if (mode === 'pdf') {
             if (btnPdf) {
                 btnPdf.classList.add('active');
-                btnPdf.style.background = '#6366f1';
+                btnPdf.style.background = '#4A7FA7';
                 btnPdf.style.color = '#fff';
-                btnPdf.style.borderColor = '#6366f1';
+                btnPdf.style.borderColor = '#4A7FA7';
             }
             if (pdfPanel) pdfPanel.style.display = 'block';
         }

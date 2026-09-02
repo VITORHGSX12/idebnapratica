@@ -85,6 +85,17 @@ router.get('/classes', authMiddleware, async (req, res) => {
 router.get('/classes/:id/students', authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
+        const user = req.user || {};
+        const orgId = user.tenant_id || user.org_id || req.tenant?.id || req.tenant?.slug || 'semed_goncalves_dias';
+
+        if (db.useLocalFallback) {
+            const raw = fs.readFileSync(db.LOCAL_DB_FILE, 'utf8');
+            const fileState = JSON.parse(raw);
+            const state = fileState[orgId] || fileState['goncalves-dias'] || {};
+            const students = (state.dbAlunos || []).filter(a => a.turma_id === id || a.turmaId === id || a.turma === id);
+            return res.json(students);
+        }
+
         const result = await db.query(
             `SELECT 
                 a.id, 
@@ -92,6 +103,8 @@ router.get('/classes/:id/students', authMiddleware, async (req, res) => {
                 a.matricula, 
                 a.nascimento, 
                 a.data_nascimento as "dataNascimento",
+                a.cpf,
+                a.necessidades_especiais as nee,
                 t.id as "turmaId", 
                 t.nome as turma, 
                 t.serie, 

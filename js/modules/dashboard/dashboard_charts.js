@@ -203,8 +203,8 @@
 
         var anos = ['2015', '2017', '2019', '2021', '2023', '2025'];
         var iniciaisGd = [4.1, 4.3, 4.7, 4.5, 4.9, 5.0];
-        var finaisGd   = [3.4, 3.6, 4.4, 4.2, 4.8, 5.1];
-        var metaInep   = [4.3, 4.6, 4.9, 5.2, 5.2, 5.5];
+        var finaisGd   = [3.5, 3.6, 4.4, 4.2, 4.8, 5.1];
+        var metaInep   = [4.3, 4.6, 4.9, 5.2, 5.2, 5.2];
 
         if (typeof Chart === 'undefined') {
             drawCanvasFallbackChart(ctxGd, anos, [

@@ -111,6 +111,118 @@
         return phone;
     }
 
+    // Normalizador de texto para comparações seguras
+    function normalizeStr(str) {
+        if (!str) return '';
+        return String(str).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+    }
+
+    /**
+     * Retorna exclusivamente as turmas que pertencem à escola especificada
+     * @param {string|number} escolaIdentificador (ID, INEP ou Nome da Escola)
+     * @param {Array} [classesList] (Opcional: lista pré-carregada de turmas)
+     * @returns {Array} Lista estrita de turmas da escola (ou [] se vazia)
+     */
+    function getTurmasPorEscola(escolaIdentificador, classesList) {
+        if (!escolaIdentificador) return [];
+
+        var target = String(escolaIdentificador).trim();
+        var targetNorm = normalizeStr(target);
+
+        var allClasses = Array.isArray(classesList) ? classesList : (
+            (typeof global.getOfficialClassesState === 'function' ? global.getOfficialClassesState() : null) ||
+            global.dbTurmas || []
+        );
+
+        if (!Array.isArray(allClasses) || allClasses.length === 0) {
+            return [];
+        }
+
+        // 1. Obter catálogo de escolas para resolver mapeamentos de ID <-> Nome
+        var allSchools = (typeof global.getOfficialSchoolsState === 'function' ? global.getOfficialSchoolsState() : null) || global.dbEscolas || [];
+        var matchedSchool = null;
+        if (Array.isArray(allSchools)) {
+            matchedSchool = allSchools.find(function(esc) {
+                if (!esc) return false;
+                var escId = String(esc.id || '').trim();
+                var escInep = String(esc.codigo_inep || esc.inep || '').trim();
+                var escNome = normalizeStr(esc.nome || esc.name || '');
+                return escId === target || escInep === target || escNome === targetNorm;
+            });
+        }
+
+        var validIds = new Set([target]);
+        var validNames = new Set([targetNorm]);
+
+        if (matchedSchool) {
+            if (matchedSchool.id) validIds.add(String(matchedSchool.id).trim());
+            if (matchedSchool.codigo_inep) validIds.add(String(matchedSchool.codigo_inep).trim());
+            if (matchedSchool.inep) validIds.add(String(matchedSchool.inep).trim());
+            if (matchedSchool.nome) validNames.add(normalizeStr(matchedSchool.nome));
+            if (matchedSchool.name) validNames.add(normalizeStr(matchedSchool.name));
+        }
+
+        // 2. Filtrar estritamente as turmas que batem com os identificadores ou nomes
+        var filtered = allClasses.filter(function(t) {
+            if (!t) return false;
+            var tEscId = String(t.escola_id || '').trim();
+            var tEscNome = normalizeStr(t.escola || t.escola_nome || '');
+
+            var matchById = tEscId && validIds.has(tEscId);
+            var matchByName = tEscNome && Array.from(validNames).some(function(vName) {
+                return vName && (tEscNome === vName || tEscNome.includes(vName) || vName.includes(tEscNome));
+            });
+
+            return matchById || matchByName;
+        });
+
+        return filtered;
+    }
+
+    /**
+     * Popula um elemento <select> com as turmas de uma escola de forma segura e padronizada
+     * @param {string|number} escolaIdentificador 
+     * @param {HTMLSelectElement|string} selectElement 
+     * @param {string} [selectedTurmaId] 
+     * @returns {Array} Lista de turmas populadas
+     */
+    function populateTurmasSelect(escolaIdentificador, selectElement, selectedTurmaId) {
+        var el = safeEl(selectElement);
+        if (!el) return [];
+
+        var turmas = getTurmasPorEscola(escolaIdentificador);
+        el.innerHTML = '';
+
+        if (turmas.length === 0) {
+            var emptyOpt = document.createElement('option');
+            emptyOpt.value = '';
+            emptyOpt.disabled = true;
+            emptyOpt.selected = true;
+            emptyOpt.textContent = 'Nenhuma turma cadastrada nesta escola';
+            el.appendChild(emptyOpt);
+            return [];
+        }
+
+        turmas.forEach(function(t, idx) {
+            var opt = document.createElement('option');
+            opt.value = t.id || t.turma_id || t.nome;
+            var label = t.nome || t.name || ('Turma ' + (idx + 1));
+            if (t.serie) label += ' (' + t.serie + (t.turno ? ' - ' + t.turno : '') + ')';
+            opt.textContent = label;
+            if (selectedTurmaId && (opt.value === selectedTurmaId || t.id === selectedTurmaId)) {
+                opt.selected = true;
+            }
+            el.appendChild(opt);
+        });
+
+        // Garante seleção padrão da primeira turma se nenhuma pré-selecionada
+        if (!selectedTurmaId || !turmas.some(function(t) { return t.id === selectedTurmaId; })) {
+            el.selectedIndex = 0;
+        }
+
+        return turmas;
+    }
+
     // Exposição global
     global._memoryStorage = _memoryStorage;
     global.safeStorage = safeStorage;
@@ -123,6 +235,9 @@
     global.safeSetStyle = safeSetStyle;
     global.safeCreateIcons = safeCreateIcons;
     global.debounce = debounce;
+    global.normalizeStr = normalizeStr;
+    global.getTurmasPorEscola = getTurmasPorEscola;
+    global.populateTurmasSelect = populateTurmasSelect;
 
 })(typeof window !== 'undefined' ? window : this);
 

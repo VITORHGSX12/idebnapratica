@@ -3,7 +3,7 @@
  * GESTÃO EDUCACIONAL SAAS — MÓDULO CRONOGRAMA (TRASH & DUPLICATION)
  * Arquivo: js/modules/cronograma/cronograma_trash.js
  * Descrição: Duplicação de planos de rotina pedagógica entre turmas,
- *            busca de habilidades agendadas e lixeira com restauração (30 dias).
+ *            busca de habilidades agendadas e lixeira com restauração e expiração (30 dias).
  * ============================================================================
  */
 
@@ -96,8 +96,7 @@
         const source = allLessons.find(l => l.id === sourceId);
         if (!source) return;
 
-        const newLesson = {
-            ...source,
+        const newLesson = Object.assign({}, source, {
             id: 'les_' + Date.now(),
             turmaContext: targetTurma,
             turma: targetTurma.split('—')[1]?.trim() || 'Turma Paralela',
@@ -105,7 +104,7 @@
             status: 'planejada',
             criadoPor: 'Profa. Silvana Ferreira (Duplicado de ' + source.turmaContext + ')',
             createdAt: new Date().toISOString()
-        };
+        });
 
         allLessons.push(newLesson);
         if (typeof window.saveScheduleLessonsDb === 'function') {
@@ -129,18 +128,16 @@
     // =========================================================================
 
     function handleDeleteLessonWithTrash(lessonId) {
-        if (typeof confirm === 'function' && !confirm('Deseja mover este plano de aula para a Lixeira? Ele ficará salvo por até 30 dias para recuperação.')) return;
-
         const allLessons = typeof window.getScheduleLessonsDb === 'function' ? window.getScheduleLessonsDb() : [];
         const lesson = allLessons.find(l => l.id === lessonId);
         if (!lesson) return;
 
         const trash = typeof window.getScheduleTrashDb === 'function' ? window.getScheduleTrashDb() : [];
-        trash.push({
-            ...lesson,
+        const trashItem = Object.assign({}, lesson, {
             deletedAt: new Date().toISOString(),
             expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
         });
+        trash.push(trashItem);
         if (typeof window.saveScheduleTrashDb === 'function') {
             window.saveScheduleTrashDb(trash);
         }
@@ -156,8 +153,9 @@
         if (typeof window.renderActiveScheduleView === 'function') {
             window.renderActiveScheduleView();
         }
+
         if (typeof window.showToast === 'function') {
-            window.showToast('Aula movida para a Lixeira temporária com sucesso!', 'info');
+            window.showToast(`Aula movida para a Lixeira.`, 'info');
         }
     }
 
@@ -166,36 +164,51 @@
         const list = document.getElementById('schedule-trash-items-list');
         if (!modal || !list) return;
 
+        // Auto-cleanup de itens com mais de 30 dias
+        if (typeof window.cleanupExpiredTrash === 'function') {
+            window.cleanupExpiredTrash(30);
+        }
+
         const trash = typeof window.getScheduleTrashDb === 'function' ? window.getScheduleTrashDb() : [];
         list.innerHTML = '';
 
         if (trash.length === 0) {
-            list.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.85rem;">A lixeira está vazia. Nenhuma aula excluída recentemente.</div>';
+            list.innerHTML = `
+                <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+                    <div style="font-size: 2.2rem; margin-bottom: 8px;">🗑️</div>
+                    <p style="font-size: 0.85rem; margin: 0;">A lixeira está vazia.</p>
+                </div>
+            `;
         } else {
-            trash.forEach(item => {
-                const row = document.createElement('div');
-                row.style.display = 'flex';
-                row.style.justifyContent = 'space-between';
-                row.style.alignItems = 'center';
-                row.style.padding = '12px 14px';
-                row.style.background = 'var(--bg-primary)';
-                row.style.border = '1px solid var(--border-color)';
-                row.style.borderRadius = 'var(--radius-sm)';
+            trash.forEach(les => {
+                const card = document.createElement('div');
+                card.style.background = 'var(--bg-primary)';
+                card.style.border = '1px solid var(--border-color)';
+                card.style.borderRadius = 'var(--radius-sm)';
+                card.style.padding = '12px 14px';
+                card.style.display = 'flex';
+                card.style.justifyContent = 'space-between';
+                card.style.alignItems = 'center';
+                card.style.gap = '10px';
 
-                const safeCode = typeof window.escapeHtml === 'function' ? window.escapeHtml(item.habilidadeCode) : item.habilidadeCode;
-                const safeDisc = typeof window.escapeHtml === 'function' ? window.escapeHtml(item.disciplina) : item.disciplina;
-                const safeContext = typeof window.escapeHtml === 'function' ? window.escapeHtml(item.turmaContext) : item.turmaContext;
+                const delDate = les.deletedAt ? new Date(les.deletedAt).toLocaleDateString('pt-BR') : 'Recente';
 
-                row.innerHTML = `
+                card.innerHTML = `
                     <div>
-                        <strong style="color: #6366f1;">${safeCode}</strong> - ${safeDisc}
-                        <div style="font-size: 0.72rem; color: var(--text-muted);">${safeContext} • Excluído em: ${new Date(item.deletedAt).toLocaleDateString('pt-BR')}</div>
+                        <div style="font-weight: 700; color: var(--text-primary); font-size: 0.85rem;">
+                            <strong style="color: #6366f1;">${les.habilidadeCode}</strong> - ${les.disciplina}
+                        </div>
+                        <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">
+                            ${les.turmaContext} • Data da aula: ${les.date.split('-').reverse().join('/')} • Excluído em: ${delDate}
+                        </div>
                     </div>
-                    <button type="button" onclick="handleRestoreTrashLesson('${item.id}');" class="btn btn-outline btn-sm" style="color: #10b981; border-color: #10b981; font-weight: 700; font-size: 0.75rem;">
-                        Restaurar Aula
-                    </button>
+                    <div style="display: flex; gap: 6px;">
+                        <button type="button" onclick="handleRestoreTrashLesson('${les.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem; font-weight: 700; color: #10b981; border-color: #10b981;">
+                            Restaurar
+                        </button>
+                    </div>
                 `;
-                list.appendChild(row);
+                list.appendChild(card);
             });
         }
 
@@ -213,16 +226,20 @@
 
     function handleRestoreTrashLesson(lessonId) {
         const trash = typeof window.getScheduleTrashDb === 'function' ? window.getScheduleTrashDb() : [];
-        const item = trash.find(t => t.id === lessonId);
-        if (!item) return;
+        const itemToRestore = trash.find(l => l.id === lessonId);
+        if (!itemToRestore) return;
 
         const allLessons = typeof window.getScheduleLessonsDb === 'function' ? window.getScheduleLessonsDb() : [];
-        allLessons.push(item);
+        const restored = Object.assign({}, itemToRestore);
+        delete restored.deletedAt;
+        delete restored.expiresAt;
+
+        allLessons.push(restored);
         if (typeof window.saveScheduleLessonsDb === 'function') {
             window.saveScheduleLessonsDb(allLessons);
         }
 
-        const updatedTrash = trash.filter(t => t.id !== lessonId);
+        const updatedTrash = trash.filter(l => l.id !== lessonId);
         if (typeof window.saveScheduleTrashDb === 'function') {
             window.saveScheduleTrashDb(updatedTrash);
         }
@@ -231,23 +248,28 @@
         if (typeof window.renderActiveScheduleView === 'function') {
             window.renderActiveScheduleView();
         }
+
         if (typeof window.showToast === 'function') {
-            window.showToast('Aula restaurada para o cronograma com sucesso!', 'success');
+            window.showToast(`Aula restaurada com sucesso para o cronograma!`, 'success');
         }
     }
 
     function handleEmptyScheduleTrash() {
-        if (typeof confirm === 'function' && !confirm('Tem certeza de que deseja esvaziar permanentemente toda a lixeira?')) return;
+        const trash = typeof window.getScheduleTrashDb === 'function' ? window.getScheduleTrashDb() : [];
+        if (trash.length === 0) return;
+
+        if (typeof confirm === 'function' && !confirm('Tem certeza que deseja esvaziar a lixeira permanentemente? Essa ação não pode ser desfeita.')) return;
+
         if (typeof window.saveScheduleTrashDb === 'function') {
             window.saveScheduleTrashDb([]);
         }
         openScheduleTrashModal();
         if (typeof window.showToast === 'function') {
-            window.showToast('Lixeira esvaziada com sucesso!', 'info');
+            window.showToast('Lixeira esvaziada permanentemente.', 'info');
         }
     }
 
-    // Exposição no Window
+    // Exposição Global
     window.handleScheduleSkillSearch = handleScheduleSkillSearch;
     window.openDuplicateLessonModal = openDuplicateLessonModal;
     window.closeDuplicateLessonModal = closeDuplicateLessonModal;

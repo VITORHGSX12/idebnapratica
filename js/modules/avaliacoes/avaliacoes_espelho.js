@@ -150,23 +150,33 @@
             }
         }
 
-        var filteredTurmas = allClasses.filter(function(t) {
-            var matchId = (t.escola_id && t.escola_id.toString() === selectedSchoolVal.toString());
-            var matchNome = (t.escola && (t.escola.toUpperCase().includes(selectedSchoolText.toUpperCase()) || selectedSchoolText.toUpperCase().includes(t.escola.toUpperCase())));
-            return matchId || matchNome;
-        });
+        // Filtro estrito via helper centralizado (Zero vazamento entre escolas)
+        var filteredTurmas = typeof global.getTurmasPorEscola === 'function'
+            ? global.getTurmasPorEscola(selectedSchoolVal || selectedSchoolText, allClasses)
+            : allClasses.filter(function(t) {
+                return (t.escola_id && String(t.escola_id) === String(selectedSchoolVal)) ||
+                       (t.escola && selectedSchoolText && t.escola.toUpperCase().includes(selectedSchoolText.toUpperCase()));
+            });
+
+        classSelect.innerHTML = '';
 
         if (filteredTurmas.length === 0) {
-            filteredTurmas = allClasses;
-        }
-
-        classSelect.innerHTML = filteredTurmas.map(function(t) {
-            var label = t.nome + (t.serie ? ' (' + t.serie + ')' : '');
-            return `<option value="${t.id}">${label}</option>`;
-        }).join('');
-
-        if (filteredTurmas.length > 0) {
-            classSelect.value = filteredTurmas[0].id;
+            var emptyOpt = document.createElement('option');
+            emptyOpt.value = '';
+            emptyOpt.disabled = true;
+            emptyOpt.selected = true;
+            emptyOpt.textContent = 'Nenhuma turma cadastrada nesta escola';
+            classSelect.appendChild(emptyOpt);
+        } else {
+            filteredTurmas.forEach(function(t, idx) {
+                var opt = document.createElement('option');
+                opt.value = t.id || t.turma_id || t.nome;
+                var label = t.nome || t.name || ('Turma ' + (idx + 1));
+                if (t.serie) label += ' (' + t.serie + (t.turno ? ' - ' + t.turno : '') + ')';
+                opt.textContent = label;
+                classSelect.appendChild(opt);
+            });
+            classSelect.selectedIndex = 0;
         }
 
         renderEspelhoLancamentoTable();

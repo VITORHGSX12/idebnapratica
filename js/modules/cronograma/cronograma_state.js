@@ -2,7 +2,8 @@
  * ============================================================================
  * GESTÃO EDUCACIONAL SAAS — MÓDULO CRONOGRAMA DE HABILIDADES (STATE & DATA)
  * Arquivo: js/modules/cronograma/cronograma_state.js
- * Descrição: Estado global, pools de descritores SAEB/BNCC e persistência local
+ * Descrição: Estado global, pools de descritores SAEB/BNCC, persistência local
+ *            e CÁLCULO CENTRALIZADO E ÚNICO de status e progresso de aulas.
  * ============================================================================
  */
 
@@ -214,6 +215,98 @@
     ];
 
     // =========================================================================
+    // FONTE ÚNICA DA VERDADE: CÁLCULO DE STATUS & PROGRESSO PEDAGÓGICO
+    // =========================================================================
+
+    /**
+     * Retorna a data de referência hoje no formato ISO YYYY-MM-DD
+     */
+    function getScheduleReferenceToday() {
+        if (window.currentScheduleReferenceDate) {
+            return window.currentScheduleReferenceDate;
+        }
+        return new Date().toISOString().split('T')[0];
+    }
+
+    /**
+     * Determina o status computado determinístico de uma aula
+     * @param {Object} lesson 
+     * @param {string} [referenceDate] 
+     * @returns {'trabalhada' | 'planejada' | 'atrasada'}
+     */
+    function getLessonComputedStatus(lesson, referenceDate) {
+        if (!lesson) return 'planejada';
+        if (lesson.status === 'trabalhada') return 'trabalhada';
+
+        const refDate = referenceDate || getScheduleReferenceToday();
+        const lessonDate = lesson.date || lesson.data_planejada || '';
+
+        if (lessonDate && lessonDate < refDate) {
+            return 'atrasada';
+        }
+        return 'planejada';
+    }
+
+    /**
+     * Calcula o progresso pedagógico consolidado sobre um conjunto de aulas
+     * @param {Array<Object>} lessons 
+     * @param {string} [referenceDate] 
+     * @returns {Object}
+     */
+    function calculateScheduleProgress(lessons, referenceDate) {
+        const list = Array.isArray(lessons) ? lessons : [];
+        const refDate = referenceDate || getScheduleReferenceToday();
+
+        const total = list.length;
+        let trabalhadas = 0;
+        let atrasadas = 0;
+        let planejadas = 0;
+
+        const bySubject = {};
+        const lacunas = [];
+
+        list.forEach(les => {
+            const st = getLessonComputedStatus(les, refDate);
+            if (st === 'trabalhada') trabalhadas++;
+            else if (st === 'atrasada') atrasadas++;
+            else planejadas++;
+
+            const disc = les.disciplina || 'Geral';
+            if (!bySubject[disc]) {
+                bySubject[disc] = { total: 0, trabalhadas: 0, atrasadas: 0, planejadas: 0, pct: 0, lacunas: [] };
+            }
+            bySubject[disc].total++;
+            if (st === 'trabalhada') {
+                bySubject[disc].trabalhadas++;
+            } else {
+                if (st === 'atrasada') bySubject[disc].atrasadas++;
+                else bySubject[disc].planejadas++;
+                if (les.habilidadeCode) {
+                    bySubject[disc].lacunas.push(les.habilidadeCode);
+                    lacunas.push(les.habilidadeCode);
+                }
+            }
+        });
+
+        const pct = total > 0 ? Math.round((trabalhadas / total) * 100) : 0;
+
+        Object.keys(bySubject).forEach(d => {
+            const sub = bySubject[d];
+            sub.pct = sub.total > 0 ? Math.round((sub.trabalhadas / sub.total) * 100) : 0;
+        });
+
+        return {
+            total,
+            trabalhadas,
+            atrasadas,
+            planejadas,
+            pct,
+            bySubject,
+            lacunas
+        };
+    }
+
+    // =========================================================================
     // PERSISTÊNCIA & STORAGE LOCAL
     // =========================================================================
 
@@ -254,6 +347,22 @@
         updateTrashBadgeCount();
     }
 
+    function cleanupExpiredTrash(maxDays = 30) {
+        try {
+            const trash = getScheduleTrashDb();
+            const now = Date.now();
+            const maxMs = maxDays * 24 * 60 * 60 * 1000;
+            const valid = trash.filter(item => {
+                if (!item.deletedAt) return true;
+                const itemTime = new Date(item.deletedAt).getTime();
+                return (now - itemTime) < maxMs;
+            });
+            if (valid.length !== trash.length) {
+                saveScheduleTrashDb(valid);
+            }
+        } catch(e) {}
+    }
+
     function updateTrashBadgeCount() {
         const trash = getScheduleTrashDb();
         const badge = document.getElementById('trash-count-badge');
@@ -262,7 +371,7 @@
         }
     }
 
-    // Exposição no Window
+    // Exposição Global
     window.CronogramaState = {
         SCHEDULE_STORAGE_KEY,
         SCHEDULE_TRASH_STORAGE_KEY,
@@ -275,10 +384,14 @@
         DEFAULT_SCHEDULE_LESSONS_V2
     };
 
+    window.getScheduleReferenceToday = getScheduleReferenceToday;
+    window.getLessonComputedStatus = getLessonComputedStatus;
+    window.calculateScheduleProgress = calculateScheduleProgress;
     window.getScheduleLessonsDb = getScheduleLessonsDb;
     window.saveScheduleLessonsDb = saveScheduleLessonsDb;
     window.getScheduleTrashDb = getScheduleTrashDb;
     window.saveScheduleTrashDb = saveScheduleTrashDb;
+    window.cleanupExpiredTrash = cleanupExpiredTrash;
     window.updateTrashBadgeCount = updateTrashBadgeCount;
 
 })(window, document);

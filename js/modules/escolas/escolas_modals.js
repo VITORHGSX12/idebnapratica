@@ -113,16 +113,26 @@
 
         var titleEl = document.getElementById('view-class-title');
         var subtitleEl = document.getElementById('view-class-subtitle');
+        var footerCountEl = document.getElementById('view-class-footer-count');
         var tbody = document.getElementById('view-class-students-tbody');
 
-        if (titleEl) titleEl.textContent = className;
+        if (titleEl) {
+            titleEl.innerHTML = `
+                <i data-lucide="users" style="width: 20px; height: 20px; color: var(--color-accent-primary);"></i>
+                <span>Turma: ${className}</span>
+            `;
+        }
         if (subtitleEl) subtitleEl.textContent = schoolName + ' • Carregando estudantes...';
-        if (tbody) tbody.innerHTML = '<tr><td colspan="4" style="padding: 24px; text-align: center; color: var(--color-text-muted);">Carregando estudantes da turma...</td></tr>';
+        if (footerCountEl) footerCountEl.textContent = 'Carregando...';
+        if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="padding: 28px; text-align: center; color: var(--color-text-muted); font-size: var(--text-sm);">Carregando estudantes da turma...</td></tr>';
 
         modal.style.display = 'flex';
         modal.classList.remove('hidden');
 
         var classStudents = [];
+        var fetchFailed = false;
+        var fetchCompleted = false;
+
         try {
             var token = localStorage.getItem('auth_token') || localStorage.getItem('token') || '';
             var headers = token ? { 'Authorization': 'Bearer ' + token } : {};
@@ -130,42 +140,80 @@
                 var res = await fetch('/api/classes/' + encodeURIComponent(classId) + '/students', { headers: headers });
                 if (res.ok) {
                     var data = await res.json();
-                    if (Array.isArray(data)) classStudents = data;
+                    if (Array.isArray(data)) {
+                        classStudents = data;
+                        fetchCompleted = true;
+                    }
+                } else {
+                    fetchFailed = true;
                 }
+            } else {
+                fetchFailed = true;
             }
         } catch(e) {
-            console.warn('[Fetch Class Students Fallback]', e);
+            console.warn('[Fetch Class Students Network Error - Ativando Fallback]', e);
+            fetchFailed = true;
         }
 
-        if (classStudents.length === 0) {
+        // Fallback ativado EXCLUSIVAMENTE em caso de falha de rede / offline
+        if (!fetchCompleted && fetchFailed) {
             var allStudents = typeof global.getOfficialStudentsState === 'function' ? global.getOfficialStudentsState() : [];
             classStudents = allStudents.filter(function(st) {
-                var matchEscola = (st.escola || '').toUpperCase().includes(schoolName.toUpperCase()) || schoolName.toUpperCase().includes((st.escola || '').toUpperCase());
+                var matchEscola = !st.escola || (st.escola || '').toUpperCase().includes(schoolName.toUpperCase()) || schoolName.toUpperCase().includes((st.escola || '').toUpperCase());
                 var matchTurma = (st.turmaId === classId) || ((st.turma || '').toUpperCase() === className.toUpperCase());
                 return matchEscola && matchTurma;
             });
+            if (typeof global.showToast === 'function') {
+                global.showToast('Exibindo dados de alunos do cache local (modo offline)', 'alert');
+            }
         }
 
-        if (subtitleEl) subtitleEl.textContent = schoolName + ' • ' + classStudents.length + ' alunos matriculados';
+        var countText = classStudents.length + ' estudante' + (classStudents.length === 1 ? '' : 's') + ' matriculado' + (classStudents.length === 1 ? '' : 's');
+        var offlineBadge = (!fetchCompleted && fetchFailed) ? ' <span class="badge badge-warning" style="font-size: 10px; font-weight: 700; margin-left: 6px;">● CACHE LOCAL</span>' : '';
+        
+        if (subtitleEl) subtitleEl.innerHTML = `${schoolName} • ${countText}${offlineBadge}`;
+        if (footerCountEl) footerCountEl.innerHTML = `Total: ${countText}${offlineBadge}`;
 
         if (tbody) {
             if (classStudents.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="padding: 24px; text-align: center; color: var(--color-text-muted);">Nenhum estudante vinculado a esta turma ainda.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" style="padding: 32px 20px; text-align: center; color: var(--color-text-muted); font-size: var(--text-sm);"><i data-lucide="info" style="width: 24px; height: 24px; margin-bottom: 6px; opacity: 0.5;"></i><p style="margin: 0;">Nenhum estudante vinculado a esta turma no momento.</p></td></tr>';
             } else {
-                tbody.innerHTML = classStudents.map(function(st, idx) {
+                tbody.innerHTML = classStudents.map(function(st) {
+                    var studentMatricula = st.matricula || st.codigo_matricula || st.id || '-';
+                    var studentEscola = st.escola || schoolName;
+                    var studentSerie = st.serie || st.etapa || 'Ensino Fundamental';
+                    var neeText = st.nee ? (typeof st.nee === 'string' ? st.nee : JSON.stringify(st.nee)) : (st.necessidades_especiais ? (typeof st.necessidades_especiais === 'string' ? st.necessidades_especiais : JSON.stringify(st.necessidades_especiais)) : null);
+                    var neeBadge = neeText ? `<span class="badge badge-warning" style="font-size: 10.5px; font-weight: 700; white-space: nowrap;">${neeText}</span>` : `<span style="color: var(--color-text-muted); font-size: var(--text-xs);">Regular / Sem NEE</span>`;
+
                     return `
-                        <tr style="border-bottom: 1px solid var(--color-border-subtle); height: 46px;">
-                            <td style="padding: 8px 14px; font-weight: 700; color: var(--color-text-muted); font-size: 11px; width: 40px;">
-                                ${idx + 1}
-                            </td>
-                            <td style="padding: 8px 14px; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-text-secondary); font-weight: 600;">
-                                ${st.matricula || '-'}
+                        <tr style="border-bottom: 1px solid var(--color-border-subtle); height: 50px; transition: background-color 0.15s ease;">
+                            <td style="padding: 8px 14px; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-text-secondary); font-weight: 700;">
+                                ${studentMatricula}
                             </td>
                             <td style="padding: 8px 14px;">
-                                <strong style="color: var(--color-brand-primary); font-size: var(--text-sm);">${st.nome}</strong>
+                                <strong style="color: var(--color-brand-primary); font-size: var(--text-sm); display: block;">${st.nome}</strong>
+                                ${st.cpf ? `<span style="font-size: 11px; color: var(--color-text-muted);">CPF: ${st.cpf}</span>` : ''}
                             </td>
                             <td style="padding: 8px 14px; font-size: var(--text-xs); color: var(--color-text-secondary);">
-                                ${st.dataNascimento || st.nascimento || '-'}
+                                ${studentEscola}
+                            </td>
+                            <td style="padding: 8px 14px; font-size: var(--text-xs); font-weight: 600; color: var(--color-text-primary);">
+                                ${studentSerie}
+                            </td>
+                            <td style="padding: 8px 14px; text-align: center;">
+                                ${neeBadge}
+                            </td>
+                            <td style="padding: 8px 14px; text-align: center;">
+                                <div style="display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+                                    <button type="button" onclick="openClassStudentDetails('${st.id}', '${st.matricula || ''}');" class="btn btn-outline" style="font-size: var(--text-xs); padding: 4px 10px; height: 28px; border-radius: var(--radius-pill); display: inline-flex; align-items: center; gap: 4px; color: var(--color-brand-primary);" title="Visualizar Dados Gerais e Ficha Cadastral">
+                                        <i data-lucide="user" style="width: 12px; height: 12px;"></i>
+                                        <span>Dados Gerais</span>
+                                    </button>
+                                    <button type="button" onclick="openClassStudentProgression('${st.id}', '${st.matricula || ''}', '${st.nome.replace(/'/g, "\\\'")}');" class="btn btn-outline" style="font-size: var(--text-xs); padding: 4px 10px; height: 28px; border-radius: var(--radius-pill); display: inline-flex; align-items: center; gap: 4px; color: #10b981; border-color: rgba(16, 185, 129, 0.4);" title="Visualizar Trajetória & Progressão SAEB">
+                                        <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
+                                        <span>Progressão</span>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     `;
@@ -175,6 +223,61 @@
 
         if (window.lucide && typeof lucide.createIcons === 'function') {
             try { lucide.createIcons(); } catch(e) {}
+        }
+    }
+
+    function openClassStudentDetails(studentId, matricula) {
+        var allStudents = typeof global.getOfficialStudentsState === 'function' ? global.getOfficialStudentsState() : (global.loadedStudents || []);
+        var student = allStudents.find(function(s) {
+            return (studentId && (String(s.id) === String(studentId) || String(s.matricula) === String(studentId))) ||
+                   (matricula && (String(s.matricula) === String(matricula) || String(s.id) === String(matricula)));
+        });
+
+        if (!student) {
+            student = {
+                id: studentId,
+                matricula: matricula || studentId,
+                nome: 'Estudante',
+                escola: 'Rede Municipal',
+                etapa: 'Ensino Fundamental'
+            };
+        }
+
+        if (typeof global.openStudentModal === 'function') {
+            global.openStudentModal(student);
+        } else if (typeof window.openStudentModal === 'function') {
+            window.openStudentModal(student);
+        } else if (typeof global.openStudentFullDetails === 'function') {
+            global.openStudentFullDetails(studentId || matricula);
+        }
+    }
+
+    function openClassStudentProgression(studentId, matricula, studentName) {
+        var allStudents = typeof global.getOfficialStudentsState === 'function' ? global.getOfficialStudentsState() : (global.loadedStudents || []);
+        var student = allStudents.find(function(s) {
+            return (studentId && (String(s.id) === String(studentId) || String(s.matricula) === String(studentId))) ||
+                   (matricula && (String(s.matricula) === String(matricula) || String(s.id) === String(matricula)));
+        });
+
+        if (!student) {
+            student = {
+                id: studentId,
+                matricula: matricula || studentId,
+                nome: studentName || 'Estudante',
+                escola: 'Rede Municipal',
+                etapa: 'Ensino Fundamental'
+            };
+        }
+
+        if (typeof global.openStudentModal === 'function') {
+            global.openStudentModal(student);
+            if (typeof global.switchStudentModalTab === 'function') {
+                global.switchStudentModalTab('progressao');
+            }
+        } else if (typeof global.openStudentProgressionModal === 'function') {
+            global.openStudentProgressionModal(matricula || studentId, studentName);
+        } else if (typeof window.openStudentProgression === 'function') {
+            window.openStudentProgression(studentId || matricula, studentName);
         }
     }
 
@@ -423,6 +526,8 @@
 
     global.openViewClassStudentsModal = openViewClassStudentsModal;
     global.closeViewClassStudentsModal = closeViewClassStudentsModal;
+    global.openClassStudentDetails = openClassStudentDetails;
+    global.openClassStudentProgression = openClassStudentProgression;
 
     global.openCreateTeacherModal = openCreateTeacherModal;
     global.closeCreateTeacherModal = closeCreateTeacherModal;
