@@ -450,30 +450,32 @@ app.get('*', (req, res) => {
 });
 
 // Start Server and Init Database
-const server = app.listen(PORT, '0.0.0.0', () => {
-    console.log(`[Railway/Production] Server running on 0.0.0.0:${PORT}`);
-    
-    // Rodar checagens de banco em segundo plano de forma assíncrona para não atrasar o binding do Railway
-    setImmediate(async () => {
-        if (!db.useLocalFallback) {
-            try {
-                console.log('Ensuring tenant_state table exists...');
-                await db.query(`
-                    CREATE TABLE IF NOT EXISTS tenant_state (
-                        tenant_id VARCHAR(50) PRIMARY KEY,
-                        data JSONB,
-                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                `);
-                
-                await db.runMigrations();
-                await db.seedDatabase();
-            } catch (err) {
-                console.error('[DB Init Warning]', err.message);
+if (require.main === module) {
+    const server = app.listen(PORT, '0.0.0.0', () => {
+        console.log(`[Railway/Production] Server running on 0.0.0.0:${PORT}`);
+        
+        // Rodar checagens de banco em segundo plano de forma assíncrona para não atrasar o binding do Railway
+        setImmediate(async () => {
+            if (!db.useLocalFallback) {
+                try {
+                    console.log('Ensuring tenant_state table exists...');
+                    await db.query(`
+                        CREATE TABLE IF NOT EXISTS tenant_state (
+                            tenant_id VARCHAR(50) PRIMARY KEY,
+                            data JSONB,
+                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        )
+                    `);
+                    
+                    await db.runMigrations();
+                    await db.seedDatabase();
+                } catch (err) {
+                    console.error('[DB Init Warning]', err.message);
+                }
             }
-        }
+        });
     });
-});
+}
 
 process.on('uncaughtException', (err) => {
     console.error('[UncaughtException]', err);
@@ -482,3 +484,5 @@ process.on('uncaughtException', (err) => {
 process.on('unhandledRejection', (reason, promise) => {
     console.error('[UnhandledRejection]', reason);
 });
+
+module.exports = app;

@@ -4,6 +4,7 @@
   "description": "Interactive spec and prototype for EduSaaS",
   "main": "index.html",
   "scripts": {
+    "build": "node cache-buster.js",
     "start": "node cache-buster.js && node server.js",
     "dev": "node cache-buster.js && npx -y http-server -p 8080",
     "import-data": "node scripts/import_inep_csv.js",

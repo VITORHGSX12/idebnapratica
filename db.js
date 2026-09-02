@@ -34,14 +34,18 @@ const LOCAL_DB_FILE = path.join(__dirname, 'local_db_state.json');
 
 // Initialize Local JSON Fallback File if not exists
 if (useLocalFallback && !fs.existsSync(LOCAL_DB_FILE)) {
-    fs.writeFileSync(LOCAL_DB_FILE, JSON.stringify({
-        escolas: [],
-        turmas: [],
-        alunos: [],
-        avaliacoes: [],
-        resultados: [],
-        questoes: []
-    }, null, 2));
+    try {
+        fs.writeFileSync(LOCAL_DB_FILE, JSON.stringify({
+            escolas: [],
+            turmas: [],
+            alunos: [],
+            avaliacoes: [],
+            resultados: [],
+            questoes: []
+        }, null, 2));
+    } catch(e) {
+        console.warn('[DB Fallback Warning] Read-only filesystem or write error:', e.message);
+    }
 }
 
 async function query(text, params) {

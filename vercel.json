@@ -1,6 +1,9 @@
 {
   "version": 2,
   "cleanUrls": true,
+  "framework": null,
+  "buildCommand": "node cache-buster.js",
+  "outputDirectory": ".",
   "headers": [
     {
       "source": "/(.*)",
