@@ -55,17 +55,43 @@
 
     function getOfficialStudentsState() {
         var seed = getSeedData();
+        var students = null;
         try {
             var saved = localStorage.getItem(STORAGE_KEY_OFFICIAL_STUDENTS);
             if (saved) {
                 var parsed = JSON.parse(saved);
-                if (Array.isArray(parsed) && parsed.length === (seed.alunos ? seed.alunos.length : 526)) return parsed;
+                if (Array.isArray(parsed) && parsed.length === (seed.alunos ? seed.alunos.length : 526)) students = parsed;
             }
         } catch(e) {}
 
-        if (seed.alunos && seed.alunos.length > 0) {
-            saveOfficialStudentsState(seed.alunos);
-            return seed.alunos;
+        if (!students && seed.alunos && seed.alunos.length > 0) {
+            students = seed.alunos;
+        }
+
+        if (students && students.length > 0) {
+            var classes = getOfficialClassesState();
+            var classMap = {};
+            classes.forEach(function(c) {
+                classMap[c.escola + '|||' + c.nome] = c.id;
+            });
+
+            var needsResave = false;
+            students.forEach(function(st) {
+                if (!st.turmaId && st.escola && st.turma) {
+                    var tid = classMap[st.escola + '|||' + st.turma];
+                    if (tid) {
+                        st.turmaId = tid;
+                        st.turma_id = tid;
+                        needsResave = true;
+                    }
+                }
+            });
+
+            if (needsResave || !localStorage.getItem(STORAGE_KEY_OFFICIAL_STUDENTS)) {
+                saveOfficialStudentsState(students);
+            }
+            if (global.dbAlunos !== students) global.dbAlunos = students;
+            return students;
         }
         return [];
     }
@@ -74,23 +100,64 @@
         try {
             var toSave = students || getOfficialStudentsState();
             localStorage.setItem(STORAGE_KEY_OFFICIAL_STUDENTS, JSON.stringify(toSave));
+            global.dbAlunos = toSave;
         } catch(e) {}
     }
 
     function getOfficialClassesState() {
+        var seed = getSeedData();
+        var seedClasses = (seed && seed.turmas && seed.turmas.length > 0) ? seed.turmas : [];
+
         try {
             var saved = localStorage.getItem(STORAGE_KEY_OFFICIAL_CLASSES);
             if (saved) {
                 var parsed = JSON.parse(saved);
-                if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                if (Array.isArray(parsed) && parsed.length >= seedClasses.length && parsed.length > 0) {
+                    if (global.dbTurmas !== parsed) global.dbTurmas = parsed;
+                    return parsed;
+                }
             }
         } catch(e) {}
 
-        var seed = getSeedData();
-        if (seed.turmas && seed.turmas.length > 0) {
-            saveOfficialClassesState(seed.turmas);
-            return seed.turmas;
+        if (seedClasses.length > 0) {
+            saveOfficialClassesState(seedClasses);
+            global.dbTurmas = seedClasses;
+            return seedClasses;
         }
+
+        // Fallback robusto: derivar classes a partir dos estudantes oficiais
+        var students = (seed && seed.alunos) ? seed.alunos : [];
+        if (students && students.length > 0) {
+            var derivedMap = {};
+            students.forEach(function(st) {
+                if (!st.escola || !st.turma) return;
+                var key = st.escola + '|||' + st.turma;
+                if (!derivedMap[key]) {
+                    var serie = st.etapa || 'Ensino Fundamental';
+                    var turno = /vespertino/i.test(st.turma) ? 'Vespertino' : (/noturno/i.test(st.turma) ? 'Noturno' : 'Matutino');
+                    var slug = (st.escola + '_' + st.turma).toLowerCase().replace(/[^a-z0-9]+/g, '_');
+                    derivedMap[key] = {
+                        id: st.turmaId || ('turma_' + slug),
+                        nome: st.turma,
+                        escola: st.escola,
+                        escola_id: st.escolaId || '',
+                        escolaId: st.escolaId || '',
+                        serie: serie,
+                        turno: turno,
+                        anoLetivo: '2026',
+                        alunosCount: 0
+                    };
+                }
+                derivedMap[key].alunosCount++;
+            });
+            var derivedList = Object.values(derivedMap);
+            if (derivedList.length > 0) {
+                saveOfficialClassesState(derivedList);
+                global.dbTurmas = derivedList;
+                return derivedList;
+            }
+        }
+
         return [];
     }
 
@@ -98,6 +165,7 @@
         try {
             var toSave = classes || getOfficialClassesState();
             localStorage.setItem(STORAGE_KEY_OFFICIAL_CLASSES, JSON.stringify(toSave));
+            global.dbTurmas = toSave;
         } catch(e) {}
     }
 

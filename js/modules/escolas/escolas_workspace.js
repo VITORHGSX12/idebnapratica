@@ -136,8 +136,13 @@
         var allStudents = typeof global.getOfficialStudentsState === 'function' ? global.getOfficialStudentsState() : [];
         var allTeachers = typeof global.getOfficialTeachersState === 'function' ? global.getOfficialTeachersState() : [];
 
-        var schoolClasses = allClasses.filter(function(c) { return c.escola === schoolName; });
-        var schoolStudents = allStudents.filter(function(st) { return st.escola === schoolName; });
+        function matchSchool(s1, s2) {
+            if (!s1 || !s2) return false;
+            return s1.trim().toLowerCase() === s2.trim().toLowerCase();
+        }
+
+        var schoolClasses = allClasses.filter(function(c) { return matchSchool(c.escola, schoolName); });
+        var schoolStudents = allStudents.filter(function(st) { return matchSchool(st.escola, schoolName); });
 
         container.innerHTML = `
             <div class="card" style="background: var(--color-surface-card); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); padding: 22px;">
@@ -166,7 +171,7 @@
                     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
                         ${schoolClasses.map(function(cls) {
                             var classStudents = schoolStudents.filter(function(st) {
-                                return st.turmaId === cls.id || st.turma === cls.nome;
+                                return st.turmaId === cls.id || st.turma_id === cls.id || (st.turma && cls.nome && st.turma.trim().toLowerCase() === cls.nome.trim().toLowerCase());
                             });
                             var studentCount = classStudents.length;
 
@@ -315,9 +320,12 @@
         var container = document.getElementById('school-inner-tab-content-container');
         if (!container) return;
 
-        var allStudents = typeof global.getOfficialStudentsState === 'function' ? global.getOfficialStudentsState() : [];
-        var schoolStudents = allStudents.filter(function(st) { return st.escola === schoolName; });
-        var schoolClasses = typeof global.getOfficialClassesState === 'function' ? global.getOfficialClassesState().filter(function(c) { return c.escola === schoolName; }) : [];
+        function matchSchool(s1, s2) {
+            if (!s1 || !s2) return false;
+            return s1.trim().toLowerCase() === s2.trim().toLowerCase();
+        }
+        var schoolStudents = allStudents.filter(function(st) { return matchSchool(st.escola, schoolName); });
+        var schoolClasses = typeof global.getOfficialClassesState === 'function' ? global.getOfficialClassesState().filter(function(c) { return matchSchool(c.escola, schoolName); }) : [];
 
         var userRole = sessionStorage.getItem('userRole') || 'Master Admin';
         var canViewSensitive = userRole === 'Master Admin' || userRole === 'Gestor da Rede' || userRole === 'Diretor Escola' || userRole === 'Admin';
@@ -382,7 +390,9 @@
         if (!tbody) return;
 
         var allStudents = typeof global.getOfficialStudentsState === 'function' ? global.getOfficialStudentsState() : [];
-        var schoolStudents = allStudents.filter(function(st) { return st.escola === schoolName; });
+        var schoolStudents = allStudents.filter(function(st) {
+            return st.escola && schoolName && st.escola.trim().toLowerCase() === schoolName.trim().toLowerCase();
+        });
 
         var searchInput = document.getElementById('school-students-search-input');
         var query = searchInput ? searchInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
@@ -401,7 +411,7 @@
             if (selectedClass === 'sem_turma') {
                 matchClass = !st.turma || st.turma === 'Sem turma';
             } else if (selectedClass !== 'all') {
-                matchClass = st.turma === selectedClass;
+                matchClass = st.turma === selectedClass || st.turmaId === selectedClass || st.turma_id === selectedClass;
             }
             return matchQuery && matchClass;
         });
@@ -428,7 +438,7 @@
                         <strong style="color: var(--color-brand-primary); font-size: var(--text-sm);">${st.nome}</strong>
                     </td>
                     <td style="padding: 8px 16px; font-size: var(--text-xs); color: var(--color-text-secondary);">
-                        ${st.dataNascimento || '-'}
+                        ${st.nascimento || st.dataNascimento || '-'}
                     </td>
                     <td style="padding: 8px 16px;">
                         ${turmaBadge}
