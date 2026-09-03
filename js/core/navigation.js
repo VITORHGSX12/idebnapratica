@@ -153,6 +153,7 @@
             } else if (resolvedId === 'escolas-panel') {
                 if (typeof global.renderDbSchools === 'function') global.renderDbSchools();
             } else if (resolvedId === 'alunos-panel') {
+                if (typeof global.initAlunosTab === 'function') global.initAlunosTab();
                 if (typeof global.renderDbStudents === 'function') global.renderDbStudents();
             } else if (resolvedId === 'metas-ideb') {
                 if (typeof global.populateIdebGoalsTable === 'function') global.populateIdebGoalsTable();

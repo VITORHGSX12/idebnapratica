@@ -136,6 +136,7 @@ var TAB_LIFECYCLE_HOOKS = {
         if (typeof populateAiSelectors === 'function') populateAiSelectors();
     },
     'alunos-panel': function() {
+        if (typeof initAlunosTab === 'function') initAlunosTab();
         if (typeof renderDbStudents === 'function') renderDbStudents();
     },
     'escolas-panel': function() {
