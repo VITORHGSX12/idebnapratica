@@ -510,6 +510,9 @@
         if (typeof global.initDashboardScrollReveal === 'function') {
             global.initDashboardScrollReveal();
         }
+        if (typeof global.startTrajectoryLineLoop === 'function') {
+            global.startTrajectoryLineLoop(container);
+        }
     }
 
     /**

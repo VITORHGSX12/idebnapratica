@@ -363,7 +363,7 @@
         }
 
         // 5. Linha Vetorial do IDEB Trajetória PDE
-        if (section.querySelector('.trajectory-observed-line')) {
+        if (section.querySelector('.trajectory-observed-line') || section.id === 'dashboard-pde-progress-container' || section.classList.contains('ideb-trajectory-card')) {
             startTrajectoryLineLoop(section);
         }
     }
@@ -515,12 +515,10 @@
                 return;
             }
 
+            sec.classList.add('dash-scroll-block');
             if (isElementInView(sec, activeScrollContainer)) {
-                sec.classList.add('dash-scroll-block', 'dash-visible');
-                sec.setAttribute('data-revealed', 'true');
-                triggerSectionNumbers(sec);
+                revealSection(sec);
             } else {
-                sec.classList.add('dash-scroll-block');
                 sec.setAttribute('data-revealed', 'false');
             }
         });
@@ -582,6 +580,7 @@
     }
 
     // Exposição Global
+    global.startTrajectoryLineLoop = startTrajectoryLineLoop;
     global.initDashboardScrollReveal = function() {
         setTimeout(initDashboardScrollReveal, 60);
     };
