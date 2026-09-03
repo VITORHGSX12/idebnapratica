@@ -90,7 +90,12 @@
         }
     }
 
-    function switchSchoolInnerTab(tabName) {
+    function enterSchoolClass(classId, className, schoolName) {
+        var school = schoolName || global.currentSelectedSchoolDetail || "UI ALDENORA DE ARAÚJO CRUZ";
+        switchSchoolInnerTab('alunos', className);
+    }
+
+    function switchSchoolInnerTab(tabName, targetClassName) {
         var btns = document.querySelectorAll('.school-nav-tab-btn');
         btns.forEach(function(btn) {
             var dt = btn.getAttribute('data-tab');
@@ -114,7 +119,7 @@
         } else if (tabName === 'professores') {
             renderSchoolTeachersTab(school);
         } else if (tabName === 'alunos') {
-            renderSchoolStudentsTab(school);
+            renderSchoolStudentsTab(school, targetClassName);
         } else {
             renderSchoolOverviewTab(school);
         }
@@ -205,7 +210,7 @@
                                     </div>
 
                                     <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--color-border-subtle); display: flex; justify-content: space-between; align-items: center;">
-                                        <button type="button" onclick="openViewClassStudentsModal('${cls.id}', '${cls.nome.replace(/'/g, "\\\'")}', '${schoolName.replace(/'/g, "\\\'")}');" class="btn btn-outline" style="font-size: var(--text-xs); padding: 5px 12px; height: 30px; border-radius: var(--radius-pill); display: inline-flex; align-items: center; gap: 5px;">
+                                        <button type="button" onclick="enterSchoolClass('${cls.id}', '${cls.nome.replace(/'/g, "\\\'")}', '${schoolName.replace(/'/g, "\\\'")}');" class="btn btn-outline" style="font-size: var(--text-xs); padding: 5px 12px; height: 30px; border-radius: var(--radius-pill); display: inline-flex; align-items: center; gap: 5px; font-weight: 600;" title="Entrar na Turma e Ver Alunos">
                                             <i data-lucide="users" style="width: 13px; height: 13px;"></i>
                                             <span>Ver Turma (${studentCount})</span>
                                         </button>
@@ -316,7 +321,7 @@
     // 4. ABA ALUNOS DA ESCOLA
     // -------------------------------------------------------------------------
 
-    function renderSchoolStudentsTab(schoolName) {
+    function renderSchoolStudentsTab(schoolName, targetClassName) {
         var container = document.getElementById('school-inner-tab-content-container');
         if (!container) return;
 
@@ -324,22 +329,39 @@
             if (!s1 || !s2) return false;
             return s1.trim().toLowerCase() === s2.trim().toLowerCase();
         }
+        var allStudents = typeof global.getOfficialStudentsState === 'function' ? global.getOfficialStudentsState() : [];
         var schoolStudents = allStudents.filter(function(st) { return matchSchool(st.escola, schoolName); });
         var schoolClasses = typeof global.getOfficialClassesState === 'function' ? global.getOfficialClassesState().filter(function(c) { return matchSchool(c.escola, schoolName); }) : [];
 
         var userRole = sessionStorage.getItem('userRole') || 'Master Admin';
         var canViewSensitive = userRole === 'Master Admin' || userRole === 'Gestor da Rede' || userRole === 'Diretor Escola' || userRole === 'Admin';
 
+        var hasTargetClass = Boolean(targetClassName && targetClassName !== 'all');
+        var activeClassStudents = hasTargetClass ? schoolStudents.filter(function(st) {
+            return st.turma === targetClassName || st.turmaId === targetClassName || (st.turma && st.turma.toLowerCase() === targetClassName.toLowerCase());
+        }) : schoolStudents;
+
         container.innerHTML = `
             <div class="card" style="background: var(--color-surface-card); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); padding: 22px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
                     <div>
-                        <h3 style="font-size: var(--text-title-sm); font-weight: 700; color: var(--color-brand-primary); margin: 0;">Estudantes Matriculados</h3>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            <h3 style="font-size: var(--text-title-sm); font-weight: 700; color: var(--color-brand-primary); margin: 0;">
+                                ${hasTargetClass ? `Estudantes da Turma: ${targetClassName}` : 'Estudantes Matriculados'}
+                            </h3>
+                            ${hasTargetClass ? `<span class="badge badge-info" style="font-size: 11px; font-weight: 700;">● FILTRADO POR TURMA</span>` : ''}
+                        </div>
                         <p style="font-size: var(--text-xs); color: var(--color-text-secondary); margin: 2px 0 0 0;">
-                            ${schoolStudents.length} alunos cadastrados em ${schoolName}
+                            ${hasTargetClass ? `${activeClassStudents.length} alunos vinculados a esta turma em ${schoolName}` : `${schoolStudents.length} alunos cadastrados em ${schoolName}`}
                         </p>
                     </div>
                     <div style="display: flex; gap: 8px; align-items: center;">
+                        ${hasTargetClass ? `
+                            <button type="button" onclick="switchSchoolInnerTab('turmas');" class="btn btn-outline" style="font-size: var(--text-xs); padding: 7px 14px; border-radius: var(--radius-pill); display: inline-flex; align-items: center; gap: 6px;">
+                                <i data-lucide="arrow-left" style="width: 14px; height: 14px;"></i>
+                                <span>Voltar para Turmas</span>
+                            </button>
+                        ` : ''}
                         <button type="button" onclick="openCreateStudentModal('${schoolName.replace(/'/g, "\\\'")}');" class="btn btn-primary" style="font-size: var(--text-xs); padding: 7px 16px; border-radius: var(--radius-pill); display: inline-flex; align-items: center; gap: 6px;">
                             <i data-lucide="user-plus" style="width: 15px; height: 15px;"></i>
                             <span>Cadastrar Novo Aluno</span>
@@ -357,7 +379,8 @@
                         <option value="all">Todas as Turmas (${schoolClasses.length})</option>
                         <option value="sem_turma">● Apenas Sem Turma</option>
                         ${schoolClasses.map(function(c) {
-                            return `<option value="${c.nome}">${c.nome}</option>`;
+                            var isSelected = (hasTargetClass && (c.nome === targetClassName || c.id === targetClassName)) ? 'selected' : '';
+                            return `<option value="${c.nome}" ${isSelected}>${c.nome}</option>`;
                         }).join('')}
                     </select>
                 </div>
@@ -371,7 +394,7 @@
                                 <th style="padding: 12px 16px;">Nascimento</th>
                                 <th style="padding: 12px 16px;">Turma Vinculada</th>
                                 ${canViewSensitive ? `<th style="padding: 12px 16px;">CPF / RG (LGPD)</th>` : ''}
-                                <th style="padding: 12px 16px; text-align: center;">Ações</th>
+                                <th style="padding: 12px 16px; text-align: center; min-width: 250px;">Ações Pedagógicas</th>
                             </tr>
                         </thead>
                         <tbody id="school-students-tbody">
@@ -449,9 +472,19 @@
                         </td>
                     ` : ''}
                     <td style="padding: 8px 16px; text-align: center;">
-                        <button type="button" onclick="openChangeStudentClassModal('${st.id}', '${st.nome.replace(/'/g, "\\\'")}', '${schoolName.replace(/'/g, "\\\'")}');" class="btn btn-outline" style="font-size: var(--text-xs); padding: 4px 8px; height: 26px; border-radius: var(--radius-pill);" title="Alterar Turma">
-                            ${hasTurma ? 'Mudar Turma' : 'Vincular Turma'}
-                        </button>
+                        <div style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap;">
+                            <button type="button" onclick="openClassStudentDetails('${st.id}', '${st.matricula || ''}');" class="btn btn-outline" style="font-size: 11px; padding: 4px 10px; height: 28px; border-radius: var(--radius-pill); display: inline-flex; align-items: center; gap: 4px; color: var(--color-brand-primary);" title="Visualizar Ficha Cadastral e Dados Gerais">
+                                <i data-lucide="user" style="width: 12px; height: 12px;"></i>
+                                <span>Ver Dados</span>
+                            </button>
+                            <button type="button" onclick="openClassStudentProgression('${st.id}', '${st.matricula || ''}', '${st.nome.replace(/'/g, "\\\'")}');" class="btn btn-outline" style="font-size: 11px; padding: 4px 10px; height: 28px; border-radius: var(--radius-pill); display: inline-flex; align-items: center; gap: 4px; color: #10b981; border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.05);" title="Visualizar Trajetória e Progressão SAEB">
+                                <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
+                                <span>Ver Progressão</span>
+                            </button>
+                            <button type="button" onclick="openChangeStudentClassModal('${st.id}', '${st.nome.replace(/'/g, "\\\'")}', '${schoolName.replace(/'/g, "\\\'")}');" class="btn-icon" style="background: none; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-pill); width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; color: var(--color-text-secondary);" title="${hasTurma ? 'Alterar Turma' : 'Vincular Turma'}">
+                                <i data-lucide="shuffle" style="width: 12px; height: 12px;"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             `;
@@ -539,5 +572,10 @@
     global.renderSchoolStudentsTab = renderSchoolStudentsTab;
     global.renderSchoolOverviewTab = renderSchoolOverviewTab;
     global.filterSchoolStudentsTable = filterSchoolStudentsTable;
+    global.enterSchoolClass = enterSchoolClass;
+
+    if (typeof window !== 'undefined') {
+        window.enterSchoolClass = enterSchoolClass;
+    }
 
 })(typeof window !== 'undefined' ? window : this);

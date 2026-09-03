@@ -205,13 +205,13 @@
                             </td>
                             <td style="padding: 8px 14px; text-align: center;">
                                 <div style="display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
-                                    <button type="button" onclick="openClassStudentDetails('${st.id}', '${st.matricula || ''}');" class="btn btn-outline" style="font-size: var(--text-xs); padding: 4px 10px; height: 28px; border-radius: var(--radius-pill); display: inline-flex; align-items: center; gap: 4px; color: var(--color-brand-primary);" title="Visualizar Dados Gerais e Ficha Cadastral">
+                                    <button type="button" onclick="openClassStudentDetails('${st.id}', '${st.matricula || ''}');" class="btn btn-outline" style="font-size: var(--text-xs); padding: 4px 10px; height: 28px; border-radius: var(--radius-pill); display: inline-flex; align-items: center; gap: 4px; color: var(--color-brand-primary);" title="Visualizar Ficha Cadastral e Dados Gerais">
                                         <i data-lucide="user" style="width: 12px; height: 12px;"></i>
-                                        <span>Dados Gerais</span>
+                                        <span>Ver Dados</span>
                                     </button>
-                                    <button type="button" onclick="openClassStudentProgression('${st.id}', '${st.matricula || ''}', '${st.nome.replace(/'/g, "\\\'")}');" class="btn btn-outline" style="font-size: var(--text-xs); padding: 4px 10px; height: 28px; border-radius: var(--radius-pill); display: inline-flex; align-items: center; gap: 4px; color: #10b981; border-color: rgba(16, 185, 129, 0.4);" title="Visualizar Trajetória & Progressão SAEB">
+                                    <button type="button" onclick="openClassStudentProgression('${st.id}', '${st.matricula || ''}', '${st.nome.replace(/'/g, "\\\'")}');" class="btn btn-outline" style="font-size: var(--text-xs); padding: 4px 10px; height: 28px; border-radius: var(--radius-pill); display: inline-flex; align-items: center; gap: 4px; color: #10b981; border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.05);" title="Visualizar Trajetória & Progressão SAEB">
                                         <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
-                                        <span>Progressão</span>
+                                        <span>Ver Progressão</span>
                                     </button>
                                 </div>
                             </td>
