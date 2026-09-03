@@ -2,9 +2,8 @@
  * ============================================================================
  * GESTÃO EDUCACIONAL SAAS — SCROLL REVEAL PROGRESSIVO DO DASHBOARD
  * Arquivo: js/modules/dashboard/dashboard_scroll_reveal.js
- * Descrição: Revela e monta os painéis, contadores e gráficos continuamente
- *            conforme o usuário rola a página no navegador.
- *            Suporte universal: viewport global (window) e container .main-content.
+ * Descrição: Montagem contínua e progressiva das seções, contadores numéricos
+ *            e gráficos conforme o usuário rola o container .content-body.
  * ============================================================================
  */
 
@@ -13,6 +12,7 @@
 
     var observerInstance = null;
     var scrollAttached = false;
+    var activeScrollContainer = null;
 
     /**
      * Verifica preferência por movimento reduzido (Acessibilidade)
@@ -48,12 +48,12 @@
             /* Elementos em espera abaixo da dobra */
             #dashboard .dash-scroll-block {
                 opacity: 0;
-                transform: translateY(24px);
-                transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+                transform: translateY(28px);
+                transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
                 will-change: opacity, transform;
             }
 
-            /* Elemento revelado conforme a tela rola */
+            /* Elemento revelado conforme o container rola */
             #dashboard .dash-scroll-block.dash-visible {
                 opacity: 1 !important;
                 transform: translateY(0) !important;
@@ -61,13 +61,13 @@
 
             /* Entrada suave dos cards do topo */
             #dashboard .dash-top-card {
-                animation: dashFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                animation: dashFadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             }
 
             @keyframes dashFadeUp {
                 from {
                     opacity: 0;
-                    transform: translateY(16px);
+                    transform: translateY(18px);
                 }
                 to {
                     opacity: 1;
@@ -258,7 +258,7 @@
     }
 
     /**
-     * Revela uma seção conforme o scroll alcança sua posição
+     * Revela uma seção conforme a rolagem do container alcança sua posição
      */
     function revealSection(section) {
         if (!section || section.getAttribute('data-revealed') === 'true') return;
@@ -270,34 +270,54 @@
     }
 
     /**
-     * Verifica se o elemento está visível no viewport do navegador
+     * Identifica o container ativo de rolagem (.content-body é a raiz real)
      */
-    function isElementInView(el) {
+    function getScrollContainer() {
+        var cb = document.querySelector('.content-body');
+        if (cb && cb.scrollHeight > cb.clientHeight) return cb;
+        var mc = document.querySelector('.main-content');
+        if (mc && mc.scrollHeight > mc.clientHeight) return mc;
+        return cb || mc || window;
+    }
+
+    /**
+     * Verifica se o elemento está visível dentro do container de rolagem
+     */
+    function isElementInView(el, container) {
         if (!el) return false;
         var r = el.getBoundingClientRect();
         if (r.height === 0 && r.width === 0) return false;
 
-        var vHeight = window.innerHeight || document.documentElement.clientHeight || 800;
-        // Revela com antecedência de 50px antes do elemento passar do fundo da tela
-        return r.top < (vHeight - 40) && r.bottom > 20;
+        var cTop = 0;
+        var cBottom = window.innerHeight;
+
+        if (container && container !== window && typeof container.getBoundingClientRect === 'function') {
+            var cr = container.getBoundingClientRect();
+            cTop = cr.top;
+            cBottom = cr.bottom;
+        }
+
+        // Revela no momento em que o topo do elemento chega a 35px antes do fundo visível do container
+        return r.top < (cBottom - 35) && r.bottom > (cTop + 10);
     }
 
     /**
-     * Monitor de Scroll Contínuo sobre a janela e containers
+     * Monitor de Scroll Contínuo sobre o container de rolagem real
      */
     function handleScrollCheck() {
+        var container = activeScrollContainer || getScrollContainer();
         var blocks = document.querySelectorAll('#dashboard-main-content .dash-scroll-block:not([data-revealed="true"])');
         if (!blocks.length) return;
 
         blocks.forEach(function(block) {
-            if (isElementInView(block)) {
+            if (isElementInView(block, container)) {
                 revealSection(block);
             }
         });
     }
 
     /**
-     * Inicializa a orquestração do scroll reveal contínuo
+     * Inicializa a orquestração do scroll reveal progressivo
      */
     function initDashboardScrollReveal() {
         var dashTab = document.getElementById('dashboard');
@@ -307,6 +327,8 @@
 
         var mainContent = document.getElementById('dashboard-main-content');
         if (!mainContent) return;
+
+        activeScrollContainer = getScrollContainer();
 
         var banner = document.getElementById('dashboard-welcome-banner');
         var metricGrid = document.getElementById('dashboard-metric-cards-container');
@@ -326,14 +348,15 @@
             var cards = metricGrid.querySelectorAll('.metric-card');
             cards.forEach(function(c, i) {
                 c.classList.add('dash-top-card');
-                c.style.animationDelay = (i * 100) + 'ms';
+                c.style.animationDelay = (i * 90) + 'ms';
             });
             setTimeout(function() {
                 triggerSectionNumbers(metricGrid);
-            }, 100);
+            }, 80);
         }
 
-        // 2. Seções seguintes: se já estiverem na tela, revela; se estiverem abaixo da dobra, aguarda scroll
+        // 2. Seções seguintes: apenas revela as que JÁ estiverem visíveis no topo da tela inicial
+        // As demais (abaixo da dobra) permanecem ocultas aguardando a rolagem real do usuário
         allSections.forEach(function(sec) {
             if (isReducedMotion()) {
                 sec.classList.add('dash-scroll-block', 'dash-visible');
@@ -341,22 +364,22 @@
                 return;
             }
 
-            if (isElementInView(sec)) {
-                // Já visível na tela inicial
+            if (isElementInView(sec, activeScrollContainer)) {
                 sec.classList.add('dash-scroll-block', 'dash-visible');
                 sec.setAttribute('data-revealed', 'true');
                 triggerSectionNumbers(sec);
             } else {
-                // Abaixo da dobra: aguarda a rolagem do usuário
                 sec.classList.add('dash-scroll-block');
             }
         });
 
-        // 3. IntersectionObserver no viewport global (root: null = window)
+        // 3. IntersectionObserver ancorado no container de rolagem real (.content-body)
         if (typeof IntersectionObserver !== 'undefined') {
             if (observerInstance) {
                 try { observerInstance.disconnect(); } catch(e) {}
             }
+
+            var obsRoot = (activeScrollContainer && activeScrollContainer !== window) ? activeScrollContainer : null;
 
             observerInstance = new IntersectionObserver(function(entries) {
                 entries.forEach(function(entry) {
@@ -366,9 +389,9 @@
                     }
                 });
             }, {
-                root: null, // Viewport real do navegador
-                rootMargin: '0px 0px -40px 0px',
-                threshold: 0.08
+                root: obsRoot,
+                rootMargin: '0px 0px -35px 0px',
+                threshold: 0.06
             });
 
             allSections.forEach(function(sec) {
@@ -378,7 +401,7 @@
             });
         }
 
-        // 4. Listeners universais de scroll (window, document e .main-content)
+        // 4. Listeners universais de rolagem sobre .content-body, .main-content e window
         if (!scrollAttached) {
             var ticking = false;
             var onScroll = function() {
@@ -391,38 +414,29 @@
                 }
             };
 
-            window.addEventListener('scroll', onScroll, { passive: true });
-            document.addEventListener('scroll', onScroll, { passive: true });
+            var cb = document.querySelector('.content-body');
+            if (cb) cb.addEventListener('scroll', onScroll, { passive: true });
 
-            var scrollBox = document.querySelector('.main-content');
-            if (scrollBox) {
-                scrollBox.addEventListener('scroll', onScroll, { passive: true });
-            }
+            var mc = document.querySelector('.main-content');
+            if (mc) mc.addEventListener('scroll', onScroll, { passive: true });
+
+            window.addEventListener('scroll', onScroll, { passive: true });
 
             scrollAttached = true;
         }
-
-        // 5. Garantia de segurança contra telas em branco:
-        // Se após 3.5 segundos algum elemento ainda estiver oculto (ex: sem scroll), revela tudo
-        setTimeout(function() {
-            var unrevealed = document.querySelectorAll('#dashboard-main-content .dash-scroll-block:not([data-revealed="true"])');
-            unrevealed.forEach(function(sec) {
-                revealSection(sec);
-            });
-        }, 3500);
     }
 
     // Exposição Global
     global.initDashboardScrollReveal = function() {
-        setTimeout(initDashboardScrollReveal, 80);
+        setTimeout(initDashboardScrollReveal, 60);
     };
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(initDashboardScrollReveal, 120);
+            setTimeout(initDashboardScrollReveal, 100);
         });
     } else {
-        setTimeout(initDashboardScrollReveal, 120);
+        setTimeout(initDashboardScrollReveal, 100);
     }
 
 })(typeof window !== 'undefined' ? window : this);
