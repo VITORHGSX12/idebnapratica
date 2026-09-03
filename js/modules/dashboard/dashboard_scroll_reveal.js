@@ -114,6 +114,56 @@
                 box-shadow: 0 16px 36px -4px rgba(10, 25, 49, 0.24), 0 0 0 1.5px rgba(255, 255, 255, 0.3) !important;
             }
 
+            /* =========================================================================
+               EFEITO BARALHO DE CARTAS INTERATIVO (ESCALA DO APRENDIZADO)
+               ========================================================================= */
+            #dashboard .escala-cards-deck {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 14px;
+                margin-top: 14px;
+                perspective: 1200px;
+                position: relative;
+                padding: 16px 6px;
+            }
+
+            #dashboard .escala-card {
+                transition: transform 0.36s cubic-bezier(0.16, 1, 0.3, 1),
+                            box-shadow 0.36s cubic-bezier(0.16, 1, 0.3, 1),
+                            opacity 0.36s ease,
+                            border-color 0.36s ease !important;
+                transform-origin: center 85%;
+                will-change: transform, box-shadow, opacity;
+                position: relative;
+                z-index: 1;
+                cursor: pointer;
+                user-select: none;
+            }
+
+            /* Carta selecionada: vem para a frente em grande destaque */
+            #dashboard .escala-card.card-selected {
+                transform: translateY(-16px) scale(1.08) rotate(0deg) !important;
+                z-index: 35 !important;
+                opacity: 1 !important;
+                box-shadow: 0 24px 50px -8px rgba(10, 25, 49, 0.32), 0 0 0 2px var(--card-color, #2563eb) !important;
+            }
+
+            /* Cartas embaralhadas à esquerda */
+            #dashboard .escala-card.card-shuffled-left {
+                transform: translate(var(--shuffle-tx, -6px), var(--shuffle-ty, 8px)) scale(0.94) rotate(var(--shuffle-rot, -4.5deg)) !important;
+                z-index: 2 !important;
+                opacity: 0.72 !important;
+                box-shadow: 0 4px 12px rgba(10, 25, 49, 0.08) !important;
+            }
+
+            /* Cartas embaralhadas à direita */
+            #dashboard .escala-card.card-shuffled-right {
+                transform: translate(var(--shuffle-tx, 6px), var(--shuffle-ty, 8px)) scale(0.94) rotate(var(--shuffle-rot, 4.5deg)) !important;
+                z-index: 2 !important;
+                opacity: 0.72 !important;
+                box-shadow: 0 4px 12px rgba(10, 25, 49, 0.08) !important;
+            }
+
             /* Acessibilidade: prefers-reduced-motion */
             @media (prefers-reduced-motion: reduce) {
                 #dashboard .dash-scroll-block,

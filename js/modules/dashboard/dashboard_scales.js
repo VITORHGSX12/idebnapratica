@@ -368,15 +368,57 @@
         var curSerie = '5';
         var curDisc = 'lp';
 
+        function bindEscalaCardsShuffle(container) {
+            if (!container) return;
+            var deck = container.querySelector('.escala-cards-deck');
+            if (!deck) return;
+            var cards = deck.querySelectorAll('.escala-card');
+            if (!cards.length) return;
+
+            cards.forEach(function(card, idx) {
+                card.onmouseenter = function() {
+                    cards.forEach(function(otherCard, otherIdx) {
+                        if (otherIdx === idx) {
+                            otherCard.classList.add('card-selected');
+                            otherCard.classList.remove('card-shuffled-left', 'card-shuffled-right');
+                        } else if (otherIdx < idx) {
+                            otherCard.classList.remove('card-selected', 'card-shuffled-right');
+                            otherCard.classList.add('card-shuffled-left');
+                            var diff = idx - otherIdx;
+                            otherCard.style.setProperty('--shuffle-rot', (-(diff * 3.8 + 1.5)) + 'deg');
+                            otherCard.style.setProperty('--shuffle-ty', (diff * 5 + 6) + 'px');
+                            otherCard.style.setProperty('--shuffle-tx', (-(diff * 6)) + 'px');
+                        } else {
+                            otherCard.classList.remove('card-selected', 'card-shuffled-left');
+                            otherCard.classList.add('card-shuffled-right');
+                            var diff = otherIdx - idx;
+                            otherCard.style.setProperty('--shuffle-rot', ((diff * 3.8 + 1.5)) + 'deg');
+                            otherCard.style.setProperty('--shuffle-ty', (diff * 5 + 6) + 'px');
+                            otherCard.style.setProperty('--shuffle-tx', ((diff * 6)) + 'px');
+                        }
+                    });
+                };
+            });
+
+            deck.onmouseleave = function() {
+                cards.forEach(function(c) {
+                    c.classList.remove('card-selected', 'card-shuffled-left', 'card-shuffled-right');
+                    c.style.removeProperty('--shuffle-rot');
+                    c.style.removeProperty('--shuffle-ty');
+                    c.style.removeProperty('--shuffle-tx');
+                });
+            };
+        }
+
         function renderActiveEscala() {
             var key = curSerie + '-' + curDisc;
             var groups = escalaData[key] || [];
 
-            var html = '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 10px;">';
+            var html = '<div class="escala-cards-deck">';
 
             groups.forEach(function(g) {
                 html += `
-                    <div style="background: ${g.bg}; border: 1px solid ${g.borderColor}; border-radius: 12px; padding: 14px 16px;">
+                    <div class="escala-card card" style="--card-color: ${g.color}; background: ${g.bg}; border: 1px solid ${g.borderColor}; border-radius: 12px; padding: 14px 16px;">
                         <div style="font-size: 0.85rem; font-weight: 800; color: ${g.color}; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
                             <span>${g.cat}</span>
                         </div>
@@ -402,6 +444,7 @@
 
             html += '</div>';
             escalaBody.innerHTML = html;
+            bindEscalaCardsShuffle(escalaBody);
         }
 
         var serieBtns = document.querySelectorAll('#dashSerieSeg button');
