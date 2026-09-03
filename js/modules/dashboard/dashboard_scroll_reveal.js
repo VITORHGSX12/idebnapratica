@@ -1,9 +1,9 @@
 /**
  * ============================================================================
- * GESTÃO EDUCACIONAL SAAS — SCROLL REVEAL PROGRESSIVO DO DASHBOARD
+ * GESTÃO EDUCACIONAL SAAS — SCROLL REVEAL BIDIRECIONAL & MICROINTERAÇÕES
  * Arquivo: js/modules/dashboard/dashboard_scroll_reveal.js
- * Descrição: Montagem contínua e progressiva das seções, contadores numéricos
- *            e gráficos conforme o usuário rola o container .content-body.
+ * Descrição: Sistema bidirecional (aparece ao descer, retira-se ao subir)
+ *            e elevação em destaque ao passar o mouse em cada caixinha.
  * ============================================================================
  */
 
@@ -42,14 +42,14 @@
         style.id = 'dash-scroll-reveal-styles';
         style.textContent = `
             /* =========================================================================
-               ESTILOS DE SCROLL REVEAL PROGRESSIVO (#dashboard)
+               ESTILOS DE SCROLL REVEAL BIDIRECIONAL & DESTAQUE HOVER (#dashboard)
                ========================================================================= */
 
-            /* Elementos em espera abaixo da dobra */
+            /* Elementos em espera abaixo da dobra / retirados */
             #dashboard .dash-scroll-block {
                 opacity: 0;
                 transform: translateY(28px);
-                transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+                transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
                 will-change: opacity, transform;
             }
 
@@ -85,23 +85,46 @@
                 transition: stroke-dashoffset 1.1s cubic-bezier(0.16, 1, 0.3, 1);
             }
 
-            /* Microinterações nos cards */
-            #dashboard .metric-card {
-                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            /* =========================================================================
+               ELEVAÇÃO EM DESTAQUE AO PASSAR O MOUSE (HOVER INTERATIVO)
+               ========================================================================= */
+            #dashboard .metric-card,
+            #dashboard .dashboard-row .card,
+            #dashboard #dashboard-pde-progress-container,
+            #dashboard .dashboard-welcome-banner,
+            #dashboard .pedagogy-action-card,
+            #dashboard .highlight-item,
+            #dashboard .priority-desc-card {
+                transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.28s ease !important;
+                cursor: pointer;
             }
-            #dashboard .metric-card:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 24px rgba(10, 25, 49, 0.08);
+
+            /* Destaque ao passar o mouse: a caixinha sobe e projeta sombra iluminada */
+            #dashboard .metric-card:hover,
+            #dashboard .dashboard-row .card:hover,
+            #dashboard #dashboard-pde-progress-container:hover {
+                transform: translateY(-6px) scale(1.008) !important;
+                box-shadow: 0 18px 36px -4px rgba(10, 25, 49, 0.18), 0 0 0 1.5px rgba(99, 102, 241, 0.35) !important;
+                z-index: 10;
+                position: relative;
+            }
+
+            #dashboard .dashboard-welcome-banner:hover {
+                transform: translateY(-4px) !important;
+                box-shadow: 0 16px 36px -4px rgba(10, 25, 49, 0.24), 0 0 0 1.5px rgba(255, 255, 255, 0.3) !important;
             }
 
             /* Acessibilidade: prefers-reduced-motion */
             @media (prefers-reduced-motion: reduce) {
                 #dashboard .dash-scroll-block,
-                #dashboard .dash-top-card {
+                #dashboard .dash-top-card,
+                #dashboard .metric-card:hover,
+                #dashboard .dashboard-row .card:hover {
                     opacity: 1 !important;
                     transform: none !important;
                     transition: none !important;
                     animation: none !important;
+                    box-shadow: none !important;
                 }
             }
         `;
@@ -138,7 +161,8 @@
         var htmlSuffix = spanMatch ? (' ' + spanMatch[1]) : '';
 
         element.setAttribute('data-counted', 'true');
-        duration = duration || 1000;
+        element.setAttribute('data-original-html', originalHtml);
+        duration = duration || 900;
 
         var startTime = null;
         function step(timestamp) {
@@ -185,7 +209,7 @@
         }, 50);
 
         if (valEl) {
-            animateCountUp(valEl, 1000);
+            animateCountUp(valEl, 900);
         }
     }
 
@@ -196,16 +220,16 @@
         if (!container) return;
 
         var metricValues = container.querySelectorAll('.metric-value');
-        metricValues.forEach(function(el) { animateCountUp(el, 1000); });
+        metricValues.forEach(function(el) { animateCountUp(el, 900); });
 
         var rings = container.querySelectorAll('.progress-ring-container');
         rings.forEach(function(rg) { animateProgressRing(rg); });
 
         var networkBadge = container.querySelector('#simulados-network-avg-badge');
-        if (networkBadge) animateCountUp(networkBadge, 1000);
+        if (networkBadge) animateCountUp(networkBadge, 900);
 
         var gapVal = container.querySelector('.ideb-trajectory-gap-val');
-        if (gapVal) animateCountUp(gapVal, 1000);
+        if (gapVal) animateCountUp(gapVal, 900);
     }
 
     /**
@@ -258,7 +282,7 @@
     }
 
     /**
-     * Revela uma seção conforme a rolagem do container alcança sua posição
+     * Revela uma seção conforme a rolagem desce e alcança sua posição
      */
     function revealSection(section) {
         if (!section || section.getAttribute('data-revealed') === 'true') return;
@@ -267,6 +291,32 @@
 
         triggerSectionNumbers(section);
         triggerSectionCharts(section);
+    }
+
+    /**
+     * Retira uma seção conforme a rolagem sobe e o elemento sai por baixo
+     */
+    function unrevealSection(section) {
+        if (!section || section.getAttribute('data-revealed') !== 'true') return;
+        section.setAttribute('data-revealed', 'false');
+        section.classList.remove('dash-visible');
+
+        // Resetar marcadores numéricos para re-animar no próximo scroll
+        var counted = section.querySelectorAll('[data-counted="true"]');
+        counted.forEach(function(el) {
+            el.removeAttribute('data-counted');
+            var orig = el.getAttribute('data-original-html');
+            if (orig) el.innerHTML = orig;
+        });
+
+        // Resetar Trajetória PDE SVG
+        var trajectoryLine = section.querySelector('.trajectory-observed-line');
+        if (trajectoryLine) {
+            try {
+                var len = trajectoryLine.getTotalLength ? trajectoryLine.getTotalLength() : 800;
+                trajectoryLine.style.strokeDashoffset = len;
+            } catch(e) {}
+        }
     }
 
     /**
@@ -297,21 +347,31 @@
             cBottom = cr.bottom;
         }
 
-        // Revela com margem suave de 60px antes da borda inferior
-        return r.top < (cBottom + 60) && r.bottom > (cTop - 40);
+        // Revela com margem suave de 50px antes da borda inferior
+        return r.top < (cBottom + 50) && r.bottom > (cTop - 40);
     }
 
     /**
-     * Monitor de Scroll Contínuo sobre o container de rolagem real
+     * Monitor de Scroll Contínuo Bidirecional
      */
     function handleScrollCheck() {
         var container = activeScrollContainer || getScrollContainer();
-        var blocks = document.querySelectorAll('#dashboard-main-content .dash-scroll-block:not([data-revealed="true"])');
+        var blocks = document.querySelectorAll('#dashboard-main-content .dash-scroll-block');
         if (!blocks.length) return;
 
+        var cBottom = window.innerHeight;
+        if (container && container !== window && typeof container.getBoundingClientRect === 'function') {
+            cBottom = container.getBoundingClientRect().bottom;
+        }
+
         blocks.forEach(function(block) {
+            var r = block.getBoundingClientRect();
             if (isElementInView(block, container)) {
+                // Rola para baixo: aparece
                 revealSection(block);
+            } else if (r.top > cBottom + 30 && block.getAttribute('data-revealed') === 'true') {
+                // Rola para cima (volta): retira-se suavemente
+                unrevealSection(block);
             }
         });
     }
@@ -339,7 +399,7 @@
         if (pdeContainer) allSections.push(pdeContainer);
         rows.forEach(function(r) { allSections.push(r); });
 
-        // 1. Elementos do Topo (Banner e Métricas): revelação imediata e contagem inicial
+        // 1. Elementos do Topo (Banner e Métricas): revelação inicial e destaque
         if (banner) {
             banner.classList.add('dash-top-card');
         }
@@ -355,8 +415,7 @@
             }, 80);
         }
 
-        // 2. Seções seguintes: apenas revela as que JÁ estiverem visíveis no topo da tela inicial
-        // As demais (abaixo da dobra) permanecem ocultas aguardando a rolagem real do usuário
+        // 2. Seções seguintes: apenas revela as que JÁ estiverem visíveis no topo
         allSections.forEach(function(sec) {
             if (isReducedMotion()) {
                 sec.classList.add('dash-scroll-block', 'dash-visible');
@@ -370,10 +429,11 @@
                 triggerSectionNumbers(sec);
             } else {
                 sec.classList.add('dash-scroll-block');
+                sec.setAttribute('data-revealed', 'false');
             }
         });
 
-        // 3. IntersectionObserver ancorado no container de rolagem real (.content-body)
+        // 3. IntersectionObserver bidirecional ancorado no .content-body
         if (typeof IntersectionObserver !== 'undefined') {
             if (observerInstance) {
                 try { observerInstance.disconnect(); } catch(e) {}
@@ -385,23 +445,25 @@
                 entries.forEach(function(entry) {
                     if (entry.isIntersecting) {
                         revealSection(entry.target);
-                        observerInstance.unobserve(entry.target);
+                    } else {
+                        var cr = entry.rootBounds || (activeScrollContainer && activeScrollContainer.getBoundingClientRect ? activeScrollContainer.getBoundingClientRect() : null);
+                        if (cr && entry.boundingClientRect.top > cr.bottom + 10) {
+                            unrevealSection(entry.target);
+                        }
                     }
                 });
             }, {
                 root: obsRoot,
-                rootMargin: '60px 0px 60px 0px',
-                threshold: 0
+                rootMargin: '50px 0px 50px 0px',
+                threshold: [0, 0.1]
             });
 
             allSections.forEach(function(sec) {
-                if (sec.getAttribute('data-revealed') !== 'true') {
-                    observerInstance.observe(sec);
-                }
+                observerInstance.observe(sec);
             });
         }
 
-        // 4. Listeners universais de rolagem sobre .content-body, .main-content e window
+        // 4. Listeners contínuos de rolagem bidirecional
         if (!scrollAttached) {
             var ticking = false;
             var onScroll = function() {
