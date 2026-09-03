@@ -282,6 +282,110 @@
         if (gapVal) animateCountUp(gapVal, 900);
     }
 
+    // Mapa de loops ativos de gráficos para gerenciamento de ciclo de vida
+    var activeChartLoops = {};
+
+    function stopChartLoop(key) {
+        if (activeChartLoops[key]) {
+            if (activeChartLoops[key].rafId) cancelAnimationFrame(activeChartLoops[key].rafId);
+            if (activeChartLoops[key].timeoutId) clearTimeout(activeChartLoops[key].timeoutId);
+            delete activeChartLoops[key];
+        }
+    }
+
+    /**
+     * Anima a subida da linha de um gráfico em loop contínuo enquanto em destaque na tela
+     */
+    function startLineChartRiseLoop(chartInstance, minY, riseDuration, holdDuration) {
+        if (!chartInstance || !chartInstance.canvas || !chartInstance.data) return;
+        var canvasId = chartInstance.canvas.id || ('chart_' + Math.random().toString(36).substr(2, 5));
+        stopChartLoop(canvasId);
+
+        if (!chartInstance._originalData) {
+            chartInstance._originalData = chartInstance.data.datasets.map(function(ds) {
+                return ds.data.slice();
+            });
+        }
+        var origData = chartInstance._originalData;
+        var duration = riseDuration || 1500;
+        var hold = holdDuration || 2600;
+
+        function runCycle() {
+            var startTime = null;
+
+            function step(timestamp) {
+                if (!startTime) startTime = timestamp;
+                var elapsed = timestamp - startTime;
+                var t = Math.min(elapsed / duration, 1);
+                var progress = 1 - Math.pow(1 - t, 3.5);
+
+                chartInstance.data.datasets.forEach(function(ds, dIdx) {
+                    var targetArr = origData[dIdx];
+                    if (!targetArr) return;
+                    ds.data = targetArr.map(function(v) {
+                        if (v === null || v === undefined) return null;
+                        return +(minY + (v - minY) * progress).toFixed(2);
+                    });
+                });
+
+                try {
+                    chartInstance.update('none');
+                } catch(e) {}
+
+                if (t < 1) {
+                    if (activeChartLoops[canvasId]) {
+                        activeChartLoops[canvasId].rafId = requestAnimationFrame(step);
+                    }
+                } else {
+                    if (activeChartLoops[canvasId]) {
+                        activeChartLoops[canvasId].timeoutId = setTimeout(function() {
+                            if (activeChartLoops[canvasId]) runCycle();
+                        }, hold);
+                    }
+                }
+            }
+
+            activeChartLoops[canvasId] = {
+                rafId: requestAnimationFrame(step),
+                timeoutId: null
+            };
+        }
+
+        runCycle();
+    }
+
+    /**
+     * Anima a linha vetorial SVG da Trajetória PDE subindo ao topo em loop
+     */
+    function startTrajectoryLineLoop(section) {
+        var line = section.querySelector('.trajectory-observed-line');
+        if (!line) return;
+        var key = 'trajectory-line';
+        stopChartLoop(key);
+
+        var len = line.getTotalLength ? line.getTotalLength() : 800;
+        line.style.strokeDasharray = len;
+
+        function runSvgCycle() {
+            line.style.transition = 'none';
+            line.style.strokeDashoffset = len;
+            void line.getBoundingClientRect();
+
+            line.style.transition = 'stroke-dashoffset 1.5s cubic-bezier(0.16, 1, 0.3, 1)';
+            line.style.strokeDashoffset = '0';
+
+            activeChartLoops[key] = {
+                timeoutId: setTimeout(function() {
+                    if (section.getAttribute('data-revealed') === 'true') {
+                        runSvgCycle();
+                    }
+                }, 4100)
+            };
+        }
+
+        runSvgCycle();
+    }
+
     /**
      * Dispara animação nativa Chart.js para gráficos dentro da seção que entrou na tela
      */
@@ -293,6 +397,11 @@
             if (typeof global.renderDashboardGoncalvesDiasChart === 'function') {
                 global.renderDashboardGoncalvesDiasChart();
             }
+            setTimeout(function() {
+                var inst = (global.dashChartInstances && global.dashChartInstances.getGoncalvesDias) ?
+                    global.dashChartInstances.getGoncalvesDias() : null;
+                if (inst) startLineChartRiseLoop(inst, 2.0, 1600, 2600);
+            }, 60);
         }
 
         // 2. Gráficos Maranhão Anos Iniciais / Finais
@@ -300,6 +409,14 @@
             if (typeof global.renderDashboardEtapasCharts === 'function') {
                 global.renderDashboardEtapasCharts();
             }
+            setTimeout(function() {
+                if (global.dashChartInstances) {
+                    var inc = global.dashChartInstances.getIniciais ? global.dashChartInstances.getIniciais() : null;
+                    var fin = global.dashChartInstances.getFinais ? global.dashChartInstances.getFinais() : null;
+                    if (inc) startLineChartRiseLoop(inc, 0, 1600, 2600);
+                    if (fin) startLineChartRiseLoop(fin, 0, 1600, 2600);
+                }
+            }, 60);
         }
 
         // 3. Gráfico Comparativo Hiato
@@ -307,6 +424,11 @@
             if (typeof global.renderDashboardComparativoChart === 'function') {
                 global.renderDashboardComparativoChart();
             }
+            setTimeout(function() {
+                var comp = (global.dashChartInstances && global.dashChartInstances.getComparativo) ?
+                    global.dashChartInstances.getComparativo() : null;
+                if (comp) startLineChartRiseLoop(comp, 2.0, 1600, 2600);
+            }, 60);
         }
 
         // 4. Gráfico Evolução Histórica SAEB
@@ -314,20 +436,15 @@
             if (typeof global.renderDashboardSaebEvolucaoGoncalvesChart === 'function') {
                 global.renderDashboardSaebEvolucaoGoncalvesChart();
             }
+            setTimeout(function() {
+                var saeb = global.dashSaebEvolucaoChartInstance;
+                if (saeb) startLineChartRiseLoop(saeb, 150, 1600, 2600);
+            }, 60);
         }
 
         // 5. Linha Vetorial do IDEB Trajetória PDE
-        var trajectoryLine = section.querySelector('.trajectory-observed-line');
-        if (trajectoryLine) {
-            try {
-                var len = trajectoryLine.getTotalLength ? trajectoryLine.getTotalLength() : 800;
-                trajectoryLine.style.strokeDasharray = len;
-                trajectoryLine.style.strokeDashoffset = len;
-                void trajectoryLine.getBoundingClientRect();
-                setTimeout(function() {
-                    trajectoryLine.style.strokeDashoffset = '0';
-                }, 60);
-            } catch(e) {}
+        if (section.querySelector('.trajectory-observed-line')) {
+            startTrajectoryLineLoop(section);
         }
     }
 
@@ -359,13 +476,22 @@
             if (orig) el.innerHTML = orig;
         });
 
+        // Parar animações em loop dos gráficos desta seção
+        var canvases = section.querySelectorAll('canvas');
+        canvases.forEach(function(cv) {
+            if (cv.id) stopChartLoop(cv.id);
+        });
+
         // Resetar Trajetória PDE SVG
-        var trajectoryLine = section.querySelector('.trajectory-observed-line');
-        if (trajectoryLine) {
-            try {
-                var len = trajectoryLine.getTotalLength ? trajectoryLine.getTotalLength() : 800;
-                trajectoryLine.style.strokeDashoffset = len;
-            } catch(e) {}
+        if (section.querySelector('.trajectory-observed-line')) {
+            stopChartLoop('trajectory-line');
+            var trajectoryLine = section.querySelector('.trajectory-observed-line');
+            if (trajectoryLine) {
+                try {
+                    var len = trajectoryLine.getTotalLength ? trajectoryLine.getTotalLength() : 800;
+                    trajectoryLine.style.strokeDashoffset = len;
+                } catch(e) {}
+            }
         }
     }
 

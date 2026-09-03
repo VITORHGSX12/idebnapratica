@@ -648,5 +648,11 @@
     global.renderDashboardGoncalvesDiasChart = renderDashboardGoncalvesDiasChart;
     global.renderDashboardEtapasCharts = renderDashboardEtapasCharts;
     global.renderDashboardComparativoChart = renderDashboardComparativoChart;
+    global.dashChartInstances = {
+        getGoncalvesDias: function() { return dashGoncalvesDiasChartInstance; },
+        getIniciais: function() { return dashIniciaisChartInstance; },
+        getFinais: function() { return dashFinaisChartInstance; },
+        getComparativo: function() { return dashComparativoChartInstance; }
+    };
 
 })(typeof window !== 'undefined' ? window : this);
