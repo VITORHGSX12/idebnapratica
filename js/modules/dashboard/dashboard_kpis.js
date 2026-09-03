@@ -394,85 +394,10 @@
             return paddingTop + (height - paddingTop - paddingBottom) * (1 - (val - minScore) / (maxScore - minScore));
         };
 
-        // Trajetória Real (Linha Sólida: 2017 -> 2019 -> 2021 -> 2023 -> Atual)
-        var observedPath = '';
-        var areaPath = '';
-
-        for (var i = 0; i <= 4; i++) {
-            var px = getX(i, points.length);
-            var py = getY(points[i].score);
-            if (i === 0) {
-                observedPath += 'M ' + px + ' ' + py;
-                areaPath += 'M ' + px + ' ' + (height - paddingBottom) + ' L ' + px + ' ' + py;
-            } else {
-                observedPath += ' L ' + px + ' ' + py;
-                areaPath += ' L ' + px + ' ' + py;
-            }
-        }
-        var lastRealX = getX(4, points.length);
-        areaPath += ' L ' + lastRealX + ' ' + (height - paddingBottom) + ' Z';
-
-        // Projeção da Meta Pactuada (Linha Tracejada de 2023 até a Meta)
-        var xBase = getX(3, points.length);
-        var yBase = getY(baselineScore);
-        var xTarget = getX(5, points.length);
-        var yTarget = getY(targetScore);
-        var targetProjectionPath = 'M ' + xBase + ' ' + yBase + ' L ' + xTarget + ' ' + yTarget;
-
-        // Área sombreada do Gap (Triângulo entre Base, Atual e Meta)
-        var xCurrent = getX(4, points.length);
-        var yCurrent = getY(currentScore);
-        var gapAreaPath = 'M ' + xBase + ' ' + yBase + ' L ' + xTarget + ' ' + yTarget + ' L ' + xCurrent + ' ' + yCurrent + ' Z';
-
-        // Marcadores SVG e Rótulos
-        var dotsHtml = '';
-        var labelsHtml = '';
-
-        points.forEach(function(pt, idx) {
+        var labelsHtml = points.map(function(pt, idx) {
             var cx = getX(idx, points.length);
-            var cy = getY(pt.score);
-
-            if (pt.isCurrent) {
-                // Ponto Atual (Hero / Destaque)
-                dotsHtml += `
-                    <circle cx="${cx}" cy="${cy}" r="6" fill="#1A2D42" stroke="#FFFFFF" stroke-width="2.5" class="trajectory-hero-dot">
-                        <title>${pt.year}: ${pt.score}</title>
-                    </circle>
-                    <g transform="translate(${cx}, ${cy - 12})">
-                        <rect x="-18" y="-16" width="36" height="17" rx="5" fill="#1A2D42" stroke="#2E4156" stroke-width="1" class="trajectory-hero-badge"/>
-                        <text x="0" y="-4" text-anchor="middle" font-size="10.5" font-weight="800" fill="#FFFFFF" font-family="var(--font-display)">${pt.score}</text>
-                    </g>
-                `;
-            } else if (pt.isTarget) {
-                // Ponto Meta (Losango)
-                dotsHtml += `
-                    <rect x="${cx - 5}" y="${cy - 5}" width="10" height="10" transform="rotate(45 ${cx} ${cy})" fill="#2E4156" stroke="#FFFFFF" stroke-width="2">
-                        <title>${pt.year}: ${pt.score}</title>
-                    </rect>
-                    <text x="${cx}" y="${cy - 10}" text-anchor="middle" font-size="10" font-weight="700" fill="#2E4156" font-family="var(--font-display)" class="trajectory-meta-text">${pt.score}</text>
-                `;
-            } else if (pt.isBase) {
-                // Ponto Base INEP 2023
-                dotsHtml += `
-                    <circle cx="${cx}" cy="${cy}" r="5" fill="#FFFFFF" stroke="#2E4156" stroke-width="2.5">
-                        <title>${pt.year}: ${pt.score}</title>
-                    </circle>
-                    <text x="${cx}" y="${cy - 9}" text-anchor="middle" font-size="10" font-weight="700" fill="#1A2D42" font-family="var(--font-display)" class="trajectory-base-text">${pt.score}</text>
-                `;
-            } else {
-                // Pontos Históricos
-                dotsHtml += `
-                    <circle cx="${cx}" cy="${cy}" r="4" fill="#2E4156" stroke="#FFFFFF" stroke-width="1.5">
-                        <title>${pt.year}: ${pt.score}</title>
-                    </circle>
-                    <text x="${cx}" y="${cy - 8}" text-anchor="middle" font-size="9.5" font-weight="600" fill="var(--text-muted)" font-family="var(--font-display)">${pt.score}</text>
-                `;
-            }
-
-            labelsHtml += `
-                <text x="${cx}" y="${height - 8}" text-anchor="middle" font-size="10.5" font-weight="${pt.isCurrent || pt.isTarget ? '700' : '500'}" fill="${pt.isCurrent ? '#1A2D42' : 'var(--text-secondary)'}" class="trajectory-axis-label">${pt.label}</text>
-            `;
-        });
+            return `<text x="${cx}" y="${height - 8}" text-anchor="middle" font-size="10.5" font-weight="${pt.isCurrent || pt.isTarget ? '700' : '500'}" fill="${pt.isCurrent ? '#1A2D42' : 'var(--text-secondary)'}" class="trajectory-axis-label">${pt.label}</text>`;
+        }).join('');
 
         container.innerHTML = `
             <div class="ideb-trajectory-card">
@@ -524,19 +449,19 @@
                         <text x="${paddingLeft - 10}" y="${getY(3.0) + 3}" fill="var(--text-muted)" font-size="10" font-weight="600" text-anchor="end">3.0</text>
 
                         <!-- Área de Preenchimento da Linha Real -->
-                        <path d="${areaPath}" fill="url(#idebTrajectoryAreaGrad)"/>
+                        <path d="" fill="url(#idebTrajectoryAreaGrad)" class="trajectory-area-path"/>
 
                         <!-- Área sombreada do Gap da Meta -->
-                        <path d="${gapAreaPath}" fill="url(#idebGapAreaGrad)"/>
+                        <path d="" fill="url(#idebGapAreaGrad)" class="trajectory-gap-path"/>
 
                         <!-- Linha de Projeção da Meta (Tracejada) -->
-                        <path d="${targetProjectionPath}" fill="none" stroke="#2E4156" stroke-width="2" stroke-dasharray="5,4" class="trajectory-meta-line"/>
+                        <path d="" fill="none" stroke="#2E4156" stroke-width="2" stroke-dasharray="5,4" class="trajectory-meta-line"/>
 
                         <!-- Linha Sólida de Trajetória Observada/Real -->
-                        <path d="${observedPath}" fill="none" stroke="#1A2D42" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="trajectory-observed-line"/>
+                        <path d="" fill="none" stroke="#1A2D42" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="trajectory-observed-line"/>
 
                         <!-- Pontos e Rótulos -->
-                        ${dotsHtml}
+                        <g class="trajectory-dots-layer"></g>
                         ${labelsHtml}
                     </svg>
 
@@ -577,6 +502,8 @@
             </div>
         `;
 
+        updatePdeTrajectoryProgress(0);
+
         if (window.lucide && typeof lucide.createIcons === 'function') {
             try { lucide.createIcons(); } catch(e) {}
         }
@@ -585,9 +512,88 @@
         }
     }
 
+    /**
+     * Atualiza a posição dos pontos, linhas e áreas da Trajetória PDE conforme o progresso vertical (0 a 1)
+     */
+    function updatePdeTrajectoryProgress(progress) {
+        var container = document.getElementById('dashboard-pde-progress-container');
+        if (!container) return;
+        var obsLine = container.querySelector('.trajectory-observed-line');
+        var metaLine = container.querySelector('.trajectory-meta-line');
+        var areaPath = container.querySelector('.trajectory-area-path');
+        var gapPath = container.querySelector('.trajectory-gap-path');
+        var dotsLayer = container.querySelector('.trajectory-dots-layer');
+        if (!obsLine) return;
+
+        var p = Math.max(0, Math.min(1, progress));
+        var pde = getPdeGoalsState();
+        var baselineScore = 4.8;
+        var currentScore = pde && pde.currentScore ? Number(pde.currentScore) : 5.2;
+        var targetScore = pde && pde.metaIdeb ? Number(pde.metaIdeb) : 5.5;
+
+        var points = [
+            { label: '2017', year: '2017', score: 3.8, isHistory: true },
+            { label: '2019', year: '2019', score: 4.2, isHistory: true },
+            { label: '2021', year: '2021', score: 4.5, isHistory: true },
+            { label: '2023', year: '2023 (Base INEP)', score: baselineScore, isBase: true },
+            { label: 'Atual', year: 'Atual (Observado)', score: currentScore, isCurrent: true },
+            { label: 'Meta PDE', year: 'Meta Pactuada (PDE)', score: targetScore, isTarget: true }
+        ];
+
+        var width = 640, height = 210, padL = 48, padR = 40, padT = 32, padB = 34, minS = 3.0, maxS = 6.0;
+        var getX = function(idx, total) { return padL + (idx * ((width - padL - padR) / (total - 1 || 1))); };
+        var getY = function(val) { return padT + (height - padT - padB) * (1 - (val - minS) / (maxS - minS)); };
+
+        var curPoints = points.map(function(pt) {
+            var s = minS + (pt.score - minS) * p;
+            return { label: pt.label, year: pt.year, curScore: +s.toFixed(2), isCurrent: pt.isCurrent, isTarget: pt.isTarget, isBase: pt.isBase };
+        });
+
+        var obsD = '', areaD = '';
+        for (var i = 0; i <= 4; i++) {
+            var px = getX(i, curPoints.length), py = getY(curPoints[i].curScore);
+            if (i === 0) {
+                obsD += 'M ' + px + ' ' + py;
+                areaD += 'M ' + px + ' ' + (height - padB) + ' L ' + px + ' ' + py;
+            } else {
+                obsD += ' L ' + px + ' ' + py;
+                areaD += ' L ' + px + ' ' + py;
+            }
+        }
+        areaD += ' L ' + getX(4, curPoints.length) + ' ' + (height - padB) + ' Z';
+
+        var xBase = getX(3, curPoints.length), yBase = getY(curPoints[3].curScore);
+        var xTarget = getX(5, curPoints.length), yTarget = getY(curPoints[5].curScore);
+        var xCurr = getX(4, curPoints.length), yCurr = getY(curPoints[4].curScore);
+
+        obsLine.setAttribute('d', obsD);
+        if (metaLine) metaLine.setAttribute('d', 'M ' + xBase + ' ' + yBase + ' L ' + xTarget + ' ' + yTarget);
+        if (areaPath) areaPath.setAttribute('d', areaD);
+        if (gapPath) gapPath.setAttribute('d', 'M ' + xBase + ' ' + yBase + ' L ' + xTarget + ' ' + yTarget + ' L ' + xCurr + ' ' + yCurr + ' Z');
+
+        if (dotsLayer) {
+            var dHtml = '';
+            curPoints.forEach(function(pt, idx) {
+                var cx = getX(idx, curPoints.length), cy = getY(pt.curScore);
+                var disp = pt.curScore.toFixed(1);
+                if (pt.isCurrent) {
+                    dHtml += '<circle cx="' + cx + '" cy="' + cy + '" r="6" fill="#1A2D42" stroke="#FFFFFF" stroke-width="2.5" class="trajectory-hero-dot"><title>' + pt.year + ': ' + disp + '</title></circle><g transform="translate(' + cx + ', ' + (cy - 12) + ')"><rect x="-18" y="-16" width="36" height="17" rx="5" fill="#1A2D42" stroke="#2E4156" stroke-width="1" class="trajectory-hero-badge"/><text x="0" y="-4" text-anchor="middle" font-size="10.5" font-weight="800" fill="#FFFFFF" font-family="var(--font-display)">' + disp + '</text></g>';
+                } else if (pt.isTarget) {
+                    dHtml += '<rect x="' + (cx - 5) + '" y="' + (cy - 5) + '" width="10" height="10" transform="rotate(45 ' + cx + ' ' + cy + ')" fill="#2E4156" stroke="#FFFFFF" stroke-width="2"><title>' + pt.year + ': ' + disp + '</title></rect><text x="' + cx + '" y="' + (cy - 10) + '" text-anchor="middle" font-size="10" font-weight="700" fill="#2E4156" font-family="var(--font-display)" class="trajectory-meta-text">' + disp + '</text>';
+                } else if (pt.isBase) {
+                    dHtml += '<circle cx="' + cx + '" cy="' + cy + '" r="5" fill="#FFFFFF" stroke="#2E4156" stroke-width="2.5"><title>' + pt.year + ': ' + disp + '</title></circle><text x="' + cx + '" y="' + (cy - 9) + '" text-anchor="middle" font-size="10" font-weight="700" fill="#1A2D42" font-family="var(--font-display)" class="trajectory-base-text">' + disp + '</text>';
+                } else {
+                    dHtml += '<circle cx="' + cx + '" cy="' + cy + '" r="4" fill="#2E4156" stroke="#FFFFFF" stroke-width="1.5"><title>' + pt.year + ': ' + disp + '</title></circle><text x="' + cx + '" y="' + (cy - 8) + '" text-anchor="middle" font-size="9.5" font-weight="600" fill="var(--text-muted)" font-family="var(--font-display)">' + disp + '</text>';
+                }
+            });
+            dotsLayer.innerHTML = dHtml;
+        }
+    }
+
     // Exposição no Escopo Global
     global.getPdeGoalsState = getPdeGoalsState;
     global.renderDashboardMetricCards = renderDashboardMetricCards;
     global.renderDashboardPdeProgress = renderDashboardPdeProgress;
+    global.updatePdeTrajectoryProgress = updatePdeTrajectoryProgress;
 
 })(typeof window !== 'undefined' ? window : this);

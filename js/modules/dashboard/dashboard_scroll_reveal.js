@@ -41,140 +41,45 @@
         var style = document.createElement('style');
         style.id = 'dash-scroll-reveal-styles';
         style.textContent = `
-            /* =========================================================================
-               ESTILOS DE SCROLL REVEAL BIDIRECIONAL & DESTAQUE HOVER (#dashboard)
-               ========================================================================= */
-
-            /* Elementos em espera abaixo da dobra / retirados */
-            #dashboard .dash-scroll-block {
-                opacity: 0;
-                transform: translateY(28px);
-                transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-                will-change: opacity, transform;
-            }
-
-            /* Elemento revelado conforme o container rola */
-            #dashboard .dash-scroll-block.dash-visible {
-                opacity: 1 !important;
-                transform: translateY(0) !important;
-            }
-
-            /* Entrada suave dos cards do topo */
-            #dashboard .dash-top-card {
-                animation: dashFadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            }
-
-            @keyframes dashFadeUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(18px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            /* Trajetória Vetorial IDEB SVG */
-            #dashboard .trajectory-observed-line {
-                transition: stroke-dashoffset 1.3s cubic-bezier(0.16, 1, 0.3, 1);
-            }
-
-            /* Anel circular de aprovação */
-            #dashboard .progress-ring-fill {
-                transition: stroke-dashoffset 1.1s cubic-bezier(0.16, 1, 0.3, 1);
-            }
-
-            /* =========================================================================
-               ELEVAÇÃO EM DESTAQUE AO PASSAR O MOUSE (HOVER INTERATIVO)
-               ========================================================================= */
-            #dashboard .metric-card,
-            #dashboard .dashboard-row .card,
-            #dashboard #dashboard-pde-progress-container,
-            #dashboard .dashboard-welcome-banner,
-            #dashboard .pedagogy-action-card,
-            #dashboard .highlight-item,
-            #dashboard .priority-desc-card {
+            #dashboard .dash-scroll-block { opacity: 0; transform: translateY(28px); transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); will-change: opacity, transform; }
+            #dashboard .dash-scroll-block.dash-visible { opacity: 1 !important; transform: translateY(0) !important; }
+            #dashboard .dash-top-card { animation: dashFadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+            @keyframes dashFadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+            #dashboard .progress-ring-fill { transition: stroke-dashoffset 1.1s cubic-bezier(0.16, 1, 0.3, 1); }
+            #dashboard .metric-card, #dashboard .dashboard-row .card, #dashboard #dashboard-pde-progress-container,
+            #dashboard .dashboard-welcome-banner, #dashboard .pedagogy-action-card, #dashboard .highlight-item, #dashboard .priority-desc-card {
                 transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.28s ease !important;
                 cursor: pointer;
             }
-
-            /* Destaque ao passar o mouse: a caixinha sobe e projeta sombra iluminada */
-            #dashboard .metric-card:hover,
-            #dashboard .dashboard-row .card:hover,
-            #dashboard #dashboard-pde-progress-container:hover {
+            #dashboard .metric-card:hover, #dashboard .dashboard-row .card:hover, #dashboard #dashboard-pde-progress-container:hover {
                 transform: translateY(-6px) scale(1.008) !important;
                 box-shadow: 0 18px 36px -4px rgba(10, 25, 49, 0.18), 0 0 0 1.5px rgba(99, 102, 241, 0.35) !important;
-                z-index: 10;
-                position: relative;
+                z-index: 10; position: relative;
             }
-
             #dashboard .dashboard-welcome-banner:hover {
                 transform: translateY(-4px) !important;
                 box-shadow: 0 16px 36px -4px rgba(10, 25, 49, 0.24), 0 0 0 1.5px rgba(255, 255, 255, 0.3) !important;
             }
-
-            /* =========================================================================
-               EFEITO BARALHO DE CARTAS INTERATIVO (ESCALA DO APRENDIZADO)
-               ========================================================================= */
-            #dashboard .escala-cards-deck {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                gap: 14px;
-                margin-top: 14px;
-                perspective: 1200px;
-                position: relative;
-                padding: 16px 6px;
-            }
-
+            #dashboard .escala-cards-deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 14px; perspective: 1200px; position: relative; padding: 16px 6px; }
             #dashboard .escala-card {
-                transition: transform 0.36s cubic-bezier(0.16, 1, 0.3, 1),
-                            box-shadow 0.36s cubic-bezier(0.16, 1, 0.3, 1),
-                            opacity 0.36s ease,
-                            border-color 0.36s ease !important;
-                transform-origin: center 85%;
-                will-change: transform, box-shadow, opacity;
-                position: relative;
-                z-index: 1;
-                cursor: pointer;
-                user-select: none;
+                transition: transform 0.36s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.36s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.36s ease, border-color 0.36s ease !important;
+                transform-origin: center 85%; will-change: transform, box-shadow, opacity; position: relative; z-index: 1; cursor: pointer; user-select: none;
             }
-
-            /* Carta selecionada: vem para a frente em grande destaque */
             #dashboard .escala-card.card-selected {
-                transform: translateY(-16px) scale(1.08) rotate(0deg) !important;
-                z-index: 35 !important;
-                opacity: 1 !important;
+                transform: translateY(-16px) scale(1.08) rotate(0deg) !important; z-index: 35 !important; opacity: 1 !important;
                 box-shadow: 0 24px 50px -8px rgba(10, 25, 49, 0.32), 0 0 0 2px var(--card-color, #2563eb) !important;
             }
-
-            /* Cartas embaralhadas à esquerda */
             #dashboard .escala-card.card-shuffled-left {
                 transform: translate(var(--shuffle-tx, -6px), var(--shuffle-ty, 8px)) scale(0.94) rotate(var(--shuffle-rot, -4.5deg)) !important;
-                z-index: 2 !important;
-                opacity: 0.72 !important;
-                box-shadow: 0 4px 12px rgba(10, 25, 49, 0.08) !important;
+                z-index: 2 !important; opacity: 0.72 !important; box-shadow: 0 4px 12px rgba(10, 25, 49, 0.08) !important;
             }
-
-            /* Cartas embaralhadas à direita */
             #dashboard .escala-card.card-shuffled-right {
                 transform: translate(var(--shuffle-tx, 6px), var(--shuffle-ty, 8px)) scale(0.94) rotate(var(--shuffle-rot, 4.5deg)) !important;
-                z-index: 2 !important;
-                opacity: 0.72 !important;
-                box-shadow: 0 4px 12px rgba(10, 25, 49, 0.08) !important;
+                z-index: 2 !important; opacity: 0.72 !important; box-shadow: 0 4px 12px rgba(10, 25, 49, 0.08) !important;
             }
-
-            /* Acessibilidade: prefers-reduced-motion */
             @media (prefers-reduced-motion: reduce) {
-                #dashboard .dash-scroll-block,
-                #dashboard .dash-top-card,
-                #dashboard .metric-card:hover,
-                #dashboard .dashboard-row .card:hover {
-                    opacity: 1 !important;
-                    transform: none !important;
-                    transition: none !important;
-                    animation: none !important;
-                    box-shadow: none !important;
+                #dashboard .dash-scroll-block, #dashboard .dash-top-card, #dashboard .metric-card:hover, #dashboard .dashboard-row .card:hover {
+                    opacity: 1 !important; transform: none !important; transition: none !important; animation: none !important; box-shadow: none !important;
                 }
             }
         `;
@@ -355,31 +260,46 @@
     }
 
     /**
-     * Anima a linha vetorial SVG da Trajetória PDE subindo ao topo em loop
+     * Anima a linha vetorial SVG da Trajetória PDE subindo verticalmente ao topo em loop
      */
     function startTrajectoryLineLoop(section) {
-        var line = section.querySelector('.trajectory-observed-line');
-        if (!line) return;
         var key = 'trajectory-line';
         stopChartLoop(key);
 
-        var len = line.getTotalLength ? line.getTotalLength() : 800;
-        line.style.strokeDasharray = len;
+        var duration = 1500;
+        var hold = 2600;
 
         function runSvgCycle() {
-            line.style.transition = 'none';
-            line.style.strokeDashoffset = len;
-            void line.getBoundingClientRect();
+            var startTime = null;
 
-            line.style.transition = 'stroke-dashoffset 1.5s cubic-bezier(0.16, 1, 0.3, 1)';
-            line.style.strokeDashoffset = '0';
+            function step(timestamp) {
+                if (!startTime) startTime = timestamp;
+                var elapsed = timestamp - startTime;
+                var t = Math.min(elapsed / duration, 1);
+                var progress = 1 - Math.pow(1 - t, 3.5);
+
+                if (typeof global.updatePdeTrajectoryProgress === 'function') {
+                    global.updatePdeTrajectoryProgress(progress);
+                }
+
+                if (t < 1) {
+                    if (activeChartLoops[key]) {
+                        activeChartLoops[key].rafId = requestAnimationFrame(step);
+                    }
+                } else {
+                    if (activeChartLoops[key]) {
+                        activeChartLoops[key].timeoutId = setTimeout(function() {
+                            if (activeChartLoops[key] && section.getAttribute('data-revealed') === 'true') {
+                                runSvgCycle();
+                            }
+                        }, hold);
+                    }
+                }
+            }
 
             activeChartLoops[key] = {
-                timeoutId: setTimeout(function() {
-                    if (section.getAttribute('data-revealed') === 'true') {
-                        runSvgCycle();
-                    }
-                }, 4100)
+                rafId: requestAnimationFrame(step),
+                timeoutId: null
             };
         }
 
@@ -485,12 +405,8 @@
         // Resetar Trajetória PDE SVG
         if (section.querySelector('.trajectory-observed-line')) {
             stopChartLoop('trajectory-line');
-            var trajectoryLine = section.querySelector('.trajectory-observed-line');
-            if (trajectoryLine) {
-                try {
-                    var len = trajectoryLine.getTotalLength ? trajectoryLine.getTotalLength() : 800;
-                    trajectoryLine.style.strokeDashoffset = len;
-                } catch(e) {}
+            if (typeof global.updatePdeTrajectoryProgress === 'function') {
+                global.updatePdeTrajectoryProgress(0);
             }
         }
     }
