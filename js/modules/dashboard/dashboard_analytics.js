@@ -146,9 +146,12 @@
                     <div style="width: 36px; height: 36px; margin: 0 auto 8px auto; display: flex; align-items: center; justify-content: center; color: var(--color-text-muted);">
                         <i data-lucide="bar-chart-3"></i>
                     </div>
+                    <div style="display: inline-flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+                        <span class="badge badge-status-warning" style="font-size: 0.75rem; font-weight: 700;">Aguardando Avaliação</span>
+                    </div>
                     <div style="font-weight: 700; color: var(--color-text-primary); margin-bottom: 4px; font-size: var(--text-body);">Nenhum simulado com respostas lançado</div>
                     <div style="font-size: var(--text-sm); color: var(--color-text-muted); line-height: 1.4;">
-                        Os descritores de maior defasagem serão consolidados automaticamente após o lançamento de provas diagnósticas.
+                        Os descritores de maior defasagem serão consolidados automaticamente após o lançamento de provas diagnósticas da rede.
                     </div>
                 </div>
             `;

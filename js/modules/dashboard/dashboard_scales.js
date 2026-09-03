@@ -647,9 +647,13 @@
         if (typeof global.renderDashboardMetricCards === 'function') global.renderDashboardMetricCards();
         if (typeof global.renderDashboardPdeProgress === 'function') global.renderDashboardPdeProgress();
         if (typeof global.renderDashboardTimelineChart === 'function') global.renderDashboardTimelineChart();
-        // Gráficos aguardam o scroll entrar em destaque na tela para animar a linha subindo ao topo
+        if (typeof global.renderDashboardPriorityDescriptors === 'function') global.renderDashboardPriorityDescriptors();
+        if (typeof global.renderDashboardGoncalvesDiasChart === 'function') global.renderDashboardGoncalvesDiasChart();
+        if (typeof global.renderDashboardEtapasCharts === 'function') global.renderDashboardEtapasCharts();
+        if (typeof global.renderDashboardComparativoChart === 'function') global.renderDashboardComparativoChart();
         if (typeof global.renderDashboardIndicadorEscala === 'function') global.renderDashboardIndicadorEscala();
         if (typeof global.renderDashboardEscalaAprendizado === 'function') global.renderDashboardEscalaAprendizado();
+        if (typeof global.renderDashboardSaebEvolucaoGoncalvesChart === 'function') global.renderDashboardSaebEvolucaoGoncalvesChart();
         if (typeof global.renderDashboardProficiency === 'function') global.renderDashboardProficiency();
         if (typeof global.renderDashboardSchoolsRanking === 'function') global.renderDashboardSchoolsRanking();
         if (typeof global.renderDashboardSimuladosConsolidados === 'function') global.renderDashboardSimuladosConsolidados();
