@@ -297,8 +297,8 @@
             cBottom = cr.bottom;
         }
 
-        // Revela no momento em que o topo do elemento chega a 35px antes do fundo visível do container
-        return r.top < (cBottom - 35) && r.bottom > (cTop + 10);
+        // Revela com margem suave de 60px antes da borda inferior
+        return r.top < (cBottom + 60) && r.bottom > (cTop - 40);
     }
 
     /**
@@ -390,8 +390,8 @@
                 });
             }, {
                 root: obsRoot,
-                rootMargin: '0px 0px -35px 0px',
-                threshold: 0.06
+                rootMargin: '60px 0px 60px 0px',
+                threshold: 0
             });
 
             allSections.forEach(function(sec) {
@@ -405,6 +405,7 @@
         if (!scrollAttached) {
             var ticking = false;
             var onScroll = function() {
+                handleScrollCheck();
                 if (!ticking) {
                     window.requestAnimationFrame(function() {
                         handleScrollCheck();

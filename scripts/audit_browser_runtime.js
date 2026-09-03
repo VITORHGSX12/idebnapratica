@@ -200,29 +200,40 @@ async function runAudit() {
         console.log('\n--- ESTADO DAS SEÇÕES DO DASHBOARD ---');
         console.log(JSON.stringify(blocksAudit, null, 2));
 
-        console.log('\n[5/5] Testando simulação de rolagem no .content-body...');
+        console.log('\n[5/5] Testando simulação de rolagem progressiva no .content-body...');
         const scrollTest = await client.evaluate(`
             (async function() {
                 var cb = document.querySelector('.content-body');
-                var beforeCbTop = cb ? cb.scrollTop : null;
+                var countBefore = document.querySelectorAll('#dashboard-main-content [data-revealed="true"]').length;
 
-                // Rolar o verdadeiro container .content-body
-                if (cb) cb.scrollTop = 800;
-                if (cb) cb.dispatchEvent(new Event('scroll'));
+                // 1. Rolar 600px
+                cb.scrollTop = 600;
+                cb.dispatchEvent(new Event('scroll'));
+                await new Promise(r => setTimeout(r, 400));
+                var countAt600 = document.querySelectorAll('#dashboard-main-content [data-revealed="true"]').length;
 
-                await new Promise(r => setTimeout(r, 600));
+                // 2. Rolar 1400px
+                cb.scrollTop = 1400;
+                cb.dispatchEvent(new Event('scroll'));
+                await new Promise(r => setTimeout(r, 400));
+                var countAt1400 = document.querySelectorAll('#dashboard-main-content [data-revealed="true"]').length;
 
-                var afterCbTop = cb ? cb.scrollTop : null;
+                // 3. Rolar até o fim
+                cb.scrollTop = cb.scrollHeight;
+                cb.dispatchEvent(new Event('scroll'));
+                await new Promise(r => setTimeout(r, 400));
+                var countAtBottom = document.querySelectorAll('#dashboard-main-content [data-revealed="true"]').length;
 
                 return {
-                    beforeCbTop: beforeCbTop,
-                    afterCbTop: afterCbTop,
-                    cbClientHeight: cb ? cb.clientHeight : null,
-                    cbScrollHeight: cb ? cb.scrollHeight : null
+                    totalSections: document.querySelectorAll('#dashboard-main-content .dash-scroll-block').length,
+                    countBefore: countBefore,
+                    countAt600: countAt600,
+                    countAt1400: countAt1400,
+                    countAtBottom: countAtBottom
                 };
             })()
         `);
-        console.log('\n--- RESULTADO DO TESTE DE ROLAGEM NO .CONTENT-BODY ---');
+        console.log('\n--- PROGRESSÃO DE REVELAÇÃO CONFORME O SCROLL ---');
         console.log(JSON.stringify(scrollTest, null, 2));
 
         // Coletar erros de console
