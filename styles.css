@@ -297,41 +297,44 @@ body.dark-mode .sidebar-logo-icon {
     white-space: nowrap;
 }
 
-/* Floating Round Collapse Button */
+/* Sidebar Collapse Button (Refined In-Header Design) */
 .sidebar-collapse-btn {
-    position: absolute;
-    right: -12px;
-    top: 22px;
-    width: 24px;
-    height: 24px;
-    background: #0F172A;
-    color: #FFFFFF;
-    border: 1px solid #E2E8F0;
-    border-radius: 50%;
+    position: relative;
+    width: 28px;
+    height: 28px;
+    background: var(--sidebar-slate-100, rgba(179, 207, 229, 0.25));
+    color: var(--sidebar-slate-800, #1A3D63);
+    border: 1px solid var(--sidebar-border, #B3CFE5);
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 105;
-    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.2);
-    transition: transform 200ms ease, background 150ms ease;
+    flex-shrink: 0;
+    margin-left: auto;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+    transition: all 150ms ease;
     padding: 0;
 }
 
 body.dark-mode .sidebar-collapse-btn {
-    background: #1E293B;
-    border-color: #334155;
+    background: rgba(26, 61, 99, 0.40);
+    color: #F6FAFD;
+    border-color: #1A3D63;
 }
 
 .sidebar-collapse-btn:hover {
-    transform: scale(1.1);
+    background: var(--sidebar-blue-500, #4A7FA7);
+    color: #FFFFFF;
+    border-color: var(--sidebar-blue-500, #4A7FA7);
+    box-shadow: 0 2px 5px rgba(74, 127, 167, 0.3);
 }
 
 .sidebar-collapse-btn svg {
     width: 14px;
     height: 14px;
-    color: #FFFFFF;
-    stroke: #FFFFFF;
+    color: currentColor;
+    stroke: currentColor;
     transition: transform 200ms ease;
 }
 
@@ -3803,17 +3806,37 @@ body.collapsed-sidebar .sidebar {
     border-radius: 0 !important;
 }
 
+body.collapsed-sidebar .sidebar-collapse-btn {
+    margin: 0 auto !important;
+    width: 26px !important;
+    height: 26px !important;
+}
+
 body.collapsed-sidebar .sidebar-collapse-btn svg {
     transform: rotate(180deg);
 }
 
 body.collapsed-sidebar .sidebar-header {
-    padding: 18px 8px 10px 8px !important;
+    padding: 14px 8px 10px 8px !important;
     align-items: center !important;
 }
 
 body.collapsed-sidebar .sidebar-header-top {
+    flex-direction: column !important;
+    gap: 8px !important;
+    align-items: center !important;
     justify-content: center !important;
+    width: 100% !important;
+}
+
+body.collapsed-sidebar .sidebar-logo-block {
+    justify-content: center !important;
+    margin: 0 auto !important;
+    gap: 0 !important;
+}
+
+body.collapsed-sidebar .sidebar-brand-text-wrap {
+    display: none !important;
 }
 
 body.collapsed-sidebar .sidebar-brand-text-wrap,
