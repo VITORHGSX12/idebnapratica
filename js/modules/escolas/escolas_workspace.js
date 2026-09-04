@@ -20,6 +20,41 @@
             .replace(/>/g, '&gt;');
     }
 
+    function sanitizeMojibake(str) {
+        if (!str || typeof str !== 'string') return str || '';
+        return str
+            .replace(/Ãƒ/g, 'Ã')
+            .replace(/Ã /g, 'Á')
+            .replace(/Ã‰/g, 'É')
+            .replace(/Ã /g, 'Í')
+            .replace(/Ã“/g, 'Ó')
+            .replace(/Ãš/g, 'Ú')
+            .replace(/ÃŠ/g, 'Ê')
+            .replace(/Ã”/g, 'Ô')
+            .replace(/Ã‡/g, 'Ç')
+            .replace(/Ã•/g, 'Õ')
+            .replace(/Ã£/g, 'ã')
+            .replace(/Ã¡/g, 'á')
+            .replace(/Ã©/g, 'é')
+            .replace(/Ã­/g, 'í')
+            .replace(/Ã³/g, 'ó')
+            .replace(/Ãº/g, 'ú')
+            .replace(/Ãª/g, 'ê')
+            .replace(/Ã´/g, 'ô')
+            .replace(/Ã§/g, 'ç')
+            .replace(/Ãµ/g, 'õ')
+            .replace(/\u00c3\u0083/g, 'Ã')
+            .replace(/\u00c3\u0081/g, 'Á')
+            .replace(/\u00c3\u0089/g, 'É')
+            .replace(/\u00c3\u008d/g, 'Í')
+            .replace(/\u00c3\u0093/g, 'Ó')
+            .replace(/\u00c3\u009a/g, 'Ú')
+            .replace(/\u00c3\u008a/g, 'Ê')
+            .replace(/\u00c3\u0094/g, 'Ô')
+            .replace(/\u00c3\u0087/g, 'Ç')
+            .replace(/\u00c3\u0095/g, 'Õ');
+    }
+
     // -------------------------------------------------------------------------
     // 1. VISÃO INTERNA DA ESCOLA (HEADER, BREADCRUMB E SUB-ABAS)
     // -------------------------------------------------------------------------
@@ -485,7 +520,7 @@
                         ${st.matricula || '-'}
                     </td>
                     <td style="padding: 8px 16px;">
-                        <strong style="color: var(--color-brand-primary); font-size: var(--text-sm);">${st.nome}</strong>
+                        <strong style="color: var(--color-brand-primary); font-size: var(--text-sm);">${sanitizeMojibake(st.nome)}</strong>
                     </td>
                     <td style="padding: 8px 16px; font-size: var(--text-xs); color: var(--color-text-secondary);">
                         ${st.nascimento || st.dataNascimento || '-'}

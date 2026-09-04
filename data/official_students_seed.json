@@ -984,7 +984,7 @@
     },
     {
       "id": "3450fda2-6e42-4e00-b51e-e6ad8bc81fe8",
-      "nome": "DAVID LUCAS ALENCAR SEBASTIÃO",
+      "nome": "DAVID LUCAS ALENCAR SEBASTIÃO",
       "matricula": "4115",
       "escolaId": "2b214ced-30b3-49e8-806c-657cf727f74e",
       "escola": "UE RAIMUNDO DOS REIS DA SILVA",
@@ -1020,7 +1020,7 @@
     },
     {
       "id": "39679218-3b7d-49dd-810e-1118107db2a1",
-      "nome": "ESTVÃO SILVA MARQUES",
+      "nome": "ESTVÃO SILVA MARQUES",
       "matricula": "4118",
       "escolaId": "2b214ced-30b3-49e8-806c-657cf727f74e",
       "escola": "UE RAIMUNDO DOS REIS DA SILVA",
@@ -1032,7 +1032,7 @@
     },
     {
       "id": "1374ba9d-5882-4bfd-b033-a889e6c424ec",
-      "nome": "JOÃO LUCAS LIMA OLIVEIRA",
+      "nome": "JOÃO LUCAS LIMA OLIVEIRA",
       "matricula": "4119",
       "escolaId": "2b214ced-30b3-49e8-806c-657cf727f74e",
       "escola": "UE RAIMUNDO DOS REIS DA SILVA",
@@ -1068,7 +1068,7 @@
     },
     {
       "id": "a24f7ea2-2c14-4fec-96d9-3674233c10e6",
-      "nome": "OTAVIO SILVA GALVÃO",
+      "nome": "OTAVIO SILVA GALVÃO",
       "matricula": "4123",
       "escolaId": "2b214ced-30b3-49e8-806c-657cf727f74e",
       "escola": "UE RAIMUNDO DOS REIS DA SILVA",
@@ -1332,7 +1332,7 @@
     },
     {
       "id": "1486d1ee-5268-43f4-8bd7-a2d3cc029d28",
-      "nome": "NELLY VITÃRIA SILVA RODRIGUES",
+      "nome": "NELLY VITÓRIA SILVA RODRIGUES",
       "matricula": "7461",
       "escolaId": "7f833929-ae7d-480c-8416-2e07afa22156",
       "escola": "UE VEREADOR LEONARDO FERREIRA LIMA",
@@ -2040,7 +2040,7 @@
     },
     {
       "id": "71501f63-08ae-47fb-b79c-0a9e8911e7e7",
-      "nome": "ANA LIVIA SANTOS MENDONÃA",
+      "nome": "ANA LIVIA SANTOS MENDONÇA",
       "matricula": "4306",
       "escolaId": "d1c1f1d1-83b2-4a93-abf1-dc1205a27022",
       "escola": "U I BASILIO ALVES",
@@ -2064,7 +2064,7 @@
     },
     {
       "id": "e9ee5167-724f-402b-abfd-200f58be9270",
-      "nome": "ARTUR GABRIEL BARROS CONCEIÃÃO",
+      "nome": "ARTUR GABRIEL BARROS CONCEIÇÃO",
       "matricula": "4307",
       "escolaId": "d1c1f1d1-83b2-4a93-abf1-dc1205a27022",
       "escola": "U I BASILIO ALVES",
@@ -2112,7 +2112,7 @@
     },
     {
       "id": "9ad6f4c4-7c02-4bc4-bb06-d8c3c5719c27",
-      "nome": "HEITOR EMANUEL CONCEIÃÃO DA SILVA",
+      "nome": "HEITOR EMANUEL CONCEIÇÃO DA SILVA",
       "matricula": "4310",
       "escolaId": "d1c1f1d1-83b2-4a93-abf1-dc1205a27022",
       "escola": "U I BASILIO ALVES",
@@ -2136,7 +2136,7 @@
     },
     {
       "id": "7bd8f5c2-e410-4717-856e-859aece87207",
-      "nome": "ICARO ENZO ASSUNÃÃO OLIVEIRA",
+      "nome": "ICARO ENZO ASSUNÇÃO OLIVEIRA",
       "matricula": "4312",
       "escolaId": "d1c1f1d1-83b2-4a93-abf1-dc1205a27022",
       "escola": "U I BASILIO ALVES",
@@ -2148,7 +2148,7 @@
     },
     {
       "id": "cd658828-1894-44cf-a37f-54f6dee9018f",
-      "nome": "JOÃO MIGUEL SILVA DA CONCEIÃÃO",
+      "nome": "JOÃO MIGUEL SILVA DA CONCEIÇÃO",
       "matricula": "7372",
       "escolaId": "d1c1f1d1-83b2-4a93-abf1-dc1205a27022",
       "escola": "U I BASILIO ALVES",
@@ -2364,7 +2364,7 @@
     },
     {
       "id": "400343f7-1ae4-423c-8c21-ee8818b42df1",
-      "nome": "KAILAN GÃIS SANTOS",
+      "nome": "KAILAN GÓIS SANTOS",
       "matricula": "4390",
       "escolaId": "d1c1f1d1-83b2-4a93-abf1-dc1205a27022",
       "escola": "U I BASILIO ALVES",
@@ -2400,7 +2400,7 @@
     },
     {
       "id": "102dc293-6dfc-4ee9-8ae8-811f4bb7060a",
-      "nome": "LUAN RODRIGUES GÃIS",
+      "nome": "LUAN RODRIGUES GÓIS",
       "matricula": "4395",
       "escolaId": "d1c1f1d1-83b2-4a93-abf1-dc1205a27022",
       "escola": "U I BASILIO ALVES",
@@ -2412,7 +2412,7 @@
     },
     {
       "id": "56307f94-d9ea-489a-aa7a-b622e8fdb22b",
-      "nome": "MONIELI CONCEIÃÃO DA SILVA",
+      "nome": "MONIELI CONCEIÇÃO DA SILVA",
       "matricula": "4396",
       "escolaId": "d1c1f1d1-83b2-4a93-abf1-dc1205a27022",
       "escola": "U I BASILIO ALVES",
@@ -2460,7 +2460,7 @@
     },
     {
       "id": "da467efa-b415-441d-a85a-f667977b18c3",
-      "nome": "RONIELSON SAMPAIO ROSÃRIO",
+      "nome": "RONIELSON SAMPAIO ROSÁRIO",
       "matricula": "4402",
       "escolaId": "d1c1f1d1-83b2-4a93-abf1-dc1205a27022",
       "escola": "U I BASILIO ALVES",
@@ -2832,7 +2832,7 @@
     },
     {
       "id": "f10dc320-f82c-4eef-961b-99e0f81cb167",
-      "nome": "GEOVANNA GONÃALVES BARBOSA",
+      "nome": "GEOVANNA GONÇALVES BARBOSA",
       "matricula": "4255",
       "escolaId": "7ff3cfda-cf15-42c3-bed0-ba42d00c21ed",
       "escola": "UI EMILIO MURAD",
@@ -3024,7 +3024,7 @@
     },
     {
       "id": "b47eb614-51ee-499e-9306-9f768076a6cd",
-      "nome": "GUILHERME ARAGÃO NOGUEIRA",
+      "nome": "GUILHERME ARAGÃO NOGUEIRA",
       "matricula": "4549",
       "escolaId": "3a3b0e2f-5e6d-4623-8035-4b119b40fa90",
       "escola": "UI JOSE CORREA LIMA",
@@ -3288,7 +3288,7 @@
     },
     {
       "id": "f252ec56-f30e-4f57-ae6d-c6bf33a8ed29",
-      "nome": "THAYLA GONÃALVES DIAS NUNES",
+      "nome": "THAYLA GONÇALVES DIAS NUNES",
       "matricula": "4627",
       "escolaId": "3a3b0e2f-5e6d-4623-8035-4b119b40fa90",
       "escola": "UI JOSE CORREA LIMA",
@@ -3300,7 +3300,7 @@
     },
     {
       "id": "ad0d08da-d53f-4578-91ae-305c3aabed25",
-      "nome": "VITORIA LAVINE BORGES FRANÃA",
+      "nome": "VITORIA LAVINE BORGES FRANÇA",
       "matricula": "4628",
       "escolaId": "3a3b0e2f-5e6d-4623-8035-4b119b40fa90",
       "escola": "UI JOSE CORREA LIMA",
@@ -3648,7 +3648,7 @@
     },
     {
       "id": "b13f1d81-9ca2-4da4-ae34-e2326801d78e",
-      "nome": "NATHYLLA VICTÃRIA SANTOS SOUSA",
+      "nome": "NATHYLLA VICTÓRIA SANTOS SOUSA",
       "matricula": "4691",
       "escolaId": "988f4f15-5f14-44df-9d60-93e313ff8f33",
       "escola": "UNIDADE ESCOLAR ANISIO GOMES",
@@ -3732,7 +3732,7 @@
     },
     {
       "id": "37400421-6bdb-45c4-8cb9-97b92e7c1b35",
-      "nome": "ANA VITÃRIA ALMEIDA MORAIS",
+      "nome": "ANA VITÓRIA ALMEIDA MORAIS",
       "matricula": "7304",
       "escolaId": "8d08a461-11fa-4b63-abaa-5b2378cf278c",
       "escola": "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ",
@@ -3864,7 +3864,7 @@
     },
     {
       "id": "e93f59db-336e-4f3a-be3b-e422a5d6cab7",
-      "nome": "JOÃO PEDRO CAMPOS LIMA",
+      "nome": "JOÃO PEDRO CAMPOS LIMA",
       "matricula": "6236",
       "escolaId": "8d08a461-11fa-4b63-abaa-5b2378cf278c",
       "escola": "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ",
@@ -3936,7 +3936,7 @@
     },
     {
       "id": "42f4b96e-a086-439c-8a84-f93c5fddd548",
-      "nome": "NICKISON OTÃVIO SANTOS NOGUEIRA",
+      "nome": "NICKISON OTÁVIO SANTOS NOGUEIRA",
       "matricula": "6232",
       "escolaId": "8d08a461-11fa-4b63-abaa-5b2378cf278c",
       "escola": "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ",
@@ -4008,7 +4008,7 @@
     },
     {
       "id": "8f40b7b1-bf89-4577-bfd0-b994fc40c843",
-      "nome": "ÃLVARO MIGUEL CARDOSO SANTOS",
+      "nome": "ÁLVARO MIGUEL CARDOSO SANTOS",
       "matricula": "6311",
       "escolaId": "8d08a461-11fa-4b63-abaa-5b2378cf278c",
       "escola": "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ",
@@ -4068,7 +4068,7 @@
     },
     {
       "id": "54886644-98ca-4221-9778-b4e281edf6bd",
-      "nome": "DHAMILA CONCEIÃÃO SILVA",
+      "nome": "DHAMILA CONCEIÇÃO SILVA",
       "matricula": "7227",
       "escolaId": "8d08a461-11fa-4b63-abaa-5b2378cf278c",
       "escola": "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ",
@@ -4416,7 +4416,7 @@
     },
     {
       "id": "d0300bc4-53bd-4e2a-9076-662e91a5b26e",
-      "nome": "JOÃO ARTHUR MONTEIRO ROSA",
+      "nome": "JOÃO ARTHUR MONTEIRO ROSA",
       "matricula": "6204",
       "escolaId": "8d08a461-11fa-4b63-abaa-5b2378cf278c",
       "escola": "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ",
@@ -4428,7 +4428,7 @@
     },
     {
       "id": "b7d46d42-ff7c-492e-9172-bcc95f8f5cb0",
-      "nome": "JOSÃ BERNARDO BENTO DA SILVA SANTOS",
+      "nome": "JOSÉ BERNARDO BENTO DA SILVA SANTOS",
       "matricula": "6210",
       "escolaId": "8d08a461-11fa-4b63-abaa-5b2378cf278c",
       "escola": "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ",
@@ -4632,7 +4632,7 @@
     },
     {
       "id": "73670d30-55f5-4079-964a-896176c2ae52",
-      "nome": "LUCCAS KAUÃ DA SILVA FLOZINO",
+      "nome": "LUCCAS KAUÊ DA SILVA FLOZINO",
       "matricula": "6364",
       "escolaId": "8d08a461-11fa-4b63-abaa-5b2378cf278c",
       "escola": "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ",
@@ -5184,7 +5184,7 @@
     },
     {
       "id": "dba5e89c-7841-47a6-a444-ab6e230e5fef",
-      "nome": "ANTONIA ALYCY CONCEIÃÃO PEREIRA",
+      "nome": "ANTONIA ALYCY CONCEIÇÃO PEREIRA",
       "matricula": "5941",
       "escolaId": "8d08a461-11fa-4b63-abaa-5b2378cf278c",
       "escola": "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ",
@@ -5376,7 +5376,7 @@
     },
     {
       "id": "71c9f914-47c2-436a-837d-34956221d1b9",
-      "nome": "MURILLO SANTOS DA CONCEIÃÃO",
+      "nome": "MURILLO SANTOS DA CONCEIÇÃO",
       "matricula": "7122",
       "escolaId": "8d08a461-11fa-4b63-abaa-5b2378cf278c",
       "escola": "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ",
@@ -5748,7 +5748,7 @@
     },
     {
       "id": "cfb2dbd7-bd7a-4dcf-a66f-37d940a73ed9",
-      "nome": "ANTONIO JHÃSAFF BACELAR DE ALMEIDA FERNANDES",
+      "nome": "ANTONIO JHÔSAFF BACELAR DE ALMEIDA FERNANDES",
       "matricula": "5970",
       "escolaId": "8d08a461-11fa-4b63-abaa-5b2378cf278c",
       "escola": "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ",
@@ -5820,7 +5820,7 @@
     },
     {
       "id": "04d7e5dd-fe1a-4079-b65a-5d01d86c9a25",
-      "nome": "DIÃGO PEDROSA PEIXOTO",
+      "nome": "DIÔGO PEDROSA PEIXOTO",
       "matricula": "5977",
       "escolaId": "8d08a461-11fa-4b63-abaa-5b2378cf278c",
       "escola": "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ",
@@ -5928,7 +5928,7 @@
     },
     {
       "id": "7ee583ac-6027-4786-ac2d-060a27057d13",
-      "nome": "LUAN HENRIQUE CARDOSO CONCEIÃÃO",
+      "nome": "LUAN HENRIQUE CARDOSO CONCEIÇÃO",
       "matricula": "5986",
       "escolaId": "8d08a461-11fa-4b63-abaa-5b2378cf278c",
       "escola": "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ",
@@ -6048,7 +6048,7 @@
     },
     {
       "id": "178e87fe-fb21-44c8-843d-43403b9fe67a",
-      "nome": "THAEMYLLE MAYSA ARAÃJO ROMANO",
+      "nome": "THAEMYLLE MAYSA ARAÚJO ROMANO",
       "matricula": "7123",
       "escolaId": "8d08a461-11fa-4b63-abaa-5b2378cf278c",
       "escola": "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ",
@@ -6300,7 +6300,7 @@
     },
     {
       "id": "3d5363b2-a253-47ca-90d0-64e92f0d7068",
-      "nome": "JOÃO VITOR CONCEIÃÃO DA SILVA",
+      "nome": "JOÃO VITOR CONCEIÇÃO DA SILVA",
       "matricula": "5778",
       "escolaId": "8d08a461-11fa-4b63-abaa-5b2378cf278c",
       "escola": "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ",
@@ -6528,7 +6528,7 @@
     },
     {
       "id": "d3f36854-9719-421a-a874-2d6560881ee3",
-      "nome": "WILLIAN MOISÃS PEREIRA SOUSA",
+      "nome": "WILLIAN MOISÉS PEREIRA SOUSA",
       "matricula": "7877",
       "escolaId": "93553a71-c887-4e37-8005-28db28fe8b71",
       "escola": "UNIDADE INTEGRADA JOSE GONCALVES DIAS",
@@ -6648,7 +6648,7 @@
     },
     {
       "id": "e5edf515-e878-48c2-812e-1ce165e3bec4",
-      "nome": "CLAUDIO LUAN GONÃALVES DA SILVA",
+      "nome": "CLAUDIO LUAN GONÇALVES DA SILVA",
       "matricula": "7439",
       "escolaId": "93553a71-c887-4e37-8005-28db28fe8b71",
       "escola": "UNIDADE INTEGRADA JOSE GONCALVES DIAS",
@@ -6684,7 +6684,7 @@
     },
     {
       "id": "7e9e70a8-8862-4c61-9e82-3fac47c1270e",
-      "nome": "JOSÃ RODOLFO MORAES SOUSA",
+      "nome": "JOSÉ RODOLFO MORAES SOUSA",
       "matricula": "4525",
       "escolaId": "93553a71-c887-4e37-8005-28db28fe8b71",
       "escola": "UNIDADE INTEGRADA JOSE GONCALVES DIAS",
@@ -6708,7 +6708,7 @@
     },
     {
       "id": "84feb3ce-f14d-4240-aff5-1b6de5377e84",
-      "nome": "KEYSON SILVA SEBASTIÃO",
+      "nome": "KEYSON SILVA SEBASTIÃO",
       "matricula": "4527",
       "escolaId": "93553a71-c887-4e37-8005-28db28fe8b71",
       "escola": "UNIDADE INTEGRADA JOSE GONCALVES DIAS",

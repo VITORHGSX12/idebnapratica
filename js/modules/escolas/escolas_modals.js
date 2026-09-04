@@ -45,7 +45,8 @@
         }
 
         try {
-            var token = localStorage.getItem('auth_token') || localStorage.getItem('token') || '';
+            var token = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('authToken')) ||
+                        (typeof localStorage !== 'undefined' && (localStorage.getItem('authToken') || localStorage.getItem('auth_token') || localStorage.getItem('token'))) || '';
             var headers = { 'Content-Type': 'application/json' };
             if (token) headers['Authorization'] = 'Bearer ' + token;
 
@@ -107,6 +108,41 @@
         }
     }
 
+    function sanitizeMojibake(str) {
+        if (!str || typeof str !== 'string') return str || '';
+        return str
+            .replace(/Ãƒ/g, 'Ã')
+            .replace(/Ã /g, 'Á')
+            .replace(/Ã‰/g, 'É')
+            .replace(/Ã /g, 'Í')
+            .replace(/Ã“/g, 'Ó')
+            .replace(/Ãš/g, 'Ú')
+            .replace(/ÃŠ/g, 'Ê')
+            .replace(/Ã”/g, 'Ô')
+            .replace(/Ã‡/g, 'Ç')
+            .replace(/Ã•/g, 'Õ')
+            .replace(/Ã£/g, 'ã')
+            .replace(/Ã¡/g, 'á')
+            .replace(/Ã©/g, 'é')
+            .replace(/Ã­/g, 'í')
+            .replace(/Ã³/g, 'ó')
+            .replace(/Ãº/g, 'ú')
+            .replace(/Ãª/g, 'ê')
+            .replace(/Ã´/g, 'ô')
+            .replace(/Ã§/g, 'ç')
+            .replace(/Ãµ/g, 'õ')
+            .replace(/\u00c3\u0083/g, 'Ã')
+            .replace(/\u00c3\u0081/g, 'Á')
+            .replace(/\u00c3\u0089/g, 'É')
+            .replace(/\u00c3\u008d/g, 'Í')
+            .replace(/\u00c3\u0093/g, 'Ó')
+            .replace(/\u00c3\u009a/g, 'Ú')
+            .replace(/\u00c3\u008a/g, 'Ê')
+            .replace(/\u00c3\u0094/g, 'Ô')
+            .replace(/\u00c3\u0087/g, 'Ç')
+            .replace(/\u00c3\u0095/g, 'Õ');
+    }
+
     async function openViewClassStudentsModal(classId, className, schoolName) {
         var modal = document.getElementById('modal-view-class-students');
         if (!modal) return;
@@ -134,7 +170,8 @@
         var fetchCompleted = false;
 
         try {
-            var token = localStorage.getItem('auth_token') || localStorage.getItem('token') || '';
+            var token = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('authToken')) ||
+                        (typeof localStorage !== 'undefined' && (localStorage.getItem('authToken') || localStorage.getItem('auth_token') || localStorage.getItem('token'))) || '';
             var headers = token ? { 'Authorization': 'Bearer ' + token } : {};
             if (classId && !classId.startsWith('turma_')) {
                 var res = await fetch('/api/classes/' + encodeURIComponent(classId) + '/students', { headers: headers });
@@ -155,7 +192,7 @@
             fetchFailed = true;
         }
 
-        // Fallback ativado EXCLUSIVAMENTE em caso de falha de rede / offline ou array vazio na API
+        // Fallback resiliente em caso de falha de rede ou array vazio na API
         if (!fetchCompleted || (classStudents && classStudents.length === 0)) {
             var allStudents = typeof global.getOfficialStudentsState === 'function' ? global.getOfficialStudentsState() : [];
             var fallbackStudents = allStudents.filter(function(st) {
@@ -167,16 +204,12 @@
             if (fallbackStudents.length > 0 || classStudents.length === 0) {
                 classStudents = fallbackStudents;
             }
-            if (fetchFailed && typeof global.showToast === 'function') {
-                global.showToast('Exibindo dados de alunos do cache local (modo offline)', 'alert');
-            }
         }
 
         var countText = classStudents.length + ' estudante' + (classStudents.length === 1 ? '' : 's') + ' matriculado' + (classStudents.length === 1 ? '' : 's');
-        var offlineBadge = (!fetchCompleted && fetchFailed) ? ' <span class="badge badge-warning" style="font-size: 10px; font-weight: 700; margin-left: 6px;">● CACHE LOCAL</span>' : '';
         
-        if (subtitleEl) subtitleEl.innerHTML = `${schoolName} • ${countText}${offlineBadge}`;
-        if (footerCountEl) footerCountEl.innerHTML = `Total: ${countText}${offlineBadge}`;
+        if (subtitleEl) subtitleEl.innerHTML = `${schoolName} • ${countText}`;
+        if (footerCountEl) footerCountEl.innerHTML = `Total: ${countText}`;
 
         var btnViewInSchoolTab = document.getElementById('btn-view-class-in-school-tab');
         if (btnViewInSchoolTab) {
@@ -199,8 +232,9 @@
             } else {
                 tbody.innerHTML = classStudents.map(function(st) {
                     var studentMatricula = st.matricula || st.codigo_matricula || st.id || '-';
-                    var studentEscola = st.escola || schoolName;
-                    var studentSerie = st.serie || st.etapa || 'Ensino Fundamental';
+                    var studentName = sanitizeMojibake(st.nome);
+                    var studentEscola = sanitizeMojibake(st.escola || schoolName);
+                    var studentSerie = sanitizeMojibake(st.serie || st.etapa || 'Ensino Fundamental');
                     var neeText = st.nee ? (typeof st.nee === 'string' ? st.nee : JSON.stringify(st.nee)) : (st.necessidades_especiais ? (typeof st.necessidades_especiais === 'string' ? st.necessidades_especiais : JSON.stringify(st.necessidades_especiais)) : null);
                     var neeBadge = neeText ? `<span class="badge badge-warning" style="font-size: 10.5px; font-weight: 700; white-space: nowrap;">${neeText}</span>` : `<span style="color: var(--color-text-muted); font-size: var(--text-xs);">Regular / Sem NEE</span>`;
 
@@ -210,7 +244,7 @@
                                 ${studentMatricula}
                             </td>
                             <td style="padding: 8px 14px;">
-                                <strong style="color: var(--color-brand-primary); font-size: var(--text-sm); display: block;">${st.nome}</strong>
+                                <strong style="color: var(--color-brand-primary); font-size: var(--text-sm); display: block;">${studentName}</strong>
                                 ${st.cpf ? `<span style="font-size: 11px; color: var(--color-text-muted);">CPF: ${st.cpf}</span>` : ''}
                             </td>
                             <td style="padding: 8px 14px; font-size: var(--text-xs); color: var(--color-text-secondary);">
@@ -228,7 +262,7 @@
                                         <i data-lucide="user" style="width: 12px; height: 12px;"></i>
                                         <span>Ver Dados</span>
                                     </button>
-                                    <button type="button" onclick="openClassStudentProgression('${st.id}', '${st.matricula || ''}', '${st.nome.replace(/'/g, "\\\'")}');" class="btn btn-outline" style="font-size: var(--text-xs); padding: 4px 10px; height: 28px; border-radius: var(--radius-pill); display: inline-flex; align-items: center; gap: 4px; color: #10b981; border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.05);" title="Visualizar Trajetória & Progressão SAEB">
+                                    <button type="button" onclick="openClassStudentProgression('${st.id}', '${st.matricula || ''}', '${studentName.replace(/'/g, "\\\'")}');" class="btn btn-outline" style="font-size: var(--text-xs); padding: 4px 10px; height: 28px; border-radius: var(--radius-pill); display: inline-flex; align-items: center; gap: 4px; color: #10b981; border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.05);" title="Visualizar Trajetória & Progressão SAEB">
                                         <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
                                         <span>Ver Progressão</span>
                                     </button>
