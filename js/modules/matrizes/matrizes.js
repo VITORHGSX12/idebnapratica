@@ -322,8 +322,14 @@
                 btnBncc.style.color = 'var(--text-secondary)';
                 btnBncc.style.border = '1px solid var(--border-color)';
             }
-            if (subSaeb) subSaeb.style.display = 'block';
-            if (subBncc) subBncc.style.display = 'none';
+            if (subSaeb) {
+                subSaeb.classList.remove('hidden');
+                subSaeb.style.display = 'block';
+            }
+            if (subBncc) {
+                subBncc.classList.add('hidden');
+                subBncc.style.display = 'none';
+            }
             renderReferenceMatrix();
         } else {
             if (btnBncc) {
@@ -338,8 +344,14 @@
                 btnSaeb.style.color = 'var(--text-secondary)';
                 btnSaeb.style.border = '1px solid var(--border-color)';
             }
-            if (subSaeb) subSaeb.style.display = 'none';
-            if (subBncc) subBncc.style.display = 'block';
+            if (subSaeb) {
+                subSaeb.classList.add('hidden');
+                subSaeb.style.display = 'none';
+            }
+            if (subBncc) {
+                subBncc.classList.remove('hidden');
+                subBncc.style.display = 'block';
+            }
             renderBnccSkillsTable();
         }
     }
