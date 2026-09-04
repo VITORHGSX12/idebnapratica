@@ -7,6 +7,71 @@
 (function(global) {
     'use strict';
 
+    var STORAGE_KEY_ADMIN_USERS = 'saas_admin_users_db';
+    var editingUserId = null;
+
+    /**
+     * Recupera a lista de usuários armazenada ou inicializa com dados padrão
+     */
+    function getStoredUsers() {
+        try {
+            if (typeof localStorage !== 'undefined') {
+                var raw = localStorage.getItem(STORAGE_KEY_ADMIN_USERS);
+                if (raw) {
+                    var parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        return parsed;
+                    }
+                }
+            }
+        } catch(e) {}
+
+        var initial = (global.DEFAULT_STAFF_USERS && global.DEFAULT_STAFF_USERS.slice()) || [];
+        saveStoredUsers(initial);
+        return initial;
+    }
+
+    /**
+     * Persiste a lista de usuários no armazenamento local
+     */
+    function saveStoredUsers(users) {
+        try {
+            if (typeof localStorage !== 'undefined') {
+                localStorage.setItem(STORAGE_KEY_ADMIN_USERS, JSON.stringify(users));
+            }
+        } catch(e) {}
+    }
+
+    /**
+     * Determina se o usuário atual pertence ao grupo com permissão de configuração (Admin/SEMED)
+     */
+    function isConfigGroup() {
+        var role = '';
+        try {
+            role = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('userRole')) ||
+                   (typeof localStorage !== 'undefined' && localStorage.getItem('userRole')) ||
+                   'Master Admin';
+        } catch(e) {
+            role = 'Master Admin';
+        }
+
+        var r = (role || '').toLowerCase();
+        return r.includes('admin') || r.includes('gestor') || r.includes('semed') || r === 'master admin';
+    }
+
+    /**
+     * Retorna a unidade escolar vinculada ao usuário ativo
+     */
+    function getLoggedUserSchool() {
+        try {
+            return (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('userSchool')) ||
+                   (typeof localStorage !== 'undefined' && localStorage.getItem('userSchool')) ||
+                   '';
+        } catch(e) {
+            return '';
+        }
+    }
+
     /**
      * Gera e-mail e senha sugeridos automaticamente com base no nome do usuário
      */
@@ -27,8 +92,13 @@
             }
         }
 
-        if (emailInput) emailInput.value = slug + '@goncalvesdias.ma.gov.br';
-        if (passInput && !passInput.value) passInput.value = 'Gondias@2026';
+        if (emailInput && (!emailInput.value || emailInput.getAttribute('data-auto') === 'true')) {
+            emailInput.value = slug + '@goncalvesdias.ma.gov.br';
+            emailInput.setAttribute('data-auto', 'true');
+        }
+        if (passInput && !passInput.value) {
+            passInput.value = 'Gondias@2026';
+        }
     }
 
     /**
@@ -39,13 +109,129 @@
     }
 
     /**
+     * Abre o modal de cadastro/edição de usuário
+     */
+    function openCreateUserModal(idToEdit) {
+        var modal = document.getElementById('create-user-modal');
+        var form = document.getElementById('create-user-form');
+        var title = modal ? modal.querySelector('.modal-header h3') : null;
+        if (!modal) return;
+
+        editingUserId = idToEdit || null;
+
+        if (editingUserId) {
+            var users = getStoredUsers();
+            var target = users.find(function(u) { return u.id === editingUserId; });
+            if (target) {
+                if (title) title.textContent = 'Editar Membro da Equipe (' + target.id + ')';
+                setInputValue('new-user-name', target.nome);
+                setInputValue('new-user-cpf', target.cpf || '');
+                setInputValue('new-user-phone', target.telefone || '');
+                setInputValue('new-user-role', target.tipo || target.role || 'Professor(a)');
+                setInputValue('new-user-school', target.escola || 'Todas as Escolas (SEMED)');
+                setInputValue('new-user-email', target.email);
+                setInputValue('new-user-password', target.senha || 'Gondias@2026');
+            }
+        } else {
+            if (title) title.textContent = 'Cadastrar Membro da Equipe';
+            if (form) form.reset();
+            var emailInput = document.getElementById('new-user-email');
+            if (emailInput) emailInput.setAttribute('data-auto', 'true');
+            generateAutoCredentials();
+        }
+
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+    }
+
+    function setInputValue(id, val) {
+        var el = document.getElementById(id);
+        if (el) el.value = val;
+    }
+
+    /**
+     * Trata o envio do formulário de salvar novo usuário ou atualizar existente
+     */
+    function handleSaveNewUser(e) {
+        if (e && e.preventDefault) e.preventDefault();
+
+        var name = (document.getElementById('new-user-name') && document.getElementById('new-user-name').value) || '';
+        var cpf = (document.getElementById('new-user-cpf') && document.getElementById('new-user-cpf').value) || '';
+        var phone = (document.getElementById('new-user-phone') && document.getElementById('new-user-phone').value) || '';
+        var role = (document.getElementById('new-user-role') && document.getElementById('new-user-role').value) || 'Professor(a)';
+        var school = (document.getElementById('new-user-school') && document.getElementById('new-user-school').value) || 'Todas as Escolas (SEMED)';
+        var email = (document.getElementById('new-user-email') && document.getElementById('new-user-email').value) || '';
+        var password = (document.getElementById('new-user-password') && document.getElementById('new-user-password').value) || 'Gondias@2026';
+
+        if (!name.trim() || !email.trim()) {
+            if (typeof global.showToast === 'function') {
+                global.showToast('Preencha os campos obrigatórios (Nome e E-mail).', 'alert-triangle');
+            }
+            return;
+        }
+
+        var users = getStoredUsers();
+
+        if (editingUserId) {
+            var idx = users.findIndex(function(u) { return u.id === editingUserId; });
+            if (idx >= 0) {
+                users[idx].nome = name.trim();
+                users[idx].cpf = cpf.trim();
+                users[idx].telefone = phone.trim();
+                users[idx].tipo = role;
+                users[idx].role = role;
+                users[idx].escola = school;
+                users[idx].email = email.trim();
+                users[idx].senha = password.trim();
+            }
+            if (typeof global.showToast === 'function') {
+                global.showToast('Dados do profissional atualizados com sucesso!', 'success');
+            }
+        } else {
+            var newId = 'USR-' + String(users.length + 1).padStart(3, '0');
+            var newUser = {
+                id: newId,
+                nome: name.trim(),
+                cpf: cpf.trim(),
+                telefone: phone.trim(),
+                tipo: role,
+                role: role,
+                escola: school,
+                turma: role.includes('Professor') ? 'Turma a Atribuir' : 'Gestão da Unidade Escolar',
+                email: email.trim(),
+                senha: password.trim(),
+                status: 'Ativo'
+            };
+            users.unshift(newUser);
+            if (typeof global.showToast === 'function') {
+                global.showToast('✅ Novo profissional cadastrado com sucesso!', 'success');
+            }
+        }
+
+        saveStoredUsers(users);
+        editingUserId = null;
+
+        if (typeof global.closeModal === 'function') {
+            global.closeModal('create-user-modal');
+        } else {
+            var modal = document.getElementById('create-user-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+            }
+        }
+
+        renderUsersList();
+    }
+
+    /**
      * Renderiza a tabela da equipe com isolamento por RBAC e filtros
      */
     function renderUsersList() {
         var tbody = document.getElementById('users-table-body');
         if (!tbody) return;
 
-        var canConfigure = typeof global.isConfigGroup === 'function' ? global.isConfigGroup() : true;
+        var canConfigure = isConfigGroup();
         var btnCreateUser = document.getElementById('btn-open-create-user-modal');
         if (btnCreateUser) {
             btnCreateUser.style.display = canConfigure ? 'inline-flex' : 'none';
@@ -55,9 +241,9 @@
         var statusFilter = (document.getElementById('filter-user-status') && document.getElementById('filter-user-status').value) || 'all';
         var searchInput = document.getElementById('filter-user-search');
         var query = searchInput ? searchInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
-        var userSchool = typeof global.getLoggedUserSchool === 'function' ? global.getLoggedUserSchool().toLowerCase().trim() : '';
+        var userSchool = getLoggedUserSchool().toLowerCase().trim();
 
-        var users = typeof global.getStoredUsers === 'function' ? global.getStoredUsers() : [];
+        var users = getStoredUsers();
 
         // RBAC: Diretores e Professores visualizam apenas sua própria unidade escolar
         if (!canConfigure && userSchool) {
@@ -89,6 +275,7 @@
                     '<div style="display: flex; align-items: center; justify-content: center; gap: 6px;">',
                     '    <button onclick="handleViewUserProfile(\'' + u.id + '\')" class="btn btn-sm btn-outline" style="font-size: 0.72rem; padding: 4px 8px;" title="Ver Detalhes do Perfil">👤 Ver</button>',
                     '    <button onclick="handleCopyUserCredentials(\'' + u.email + '\', \'' + (u.senha || 'Gondias@2026') + '\')" class="btn btn-outline btn-sm" style="font-size: 0.72rem; padding: 4px 8px; color: #6366f1;" title="Copiar Login e Senha">🔑</button>',
+                    '    <button onclick="openCreateUserModal(\'' + u.id + '\')" class="btn btn-outline btn-sm" style="font-size: 0.72rem; padding: 4px 8px; color: #f59e0b;" title="Editar Usuário">✏️</button>',
                     '    <button onclick="handleDeleteUser(\'' + u.id + '\')" class="btn btn-icon btn-sm" style="color: #ef4444; border: 1px solid var(--border-color);" title="Excluir Usuário">🗑️</button>',
                     '</div>'
                 ].join('\n');
@@ -129,7 +316,7 @@
      * Exibe o perfil completo do profissional selecionado
      */
     function handleViewUserProfile(id) {
-        var users = typeof global.getStoredUsers === 'function' ? global.getStoredUsers() : [];
+        var users = getStoredUsers();
         var u = users.find(function(user) { return user.id === id; });
         if (u) openUserProfileDetail(u);
     }
@@ -142,10 +329,13 @@
         listView.classList.add('hidden');
         detailView.classList.remove('hidden');
 
-        var canConfigure = typeof global.isConfigGroup === 'function' ? global.isConfigGroup() : true;
+        var canConfigure = isConfigGroup();
         var btnEdit = document.getElementById('btn-profile-edit-user');
         if (btnEdit) {
             btnEdit.style.display = canConfigure ? 'inline-flex' : 'none';
+            btnEdit.onclick = function() {
+                openCreateUserModal(user.id);
+            };
         }
 
         var isConfigRole = (user.tipo || user.role || '').toLowerCase().includes('admin') || (user.tipo || user.role || '').toLowerCase().includes('gestor') || (user.tipo || user.role || '').toLowerCase().includes('semed');
@@ -192,13 +382,27 @@
      */
     function handleCopyUserCredentials(email, senha) {
         var text = 'Sistema IDEB na Prática (SEMED Gonçalves Dias)\nLogin: ' + email + '\nSenha: ' + senha;
-        if (navigator.clipboard) {
+        if (navigator && navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
             navigator.clipboard.writeText(text).then(function() {
                 if (typeof global.showToast === 'function') global.showToast('Credenciais copiadas com sucesso!', 'check-circle');
             }).catch(function() {
-                prompt('Copie as credenciais de acesso:', text);
+                fallbackCopyText(text);
             });
         } else {
+            fallbackCopyText(text);
+        }
+    }
+
+    function fallbackCopyText(text) {
+        try {
+            var area = document.createElement('textarea');
+            area.value = text;
+            document.body.appendChild(area);
+            area.select();
+            document.execCommand('copy');
+            document.body.removeChild(area);
+            if (typeof global.showToast === 'function') global.showToast('Credenciais copiadas com sucesso!', 'check-circle');
+        } catch(e) {
             prompt('Copie as credenciais de acesso:', text);
         }
     }
@@ -207,19 +411,25 @@
      * Exclui usuário com validação de perfil RBAC
      */
     async function handleDeleteUser(id) {
-        var canConfigure = typeof global.isConfigGroup === 'function' ? global.isConfigGroup() : true;
+        var canConfigure = isConfigGroup();
         if (!canConfigure) {
             if (typeof global.showToast === 'function') global.showToast('Operação bloqueada: Apenas administradores podem excluir usuários.', 'alert-triangle');
             return;
         }
 
-        if (confirm('Deseja realmente revogar o acesso e excluir este usuário?')) {
-            var current = typeof global.getStoredUsers === 'function' ? global.getStoredUsers().filter(function(u) { return u.id !== id; }) : [];
-            if (typeof global.saveStoredUsers === 'function') global.saveStoredUsers(current);
+        var users = getStoredUsers();
+        var target = users.find(function(u) { return u.id === id; });
+        var targetName = target ? target.nome : id;
+
+        var confirmed = typeof global.confirm === 'function' ? global.confirm('Deseja realmente revogar o acesso e excluir ' + targetName + '?') : true;
+        if (confirmed) {
+            var current = users.filter(function(u) { return u.id !== id; });
+            saveStoredUsers(current);
 
             try {
-                var token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
-                if (token) {
+                var token = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('authToken')) ||
+                            (typeof localStorage !== 'undefined' && localStorage.getItem('authToken'));
+                if (token && typeof fetch === 'function') {
                     await fetch('/api/users/' + id, {
                         method: 'DELETE',
                         headers: { 'Authorization': 'Bearer ' + token }
@@ -265,12 +475,9 @@
         }
 
         var btnOpenModal = document.getElementById('btn-open-create-user-modal');
-        var modalCreate = document.getElementById('create-user-modal');
-        if (btnOpenModal && modalCreate) {
+        if (btnOpenModal) {
             btnOpenModal.onclick = function() {
-                modalCreate.classList.remove('hidden');
-                modalCreate.style.display = 'flex';
-                generateAutoCredentials();
+                openCreateUserModal();
             };
         }
 
@@ -278,9 +485,16 @@
     }
 
     // Exposição Global
+    global.getStoredUsers = getStoredUsers;
+    global.saveStoredUsers = saveStoredUsers;
+    global.isConfigGroup = isConfigGroup;
+    global.getLoggedUserSchool = getLoggedUserSchool;
     global.generateAutoCredentials = generateAutoCredentials;
     global.handleUserRoleChange = handleUserRoleChange;
+    global.openCreateUserModal = openCreateUserModal;
+    global.handleSaveNewUser = handleSaveNewUser;
     global.renderUsersList = renderUsersList;
+    global.loadUsersList = renderUsersList;
     global.handleViewUserProfile = handleViewUserProfile;
     global.openUserProfileDetail = openUserProfileDetail;
     global.handleCopyUserCredentials = handleCopyUserCredentials;
@@ -291,7 +505,7 @@
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initAdminUsersModule);
     } else {
-        setTimeout(initAdminUsersModule, 220);
+        setTimeout(initAdminUsersModule, 100);
     }
 
 })(typeof window !== 'undefined' ? window : this);
