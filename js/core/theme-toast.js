@@ -14,7 +14,16 @@
      * @param {string} iconName Nome do ícone Lucide (padrão: 'info')
      */
     function showToast(message, iconName) {
-        iconName = iconName || 'info';
+        var iconAliases = {
+            'success': 'check-circle',
+            'check': 'check',
+            'error': 'alert-circle',
+            'danger': 'alert-circle',
+            'warning': 'alert-triangle',
+            'alert': 'alert-triangle',
+            'info': 'info'
+        };
+        var resolvedIcon = iconAliases[iconName] || iconName || 'info';
         var toast = document.getElementById('toast-notification');
         var toastMessage = document.getElementById('toast-message');
         var toastIcon = document.getElementById('toast-icon');
@@ -23,7 +32,7 @@
 
         toastMessage.textContent = message;
         if (toastIcon) {
-            toastIcon.setAttribute('data-lucide', iconName);
+            toastIcon.setAttribute('data-lucide', resolvedIcon);
         }
 
         if (typeof global.safeCreateIcons === 'function') {
