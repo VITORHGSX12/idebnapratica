@@ -103,7 +103,12 @@ async function diagnose() {
         await client.send('Page.enable');
         await client.send('Runtime.enable');
 
-        await sleep(2000);
+        // Aguarda carregamento de todos os scripts
+        for (let i = 0; i < 30; i++) {
+            const ready = await client.evaluate(`typeof window.openCreateUserModal === 'function' && document.readyState === 'complete'`);
+            if (ready) break;
+            await sleep(500);
+        }
 
         console.log('\n--- 1. Verificação das Funções Globais no Navegador ---');
         const globalsCheck = await client.evaluate(`
