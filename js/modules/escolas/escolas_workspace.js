@@ -10,6 +10,16 @@
 (function(global) {
     'use strict';
 
+    function escapeAttr(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
     // -------------------------------------------------------------------------
     // 1. VISÃO INTERNA DA ESCOLA (HEADER, BREADCRUMB E SUB-ABAS)
     // -------------------------------------------------------------------------
@@ -92,10 +102,11 @@
 
     function enterSchoolClass(classId, className, schoolName) {
         var school = schoolName || global.currentSelectedSchoolDetail || "UI ALDENORA DE ARAÚJO CRUZ";
-        switchSchoolInnerTab('alunos', className);
+        global.currentSelectedSchoolDetail = school;
+        switchSchoolInnerTab('alunos', className, classId);
     }
 
-    function switchSchoolInnerTab(tabName, targetClassName) {
+    function switchSchoolInnerTab(tabName, targetClassName, targetClassId) {
         var btns = document.querySelectorAll('.school-nav-tab-btn');
         btns.forEach(function(btn) {
             var dt = btn.getAttribute('data-tab');
@@ -119,7 +130,7 @@
         } else if (tabName === 'professores') {
             renderSchoolTeachersTab(school);
         } else if (tabName === 'alunos') {
-            renderSchoolStudentsTab(school, targetClassName);
+            renderSchoolStudentsTab(school, targetClassName, targetClassId);
         } else {
             renderSchoolOverviewTab(school);
         }
@@ -210,11 +221,25 @@
                                     </div>
 
                                     <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--color-border-subtle); display: flex; justify-content: space-between; align-items: center;">
-                                        <button type="button" onclick="enterSchoolClass('${cls.id}', '${cls.nome.replace(/'/g, "\\\'")}', '${schoolName.replace(/'/g, "\\\'")}');" class="btn btn-outline" style="font-size: var(--text-xs); padding: 5px 12px; height: 30px; border-radius: var(--radius-pill); display: inline-flex; align-items: center; gap: 5px; font-weight: 600;" title="Entrar na Turma e Ver Alunos">
+                                        <button type="button" 
+                                                class="btn btn-outline btn-ver-turma" 
+                                                data-class-id="${escapeAttr(cls.id)}" 
+                                                data-class-name="${escapeAttr(cls.nome)}" 
+                                                data-school-name="${escapeAttr(schoolName)}" 
+                                                onclick="if (typeof openViewClassStudentsModal === 'function') { openViewClassStudentsModal(this.getAttribute('data-class-id'), this.getAttribute('data-class-name'), this.getAttribute('data-school-name')); } else { enterSchoolClass(this.getAttribute('data-class-id'), this.getAttribute('data-class-name'), this.getAttribute('data-school-name')); }" 
+                                                style="font-size: var(--text-xs); padding: 5px 12px; height: 30px; border-radius: var(--radius-pill); display: inline-flex; align-items: center; gap: 5px; font-weight: 600; cursor: pointer;" 
+                                                title="Entrar na Turma e Ver Alunos">
                                             <i data-lucide="users" style="width: 13px; height: 13px;"></i>
                                             <span>Ver Turma (${studentCount})</span>
                                         </button>
-                                        <button type="button" onclick="openAddStudentToClassModal('${cls.id}', '${cls.nome.replace(/'/g, "\\\'")}', '${schoolName.replace(/'/g, "\\\'")}');" class="btn-icon" style="background: none; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-pill); width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; color: var(--color-accent-primary);" title="Adicionar Aluno nesta Turma">
+                                        <button type="button" 
+                                                class="btn-icon btn-add-aluno-turma" 
+                                                data-class-id="${escapeAttr(cls.id)}" 
+                                                data-class-name="${escapeAttr(cls.nome)}" 
+                                                data-school-name="${escapeAttr(schoolName)}" 
+                                                onclick="if (typeof openAddStudentToClassModal === 'function') { openAddStudentToClassModal(this.getAttribute('data-class-id'), this.getAttribute('data-class-name'), this.getAttribute('data-school-name')); } else if (typeof openCreateStudentModal === 'function') { openCreateStudentModal(this.getAttribute('data-school-name')); }" 
+                                                style="background: none; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-pill); width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; color: var(--color-accent-primary);" 
+                                                title="Adicionar Aluno nesta Turma">
                                             <i data-lucide="user-plus" style="width: 14px; height: 14px;"></i>
                                         </button>
                                     </div>
@@ -321,7 +346,7 @@
     // 4. ABA ALUNOS DA ESCOLA
     // -------------------------------------------------------------------------
 
-    function renderSchoolStudentsTab(schoolName, targetClassName) {
+    function renderSchoolStudentsTab(schoolName, targetClassName, targetClassId) {
         var container = document.getElementById('school-inner-tab-content-container');
         if (!container) return;
 
@@ -338,7 +363,8 @@
 
         var hasTargetClass = Boolean(targetClassName && targetClassName !== 'all');
         var activeClassStudents = hasTargetClass ? schoolStudents.filter(function(st) {
-            return st.turma === targetClassName || st.turmaId === targetClassName || (st.turma && st.turma.toLowerCase() === targetClassName.toLowerCase());
+            return (targetClassId && (st.turmaId === targetClassId || st.turma_id === targetClassId)) ||
+                   (st.turma === targetClassName || (st.turma && targetClassName && st.turma.trim().toLowerCase() === targetClassName.trim().toLowerCase()));
         }) : schoolStudents;
 
         container.innerHTML = `
@@ -347,12 +373,12 @@
                     <div>
                         <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
                             <h3 style="font-size: var(--text-title-sm); font-weight: 700; color: var(--color-brand-primary); margin: 0;">
-                                ${hasTargetClass ? `Estudantes da Turma: ${targetClassName}` : 'Estudantes Matriculados'}
+                                ${hasTargetClass ? `Estudantes da Turma: ${escapeAttr(targetClassName)}` : 'Estudantes Matriculados'}
                             </h3>
                             ${hasTargetClass ? `<span class="badge badge-info" style="font-size: 11px; font-weight: 700;">● FILTRADO POR TURMA</span>` : ''}
                         </div>
                         <p style="font-size: var(--text-xs); color: var(--color-text-secondary); margin: 2px 0 0 0;">
-                            ${hasTargetClass ? `${activeClassStudents.length} alunos vinculados a esta turma em ${schoolName}` : `${schoolStudents.length} alunos cadastrados em ${schoolName}`}
+                            ${hasTargetClass ? `${activeClassStudents.length} alunos vinculados a esta turma em ${escapeAttr(schoolName)}` : `${schoolStudents.length} alunos cadastrados em ${escapeAttr(schoolName)}`}
                         </p>
                     </div>
                     <div style="display: flex; gap: 8px; align-items: center;">
@@ -362,7 +388,7 @@
                                 <span>Voltar para Turmas</span>
                             </button>
                         ` : ''}
-                        <button type="button" onclick="openCreateStudentModal('${schoolName.replace(/'/g, "\\\'")}');" class="btn btn-primary" style="font-size: var(--text-xs); padding: 7px 16px; border-radius: var(--radius-pill); display: inline-flex; align-items: center; gap: 6px;">
+                        <button type="button" onclick="openCreateStudentModal('${escapeAttr(schoolName)}');" class="btn btn-primary" style="font-size: var(--text-xs); padding: 7px 16px; border-radius: var(--radius-pill); display: inline-flex; align-items: center; gap: 6px;">
                             <i data-lucide="user-plus" style="width: 15px; height: 15px;"></i>
                             <span>Cadastrar Novo Aluno</span>
                         </button>
@@ -372,15 +398,15 @@
                 <!-- Barra de Busca e Filtro de Turma -->
                 <div style="display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;">
                     <div style="flex: 1; min-width: 240px; position: relative;">
-                        <input type="text" id="school-students-search-input" oninput="filterSchoolStudentsTable('${schoolName.replace(/'/g, "\\\'")}');" placeholder="Buscar por nome ou matrícula do aluno..." style="width: 100%; padding: 8px 12px 8px 34px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-xs); outline: none;">
+                        <input type="text" id="school-students-search-input" oninput="filterSchoolStudentsTable('${escapeAttr(schoolName)}');" placeholder="Buscar por nome ou matrícula do aluno..." style="width: 100%; padding: 8px 12px 8px 34px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-xs); outline: none;">
                         <i data-lucide="search" style="width: 14px; height: 14px; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--color-text-muted);"></i>
                     </div>
-                    <select id="school-students-class-filter" onchange="filterSchoolStudentsTable('${schoolName.replace(/'/g, "\\\'")}');" style="padding: 8px 12px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-xs); background: var(--color-surface-card); font-weight: 600;">
+                    <select id="school-students-class-filter" onchange="filterSchoolStudentsTable('${escapeAttr(schoolName)}');" style="padding: 8px 12px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); font-size: var(--text-xs); background: var(--color-surface-card); font-weight: 600;">
                         <option value="all">Todas as Turmas (${schoolClasses.length})</option>
                         <option value="sem_turma">● Apenas Sem Turma</option>
                         ${schoolClasses.map(function(c) {
-                            var isSelected = (hasTargetClass && (c.nome === targetClassName || c.id === targetClassName)) ? 'selected' : '';
-                            return `<option value="${c.nome}" ${isSelected}>${c.nome}</option>`;
+                            var isSelected = (hasTargetClass && (c.nome === targetClassName || c.id === targetClassId || c.id === targetClassName || (c.nome && targetClassName && c.nome.trim().toLowerCase() === targetClassName.trim().toLowerCase()))) ? 'selected' : '';
+                            return `<option value="${escapeAttr(c.nome)}" ${isSelected}>${escapeAttr(c.nome)}</option>`;
                         }).join('')}
                     </select>
                 </div>
@@ -434,7 +460,8 @@
             if (selectedClass === 'sem_turma') {
                 matchClass = !st.turma || st.turma === 'Sem turma';
             } else if (selectedClass !== 'all') {
-                matchClass = st.turma === selectedClass || st.turmaId === selectedClass || st.turma_id === selectedClass;
+                matchClass = st.turma === selectedClass || st.turmaId === selectedClass || st.turma_id === selectedClass ||
+                             (st.turma && selectedClass && st.turma.trim().toLowerCase() === selectedClass.trim().toLowerCase());
             }
             return matchQuery && matchClass;
         });
@@ -579,3 +606,5 @@
     }
 
 })(typeof window !== 'undefined' ? window : this);
+
+

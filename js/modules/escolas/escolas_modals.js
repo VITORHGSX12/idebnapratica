@@ -155,15 +155,19 @@
             fetchFailed = true;
         }
 
-        // Fallback ativado EXCLUSIVAMENTE em caso de falha de rede / offline
-        if (!fetchCompleted && fetchFailed) {
+        // Fallback ativado EXCLUSIVAMENTE em caso de falha de rede / offline ou array vazio na API
+        if (!fetchCompleted || (classStudents && classStudents.length === 0)) {
             var allStudents = typeof global.getOfficialStudentsState === 'function' ? global.getOfficialStudentsState() : [];
-            classStudents = allStudents.filter(function(st) {
-                var matchEscola = !st.escola || (st.escola || '').toUpperCase().includes(schoolName.toUpperCase()) || schoolName.toUpperCase().includes((st.escola || '').toUpperCase());
-                var matchTurma = (st.turmaId === classId) || ((st.turma || '').toUpperCase() === className.toUpperCase());
+            var fallbackStudents = allStudents.filter(function(st) {
+                var matchEscola = !schoolName || !st.escola || (st.escola || '').toUpperCase().includes(schoolName.toUpperCase()) || schoolName.toUpperCase().includes((st.escola || '').toUpperCase());
+                var matchTurma = (classId && (st.turmaId === classId || st.turma_id === classId)) || 
+                                 (st.turma && className && st.turma.trim().toLowerCase() === className.trim().toLowerCase());
                 return matchEscola && matchTurma;
             });
-            if (typeof global.showToast === 'function') {
+            if (fallbackStudents.length > 0 || classStudents.length === 0) {
+                classStudents = fallbackStudents;
+            }
+            if (fetchFailed && typeof global.showToast === 'function') {
                 global.showToast('Exibindo dados de alunos do cache local (modo offline)', 'alert');
             }
         }
@@ -173,6 +177,21 @@
         
         if (subtitleEl) subtitleEl.innerHTML = `${schoolName} • ${countText}${offlineBadge}`;
         if (footerCountEl) footerCountEl.innerHTML = `Total: ${countText}${offlineBadge}`;
+
+        var btnViewInSchoolTab = document.getElementById('btn-view-class-in-school-tab');
+        if (btnViewInSchoolTab) {
+            btnViewInSchoolTab.onclick = function() {
+                closeViewClassStudentsModal();
+                if (typeof global.switchSchoolInnerTab === 'function') {
+                    global.switchSchoolInnerTab('alunos', className, classId);
+                } else if (typeof global.switchSchoolTab === 'function') {
+                    global.switchSchoolTab('alunos');
+                }
+                if (typeof global.renderSchoolStudentsTab === 'function') {
+                    global.renderSchoolStudentsTab(schoolName, className, classId);
+                }
+            };
+        }
 
         if (tbody) {
             if (classStudents.length === 0) {
@@ -519,6 +538,15 @@
         }
     }
 
+    function openAddStudentToClassModal(classId, className, schoolName) {
+        var targetSchool = schoolName || global.currentSelectedSchoolDetail || '';
+        openCreateStudentModal(targetSchool);
+        var selectTurma = document.getElementById('create-student-turma');
+        if (selectTurma && className) {
+            selectTurma.value = className;
+        }
+    }
+
     // Exposição no Escopo Global
     global.openCreateClassModal = openCreateClassModal;
     global.closeCreateClassModal = closeCreateClassModal;
@@ -528,6 +556,7 @@
     global.closeViewClassStudentsModal = closeViewClassStudentsModal;
     global.openClassStudentDetails = openClassStudentDetails;
     global.openClassStudentProgression = openClassStudentProgression;
+    global.openAddStudentToClassModal = openAddStudentToClassModal;
 
     global.openCreateTeacherModal = openCreateTeacherModal;
     global.closeCreateTeacherModal = closeCreateTeacherModal;
@@ -542,3 +571,4 @@
     global.handleSaveChangeStudentClass = handleSaveChangeStudentClass;
 
 })(typeof window !== 'undefined' ? window : this);
+
