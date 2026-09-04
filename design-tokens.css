@@ -125,7 +125,30 @@
     --gradient-kpi-card: linear-gradient(135deg, #4A7FA7 0%, #B3CFE5 100%);
 
     /* ---------------------------------------------------------------------
-       12. RETROCOMPATIBILIDADE MAPEADA (ALIASES)
+       12. SEMANTIC DASHBOARD TOKENS (ETAPA 1 — PADRONIZAÇÃO DE CORES)
+       Tokens semânticos 1:1 com as cores vigentes para transição segura
+       --------------------------------------------------------------------- */
+    --color-primary:            #4A7FA7; /* Azul principal do sistema (dados reais, cards, headers) */
+    --color-primary-light:      #B3CFE5; /* Azul claro dos cards e apoios */
+    --color-primary-dark:       #1A3D63; /* Azul marinho escuro de apoio */
+    --color-primary-chart:      #2563EB; /* Azul royal calibrado para gráficos de série real */
+    --color-primary-chart-bg:   rgba(37, 99, 235, 0.12);
+
+    --color-target:             #D97706; /* Âmbar/Laranja exclusivo para linhas de meta/projeção */
+    --color-target-light:       #FCD34D;
+    --color-target-bg:          rgba(217, 119, 6, 0.15);
+
+    --color-success:            #059669; /* Verde para status positivo / taxa de aprovação */
+    --color-success-light:      #6EE7B7;
+    --color-success-bg:         #ECFDF5;
+
+    --color-neutral-bg:         var(--color-surface-canvas); /* Fundo geral */
+    --color-neutral-card:       var(--color-surface-card);   /* Fundo de cards */
+    --color-neutral-subtle:     var(--color-surface-subtle); /* Fundo suave */
+    --color-neutral-border:     var(--color-border-subtle);  /* Bordas e divisores */
+
+    /* ---------------------------------------------------------------------
+       13. RETROCOMPATIBILIDADE MAPEADA (ALIASES)
        --------------------------------------------------------------------- */
     --bg-primary:    var(--color-surface-canvas);
     --bg-secondary:  var(--color-surface-card);
@@ -174,4 +197,24 @@ body.dark-mode {
 
     --gradient-banner:   linear-gradient(135deg, #0A1931 0%, #142E4C 50%, #1A3D63 100%);
     --gradient-kpi-card: linear-gradient(135deg, #1A3D63 0%, #4A7FA7 100%);
+
+    /* Semantic Dashboard Tokens (Dark Mode) */
+    --color-primary:            #4A7FA7;
+    --color-primary-light:      #7FB3E0;
+    --color-primary-dark:       #1A3D63;
+    --color-primary-chart:      #7FB3E0;
+    --color-primary-chart-bg:   rgba(127, 179, 224, 0.18);
+
+    --color-target:             #FFC857;
+    --color-target-light:       #FDE68A;
+    --color-target-bg:          rgba(255, 200, 87, 0.20);
+
+    --color-success:            #059669;
+    --color-success-light:      #5FD3C4;
+    --color-success-bg:         rgba(95, 211, 196, 0.15);
+
+    --color-neutral-bg:         var(--color-surface-canvas);
+    --color-neutral-card:       var(--color-surface-card);
+    --color-neutral-subtle:     var(--color-surface-subtle);
+    --color-neutral-border:     var(--color-border-subtle);
 }

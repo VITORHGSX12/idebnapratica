@@ -50,7 +50,17 @@
             datalabelIniciais: '#1D4ED8',
             datalabelFinais: '#0F766E',
             datalabelMeta: '#B45309',
-            datalabelBadgeBg: '#0D9488'
+            datalabelBadgeBg: '#0D9488',
+
+            // Semantic Tokens (1:1 com CSS Variables)
+            colorPrimary: '#4A7FA7',
+            colorPrimaryLight: '#B3CFE5',
+            colorPrimaryDark: '#1A3D63',
+            colorPrimaryChart: '#2563EB',
+            colorTarget: '#D97706',
+            colorTargetBg: 'rgba(217, 119, 6, 0.15)',
+            colorSuccess: '#059669',
+            colorSuccessBg: '#ECFDF5'
         },
         dark: {
             isDark: true,
@@ -88,7 +98,17 @@
             datalabelIniciais: '#F6FAFD',
             datalabelFinais: '#F6FAFD',
             datalabelMeta: '#FFC857',
-            datalabelBadgeBg: '#059669'
+            datalabelBadgeBg: '#059669',
+
+            // Semantic Tokens (1:1 com CSS Variables)
+            colorPrimary: '#4A7FA7',
+            colorPrimaryLight: '#7FB3E0',
+            colorPrimaryDark: '#1A3D63',
+            colorPrimaryChart: '#7FB3E0',
+            colorTarget: '#FFC857',
+            colorTargetBg: 'rgba(255, 200, 87, 0.20)',
+            colorSuccess: '#059669',
+            colorSuccessBg: 'rgba(95, 211, 196, 0.15)'
         }
     };
 
