@@ -141,6 +141,7 @@
         }
 
         modal.classList.remove('hidden');
+        modal.classList.add('active');
         modal.style.display = 'flex';
     }
 
@@ -152,38 +153,70 @@
     /**
      * Trata o envio do formulário de salvar novo usuário ou atualizar existente
      */
-    function handleSaveNewUser(e) {
+    async function handleSaveNewUser(e) {
         if (e && e.preventDefault) e.preventDefault();
 
-        var name = (document.getElementById('new-user-name') && document.getElementById('new-user-name').value) || '';
-        var cpf = (document.getElementById('new-user-cpf') && document.getElementById('new-user-cpf').value) || '';
-        var phone = (document.getElementById('new-user-phone') && document.getElementById('new-user-phone').value) || '';
-        var role = (document.getElementById('new-user-role') && document.getElementById('new-user-role').value) || 'Professor(a)';
-        var school = (document.getElementById('new-user-school') && document.getElementById('new-user-school').value) || 'Todas as Escolas (SEMED)';
-        var email = (document.getElementById('new-user-email') && document.getElementById('new-user-email').value) || '';
-        var password = (document.getElementById('new-user-password') && document.getElementById('new-user-password').value) || 'Gondias@2026';
+        var nameEl = document.getElementById('new-user-name');
+        var cpfEl = document.getElementById('new-user-cpf');
+        var phoneEl = document.getElementById('new-user-phone');
+        var roleEl = document.getElementById('new-user-role');
+        var schoolEl = document.getElementById('new-user-school');
+        var emailEl = document.getElementById('new-user-email');
+        var passEl = document.getElementById('new-user-password');
+
+        var name = (nameEl && nameEl.value) || '';
+        var cpf = (cpfEl && cpfEl.value) || '';
+        var phone = (phoneEl && phoneEl.value) || '';
+        var role = (roleEl && roleEl.value) || 'Professor(a)';
+        var school = (schoolEl && schoolEl.value) || 'Todas as Escolas (SEMED)';
+        var email = (emailEl && emailEl.value) || '';
+        var password = (passEl && passEl.value) || 'Gondias@2026';
 
         if (!name.trim() || !email.trim()) {
             if (typeof global.showToast === 'function') {
-                global.showToast('Preencha os campos obrigatórios (Nome e E-mail).', 'alert-triangle');
+                global.showToast('Preencha os campos obrigatórios (Nome e E-mail Institucional).', 'alert-triangle');
             }
+            if (nameEl && !name.trim()) nameEl.focus();
+            else if (emailEl && !email.trim()) emailEl.focus();
             return;
         }
 
         var users = getStoredUsers();
+        var token = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('authToken')) ||
+                    (typeof localStorage !== 'undefined' && localStorage.getItem('authToken'));
 
         if (editingUserId) {
             var idx = users.findIndex(function(u) { return u.id === editingUserId; });
             if (idx >= 0) {
                 users[idx].nome = name.trim();
-                users[idx].cpf = cpf.trim();
-                users[idx].telefone = phone.trim();
+                users[idx].cpf = cpf.trim() || '-';
+                users[idx].telefone = phone.trim() || '-';
                 users[idx].tipo = role;
                 users[idx].role = role;
                 users[idx].escola = school;
                 users[idx].email = email.trim();
                 users[idx].senha = password.trim();
             }
+
+            // Sincronizar atualização com o backend via PUT /api/users/:id
+            if (token && typeof fetch === 'function') {
+                try {
+                    fetch('/api/users/' + editingUserId, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                        body: JSON.stringify({
+                            nome: name.trim(),
+                            cpf: cpf.trim() || '-',
+                            telefone: phone.trim() || '-',
+                            role: role,
+                            escola: school,
+                            email: email.trim(),
+                            password: password.trim()
+                        })
+                    }).catch(function(err) { console.warn('[Backend Put Sync Warning]:', err); });
+                } catch(e) {}
+            }
+
             if (typeof global.showToast === 'function') {
                 global.showToast('Dados do profissional atualizados com sucesso!', 'success');
             }
@@ -192,8 +225,8 @@
             var newUser = {
                 id: newId,
                 nome: name.trim(),
-                cpf: cpf.trim(),
-                telefone: phone.trim(),
+                cpf: cpf.trim() || '-',
+                telefone: phone.trim() || '-',
                 tipo: role,
                 role: role,
                 escola: school,
@@ -203,6 +236,28 @@
                 status: 'Ativo'
             };
             users.unshift(newUser);
+
+            // Sincronizar novo cadastro com o backend via POST /api/users
+            if (token && typeof fetch === 'function') {
+                try {
+                    fetch('/api/users', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                        body: JSON.stringify({
+                            nome: newUser.nome,
+                            email: newUser.email,
+                            password: newUser.senha,
+                            role: newUser.role,
+                            tipo: newUser.tipo,
+                            escola: newUser.escola,
+                            turma: newUser.turma,
+                            telefone: newUser.telefone,
+                            cpf: newUser.cpf
+                        })
+                    }).catch(function(err) { console.warn('[Backend Post Sync Warning]:', err); });
+                } catch(e) {}
+            }
+
             if (typeof global.showToast === 'function') {
                 global.showToast('✅ Novo profissional cadastrado com sucesso!', 'success');
             }
@@ -217,6 +272,7 @@
             var modal = document.getElementById('create-user-modal');
             if (modal) {
                 modal.classList.add('hidden');
+                modal.classList.remove('active');
                 modal.style.display = 'none';
             }
         }
@@ -478,6 +534,25 @@
         if (btnOpenModal) {
             btnOpenModal.onclick = function() {
                 openCreateUserModal();
+            };
+        }
+
+        // Vinculação programática direta no formulário de cadastro/edição
+        var formCreate = document.getElementById('create-user-form');
+        if (formCreate) {
+            formCreate.onsubmit = handleSaveNewUser;
+            formCreate.addEventListener('submit', handleSaveNewUser);
+        }
+
+        // Máscara dinâmica de CPF
+        var cpfInput = document.getElementById('new-user-cpf');
+        if (cpfInput) {
+            cpfInput.oninput = function(e) {
+                var v = e.target.value.replace(/\D/g, '').substring(0, 11);
+                if (v.length > 9) v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+                else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+                else if (v.length > 3) v = v.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+                e.target.value = v;
             };
         }
 

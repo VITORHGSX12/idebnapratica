@@ -18,43 +18,22 @@ if (fs.existsSync(indexHtmlPath)) {
     const appHash = getHash(appJsPath) + '_' + timestamp;
     const cssHash = getHash(stylesCssPath) + '_' + timestamp;
 
-    // Replace all script tags and css tags with fresh hash
+    // Update app.js and styles.css
     indexHtml = indexHtml.replace(/src="app\.js(\?[^"]*)?"/g, `src="app.js?v=${appHash}"`);
     indexHtml = indexHtml.replace(/href="styles\.css(\?[^"]*)?"/g, `href="styles.css?v=${cssHash}"`);
-    
-    // Also update other JS databases and modular scripts
-    const jsFiles = [
-        'ideb_maranhao_oficial_2015_2025.js', 
-        'escolas_maranhao_oficial_2015_2025.js', 
-        'matriz_descritores_excel_oficial.js', 
-        'ideb_publico_db.js', 
-        'alunos_db.js', 
-        'js/core/helpers.js',
-        'js/core/theme-toast.js',
-        'js/core/user-profile.js',
-        'js/core/auth.js',
-        'js/core/navigation.js',
-        'js/modules/dashboard/dashboard_kpis.js',
-        'js/modules/dashboard/dashboard_charts.js',
-        'js/modules/dashboard/dashboard_scales.js',
-        'js/modules/alunos/alunos_list.js',
-        'js/modules/alunos/alunos_forms.js',
-        'js/modules/turmas/turmas_diario.js',
-        'js/modules/metas/metas_ideb.js',
-        'js/modules/escolas/escolas.js',
-        'js/modules/matrizes/matrizes.js',
-        'js/modules/cronograma/cronograma.js',
-        'js/modules/biblioteca/biblioteca.js'
-    ];
-    jsFiles.forEach(file => {
-        const filePath = path.join(__dirname, file);
-        const fileHash = getHash(filePath) + '_' + timestamp;
-        const regex = new RegExp(`src="${file.replace(/\//g, '\\/')}(\\?[^"]*)?"`, 'g');
-        indexHtml = indexHtml.replace(regex, `src="${file}?v=${fileHash}"`);
+
+    // Dynamically match all local script tags src="...js"
+    indexHtml = indexHtml.replace(/src="([^"]+\.js)(\?[^"]*)?"/g, (match, scriptPath) => {
+        if (scriptPath === 'app.js' || scriptPath.startsWith('http://') || scriptPath.startsWith('https://')) {
+            return match;
+        }
+        const fullLocalPath = path.join(__dirname, scriptPath);
+        const scriptHash = getHash(fullLocalPath) + '_' + timestamp;
+        return `src="${scriptPath}?v=${scriptHash}"`;
     });
 
     fs.writeFileSync(indexHtmlPath, indexHtml, 'utf8');
-    console.log(`[Cache-Buster] Complete! app.js?v=${appHash}, styles.css?v=${cssHash}`);
+    console.log(`[Cache-Buster] Complete! Updated all modular JS scripts, app.js (${appHash}) and styles.css (${cssHash})`);
 } else {
     console.error('[Cache-Buster] index.html not found!');
 }
