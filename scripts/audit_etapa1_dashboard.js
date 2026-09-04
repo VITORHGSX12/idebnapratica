@@ -323,3 +323,5 @@ console.log(`- FUNCIONA: ${auditResults.filter(r => r.status === 'Funciona').len
 console.log(`- PRECISA SER IMPLEMENTADO: ${auditResults.filter(r => r.status === 'Precisa ser implementado').length}`);
 console.log(`- NÃO FUNCIONA: ${auditResults.filter(r => r.status === 'Não funciona').length}`);
 console.log('========================================================================');
+
+process.exit(0);
