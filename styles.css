@@ -7950,6 +7950,84 @@ body.dark-mode .metric-card .progress-ring-value {
     box-shadow: 0 4px 12px rgba(10, 25, 49, 0.08) !important;
 }
 
+/* ==========================================================================
+   GRID DE TURMAS — ANIMAÇÕES DE FOCO & RECUO 3D (DEPTH FOCUS)
+   ========================================================================== */
+.school-classes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 18px;
+    perspective: 1200px;
+}
+
+/* Card padrão com transição suave para efeito de profundidade */
+.school-class-card {
+    position: relative;
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-card);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: var(--shadow-card);
+    transform-origin: center center;
+    transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.25, 1),
+                opacity 0.32s cubic-bezier(0.2, 0.8, 0.25, 1),
+                box-shadow 0.32s cubic-bezier(0.2, 0.8, 0.25, 1),
+                border-color 0.32s cubic-bezier(0.2, 0.8, 0.25, 1),
+                filter 0.32s cubic-bezier(0.2, 0.8, 0.25, 1);
+    will-change: transform, opacity, box-shadow;
+    z-index: 1;
+    cursor: default;
+    animation: classCardFadeIn 0.38s ease-out backwards;
+    animation-delay: calc(var(--card-index, 0) * 0.045s);
+}
+
+@keyframes classCardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Quando o usuário passa o mouse pelo grid, os cards NÃO focados RECUAM para trás */
+.school-classes-grid:hover .school-class-card:not(:hover) {
+    transform: scale(0.94) translateZ(-25px);
+    opacity: 0.52;
+    filter: blur(0.4px) grayscale(20%);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* O card sobre o qual o mouse está focado VEM PARA FRENTE com DESTAQUE TOTAL */
+.school-classes-grid .school-class-card:hover {
+    transform: scale(1.045) translateY(-8px) translateZ(40px);
+    opacity: 1 !important;
+    filter: none !important;
+    z-index: 20;
+    border-color: var(--color-accent-primary, #7FB3E0) !important;
+    box-shadow: 0 20px 38px -10px rgba(10, 25, 49, 0.38),
+                0 0 0 1.5px var(--color-accent-primary, #7FB3E0),
+                0 0 24px -4px rgba(127, 179, 224, 0.3);
+}
+
+/* Microinteração elegante no botão Ver Turma ao destacar o card */
+.school-class-card .btn-ver-turma {
+    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+}
+.school-class-card:hover .btn-ver-turma {
+    background: var(--color-brand-primary, #1e3a8a);
+    color: #FFFFFF !important;
+    border-color: var(--color-brand-primary, #1e3a8a);
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.35);
+    transform: translateY(-1px);
+}
+
+
 
 
 

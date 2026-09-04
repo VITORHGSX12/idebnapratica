@@ -219,8 +219,8 @@
                         </button>
                     </div>
                 ` : `
-                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
-                        ${schoolClasses.map(function(cls) {
+                    <div class="school-classes-grid">
+                        ${schoolClasses.map(function(cls, idx) {
                             var classStudents = schoolStudents.filter(function(st) {
                                 return st.turmaId === cls.id || st.turma_id === cls.id || (st.turma && cls.nome && st.turma.trim().toLowerCase() === cls.nome.trim().toLowerCase());
                             });
@@ -233,7 +233,7 @@
                             });
 
                             return `
-                                <div class="card" style="background: var(--color-surface-card); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); padding: 16px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-card); transition: transform 0.15s ease, border-color 0.15s ease;">
+                                <div class="card school-class-card" style="--card-index: ${idx};">
                                     <div>
                                         <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px;">
                                             <div>
