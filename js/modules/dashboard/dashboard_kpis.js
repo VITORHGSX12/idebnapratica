@@ -426,12 +426,12 @@
                     <svg viewBox="0 0 ${width} ${height}" width="100%" height="210" style="overflow: visible; font-family: var(--font-body);">
                         <defs>
                             <linearGradient id="idebTrajectoryAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stop-color="#1A2D42" stop-opacity="0.16"/>
-                                <stop offset="100%" stop-color="#1A2D42" stop-opacity="0.01"/>
+                                <stop offset="0%" stop-color="var(--color-primary-chart, #2563EB)" stop-opacity="0.14"/>
+                                <stop offset="100%" stop-color="var(--color-primary-chart, #2563EB)" stop-opacity="0.01"/>
                             </linearGradient>
                             <linearGradient id="idebGapAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stop-color="#AAB7B7" stop-opacity="0.25"/>
-                                <stop offset="100%" stop-color="#AAB7B7" stop-opacity="0.08"/>
+                                <stop offset="0%" stop-color="var(--color-target, #D97706)" stop-opacity="0.18"/>
+                                <stop offset="100%" stop-color="var(--color-target, #D97706)" stop-opacity="0.02"/>
                             </linearGradient>
                         </defs>
 
@@ -448,17 +448,17 @@
                         <line x1="${paddingLeft}" y1="${getY(3.0)}" x2="${width - paddingRight}" y2="${getY(3.0)}" stroke="var(--border-color)" stroke-dasharray="3,3" stroke-width="1"/>
                         <text x="${paddingLeft - 10}" y="${getY(3.0) + 3}" fill="var(--text-muted)" font-size="10" font-weight="600" text-anchor="end">3.0</text>
 
-                        <!-- Área de Preenchimento da Linha Real -->
+                        <!-- Área de Preenchimento da Linha Real (Azul Sutil) -->
                         <path d="" fill="url(#idebTrajectoryAreaGrad)" class="trajectory-area-path"/>
 
-                        <!-- Área sombreada do Gap da Meta -->
+                        <!-- Área sombreada do Gap da Meta (Âmbar Sutil) -->
                         <path d="" fill="url(#idebGapAreaGrad)" class="trajectory-gap-path"/>
 
-                        <!-- Linha de Projeção da Meta (Tracejada) -->
-                        <path d="" fill="none" stroke="#2E4156" stroke-width="2" stroke-dasharray="5,4" class="trajectory-meta-line"/>
+                        <!-- Linha de Projeção da Meta (Âmbar Tracejada) -->
+                        <path d="" fill="none" stroke="var(--color-target, #D97706)" stroke-width="2" stroke-dasharray="5,4" class="trajectory-meta-line"/>
 
-                        <!-- Linha Sólida de Trajetória Observada/Real -->
-                        <path d="" fill="none" stroke="#1A2D42" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="trajectory-observed-line"/>
+                        <!-- Linha Sólida de Trajetória Observada/Real (Azul Primário) -->
+                        <path d="" fill="none" stroke="var(--color-primary-chart, #2563EB)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="trajectory-observed-line"/>
 
                         <!-- Pontos e Rótulos -->
                         <g class="trajectory-dots-layer"></g>
@@ -485,7 +485,7 @@
                 <div class="ideb-trajectory-footer">
                     <div style="display: flex; align-items: center; gap: 16px; font-size: var(--text-xs); color: var(--color-text-secondary); flex-wrap: wrap;">
                         <span style="display: inline-flex; align-items: center; gap: 6px;">
-                            <span style="width: 8px; height: 8px; border-radius: 50%; background-color: #1A2D42;"></span>
+                            <span style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--color-primary-chart);"></span>
                             <strong>${progressPct}%</strong> da escala total alcançada
                         </span>
                         <span>•</span>
@@ -580,13 +580,13 @@
                 var cx = getX(idx, curPoints.length), cy = getY(pt.curScore);
                 var disp = pt.curScore.toFixed(1);
                 if (pt.isCurrent) {
-                    dHtml += '<circle cx="' + cx + '" cy="' + cy + '" r="6" fill="#1A2D42" stroke="#FFFFFF" stroke-width="2.5" class="trajectory-hero-dot"><title>' + pt.year + ': ' + disp + '</title></circle><g transform="translate(' + cx + ', ' + (cy - 12) + ')"><rect x="-18" y="-16" width="36" height="17" rx="5" fill="#1A2D42" stroke="#2E4156" stroke-width="1" class="trajectory-hero-badge"/><text x="0" y="-4" text-anchor="middle" font-size="10.5" font-weight="800" fill="#FFFFFF" font-family="var(--font-display)">' + disp + '</text></g>';
+                    dHtml += '<circle cx="' + cx + '" cy="' + cy + '" r="6" fill="var(--color-primary-chart)" stroke="#FFFFFF" stroke-width="2.5" class="trajectory-hero-dot"><title>' + pt.year + ': ' + disp + '</title></circle><g transform="translate(' + cx + ', ' + (cy - 12) + ')"><rect x="-18" y="-16" width="36" height="17" rx="5" fill="var(--color-primary-dark)" stroke="var(--color-primary-light)" stroke-width="1" class="trajectory-hero-badge"/><text x="0" y="-4" text-anchor="middle" font-size="10.5" font-weight="800" fill="#FFFFFF" font-family="var(--font-display)">' + disp + '</text></g>';
                 } else if (pt.isTarget) {
-                    dHtml += '<rect x="' + (cx - 5) + '" y="' + (cy - 5) + '" width="10" height="10" transform="rotate(45 ' + cx + ' ' + cy + ')" fill="#2E4156" stroke="#FFFFFF" stroke-width="2"><title>' + pt.year + ': ' + disp + '</title></rect><text x="' + cx + '" y="' + (cy - 10) + '" text-anchor="middle" font-size="10" font-weight="700" fill="#2E4156" font-family="var(--font-display)" class="trajectory-meta-text">' + disp + '</text>';
+                    dHtml += '<rect x="' + (cx - 5) + '" y="' + (cy - 5) + '" width="10" height="10" transform="rotate(45 ' + cx + ' ' + cy + ')" fill="var(--color-target)" stroke="#FFFFFF" stroke-width="2"><title>' + pt.year + ': ' + disp + '</title></rect><text x="' + cx + '" y="' + (cy - 10) + '" text-anchor="middle" font-size="10" font-weight="700" fill="var(--color-target)" font-family="var(--font-display)" class="trajectory-meta-text">' + disp + '</text>';
                 } else if (pt.isBase) {
-                    dHtml += '<circle cx="' + cx + '" cy="' + cy + '" r="5" fill="#FFFFFF" stroke="#2E4156" stroke-width="2.5"><title>' + pt.year + ': ' + disp + '</title></circle><text x="' + cx + '" y="' + (cy - 9) + '" text-anchor="middle" font-size="10" font-weight="700" fill="#1A2D42" font-family="var(--font-display)" class="trajectory-base-text">' + disp + '</text>';
+                    dHtml += '<circle cx="' + cx + '" cy="' + cy + '" r="5" fill="#FFFFFF" stroke="var(--color-primary-chart)" stroke-width="2.5"><title>' + pt.year + ': ' + disp + '</title></circle><text x="' + cx + '" y="' + (cy - 9) + '" text-anchor="middle" font-size="10" font-weight="700" fill="var(--color-primary-dark)" font-family="var(--font-display)" class="trajectory-base-text">' + disp + '</text>';
                 } else {
-                    dHtml += '<circle cx="' + cx + '" cy="' + cy + '" r="4" fill="#2E4156" stroke="#FFFFFF" stroke-width="1.5"><title>' + pt.year + ': ' + disp + '</title></circle><text x="' + cx + '" y="' + (cy - 8) + '" text-anchor="middle" font-size="9.5" font-weight="600" fill="var(--text-muted)" font-family="var(--font-display)">' + disp + '</text>';
+                    dHtml += '<circle cx="' + cx + '" cy="' + cy + '" r="4" fill="var(--color-primary-light)" stroke="#FFFFFF" stroke-width="1.5"><title>' + pt.year + ': ' + disp + '</title></circle><text x="' + cx + '" y="' + (cy - 8) + '" text-anchor="middle" font-size="9.5" font-weight="600" fill="var(--color-text-secondary)" font-family="var(--font-display)">' + disp + '</text>';
                 }
             });
             dotsLayer.innerHTML = dHtml;

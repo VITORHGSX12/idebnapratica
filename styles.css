@@ -1531,60 +1531,90 @@ body.dark-mode .ideb-trajectory-chart-legend {
 }
 
 .ideb-trajectory-chart-legend .legend-line.solid {
-    background-color: #1A2D42;
+    background-color: var(--color-primary-chart);
 }
 
 body.dark-mode .ideb-trajectory-chart-legend .legend-line.solid {
-    background-color: #D4D8DD;
+    background-color: var(--color-primary-chart);
 }
 
 .ideb-trajectory-chart-legend .legend-line.dashed {
     height: 0;
-    border-top: 2.5px dashed #2E4156;
+    border-top: 2.5px dashed var(--color-target);
 }
 
 body.dark-mode .ideb-trajectory-chart-legend .legend-line.dashed {
-    border-top-color: #AAB7B7;
+    border-top-color: var(--color-target);
 }
 
 .ideb-trajectory-chart-legend .legend-gap-box {
     display: inline-block;
     width: 12px;
     height: 10px;
-    background-color: rgba(170, 183, 183, 0.35);
-    border: 1px solid #AAB7B7;
+    background-color: var(--color-target-bg);
+    border: 1px solid var(--color-target);
     border-radius: 2px;
 }
 
-/* Dark Mode Harmonization for SVG Line Chart elements */
+/* Semantics for SVG Line Chart elements (IDEB Trajectory vs Meta) */
+.trajectory-observed-line {
+    stroke: var(--color-primary-chart) !important;
+}
+
 body.dark-mode .trajectory-observed-line {
-    stroke: #D4D8DD !important;
+    stroke: var(--color-primary-chart) !important;
+}
+
+.trajectory-meta-line {
+    stroke: var(--color-target) !important;
 }
 
 body.dark-mode .trajectory-meta-line {
-    stroke: #AAB7B7 !important;
+    stroke: var(--color-target) !important;
 }
 
-body.dark-mode .trajectory-hero-dot {
-    fill: #2E4156 !important;
+.trajectory-hero-dot {
+    fill: var(--color-primary-chart) !important;
     stroke: #FFFFFF !important;
 }
 
+body.dark-mode .trajectory-hero-dot {
+    fill: var(--color-primary-chart) !important;
+    stroke: #FFFFFF !important;
+}
+
+.trajectory-hero-badge {
+    fill: var(--color-primary-dark) !important;
+    stroke: var(--color-primary-light) !important;
+}
+
 body.dark-mode .trajectory-hero-badge {
-    fill: #2E4156 !important;
-    stroke: #AAB7B7 !important;
+    fill: var(--color-primary-dark) !important;
+    stroke: var(--color-primary-light) !important;
+}
+
+.trajectory-meta-text {
+    fill: var(--color-target) !important;
 }
 
 body.dark-mode .trajectory-meta-text {
-    fill: #AAB7B7 !important;
+    fill: var(--color-target) !important;
+}
+
+.trajectory-base-text {
+    fill: var(--color-text-primary) !important;
 }
 
 body.dark-mode .trajectory-base-text {
-    fill: #FFFFFF !important;
+    fill: var(--color-text-primary) !important;
+}
+
+.trajectory-axis-label {
+    fill: var(--color-text-secondary) !important;
 }
 
 body.dark-mode .trajectory-axis-label {
-    fill: #D4D8DD !important;
+    fill: var(--color-text-secondary) !important;
 }
 
 .ideb-trajectory-footer {

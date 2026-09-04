@@ -23,12 +23,12 @@
             grid: 'rgba(10, 25, 49, 0.09)',
             border: '#E2E8F0',
             
-            // Séries Principais (Claro)
-            iniciais: '#2563EB',         // Azul Royal vibrante
+            // Séries Principais (Claro) — Azul para Observado/Real e Âmbar para Meta
+            iniciais: '#2563EB',         // Azul Royal vibrante (Observado Anos Iniciais)
             iniciaisBg: 'rgba(37, 99, 235, 0.12)',
-            finais: '#0D9488',           // Teal/Verde Petróleo distinto
-            finaisBg: 'rgba(13, 148, 136, 0.12)',
-            meta: '#D97706',             // Âmbar/Dourado Quente
+            finais: '#1E40AF',           // Azul Marinho Profundo (Observado Anos Finais)
+            finaisBg: 'rgba(30, 64, 175, 0.10)',
+            meta: '#D97706',             // Âmbar/Dourado Quente (Meta/Projeção exclusiva)
             metaBg: 'rgba(217, 119, 6, 0.15)',
             
             // Disciplinas SAEB
@@ -48,7 +48,7 @@
             
             // Datalabels
             datalabelIniciais: '#1D4ED8',
-            datalabelFinais: '#0F766E',
+            datalabelFinais: '#1E40AF',
             datalabelMeta: '#B45309',
             datalabelBadgeBg: '#0D9488',
 
@@ -72,11 +72,11 @@
             border: 'rgba(179, 207, 229, 0.22)',
             
             // Séries Principais (Escuro - Cores vivas e distinguíveis)
-            iniciais: '#7FB3E0',        // Azul Celeste Claro
+            iniciais: '#7FB3E0',        // Azul Celeste Claro (Observado Anos Iniciais)
             iniciaisBg: 'rgba(127, 179, 224, 0.18)',
-            finais: '#5FD3C4',          // Verde Menta/Ciano Vibrante (Contraste absoluto com Iniciais)
-            finaisBg: 'rgba(95, 211, 196, 0.18)',
-            meta: '#FFC857',            // Ouro/Amarelo Quente Dourado (Contraste térmico com os azuis)
+            finais: '#93C5FD',          // Azul Claro Distinto (Observado Anos Finais)
+            finaisBg: 'rgba(147, 197, 253, 0.16)',
+            meta: '#FFC857',            // Ouro/Amarelo Quente Dourado (Meta/Projeção exclusiva)
             metaBg: 'rgba(255, 200, 87, 0.20)',
             
             // Disciplinas SAEB

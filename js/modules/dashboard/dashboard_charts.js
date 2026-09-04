@@ -65,6 +65,22 @@
                     if (val === null || val === undefined) return null;
                     var formatted = typeof val === 'number' ? (val >= 50 ? val.toFixed(1) + ' pts' : val.toFixed(1) + ' ★') : val;
                     return ' ' + label + ': ' + formatted;
+                },
+                labelColor: function(context) {
+                    var c = context.dataset.borderColor || context.dataset.backgroundColor || '#2563EB';
+                    return {
+                        borderColor: c,
+                        backgroundColor: c,
+                        borderWidth: 2,
+                        borderRadius: 2
+                    };
+                },
+                labelPointStyle: function(context) {
+                    var isDashed = context.dataset.borderDash && context.dataset.borderDash.length > 0;
+                    return {
+                        pointStyle: isDashed ? 'rectRot' : 'circle',
+                        rotation: 0
+                    };
                 }
             };
         } catch(e) {}
@@ -87,10 +103,18 @@
         var legendX = pL;
         datasets.forEach(function(ds) {
             if (!ds.label) return;
-            var color = ds.borderColor || (typeof ds.backgroundColor === 'string' ? ds.backgroundColor : '#6366f1');
-            ctx.fillStyle = color; ctx.beginPath(); ctx.arc(legendX + 5, 12, 4, 0, Math.PI * 2); ctx.fill();
+            var isMeta = ds.label && (ds.label.toLowerCase().includes('meta') || ds.label.toLowerCase().includes('projetad'));
+            var color = ds.borderColor || (typeof ds.backgroundColor === 'string' ? ds.backgroundColor : (isMeta ? '#D97706' : '#2563EB'));
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            if (isMeta) {
+                ctx.rect(legendX + 1, 8, 8, 8);
+            } else {
+                ctx.arc(legendX + 5, 12, 4, 0, Math.PI * 2);
+            }
+            ctx.fill();
             ctx.fillStyle = '#475569'; ctx.font = 'bold 10.5px sans-serif'; ctx.textAlign = 'left';
-            ctx.fillText(ds.label, legendX + 13, 15);
+            ctx.fillText(ds.label, legendX + 14, 15);
             legendX += ctx.measureText(ds.label).width + 25;
         });
         ctx.strokeStyle = 'rgba(226, 232, 240, 0.6)'; ctx.lineWidth = 1;
@@ -103,13 +127,14 @@
         }
         var stepX = cW / labels.length;
         datasets.forEach(function(ds) {
+            var isMeta = ds.label && (ds.label.toLowerCase().includes('meta') || ds.label.toLowerCase().includes('projetad'));
             if (ds.type === 'bar') {
                 var barW = Math.min(stepX * 0.35, 20);
                 ds.data.forEach(function(val, idx) {
                     if (val === null || val === undefined) return;
                     var x = pL + idx * stepX + stepX / 2 - barW / 2;
                     var h = Math.max(0, ((val - minY) / (maxY - minY)) * cH);
-                    ctx.fillStyle = typeof ds.backgroundColor === 'string' ? ds.backgroundColor : '#6366f1';
+                    ctx.fillStyle = typeof ds.backgroundColor === 'string' ? ds.backgroundColor : '#2563EB';
                     ctx.fillRect(x, pT + cH - h, barW, h);
                     ctx.fillStyle = '#475569'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
                     ctx.fillText(val.toFixed(1), x + barW / 2, pT + cH - h - 4);
@@ -122,13 +147,31 @@
                     var y = pT + cH - ((val - minY) / (maxY - minY)) * cH;
                     if (first) { ctx.moveTo(x, y); first = false; } else { ctx.lineTo(x, y); }
                 });
-                ctx.strokeStyle = ds.borderColor || '#10b981'; ctx.lineWidth = 2.5; ctx.stroke();
+                if (isMeta) {
+                    ctx.setLineDash([5, 4]);
+                } else {
+                    ctx.setLineDash([]);
+                }
+                ctx.strokeStyle = ds.borderColor || (isMeta ? '#D97706' : '#2563EB');
+                ctx.lineWidth = 2.5; ctx.stroke();
+                ctx.setLineDash([]);
                 ds.data.forEach(function(val, idx) {
                     if (val === null || val === undefined) return;
                     var x = pL + idx * stepX + stepX / 2;
                     var y = pT + cH - ((val - minY) / (maxY - minY)) * cH;
-                    ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
-                    ctx.strokeStyle = ds.borderColor || '#10b981'; ctx.lineWidth = 2; ctx.stroke();
+                    ctx.beginPath();
+                    if (isMeta) {
+                        ctx.rect(x - 3.5, y - 3.5, 7, 7);
+                        ctx.fillStyle = '#D97706';
+                        ctx.fill();
+                    } else {
+                        ctx.arc(x, y, 4, 0, Math.PI * 2);
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fill();
+                        ctx.strokeStyle = ds.borderColor || '#2563EB';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                    }
                 });
             }
         });
