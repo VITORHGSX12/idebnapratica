@@ -21,6 +21,12 @@
         if (typeof global.renderSaebProficiencyDashboard === 'function') {
             global.renderSaebProficiencyDashboard();
         }
+        if (typeof global.initPedagogicPlansSubtab === 'function') {
+            global.initPedagogicPlansSubtab();
+        }
+        if (typeof global.renderSaebOficialComparativoTable === 'function') {
+            global.renderSaebOficialComparativoTable();
+        }
     }
 
     function bindPedagogicSubtabs() {
@@ -57,6 +63,14 @@
                 if (targetId === 'niveis-saeb-sub') {
                     if (typeof global.renderSaebProficiencyDashboard === 'function') {
                         global.renderSaebProficiencyDashboard();
+                    }
+                } else if (targetId === 'planos-intervencao-sub') {
+                    if (typeof global.initPedagogicPlansSubtab === 'function') {
+                        global.initPedagogicPlansSubtab();
+                    }
+                } else if (targetId === 'comparativo-saeb-sub') {
+                    if (typeof global.renderSaebOficialComparativoTable === 'function') {
+                        global.renderSaebOficialComparativoTable();
                     }
                 }
             };

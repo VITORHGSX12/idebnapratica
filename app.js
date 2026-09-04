@@ -127,6 +127,8 @@ var TAB_LIFECYCLE_HOOKS = {
     },
     'gestao-pedagogica': function() {
         if (typeof renderSaebProficiencyDashboard === 'function') renderSaebProficiencyDashboard();
+        if (typeof initPedagogicPlansSubtab === 'function') initPedagogicPlansSubtab();
+        if (typeof renderSaebOficialComparativoTable === 'function') renderSaebOficialComparativoTable();
         if (typeof renderRiskGoalsTable === 'function') renderRiskGoalsTable();
     },
     'ideb-comparativo': function() {
