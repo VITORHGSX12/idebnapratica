@@ -56,7 +56,7 @@
                         </div>
                         <div class="metric-sub">
                             <span class="badge-status-advanced" style="font-size: var(--text-xs); padding: 2px 8px;">Base INEP</span>
-                            <span style="margin-left: auto; font-size: var(--text-xs); color: var(--color-text-secondary);">Meta 2026: <strong style="color: var(--color-brand-primary);">5.8</strong></span>
+                            <span style="margin-left: auto; font-size: var(--text-xs); color: var(--color-text-secondary);">Meta 2026: <strong style="color: var(--color-target);">5.8</strong></span>
                         </div>
                     </div>
 
@@ -272,15 +272,15 @@
         // 3. VISÃO DO GESTOR DA REDE / ADMIN (Escopo: Rede Municipal de Gonçalves Dias)
         var pde = getPdeGoalsState();
         var idebVal = '5.2';
-        var idebSub = 'Meta 2026: <strong>5.5</strong>';
+        var idebSub = 'Meta 2026: <strong style="color: var(--color-target);">5.5</strong>';
         var profVal = '228.4';
-        var profSub = 'LP: <strong>221.8</strong> • MAT: <strong>235.1</strong>';
+        var profSub = 'LP: <strong style="color: var(--color-primary); font-weight: 800;">221.8</strong> • MAT: <strong style="color: var(--color-primary); font-weight: 800;">235.1</strong>';
         var fluxoVal = '96.2%';
         var fluxoSub = 'Taxa de rendimento escolar consolidada';
 
         if (pde && pde.currentScore) {
             idebVal = Number(pde.currentScore).toFixed(1);
-            idebSub = 'Meta Pactuada: <strong>' + (pde.metaIdeb || '5.5') + '</strong>';
+            idebSub = 'Meta Pactuada: <strong style="color: var(--color-target);">' + (pde.metaIdeb || '5.5') + '</strong>';
         }
 
         var fluxoNum = parseFloat(fluxoVal) || 96.2;
