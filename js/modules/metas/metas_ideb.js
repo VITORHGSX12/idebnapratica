@@ -77,6 +77,8 @@
             } else if (targetTab === 'ranking-escolas-ma') {
                 if (typeof global.populateSchoolCitySelectDropdown === 'function') global.populateSchoolCitySelectDropdown();
                 if (typeof global.filterSchoolRankingTable === 'function') global.filterSchoolRankingTable();
+            } else if (targetTab === 'manual-calculo-ideb') {
+                if (typeof global.initIdebVaarCalculator === 'function') global.initIdebVaarCalculator();
             }
         } catch(e) {
             console.error('Error switching regional subtab:', e);

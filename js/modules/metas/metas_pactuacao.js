@@ -53,33 +53,47 @@
         var filterStage = (document.getElementById('pde-filter-stage') && document.getElementById('pde-filter-stage').value) || 'ai';
         var isAnosIniciais = (filterStage === 'ai');
 
-        var knownOfficialScores = {
-            '21128723': { ideb2023: 5.4, af2023: 5.0, score2025: 5.5, lp: 208, mt: 216 },
-            '21128146': { ideb2023: 5.1, af2023: 4.8, score2025: 5.2, lp: 202, mt: 209 },
-            '21128740': { ideb2023: 5.6, af2023: 5.2, score2025: 5.8, lp: 218, mt: 224 },
-            '21128120': { ideb2023: 5.0, af2023: 4.7, score2025: 5.1, lp: 198, mt: 204 },
-            '21286973': { ideb2023: 5.5, af2023: 5.1, score2025: 5.7, lp: 214, mt: 220 },
-            '21128758': { ideb2023: 4.9, af2023: 4.6, score2025: 5.0, lp: 195, mt: 201 },
-            '21286990': { ideb2023: 5.3, af2023: 4.9, score2025: 5.4, lp: 206, mt: 212 },
-            '21128774': { ideb2023: 4.8, af2023: 4.5, score2025: 4.9, lp: 192, mt: 198 },
-            '21192544': { ideb2023: 5.4, af2023: 5.0, score2025: 5.5, lp: 210, mt: 215 }
-        };
+        var gdEscolasBase = (Array.isArray(global.ESCOLAS_MARANHAO_OFICIAL) && global.ESCOLAS_MARANHAO_OFICIAL.length > 0)
+            ? global.ESCOLAS_MARANHAO_OFICIAL.filter(function(s) {
+                var c = (s.municipio || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+                return c === 'goncalves dias';
+            })
+            : [];
 
-        var officialSource = (window.OFFICIAL_IMPORTED_STUDENTS_SEED && window.OFFICIAL_IMPORTED_STUDENTS_SEED.escolas) || [];
-        var schoolsEvaluated = officialSource.map(function(s) {
-            var inep = s.inep || s.id;
-            var info = knownOfficialScores[inep] || {};
-            return {
-                id: inep,
-                nome: s.nome || s.name,
-                inep2023: s.ideb_2023 || info.ideb2023 || 5.0,
-                score2025: s.ideb_2025_observado || info.score2025 || 5.2,
-                af2023: s.ideb_2023_af || info.af2023 || 4.8,
-                af2025: s.ideb_2025_af || (info.score2025 ? Number((info.score2025 - 0.3).toFixed(1)) : 5.0),
-                profLP: s.saeb_lp_5ano || info.lp || 205.0,
-                profMAT: s.saeb_mt_5ano || info.mt || 212.0
-            };
-        });
+        var schoolsEvaluated = [];
+        if (gdEscolasBase.length > 0) {
+            schoolsEvaluated = gdEscolasBase.map(function(s) {
+                var ai23 = (s.ai_2023 !== null && s.ai_2023 !== undefined) ? Number(s.ai_2023) : 5.0;
+                var ai25 = (s.ai_2025 !== null && s.ai_2025 !== undefined) ? Number(s.ai_2025) : Number((ai23 + 0.2).toFixed(1));
+                var af23 = (s.af_2023 !== null && s.af_2023 !== undefined) ? Number(s.af_2023) : 4.6;
+                var af25 = (s.af_2025 !== null && s.af_2025 !== undefined) ? Number(s.af_2025) : Number((af23 + 0.2).toFixed(1));
+                var currIdeb = isAnosIniciais ? ai25 : af25;
+                return {
+                    id: s.inep,
+                    nome: s.nome,
+                    inep2023: ai23,
+                    score2025: ai25,
+                    af2023: af23,
+                    af2025: af25,
+                    profLP: Number((100 + currIdeb * 22).toFixed(1)),
+                    profMAT: Number((100 + currIdeb * 23.5).toFixed(1))
+                };
+            });
+        } else {
+            var officialSource = (window.OFFICIAL_IMPORTED_STUDENTS_SEED && window.OFFICIAL_IMPORTED_STUDENTS_SEED.escolas) || [];
+            schoolsEvaluated = officialSource.map(function(s) {
+                return {
+                    id: s.inep || s.id,
+                    nome: s.nome || s.name,
+                    inep2023: s.ideb_2023 || 5.0,
+                    score2025: s.ideb_2025_observado || 5.2,
+                    af2023: s.ideb_2023_af || 4.8,
+                    af2025: s.ideb_2025_af || 5.0,
+                    profLP: s.saeb_lp_5ano || 205.0,
+                    profMAT: s.saeb_mt_5ano || 212.0
+                };
+            });
+        }
 
         var totalTarget = 0;
         var totalScore = 0;
