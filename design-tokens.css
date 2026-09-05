@@ -122,7 +122,7 @@
        11. GRADIENTES INSTITUCIONAIS
        --------------------------------------------------------------------- */
     --gradient-banner:   linear-gradient(135deg, #1A3D63 0%, #2A5A8A 50%, #4A7FA7 100%);
-    --gradient-kpi-card: linear-gradient(135deg, #4A7FA7 0%, #B3CFE5 100%);
+    --gradient-kpi-card: linear-gradient(135deg, #1D436C 0%, #2E608A 100%);
 
     /* ---------------------------------------------------------------------
        12. SEMANTIC DASHBOARD TOKENS (ETAPA 1 — PADRONIZAÇÃO DE CORES)

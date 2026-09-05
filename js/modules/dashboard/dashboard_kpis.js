@@ -272,15 +272,15 @@
         // 3. VISÃO DO GESTOR DA REDE / ADMIN (Escopo: Rede Municipal de Gonçalves Dias)
         var pde = getPdeGoalsState();
         var idebVal = '5.2';
-        var idebSub = 'Meta 2026: <strong style="color: var(--color-target);">5.5</strong>';
+        var idebSub = 'Meta 2026: <strong style="color: #ffffff; font-weight: 800;">5.5</strong>';
         var profVal = '228.4';
-        var profSub = 'LP: <strong style="color: var(--color-primary); font-weight: 800;">221.8</strong> • MAT: <strong style="color: var(--color-primary); font-weight: 800;">235.1</strong>';
+        var profSub = 'LP: <strong style="color: #ffffff; font-weight: 800;">221.8</strong> • MAT: <strong style="color: #ffffff; font-weight: 800;">235.1</strong>';
         var fluxoVal = '96.2%';
         var fluxoSub = 'Taxa de rendimento escolar consolidada';
 
         if (pde && pde.currentScore) {
             idebVal = Number(pde.currentScore).toFixed(1);
-            idebSub = 'Meta Pactuada: <strong style="color: var(--color-target);">' + (pde.metaIdeb || '5.5') + '</strong>';
+            idebSub = 'Meta Pactuada: <strong style="color: #ffffff; font-weight: 800;">' + (pde.metaIdeb || '5.5') + '</strong>';
         }
 
         var fluxoNum = parseFloat(fluxoVal) || 96.2;
@@ -291,15 +291,15 @@
                 <div class="metric-card-header">
                     <div>
                         <span class="metric-label">IDEB Observado / Projetado</span>
-                        <div class="metric-value" style="margin-top: 6px;">${idebVal}</div>
+                        <div class="metric-value" style="margin-top: 6px; color: #ffffff;">${idebVal}</div>
                     </div>
                     <div class="metric-icon-bubble">
                         <i data-lucide="trending-up"></i>
                     </div>
                 </div>
                 <div class="metric-sub">
-                    <span class="badge-status-success" style="font-size: var(--text-xs); padding: 2px 8px;">+0.4</span>
-                    <span style="margin-left: auto; font-size: var(--text-xs); color: var(--color-text-secondary);">${idebSub}</span>
+                    <span class="badge-status-success" style="font-size: var(--text-xs); padding: 2px 8px; color: #ffffff;">+0.4</span>
+                    <span style="margin-left: auto; font-size: var(--text-xs); color: rgba(255, 255, 255, 0.95);">${idebSub}</span>
                 </div>
             </div>
 
@@ -307,13 +307,13 @@
                 <div class="metric-card-header">
                     <div>
                         <span class="metric-label">Proficiência Média da Rede</span>
-                        <div class="metric-value" style="margin-top: 6px;">${profVal} <span style="font-size: 0.95rem; font-weight: 600; color: var(--color-text-muted);">pts</span></div>
+                        <div class="metric-value" style="margin-top: 6px; color: #ffffff;">${profVal} <span style="font-size: 0.95rem; font-weight: 600; color: rgba(255, 255, 255, 0.88);">pts</span></div>
                     </div>
                     <div class="metric-icon-bubble status-advanced">
                         <i data-lucide="graduation-cap"></i>
                     </div>
                 </div>
-                <div class="metric-sub">
+                <div class="metric-sub" style="color: rgba(255, 255, 255, 0.95);">
                     <span>${profSub}</span>
                 </div>
             </div>
@@ -322,7 +322,7 @@
                 <div class="metric-card-header">
                     <div>
                         <span class="metric-label">Taxa de Aprovação (Fluxo)</span>
-                        <div class="metric-value" style="margin-top: 6px;">${fluxoVal}</div>
+                        <div class="metric-value" style="margin-top: 6px; color: #ffffff;">${fluxoVal}</div>
                     </div>
                     <div class="progress-ring-container">
                         <svg class="progress-ring-svg" viewBox="0 0 72 72">
@@ -331,11 +331,11 @@
                                     stroke-dasharray="188.4" 
                                     stroke-dashoffset="${ringOffset}" />
                         </svg>
-                        <span class="progress-ring-value">${fluxoVal}</span>
+                        <span class="progress-ring-value" style="color: #ffffff;">${fluxoVal}</span>
                     </div>
                 </div>
-                <div class="metric-sub">
-                    <i data-lucide="check-circle" style="width: 14px; height: 14px; color: var(--color-status-success);"></i>
+                <div class="metric-sub" style="color: rgba(255, 255, 255, 0.95);">
+                    <i data-lucide="check-circle" style="width: 14px; height: 14px; color: #34D399;"></i>
                     <span>${fluxoSub}</span>
                 </div>
             </div>
