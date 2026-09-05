@@ -15,7 +15,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="design-tokens.css?v=20260830_v2">
-    <link rel="stylesheet" href="styles.css?v=7336974a7d_mtnq0qpt">
+    <link rel="stylesheet" href="styles.css?v=b9d9160d4a_mtnrvz6j">
     <link rel="stylesheet" href="login-premium.css?v=20260830_v2">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -119,6 +119,25 @@
             }
         }
         window.handleGlobalBackNavigation = handleGlobalBackNavigation;
+
+        function selectLoginProfile(email, btn) {
+            var emailInput = document.getElementById('login-email');
+            var passInput = document.getElementById('login-password');
+            if (emailInput) {
+                emailInput.value = email;
+                try { emailInput.dispatchEvent(new Event('input', { bubbles: true })); } catch(e) {}
+            }
+            if (passInput) {
+                passInput.value = '123456';
+                try { passInput.dispatchEvent(new Event('input', { bubbles: true })); } catch(e) {}
+            }
+            var pills = document.querySelectorAll('.role-pill');
+            pills.forEach(function(p) { p.classList.remove('active'); });
+            if (btn) btn.classList.add('active');
+            var err = document.getElementById('login-error-alert');
+            if (err) { err.classList.add('hidden'); err.style.display = 'none'; }
+        }
+        window.selectLoginProfile = selectLoginProfile;
 
         function toggleMobileSidebar(forceState) {
             var appContainer = document.querySelector('.app-container') || document.body;
@@ -413,78 +432,14 @@
                 <div class="login-bg-photo" aria-hidden="true"></div>
                 <div class="login-bg-overlay" aria-hidden="true"></div>
 
-                <!-- Background Mesh Animado & Dot Grid & Partículas Sutis & Elementos Educacionais -->
+                <!-- Background Grid Sutil & Glow de Estúdio -->
                 <div class="login-mesh-bg" aria-hidden="true">
-                    <div class="mesh-blob blob-1"></div>
-                    <div class="mesh-blob blob-2"></div>
-                    <div class="mesh-blob blob-3"></div>
                     <div class="mesh-dot-grid"></div>
                     <div class="mesh-glow-edge"></div>
-                    
-                    <!-- Rede Vetorial Conectiva Sutil (Constelação Pedagógica) -->
-                    <svg class="mesh-network-constellation" viewBox="0 0 600 800" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <line x1="80" y1="120" x2="220" y2="180" stroke="rgba(147, 197, 253, 0.10)" stroke-dasharray="3 3" />
-                        <line x1="220" y1="180" x2="480" y2="140" stroke="rgba(147, 197, 253, 0.08)" />
-                        <line x1="220" y1="180" x2="160" y2="380" stroke="rgba(147, 197, 253, 0.09)" stroke-dasharray="4 4" />
-                        <line x1="160" y1="380" x2="420" y2="420" stroke="rgba(147, 197, 253, 0.08)" />
-                        <line x1="420" y1="420" x2="520" y2="620" stroke="rgba(147, 197, 253, 0.09)" stroke-dasharray="3 3" />
-                        <line x1="160" y1="380" x2="120" y2="680" stroke="rgba(147, 197, 253, 0.08)" />
-                        <line x1="120" y1="680" x2="380" y2="720" stroke="rgba(147, 197, 253, 0.10)" stroke-dasharray="4 4" />
-                        <circle cx="80" cy="120" r="3" fill="rgba(147, 197, 253, 0.22)" />
-                        <circle cx="220" cy="180" r="4" fill="rgba(56, 189, 248, 0.25)" />
-                        <circle cx="480" cy="140" r="2.5" fill="rgba(147, 197, 253, 0.20)" />
-                        <circle cx="160" cy="380" r="3.5" fill="rgba(34, 197, 94, 0.25)" />
-                        <circle cx="420" cy="420" r="3" fill="rgba(147, 197, 253, 0.20)" />
-                        <circle cx="520" cy="620" r="3.5" fill="rgba(251, 191, 36, 0.22)" />
-                        <circle cx="120" cy="680" r="3" fill="rgba(147, 197, 253, 0.20)" />
-                        <circle cx="380" cy="720" r="3" fill="rgba(56, 189, 248, 0.22)" />
-                    </svg>
-
-                    <!-- Ícones Educacionais Vetoriais Sutis (Baixa Opacidade 8-14%) -->
-                    <div class="mesh-edu-item item-book">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
-                            <path d="M6 6h10M6 10h10M6 14h6"/>
-                        </svg>
-                    </div>
-                    <div class="mesh-edu-item item-cap">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-                        </svg>
-                    </div>
-                    <div class="mesh-edu-item item-chart">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 3v18h18"/>
-                            <path d="m19 9-5 5-4-4-3 3"/>
-                        </svg>
-                    </div>
-                    <div class="mesh-edu-item item-award">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="8" r="6"/>
-                            <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>
-                        </svg>
-                    </div>
 
                     <!-- Pílulas Discretas de Métricas Ideb / Saeb Flutuantes -->
-                    <div class="mesh-float-badge badge-ideb"><span>IDEB 6.5</span></div>
-                    <div class="mesh-float-badge badge-saeb"><span>SAEB +0.9</span></div>
-
-                    <div class="mesh-particle p1"></div>
-                    <div class="mesh-particle p2"></div>
-                    <div class="mesh-particle p3"></div>
-                    <div class="mesh-particle p4"></div>
-                    <div class="mesh-particle p5"></div>
-                    <div class="mesh-particle p6"></div>
-                    <div class="mesh-particle p7"></div>
-                    <div class="mesh-particle p8"></div>
-                </div>
-
-                <!-- Divisor em Curva Orgânica para o Painel de Login -->
-                <div class="login-curve-divider" aria-hidden="true">
-                    <svg viewBox="0 0 100 1000" preserveAspectRatio="none">
-                        <path d="M0,0 C65,220 85,420 40,650 C10,820 45,950 0,1000 L100,1000 L100,0 Z" fill="var(--color-surface-canvas, #F1F5F9)"></path>
-                    </svg>
+                    <div class="mesh-float-badge badge-ideb"><span>IDEB 5.3 (2025)</span></div>
+                    <div class="mesh-float-badge badge-saeb"><span>SAEB +0.5 pts</span></div>
                 </div>
 
                 <div class="brand login-brand">
@@ -499,8 +454,8 @@
 
                 <div class="login-headline-wrapper">
                     <h1 class="headline login-headline" id="rotating-headline">
-                        <span class="headline-line-1">Cada décimo do IDEB</span>
-                        <span class="headline-line-2">planejado e conquistado.</span>
+                        <span class="headline-line-1">Gestão da educação municipal,</span>
+                        <span class="headline-line-2">em um só lugar.</span>
                     </h1>
                     <div class="login-headline-dots" id="login-headline-dots" aria-hidden="true">
                         <span class="headline-dot active"></span>
@@ -509,57 +464,60 @@
                     </div>
                 </div>
 
-                <!-- Chart Card (IDEB Animated Graphic) -->
-                <div class="chart-card login-chart-card">
+                <!-- Chart Card (IDEB Animated Dynamic Graphic) -->
+                <div class="chart-card login-chart-card login-glass-chart">
                     <div class="chart-head login-chart-head">
                         <div class="chart-title login-chart-title">
                             <span class="dot login-pulse-dot"></span>
                             <span class="label">Evolução do IDEB (Escala 0 a 10)</span>
                         </div>
-                        <div class="badge-meta login-badge-meta" id="login-card-target-badge">Meta Pactuada 2025 · 6.5</div>
+                        <div class="badge-meta login-badge-meta" id="login-card-target-badge">Meta Pactuada 2026 · 5.5</div>
                     </div>
-                    <div class="chart-plot login-chart-plot">
+                    <div class="chart-plot login-chart-plot login-dynamic-plot">
                         <div class="goal-line login-goal-line"></div>
-                        <div class="bar b1 login-bar" id="ideb-bar-1">
+                        <div class="bar b1 login-bar login-bar-animated" id="ideb-bar-1">
                             <div class="bar-shimmer"></div>
                             <span id="ideb-bar-val-1">4.2</span>
                         </div>
-                        <div class="bar b2 login-bar" id="ideb-bar-2">
+                        <div class="bar b2 login-bar login-bar-animated" id="ideb-bar-2">
                             <div class="bar-shimmer"></div>
                             <span id="ideb-bar-val-2">4.6</span>
                         </div>
-                        <div class="bar b3 login-bar" id="ideb-bar-3">
+                        <div class="bar b3 login-bar login-bar-animated" id="ideb-bar-3">
                             <div class="bar-shimmer"></div>
                             <span id="ideb-bar-val-3">5.1</span>
                         </div>
-                        <div class="bar b4 login-bar" id="ideb-bar-4">
+                        <div class="bar b4 login-bar login-bar-animated" id="ideb-bar-4">
                             <div class="bar-shimmer"></div>
-                            <span id="ideb-bar-val-4">5.6</span>
+                            <span id="ideb-bar-val-4">5.3</span>
                         </div>
-                        <div class="bar b5 bar-target login-bar" id="ideb-bar-5">
+                        <div class="bar b5 bar-target login-bar login-bar-animated" id="ideb-bar-5">
                             <div class="bar-shimmer"></div>
                             <div class="bar-radar-beacon" aria-hidden="true">
                                 <span class="beacon-ring r1"></span>
                                 <span class="beacon-ring r2"></span>
                                 <span class="beacon-core"></span>
                             </div>
-                            <span id="ideb-bar-val-5">6.5*</span>
+                            <span id="ideb-bar-val-5">5.5*</span>
                         </div>
                     </div>
                     <div class="chart-foot login-chart-foot">
-                        <span>2019</span><span>2020</span><span>2021</span><span>2023</span><span>2025*</span>
+                        <span>2019</span><span>2020</span><span>2021</span><span>2023/25</span><span>2026*</span>
                     </div>
                 </div>
 
                 <div class="pill-note login-pill-note">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
-                    <span>Dados oficiais INEP/SAEB (2019–2023) com metas municipais pactuadas</span>
+                    <span>Dados oficiais INEP/SAEB com metas municipais pactuadas</span>
                 </div>
 
                 <div class="spacer login-spacer"></div>
 
+                <!-- Selo Oficial da Prefeitura e SEMED com cores originais em alta nitidez -->
                 <div class="left-footer login-left-footer">
-                    <img class="footer-logo-img login-footer-logo-img" src="assets/logo-prefeitura-semed.png" alt="Prefeitura de Gonçalves Dias e SEMED - Secretaria Municipal de Educação">
+                    <div class="prefeitura-badge-container">
+                        <img class="footer-logo-img login-footer-logo-img" src="assets/logo-prefeitura-semed.png" alt="Prefeitura de Gonçalves Dias e SEMED - Secretaria Municipal de Educação">
+                    </div>
                 </div>
             </div>
 
@@ -573,6 +531,21 @@
                 <div class="card login-form-container">
                     <h1 class="login-card-title">Bem-vindo de volta</h1>
                     <p class="sub login-card-sub">Insira suas credenciais institucionais para continuar.</p>
+
+                    <!-- Seletor Rápido de Perfil em Pílula -->
+                    <div class="login-quick-roles-container">
+                        <div class="login-quick-roles-pills">
+                            <button type="button" class="role-pill active" onclick="selectLoginProfile('admin@goncalvesdias.ma.gov.br', this)">
+                                <span>Gestor Municipal</span>
+                            </button>
+                            <button type="button" class="role-pill" onclick="selectLoginProfile('diretor@goncalvesdias.ma.gov.br', this)">
+                                <span>Diretor</span>
+                            </button>
+                            <button type="button" class="role-pill" onclick="selectLoginProfile('professor@goncalvesdias.ma.gov.br', this)">
+                                <span>Professor</span>
+                            </button>
+                        </div>
+                    </div>
 
                     <form id="login-form" class="login-form-body" onsubmit="event.preventDefault(); if(window.executeSystemLogin) window.executeSystemLogin(); return false;">
                         <!-- Inline Error Alert -->
@@ -7468,86 +7441,86 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=341bc2b5e3_mtnq0qpt"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=daec643646_mtnq0qpt"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mtnq0qpt"></script>
-    <script src="bncc_habilidades_oficial.js?v=2f802bf604_mtnq0qpt"></script>
-    <script src="ideb_publico_db.js?v=fa7edb185f_mtnq0qpt"></script>
-    <script src="alunos_db.js?v=e23fe3179f_mtnq0qpt"></script>
-    <script src="js/data/official_students_seed.js?v=876be25c9a_mtnq0qpt"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=341bc2b5e3_mtnrvz6j"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=daec643646_mtnrvz6j"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mtnrvz6j"></script>
+    <script src="bncc_habilidades_oficial.js?v=2f802bf604_mtnrvz6j"></script>
+    <script src="ideb_publico_db.js?v=fa7edb185f_mtnrvz6j"></script>
+    <script src="alunos_db.js?v=e23fe3179f_mtnrvz6j"></script>
+    <script src="js/data/official_students_seed.js?v=876be25c9a_mtnrvz6j"></script>
 
     <!-- Módulos do Core -->
-    <script src="js/core/security.js?v=9d4fc4a791_mtnq0qpt"></script>
-    <script src="js/core/helpers.js?v=7656a2a6bb_mtnq0qpt"></script>
-    <script src="js/core/theme-toast.js?v=c181c006e0_mtnq0qpt"></script>
-    <script src="js/core/chart-theme.js?v=427aa86547_mtnq0qpt"></script>
-    <script src="js/core/user-profile.js?v=4adb3d4494_mtnq0qpt"></script>
-    <script src="js/data/official_users_directory.js?v=24a756e04c_mtnq0qpt"></script>
-    <script src="js/core/login-animation.js?v=414e14bbcd_mtnq0qpt"></script>
-    <script src="js/core/auth.js?v=09bdb4abe2_mtnq0qpt"></script>
-    <script src="js/core/navigation/navigation_meta.js?v=55f19105e6_mtnq0qpt"></script>
-    <script src="js/core/navigation/navigation_history.js?v=a09c33f4ae_mtnq0qpt"></script>
-    <script src="js/core/navigation/navigation_events.js?v=7e416c2fa3_mtnq0qpt"></script>
-    <script src="js/core/navigation.js?v=13cb58fbfc_mtnq0qpt"></script>
-    <script src="js/core/sync.js?v=73ebd2560a_mtnq0qpt"></script>
+    <script src="js/core/security.js?v=9d4fc4a791_mtnrvz6j"></script>
+    <script src="js/core/helpers.js?v=7656a2a6bb_mtnrvz6j"></script>
+    <script src="js/core/theme-toast.js?v=c181c006e0_mtnrvz6j"></script>
+    <script src="js/core/chart-theme.js?v=427aa86547_mtnrvz6j"></script>
+    <script src="js/core/user-profile.js?v=4adb3d4494_mtnrvz6j"></script>
+    <script src="js/data/official_users_directory.js?v=24a756e04c_mtnrvz6j"></script>
+    <script src="js/core/login-animation.js?v=414e14bbcd_mtnrvz6j"></script>
+    <script src="js/core/auth.js?v=8d65f95dbe_mtnrvz6j"></script>
+    <script src="js/core/navigation/navigation_meta.js?v=55f19105e6_mtnrvz6j"></script>
+    <script src="js/core/navigation/navigation_history.js?v=a09c33f4ae_mtnrvz6j"></script>
+    <script src="js/core/navigation/navigation_events.js?v=7e416c2fa3_mtnrvz6j"></script>
+    <script src="js/core/navigation.js?v=13cb58fbfc_mtnrvz6j"></script>
+    <script src="js/core/sync.js?v=73ebd2560a_mtnrvz6j"></script>
 
     <!-- Módulos de Domínio -->
-    <script src="js/modules/dashboard/dashboard_kpis.js?v=661c48df5d_mtnq0qpt"></script>
-    <script src="js/modules/dashboard/dashboard_charts.js?v=d94a8aa823_mtnq0qpt"></script>
-    <script src="js/modules/dashboard/dashboard_analytics.js?v=156257a0b0_mtnq0qpt"></script>
-    <script src="js/modules/dashboard/dashboard_scales.js?v=8b105db83a_mtnq0qpt"></script>
-    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=047c7904b7_mtnq0qpt"></script>
-    <script src="js/modules/dashboard/dashboard_scroll_reveal.js?v=765a5ac049_mtnq0qpt"></script>
-    <script src="js/modules/alunos/alunos_progression_modal.js?v=cf365ce8cf_mtnq0qpt"></script>
-    <script src="js/modules/alunos/alunos_list.js?v=1680ba1e32_mtnq0qpt"></script>
-    <script src="js/modules/alunos/alunos_forms.js?v=d65581afbc_mtnq0qpt"></script>
-    <script src="js/modules/turmas/turmas_crud.js?v=e246099ccf_mtnq0qpt"></script>
-    <script src="js/modules/turmas/turmas_diario.js?v=a785ddd9e6_mtnq0qpt"></script>
-    <script src="js/modules/metas/metas_regional.js?v=2237174a37_mtnq0qpt"></script>
-    <script src="js/modules/metas/metas_pactuacao.js?v=d8339a8098_mtnq0qpt"></script>
-    <script src="js/modules/metas/metas_escolas_ranking.js?v=3f51553992_mtnq0qpt"></script>
-    <script src="js/modules/metas/metas_calculo_manual.js?v=1798f23acb_mtnq0qpt"></script>
-    <script src="js/modules/metas/metas_ideb.js?v=505cc6d09c_mtnq0qpt"></script>
-    <script src="js/modules/escolas/escolas.js?v=ad88821233_mtnq0qpt"></script>
-    <script src="js/modules/escolas/escolas_workspace.js?v=cbd14d4cc2_mtnq0qpt"></script>
-    <script src="js/modules/escolas/escolas_modals.js?v=d32d052d1d_mtnq0qpt"></script>
-    <script src="js/modules/matrizes/matrizes.js?v=d2df1a4b54_mtnq0qpt"></script>
-    <script src="js/modules/cronograma/cronograma_state.js?v=291ef65907_mtnq0qpt"></script>
-    <script src="js/modules/cronograma/cronograma_views_monthly.js?v=9bbac5a230_mtnq0qpt"></script>
-    <script src="js/modules/cronograma/cronograma_views_weekly.js?v=37e3b04d03_mtnq0qpt"></script>
-    <script src="js/modules/cronograma/cronograma_views_comparison.js?v=9875be98c6_mtnq0qpt"></script>
-    <script src="js/modules/cronograma/cronograma_progress_modal.js?v=f327132831_mtnq0qpt"></script>
-    <script src="js/modules/cronograma/cronograma_views.js?v=3254fb7223_mtnq0qpt"></script>
-    <script src="js/modules/cronograma/cronograma_planner.js?v=217cb644d9_mtnq0qpt"></script>
-    <script src="js/modules/cronograma/cronograma_trash.js?v=a01d97e91e_mtnq0qpt"></script>
-    <script src="js/modules/cronograma/cronograma_calendar_40w.js?v=951800db84_mtnq0qpt"></script>
-    <script src="js/modules/cronograma/cronograma.js?v=69486dcbc3_mtnq0qpt"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_state.js?v=3b4b3c473f_mtnq0qpt"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_wizard.js?v=23d3745407_mtnq0qpt"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_events.js?v=95483a70b1_mtnq0qpt"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_espelho.js?v=11acd9efc8_mtnq0qpt"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_analytics.js?v=d8988743ae_mtnq0qpt"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_print.js?v=b5eb11e2a6_mtnq0qpt"></script>
-    <script src="js/modules/questoes/questoes_generator.js?v=8e44d7592b_mtnq0qpt"></script>
-    <script src="js/modules/questoes/questoes_list.js?v=5543a2c1d7_mtnq0qpt"></script>
-    <script src="js/modules/questoes/questoes_import_export.js?v=c7d3bb36d0_mtnq0qpt"></script>
-    <script src="js/modules/diagnostico/diagnostico.js?v=e4becf6279_mtnq0qpt"></script>
-    <script src="js/modules/saeb/saeb_state.js?v=178da7f734_mtnq0qpt"></script>
-    <script src="js/modules/saeb/saeb_distribution_view.js?v=7bee5af18a_mtnq0qpt"></script>
-    <script src="js/modules/saeb/saeb_comparativo_turmas.js?v=22f1b3636c_mtnq0qpt"></script>
-    <script src="js/modules/saeb/saeb_ficha_individual.js?v=17642111a3_mtnq0qpt"></script>
-    <script src="js/modules/saeb/saeb_boletim.js?v=f2fbc9e7e7_mtnq0qpt"></script>
-    <script src="js/modules/saeb/saeb_intervencoes_comparativo.js?v=ada1202837_mtnq0qpt"></script>
-    <script src="js/modules/saeb/saeb.js?v=6f18f413e8_mtnq0qpt"></script>
-    <script src="js/modules/biblioteca/biblioteca_reader.js?v=a526e81258_mtnq0qpt"></script>
-    <script src="js/modules/biblioteca/biblioteca_upload.js?v=a0fcce08d5_mtnq0qpt"></script>
-    <script src="js/modules/biblioteca/biblioteca.js?v=9933182f10_mtnq0qpt"></script>
-    <script src="js/modules/admin/admin_data.js?v=4146d4760b_mtnq0qpt"></script>
-    <script src="js/modules/admin/admin_users.js?v=9efdb86dbd_mtnq0qpt"></script>
-    <script src="js/modules/admin/admin_tenants.js?v=ae5a501f46_mtnq0qpt"></script>
-    <script src="js/modules/doc_tecnica/doc_tecnica.js?v=014b44adfa_mtnq0qpt"></script>
+    <script src="js/modules/dashboard/dashboard_kpis.js?v=661c48df5d_mtnrvz6j"></script>
+    <script src="js/modules/dashboard/dashboard_charts.js?v=d94a8aa823_mtnrvz6j"></script>
+    <script src="js/modules/dashboard/dashboard_analytics.js?v=156257a0b0_mtnrvz6j"></script>
+    <script src="js/modules/dashboard/dashboard_scales.js?v=8b105db83a_mtnrvz6j"></script>
+    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=047c7904b7_mtnrvz6j"></script>
+    <script src="js/modules/dashboard/dashboard_scroll_reveal.js?v=765a5ac049_mtnrvz6j"></script>
+    <script src="js/modules/alunos/alunos_progression_modal.js?v=cf365ce8cf_mtnrvz6j"></script>
+    <script src="js/modules/alunos/alunos_list.js?v=1680ba1e32_mtnrvz6j"></script>
+    <script src="js/modules/alunos/alunos_forms.js?v=d65581afbc_mtnrvz6j"></script>
+    <script src="js/modules/turmas/turmas_crud.js?v=e246099ccf_mtnrvz6j"></script>
+    <script src="js/modules/turmas/turmas_diario.js?v=a785ddd9e6_mtnrvz6j"></script>
+    <script src="js/modules/metas/metas_regional.js?v=2237174a37_mtnrvz6j"></script>
+    <script src="js/modules/metas/metas_pactuacao.js?v=d8339a8098_mtnrvz6j"></script>
+    <script src="js/modules/metas/metas_escolas_ranking.js?v=3f51553992_mtnrvz6j"></script>
+    <script src="js/modules/metas/metas_calculo_manual.js?v=1798f23acb_mtnrvz6j"></script>
+    <script src="js/modules/metas/metas_ideb.js?v=505cc6d09c_mtnrvz6j"></script>
+    <script src="js/modules/escolas/escolas.js?v=ad88821233_mtnrvz6j"></script>
+    <script src="js/modules/escolas/escolas_workspace.js?v=cbd14d4cc2_mtnrvz6j"></script>
+    <script src="js/modules/escolas/escolas_modals.js?v=d32d052d1d_mtnrvz6j"></script>
+    <script src="js/modules/matrizes/matrizes.js?v=d2df1a4b54_mtnrvz6j"></script>
+    <script src="js/modules/cronograma/cronograma_state.js?v=291ef65907_mtnrvz6j"></script>
+    <script src="js/modules/cronograma/cronograma_views_monthly.js?v=9bbac5a230_mtnrvz6j"></script>
+    <script src="js/modules/cronograma/cronograma_views_weekly.js?v=37e3b04d03_mtnrvz6j"></script>
+    <script src="js/modules/cronograma/cronograma_views_comparison.js?v=9875be98c6_mtnrvz6j"></script>
+    <script src="js/modules/cronograma/cronograma_progress_modal.js?v=f327132831_mtnrvz6j"></script>
+    <script src="js/modules/cronograma/cronograma_views.js?v=3254fb7223_mtnrvz6j"></script>
+    <script src="js/modules/cronograma/cronograma_planner.js?v=217cb644d9_mtnrvz6j"></script>
+    <script src="js/modules/cronograma/cronograma_trash.js?v=a01d97e91e_mtnrvz6j"></script>
+    <script src="js/modules/cronograma/cronograma_calendar_40w.js?v=951800db84_mtnrvz6j"></script>
+    <script src="js/modules/cronograma/cronograma.js?v=69486dcbc3_mtnrvz6j"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_state.js?v=3b4b3c473f_mtnrvz6j"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_wizard.js?v=23d3745407_mtnrvz6j"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_events.js?v=95483a70b1_mtnrvz6j"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_espelho.js?v=11acd9efc8_mtnrvz6j"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_analytics.js?v=d8988743ae_mtnrvz6j"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_print.js?v=b5eb11e2a6_mtnrvz6j"></script>
+    <script src="js/modules/questoes/questoes_generator.js?v=8e44d7592b_mtnrvz6j"></script>
+    <script src="js/modules/questoes/questoes_list.js?v=5543a2c1d7_mtnrvz6j"></script>
+    <script src="js/modules/questoes/questoes_import_export.js?v=c7d3bb36d0_mtnrvz6j"></script>
+    <script src="js/modules/diagnostico/diagnostico.js?v=e4becf6279_mtnrvz6j"></script>
+    <script src="js/modules/saeb/saeb_state.js?v=178da7f734_mtnrvz6j"></script>
+    <script src="js/modules/saeb/saeb_distribution_view.js?v=7bee5af18a_mtnrvz6j"></script>
+    <script src="js/modules/saeb/saeb_comparativo_turmas.js?v=22f1b3636c_mtnrvz6j"></script>
+    <script src="js/modules/saeb/saeb_ficha_individual.js?v=17642111a3_mtnrvz6j"></script>
+    <script src="js/modules/saeb/saeb_boletim.js?v=f2fbc9e7e7_mtnrvz6j"></script>
+    <script src="js/modules/saeb/saeb_intervencoes_comparativo.js?v=ada1202837_mtnrvz6j"></script>
+    <script src="js/modules/saeb/saeb.js?v=6f18f413e8_mtnrvz6j"></script>
+    <script src="js/modules/biblioteca/biblioteca_reader.js?v=a526e81258_mtnrvz6j"></script>
+    <script src="js/modules/biblioteca/biblioteca_upload.js?v=a0fcce08d5_mtnrvz6j"></script>
+    <script src="js/modules/biblioteca/biblioteca.js?v=9933182f10_mtnrvz6j"></script>
+    <script src="js/modules/admin/admin_data.js?v=4146d4760b_mtnrvz6j"></script>
+    <script src="js/modules/admin/admin_users.js?v=9efdb86dbd_mtnrvz6j"></script>
+    <script src="js/modules/admin/admin_tenants.js?v=ae5a501f46_mtnrvz6j"></script>
+    <script src="js/modules/doc_tecnica/doc_tecnica.js?v=014b44adfa_mtnrvz6j"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=826c28719e_mtnq0qpt"></script>
+    <script src="app.js?v=826c28719e_mtnrvz6j"></script>
 </body>
 </html>

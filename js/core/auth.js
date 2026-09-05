@@ -635,6 +635,25 @@
         }
     }
 
+    function selectLoginProfile(email, buttonEl) {
+        var emailInput = document.getElementById('login-email');
+        var passInput = document.getElementById('login-password');
+        if (emailInput) {
+            emailInput.value = email;
+        }
+        if (passInput) {
+            passInput.value = '123456';
+        }
+        if (buttonEl) {
+            var allPills = document.querySelectorAll('.login-quick-roles-pills .role-pill');
+            for (var i = 0; i < allPills.length; i++) {
+                allPills[i].classList.remove('active');
+            }
+            buttonEl.classList.add('active');
+        }
+        clearLoginErrorAlert();
+    }
+
     // Inicialização
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
@@ -648,6 +667,7 @@
 
     // Exposição global
     global.executeSystemLogin = executeSystemLogin;
+    global.selectLoginProfile = selectLoginProfile;
     global.showLoginErrorAlert = showLoginErrorAlert;
     global.clearLoginErrorAlert = clearLoginErrorAlert;
     global.copySupportPhoneNumber = copySupportPhoneNumber;
