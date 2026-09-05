@@ -821,11 +821,11 @@ root.IDEB_MARANHAO_MUNICIPIOS = {
     "municipio": "Gonçalves Dias",
     "ure": "URE Presidente Dutra",
     "y2015": 4.1,
-    "y2017": 4.3,
-    "y2019": 4.7,
-    "y2021": 4.5,
-    "y2023": 4.9,
-    "y2025": 5.0
+    "y2017": 4.14,
+    "y2019": 4.51,
+    "y2021": 4.3,
+    "y2023": 4.82,
+    "y2025": 5.28
   },
   {
     "codigoInep": "2104503",
@@ -3209,12 +3209,12 @@ root.IDEB_MARANHAO_MUNICIPIOS = {
     "codigoInep": "2104404",
     "municipio": "Gonçalves Dias",
     "ure": "URE Presidente Dutra",
-    "y2015": 3.5,
-    "y2017": 3.6,
-    "y2019": 4.4,
-    "y2021": 4.2,
-    "y2023": 4.8,
-    "y2025": 5.1
+    "y2015": 3.46,
+    "y2017": 3.37,
+    "y2019": 4.05,
+    "y2021": 4.03,
+    "y2023": 4.47,
+    "y2025": 4.83
   },
   {
     "codigoInep": "2104503",

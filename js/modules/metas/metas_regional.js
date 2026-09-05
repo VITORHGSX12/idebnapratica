@@ -331,6 +331,11 @@
         var query = queryInput ? normalizeStr(queryInput.value) : '';
         var ureFilter = document.getElementById('ranking-ma-ure-filter') ? document.getElementById('ranking-ma-ure-filter').value : 'all';
 
+        var thPrev = document.getElementById('th-ranking-prev');
+        if (thPrev) thPrev.textContent = (activeYear === 2015) ? 'ANO BASE' : ('CICLO ' + prevYear);
+        var thCurr = document.getElementById('th-ranking-curr');
+        if (thCurr) thCurr.textContent = 'IDEB ' + activeYear;
+
         var db = getMaranhaoMunicipiosDb();
         var rawList = (activeStage === 'Anos Finais') ? db.finais : db.iniciais;
 
@@ -340,17 +345,78 @@
             return !name.includes('municipio') && !name.includes('codigo');
         });
 
-        validList.sort(function(a, b) {
-            var valA = (a[currKey] !== null && a[currKey] !== undefined && a[currKey] >= 0 && a[currKey] <= 10) ? a[currKey] : -1;
-            var valB = (b[currKey] !== null && b[currKey] !== undefined && b[currKey] >= 0 && b[currKey] <= 10) ? b[currKey] : -1;
-            return valB - valA;
+        // 1. Mapeamento padronizado com valores numéricos ou null
+        var mappedList = validList.map(function(c) {
+            var rawCurr = (c[currKey] !== null && c[currKey] !== undefined && c[currKey] >= 0 && c[currKey] <= 10) ? Number(c[currKey]) : null;
+            var rawPrev = (activeYear === 2015) ? null : ((c[prevKey] !== null && c[prevKey] !== undefined && c[prevKey] >= 0 && c[prevKey] <= 10) ? Number(c[prevKey]) : null);
+            return {
+                municipio: c.municipio,
+                codigo: c.codigo,
+                ure: c.ure || getUreForCity(c.municipio),
+                scoreCurr: rawCurr,
+                scorePrev: rawPrev,
+                raw: c
+            };
         });
 
-        var filtered = validList.filter(function(c) {
-            var ure = c.ure || getUreForCity(c.municipio);
-            if (ureFilter !== 'all' && ure !== ureFilter) return false;
+        // 2. Ordenação global por nota decrescente
+        mappedList.sort(function(a, b) {
+            var valA = a.scoreCurr !== null ? a.scoreCurr : -1;
+            var valB = b.scoreCurr !== null ? b.scoreCurr : -1;
+            if (valB !== valA) return valB - valA;
+            return a.municipio.localeCompare(b.municipio);
+        });
+
+        // 3. Ranking Estadual (Global) com tratamento oficial de empates
+        var validGlobalCount = mappedList.filter(function(m) { return m.scoreCurr !== null; }).length;
+        mappedList.forEach(function(m, idx) {
+            if (m.scoreCurr === null) {
+                m.stateRank = null;
+            } else {
+                if (idx > 0 && mappedList[idx - 1].scoreCurr !== null && m.scoreCurr === mappedList[idx - 1].scoreCurr) {
+                    m.stateRank = mappedList[idx - 1].stateRank;
+                } else {
+                    m.stateRank = idx + 1;
+                }
+            }
+            m.totalState = validGlobalCount;
+        });
+
+        // 4. Ranking na URE (Local) com tratamento oficial de empates
+        var ureGroups = {};
+        mappedList.forEach(function(m) {
+            if (!ureGroups[m.ure]) ureGroups[m.ure] = [];
+            ureGroups[m.ure].push(m);
+        });
+
+        Object.keys(ureGroups).forEach(function(uName) {
+            var group = ureGroups[uName];
+            group.sort(function(a, b) {
+                var valA = a.scoreCurr !== null ? a.scoreCurr : -1;
+                var valB = b.scoreCurr !== null ? b.scoreCurr : -1;
+                if (valB !== valA) return valB - valA;
+                return a.municipio.localeCompare(b.municipio);
+            });
+            var validUreCount = group.filter(function(x) { return x.scoreCurr !== null; }).length;
+            group.forEach(function(m, uIdx) {
+                if (m.scoreCurr === null) {
+                    m.ureRank = null;
+                } else {
+                    if (uIdx > 0 && group[uIdx - 1].scoreCurr !== null && m.scoreCurr === group[uIdx - 1].scoreCurr) {
+                        m.ureRank = group[uIdx - 1].ureRank;
+                    } else {
+                        m.ureRank = uIdx + 1;
+                    }
+                }
+                m.totalUre = validUreCount;
+            });
+        });
+
+        // 5. Filtragem por busca e URE
+        var filtered = mappedList.filter(function(c) {
+            if (ureFilter !== 'all' && c.ure !== ureFilter) return false;
             if (query) {
-                var full = normalizeStr(c.municipio + ' ' + ure);
+                var full = normalizeStr(c.municipio + ' ' + c.ure);
                 if (!full.includes(query)) return false;
             }
             return true;
@@ -363,9 +429,9 @@
 
         var cycles = [2015, 2017, 2019, 2021, 2023, 2025];
 
-        tbody.innerHTML = filtered.map(function(c, idx) {
-            var rawCurr = (c[currKey] !== null && c[currKey] !== undefined && c[currKey] >= 0 && c[currKey] <= 10) ? c[currKey] : null;
-            var rawPrev = (activeYear === 2015) ? null : ((c[prevKey] !== null && c[prevKey] !== undefined && c[prevKey] >= 0 && c[prevKey] <= 10) ? c[prevKey] : null);
+        tbody.innerHTML = filtered.map(function(c) {
+            var rawCurr = c.scoreCurr;
+            var rawPrev = c.scorePrev;
 
             var displayCurr = rawCurr !== null ? Number(rawCurr).toFixed(1) : '—';
             var displayPrev = rawPrev !== null ? Number(rawPrev).toFixed(1) : (activeYear === 2015 ? 'Base' : '—');
@@ -381,20 +447,41 @@
             }
 
             var isGD = normalizeStr(c.municipio) === 'goncalves dias';
-            var ureName = c.ure || getUreForCity(c.municipio);
+            var ureName = c.ure;
 
             var miniChips = cycles.map(function(cyc) {
                 var k = 'y' + cyc;
-                var v = (c[k] !== null && c[k] !== undefined && c[k] >= 0 && c[k] <= 10) ? Number(c[k]).toFixed(1) : '-';
+                var v = (c.raw[k] !== null && c.raw[k] !== undefined && c.raw[k] >= 0 && c.raw[k] <= 10) ? Number(c.raw[k]).toFixed(1) : '-';
                 var isCurrent = (cyc === activeYear);
                 return '<span style="font-size:0.65rem; padding:1px 4px; border-radius:4px; ' + (isCurrent ? 'background:#6366f1; color:#fff; font-weight:800;' : 'background:var(--color-surface-subtle); color:var(--color-text-secondary); border:1px solid var(--color-border-subtle);') + '" title="' + cyc + ': ' + v + '">' + v + '</span>';
             }).join(' ');
 
+            var rankMarkup = '';
+            if (c.stateRank !== null) {
+                var badgeIcon = c.stateRank === 1 ? ' 👑' : (c.stateRank === 2 ? ' 🥈' : (c.stateRank === 3 ? ' 🥉' : ''));
+                var rankColor = c.stateRank <= 3 ? '#f59e0b' : 'var(--color-text-secondary)';
+                rankMarkup = '<span style="font-weight:800; color:' + rankColor + '; font-family:var(--font-display); font-size:0.95rem;">#' + c.stateRank + badgeIcon + '</span>';
+                if (ureFilter !== 'all' && c.ureRank !== null) {
+                    rankMarkup += '<div style="font-size:0.68rem; color:#6366f1; font-weight:700; margin-top:1px;">#' + c.ureRank + ' na URE</div>';
+                }
+            } else {
+                rankMarkup = '<span style="color:var(--color-text-secondary); font-size:0.8rem;" title="Sem avaliação divulgada neste ciclo">—</span>';
+            }
+
+            var situacaoBadge = '';
+            if (rawCurr === null) {
+                situacaoBadge = '<span class="badge badge-neutral" style="font-size: 0.68rem;">Sem Nota</span>';
+            } else if (rawCurr >= 5.0) {
+                situacaoBadge = '<span class="badge badge-success" style="font-size: 0.68rem;">Alto Desempenho 🟢</span>';
+            } else if (rawCurr >= 4.0) {
+                situacaoBadge = '<span class="badge badge-info" style="font-size: 0.68rem;">Médio Desempenho 🔵</span>';
+            } else {
+                situacaoBadge = '<span class="badge badge-warning" style="font-size: 0.68rem;">Em Desenvolvimento 🟡</span>';
+            }
+
             return [
                 '<tr style="border-bottom: 1px solid var(--color-border-subtle); height: 50px; ' + (isGD ? 'background: rgba(16, 185, 129, 0.08);' : '') + '">',
-                '    <td style="padding: 10px 14px; font-weight: 800; color: ' + (idx < 3 ? '#f59e0b' : 'var(--color-text-secondary)') + '; font-family: var(--font-display); font-variant-numeric: tabular-nums;">',
-                '        #' + (idx + 1) + ' ' + (idx === 0 ? '👑' : '') + '',
-                '    </td>',
+                '    <td style="padding: 10px 14px; font-variant-numeric: tabular-nums;">' + rankMarkup + '</td>',
                 '    <td style="padding: 10px 14px; font-weight: 700; color: ' + (isGD ? '#10b981' : 'var(--color-brand-primary)') + ';">',
                 '        <a href="#" onclick="selectCityFromUre(\'' + (c.municipio||'').replace(/'/g, "\\'") + '\'); return false;" style="color:inherit; text-decoration:none;">',
                 '            ' + c.municipio + ' ' + (isGD ? '⭐ (Sua Rede)' : '') + '',
@@ -404,11 +491,7 @@
                 '    <td style="padding: 10px 14px; text-align: center; font-size: 0.85rem; font-family: var(--font-display); font-variant-numeric: tabular-nums;">' + displayPrev + '</td>',
                 '    <td style="padding: 10px 14px; text-align: center; font-weight: 800; font-size: 0.95rem; color: #10b981; font-family: var(--font-display); font-variant-numeric: tabular-nums;">' + displayCurr + '</td>',
                 '    <td style="padding: 10px 14px; text-align: center;">' + diffBadge + '</td>',
-                '    <td style="padding: 10px 14px; text-align: center;">',
-                '        <span class="badge ' + (rawCurr !== null && rawCurr >= 5.0 ? 'badge-success' : 'badge-warning') + '" style="font-size: 0.68rem;">',
-                '            ' + (rawCurr !== null && rawCurr >= 5.0 ? 'Alto Desempenho 🟢' : 'Em Desenvolvimento 🟡') + '',
-                '        </span>',
-                '    </td>',
+                '    <td style="padding: 10px 14px; text-align: center;">' + situacaoBadge + '</td>',
                 '    <td style="padding: 10px 14px; text-align: center; white-space: nowrap;">',
                 '        <div style="display:inline-flex; gap:2px; align-items:center;">' + miniChips + '</div>',
                 '    </td>',

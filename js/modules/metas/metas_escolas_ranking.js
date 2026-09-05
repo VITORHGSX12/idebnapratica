@@ -116,14 +116,26 @@
         schoolsData.sort(function(a, b) {
             var valA = (a.scoreCurr !== null) ? a.scoreCurr : -1;
             var valB = (b.scoreCurr !== null) ? b.scoreCurr : -1;
-            return valB - valA;
+            if (valB !== valA) return valB - valA;
+            return a.name.localeCompare(b.name);
         });
 
+        // Ranking Estadual (Global) com tratamento oficial de empates
+        var validGlobalCount = schoolsData.filter(function(s) { return s.scoreCurr !== null; }).length;
         schoolsData.forEach(function(sch, idx) {
-            sch.globalRank = idx + 1;
-            sch.totalGlobal = schoolsData.length;
+            if (sch.scoreCurr === null) {
+                sch.globalRank = null;
+            } else {
+                if (idx > 0 && schoolsData[idx - 1].scoreCurr !== null && sch.scoreCurr === schoolsData[idx - 1].scoreCurr) {
+                    sch.globalRank = schoolsData[idx - 1].globalRank;
+                } else {
+                    sch.globalRank = idx + 1;
+                }
+            }
+            sch.totalGlobal = validGlobalCount;
         });
 
+        // Ranking Municipal (Local) com tratamento oficial de empates
         var cityGroups = {};
         schoolsData.forEach(function(sch) {
             var cleanC = normalizeStr(sch.city);
@@ -132,10 +144,27 @@
         });
 
         Object.keys(cityGroups).forEach(function(cleanC) {
-            cityGroups[cleanC].sort(function(a, b) { return ((b.scoreCurr !== null ? b.scoreCurr : -1) - (a.scoreCurr !== null ? a.scoreCurr : -1)); });
-            cityGroups[cleanC].forEach(function(sch, lIdx) {
-                sch.localRank = lIdx + 1;
-                sch.localTotal = cityGroups[cleanC].length;
+            var group = cityGroups[cleanC];
+            group.sort(function(a, b) { 
+                var valA = (a.scoreCurr !== null ? a.scoreCurr : -1);
+                var valB = (b.scoreCurr !== null ? b.scoreCurr : -1);
+                if (valB !== valA) return valB - valA;
+                return a.name.localeCompare(b.name);
+            });
+            var validLocalCount = group.filter(function(s) { return s.scoreCurr !== null; }).length;
+
+            group.forEach(function(sch, lIdx) {
+                if (sch.scoreCurr === null) {
+                    sch.localRank = null;
+                } else {
+                    if (lIdx > 0 && group[lIdx - 1].scoreCurr !== null && sch.scoreCurr === group[lIdx - 1].scoreCurr) {
+                        sch.localRank = group[lIdx - 1].localRank;
+                    } else {
+                        sch.localRank = lIdx + 1;
+                    }
+                }
+                sch.localTotal = validLocalCount;
+                sch.localTotalAll = group.length;
             });
         });
 
@@ -177,11 +206,13 @@
             }
 
             var isGD = normalizeStr(sch.city) === 'goncalves dias';
+            var globalRankText = sch.globalRank !== null ? ('#' + sch.globalRank) : '<span style="color:var(--color-text-secondary); font-size:0.75rem;">—</span>';
+            var localRankText = sch.localRank !== null ? ('#' + sch.localRank + ' de ' + sch.localTotal) : '<span style="color:var(--color-text-secondary); font-size:0.75rem;">Sem nota</span>';
 
             return [
                 '<tr style="border-bottom: 1px solid var(--color-border-subtle); height: 54px; ' + (isGD ? 'background: rgba(16, 185, 129, 0.05);' : '') + '">',
-                '    <td style="padding: 10px 14px; font-weight: 800; font-family: var(--font-display); font-variant-numeric: tabular-nums; color: #6366f1;">#' + sch.globalRank + '</td>',
-                '    <td style="padding: 10px 14px; font-weight: 800; font-family: var(--font-display); font-variant-numeric: tabular-nums; color: #f59e0b;">#' + sch.localRank + ' de ' + sch.localTotal + '</td>',
+                '    <td style="padding: 10px 14px; font-weight: 800; font-family: var(--font-display); font-variant-numeric: tabular-nums; color: #6366f1;">' + globalRankText + '</td>',
+                '    <td style="padding: 10px 14px; font-weight: 800; font-family: var(--font-display); font-variant-numeric: tabular-nums; color: #f59e0b;">' + localRankText + '</td>',
                 '    <td style="padding: 10px 14px; font-weight: 700; color: var(--color-brand-primary); font-size: 0.88rem;">' + sch.name + ' ' + (isGD ? '⭐' : '') + '</td>',
                 '    <td style="padding: 10px 14px; font-size: 0.8rem; color: var(--color-text-secondary);">' + sch.city + ' • <span style="color:var(--color-text-secondary);">' + sch.ure + '</span></td>',
                 '    <td style="padding: 10px 14px;"><span class="badge ' + (sch.network === 'Municipal' ? 'badge-neutral' : 'badge-info') + '" style="font-size:0.68rem;">' + sch.network + '</span></td>',
@@ -213,28 +244,31 @@
 
         var validScores = schoolsList.filter(function(s) { return s.scoreCurr !== null; });
         var total = schoolsList.length;
-        var avg = (validScores.length > 0) ? (validScores.reduce(function(acc, s) { return acc + s.scoreCurr; }, 0) / validScores.length).toFixed(1) : '—';
-        var best = validScores[0] || schoolsList[0];
-        var worst = validScores[validScores.length - 1] || schoolsList[schoolsList.length - 1];
+        var validCount = validScores.length;
+        var avg = (validCount > 0) ? (validScores.reduce(function(acc, s) { return acc + s.scoreCurr; }, 0) / validCount).toFixed(1) : '—';
+        var best = validScores.length > 0 ? validScores[0] : null;
+        var worst = (validScores.length > 1) ? validScores[validScores.length - 1] : (validScores.length === 1 ? validScores[0] : null);
 
         summaryContainer.innerHTML = [
             '<div style="background:var(--color-surface-subtle); padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--color-border-subtle); text-align:center;">',
             '    <div style="font-size:0.7rem; font-weight:700; color:var(--color-text-secondary);">Total de Escolas</div>',
             '    <div style="font-size:1.1rem; font-weight:800; color:var(--color-brand-primary); margin-top:2px;">' + total + ' Unidades</div>',
+            '    <div style="font-size:0.68rem; color:var(--color-text-secondary); margin-top:2px;">' + validCount + ' com nota oficial</div>',
             '</div>',
             '<div style="background:var(--color-surface-subtle); padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--color-border-subtle); text-align:center;">',
             '    <div style="font-size:0.7rem; font-weight:700; color:var(--color-text-secondary);">Média no Ciclo ' + (year || 2025) + '</div>',
             '    <div style="font-size:1.1rem; font-weight:800; color:#6366f1; margin-top:2px;">' + avg + ' IDEB</div>',
+            '    <div style="font-size:0.68rem; color:var(--color-text-secondary); margin-top:2px;">Média simples das escolas</div>',
             '</div>',
             '<div style="background:rgba(16, 185, 129, 0.08); padding:10px 12px; border-radius:var(--radius-sm); border:1px solid #10b981; text-align:center;">',
             '    <div style="font-size:0.7rem; font-weight:700; color:#10b981;">🥇 Melhor Escola (' + (year || 2025) + ')</div>',
             '    <div style="font-size:0.82rem; font-weight:800; color:var(--color-brand-primary); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="' + (best ? best.name : '') + '">' + (best ? best.name : '—') + '</div>',
-            '    <div style="font-size:0.7rem; font-weight:800; color:#10b981;">' + (best && best.scoreCurr !== null ? best.scoreCurr : '—') + ' IDEB</div>',
+            '    <div style="font-size:0.7rem; font-weight:800; color:#10b981;">' + (best && best.scoreCurr !== null ? (best.scoreCurr.toFixed(1) + ' IDEB') : '—') + '</div>',
             '</div>',
             '<div style="background:rgba(239, 68, 68, 0.08); padding:10px 12px; border-radius:var(--radius-sm); border:1px solid #ef4444; text-align:center;">',
             '    <div style="font-size:0.7rem; font-weight:700; color:#ef4444;">⚠️ Escola Prioritária (' + (year || 2025) + ')</div>',
             '    <div style="font-size:0.82rem; font-weight:800; color:var(--color-brand-primary); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="' + (worst ? worst.name : '') + '">' + (worst ? worst.name : '—') + '</div>',
-            '    <div style="font-size:0.7rem; font-weight:800; color:#ef4444;">' + (worst && worst.scoreCurr !== null ? worst.scoreCurr : '—') + ' IDEB</div>',
+            '    <div style="font-size:0.7rem; font-weight:800; color:#ef4444;">' + (worst && worst.scoreCurr !== null ? (worst.scoreCurr.toFixed(1) + ' IDEB') : '—') + '</div>',
             '</div>'
         ].join('\n');
     }
