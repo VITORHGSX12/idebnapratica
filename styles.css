@@ -7343,15 +7343,27 @@ html, body {
     justify-content: space-between !important;
     position: relative !important;
     overflow: hidden !important;
-    transition: transform 180ms ease, box-shadow 180ms ease !important;
+    transform-origin: center center;
+    transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.25, 1),
+                opacity 0.32s cubic-bezier(0.2, 0.8, 0.25, 1),
+                box-shadow 0.32s cubic-bezier(0.2, 0.8, 0.25, 1),
+                border-color 0.32s cubic-bezier(0.2, 0.8, 0.25, 1),
+                filter 0.32s cubic-bezier(0.2, 0.8, 0.25, 1) !important;
+    will-change: transform, opacity, box-shadow;
+    z-index: 1;
 }
 
 #dashboard-metric-cards-container .metric-card:hover,
 .metrics-grid .metric-card:hover,
 .metric-card:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 8px 24px -2px rgba(10, 25, 49, 0.18) !important;
-    border-color: #1A3D63 !important;
+    transform: scale(1.045) translateY(-8px) translateZ(40px) !important;
+    box-shadow: 0 20px 38px -10px rgba(10, 25, 49, 0.38),
+                0 0 0 1.5px var(--color-accent-primary, #7FB3E0),
+                0 0 24px -4px rgba(127, 179, 224, 0.3) !important;
+    border-color: var(--color-accent-primary, #7FB3E0) !important;
+    opacity: 1 !important;
+    filter: none !important;
+    z-index: 20 !important;
 }
 
 #dashboard-metric-cards-container .metric-card .metric-label,
@@ -8027,7 +8039,135 @@ body.dark-mode .metric-card .progress-ring-value {
     transform: translateY(-1px);
 }
 
+/* ==========================================================================
+   PAINEL EXECUTIVO — ANIMAÇÕES DE FOCO 3D & RECUO (DEPTH FOCUS)
+   ========================================================================== */
 
+/* 1. Container dos KPIs Executivos com Perspectiva 3D */
+#dashboard-metric-cards-container,
+.metrics-grid {
+    perspective: 1200px;
+}
 
+/* Quando o cursor entra no grid de KPIs, os cards NÃO focados RECUAM para trás */
+#dashboard-metric-cards-container:hover .metric-card:not(:hover),
+.metrics-grid:hover .metric-card:not(:hover) {
+    transform: scale(0.94) translateZ(-25px) !important;
+    opacity: 0.52 !important;
+    filter: blur(0.4px) grayscale(18%) !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05) !important;
+}
 
+/* Card de KPI em destaque com foco 3D para frente */
+#dashboard-metric-cards-container .metric-card:hover,
+.metrics-grid .metric-card:hover,
+body.dark-mode #dashboard-metric-cards-container .metric-card:hover,
+body.dark-mode .metrics-grid .metric-card:hover {
+    transform: scale(1.045) translateY(-8px) translateZ(40px) !important;
+    opacity: 1 !important;
+    filter: none !important;
+    z-index: 20 !important;
+    border-color: var(--color-accent-primary, #7FB3E0) !important;
+    box-shadow: 0 20px 40px -10px rgba(10, 25, 49, 0.45),
+                0 0 0 1.5px var(--color-accent-primary, #7FB3E0),
+                0 0 24px -4px rgba(127, 179, 224, 0.35) !important;
+}
 
+/* Microinteração elegante na bolha de ícone do KPI destacado */
+#dashboard-metric-cards-container .metric-card .metric-icon-bubble,
+.metrics-grid .metric-card .metric-icon-bubble {
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.25, 1), box-shadow 0.3s ease;
+}
+#dashboard-metric-cards-container .metric-card:hover .metric-icon-bubble,
+.metrics-grid .metric-card:hover .metric-icon-bubble {
+    transform: scale(1.14) rotate(4deg);
+    box-shadow: 0 4px 14px rgba(74, 127, 167, 0.35);
+}
+
+/* Entrada escalonada suave nos cards de KPI */
+@keyframes metricCardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+#dashboard-metric-cards-container .metric-card:nth-child(1) { animation: metricCardFadeIn 0.38s ease-out backwards; animation-delay: 0.04s; }
+#dashboard-metric-cards-container .metric-card:nth-child(2) { animation: metricCardFadeIn 0.38s ease-out backwards; animation-delay: 0.09s; }
+#dashboard-metric-cards-container .metric-card:nth-child(3) { animation: metricCardFadeIn 0.38s ease-out backwards; animation-delay: 0.14s; }
+#dashboard-metric-cards-container .metric-card:nth-child(4) { animation: metricCardFadeIn 0.38s ease-out backwards; animation-delay: 0.19s; }
+
+/* 2. Grid de 2 Colunas do Dashboard (Linha do Tempo, Descritores Prioritários, Séries Históricas) */
+#dashboard .dashboard-row.grid-2 {
+    perspective: 1200px;
+}
+#dashboard .dashboard-row.grid-2 > .card {
+    transform-origin: center center;
+    transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.25, 1),
+                opacity 0.32s cubic-bezier(0.2, 0.8, 0.25, 1),
+                box-shadow 0.32s cubic-bezier(0.2, 0.8, 0.25, 1),
+                border-color 0.32s cubic-bezier(0.2, 0.8, 0.25, 1),
+                filter 0.32s cubic-bezier(0.2, 0.8, 0.25, 1);
+    will-change: transform, opacity, box-shadow;
+    z-index: 1;
+}
+#dashboard .dashboard-row.grid-2:hover > .card:not(:hover) {
+    transform: scale(0.97) translateZ(-18px);
+    opacity: 0.62;
+    filter: blur(0.35px) grayscale(15%);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+#dashboard .dashboard-row.grid-2 > .card:hover {
+    transform: scale(1.025) translateY(-6px) translateZ(30px);
+    opacity: 1 !important;
+    filter: none !important;
+    z-index: 15;
+    border-color: var(--color-accent-primary, #7FB3E0) !important;
+    box-shadow: 0 20px 40px -10px rgba(10, 25, 49, 0.35),
+                0 0 0 1.5px var(--color-accent-primary, #7FB3E0),
+                0 0 22px -4px rgba(127, 179, 224, 0.28) !important;
+}
+
+/* 3. Cards de Linha Única no Dashboard (Suavidade e Elevação Nobre) */
+#dashboard .dashboard-row.grid-1 > .card {
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.25, 1),
+                box-shadow 0.28s cubic-bezier(0.2, 0.8, 0.25, 1),
+                border-color 0.28s cubic-bezier(0.2, 0.8, 0.25, 1);
+}
+#dashboard .dashboard-row.grid-1 > .card:hover {
+    border-color: var(--color-accent-primary, #7FB3E0);
+    box-shadow: 0 12px 30px -6px rgba(10, 25, 49, 0.16),
+                0 0 0 1px rgba(127, 179, 224, 0.3);
+}
+
+/* 4. Descritores Críticos da Rede Municipal (Foco & Recuo) */
+#grid-descritores-criticos-rede {
+    perspective: 1000px;
+}
+#grid-descritores-criticos-rede > div {
+    transform-origin: center center;
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.25, 1),
+                opacity 0.28s cubic-bezier(0.2, 0.8, 0.25, 1),
+                box-shadow 0.28s cubic-bezier(0.2, 0.8, 0.25, 1),
+                border-color 0.28s cubic-bezier(0.2, 0.8, 0.25, 1),
+                filter 0.28s cubic-bezier(0.2, 0.8, 0.25, 1);
+    will-change: transform, opacity, box-shadow;
+    z-index: 1;
+}
+#grid-descritores-criticos-rede:hover > div:not(:hover) {
+    transform: scale(0.95) translateZ(-15px);
+    opacity: 0.52;
+    filter: blur(0.35px) grayscale(15%);
+}
+#grid-descritores-criticos-rede > div:hover {
+    transform: scale(1.045) translateY(-4px) translateZ(24px);
+    opacity: 1 !important;
+    filter: none !important;
+    z-index: 10;
+    border-color: var(--color-accent-primary, #7FB3E0) !important;
+    box-shadow: 0 12px 24px -4px rgba(10, 25, 49, 0.25),
+                0 0 0 1.5px var(--color-accent-primary, #7FB3E0) !important;
+}
