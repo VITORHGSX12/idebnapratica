@@ -413,14 +413,30 @@ body.dark-mode .sidebar-logo-icon {
 }
 
 .menu-item i,
-.menu-item svg {
-    width: 18px !important;
-    height: 18px !important;
+.menu-item svg,
+.menu-item img.menu-icon-svg,
+.menu-icon-svg {
+    width: 20px !important;
+    height: 20px !important;
+    max-width: 20px !important;
+    max-height: 20px !important;
     color: #A0B3CC !important;
     stroke: #A0B3CC !important;
     stroke-width: 2 !important;
     flex-shrink: 0 !important;
-    transition: color 150ms ease !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+    object-fit: contain !important;
+    transition: color 150ms ease, filter 150ms ease, transform 150ms ease !important;
+}
+
+.sidebar .menu-item img.menu-icon-svg {
+    filter: brightness(0) invert(1) opacity(0.85);
+}
+
+.sidebar .menu-item:hover img.menu-icon-svg,
+.sidebar .menu-item.active img.menu-icon-svg {
+    filter: brightness(0) invert(1) opacity(1);
 }
 
 .menu-item:hover {
@@ -3829,13 +3845,17 @@ body.collapsed-sidebar .menu-item {
 }
 
 body.collapsed-sidebar .menu-item i,
-body.collapsed-sidebar .menu-item svg {
+body.collapsed-sidebar .menu-item svg,
+body.collapsed-sidebar .menu-item img.menu-icon-svg,
+body.collapsed-sidebar .menu-item .menu-icon-svg {
     margin: 0 auto !important;
     display: block !important;
     width: 20px !important;
     height: 20px !important;
     min-width: 20px !important;
     min-height: 20px !important;
+    max-width: 20px !important;
+    max-height: 20px !important;
     flex-shrink: 0 !important;
     transform: none !important;
 }
@@ -4053,9 +4073,14 @@ body.collapsed-sidebar [data-tooltip]:hover::after {
     .mobile-bottom-nav .menu-item i,
     .mobile-bottom-nav .mobile-nav-more i,
     .mobile-bottom-nav .menu-item svg,
-    .mobile-bottom-nav .mobile-nav-more svg {
+    .mobile-bottom-nav .mobile-nav-more svg,
+    .mobile-bottom-nav .menu-item img,
+    .mobile-bottom-nav .mobile-nav-more img {
         width: 20px !important;
         height: 20px !important;
+        max-width: 20px !important;
+        max-height: 20px !important;
+        object-fit: contain !important;
         transition: transform 0.2s ease !important;
     }
 
@@ -4067,7 +4092,8 @@ body.collapsed-sidebar [data-tooltip]:hover::after {
     }
 
     .mobile-bottom-nav .menu-item.active i,
-    .mobile-bottom-nav .menu-item.active svg {
+    .mobile-bottom-nav .menu-item.active svg,
+    .mobile-bottom-nav .menu-item.active img {
         transform: scale(1.1) !important;
     }
 

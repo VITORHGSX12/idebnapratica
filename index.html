@@ -8,6 +8,7 @@
     <meta http-equiv="Expires" content="0">
     <title>IDEB na Prática | SEMED Gonçalves Dias</title>
     <!-- Favicon Oficial IDEB na Prática -->
+    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -15,7 +16,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="design-tokens.css?v=20260830_v2">
-    <link rel="stylesheet" href="styles.css?v=b9a2b75047_mtqxbrrm">
+    <link rel="stylesheet" href="styles.css?v=9c6ee9451f_mtqymqeo">
     <link rel="stylesheet" href="login-premium.css?v=20260830_v2">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -444,7 +445,7 @@
                 <!-- Headline de Impacto com 4 Frases Rotativas em Tipografia Bold -->
                 <div class="hero-headline-wrap">
                     <div class="hero-brand-tag">
-                        <img src="assets/sidebar-icon-128x128.png" alt="IDEB na Prática" class="hero-brand-icon">
+                        <img src="assets/icons/login.svg" alt="IDEB na Prática" class="hero-brand-icon">
                         <span>IDEB na Prática · SEMED Gonçalves Dias</span>
                     </div>
                     
@@ -737,9 +738,7 @@
                         </div>
                     </div>
                     <button class="sidebar-collapse-btn" id="sidebar-collapse-toggle" onclick="toggleSidebarCollapse();" title="Recolher / Expandir Menu" aria-label="Recolher menu">
-                        <svg id="sidebar-toggle-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="15 18 9 12 15 6"></polyline>
-                        </svg>
+                        <img src="assets/icons/sidebar.svg" id="sidebar-toggle-svg" class="sidebar-toggle-icon" alt="" aria-hidden="true" style="width: 14px; height: 14px; filter: brightness(0) invert(1);">
                     </button>
                 </div>
                 
@@ -759,22 +758,22 @@
                     <span class="menu-section-label">VISÃO GERAL</span>
                     <a href="#dashboard" onclick="switchTab('dashboard'); return false;" class="menu-item active" data-target="dashboard" data-tooltip="Painel Executivo">
                         <div class="menu-active-indicator"></div>
-                        <i data-lucide="layout-grid"></i>
+                        <img src="assets/icons/inicio.svg" class="menu-icon-svg" alt="" aria-hidden="true">
                         <span>Painel Executivo</span>
                     </a>
                     <a href="#calculo-ideb" onclick="switchTab('calculo-ideb'); return false;" class="menu-item" data-target="calculo-ideb" data-tooltip="Cálculo do IDEB">
                         <div class="menu-active-indicator"></div>
-                        <i data-lucide="calculator"></i>
+                        <img src="assets/icons/turmas.svg" class="menu-icon-svg" alt="" aria-hidden="true">
                         <span>Cálculo do IDEB</span>
                     </a>
                     <a href="#escolas-panel" onclick="switchTab('escolas-panel'); return false;" class="menu-item" data-target="escolas-panel" data-tooltip="Escolas da Rede">
                         <div class="menu-active-indicator"></div>
-                        <i data-lucide="school"></i>
+                        <img src="assets/icons/escolas.svg" class="menu-icon-svg" alt="" aria-hidden="true">
                         <span>Escolas da Rede</span>
                     </a>
                     <a href="#alunos-panel" onclick="switchTab('alunos-panel'); return false;" class="menu-item" data-target="alunos-panel" data-tooltip="Estudantes &amp; Turmas">
                         <div class="menu-active-indicator"></div>
-                        <i data-lucide="users"></i>
+                        <img src="assets/icons/alunos.svg" class="menu-icon-svg" alt="" aria-hidden="true">
                         <span>Estudantes &amp; Turmas</span>
                         <span class="badge badge-counter" id="badge-count-students">526</span>
                     </a>
@@ -785,22 +784,22 @@
                     <span class="menu-section-label">PLANEJAMENTO</span>
                     <a href="#metas-ideb" onclick="switchTab('metas-ideb'); return false;" class="menu-item" data-target="metas-ideb" data-tooltip="Metas Municipais (PDE)">
                         <div class="menu-active-indicator"></div>
-                        <i data-lucide="target"></i>
+                        <img src="assets/icons/configuracoes.svg" class="menu-icon-svg" alt="" aria-hidden="true">
                         <span>Metas Municipais (PDE)</span>
                     </a>
                     <a href="#ideb-comparativo" onclick="switchTab('ideb-comparativo'); return false;" class="menu-item" data-target="ideb-comparativo" data-tooltip="Comparativo Regional">
                         <div class="menu-active-indicator"></div>
-                        <i data-lucide="globe-2"></i>
+                        <img src="assets/icons/relatorios.svg" class="menu-icon-svg" alt="" aria-hidden="true">
                         <span>Comparativo Regional</span>
                     </a>
                     <a href="#matriz-descritores" onclick="switchTab('matriz-descritores'); return false;" class="menu-item" data-target="matriz-descritores" data-tooltip="Matriz &amp; Descritores">
                         <div class="menu-active-indicator"></div>
-                        <i data-lucide="list-tree"></i>
+                        <img src="assets/icons/matriculas.svg" class="menu-icon-svg" alt="" aria-hidden="true">
                         <span>Matriz &amp; Descritores</span>
                     </a>
                     <a href="#cronograma-habilidades" onclick="switchTab('cronograma-habilidades'); return false;" class="menu-item" data-target="cronograma-habilidades" data-tooltip="Cronograma de Habilidades">
                         <div class="menu-active-indicator"></div>
-                        <i data-lucide="calendar-clock"></i>
+                        <img src="assets/icons/calendario.svg" class="menu-icon-svg" alt="" aria-hidden="true">
                         <span>Cronograma de Habilidades</span>
                         <span class="badge badge-counter">Semanal</span>
                     </a>
@@ -811,38 +810,38 @@
                     <span class="menu-section-label">AVALIAÇÕES</span>
                     <a href="#sec-criar-avaliacoes" onclick="switchTab('sec-criar-avaliacoes'); return false;" class="menu-item" data-target="sec-criar-avaliacoes" data-tooltip="Avaliações &amp; Simulados">
                         <div class="menu-active-indicator"></div>
-                        <i data-lucide="clipboard-check"></i>
+                        <img src="assets/icons/turmas.svg" class="menu-icon-svg" alt="" aria-hidden="true">
                         <span>Avaliações &amp; Simulados</span>
                     </a>
                     <a href="#banco-questoes" onclick="switchTab('banco-questoes'); return false;" class="menu-item" data-target="banco-questoes" data-tooltip="Banco de Questões">
                         <div class="menu-active-indicator"></div>
-                        <i data-lucide="book-open"></i>
+                        <img src="assets/icons/matriculas.svg" class="menu-icon-svg" alt="" aria-hidden="true">
                         <span>Banco de Questões</span>
                         <span class="badge badge-counter" id="badge-count-questions">12</span>
                     </a>
                     <a href="#relatorios-monitoramento" onclick="switchTab('relatorios-monitoramento'); return false;" class="menu-item" data-target="relatorios-monitoramento" data-tooltip="Relatórios &amp; Monitoramento">
                         <div class="menu-active-indicator"></div>
-                        <i data-lucide="bar-chart-3"></i>
+                        <img src="assets/icons/relatorios.svg" class="menu-icon-svg" alt="" aria-hidden="true">
                         <span>Relatórios &amp; Monitoramento</span>
                     </a>
                     <a href="#gestao-pedagogica" onclick="switchTab('gestao-pedagogica'); return false;" class="menu-item" data-target="gestao-pedagogica" data-tooltip="Gestão Pedagógica">
                         <div class="menu-active-indicator"></div>
-                        <i data-lucide="sparkles"></i>
+                        <img src="assets/icons/professores.svg" class="menu-icon-svg" alt="" aria-hidden="true">
                         <span>Gestão Pedagógica</span>
                     </a>
                     <a href="#biblioteca-recursos" onclick="switchTab('biblioteca-recursos'); return false;" class="menu-item" data-target="biblioteca-recursos" data-tooltip="Biblioteca Pedagógica">
                         <div class="menu-active-indicator"></div>
-                        <i data-lucide="book-marked"></i>
+                        <img src="assets/icons/suporte.svg" class="menu-icon-svg" alt="" aria-hidden="true">
                         <span>Biblioteca Pedagógica</span>
                     </a>
                     <a href="#doc-tecnica" onclick="switchTab('doc-tecnica'); return false;" class="menu-item" data-target="doc-tecnica" data-tooltip="Documentação Técnica">
                         <div class="menu-active-indicator"></div>
-                        <i data-lucide="file-code"></i>
+                        <img src="assets/icons/suporte.svg" class="menu-icon-svg" alt="" aria-hidden="true">
                         <span>Documentação Técnica</span>
                     </a>
                     <a href="#admin-panel" onclick="switchTab('admin-panel'); return false;" class="menu-item" data-target="admin-panel" data-tooltip="Área Administrativa">
                         <div class="menu-active-indicator"></div>
-                        <i data-lucide="shield"></i>
+                        <img src="assets/icons/usuarios.svg" class="menu-icon-svg" alt="" aria-hidden="true">
                         <span>Área Administrativa</span>
                     </a>
                 </div>
@@ -866,7 +865,9 @@
 
                 <!-- User Navigation Card (Direct Profile Action) -->
                 <button type="button" class="user-profile-nav-card" id="user-menu-btn" onclick="if(typeof openUserProfileModal==='function') openUserProfileModal();" title="Ver e Editar Meu Perfil" data-tooltip="Meu Perfil">
-                    <div class="user-avatar-circle" id="sidebar-user-avatar">GD</div>
+                    <div class="user-avatar-circle" id="sidebar-user-avatar">
+                        <img src="assets/icons/profile.svg" alt="Perfil" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                    </div>
                     <div class="user-info-text">
                         <span class="user-name-label" id="sidebar-user-name">Gestor da Rede</span>
                         <span class="user-role-label" id="sidebar-user-role">Secretaria Exec. · Ver perfil</span>
@@ -889,8 +890,8 @@
                             <polyline points="12 19 5 12 12 5"></polyline>
                         </svg>
                     </button>
-                    <button class="btn-icon" id="mobile-menu-toggle" onclick="toggleMobileSidebar();" style="display:none; background: none; border: none; color: var(--text-primary); cursor: pointer; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: var(--radius-md);">
-                        <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
+                    <button class="btn-icon" id="mobile-menu-toggle" onclick="toggleMobileSidebar();" style="display:none; background: none; border: none; color: var(--text-primary); cursor: pointer; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: var(--radius-md);" aria-label="Abrir menu lateral">
+                        <img src="assets/icons/sidebar.svg" alt="" aria-hidden="true" style="width: 22px; height: 22px;">
                     </button>
                     <div>
                         <h2 id="page-title">IDEB na Prática</h2>
@@ -934,8 +935,8 @@
                     </button>
 
                     <!-- Botão Deslogar / Sair -->
-                    <button type="button" class="btn btn-icon" id="btn-header-logout" onclick="handleSystemLogout();" title="Deslogar do Sistema" style="width: 38px; height: 38px; border-radius: var(--radius-btn, 10px); color: #ef4444; border-color: rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.08);">
-                        <i data-lucide="log-out" style="width: 17px; height: 17px;"></i>
+                    <button type="button" class="btn btn-icon" id="btn-header-logout" onclick="handleSystemLogout();" title="Deslogar do Sistema" style="width: 38px; height: 38px; border-radius: var(--radius-btn, 10px); color: #ef4444; border-color: rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.08); display: flex; align-items: center; justify-content: center;">
+                        <img src="assets/icons/sair.svg" alt="Sair" aria-hidden="true" style="width: 18px; height: 18px; filter: brightness(0) saturate(100%) invert(32%) sepia(85%) saturate(2250%) hue-rotate(341deg) brightness(98%) contrast(92%);">
                     </button>
                 </div>
             </header>
@@ -7239,7 +7240,7 @@
                     </label>
                     <div style="display: flex; align-items: center; gap: 16px;">
                         <div id="profile-avatar-preview" style="width: 60px; height: 60px; border-radius: var(--radius-sm); background: var(--color-brand-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: 700; border: 1px solid var(--color-border-strong); flex-shrink: 0; overflow: hidden;">
-                            SE
+                            <img src="assets/icons/profile.svg" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
                         </div>
                         <div style="flex: 1;">
                             <div style="font-size: var(--text-xs); color: var(--color-text-secondary); margin-bottom: 6px;">Ou informe a URL de uma foto institucional:</div>
@@ -7284,7 +7285,7 @@
                 <!-- Footer do Modal -->
                 <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 10px; padding-top: 16px; border-top: 1px solid var(--color-border-subtle);">
                     <button type="button" onclick="handleSystemLogout();" class="btn btn-outline" style="color: var(--color-status-critical-text); border-color: var(--color-status-critical-border); background: var(--color-status-critical-bg); font-size: var(--text-xs); font-weight: 700; padding: 0 14px; height: 38px; display: inline-flex; align-items: center; gap: 6px;">
-                        <i data-lucide="log-out" style="width: 14px; height: 14px;"></i>
+                        <img src="assets/icons/sair.svg" alt="" aria-hidden="true" style="width: 14px; height: 14px; filter: brightness(0) saturate(100%) invert(32%) sepia(85%) saturate(2250%) hue-rotate(341deg) brightness(98%) contrast(92%);">
                         <span>Encerrar Sessão</span>
                     </button>
 
@@ -7587,88 +7588,88 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=341bc2b5e3_mtqxbrrm"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=daec643646_mtqxbrrm"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mtqxbrrm"></script>
-    <script src="bncc_habilidades_oficial.js?v=2f802bf604_mtqxbrrm"></script>
-    <script src="ideb_publico_db.js?v=fa7edb185f_mtqxbrrm"></script>
-    <script src="alunos_db.js?v=e23fe3179f_mtqxbrrm"></script>
-    <script src="js/data/official_students_seed.js?v=876be25c9a_mtqxbrrm"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=341bc2b5e3_mtqymqeo"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=daec643646_mtqymqeo"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mtqymqeo"></script>
+    <script src="bncc_habilidades_oficial.js?v=2f802bf604_mtqymqeo"></script>
+    <script src="ideb_publico_db.js?v=fa7edb185f_mtqymqeo"></script>
+    <script src="alunos_db.js?v=e23fe3179f_mtqymqeo"></script>
+    <script src="js/data/official_students_seed.js?v=876be25c9a_mtqymqeo"></script>
 
     <!-- Módulos do Core -->
-    <script src="js/core/security.js?v=9d4fc4a791_mtqxbrrm"></script>
-    <script src="js/core/helpers.js?v=7656a2a6bb_mtqxbrrm"></script>
-    <script src="js/core/theme-toast.js?v=c181c006e0_mtqxbrrm"></script>
-    <script src="js/core/chart-theme.js?v=427aa86547_mtqxbrrm"></script>
-    <script src="js/core/user-profile.js?v=4adb3d4494_mtqxbrrm"></script>
-    <script src="js/data/official_users_directory.js?v=24a756e04c_mtqxbrrm"></script>
-    <script src="js/core/login-animation.js?v=414e14bbcd_mtqxbrrm"></script>
-    <script src="js/core/auth.js?v=fc3f5dd497_mtqxbrrm"></script>
-    <script src="js/core/navigation/navigation_meta.js?v=8c84252ce2_mtqxbrrm"></script>
-    <script src="js/core/navigation/navigation_history.js?v=a09c33f4ae_mtqxbrrm"></script>
-    <script src="js/core/navigation/navigation_events.js?v=7e416c2fa3_mtqxbrrm"></script>
-    <script src="js/core/navigation.js?v=5b61fc7023_mtqxbrrm"></script>
-    <script src="js/core/sync.js?v=73ebd2560a_mtqxbrrm"></script>
+    <script src="js/core/security.js?v=9d4fc4a791_mtqymqeo"></script>
+    <script src="js/core/helpers.js?v=7656a2a6bb_mtqymqeo"></script>
+    <script src="js/core/theme-toast.js?v=c181c006e0_mtqymqeo"></script>
+    <script src="js/core/chart-theme.js?v=427aa86547_mtqymqeo"></script>
+    <script src="js/core/user-profile.js?v=1049f256c6_mtqymqeo"></script>
+    <script src="js/data/official_users_directory.js?v=24a756e04c_mtqymqeo"></script>
+    <script src="js/core/login-animation.js?v=414e14bbcd_mtqymqeo"></script>
+    <script src="js/core/auth.js?v=fc3f5dd497_mtqymqeo"></script>
+    <script src="js/core/navigation/navigation_meta.js?v=8c84252ce2_mtqymqeo"></script>
+    <script src="js/core/navigation/navigation_history.js?v=a09c33f4ae_mtqymqeo"></script>
+    <script src="js/core/navigation/navigation_events.js?v=7e416c2fa3_mtqymqeo"></script>
+    <script src="js/core/navigation.js?v=5b61fc7023_mtqymqeo"></script>
+    <script src="js/core/sync.js?v=73ebd2560a_mtqymqeo"></script>
 
     <!-- Módulos de Domínio -->
-    <script src="js/modules/dashboard/dashboard_kpis.js?v=661c48df5d_mtqxbrrm"></script>
-    <script src="js/modules/dashboard/dashboard_charts.js?v=f817fe2edd_mtqxbrrm"></script>
-    <script src="js/modules/dashboard/dashboard_analytics.js?v=156257a0b0_mtqxbrrm"></script>
-    <script src="js/modules/dashboard/dashboard_scales.js?v=8b105db83a_mtqxbrrm"></script>
-    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=047c7904b7_mtqxbrrm"></script>
-    <script src="js/modules/dashboard/dashboard_scroll_reveal.js?v=765a5ac049_mtqxbrrm"></script>
-    <script src="js/modules/alunos/alunos_progression_modal.js?v=cf365ce8cf_mtqxbrrm"></script>
-    <script src="js/modules/alunos/alunos_list.js?v=1680ba1e32_mtqxbrrm"></script>
-    <script src="js/modules/alunos/alunos_forms.js?v=d65581afbc_mtqxbrrm"></script>
-    <script src="js/modules/turmas/turmas_crud.js?v=e246099ccf_mtqxbrrm"></script>
-    <script src="js/modules/turmas/turmas_diario.js?v=a785ddd9e6_mtqxbrrm"></script>
-    <script src="js/modules/metas/metas_regional.js?v=2237174a37_mtqxbrrm"></script>
-    <script src="js/modules/metas/metas_pactuacao.js?v=4706caf85f_mtqxbrrm"></script>
-    <script src="js/modules/metas/metas_escolas_ranking.js?v=764501fe71_mtqxbrrm"></script>
-    <script src="js/modules/metas/metas_calculo_manual.js?v=42d907079e_mtqxbrrm"></script>
-    <script src="js/modules/metas/metas_ideb.js?v=505cc6d09c_mtqxbrrm"></script>
-    <script src="js/modules/escolas/escolas.js?v=6156cfb8f2_mtqxbrrm"></script>
-    <script src="js/modules/escolas/escolas_workspace.js?v=cbd14d4cc2_mtqxbrrm"></script>
-    <script src="js/modules/escolas/escolas_modals.js?v=d32d052d1d_mtqxbrrm"></script>
-    <script src="js/modules/matrizes/matrizes.js?v=d2df1a4b54_mtqxbrrm"></script>
-    <script src="js/modules/cronograma/cronograma_state.js?v=291ef65907_mtqxbrrm"></script>
-    <script src="js/modules/cronograma/cronograma_views_monthly.js?v=9bbac5a230_mtqxbrrm"></script>
-    <script src="js/modules/cronograma/cronograma_views_weekly.js?v=37e3b04d03_mtqxbrrm"></script>
-    <script src="js/modules/cronograma/cronograma_views_comparison.js?v=9875be98c6_mtqxbrrm"></script>
-    <script src="js/modules/cronograma/cronograma_progress_modal.js?v=f327132831_mtqxbrrm"></script>
-    <script src="js/modules/cronograma/cronograma_views.js?v=3254fb7223_mtqxbrrm"></script>
-    <script src="js/modules/cronograma/cronograma_planner.js?v=217cb644d9_mtqxbrrm"></script>
-    <script src="js/modules/cronograma/cronograma_trash.js?v=a01d97e91e_mtqxbrrm"></script>
-    <script src="js/modules/cronograma/cronograma_calendar_40w.js?v=951800db84_mtqxbrrm"></script>
-    <script src="js/modules/cronograma/cronograma.js?v=69486dcbc3_mtqxbrrm"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_state.js?v=926f0714e3_mtqxbrrm"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_wizard.js?v=23d3745407_mtqxbrrm"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_events.js?v=6af1a89e95_mtqxbrrm"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_espelho.js?v=11acd9efc8_mtqxbrrm"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_analytics.js?v=d8988743ae_mtqxbrrm"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_print.js?v=b5eb11e2a6_mtqxbrrm"></script>
-    <script src="js/modules/questoes/questoes_generator.js?v=8e44d7592b_mtqxbrrm"></script>
-    <script src="js/modules/questoes/questoes_list.js?v=5543a2c1d7_mtqxbrrm"></script>
-    <script src="js/modules/questoes/questoes_import_export.js?v=c7d3bb36d0_mtqxbrrm"></script>
-    <script src="js/modules/diagnostico/diagnostico.js?v=e4becf6279_mtqxbrrm"></script>
-    <script src="js/modules/saeb/saeb_state.js?v=178da7f734_mtqxbrrm"></script>
-    <script src="js/modules/saeb/saeb_distribution_view.js?v=7bee5af18a_mtqxbrrm"></script>
-    <script src="js/modules/saeb/saeb_comparativo_turmas.js?v=22f1b3636c_mtqxbrrm"></script>
-    <script src="js/modules/saeb/saeb_ficha_individual.js?v=17642111a3_mtqxbrrm"></script>
-    <script src="js/modules/saeb/saeb_boletim.js?v=f2fbc9e7e7_mtqxbrrm"></script>
-    <script src="js/modules/saeb/saeb_intervencoes_comparativo.js?v=ada1202837_mtqxbrrm"></script>
-    <script src="js/modules/saeb/saeb.js?v=6f18f413e8_mtqxbrrm"></script>
-    <script src="js/modules/biblioteca/biblioteca_reader.js?v=a526e81258_mtqxbrrm"></script>
-    <script src="js/modules/biblioteca/biblioteca_upload.js?v=a0fcce08d5_mtqxbrrm"></script>
-    <script src="js/modules/biblioteca/biblioteca.js?v=9933182f10_mtqxbrrm"></script>
-    <script src="js/modules/admin/admin_data.js?v=4146d4760b_mtqxbrrm"></script>
-    <script src="js/modules/admin/admin_users.js?v=9efdb86dbd_mtqxbrrm"></script>
-    <script src="js/modules/admin/admin_tenants.js?v=ae5a501f46_mtqxbrrm"></script>
-    <script src="js/modules/doc_tecnica/doc_tecnica.js?v=014b44adfa_mtqxbrrm"></script>
-    <script src="js/modules/onboarding/onboarding_tour.js?v=cffc5cac55_mtqxbrrm"></script>
-    <script src="js/modules/onboarding/tab_context_tours.js?v=99633ec3f4_mtqxbrrm"></script>
+    <script src="js/modules/dashboard/dashboard_kpis.js?v=661c48df5d_mtqymqeo"></script>
+    <script src="js/modules/dashboard/dashboard_charts.js?v=f817fe2edd_mtqymqeo"></script>
+    <script src="js/modules/dashboard/dashboard_analytics.js?v=156257a0b0_mtqymqeo"></script>
+    <script src="js/modules/dashboard/dashboard_scales.js?v=8b105db83a_mtqymqeo"></script>
+    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=047c7904b7_mtqymqeo"></script>
+    <script src="js/modules/dashboard/dashboard_scroll_reveal.js?v=765a5ac049_mtqymqeo"></script>
+    <script src="js/modules/alunos/alunos_progression_modal.js?v=cf365ce8cf_mtqymqeo"></script>
+    <script src="js/modules/alunos/alunos_list.js?v=1680ba1e32_mtqymqeo"></script>
+    <script src="js/modules/alunos/alunos_forms.js?v=d65581afbc_mtqymqeo"></script>
+    <script src="js/modules/turmas/turmas_crud.js?v=e246099ccf_mtqymqeo"></script>
+    <script src="js/modules/turmas/turmas_diario.js?v=a785ddd9e6_mtqymqeo"></script>
+    <script src="js/modules/metas/metas_regional.js?v=2237174a37_mtqymqeo"></script>
+    <script src="js/modules/metas/metas_pactuacao.js?v=4706caf85f_mtqymqeo"></script>
+    <script src="js/modules/metas/metas_escolas_ranking.js?v=764501fe71_mtqymqeo"></script>
+    <script src="js/modules/metas/metas_calculo_manual.js?v=42d907079e_mtqymqeo"></script>
+    <script src="js/modules/metas/metas_ideb.js?v=505cc6d09c_mtqymqeo"></script>
+    <script src="js/modules/escolas/escolas.js?v=6156cfb8f2_mtqymqeo"></script>
+    <script src="js/modules/escolas/escolas_workspace.js?v=cbd14d4cc2_mtqymqeo"></script>
+    <script src="js/modules/escolas/escolas_modals.js?v=d32d052d1d_mtqymqeo"></script>
+    <script src="js/modules/matrizes/matrizes.js?v=d2df1a4b54_mtqymqeo"></script>
+    <script src="js/modules/cronograma/cronograma_state.js?v=291ef65907_mtqymqeo"></script>
+    <script src="js/modules/cronograma/cronograma_views_monthly.js?v=9bbac5a230_mtqymqeo"></script>
+    <script src="js/modules/cronograma/cronograma_views_weekly.js?v=37e3b04d03_mtqymqeo"></script>
+    <script src="js/modules/cronograma/cronograma_views_comparison.js?v=9875be98c6_mtqymqeo"></script>
+    <script src="js/modules/cronograma/cronograma_progress_modal.js?v=f327132831_mtqymqeo"></script>
+    <script src="js/modules/cronograma/cronograma_views.js?v=3254fb7223_mtqymqeo"></script>
+    <script src="js/modules/cronograma/cronograma_planner.js?v=217cb644d9_mtqymqeo"></script>
+    <script src="js/modules/cronograma/cronograma_trash.js?v=a01d97e91e_mtqymqeo"></script>
+    <script src="js/modules/cronograma/cronograma_calendar_40w.js?v=951800db84_mtqymqeo"></script>
+    <script src="js/modules/cronograma/cronograma.js?v=69486dcbc3_mtqymqeo"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_state.js?v=926f0714e3_mtqymqeo"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_wizard.js?v=23d3745407_mtqymqeo"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_events.js?v=6af1a89e95_mtqymqeo"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_espelho.js?v=11acd9efc8_mtqymqeo"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_analytics.js?v=d8988743ae_mtqymqeo"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_print.js?v=b5eb11e2a6_mtqymqeo"></script>
+    <script src="js/modules/questoes/questoes_generator.js?v=8e44d7592b_mtqymqeo"></script>
+    <script src="js/modules/questoes/questoes_list.js?v=5543a2c1d7_mtqymqeo"></script>
+    <script src="js/modules/questoes/questoes_import_export.js?v=c7d3bb36d0_mtqymqeo"></script>
+    <script src="js/modules/diagnostico/diagnostico.js?v=e4becf6279_mtqymqeo"></script>
+    <script src="js/modules/saeb/saeb_state.js?v=178da7f734_mtqymqeo"></script>
+    <script src="js/modules/saeb/saeb_distribution_view.js?v=7bee5af18a_mtqymqeo"></script>
+    <script src="js/modules/saeb/saeb_comparativo_turmas.js?v=22f1b3636c_mtqymqeo"></script>
+    <script src="js/modules/saeb/saeb_ficha_individual.js?v=17642111a3_mtqymqeo"></script>
+    <script src="js/modules/saeb/saeb_boletim.js?v=f2fbc9e7e7_mtqymqeo"></script>
+    <script src="js/modules/saeb/saeb_intervencoes_comparativo.js?v=ada1202837_mtqymqeo"></script>
+    <script src="js/modules/saeb/saeb.js?v=6f18f413e8_mtqymqeo"></script>
+    <script src="js/modules/biblioteca/biblioteca_reader.js?v=a526e81258_mtqymqeo"></script>
+    <script src="js/modules/biblioteca/biblioteca_upload.js?v=a0fcce08d5_mtqymqeo"></script>
+    <script src="js/modules/biblioteca/biblioteca.js?v=9933182f10_mtqymqeo"></script>
+    <script src="js/modules/admin/admin_data.js?v=4146d4760b_mtqymqeo"></script>
+    <script src="js/modules/admin/admin_users.js?v=9efdb86dbd_mtqymqeo"></script>
+    <script src="js/modules/admin/admin_tenants.js?v=ae5a501f46_mtqymqeo"></script>
+    <script src="js/modules/doc_tecnica/doc_tecnica.js?v=014b44adfa_mtqymqeo"></script>
+    <script src="js/modules/onboarding/onboarding_tour.js?v=cffc5cac55_mtqymqeo"></script>
+    <script src="js/modules/onboarding/tab_context_tours.js?v=99633ec3f4_mtqymqeo"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=826c28719e_mtqxbrrm"></script>
+    <script src="app.js?v=826c28719e_mtqymqeo"></script>
 </body>
 </html>

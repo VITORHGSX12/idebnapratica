@@ -98,8 +98,7 @@
             if (profile.avatarPhoto) {
                 sidebarAvatar.innerHTML = '<img src="' + profile.avatarPhoto + '" alt="' + profile.name + '" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">';
             } else {
-                var initials = (profile.name || 'GD').trim().split(/\s+/).map(function(w){ return w[0]; }).slice(0,2).join('').toUpperCase();
-                sidebarAvatar.textContent = initials || 'GD';
+                sidebarAvatar.innerHTML = '<img src="assets/icons/profile.svg" alt="' + (profile.name || 'Perfil') + '" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">';
             }
         }
     }
@@ -149,8 +148,8 @@
         }
 
         var avatarContent = profile.avatarPhoto 
-            ? '<img src="' + profile.avatarPhoto + '" alt="' + cleanName + '" style="width:100%; height:100%; object-fit:cover;">' 
-            : '<div style="width: 100%; height: 100%; background: rgba(255, 255, 255, 0.2); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.05rem;">' + (cleanName ? cleanName.slice(0,2).toUpperCase() : 'SE') + '</div>';
+            ? '<img src="' + profile.avatarPhoto + '" alt="' + cleanName + '" style="width:100%; height:100%; border-radius: 50%; object-fit:cover;">' 
+            : '<img src="assets/icons/profile.svg" alt="' + cleanName + '" style="width:100%; height:100%; border-radius: 50%; object-fit:cover;">';
 
         var teacherAlertHtml = '';
         if (isTeacher && !hasEvaluations) {
@@ -335,7 +334,7 @@
             if (profile.avatarPhoto) {
                 preview.innerHTML = '<img src="' + profile.avatarPhoto + '" alt="' + profile.name + '" style="width:100%; height:100%; object-fit:cover;">';
             } else {
-                preview.innerHTML = selectedProfileIcon;
+                preview.innerHTML = '<img src="assets/icons/profile.svg" alt="Avatar" style="width:100%; height:100%; object-fit:cover;">';
             }
         }
 
