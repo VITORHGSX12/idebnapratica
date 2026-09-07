@@ -9,8 +9,8 @@ const { spawn } = require('child_process');
 
 const PORT = 3351;
 const ROOT_DIR = path.resolve(__dirname, '..');
-const ARTIFACTS_DIR = 'C:\\Users\\Alleg\\.gemini\\antigravity-ide\\brain\\015ed507-beab-4db5-8587-c865a571a89c';
-const SCREENSHOT_LOGIN = path.join(ARTIFACTS_DIR, 'login_redesign_final_verificado.png');
+const ARTIFACTS_DIR = 'C:\\Users\\Alleg\\.gemini\\antigravity-ide\\brain\\949e6a03-e104-4aad-8205-a0bf96be5959';
+const SCREENSHOT_LOGIN = path.join(ARTIFACTS_DIR, 'login_organic_design_verified.png');
 
 const MIME_TYPES = {
     '.html': 'text/html; charset=utf-8',

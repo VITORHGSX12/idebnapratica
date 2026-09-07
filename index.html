@@ -15,7 +15,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="design-tokens.css?v=20260830_v2">
-    <link rel="stylesheet" href="styles.css?v=5db39932f5_mtqvco1p">
+    <link rel="stylesheet" href="styles.css?v=2bdfb457ff_mtqvwob7">
     <link rel="stylesheet" href="login-premium.css?v=20260830_v2">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -423,88 +423,72 @@
 
 </head>
 <body>
-    <!-- Login Screen Split-Screen (Design Realista & Minimalista) -->
-    <div id="login-screen" class="login-screen">
-        <div class="login-split-container">
-            <!-- Left Panel (Institucional & Acompanhamento de Metas IDEB) -->
-            <div class="login-left-panel">
-                <div class="login-bg-photo" aria-hidden="true"></div>
-                <div class="login-bg-overlay" aria-hidden="true"></div>
+    <!-- Login Screen Split-Screen (Inspirado no Modelo de Curva Orgânica & Bold Typography) -->
+    <div id="login-screen" class="login-screen login-screen-organic">
+        <div class="login-split-container-organic">
+            <!-- Left Hero Section (Textura de Fundo, Headline de Impacto & Arcos Geométricos) -->
+            <div class="login-hero-left">
+                <div class="hero-bg-texture" aria-hidden="true"></div>
+                <div class="hero-bg-overlay" aria-hidden="true"></div>
 
-                <div class="login-left-content-wrap">
-                    <!-- Realistic White Elevated Card on Left Panel -->
-                    <div class="login-realistic-metas-card">
-                        <div class="metas-card-header">
-                            <div class="metas-card-title-group">
-                                <h2 class="metas-card-title">Acompanhamento de Metas IDEB</h2>
-                                <span class="metas-card-subtitle">(Ensino Fundamental II)</span>
-                            </div>
-                            <div class="metas-card-badge-alcançada">
-                                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
-                                <span>Alcançada</span>
-                            </div>
-                        </div>
+                <!-- Circulo de Profundidade Sombreado & Arcos Geométricos Decorativos Inferior Esquerdo -->
+                <div class="hero-depth-disc" aria-hidden="true"></div>
+                <div class="hero-decor-arcs-left" aria-hidden="true">
+                    <svg viewBox="0 0 280 280" fill="none">
+                        <circle cx="20" cy="260" r="80" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+                        <circle cx="20" cy="260" r="140" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+                        <circle cx="20" cy="260" r="200" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+                    </svg>
+                </div>
 
-                        <!-- Gráfico de Trajetória e Barras Realistas -->
-                        <div class="metas-chart-container">
-                            <div class="metas-trend-arrow">
-                                <svg viewBox="0 0 240 60" preserveAspectRatio="none" class="trend-arrow-svg">
-                                    <path d="M 15 50 L 225 15" stroke="#3b82f6" stroke-width="2" fill="none"/>
-                                    <polygon points="225,10 235,15 225,20" fill="#3b82f6"/>
-                                </svg>
-                            </div>
-                            <div class="metas-projected-line" style="top: 38%;"></div>
-
-                            <div class="metas-bars-grid">
-                                <div class="metas-bar-col">
-                                    <span class="metas-bar-val" id="ideb-bar-val-1">4,2</span>
-                                    <div class="metas-bar-fill bar-blue" id="ideb-bar-1" style="height: 52%;"></div>
-                                    <span class="metas-bar-year">2019</span>
-                                </div>
-                                <div class="metas-bar-col">
-                                    <span class="metas-bar-val" id="ideb-bar-val-2">4,8</span>
-                                    <div class="metas-bar-fill bar-blue" id="ideb-bar-2" style="height: 64%;"></div>
-                                    <span class="metas-bar-year">2021</span>
-                                </div>
-                                <div class="metas-bar-col">
-                                    <span class="metas-bar-val" id="ideb-bar-val-3">5,3</span>
-                                    <div class="metas-bar-fill bar-blue" id="ideb-bar-3" style="height: 74%;"></div>
-                                    <span class="metas-bar-year">2023</span>
-                                </div>
-                                <div class="metas-bar-col">
-                                    <span class="metas-bar-val metas-val-target" id="ideb-bar-val-4">5,6</span>
-                                    <div class="metas-bar-fill bar-green" id="ideb-bar-4" style="height: 84%;"></div>
-                                    <span class="metas-bar-year metas-year-target">Meta 2026</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Legenda do Gráfico -->
-                        <div class="metas-card-legend">
-                            <span class="legend-stat">Média Municipal: <strong style="color:#10b981;">+15%</strong> desde 2019</span>
-                            <span class="legend-target-line"><span class="green-dash"></span> Meta Projetada</span>
-                        </div>
-
-                        <!-- Rodapé Institucional do Card -->
-                        <div class="metas-card-brand-footer">
-                            <div class="card-footer-prefeitura">
-                                <img src="assets/logo-prefeitura-semed.png" alt="Prefeitura de Gonçalves Dias - SEMED" class="prefeitura-logo-clean">
-                            </div>
-                            <div class="card-footer-ideb">
-                                <div class="brand-text-clean">
-                                    <span class="brand-title-bold">IDEB</span>
-                                    <span class="brand-sub-light">na Prática</span>
-                                </div>
-                            </div>
-                        </div>
+                <!-- Headline de Impacto em Tipografia Bold -->
+                <div class="hero-headline-wrap">
+                    <div class="hero-brand-tag">
+                        <img src="assets/sidebar-icon-128x128.png" alt="IDEB na Prática" class="hero-brand-icon">
+                        <span>IDEB na Prática · SEMED Gonçalves Dias</span>
                     </div>
+                    <h1 class="hero-main-title">
+                        Gestão educacional estratégica para transformar e otimizar o potencial pedagógico de cada aluno
+                    </h1>
+                    <p class="hero-subtitle">
+                        Acompanhamento de metas municipais, simulados diagnósticos e pactuação do PDE em uma única plataforma integrada.
+                    </p>
                 </div>
             </div>
 
-            <!-- Right Panel (Login Card & Quick Access) -->
-            <div class="login-right-panel">
-                <div class="card login-form-container">
-                    <h1 class="login-card-title">Bem-vindo de volta</h1>
+            <!-- Right Form Section (Welcome Back, Inputs, Botões e Arcos Inferiores) -->
+            <div class="login-form-right">
+                <!-- Divisor Orgânico em Onda Suave Integrado -->
+                <div class="login-organic-wave-divider" aria-hidden="true">
+                    <svg viewBox="0 0 200 1000" preserveAspectRatio="none">
+                        <path d="M 200,0 L 90,0 C 10,200 190,400 35,620 C -35,760 140,890 200,1000 Z" fill="#FFFFFF"/>
+                    </svg>
+                </div>
+
+                <!-- Menu Decorativo Superior Direito -->
+                <div class="login-top-menu-decor" aria-hidden="true">
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <!-- Arcos Geométricos Decorativos Inferior Direito -->
+                <div class="form-decor-arcs-right" aria-hidden="true">
+                    <svg viewBox="0 0 260 260" fill="none">
+                        <circle cx="260" cy="260" r="120" fill="#0F172A"/>
+                        <circle cx="260" cy="260" r="145" stroke="#0F172A" stroke-width="1.5" opacity="0.65"/>
+                        <circle cx="260" cy="260" r="170" stroke="#0F172A" stroke-width="1.5" opacity="0.45"/>
+                        <circle cx="260" cy="260" r="195" stroke="#0F172A" stroke-width="1.5" opacity="0.25"/>
+                    </svg>
+                </div>
+
+                <div class="login-form-card-wrap">
+                    <!-- Título Grande Bold: Welcome Back / Bem-vindo de volta -->
+                    <div class="login-title-header">
+                        <h1 class="welcome-title-bold">
+                            Welcome<br><span>Back</span>
+                        </h1>
+                        <p class="welcome-title-sub">Acesse o painel institucional de Gonçalves Dias</p>
+                    </div>
 
                     <!-- Seletor Rápido de Perfil em Pílula -->
                     <div class="login-quick-roles-container">
@@ -533,42 +517,43 @@
 
                         <!-- Input Email -->
                         <div class="login-input-group-styled">
-                            <label for="login-email" class="login-field-label">E-mail institucional</label>
+                            <label for="login-email" class="login-field-label">Email</label>
                             <div class="field login-input-group">
-                                <input type="email" id="login-email" class="login-input-field" placeholder="digite seu e-mail..." required autocomplete="email" value="" oninput="if(window.clearLoginErrorAlert) window.clearLoginErrorAlert();" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); if(window.executeSystemLogin) window.executeSystemLogin(); }">
+                                <input type="email" id="login-email" class="login-input-field" placeholder="Enter your email" required autocomplete="email" value="" oninput="if(window.clearLoginErrorAlert) window.clearLoginErrorAlert();" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); if(window.executeSystemLogin) window.executeSystemLogin(); }">
                             </div>
                         </div>
 
                         <!-- Input Senha -->
                         <div class="login-input-group-styled">
-                            <label for="login-password" class="login-field-label">Senha</label>
+                            <label for="login-password" class="login-field-label">Password</label>
                             <div class="field login-input-group">
-                                <input type="password" id="login-password" class="login-input-field" placeholder="sua senha..." required autocomplete="current-password" value="" oninput="if(window.clearLoginErrorAlert) window.clearLoginErrorAlert();" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); if(window.executeSystemLogin) window.executeSystemLogin(); }">
+                                <input type="password" id="login-password" class="login-input-field" placeholder="Enter your password" required autocomplete="current-password" value="" oninput="if(window.clearLoginErrorAlert) window.clearLoginErrorAlert();" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); if(window.executeSystemLogin) window.executeSystemLogin(); }">
                                 <button type="button" id="btn-toggle-login-password" class="eye login-password-toggle" title="Mostrar/ocultar senha">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Submit Button -->
-                        <button type="button" id="btn-login-submit" class="btn-primary btn-login-primary" onclick="if(window.executeSystemLogin) window.executeSystemLogin();">
-                            <span>Entrar no Sistema</span>
-                        </button>
-
-                        <!-- Options Row: Lembrar-me & Esqueci a senha -->
-                        <div class="login-forgot-wrap">
-                            <a href="#" id="link-forgot-password" class="login-forgot-link" onclick="if(window.handleForgotPassword) window.handleForgotPassword(); return false;">Esqueci a senha?</a>
+                        <!-- Options Row: Remember me & Forgot Password -->
+                        <div class="login-remember-row">
+                            <label class="remember login-checkbox-label">
+                                <input type="checkbox" id="login-remember-me" checked>
+                                <span>Remember me</span>
+                            </label>
+                            <a href="#" id="link-forgot-password" class="login-forgot-link" onclick="if(window.handleForgotPassword) window.handleForgotPassword(); return false;">Forgot Password</a>
                         </div>
+
+                        <!-- Submit Button (Sign in / Entrar no Sistema) -->
+                        <button type="button" id="btn-login-submit" class="btn-primary btn-login-primary btn-dark-signin" onclick="if(window.executeSystemLogin) window.executeSystemLogin();">
+                            <span>Sign in</span>
+                        </button>
                     </form>
 
-                    <div class="secure login-secure-badge">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        <span>Acesso Seguro SSL</span>
+                    <!-- Footer com Logotipos Institucionais -->
+                    <div class="login-footer-branding">
+                        <img src="assets/logo-prefeitura-semed.png" alt="Prefeitura de Gonçalves Dias - SEMED" class="login-footer-semed-logo">
+                        <span class="login-footer-copy">IDEB na Prática © 2026 · Secretaria Municipal de Educação</span>
                     </div>
-                </div>
-
-                <div class="foot-copy login-footer">
-                    <span class="copy-author">IDEB na Prática © 2026. Todos os direitos reservados. | Desenvolvido por Ió Sistems</span>
                 </div>
             </div>
         </div>
@@ -7594,88 +7579,88 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=341bc2b5e3_mtqvco1p"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=daec643646_mtqvco1p"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mtqvco1p"></script>
-    <script src="bncc_habilidades_oficial.js?v=2f802bf604_mtqvco1p"></script>
-    <script src="ideb_publico_db.js?v=fa7edb185f_mtqvco1p"></script>
-    <script src="alunos_db.js?v=e23fe3179f_mtqvco1p"></script>
-    <script src="js/data/official_students_seed.js?v=876be25c9a_mtqvco1p"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=341bc2b5e3_mtqvwob7"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=daec643646_mtqvwob7"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mtqvwob7"></script>
+    <script src="bncc_habilidades_oficial.js?v=2f802bf604_mtqvwob7"></script>
+    <script src="ideb_publico_db.js?v=fa7edb185f_mtqvwob7"></script>
+    <script src="alunos_db.js?v=e23fe3179f_mtqvwob7"></script>
+    <script src="js/data/official_students_seed.js?v=876be25c9a_mtqvwob7"></script>
 
     <!-- Módulos do Core -->
-    <script src="js/core/security.js?v=9d4fc4a791_mtqvco1p"></script>
-    <script src="js/core/helpers.js?v=7656a2a6bb_mtqvco1p"></script>
-    <script src="js/core/theme-toast.js?v=c181c006e0_mtqvco1p"></script>
-    <script src="js/core/chart-theme.js?v=427aa86547_mtqvco1p"></script>
-    <script src="js/core/user-profile.js?v=4adb3d4494_mtqvco1p"></script>
-    <script src="js/data/official_users_directory.js?v=24a756e04c_mtqvco1p"></script>
-    <script src="js/core/login-animation.js?v=414e14bbcd_mtqvco1p"></script>
-    <script src="js/core/auth.js?v=1cfdb8fe2a_mtqvco1p"></script>
-    <script src="js/core/navigation/navigation_meta.js?v=8c84252ce2_mtqvco1p"></script>
-    <script src="js/core/navigation/navigation_history.js?v=a09c33f4ae_mtqvco1p"></script>
-    <script src="js/core/navigation/navigation_events.js?v=7e416c2fa3_mtqvco1p"></script>
-    <script src="js/core/navigation.js?v=5b61fc7023_mtqvco1p"></script>
-    <script src="js/core/sync.js?v=73ebd2560a_mtqvco1p"></script>
+    <script src="js/core/security.js?v=9d4fc4a791_mtqvwob7"></script>
+    <script src="js/core/helpers.js?v=7656a2a6bb_mtqvwob7"></script>
+    <script src="js/core/theme-toast.js?v=c181c006e0_mtqvwob7"></script>
+    <script src="js/core/chart-theme.js?v=427aa86547_mtqvwob7"></script>
+    <script src="js/core/user-profile.js?v=4adb3d4494_mtqvwob7"></script>
+    <script src="js/data/official_users_directory.js?v=24a756e04c_mtqvwob7"></script>
+    <script src="js/core/login-animation.js?v=414e14bbcd_mtqvwob7"></script>
+    <script src="js/core/auth.js?v=1cfdb8fe2a_mtqvwob7"></script>
+    <script src="js/core/navigation/navigation_meta.js?v=8c84252ce2_mtqvwob7"></script>
+    <script src="js/core/navigation/navigation_history.js?v=a09c33f4ae_mtqvwob7"></script>
+    <script src="js/core/navigation/navigation_events.js?v=7e416c2fa3_mtqvwob7"></script>
+    <script src="js/core/navigation.js?v=5b61fc7023_mtqvwob7"></script>
+    <script src="js/core/sync.js?v=73ebd2560a_mtqvwob7"></script>
 
     <!-- Módulos de Domínio -->
-    <script src="js/modules/dashboard/dashboard_kpis.js?v=661c48df5d_mtqvco1p"></script>
-    <script src="js/modules/dashboard/dashboard_charts.js?v=f817fe2edd_mtqvco1p"></script>
-    <script src="js/modules/dashboard/dashboard_analytics.js?v=156257a0b0_mtqvco1p"></script>
-    <script src="js/modules/dashboard/dashboard_scales.js?v=8b105db83a_mtqvco1p"></script>
-    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=047c7904b7_mtqvco1p"></script>
-    <script src="js/modules/dashboard/dashboard_scroll_reveal.js?v=765a5ac049_mtqvco1p"></script>
-    <script src="js/modules/alunos/alunos_progression_modal.js?v=cf365ce8cf_mtqvco1p"></script>
-    <script src="js/modules/alunos/alunos_list.js?v=1680ba1e32_mtqvco1p"></script>
-    <script src="js/modules/alunos/alunos_forms.js?v=d65581afbc_mtqvco1p"></script>
-    <script src="js/modules/turmas/turmas_crud.js?v=e246099ccf_mtqvco1p"></script>
-    <script src="js/modules/turmas/turmas_diario.js?v=a785ddd9e6_mtqvco1p"></script>
-    <script src="js/modules/metas/metas_regional.js?v=2237174a37_mtqvco1p"></script>
-    <script src="js/modules/metas/metas_pactuacao.js?v=4706caf85f_mtqvco1p"></script>
-    <script src="js/modules/metas/metas_escolas_ranking.js?v=764501fe71_mtqvco1p"></script>
-    <script src="js/modules/metas/metas_calculo_manual.js?v=42d907079e_mtqvco1p"></script>
-    <script src="js/modules/metas/metas_ideb.js?v=505cc6d09c_mtqvco1p"></script>
-    <script src="js/modules/escolas/escolas.js?v=6156cfb8f2_mtqvco1p"></script>
-    <script src="js/modules/escolas/escolas_workspace.js?v=cbd14d4cc2_mtqvco1p"></script>
-    <script src="js/modules/escolas/escolas_modals.js?v=d32d052d1d_mtqvco1p"></script>
-    <script src="js/modules/matrizes/matrizes.js?v=d2df1a4b54_mtqvco1p"></script>
-    <script src="js/modules/cronograma/cronograma_state.js?v=291ef65907_mtqvco1p"></script>
-    <script src="js/modules/cronograma/cronograma_views_monthly.js?v=9bbac5a230_mtqvco1p"></script>
-    <script src="js/modules/cronograma/cronograma_views_weekly.js?v=37e3b04d03_mtqvco1p"></script>
-    <script src="js/modules/cronograma/cronograma_views_comparison.js?v=9875be98c6_mtqvco1p"></script>
-    <script src="js/modules/cronograma/cronograma_progress_modal.js?v=f327132831_mtqvco1p"></script>
-    <script src="js/modules/cronograma/cronograma_views.js?v=3254fb7223_mtqvco1p"></script>
-    <script src="js/modules/cronograma/cronograma_planner.js?v=217cb644d9_mtqvco1p"></script>
-    <script src="js/modules/cronograma/cronograma_trash.js?v=a01d97e91e_mtqvco1p"></script>
-    <script src="js/modules/cronograma/cronograma_calendar_40w.js?v=951800db84_mtqvco1p"></script>
-    <script src="js/modules/cronograma/cronograma.js?v=69486dcbc3_mtqvco1p"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_state.js?v=926f0714e3_mtqvco1p"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_wizard.js?v=23d3745407_mtqvco1p"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_events.js?v=6af1a89e95_mtqvco1p"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_espelho.js?v=11acd9efc8_mtqvco1p"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_analytics.js?v=d8988743ae_mtqvco1p"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_print.js?v=b5eb11e2a6_mtqvco1p"></script>
-    <script src="js/modules/questoes/questoes_generator.js?v=8e44d7592b_mtqvco1p"></script>
-    <script src="js/modules/questoes/questoes_list.js?v=5543a2c1d7_mtqvco1p"></script>
-    <script src="js/modules/questoes/questoes_import_export.js?v=c7d3bb36d0_mtqvco1p"></script>
-    <script src="js/modules/diagnostico/diagnostico.js?v=e4becf6279_mtqvco1p"></script>
-    <script src="js/modules/saeb/saeb_state.js?v=178da7f734_mtqvco1p"></script>
-    <script src="js/modules/saeb/saeb_distribution_view.js?v=7bee5af18a_mtqvco1p"></script>
-    <script src="js/modules/saeb/saeb_comparativo_turmas.js?v=22f1b3636c_mtqvco1p"></script>
-    <script src="js/modules/saeb/saeb_ficha_individual.js?v=17642111a3_mtqvco1p"></script>
-    <script src="js/modules/saeb/saeb_boletim.js?v=f2fbc9e7e7_mtqvco1p"></script>
-    <script src="js/modules/saeb/saeb_intervencoes_comparativo.js?v=ada1202837_mtqvco1p"></script>
-    <script src="js/modules/saeb/saeb.js?v=6f18f413e8_mtqvco1p"></script>
-    <script src="js/modules/biblioteca/biblioteca_reader.js?v=a526e81258_mtqvco1p"></script>
-    <script src="js/modules/biblioteca/biblioteca_upload.js?v=a0fcce08d5_mtqvco1p"></script>
-    <script src="js/modules/biblioteca/biblioteca.js?v=9933182f10_mtqvco1p"></script>
-    <script src="js/modules/admin/admin_data.js?v=4146d4760b_mtqvco1p"></script>
-    <script src="js/modules/admin/admin_users.js?v=9efdb86dbd_mtqvco1p"></script>
-    <script src="js/modules/admin/admin_tenants.js?v=ae5a501f46_mtqvco1p"></script>
-    <script src="js/modules/doc_tecnica/doc_tecnica.js?v=014b44adfa_mtqvco1p"></script>
-    <script src="js/modules/onboarding/onboarding_tour.js?v=cffc5cac55_mtqvco1p"></script>
-    <script src="js/modules/onboarding/tab_context_tours.js?v=99633ec3f4_mtqvco1p"></script>
+    <script src="js/modules/dashboard/dashboard_kpis.js?v=661c48df5d_mtqvwob7"></script>
+    <script src="js/modules/dashboard/dashboard_charts.js?v=f817fe2edd_mtqvwob7"></script>
+    <script src="js/modules/dashboard/dashboard_analytics.js?v=156257a0b0_mtqvwob7"></script>
+    <script src="js/modules/dashboard/dashboard_scales.js?v=8b105db83a_mtqvwob7"></script>
+    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=047c7904b7_mtqvwob7"></script>
+    <script src="js/modules/dashboard/dashboard_scroll_reveal.js?v=765a5ac049_mtqvwob7"></script>
+    <script src="js/modules/alunos/alunos_progression_modal.js?v=cf365ce8cf_mtqvwob7"></script>
+    <script src="js/modules/alunos/alunos_list.js?v=1680ba1e32_mtqvwob7"></script>
+    <script src="js/modules/alunos/alunos_forms.js?v=d65581afbc_mtqvwob7"></script>
+    <script src="js/modules/turmas/turmas_crud.js?v=e246099ccf_mtqvwob7"></script>
+    <script src="js/modules/turmas/turmas_diario.js?v=a785ddd9e6_mtqvwob7"></script>
+    <script src="js/modules/metas/metas_regional.js?v=2237174a37_mtqvwob7"></script>
+    <script src="js/modules/metas/metas_pactuacao.js?v=4706caf85f_mtqvwob7"></script>
+    <script src="js/modules/metas/metas_escolas_ranking.js?v=764501fe71_mtqvwob7"></script>
+    <script src="js/modules/metas/metas_calculo_manual.js?v=42d907079e_mtqvwob7"></script>
+    <script src="js/modules/metas/metas_ideb.js?v=505cc6d09c_mtqvwob7"></script>
+    <script src="js/modules/escolas/escolas.js?v=6156cfb8f2_mtqvwob7"></script>
+    <script src="js/modules/escolas/escolas_workspace.js?v=cbd14d4cc2_mtqvwob7"></script>
+    <script src="js/modules/escolas/escolas_modals.js?v=d32d052d1d_mtqvwob7"></script>
+    <script src="js/modules/matrizes/matrizes.js?v=d2df1a4b54_mtqvwob7"></script>
+    <script src="js/modules/cronograma/cronograma_state.js?v=291ef65907_mtqvwob7"></script>
+    <script src="js/modules/cronograma/cronograma_views_monthly.js?v=9bbac5a230_mtqvwob7"></script>
+    <script src="js/modules/cronograma/cronograma_views_weekly.js?v=37e3b04d03_mtqvwob7"></script>
+    <script src="js/modules/cronograma/cronograma_views_comparison.js?v=9875be98c6_mtqvwob7"></script>
+    <script src="js/modules/cronograma/cronograma_progress_modal.js?v=f327132831_mtqvwob7"></script>
+    <script src="js/modules/cronograma/cronograma_views.js?v=3254fb7223_mtqvwob7"></script>
+    <script src="js/modules/cronograma/cronograma_planner.js?v=217cb644d9_mtqvwob7"></script>
+    <script src="js/modules/cronograma/cronograma_trash.js?v=a01d97e91e_mtqvwob7"></script>
+    <script src="js/modules/cronograma/cronograma_calendar_40w.js?v=951800db84_mtqvwob7"></script>
+    <script src="js/modules/cronograma/cronograma.js?v=69486dcbc3_mtqvwob7"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_state.js?v=926f0714e3_mtqvwob7"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_wizard.js?v=23d3745407_mtqvwob7"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_events.js?v=6af1a89e95_mtqvwob7"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_espelho.js?v=11acd9efc8_mtqvwob7"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_analytics.js?v=d8988743ae_mtqvwob7"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_print.js?v=b5eb11e2a6_mtqvwob7"></script>
+    <script src="js/modules/questoes/questoes_generator.js?v=8e44d7592b_mtqvwob7"></script>
+    <script src="js/modules/questoes/questoes_list.js?v=5543a2c1d7_mtqvwob7"></script>
+    <script src="js/modules/questoes/questoes_import_export.js?v=c7d3bb36d0_mtqvwob7"></script>
+    <script src="js/modules/diagnostico/diagnostico.js?v=e4becf6279_mtqvwob7"></script>
+    <script src="js/modules/saeb/saeb_state.js?v=178da7f734_mtqvwob7"></script>
+    <script src="js/modules/saeb/saeb_distribution_view.js?v=7bee5af18a_mtqvwob7"></script>
+    <script src="js/modules/saeb/saeb_comparativo_turmas.js?v=22f1b3636c_mtqvwob7"></script>
+    <script src="js/modules/saeb/saeb_ficha_individual.js?v=17642111a3_mtqvwob7"></script>
+    <script src="js/modules/saeb/saeb_boletim.js?v=f2fbc9e7e7_mtqvwob7"></script>
+    <script src="js/modules/saeb/saeb_intervencoes_comparativo.js?v=ada1202837_mtqvwob7"></script>
+    <script src="js/modules/saeb/saeb.js?v=6f18f413e8_mtqvwob7"></script>
+    <script src="js/modules/biblioteca/biblioteca_reader.js?v=a526e81258_mtqvwob7"></script>
+    <script src="js/modules/biblioteca/biblioteca_upload.js?v=a0fcce08d5_mtqvwob7"></script>
+    <script src="js/modules/biblioteca/biblioteca.js?v=9933182f10_mtqvwob7"></script>
+    <script src="js/modules/admin/admin_data.js?v=4146d4760b_mtqvwob7"></script>
+    <script src="js/modules/admin/admin_users.js?v=9efdb86dbd_mtqvwob7"></script>
+    <script src="js/modules/admin/admin_tenants.js?v=ae5a501f46_mtqvwob7"></script>
+    <script src="js/modules/doc_tecnica/doc_tecnica.js?v=014b44adfa_mtqvwob7"></script>
+    <script src="js/modules/onboarding/onboarding_tour.js?v=cffc5cac55_mtqvwob7"></script>
+    <script src="js/modules/onboarding/tab_context_tours.js?v=99633ec3f4_mtqvwob7"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=826c28719e_mtqvco1p"></script>
+    <script src="app.js?v=826c28719e_mtqvwob7"></script>
 </body>
 </html>

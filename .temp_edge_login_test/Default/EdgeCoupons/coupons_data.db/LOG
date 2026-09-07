@@ -1,0 +1,5 @@
+2026/09/07-03:51:22.384 2578 Creating DB C:\Users\Alleg\.gemini\antigravity\scratch\gestao-educacional-saas\.temp_edge_login_test\Default\EdgeCoupons/coupons_data.db since it was missing.
+2026/09/07-03:51:22.402 2578 Reusing MANIFEST C:\Users\Alleg\.gemini\antigravity\scratch\gestao-educacional-saas\.temp_edge_login_test\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
+2026/09/07-03:51:24.130 4d88 Level-0 table #5: started
+2026/09/07-03:51:24.135 4d88 Level-0 table #5: 683273 bytes OK
+2026/09/07-03:51:24.137 4d88 Delete type=0 #3
