@@ -135,7 +135,17 @@ async function testVisualDesign() {
 
     console.log('Estilos Computados:', visualAudit);
 
-    console.log('3. Capturando screenshot da interface no modo escuro...');
+    console.log('3. Ativando e capturando screenshot do Modo Escuro...');
+    await evaluate(`
+        (function() {
+            if (typeof window.setThemeMode === 'function') {
+                window.setThemeMode('dark');
+            } else {
+                document.body.classList.add('dark-mode');
+            }
+        })()
+    `);
+    await new Promise(r => setTimeout(r, 600));
     const ssDark = await send('Page.captureScreenshot', { format: 'png' });
     const darkPath = path.join('C:\\Users\\Alleg\\.gemini\\antigravity-ide\\brain\\949e6a03-e104-4aad-8205-a0bf96be5959', 'education2025_visual_dashboard_dark.png');
     fs.writeFileSync(darkPath, Buffer.from(ssDark.data, 'base64'));
