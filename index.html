@@ -15,7 +15,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="design-tokens.css?v=20260830_v2">
-    <link rel="stylesheet" href="styles.css?v=afe9cf04ae_mtqt5l16">
+    <link rel="stylesheet" href="styles.css?v=afe9cf04ae_mtqtvwxq">
     <link rel="stylesheet" href="login-premium.css?v=20260830_v2">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2656,27 +2656,42 @@
                             <button class="btn btn-outline" id="btn-show-new-event-wizard"><i data-lucide="plus-circle"></i> + Novo Evento</button>
                         </div>
 
-                        <!-- Panel: Eventos Criados List -->
+                        <!-- Panel: Eventos Criados List / Gerenciador de Avaliações -->
                         <div id="panel-created-events">
-                            <!-- Filters: Ativos, Rascunhos, Finalizados -->
-                            <div style="display:flex; gap:20px; margin-bottom:20px; border-bottom:1px solid var(--border-color); padding-bottom:10px; font-size:0.85rem;">
-                                <a href="#" id="filter-count-ativos" class="event-filter-link active" data-filter="ativos" style="color:var(--green-light); font-weight:600; text-decoration:none;">Ativos (0)</a>
-                                <a href="#" id="filter-count-rascunhos" class="event-filter-link" data-filter="rascunhos" style="color:var(--text-muted); text-decoration:none;">Rascunhos (0)</a>
-                                <a href="#" id="filter-count-finalizados" class="event-filter-link" data-filter="finalizados" style="color:var(--text-muted); text-decoration:none;">Finalizados (0)</a>
+                            <!-- Header & Barra de Busca -->
+                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:16px;">
+                                <div>
+                                    <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--color-brand-primary); margin: 0 0 4px 0;">Gerenciador de Avaliações & Simulados</h3>
+                                    <p style="font-size: 0.8rem; color: var(--color-text-secondary); margin: 0;">Acompanhe o preenchimento de respostas em tempo real, publique provas e gerencie eventos.</p>
+                                </div>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <div style="position:relative;">
+                                        <input type="text" id="eval-search-input" placeholder="Buscar avaliação, disciplina..." class="form-input-text" style="width: 260px; height: 36px; font-size: 0.82rem; padding-left: 32px; border-radius: 8px;">
+                                        <i data-lucide="search" style="position:absolute; left:10px; top:10px; width:15px; height:15px; color:var(--color-text-muted);"></i>
+                                    </div>
+                                </div>
                             </div>
 
-                            <!-- List of Events -->
-                            <div class="card card-full" style="padding:0;">
+                            <!-- Filtros por Status (5 Categorias Gerenciais) -->
+                            <div style="display:flex; gap:16px; margin-bottom:20px; border-bottom:1px solid var(--border-color); padding-bottom:10px; font-size:0.85rem; overflow-x:auto;">
+                                <a href="#" id="filter-count-todas" class="event-filter-link active" data-filter="todas" style="color:var(--color-brand-primary, #1A2D42); font-weight:700; border-bottom:2px solid var(--color-brand-primary, #1A2D42); text-decoration:none; padding-bottom:6px; white-space:nowrap;">Todas (0)</a>
+                                <a href="#" id="filter-count-ativos" class="event-filter-link" data-filter="ativos" style="color:var(--color-text-secondary); font-weight:500; text-decoration:none; padding-bottom:6px; white-space:nowrap;">Ativas / Abertas (0)</a>
+                                <a href="#" id="filter-count-andamento" class="event-filter-link" data-filter="andamento" style="color:var(--color-text-secondary); font-weight:500; text-decoration:none; padding-bottom:6px; white-space:nowrap;">Em Digitação (0)</a>
+                                <a href="#" id="filter-count-concluidos" class="event-filter-link" data-filter="concluidos" style="color:var(--color-text-secondary); font-weight:500; text-decoration:none; padding-bottom:6px; white-space:nowrap;">100% Preenchidas (0)</a>
+                                <a href="#" id="filter-count-rascunhos" class="event-filter-link" data-filter="rascunhos" style="color:var(--color-text-secondary); font-weight:500; text-decoration:none; padding-bottom:6px; white-space:nowrap;">Rascunhos (0)</a>
+                            </div>
+
+                            <!-- List of Events Table -->
+                            <div class="card card-full" style="padding:0; box-shadow: var(--shadow-sm); border-radius: 12px; overflow:hidden;">
                                 <div class="card-body no-padding" style="overflow-x:auto;">
                                     <table class="table-compact" style="width:100%; border-collapse: collapse; text-align: left;">
                                         <thead>
-                                            <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-secondary); height: 40px;">
+                                            <tr style="border-bottom: 1px solid var(--border-color); background: var(--color-surface-subtle, #f8fafc); color: var(--color-text-secondary); height: 44px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px;">
                                                 <th style="padding: 12px 16px;">Avaliação</th>
-                                                <th style="padding: 12px 16px;">Escola Alvo</th>
+                                                <th style="padding: 12px 16px;">Público / Escolas</th>
                                                 <th style="padding: 12px 16px;">Janela de Aplicação</th>
-                                                <th style="padding: 12px 16px;">Tipo</th>
-                                                <th style="padding: 12px 16px;">Etapa</th>
-                                                <th style="padding: 12px 16px; text-align:center;">Status do Gabarito</th>
+                                                <th style="padding: 12px 16px;">Progresso de Digitação</th>
+                                                <th style="padding: 12px 16px; text-align:center;">Status</th>
                                                 <th style="padding: 12px 16px; text-align:center;">Ações</th>
                                             </tr>
                                         </thead>
@@ -2684,6 +2699,37 @@
                                             <!-- Rendered dynamically by JS -->
                                         </tbody>
                                     </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal: Confirmação de Exclusão de Avaliação / Dados de Teste -->
+                        <div id="modal-confirm-delete-evento" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(6px); align-items: center; justify-content: center; padding: 20px;">
+                            <div class="card" style="width: 100%; max-width: 480px; background: var(--color-surface, #FFFFFF); border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); overflow: hidden; padding: 0;">
+                                <div style="padding: 20px 24px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; background: rgba(239, 68, 68, 0.05);">
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(239, 68, 68, 0.15); display: flex; align-items: center; justify-content: center; color: #ef4444;">
+                                            <i data-lucide="trash-2" style="width: 20px; height: 20px;"></i>
+                                        </div>
+                                        <h3 style="font-size: 1.1rem; font-weight: 700; color: #b91c1c; margin: 0;">Excluir Avaliação</h3>
+                                    </div>
+                                    <button type="button" onclick="fecharModalExcluirEvento()" style="background: none; border: none; cursor: pointer; color: var(--color-text-muted); font-size: 1.3rem;">✕</button>
+                                </div>
+                                <div style="padding: 24px;">
+                                    <p style="font-size: 0.9rem; color: var(--color-text-primary); margin: 0 0 12px 0;">Tem certeza que deseja excluir permanentemente o evento avaliativo:</p>
+                                    <div style="background: var(--color-surface-subtle, #f8fafc); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px;">
+                                        <strong id="delete-modal-event-title" style="color: var(--color-brand-primary); font-size: 0.95rem;">-</strong>
+                                    </div>
+                                    <div id="delete-modal-event-alert" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 12px 14px; font-size: 0.82rem; color: #b45309; margin-bottom: 20px;">
+                                        ⚠️ Atenção: Esta ação é irreversível. Todas as notas, gabaritos e respostas de teste vinculadas a esta avaliação serão eliminadas.
+                                    </div>
+                                    <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                                        <button type="button" onclick="fecharModalExcluirEvento()" class="btn btn-outline" style="font-size: 0.85rem; padding: 8px 16px;">Cancelar</button>
+                                        <button type="button" onclick="confirmarExclusaoEventoModal()" class="btn btn-danger" style="font-size: 0.85rem; padding: 8px 18px; background: #ef4444; border-color: #ef4444; color: #fff; font-weight: 700;">
+                                            <i data-lucide="trash-2" style="width: 14px; height: 14px; margin-right: 4px;"></i>
+                                            Sim, Excluir Avaliação
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -7576,88 +7622,88 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=341bc2b5e3_mtqt5l16"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=daec643646_mtqt5l16"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mtqt5l16"></script>
-    <script src="bncc_habilidades_oficial.js?v=2f802bf604_mtqt5l16"></script>
-    <script src="ideb_publico_db.js?v=fa7edb185f_mtqt5l16"></script>
-    <script src="alunos_db.js?v=e23fe3179f_mtqt5l16"></script>
-    <script src="js/data/official_students_seed.js?v=876be25c9a_mtqt5l16"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=341bc2b5e3_mtqtvwxq"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=daec643646_mtqtvwxq"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mtqtvwxq"></script>
+    <script src="bncc_habilidades_oficial.js?v=2f802bf604_mtqtvwxq"></script>
+    <script src="ideb_publico_db.js?v=fa7edb185f_mtqtvwxq"></script>
+    <script src="alunos_db.js?v=e23fe3179f_mtqtvwxq"></script>
+    <script src="js/data/official_students_seed.js?v=876be25c9a_mtqtvwxq"></script>
 
     <!-- Módulos do Core -->
-    <script src="js/core/security.js?v=9d4fc4a791_mtqt5l16"></script>
-    <script src="js/core/helpers.js?v=7656a2a6bb_mtqt5l16"></script>
-    <script src="js/core/theme-toast.js?v=c181c006e0_mtqt5l16"></script>
-    <script src="js/core/chart-theme.js?v=427aa86547_mtqt5l16"></script>
-    <script src="js/core/user-profile.js?v=4adb3d4494_mtqt5l16"></script>
-    <script src="js/data/official_users_directory.js?v=24a756e04c_mtqt5l16"></script>
-    <script src="js/core/login-animation.js?v=414e14bbcd_mtqt5l16"></script>
-    <script src="js/core/auth.js?v=1cfdb8fe2a_mtqt5l16"></script>
-    <script src="js/core/navigation/navigation_meta.js?v=8c84252ce2_mtqt5l16"></script>
-    <script src="js/core/navigation/navigation_history.js?v=a09c33f4ae_mtqt5l16"></script>
-    <script src="js/core/navigation/navigation_events.js?v=7e416c2fa3_mtqt5l16"></script>
-    <script src="js/core/navigation.js?v=5b61fc7023_mtqt5l16"></script>
-    <script src="js/core/sync.js?v=73ebd2560a_mtqt5l16"></script>
+    <script src="js/core/security.js?v=9d4fc4a791_mtqtvwxq"></script>
+    <script src="js/core/helpers.js?v=7656a2a6bb_mtqtvwxq"></script>
+    <script src="js/core/theme-toast.js?v=c181c006e0_mtqtvwxq"></script>
+    <script src="js/core/chart-theme.js?v=427aa86547_mtqtvwxq"></script>
+    <script src="js/core/user-profile.js?v=4adb3d4494_mtqtvwxq"></script>
+    <script src="js/data/official_users_directory.js?v=24a756e04c_mtqtvwxq"></script>
+    <script src="js/core/login-animation.js?v=414e14bbcd_mtqtvwxq"></script>
+    <script src="js/core/auth.js?v=1cfdb8fe2a_mtqtvwxq"></script>
+    <script src="js/core/navigation/navigation_meta.js?v=8c84252ce2_mtqtvwxq"></script>
+    <script src="js/core/navigation/navigation_history.js?v=a09c33f4ae_mtqtvwxq"></script>
+    <script src="js/core/navigation/navigation_events.js?v=7e416c2fa3_mtqtvwxq"></script>
+    <script src="js/core/navigation.js?v=5b61fc7023_mtqtvwxq"></script>
+    <script src="js/core/sync.js?v=73ebd2560a_mtqtvwxq"></script>
 
     <!-- Módulos de Domínio -->
-    <script src="js/modules/dashboard/dashboard_kpis.js?v=661c48df5d_mtqt5l16"></script>
-    <script src="js/modules/dashboard/dashboard_charts.js?v=d94a8aa823_mtqt5l16"></script>
-    <script src="js/modules/dashboard/dashboard_analytics.js?v=156257a0b0_mtqt5l16"></script>
-    <script src="js/modules/dashboard/dashboard_scales.js?v=8b105db83a_mtqt5l16"></script>
-    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=047c7904b7_mtqt5l16"></script>
-    <script src="js/modules/dashboard/dashboard_scroll_reveal.js?v=765a5ac049_mtqt5l16"></script>
-    <script src="js/modules/alunos/alunos_progression_modal.js?v=cf365ce8cf_mtqt5l16"></script>
-    <script src="js/modules/alunos/alunos_list.js?v=1680ba1e32_mtqt5l16"></script>
-    <script src="js/modules/alunos/alunos_forms.js?v=d65581afbc_mtqt5l16"></script>
-    <script src="js/modules/turmas/turmas_crud.js?v=e246099ccf_mtqt5l16"></script>
-    <script src="js/modules/turmas/turmas_diario.js?v=a785ddd9e6_mtqt5l16"></script>
-    <script src="js/modules/metas/metas_regional.js?v=2237174a37_mtqt5l16"></script>
-    <script src="js/modules/metas/metas_pactuacao.js?v=d8339a8098_mtqt5l16"></script>
-    <script src="js/modules/metas/metas_escolas_ranking.js?v=3f51553992_mtqt5l16"></script>
-    <script src="js/modules/metas/metas_calculo_manual.js?v=42d907079e_mtqt5l16"></script>
-    <script src="js/modules/metas/metas_ideb.js?v=505cc6d09c_mtqt5l16"></script>
-    <script src="js/modules/escolas/escolas.js?v=ad88821233_mtqt5l16"></script>
-    <script src="js/modules/escolas/escolas_workspace.js?v=cbd14d4cc2_mtqt5l16"></script>
-    <script src="js/modules/escolas/escolas_modals.js?v=d32d052d1d_mtqt5l16"></script>
-    <script src="js/modules/matrizes/matrizes.js?v=d2df1a4b54_mtqt5l16"></script>
-    <script src="js/modules/cronograma/cronograma_state.js?v=291ef65907_mtqt5l16"></script>
-    <script src="js/modules/cronograma/cronograma_views_monthly.js?v=9bbac5a230_mtqt5l16"></script>
-    <script src="js/modules/cronograma/cronograma_views_weekly.js?v=37e3b04d03_mtqt5l16"></script>
-    <script src="js/modules/cronograma/cronograma_views_comparison.js?v=9875be98c6_mtqt5l16"></script>
-    <script src="js/modules/cronograma/cronograma_progress_modal.js?v=f327132831_mtqt5l16"></script>
-    <script src="js/modules/cronograma/cronograma_views.js?v=3254fb7223_mtqt5l16"></script>
-    <script src="js/modules/cronograma/cronograma_planner.js?v=217cb644d9_mtqt5l16"></script>
-    <script src="js/modules/cronograma/cronograma_trash.js?v=a01d97e91e_mtqt5l16"></script>
-    <script src="js/modules/cronograma/cronograma_calendar_40w.js?v=951800db84_mtqt5l16"></script>
-    <script src="js/modules/cronograma/cronograma.js?v=69486dcbc3_mtqt5l16"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_state.js?v=3b4b3c473f_mtqt5l16"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_wizard.js?v=23d3745407_mtqt5l16"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_events.js?v=95483a70b1_mtqt5l16"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_espelho.js?v=11acd9efc8_mtqt5l16"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_analytics.js?v=d8988743ae_mtqt5l16"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_print.js?v=b5eb11e2a6_mtqt5l16"></script>
-    <script src="js/modules/questoes/questoes_generator.js?v=8e44d7592b_mtqt5l16"></script>
-    <script src="js/modules/questoes/questoes_list.js?v=5543a2c1d7_mtqt5l16"></script>
-    <script src="js/modules/questoes/questoes_import_export.js?v=c7d3bb36d0_mtqt5l16"></script>
-    <script src="js/modules/diagnostico/diagnostico.js?v=e4becf6279_mtqt5l16"></script>
-    <script src="js/modules/saeb/saeb_state.js?v=178da7f734_mtqt5l16"></script>
-    <script src="js/modules/saeb/saeb_distribution_view.js?v=7bee5af18a_mtqt5l16"></script>
-    <script src="js/modules/saeb/saeb_comparativo_turmas.js?v=22f1b3636c_mtqt5l16"></script>
-    <script src="js/modules/saeb/saeb_ficha_individual.js?v=17642111a3_mtqt5l16"></script>
-    <script src="js/modules/saeb/saeb_boletim.js?v=f2fbc9e7e7_mtqt5l16"></script>
-    <script src="js/modules/saeb/saeb_intervencoes_comparativo.js?v=ada1202837_mtqt5l16"></script>
-    <script src="js/modules/saeb/saeb.js?v=6f18f413e8_mtqt5l16"></script>
-    <script src="js/modules/biblioteca/biblioteca_reader.js?v=a526e81258_mtqt5l16"></script>
-    <script src="js/modules/biblioteca/biblioteca_upload.js?v=a0fcce08d5_mtqt5l16"></script>
-    <script src="js/modules/biblioteca/biblioteca.js?v=9933182f10_mtqt5l16"></script>
-    <script src="js/modules/admin/admin_data.js?v=4146d4760b_mtqt5l16"></script>
-    <script src="js/modules/admin/admin_users.js?v=9efdb86dbd_mtqt5l16"></script>
-    <script src="js/modules/admin/admin_tenants.js?v=ae5a501f46_mtqt5l16"></script>
-    <script src="js/modules/doc_tecnica/doc_tecnica.js?v=014b44adfa_mtqt5l16"></script>
-    <script src="js/modules/onboarding/onboarding_tour.js?v=cffc5cac55_mtqt5l16"></script>
-    <script src="js/modules/onboarding/tab_context_tours.js?v=99633ec3f4_mtqt5l16"></script>
+    <script src="js/modules/dashboard/dashboard_kpis.js?v=661c48df5d_mtqtvwxq"></script>
+    <script src="js/modules/dashboard/dashboard_charts.js?v=f817fe2edd_mtqtvwxq"></script>
+    <script src="js/modules/dashboard/dashboard_analytics.js?v=156257a0b0_mtqtvwxq"></script>
+    <script src="js/modules/dashboard/dashboard_scales.js?v=8b105db83a_mtqtvwxq"></script>
+    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=047c7904b7_mtqtvwxq"></script>
+    <script src="js/modules/dashboard/dashboard_scroll_reveal.js?v=765a5ac049_mtqtvwxq"></script>
+    <script src="js/modules/alunos/alunos_progression_modal.js?v=cf365ce8cf_mtqtvwxq"></script>
+    <script src="js/modules/alunos/alunos_list.js?v=1680ba1e32_mtqtvwxq"></script>
+    <script src="js/modules/alunos/alunos_forms.js?v=d65581afbc_mtqtvwxq"></script>
+    <script src="js/modules/turmas/turmas_crud.js?v=e246099ccf_mtqtvwxq"></script>
+    <script src="js/modules/turmas/turmas_diario.js?v=a785ddd9e6_mtqtvwxq"></script>
+    <script src="js/modules/metas/metas_regional.js?v=2237174a37_mtqtvwxq"></script>
+    <script src="js/modules/metas/metas_pactuacao.js?v=d8339a8098_mtqtvwxq"></script>
+    <script src="js/modules/metas/metas_escolas_ranking.js?v=3f51553992_mtqtvwxq"></script>
+    <script src="js/modules/metas/metas_calculo_manual.js?v=42d907079e_mtqtvwxq"></script>
+    <script src="js/modules/metas/metas_ideb.js?v=505cc6d09c_mtqtvwxq"></script>
+    <script src="js/modules/escolas/escolas.js?v=ad88821233_mtqtvwxq"></script>
+    <script src="js/modules/escolas/escolas_workspace.js?v=cbd14d4cc2_mtqtvwxq"></script>
+    <script src="js/modules/escolas/escolas_modals.js?v=d32d052d1d_mtqtvwxq"></script>
+    <script src="js/modules/matrizes/matrizes.js?v=d2df1a4b54_mtqtvwxq"></script>
+    <script src="js/modules/cronograma/cronograma_state.js?v=291ef65907_mtqtvwxq"></script>
+    <script src="js/modules/cronograma/cronograma_views_monthly.js?v=9bbac5a230_mtqtvwxq"></script>
+    <script src="js/modules/cronograma/cronograma_views_weekly.js?v=37e3b04d03_mtqtvwxq"></script>
+    <script src="js/modules/cronograma/cronograma_views_comparison.js?v=9875be98c6_mtqtvwxq"></script>
+    <script src="js/modules/cronograma/cronograma_progress_modal.js?v=f327132831_mtqtvwxq"></script>
+    <script src="js/modules/cronograma/cronograma_views.js?v=3254fb7223_mtqtvwxq"></script>
+    <script src="js/modules/cronograma/cronograma_planner.js?v=217cb644d9_mtqtvwxq"></script>
+    <script src="js/modules/cronograma/cronograma_trash.js?v=a01d97e91e_mtqtvwxq"></script>
+    <script src="js/modules/cronograma/cronograma_calendar_40w.js?v=951800db84_mtqtvwxq"></script>
+    <script src="js/modules/cronograma/cronograma.js?v=69486dcbc3_mtqtvwxq"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_state.js?v=181e0c2a1c_mtqtvwxq"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_wizard.js?v=23d3745407_mtqtvwxq"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_events.js?v=2a8cda0df1_mtqtvwxq"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_espelho.js?v=11acd9efc8_mtqtvwxq"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_analytics.js?v=d8988743ae_mtqtvwxq"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_print.js?v=b5eb11e2a6_mtqtvwxq"></script>
+    <script src="js/modules/questoes/questoes_generator.js?v=8e44d7592b_mtqtvwxq"></script>
+    <script src="js/modules/questoes/questoes_list.js?v=5543a2c1d7_mtqtvwxq"></script>
+    <script src="js/modules/questoes/questoes_import_export.js?v=c7d3bb36d0_mtqtvwxq"></script>
+    <script src="js/modules/diagnostico/diagnostico.js?v=e4becf6279_mtqtvwxq"></script>
+    <script src="js/modules/saeb/saeb_state.js?v=178da7f734_mtqtvwxq"></script>
+    <script src="js/modules/saeb/saeb_distribution_view.js?v=7bee5af18a_mtqtvwxq"></script>
+    <script src="js/modules/saeb/saeb_comparativo_turmas.js?v=22f1b3636c_mtqtvwxq"></script>
+    <script src="js/modules/saeb/saeb_ficha_individual.js?v=17642111a3_mtqtvwxq"></script>
+    <script src="js/modules/saeb/saeb_boletim.js?v=f2fbc9e7e7_mtqtvwxq"></script>
+    <script src="js/modules/saeb/saeb_intervencoes_comparativo.js?v=ada1202837_mtqtvwxq"></script>
+    <script src="js/modules/saeb/saeb.js?v=6f18f413e8_mtqtvwxq"></script>
+    <script src="js/modules/biblioteca/biblioteca_reader.js?v=a526e81258_mtqtvwxq"></script>
+    <script src="js/modules/biblioteca/biblioteca_upload.js?v=a0fcce08d5_mtqtvwxq"></script>
+    <script src="js/modules/biblioteca/biblioteca.js?v=9933182f10_mtqtvwxq"></script>
+    <script src="js/modules/admin/admin_data.js?v=4146d4760b_mtqtvwxq"></script>
+    <script src="js/modules/admin/admin_users.js?v=9efdb86dbd_mtqtvwxq"></script>
+    <script src="js/modules/admin/admin_tenants.js?v=ae5a501f46_mtqtvwxq"></script>
+    <script src="js/modules/doc_tecnica/doc_tecnica.js?v=014b44adfa_mtqtvwxq"></script>
+    <script src="js/modules/onboarding/onboarding_tour.js?v=cffc5cac55_mtqtvwxq"></script>
+    <script src="js/modules/onboarding/tab_context_tours.js?v=99633ec3f4_mtqtvwxq"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=826c28719e_mtqt5l16"></script>
+    <script src="app.js?v=826c28719e_mtqtvwxq"></script>
 </body>
 </html>

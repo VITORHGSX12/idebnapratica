@@ -243,6 +243,177 @@
         };
     }
 
+    // -------------------------------------------------------------------------
+    // 5. GESTÃO GERENCIAL DE AVALIAÇÕES: PROGRESSO, STATUS E EXCLUSÃO EM CASCATA
+    // -------------------------------------------------------------------------
+
+    /**
+     * Calcula com precisão o progresso de digitação de respostas de uma avaliação
+     * @param {string} eventoId ID do evento avaliativo
+     * @returns {Object} Estatísticas de preenchimento, status gerencial e percentual
+     */
+    function calcularProgressoEvento(eventoId) {
+        var eventos = getEventosState();
+        var ev = eventos.find(function(e) { return e.id === eventoId; });
+        if (!ev) {
+            return {
+                eventoId: eventoId,
+                statusEvento: 'INEXISTENTE',
+                alunosPreenchidos: 0,
+                alunosEsperados: 0,
+                percentual: 0,
+                isConcluido: false,
+                isEmAndamento: false,
+                isAtivo: false,
+                isRascunho: false,
+                statusGerencial: 'INEXISTENTE'
+            };
+        }
+
+        var statusEvento = (ev.status || 'ABERTO').toUpperCase();
+        var respostasDb = getRespostasState();
+        var prefix = eventoId + '_';
+
+        var totalPreenchidos = 0;
+        var totalAusentes = 0;
+        var chavesEvento = Object.keys(respostasDb).filter(function(k) {
+            return k === eventoId || k.indexOf(prefix) === 0;
+        });
+
+        chavesEvento.forEach(function(k) {
+            var turmaData = respostasDb[k];
+            if (turmaData && typeof turmaData === 'object') {
+                Object.keys(turmaData).forEach(function(alunoId) {
+                    var rec = turmaData[alunoId];
+                    if (!rec) return;
+                    if (rec.statusPresenca === 'AUSENTE') {
+                        totalAusentes++;
+                        totalPreenchidos++;
+                    } else if (Array.isArray(rec.respostas)) {
+                        var temRespostas = rec.respostas.some(function(r) { return r && r.toString().trim() !== ''; });
+                        if (temRespostas) {
+                            totalPreenchidos++;
+                        }
+                    }
+                });
+            }
+        });
+
+        // Determinação de alunos esperados
+        var totalEsperados = 0;
+        if (Array.isArray(ev.turmas) && ev.turmas.length > 0) {
+            ev.turmas.forEach(function(t) {
+                totalEsperados += (parseInt(t.totalAlunos) || parseInt(t.qtdAlunos) || 25);
+            });
+        }
+
+        // Se não tiver turmas explícitas, verifica base de alunos oficial cadastrada
+        if (totalEsperados === 0) {
+            var allStudents = typeof global.getOfficialStudentsState === 'function' ? global.getOfficialStudentsState() : (global.dbAlunos || []);
+            if (Array.isArray(allStudents) && allStudents.length > 0) {
+                var etapas = Array.isArray(ev.etapasAlvo) ? ev.etapasAlvo : [ev.etapasAlvo || '5º Ano'];
+                var filteredSt = allStudents.filter(function(st) {
+                    return etapas.some(function(et) {
+                        return st.serie && (st.serie.includes(et) || et.includes(st.serie));
+                    });
+                });
+                totalEsperados = filteredSt.length;
+            }
+        }
+
+        // Fallback inteligente para garantir percentual consistente
+        if (totalEsperados === 0) {
+            totalEsperados = totalPreenchidos > 0 ? totalPreenchidos : 30;
+        }
+
+        if (totalPreenchidos > totalEsperados) {
+            totalEsperados = totalPreenchidos;
+        }
+
+        var percentual = totalEsperados > 0 ? Math.min(100, Number(((totalPreenchidos / totalEsperados) * 100).toFixed(1))) : 0;
+
+        var isRascunho = (statusEvento === 'RASCUNHO');
+        var isConcluido = (statusEvento === 'ENCERRADO') || (percentual >= 100 && totalPreenchidos > 0);
+        var isEmAndamento = (!isRascunho && !isConcluido && totalPreenchidos > 0);
+        var isAtivo = (statusEvento === 'ABERTO' && totalPreenchidos === 0);
+
+        var statusGerencial = 'ATIVO';
+        if (isRascunho) statusGerencial = 'RASCUNHO';
+        else if (isConcluido) statusGerencial = 'CONCLUIDO';
+        else if (isEmAndamento) statusGerencial = 'EM_ANDAMENTO';
+
+        return {
+            eventoId: eventoId,
+            statusEvento: statusEvento,
+            alunosPreenchidos: totalPreenchidos,
+            alunosAusentes: totalAusentes,
+            alunosEsperados: totalEsperados,
+            percentual: percentual,
+            isConcluido: isConcluido,
+            isEmAndamento: isEmAndamento,
+            isAtivo: isAtivo,
+            isRascunho: isRascunho,
+            statusGerencial: statusGerencial
+        };
+    }
+
+    /**
+     * Remove um evento e purga permanentemente todas as suas respostas do armazenamento
+     * @param {string} eventoId 
+     * @returns {Object} Resultado da exclusão
+     */
+    function excluirEventoComRespostas(eventoId) {
+        var eventos = getEventosState();
+        var novoEventos = eventos.filter(function(e) { return e.id !== eventoId; });
+        saveEventosState(novoEventos);
+
+        var respostasDb = getRespostasState();
+        var prefix = eventoId + '_';
+        var chavesRemover = Object.keys(respostasDb).filter(function(k) {
+            return k === eventoId || k.indexOf(prefix) === 0;
+        });
+
+        chavesRemover.forEach(function(k) {
+            delete respostasDb[k];
+        });
+        saveRespostasState(respostasDb);
+
+        return {
+            success: true,
+            eventoId: eventoId,
+            chavesRespostasRemovidas: chavesRemover.length
+        };
+    }
+
+    /**
+     * Obtém o resumo numérico consolidado para os cards de filtro do Gerenciador
+     * @returns {Object} { total, ativas, emAndamento, concluidas, rascunhos }
+     */
+    function obterResumoGerencialAvaliacoes() {
+        var eventos = getEventosState();
+        var total = eventos.length;
+        var ativas = 0;
+        var emAndamento = 0;
+        var concluidas = 0;
+        var rascunhos = 0;
+
+        eventos.forEach(function(ev) {
+            var prog = calcularProgressoEvento(ev.id);
+            if (prog.isRascunho) rascunhos++;
+            else if (prog.isConcluido) concluidas++;
+            else if (prog.isEmAndamento) emAndamento++;
+            else ativas++;
+        });
+
+        return {
+            total: total,
+            ativas: ativas,
+            emAndamento: emAndamento,
+            concluidas: concluidas,
+            rascunhos: rascunhos
+        };
+    }
+
     // Exposição Global
     global.MATRIZ_HABILIDADES_SAEB = MATRIZ_HABILIDADES_SAEB;
     global.getEventosState = getEventosState;
@@ -250,5 +421,8 @@
     global.getRespostasState = getRespostasState;
     global.saveRespostasState = saveRespostasState;
     global.processarCorrecaoAluno = processarCorrecaoAluno;
+    global.calcularProgressoEvento = calcularProgressoEvento;
+    global.excluirEventoComRespostas = excluirEventoComRespostas;
+    global.obterResumoGerencialAvaliacoes = obterResumoGerencialAvaliacoes;
 
 })(typeof window !== 'undefined' ? window : this);

@@ -1,20 +1,11 @@
-// =========================================================================
-// DASHBOARD CHARTS ENGINE
-// Responsabilidade: Renderização de gráficos comparativos históricos (Chart.js),
-// Anos Iniciais vs Anos Finais, metas INEP de Gonçalves Dias e Maranhão,
-// tooltips interativas e fallbacks de canvas nativo.
-// =========================================================================
-
+// DASHBOARD CHARTS ENGINE - Responsabilidade: Renderização de gráficos comparativos históricos (Chart.js)
 (function(global) {
     'use strict';
-
-    // Instâncias Globais de Gráficos do Dashboard
     var dashGoncalvesDiasChartInstance = null;
     var dashIniciaisChartInstance = null;
     var dashFinaisChartInstance = null;
     var dashComparativoChartInstance = null;
 
-    // Registrar o plugin datalabels globalmente se a biblioteca estiver carregada
     if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined') {
         try { Chart.register(ChartDataLabels); } catch(e) {}
     }

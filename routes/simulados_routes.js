@@ -293,36 +293,29 @@ router.delete('/eventos-simulado/:id', async (req, res) => {
     try {
         const { id } = req.params;
         if (!db.useLocalFallback) {
-            const check = await db.query('SELECT id, titulo, status FROM eventos_simulados WHERE id = $1', [id]);
-            if (!check || check.rows.length === 0) {
-                // Se não estiver no banco mas estiver em memória, permite limpar
-                const memIdx = memoryEventosSimulados.findIndex(e => e.id === id);
-                if (memIdx !== -1) {
-                    const memEv = memoryEventosSimulados[memIdx];
-                    if (memEv.status !== 'RASCUNHO') {
-                        return res.status(400).json({
-                            success: false,
-                            error: `Não é permitido excluir eventos com status '${memEv.status}'. Apenas eventos em status 'RASCUNHO' podem ser excluídos.`
-                        });
-                    }
-                    memoryEventosSimulados.splice(memIdx, 1);
-                    return res.json({ success: true, message: 'Evento em rascunho excluído com sucesso.' });
-                }
-                return res.status(404).json({ success: false, error: 'Evento avaliativo não encontrado.' });
+            // Limpeza em cascata no banco de dados relacional
+            try {
+                await db.query('DELETE FROM respostas_simulados WHERE evento_id = $1', [id]);
+                await db.query('DELETE FROM eventos_simulados_turmas WHERE evento_id = $1', [id]);
+                await db.query('DELETE FROM eventos_simulados WHERE id = $1', [id]);
+            } catch(dbErr) {
+                console.warn('[DELETE Evento DB Warning]', dbErr.message);
             }
-
-            const status = (check.rows[0].status || '').toUpperCase();
-            if (status !== 'RASCUNHO') {
-                return res.status(400).json({
-                    success: false,
-                    error: `Não é permitido excluir eventos com status '${status}'. Apenas eventos em status 'RASCUNHO' podem ser excluídos. Eventos abertos ou encerrados devem ser concluídos ou mantidos para integridade histórica.`
-                });
-            }
-
-            await db.query('DELETE FROM eventos_simulados WHERE id = $1', [id]);
         }
+        
+        // Limpeza no estado em memória
         memoryEventosSimulados = memoryEventosSimulados.filter(e => e.id !== id);
-        res.json({ success: true, message: 'Evento em rascunho excluído com sucesso.' });
+        
+        // Limpeza de respostas em memória vinculadas ao evento
+        if (typeof memoryRespostasSimulados === 'object' && memoryRespostasSimulados !== null) {
+            Object.keys(memoryRespostasSimulados).forEach(key => {
+                if (key.startsWith(id + '_') || key === id) {
+                    delete memoryRespostasSimulados[key];
+                }
+            });
+        }
+        
+        res.json({ success: true, message: 'Evento avaliativo e respostas associadas excluídos com sucesso.' });
     } catch (err) {
         console.error('[DELETE /eventos-simulado Error]', err);
         res.status(500).json({ success: false, error: err.message });
