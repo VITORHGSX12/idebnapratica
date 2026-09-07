@@ -13,3 +13,6 @@ local_db_state_backup.json
 .vercel
 backups/
 
+
+.temp_edge_login_test/
+
