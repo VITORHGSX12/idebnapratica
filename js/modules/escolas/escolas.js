@@ -15,9 +15,17 @@
     var STORAGE_KEY_OFFICIAL_CLASSES = 'gd_official_classes_data';
     var STORAGE_KEY_OFFICIAL_TEACHERS = 'gd_official_teachers_data';
 
-    // -------------------------------------------------------------------------
-    // 1. GESTÃO DE ESTADO CENTRALIZADO (ESCOLAS, TURMAS, PROFESSORES, ALUNOS)
-    // -------------------------------------------------------------------------
+    var CANONICAL_GONCALVES_DIAS_SCHOOLS = [
+        { id: "8d08a461-11fa-4b63-abaa-5b2378cf278c", name: "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ", inep: "21286973", zone: "Sede Urbana", status: "Ativa", city: "Gonçalves Dias - MA", phone: "(99) 9935-6218", director: "Gestão Escolar", alunosCount: 232, turmasCount: 8 },
+        { id: "3a3b0e2f-5e6d-4623-8035-4b119b40fa90", name: "UI JOSE CORREA LIMA", inep: "21128723", zone: "Zona Rural", status: "Ativa", city: "Gonçalves Dias - MA", phone: "(99) 9935-6218", director: "Gestão Escolar", alunosCount: 30, turmasCount: 3 },
+        { id: "7ff3cfda-cf15-42c3-bed0-ba42d00c21ed", name: "UI EMILIO MURAD", inep: "21128146", zone: "Zona Rural", status: "Ativa", city: "Gonçalves Dias - MA", phone: "(99) 9935-6218", director: "Gestão Escolar", alunosCount: 38, turmasCount: 3 },
+        { id: "7f833929-ae7d-480c-8416-2e07afa22156", name: "UE VEREADOR LEONARDO FERREIRA LIMA", inep: "21128740", zone: "Sede Urbana", status: "Ativa", city: "Gonçalves Dias - MA", phone: "(99) 9935-6218", director: "Gestão Escolar", alunosCount: 57, turmasCount: 4 },
+        { id: "d1c1f1d1-83b2-4a93-abf1-dc1205a27022", name: "U I BASILIO ALVES", inep: "21128120", zone: "Zona Rural", status: "Ativa", city: "Gonçalves Dias - MA", phone: "(99) 9935-6218", director: "Gestão Escolar", alunosCount: 59, turmasCount: 4 },
+        { id: "2b214ced-30b3-49e8-806c-657cf727f74e", name: "UE RAIMUNDO DOS REIS DA SILVA", inep: "21128758", zone: "Zona Rural", status: "Ativa", city: "Gonçalves Dias - MA", phone: "(99) 9935-6218", director: "Gestão Escolar", alunosCount: 13, turmasCount: 2 },
+        { id: "93553a71-c887-4e37-8005-28db28fe8b71", name: "UNIDADE INTEGRADA JOSE GONCALVES DIAS", inep: "21286990", zone: "Zona Rural", status: "Ativa", city: "Gonçalves Dias - MA", phone: "(99) 9935-6218", director: "Gestão Escolar", alunosCount: 27, turmasCount: 3 },
+        { id: "988f4f15-5f14-44df-9d60-93e313ff8f33", name: "UNIDADE ESCOLAR ANISIO GOMES", inep: "21128774", zone: "Zona Rural", status: "Ativa", city: "Gonçalves Dias - MA", phone: "(99) 9935-6218", director: "Gestão Escolar", alunosCount: 31, turmasCount: 3 },
+        { id: "dbc3e23d-6f2f-4af2-aeed-b2fc4138343b", name: "UE ANITA FURTADO", inep: "21192544", zone: "Sede Urbana", status: "Ativa", city: "Gonçalves Dias - MA", phone: "(99) 9935-6218", director: "Gestão Escolar", alunosCount: 39, turmasCount: 2 }
+    ];
 
     function getSeedData() {
         if (typeof global.officialStudentsSeed !== 'undefined' && global.officialStudentsSeed) {
@@ -26,7 +34,7 @@
         if (typeof global.OFFICIAL_IMPORTED_STUDENTS_SEED !== 'undefined' && global.OFFICIAL_IMPORTED_STUDENTS_SEED) {
             return global.OFFICIAL_IMPORTED_STUDENTS_SEED;
         }
-        return { escolas: [], turmas: [], professores: [], alunos: [] };
+        return { escolas: CANONICAL_GONCALVES_DIAS_SCHOOLS, turmas: [], professores: [], alunos: [] };
     }
 
     function getOfficialSchoolsState() {
@@ -35,21 +43,24 @@
             var saved = localStorage.getItem(STORAGE_KEY_OFFICIAL_SCHOOLS);
             if (saved) {
                 var parsed = JSON.parse(saved);
-                if (Array.isArray(parsed) && parsed.length === (seed.escolas ? seed.escolas.length : 9)) return parsed;
+                if (Array.isArray(parsed) && parsed.length === 9) {
+                    var canonicalIneps = CANONICAL_GONCALVES_DIAS_SCHOOLS.map(function(c) { return c.inep; });
+                    var isValidGD = parsed.every(function(s) { return canonicalIneps.includes(s.inep); });
+                    if (isValidGD) return parsed;
+                }
             }
         } catch(e) {}
 
-        if (seed.escolas && seed.escolas.length > 0) {
-            saveOfficialSchoolsState(seed.escolas);
-            return seed.escolas;
-        }
-        return [];
+        var fallbackSchools = (seed.escolas && seed.escolas.length === 9) ? seed.escolas : CANONICAL_GONCALVES_DIAS_SCHOOLS;
+        saveOfficialSchoolsState(fallbackSchools);
+        return fallbackSchools;
     }
 
     function saveOfficialSchoolsState(schools) {
         try {
             var toSave = schools || getOfficialSchoolsState();
             localStorage.setItem(STORAGE_KEY_OFFICIAL_SCHOOLS, JSON.stringify(toSave));
+            global.dbEscolas = toSave;
         } catch(e) {}
     }
 

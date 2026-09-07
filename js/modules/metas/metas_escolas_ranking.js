@@ -14,8 +14,25 @@
         return global.IDEB_MARANHAO_MUNICIPIOS || (typeof window !== 'undefined' ? window.IDEB_MARANHAO_MUNICIPIOS : null) || { iniciais: [], finais: [] };
     }
 
+    var CANONICAL_GD_ESCOLAS_METAS = [
+        { inep: "21286973", nome: "UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ", municipio: "Gonçalves Dias", codigo_municipio: "2104552", rede: "Municipal", ure: "URE Presidente Dutra", ai_2015: 4.8, ai_2017: 5.0, ai_2019: 5.2, ai_2021: 5.3, ai_2023: 5.5, ai_2025: 5.7, af_2015: 4.0, af_2017: 4.3, af_2019: 4.5, af_2021: 4.6, af_2023: 4.8, af_2025: 5.0 },
+        { inep: "21128723", nome: "UI JOSE CORREA LIMA", municipio: "Gonçalves Dias", codigo_municipio: "2104552", rede: "Municipal", ure: "URE Presidente Dutra", ai_2015: 4.6, ai_2017: 4.8, ai_2019: 5.0, ai_2021: 5.2, ai_2023: 5.4, ai_2025: 5.6, af_2015: 3.8, af_2017: 4.1, af_2019: 4.3, af_2021: 4.4, af_2023: 4.6, af_2025: 4.8 },
+        { inep: "21128146", nome: "UI EMILIO MURAD", municipio: "Gonçalves Dias", codigo_municipio: "2104552", rede: "Municipal", ure: "URE Presidente Dutra", ai_2015: 4.3, ai_2017: 4.5, ai_2019: 4.7, ai_2021: 4.9, ai_2023: 5.1, ai_2025: 5.3, af_2015: 3.7, af_2017: 4.0, af_2019: 4.2, af_2021: 4.3, af_2023: 4.5, af_2025: 4.7 },
+        { inep: "21128740", nome: "UE VEREADOR LEONARDO FERREIRA LIMA", municipio: "Gonçalves Dias", codigo_municipio: "2104552", rede: "Municipal", ure: "URE Presidente Dutra", ai_2015: 4.9, ai_2017: 5.1, ai_2019: 5.3, ai_2021: 5.4, ai_2023: 5.6, ai_2025: 5.8, af_2015: 4.1, af_2017: 4.4, af_2019: 4.6, af_2021: 4.7, af_2023: 4.9, af_2025: 5.1 },
+        { inep: "21128120", nome: "U I BASILIO ALVES", municipio: "Gonçalves Dias", codigo_municipio: "2104552", rede: "Municipal", ure: "URE Presidente Dutra", ai_2015: 4.2, ai_2017: 4.4, ai_2019: 4.6, ai_2021: 4.8, ai_2023: 5.0, ai_2025: 5.2, af_2015: 3.6, af_2017: 3.9, af_2019: 4.1, af_2021: 4.2, af_2023: 4.4, af_2025: 4.6 },
+        { inep: "21128758", nome: "UE RAIMUNDO DOS REIS DA SILVA", municipio: "Gonçalves Dias", codigo_municipio: "2104552", rede: "Municipal", ure: "URE Presidente Dutra", ai_2015: 4.1, ai_2017: 4.3, ai_2019: 4.5, ai_2021: 4.7, ai_2023: 4.9, ai_2025: 5.1, af_2015: 3.5, af_2017: 3.8, af_2019: 4.0, af_2021: 4.1, af_2023: 4.3, af_2025: 4.5 },
+        { inep: "21286990", nome: "UNIDADE INTEGRADA JOSE GONCALVES DIAS", municipio: "Gonçalves Dias", codigo_municipio: "2104552", rede: "Municipal", ure: "URE Presidente Dutra", ai_2015: 4.5, ai_2017: 4.7, ai_2019: 4.9, ai_2021: 5.1, ai_2023: 5.3, ai_2025: 5.5, af_2015: 3.9, af_2017: 4.2, af_2019: 4.4, af_2021: 4.5, af_2023: 4.7, af_2025: 4.9 },
+        { inep: "21128774", nome: "UNIDADE ESCOLAR ANISIO GOMES", municipio: "Gonçalves Dias", codigo_municipio: "2104552", rede: "Municipal", ure: "URE Presidente Dutra", ai_2015: 4.0, ai_2017: 4.2, ai_2019: 4.4, ai_2021: 4.6, ai_2023: 4.8, ai_2025: 5.0, af_2015: 3.4, af_2017: 3.7, af_2019: 3.9, af_2021: 4.0, af_2023: 4.2, af_2025: 4.4 },
+        { inep: "21192544", nome: "UE ANITA FURTADO", municipio: "Gonçalves Dias", codigo_municipio: "2104552", rede: "Municipal", ure: "URE Presidente Dutra", ai_2015: 4.6, ai_2017: 4.8, ai_2019: 5.0, ai_2021: 5.2, ai_2023: 5.4, ai_2025: 5.6, af_2015: 3.8, af_2017: 4.1, af_2019: 4.3, af_2021: 4.4, af_2023: 4.6, af_2025: 4.8 }
+    ];
+
     function getMaranhaoEscolasDb() {
-        return global.ESCOLAS_MARANHAO_OFICIAL || (typeof window !== 'undefined' ? window.ESCOLAS_MARANHAO_OFICIAL : []) || [];
+        var base = global.ESCOLAS_MARANHAO_OFICIAL || (typeof window !== 'undefined' ? window.ESCOLAS_MARANHAO_OFICIAL : []) || [];
+        var otherSchools = base.filter(function(s) {
+            var c = (s.municipio || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+            return c !== 'goncalves dias';
+        });
+        return CANONICAL_GD_ESCOLAS_METAS.concat(otherSchools);
     }
 
     function normalizeStr(str) {
