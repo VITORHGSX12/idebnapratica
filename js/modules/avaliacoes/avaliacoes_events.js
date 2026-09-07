@@ -54,7 +54,11 @@
             if (res.ok) {
                 var json = await res.json();
                 if (json && json.success && Array.isArray(json.eventos)) {
-                    if (typeof global.saveEventosState === 'function') global.saveEventosState(json.eventos);
+                    var deletedIds = typeof global.getDeletedEventosIds === 'function' ? global.getDeletedEventosIds() : [];
+                    var validEventos = json.eventos.filter(function(e) {
+                        return e && e.id && !deletedIds.includes(e.id);
+                    });
+                    if (typeof global.saveEventosState === 'function') global.saveEventosState(validEventos);
                     renderEventosTable();
                 }
             }

@@ -12,6 +12,29 @@
 
     var STORAGE_KEY_EVENTOS = 'gd_eventos_simulados_data';
     var STORAGE_KEY_RESPOSTAS = 'gd_respostas_simulados_data';
+    var STORAGE_KEY_DELETED_EVENTOS = 'gd_eventos_simulados_deleted_ids';
+
+    function getDeletedEventosIds() {
+        try {
+            var raw = localStorage.getItem(STORAGE_KEY_DELETED_EVENTOS);
+            if (raw) {
+                var parsed = JSON.parse(raw);
+                if (Array.isArray(parsed)) return parsed;
+            }
+        } catch(e) {}
+        return [];
+    }
+
+    function addDeletedEventoId(eventoId) {
+        if (!eventoId) return;
+        var list = getDeletedEventosIds();
+        if (!list.includes(eventoId)) {
+            list.push(eventoId);
+            try {
+                localStorage.setItem(STORAGE_KEY_DELETED_EVENTOS, JSON.stringify(list));
+            } catch(e) {}
+        }
+    }
 
     // -------------------------------------------------------------------------
     // 1. BANCO CANÔNICO DE HABILIDADES SAEB (LÍNGUA PORTUGUESA & MATEMÁTICA)
@@ -118,15 +141,18 @@
     // -------------------------------------------------------------------------
 
     function getEventosState() {
+        var deletedIds = getDeletedEventosIds();
         try {
             var raw = localStorage.getItem(STORAGE_KEY_EVENTOS);
             if (raw !== null) {
                 var parsed = JSON.parse(raw);
-                if (Array.isArray(parsed)) return parsed;
+                if (Array.isArray(parsed)) {
+                    return parsed.filter(function(e) { return e && e.id && !deletedIds.includes(e.id); });
+                }
             }
         } catch(e) {}
 
-        var seed = getInitialEventosSeed();
+        var seed = getInitialEventosSeed().filter(function(e) { return e && e.id && !deletedIds.includes(e.id); });
         saveEventosState(seed);
         return seed;
     }
@@ -363,8 +389,11 @@
      * @returns {Object} Resultado da exclusão
      */
     function excluirEventoComRespostas(eventoId) {
+        if (!eventoId) return { success: false };
+        addDeletedEventoId(eventoId);
+
         var eventos = getEventosState();
-        var novoEventos = eventos.filter(function(e) { return e.id !== eventoId; });
+        var novoEventos = eventos.filter(function(e) { return e && e.id !== eventoId; });
         saveEventosState(novoEventos);
 
         var respostasDb = getRespostasState();
@@ -420,6 +449,8 @@
     global.saveEventosState = saveEventosState;
     global.getRespostasState = getRespostasState;
     global.saveRespostasState = saveRespostasState;
+    global.getDeletedEventosIds = getDeletedEventosIds;
+    global.addDeletedEventoId = addDeletedEventoId;
     global.processarCorrecaoAluno = processarCorrecaoAluno;
     global.calcularProgressoEvento = calcularProgressoEvento;
     global.excluirEventoComRespostas = excluirEventoComRespostas;

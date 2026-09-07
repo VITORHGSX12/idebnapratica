@@ -135,7 +135,7 @@ router.get('/eventos-simulado', async (req, res) => {
                 FROM eventos_simulados
                 ORDER BY criado_em DESC
             `);
-            if (queryRes && queryRes.rows && queryRes.rows.length > 0) {
+            if (queryRes && Array.isArray(queryRes.rows)) {
                 return res.json({ success: true, eventos: queryRes.rows });
             }
         }
