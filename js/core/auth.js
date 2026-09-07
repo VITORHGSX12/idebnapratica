@@ -287,12 +287,22 @@
                     global.showToast('Bem-vindo ao IDEB na Prática! Painel ' + detectedRole + ' carregado.', 'check');
                 }
                 window.scrollTo(0, 0);
+
+                // Gatilho do Tour de Boas-Vindas no primeiro login
+                if (typeof global.checkAndTriggerOnboarding === 'function') {
+                    global.checkAndTriggerOnboarding();
+                }
             }, 280);
         } else {
             if (typeof global.showToast === 'function') {
                 global.showToast('Bem-vindo ao IDEB na Prática! Painel ' + detectedRole + ' carregado.', 'check');
             }
             window.scrollTo(0, 0);
+
+            // Gatilho do Tour de Boas-Vindas no primeiro login
+            if (typeof global.checkAndTriggerOnboarding === 'function') {
+                global.checkAndTriggerOnboarding();
+            }
         }
     }
 

@@ -8304,3 +8304,96 @@ body.dark-mode .metrics-grid .metric-card:hover {
     box-shadow: 0 12px 24px -4px rgba(10, 25, 49, 0.25),
                 0 0 0 1.5px var(--color-accent-primary, #7FB3E0) !important;
 }
+
+/* =========================================================================
+   ONBOARDING GUIDED TOUR (SPOTLIGHT SEQUENCIAL EM 12 ETAPAS)
+   ========================================================================= */
+
+@keyframes tourFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes spotlightPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 4px rgba(74, 127, 167, 0.6), 0 0 0 9999px rgba(10, 25, 49, 0.65);
+    }
+    50% {
+        box-shadow: 0 0 0 7px rgba(74, 127, 167, 0.9), 0 0 0 9999px rgba(10, 25, 49, 0.70);
+    }
+}
+
+.onboarding-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: transparent;
+    z-index: 9998;
+    pointer-events: auto;
+    transition: opacity 0.3s ease;
+}
+
+.onboarding-backdrop.hidden {
+    display: none !important;
+}
+
+.onboarding-spotlight-box {
+    position: fixed;
+    border-radius: 12px;
+    pointer-events: none;
+    z-index: 9999;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.25, 1);
+    animation: spotlightPulse 2.5s ease-in-out infinite;
+}
+
+.onboarding-spotlight-box.hidden {
+    display: none !important;
+}
+
+.onboarding-tooltip-card {
+    position: fixed;
+    z-index: 10000;
+    width: 340px;
+    max-width: calc(100vw - 32px);
+    background: var(--bg-secondary, #ffffff);
+    color: var(--text-primary, #0f172a);
+    border: 1px solid var(--border-color, #cbd5e1);
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(74, 127, 167, 0.25);
+    animation: tourFadeIn 0.28s cubic-bezier(0.2, 0.8, 0.25, 1);
+    transition: top 0.25s ease, left 0.25s ease;
+}
+
+.onboarding-tooltip-card.hidden {
+    display: none !important;
+}
+
+.onboarding-welcome-modal-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(10, 25, 49, 0.75);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+    animation: tourFadeIn 0.3s ease-out;
+}
+
+.onboarding-welcome-modal-wrapper.hidden {
+    display: none !important;
+}
+
