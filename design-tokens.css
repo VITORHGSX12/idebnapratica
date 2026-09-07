@@ -1,57 +1,74 @@
 /* =========================================================================
-   DESIGN TOKENS INSTITUCIONAIS — NOVA PALETA OFICIAL
+   DESIGN TOKENS INSTITUCIONAIS — PALETA EDUCATION2025
    =========================================================================
-   PALETA DEFINIDA:
-   - #F6FAFD : Branco levemente azulado (Fundo geral / Canvas do sistema / Texto claro no dark mode)
-   - #0A1931 : Azul marinho escuro (Contraste máximo / Texto principal no modo claro / Fundo geral no dark mode)
-   - #1A3D63 : Azul marinho médio (Apoio escuro / Subtítulos e labels no modo claro / Cards e painéis no dark mode)
-   - #4A7FA7 : Azul médio (Cor de destaque e ação / Botões primários / Links / Ícones ativos / Badges)
-   - #B3CFE5 : Azul claro (Apoio suave / Fundos de cards / Hover / Divisores e bordas / Texto secundário no dark mode)
+   PALETA DA REFERÊNCIA EDUCATION2025:
+   - #0B2545 -> #1B4B8F : Gradiente vertical escuro da sidebar (azul-marinho escuro ao azul médio)
+   - #2F6FED : Azul vibrante de destaque (Menu ativo / Botões primários / CTAs / Ações)
+   - #F4F6F9 : Fundo geral do conteúdo principal (Cinza muito claro)
+   - #FFFFFF : Superfície nítida dos cards com cantos arredondados (16px) e sombra suave
+   - #0F1A2B : Texto principal (quase preto azulado de altíssimo contraste)
+   - #6B7A90 : Texto secundário e apoios (cinza médio neutro)
+   - #22C55E : Badge de destaque / Sucesso / Concluído
+   - #8B5CF6 : Badge secundário / Categoria
    ========================================================================= */
 
 :root {
     /* ---------------------------------------------------------------------
-       1. SUPERFÍCIES E ESTRUTURA
+       1. SIDEBAR COM GRADIENTE VERTICAL (REFERÊNCIA EDUCATION2025)
        --------------------------------------------------------------------- */
-    --color-brand-primary:      #4A7FA7; /* Azul médio: Ações primárias, links ativos, badges, destaque */
-    --color-brand-secondary:    #1A3D63; /* Azul marinho médio: Subtítulos, apoio escuro, bordas ativas */
-    --color-brand-subtle:       #1A3D63; /* Elementos de suporte */
+    --sidebar-gradient:         linear-gradient(180deg, #0B2545 0%, #10376B 55%, #1B4B8F 100%);
+    --sidebar-bg:               #0B2545;
+    --sidebar-border:           rgba(255, 255, 255, 0.10);
+    --sidebar-item-active:      #2F6FED;
+    --sidebar-item-active-text: #FFFFFF;
+    --sidebar-item-inactive:    #A0B3CC;
+    --sidebar-item-hover:       rgba(255, 255, 255, 0.09);
+    --sidebar-item-hover-text:  #FFFFFF;
+    --sidebar-section-label:    rgba(255, 255, 255, 0.45);
+
+    /* ---------------------------------------------------------------------
+       2. SUPERFÍCIES E ESTRUTURA
+       --------------------------------------------------------------------- */
+    --color-brand-primary:      #2F6FED; /* Azul vibrante: Ações primárias, links ativos, badges, destaque */
+    --color-brand-primary-hover:#255BD1; /* Azul hover */
+    --color-brand-secondary:    #0B2545; /* Azul marinho escuro: Subtítulos, apoio escuro, bordas ativas */
+    --color-brand-subtle:       #10376B; /* Elementos de suporte */
     
-    --color-surface-canvas:     #F6FAFD; /* Branco levemente azulado: Fundo base geral da aplicação e containers */
+    --color-surface-canvas:     #F4F6F9; /* Cinza muito claro: Fundo base geral da aplicação e containers */
     --color-surface-card:       #FFFFFF; /* Superfície nítida de cartões sobre o canvas */
-    --color-surface-subtle:     #B3CFE5; /* Azul claro: Fundo suave de cards alternados, hover, tags neutras */
-    --color-surface-muted:      #B3CFE5; /* Trilhos e divisores */
-    --color-surface-overlay:    rgba(10, 25, 49, 0.75); /* Fundo de modais (#0A1931 com opacidade) */
+    --color-surface-subtle:     #EEF2F6; /* Fundo suave de cards alternados, hover, tags neutras */
+    --color-surface-muted:      #E2E8F0; /* Trilhos e divisores */
+    --color-surface-overlay:    rgba(11, 37, 69, 0.75); /* Fundo de modais */
     
     /* ---------------------------------------------------------------------
-       2. BORDAS E DIVISORES DE ALTA PRECISÃO
+       3. BORDAS E DIVISORES DE ALTA PRECISÃO
        --------------------------------------------------------------------- */
-    --color-border-subtle:      #B3CFE5; /* Azul claro: Divisores, separadores, bordas padrão de inputs e cards */
-    --color-border-strong:      #B3CFE5; /* Contornos padrão */
-    --color-border-focus:       #4A7FA7; /* Foco acessível em elementos interativos */
+    --color-border-subtle:      #E5E9F0; /* Bordas sutis padrão de inputs e cards */
+    --color-border-strong:      #CBD5E1; /* Contornos padrão */
+    --color-border-focus:       #2F6FED; /* Foco acessível em elementos interativos */
 
     /* ---------------------------------------------------------------------
-       3. TIPOGRAFIA & CONTRASTE (WCAG AA / AAA)
+       4. TIPOGRAFIA & CONTRASTE (WCAG AA / AAA)
        --------------------------------------------------------------------- */
-    --color-text-primary:       #0A1931; /* Azul marinho escuro: Títulos e métricas principais (18.2:1 de contraste) */
-    --color-text-secondary:     #1A3D63; /* Azul marinho médio: Subtítulos e textos de apoio (10.5:1 de contraste) */
-    --color-text-muted:         #1A3D63; /* Metadados e rótulos */
-    --color-text-placeholder:   #4A7FA7; /* Azul médio para placeholders */
-    --color-text-inverse:       #FFFFFF; /* Texto sobre fundos de ação/escuros (#4A7FA7, #0A1931, #1A3D63) */
+    --color-text-primary:       #0F1A2B; /* Quase preto azulado: Títulos e métricas principais */
+    --color-text-secondary:     #6B7A90; /* Cinza médio: Subtítulos e textos de apoio */
+    --color-text-muted:         #8A99AD; /* Metadados e rótulos */
+    --color-text-placeholder:   #94A3B8; /* Placeholders */
+    --color-text-inverse:       #FFFFFF; /* Texto sobre fundos de ação/escuros */
 
     /* ---------------------------------------------------------------------
-       4. COR DE DESTAQUE INSTITUCIONAL (CTA / INTERAÇÃO)
+       5. COR DE DESTAQUE INSTITUCIONAL (CTA / INTERAÇÃO)
        --------------------------------------------------------------------- */
-    --color-accent-primary:     #4A7FA7; /* Primária de destaque / CTA / Ação */
-    --color-accent-primary-hover:#1A3D63;/* Hover / Focus */
-    --color-accent-hover:       #1A3D63;
-    --color-accent-soft:        #B3CFE5; /* Fundo suave */
-    --color-accent-soft-border: #B3CFE5;
-    --color-accent-subtle:      #B3CFE5;
-    --color-accent-border:      #B3CFE5;
+    --color-accent-primary:     #2F6FED; /* Primária de destaque / CTA / Ação */
+    --color-accent-primary-hover:#255BD1;/* Hover / Focus */
+    --color-accent-hover:       #255BD1;
+    --color-accent-soft:        rgba(47, 111, 237, 0.12); /* Fundo suave */
+    --color-accent-soft-border: rgba(47, 111, 237, 0.25);
+    --color-accent-subtle:      #EEF2F6;
+    --color-accent-border:      #E2E8F0;
 
     /* ---------------------------------------------------------------------
-       5. SISTEMA SEMÂNTICO SAEB / IDEB (PRESERVADO)
+       6. SISTEMA SEMÂNTICO SAEB / IDEB
        --------------------------------------------------------------------- */
     --color-status-critical:        #DC2626;
     --color-status-critical-bg:     #FEF2F2;
@@ -63,25 +80,28 @@
     --color-status-warning-border:  #FCD34D;
     --color-status-warning-text:    #92400E;
 
-    --color-status-success:         #059669;
-    --color-status-success-bg:      #ECFDF5;
-    --color-status-success-border:  #6EE7B7;
-    --color-status-success-text:    #065F46;
+    --color-status-success:         #22C55E;
+    --color-status-success-bg:      #F0FDF4;
+    --color-status-success-border:  #86EFAC;
+    --color-status-success-text:    #166534;
 
-    --color-status-advanced:        #4A7FA7;
-    --color-status-advanced-bg:     rgba(179, 207, 229, 0.25);
-    --color-status-advanced-border: #B3CFE5;
-    --color-status-advanced-text:   #0A1931;
+    --color-status-advanced:        #2F6FED;
+    --color-status-advanced-bg:     rgba(47, 111, 237, 0.12);
+    --color-status-advanced-border: rgba(47, 111, 237, 0.30);
+    --color-status-advanced-text:   #0B2545;
+
+    --color-category-purple:        #8B5CF6;
+    --color-category-purple-bg:     rgba(139, 92, 246, 0.12);
 
     /* ---------------------------------------------------------------------
-       6. FONTES E FAMÍLIAS TIPOGRÁFICAS
+       7. FONTES E FAMÍLIAS TIPOGRÁFICAS
        --------------------------------------------------------------------- */
     --font-display: 'Lexend', 'Plus Jakarta Sans', -apple-system, sans-serif;
     --font-body:    'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     --font-mono:    'JetBrains Mono', 'SF Mono', Consolas, Courier, monospace;
 
     /* ---------------------------------------------------------------------
-       7. ESCALA TIPOGRÁFICA INSTITUCIONAL
+       8. ESCALA TIPOGRÁFICA INSTITUCIONAL
        --------------------------------------------------------------------- */
     --text-hero-stat:    2.25rem;
     --text-title-lg:     1.5rem;
@@ -92,37 +112,37 @@
     --text-xs:           0.6875rem;
 
     /* ---------------------------------------------------------------------
-       8. MEDIDAS E GEOMETRIA
+       9. MEDIDAS E GEOMETRIA (CARDS COM 16PX)
        --------------------------------------------------------------------- */
     --radius-xs: 4px;
     --radius-sm: 6px;
-    --radius-md: 8px;
-    --radius-card: 8px;
-    --radius-btn: 9999px;
+    --radius-md: 10px;
+    --radius-card: 16px;
+    --radius-btn: 10px;
     --radius-btn-rect: 12px;
     --radius-pill: 9999px;
-    --radius-lg: 12px;
+    --radius-lg: 16px;
     --radius-full: 9999px;
 
     /* ---------------------------------------------------------------------
-       9. SOMBRAS SUTIS
+       10. SOMBRAS MODERNAS
        --------------------------------------------------------------------- */
-    --shadow-subtle: 0 1px 2px rgba(10, 25, 49, 0.05);
-    --shadow-card:   0 1px 3px rgba(10, 25, 49, 0.08);
-    --shadow-dropdown: 0 4px 6px -1px rgba(10, 25, 49, 0.12), 0 2px 4px -2px rgba(10, 25, 49, 0.06);
-    --shadow-modal:  0 10px 25px -5px rgba(10, 25, 49, 0.25), 0 8px 10px -6px rgba(10, 25, 49, 0.12);
+    --shadow-subtle: 0 1px 2px rgba(15, 26, 43, 0.04);
+    --shadow-card:   0 4px 16px rgba(15, 26, 43, 0.04), 0 1px 3px rgba(15, 26, 43, 0.03);
+    --shadow-dropdown: 0 10px 25px -5px rgba(15, 26, 43, 0.15), 0 4px 6px -2px rgba(15, 26, 43, 0.05);
+    --shadow-modal:  0 20px 40px -10px rgba(11, 37, 69, 0.35);
 
     /* ---------------------------------------------------------------------
-       10. TRANSIÇÕES CONTROLADAS
+       11. TRANSIÇÕES CONTROLADAS
        --------------------------------------------------------------------- */
     --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
 
     /* ---------------------------------------------------------------------
-       11. GRADIENTES INSTITUCIONAIS
+       12. GRADIENTES
        --------------------------------------------------------------------- */
-    --gradient-banner:   linear-gradient(135deg, #1A3D63 0%, #2A5A8A 50%, #4A7FA7 100%);
-    --gradient-kpi-card: linear-gradient(135deg, #1D436C 0%, #2E608A 100%);
+    --gradient-banner:   linear-gradient(135deg, #0B2545 0%, #10376B 50%, #2F6FED 100%);
+    --gradient-kpi-card: linear-gradient(135deg, #0B2545 0%, #1B4B8F 100%);
 
     /* ---------------------------------------------------------------------
        12. SEMANTIC DASHBOARD TOKENS (ETAPA 1 — PADRONIZAÇÃO DE CORES)
