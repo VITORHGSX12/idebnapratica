@@ -185,6 +185,34 @@ async function testVisualDesign() {
     fs.writeFileSync(escolasPath, Buffer.from(ssEscolas.data, 'base64'));
     console.log('Screenshot Escolas salvo em:', escolasPath);
 
+    console.log('7. Abrindo menu de ajuda e central de tours...');
+    await evaluate(`
+        (function() {
+            window.switchTab('dashboard');
+            if (typeof window.toggleHelpTourMenu === 'function') {
+                window.toggleHelpTourMenu();
+            }
+        })()
+    `);
+    await new Promise(r => setTimeout(r, 600));
+    const ssHelpMenu = await send('Page.captureScreenshot', { format: 'png' });
+    const helpMenuPath = path.join('C:\\Users\\Alleg\\.gemini\\antigravity-ide\\brain\\949e6a03-e104-4aad-8205-a0bf96be5959', 'help_tour_popover_menu.png');
+    fs.writeFileSync(helpMenuPath, Buffer.from(ssHelpMenu.data, 'base64'));
+    console.log('Screenshot Menu de Ajuda salvo em:', helpMenuPath);
+
+    console.log('8. Iniciando Tour Contextual da Aba Dashboard...');
+    await evaluate(`
+        (function() {
+            if (typeof window.toggleHelpTourMenu === 'function') window.toggleHelpTourMenu();
+            if (typeof window.startTabContextTour === 'function') window.startTabContextTour('dashboard');
+        })()
+    `);
+    await new Promise(r => setTimeout(r, 700));
+    const ssTabTour = await send('Page.captureScreenshot', { format: 'png' });
+    const tabTourPath = path.join('C:\\Users\\Alleg\\.gemini\\antigravity-ide\\brain\\949e6a03-e104-4aad-8205-a0bf96be5959', 'tab_context_tour_dashboard_spotlight.png');
+    fs.writeFileSync(tabTourPath, Buffer.from(ssTabTour.data, 'base64'));
+    console.log('Screenshot Tour da Aba salvo em:', tabTourPath);
+
     ws.close();
     proc.kill();
     console.log('--- TESTE VISUAL CONCLUÍDO COM SUCESSO! ---');
