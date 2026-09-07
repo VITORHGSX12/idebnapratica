@@ -120,18 +120,13 @@
 
             var isAplicacaoProvas = (safeTarget === 'sec-aplicacao-provas' || safeTarget === 'aplicacao-provas');
             var isCriarAvaliacoes = (safeTarget === 'sec-criar-avaliacoes' || safeTarget === 'criar-avaliacoes');
+            var isAvaliacoesOrAplicacao = (isAplicacaoProvas || isCriarAvaliacoes);
 
             var menuItems = document.querySelectorAll('.menu-item');
             menuItems.forEach(function(item) {
                 var dt = item.getAttribute('data-target');
-                if (isAplicacaoProvas) {
-                    if (dt === 'sec-aplicacao-provas' || dt === 'aplicacao-provas') {
-                        item.classList.add('active');
-                    } else {
-                        item.classList.remove('active');
-                    }
-                } else if (isCriarAvaliacoes) {
-                    if (dt === 'sec-criar-avaliacoes' || dt === 'criar-avaliacoes') {
+                if (isAvaliacoesOrAplicacao) {
+                    if (dt === 'sec-criar-avaliacoes' || dt === 'criar-avaliacoes' || dt === 'sec-aplicacao-provas' || dt === 'aplicacao-provas') {
                         item.classList.add('active');
                     } else {
                         item.classList.remove('active');
@@ -147,7 +142,7 @@
             if (isAplicacaoProvas) {
                 if (typeof global.switchAvaliacoesSubtab === 'function') global.switchAvaliacoesSubtab('lancar-notas-sub');
                 if (typeof global.initEspelhoSelectors === 'function') global.initEspelhoSelectors();
-            } else if (isCriarAvaliacoes) {
+            } else if (isCriarAvaliacoes || isAvaliacoesOrAplicacao) {
                 if (typeof global.switchAvaliacoesSubtab === 'function') global.switchAvaliacoesSubtab('criar-evento-sub');
                 if (typeof global.populateWizardSchools === 'function') global.populateWizardSchools();
                 if (typeof global.renderEventosTable === 'function') global.renderEventosTable();
