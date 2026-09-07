@@ -1,0 +1,535 @@
+INSTITUTO NACIONAL DE ESTUDOS E PESQUISAS EDUCACIONAIS ANÍSIO TEIXEIRA
+NOTA TÉCNICA CONJUNTA Nº 23/2023
+PROCESSO Nº 23036.004760/2023-89
+1. 	ASSUNTO
+1.1. 	Metodologia dos indicadores para distribuição da complementação -VAAR do Fundeb,
+constante na Emenda Constitucional n°10/8/2020 e Lei n°14.113/2020.
+2. 	REFERÊNCIAS
+2.1. 	BRASIL. Emenda Cons1tuição n° 108/2020, 26 de agosto de 2020a. Altera a Cons1tuição
+Federal para estabelecer critérios de distribuição da cota municipal do Imposto sobre Operações
+Rela1vas à Circulação de Mercadorias e sobre Prestações de Serviços de Transporte Interestadual e
+Intermunicipal e de Comunicação (ICMS), para disciplinar a disponibilização de dados contábeis pelos
+entes federados, para tratar do planejamento na ordem social e para dispor sobre o Fundo de
+Manutenção e Desenvolvimento da Educação Básica e de Valorização dos Profissionais da Educação
+(Fundeb); altera o Ato das Disposições Cons1tucionais Transitórias; e dá outras providências. Brasília:
+Diário Oficial da União, Presidência da República. Disponível em: www.planalto.gov.br. Acesso em: 31
+de maio de 2022.
+2.2. 	BRASIL. Lei nº 14.113, de 25 de dezembro de 2020b. Regulamenta o Fundo de
+Manutenção e Desenvolvimento da Educação Básica e de Valorização dos Profissionais da Educação
+(Fundeb), de que trata o art. 212-A da Constituição Federal; revoga dispositivos da Lei nº 11.494, de 20
+de junho de 2007; e dá outras providências. Brasília: Diário Oficial da União, Brasília, Presidência da
+República. Disponível em: www.planalto.gov.br. Acesso em: 31 de maio de 2022.
+2.3. 	BECKER, K. L. Uma análise da Contribuição do Fundeb sobre a Qualidade da Educação
+Pública dos Municípios Brasileiros. Texto para Discussão. IPEA.2021.
+2.4. 	BUSSAB, W. O. & MORETTIN, P. A. (2011), EstaQs1ca Básica (7ª ed.). São Paulo: Editora
+Saraiva.
+2.5. 	CALLEGARI, C. (Org.). Fundeb: financiamento da educação pública no estado de São
+Paulo. São Paulo: Ground: APEOESP, 2008.
+2.6. 	CALLEGARI, C. Para entender o Novo Fundeb em 2021: Uma polí1ca consolidada de
+enfrentamento 	das 	desigualdades 	educacionais. https://cesarcallegari.com.br/2021/06/18/para-
+entender-novo-fundeb-2021/. Acesso em: 23 de maio de 2022
+2.7. 	INSTITUTO BRASILEIRO DE GEOGRAFIA E ESTATÍSTICA. Síntese de Indicadores Sociais.
+htps://ftp.ibge.gov.br/Indicadores_Sociais/Sintese_de_Indicadores_Sociais/Indicadores_Sociais_2018_tabulacoes_especiais/documentacao/Coeficiente_de_Variacao.pdf.
+2.8. 	INSTITUTO NACIONAL DE ESTUDOS E PESQUISAS EDUCACIONAIS ANÍSIO TEIXEIRA.
+Microdados do Saeb 2017. Brasília: Inep, 2021. Disponível em: Acesso em: 28 fev de 2021.
+2.9. 	______________________. 	Escalas 	de 	Proficiência 	do 	SAEB. 	Disponível
+em: https://download.inep.gov.br/publicacoes/institucionais/avaliacoes_e_exames_da_educacao_basica/escalas_de_proficiencia_do_saeb.pdf
+2.10. 	______________________Relatório de resultados do SAEB 2019. Volume 1. Disponível
+em: relatorio_de_resultados_do_saeb_2019_volume_1.pdf (inep.gov.br)
+2.11. 	MINISTÉRIO DA EDUCAÇÃO. Manual de orientação do Novo Fundeb. 2021. Disponível
+em 	hYps://www.gov.br/fnde/pt-br/acesso-a-informacao/acoes-e-
+programas/financiamento/fundeb/ManualNovoFundeb2021.pdf. Acesso em: 25 de maio de 2022.
+2.12. 	ROSSIGNOLI, OLVEIRA, ANDRADE. Novo fundeb e garan1as cons1tucionais quanto ao
+direito educacional: busca pela redução das desigualdades sociais. Revista de Direitos Sociais e
+Políticas Públicas (UNIFAFIBE). 2021.
+2.13. 	SOARES, JOSÉ FRANSCISCO. Índice de Desenvolvimento da Educação de São Paulo –
+IDESP. 	Bases 	Metodológicas. 	Disponível:
+http://produtos.seade.gov.br/produtos/spp/v23n01/v23n01_03.pdf
+3. 	SUMÁRIO EXECUTIVO
+3.1. 	Esta nota técnica apresenta uma proposta metodológica para a distribuição da
+complementação-VAAR por meio de dois indicadores - um que trata da melhoria do atendimento e
+outro que trata da melhoria de aprendizagem com equidade. A proposta sugere que a distribuição da
+complementação-VAAR seja composta pela soma da parcela VAAR atendimento e parcela VAAR
+aprendizagem com equidade, e que o coeficiente de par1cipação de cada rede pública beneficiada
+com a complementação-VAAR seja definido como funções dos indicadores de atendimento e de
+aprendizagem com equidade. O texto apresenta as expressões para calcular os valores a serem
+recebidos por cada rede pública de ensino em função dos indicadores de melhoria do atendimento e
+da aprendizagem com equidade, bem como em função apenas de um desses indicadores. A proposta
+busca permi1r ao gestor público iden1ficar a melhoria de seus resultados de forma desagregada e
+aumentar a participação de redes na complementação-VAAR.
+3.2. 	Sobre o indicador de melhoria de atendimento, a nota apresenta uma proposta
+metodológica para a criação desse indicador, que será u1lizado para distribuir recursos para redes
+públicas de ensino que cumpriram as cinco condicionalidades e apresentaram melhoria no
+atendimento escolar. O indicador é composto por dois subindicadores: Índice de Expansão Escolar
+(IEE), que mensura a variação da oferta de matrículas, e o Índice de Abandono Escolar (IAE), que
+mensura aspectos da evasão escolar. A distribuição dos recursos leva em conta o número de
+matrículas ponderadas, evitando discrepâncias extremas, e a rede de ensino com melhor indicador de
+melhoria do atendimento terá maior peso nas matrículas para efeito de par1cipação na
+
+-- 1 of 18 --
+
+complementação-VAAR atendimento.
+3.3. 	Sobre o indicador de melhoria de aprendizagem com equidade, a lei do Novo Fundeb
+pede que seja considerado o nível e avanço dos resultados dos estudantes em exames nacionais, as
+taxas de aprovação no ensino fundamental e médio e a equidade de aprendizagem. Para cumprir
+essas exigências, propõe-se a criação do Índice de Aprovação Escolar (IAPE) e do Índice de Progresso
+e Aprendizagem (IPA), que utilizam as informações do Censo Escolar de 2019 e do Sistema Nacional de
+Avaliação da Educação Básica (Saeb) de 2019. O IPA retrata a aprendizagem pela proficiência e nível
+de escala de aprendizagem dos alunos no Saeb e a equidade por medidas de desigualdade
+socioeconômico e raciais.
+3.4. 	O Indicador Progresso e Aprendizagem (IPA) mede a aprendizagem por meio do Índice
+de Distribuição de Nível de Escala, do Índice de Diferença Racial Educacional e do Índice de Diferença
+Sociaoeconômica Educacional. O componente de progresso do IPA é medido pela variação dos itens
+que compõem o componente aprendizagem entre as edições do Saeb. O indicador de melhoria de
+aprendizagem 	com 	equidade 	visa 	distribuir 	recursos 	às 	redes 	que 	cumpriram 	as 	cinco
+condicionalidades e melhoraram a proficiência média. Para diminuir distorções na distribuição dos
+recursos, propõe-se que a complementação-VAAR a ser recebida por cada rede pública considere as
+matrículas na Educação Básica. O coeficiente de par1cipação da complementação-VAAR é a divisão
+da matrícula ponderada pela rede beneficiada pela parcela aprendizagem da complementação-VAAR.
+3.5. 	Em resumo, o total da complementação-VAAR é composto pela parcela VAAR
+atendimento e parcela VAAR aprendizagem com equidade. O indicador de melhoria do atendimento é
+composto pelo Índice de Expansão Escolar (IEE) e Índice de Abandono Escolar (IAE), enquanto o
+indicador de melhoria na aprendizagem com equidade é determinado pelo Índice de Aprovação Escolar
+(IAPE) e Indicador Progresso e Aprendizagem (IPA).
+4. 	ANÁLISE INTRODUTÓRIA
+4.1. 	A Emenda Cons1tucional n°108, de agosto de 2020, tornou permanente o mecanismo de
+financiamento da educação básica, o Fundo Manutenção e Desenvolvimento da Educação Básica e de
+Valorização dos Profissionais da Educação (Fundeb), e criou parcelas novas de contribuição da União
+ao Fundo, aumentando essa par1cipação de 10% para 23% do seu valor total. Duas novas
+complementações da União passam a integrar o novo Fundeb, além da complementação do Valor
+Anual por Aluno (VAAF), que já operava desde 2007 por ocasião do Fundeb: a Complementação Valor
+Anual por Aluno Total (VAAT) e a Complementação Valor Anual por Aluno Resultado (VAAR). Com a
+inclusão dessas duas novas parcelas contribu1vas da União ao Fundeb, o percentual de
+complementação-VAAT foi fixado em, no mínimo, 10,5% do valor do Fundo e, o percentual de
+complementação-VAAR em 2,5%.
+4.2. 	A complementação-VAAT teve início em julho de 2021 e representa uma parcela de
+equalização do valor anual aluno total, considerados os recursos do Fundeb (incluídas a
+complementação-VAAF da União), os vinculados à manutenção e desenvolvimento do ensino (MDE)
+mas não integrantes do Fundeb, os repasses do salário educação, as transferências voluntárias
+rela1vas aos programas universais geridos pelo Fundo Nacional de Desenvolvimento da Educação
+(FNDE) e os recursos dos royal1es do petróleo des1nados à educação. Ao es1mar esse conjunto de
+receitas vinculadas à educação que compõem o VAAT em cada rede pública, a União define o VAAT
+mínimo nacional e assegura a transferência de 10,5% do valor total do Fundo às redes públicas que
+1verem VAAT menor que o VAAT mínimo nacional. Dessa forma, uma nova camada de equalização de
+receitas vinculadas à educação é garan1da aos sistemas de ensino, elevando o piso do financiamento
+nacional para além do valor anual aluno (VAAF) mínimo definido no antigo Fundeb.
+4.3. 	A complementação Valor Anual por Aluno (VAAR) des1na-se às redes públicas de
+ensino que cumprirem as cinco condicionalidades elencadas na Lei n° 14.113/2020 e apresentarem
+melhoria em indicadores de atendimento, aprendizagem e redução das desigualdades educacionais
+socioeconômicas e raciais. De acordo com a citada lei, os indicadores para distribuição da
+complementação-VAAR devem ser elaborados pelo Ins1tuto Nacional de Estudos e Pesquisas
+Educacionais Anísio Teixeira (Inep).
+4.4. 	Esta Nota Técnica obje1va apresentar proposições metodológicas dos indicadores da
+distribuição da complementação-VAAR, a proposta tratará de dois indicadores: um indicador que
+mensure aspectos referentes ao atendimento e outro que trate da aprendizagem com equidade. Esses
+indicadores definirão a par1cipação na complementação-VAAR para o grupo de redes públicas de
+ensino beneficiadas (ou seja, que cumprirem as cinco condicionalidades e apresentarem melhorias no
+atendimento e/ou aprendizagem). E a fim de evitar grandes variabilidades no valor a ser recebido
+pelas redes em termos per capita, o que poderia resultar em valores exorbitantes para redes pequenas
+e valores pífios para redes com grandes números de alunos, propõem-se, também, considerar o
+número de matrículas na Educação Básica ao definir a par1cipação de cada rede de ensino na
+complementação-VAAR.
+5. 	BASE LEGAL
+5.1. 	A complementação-VAAR do novo Fundeb é ins1tuída pela Emenda Cons1tucional n° 8,
+de 26 de agosto de 2020, que prevê na alínea (c), inciso V, art. 212 – A, que a União transferirá as
+redes públicas de ensino o equivalente a 2,5 pontos percentuais do valor total do Fundeb, uma vez
+atendidas as cinco condicionalidades de gestão e avanço em indicadores de atendimento e
+aprendizagem com redução das desigualdades.
+5.2. 	Segundo o art. 14 da Lei n° 14.113/2020, os indicadores deverão, obrigatoriamente,
+possuir os seguintes elementos:
+“§ 2º A metodologia de cálculo dos indicadores referidos no caput deste argo
+considerará obrigatoriamente:
+I - o nível e o avanço, com maior peso para o avanço, dos resultados médios dos
+estudantes de cada rede pública estadual e municipal nos exames nacionais do
+sistema nacional de avaliação da educação básica, ponderados pela taxa de
+participação nesses exames e por medida de equidade de aprendizagem;
+II - as taxas de aprovação no ensino fundamental e médio em cada rede estadual e
+municipal;
+
+-- 2 of 18 --
+
+III - as taxas de atendimento escolar das crianças e jovens na educação básica
+presencial em cada ente federado, definido de modo a captar, direta ou
+indiretamente, a evasão no ensino fundamental e médio.
+§ 3º A medida de equidade de aprendizagem, prevista no inciso I do § 2º deste artigo:
+I - será baseada na escala de níveis de aprendizagem, definida pelo Inep, com relação
+aos resultados dos estudantes nos exames nacionais referidos no inciso I do § 2º deste
+artigo;
+II - considerará em seu cálculo a proporção de estudantes cujos resultados de
+aprendizagem estejam em níveis abaixo do nível adequado, com maior peso para:
+a) os estudantes com resultados mais distantes desse nível;
+b) as desigualdades de resultados nos diferentes grupos de nível socioeconômico e de
+raça e dos estudantes com deficiência em cada rede pública.
+.(Brasil,2020b)”
+5.3. 	A proposta obje1va cumprir as exigências metodológicas explicitadas na Lei n°
+14.113/2020, e u1lizará as informações coletadas no Censo da Educação Básica e no Sistema de
+Avaliação da Educação Básica (Saeb). A seguir serão apresentadas as metodologias dos indicadores e
+de seus respectivos coeficientes de participação.
+6. 	PROPOSTA METODOLÓGICA PARA INDICADORES DA COMPLEMENTAÇAO-VAAR
+6.1. 	A proposta metodológica é baseada na distribuição da complementação-VAAR por meio
+de dois indicadores – um que trate da melhoria do atendimento e outro que trate da melhoria de
+aprendizagem com equidade.
+6.2. 	Esse par1cionamento permi1rá ao gestor público iden1ficar a melhoria de seus
+resultados de forma desagregada, e maior par1cipação de redes na complementação-VAAR, uma vez
+que a averiguação da melhoria no atendimento ou na aprendizagem, ou em ambos, qualificaria a rede
+pública para participação nos recursos do VAAR.
+6.3. 	É proposto que o total da complementação-VAAR a ser distribuída pela União em cada
+exercício t, denominada VAART, seja composto pela soma pela parcela VAAR atendimento e parcela
+VAAR aprendizagem com equidade.
+6.4. 	As parcelas são equivalentes e dada por:
+Onde:
+6.5. 	O coeficiente de par1cipação de cada rede pública beneficiada com complementação-
+VAAR é composto de duas partes, uma rela1va à melhoria de aprendizagem com equidade e outra
+rela1va a melhoria do atendimento. Esses coeficientes são definidos como funções dos indicadores de
+atendimento e de aprendizagem com equidade.
+
+-- 3 of 18 --
+
+6.6. 	Os valores a serem recebidos por cada rede pública de ensino k e ano t devido aos
+indicadores de melhoria do atendimento e da aprendizagem com equidade são dados pelas
+expressões:
+6.7. 	Desse modo, o total a ser recebido pela rede pública de ensino k e ano t beneficiada
+com complementação-VAAR em função dos indicadores de melhoria do atendimento e aprendizagem
+com equidade é dada por:
+6.8. 	Já o total a ser recebido por cada rede pública de ensino k e ano t beneficiada com
+complementação-VAAR em função apenas do indicador de melhoria do atendimento é dada por:
+6.9. 	E o total a ser recebido por cada rede pública de ensino k e ano t beneficiada com
+complementação-VAAR em função apenas do indicador de melhoria da aprendizagem com equidade é
+dada por:
+
+-- 4 of 18 --
+
+7. 	PROPOSTA METODOLÓGICA PARA INDICADOR DE MELHORIA DO ATENDIMENTO
+7.1. 	Antes de iniciar as proposições, é válido mais uma vez consultar trechos da lei que
+tratam dos indicadores da complementação-VAAR:
+“A metodologia de cálculo dos indicadores referidos no caput deste artigo considerará
+obrigatoriamente:
+III - as taxas de atendimento escolar das crianças e jovens na educação básica presencial em
+cada ente federado, definido de modo a captar, direta ou indiretamente, a evasão no ensino
+fundamental e médio.”
+7.2. 	Em atenção ao estabelecido em lei, propõem-se que o indicador de melhoria do
+atendimento seja composto por dados:
+7.2.1. 	Que mensure a variação da oferta de matrículas, que será chamado o Índice de
+Expansão Escolar (IEE). O IEE é composto pela taxa de variação das matrículas da educação infan1l
+para redes municipais e do ensino médio para redes estaduais, no período de quatro de anos, o
+obje1vo é verificar se as redes de ensino estão elevando matrículas em etapas de ensino em que a
+universalidade no atendimento é um desafio. O IEE é dado pela seguinte expressão:
+Destaca-se que para o cálculo do IEE serão u1lizados os dados coletados no Censo Escolar de 2017,
+2018, 2019 e 2020. Optou-se por esse quadriênio no primeiro ciclo de distribuição da
+complementação-VAAR obje1vando evitar os dados coletados em 2021, período pandêmico que
+trazem impactos na evolução do número de matrículas.
+7.2.2. 	Que mensure aspectos da evasão escolar, para tanto é proposto o Índice de Abandono
+Escolar (IAE) composto pelas taxas de abandono nos anos iniciais e finais do Ensino Fundamental, e
+do Ensino Médio, ponderadas pelo número de matrículas para rede ensino k e ano t, em cada uma
+dessas etapas segundo o Censo Escolar da Educação Básica, conforme expressão abaixo:
+Na expressão acima n representa as etapas a serem consideradas em cada rede pública de ensino ao
+se calcular o IA E, podendo incluir todas as etapas de ensino presentes na expressão ou algumas
+delas, a depender da estrutura de oferta da rede pública.
+Ressalta-se que para mensuração do IAE no primeiro ano de distribuição da complementação-VAAR
+serão u1lizadas informações coletadas no Censo Escolar de 2019, pois optou-se por u1lizar os dados
+coletados no mesmo ano da edição do Saeb que servirá de fonte de dados para cálculo do indicador de
+melhoria de aprendizagem com equidade.
+
+-- 5 of 18 --
+
+7.3. 	Por fim, o indicador de melhoria do atendimento para rede de ensino k e ano t é
+composto pelo Índice de Expansão Escolar descontado do Índice de Abandono Escolar.
+7.4. 	Dada a definição do indicador de melhoria do atendimento, é necessário lembrar que
+essa medida visa distribuir recursos às redes de ensino beneficiadas com a parcela da
+complementação-VAAR devida ao componente de atendimento, isto é, redes que foram habilitadas
+nas cinco condicionalidades e apresentaram melhoria no atendimento. Para averiguação de melhorias
+no atendimento será u1lizado o Índice de Expansão Escolar (IEE). Detalhando, as redes que cumprirem
+as 	cinco 	condicionalidades 	e 	apresentarem 	um IEE acima de 1 serão beneficiadas 	com
+complementação-VAAR atendimento.
+7.5. 	Com a finalidade de diminuir distorções na distribuição de recursos propõem- se que: a
+parcela VAAR atendimento a ser recebida por cada rede pública considere as matrículas na Educação
+Básica, de modo que o valor per capita da parcela VAAR atendimento não apresente discrepâncias
+extremas; e a transformação do indicador atendimento em peso para matrículas da Educação Básica
+por meio da função exponencial limitada com taxas de crescimento igual a 4, peso mínimo 1 e peso
+máximo 2.
+7.6. 	A escolha do peso máximo 2 evita grandes discrepâncias no valor per capita da
+premiação a ser paga, e o peso como função do indicador VAAR de atendimento assegura que um
+maior peso da matrícula para efeito de par1cipação na complementação-VAAR atendimento seja
+atribuído à rede com melhor indicador de melhoria do atendimento.
+7.7. 	Após a definição dos pesos das matrículas na Educação Básica é possível definir a
+matrícula ponderada ( 	) 	que é número de matrículas na Educação Básica
+da rede de ensino k e ano t ponderada pelo peso das matrículas da rede de ensino k e ano t.
+7.8. 	Já o coeficiente de par1cipação na complementação-VAAR atendimento da rede de
+ensino k e ano t ( é resultante da divisão da matrícula ponderada da rede de ensino k e ano t pelo
+somatório das matrículas ponderadas das redes habilitadas a receber a complementação-VAAR
+atendimento.
+
+-- 6 of 18 --
+
+7.9. 	Consequentemente, o valor em reais da complementação-VAAR devido ao indicador de
+melhoria de atendimento para cada rede de ensino beneficiada 	será:
+8. 	PROPOSTA METODOLÓGICA PARA INDICADOR DE APRENDIZAGEM
+8.1. 	A lei do Novo Fundeb em seu ar1go 14, parágrafos 2º e 3º estabelece que o indicador
+de distribuição de complementação-VAAR considerará obrigatoriamente:
+“§2 - I - o nível e o avanço, com maior peso para o avanço, dos resultados médios dos
+estudantes de cada rede pública estadual e municipal nos exames nacionais do sistema
+nacional de avaliação da educação básica, ponderados pela taxa de participação nesses
+exames e por medida de equidade de aprendizagem;
+II - as taxas de aprovação no ensino fundamental e médio em cada rede estadual e municipal;
+§ 3º A medida de equidade de aprendizagem, prevista no inciso I do § 2º deste artigo
+I – será baseada na escala de níveis de aprendizagem, definida pelo Inep, com relação aos
+resultados dos estudantes nos exames nacionais referidos no inciso I do § 2º deste artigo;
+II - considerará em seu cálculo a proporção de estudantes cujos resultados de aprendizagem
+estejam em níveis abaixo do nível adequado, com maior peso para:
+a) os estudantes com resultados mais distantes desse nível;
+b) as desigualdades de resultados nos diferentes grupos de nível socioeconômico e de raça e
+dos estudantes com deficiência em cada rede pública.”
+8.2. 	A fim cumprir as exigências metodológicas dispostas na lei, é proposto que o indicador
+da melhoria da aprendizagem com equidade seja composto pelo:
+8.2.1. 	Índice de Aprovação Escolar (IAPE):
+8.2.1.1. 	O Índice de Aprovação Escolar (IAPE) é definido pelas taxas de aprovação escolar dos
+anos iniciais e finais do Ensino Fundamental e taxas de aprovação do Ensino Médio, ponderadas pelo
+número de matrículas de cada etapa na rede de ensino, segundo o Censo Escolar da Educação Básica,
+conforme expressão abaixo:
+
+-- 7 of 18 --
+
+8.2.1.2. 	Na expressão acima n representa as etapas a serem consideradas em cada rede pública
+de ensino ao se calcular o IAPE, podendo incluir todas as etapas de ensino presentes na expressão ou
+algumas, a depender da estrutura de oferta da rede pública.
+8.2.1.3. 	Ressalta-se que para mensuração do IAPE no primeiro ano de distribuição da
+complementação-VAAR serão u1lizadas informações coletadas no Censo Escolar de 2019, pois optou-
+se por utilizar os dados coletados no mesmo ano da edição do Saeb que servirá de fonte de dados para
+cálculo do nível e avanço da aprendizagem.
+8.2.2. 	Índice de Progresso e Aprendizagem (IPA)
+8.2.2.1. 	O Índice de Progresso e Aprendizagem (IPA) obje1va tratar da aprendizagem com
+equidade e seus avanços, sendo que a aprendizagem será retratada pela proficiência e nível de escala
+de aprendizagem dos alunos no Saeb e a equidade será representada por medidas de desigualdade
+socioeconômico e raciais. A seguir detalha-se os elementos que compõem o IPA.
+8.2.2.2. 	Primeiramente, esclarece-se que o Saeb é um conjunto de avaliações externas em larga
+escala, realizadas periodicamente por meio da aplicação de instrumentos padronizados (testes
+cogni1vos e ques1onários) para etapas específicas da educação básica. O obje1vo da pesquisa é
+disponibilizar informações para sociedade civil e subsidiar os gestores educacionais na elaboração,
+monitoramento, acompanhamento e avaliação de polí1cas educacionais. Na edição de 2019, a
+população-alvo[1] do Saeb é composta por: estudantes matriculados em turmas de 2°, 5° e 9° anos do
+ensino fundamental e 3° e 4° séries do ensino médio técnico integrado. Além de ins1tuições que
+oferecem creche e/ou pré-escola. O quadro 1 sinte1za a aplicação do SAEB 2019, nele estão
+destacadas as áreas, tipo de aplicação e etapa que são alvo de análise.
+
+-- 8 of 18 --
+
+8.2.2.3. 	Já a população de referência[2] da avaliação é composta pela população-alvo menos os
+seguintes exclusões: 	escolas com menos de dez estudantes matriculados nas etapas avaliadas;
+turmas mul1sseriadas; turmas de correção de fluxo; turmas de educação de jovens e adultos; turmas
+de ensino médio normal/magistério; classes, escolas ou serviços especializados de educação especial
+não integrantes do ensino regular; e escolas indígenas em que o ensino não é ministrado em Língua
+Portuguesa como primeira língua. A aprendizagem será retratada pela proficiência média e nível de
+escala de aprendizagem resultantes da aplicação do 1po censitário do Saeb 2017 e 2019, já que foram
+aplicados antes do período pandêmico.
+8.2.2.4. 	De acordo com Relatório Nacional do Saeb 2019, a proficiência “refere-se tanto aos
+conhecimentos ou habilidades medidos pelo teste (ex: proficiência em Língua Portuguesa), como ao
+número que representa a medida desses conhecimentos ou habilidades (geralmente simbolizado pela
+letra grega θ na Teoria de Resposta ao Item –TRI). Proficiência também é chamada de traço latente ou
+habilidade.” Já a proficiência média resulta “do cálculo da média das proficiências dos estudantes
+com resultado válido para o teste. Os termos proficiência média e “média das proficiências”
+geralmente são u1lizados indis1ntamente”. O componente aprendizagem do IPA será representado
+pela proficiência média dos estudantes em cada rede pública Para garan1r a comparabilidade entre as
+dis1ntas edições do Saeb e etapas de ensino faz-se sua normalização para os dois testes cogni1vos –
+Língua Portuguesa e Matemática –, conforme descrição abaixo:
+8.2.2.5. 	A normalização da proficiência média em Matemá1ca para o 5° ano do Ensino
+Fundamental é dada por:
+8.2.2.6. 	A normalização da proficiência média em Língua Portuguesa para 5° ano do Ensino
+Fundamental é dada por:
+8.2.2.7. 	As proficiências médias normalizadas do 5° ano do Ensino Fundamental é representada
+por:
+Onde:
+
+-- 9 of 18 --
+
+8.2.2.8. 	Em seguida faz-se a ponderação das proficiências médias normalizadas pelo número de
+matrículas de cada etapa na rede de ensino avaliada e pelas taxas de par1cipação para cada etapa de
+ensino avaliada no Saeb 2019 - que resulta da divisão do número de estudantes presentes na etapa
+avaliada no dia da aplicação pelo número de matrículas na etapa, conforme população de referência
+do Saeb. Por exemplo, a taxa de par1cipação dos estudantes do 5° ano do Ensino Fundamental para
+rede de ensino k e ano t é dada por:
+Onde:
+8.2.2.9. 	Por fim pode-se representar a medida de aprendizagem para a rede de ensino k no ano t
+pela média das proficiências normalizadas, ponderadas pelo número de matrículas de cada etapa na
+rede de ensino avaliada e pelas taxas de par1cipação no Saeb 2019 de cada etapa de ensino avaliada.
+Conforme a seguinte equação:
+
+-- 10 of 18 --
+
+8.2.2.10. 	Na expressão acima, n representa as etapas avaliadas pelo Saeb em cada rede pública
+de ensino, podendo incluir todas as etapas de ensino presentes na expressão ou algumas, a depender
+da população de referência constante na rede de ensino.
+Onde:
+8.2.3. 	Recorrendo a Lei n° 14.113/2020, observa-se a obrigatoriedade da inserção dos níveis
+de aprendizagem na composição dos indicadores da complementação-VAAR, conforme transcrição
+abaixo:
+“o nível e o avanço, com maior peso para o avanço, dos resultados médios dos
+estudantes de cada rede pública estadual e municipal nos exames nacionais do
+sistema nacional de avaliação da educação básica, ponderados pela taxa de
+participação nesses exames e por medida de equidade de aprendizagem”
+8.2.4. 	O Relatório Nacional do Saeb do 2019 conceitua escala de proficiência como: “conjunto
+de números ordenados obdo pela Teoria de Resposta ao Item (TRI) que representam a medida da
+proficiência em uma determinada área de conhecimento. No Saeb, há uma escala de proficiência
+única para o 5º e 9º anos do ensino fundamental e 3ª e 4ª séries do ensino médio – Língua Portuguesa
+e Matemáca, comum a todas as edições da avaliação...Cada escala varia de 0 a 500 pontos, com
+média de 250 e desvio-padrão de 50!”. Já os níveis de escala de proficiência do Saeb são definidos
+como “intervalos em cada escala de proficiência que são ulizados para agrupar tanto os itens (com
+base em seus parâmetros) como os estudantes (com base em suas proficiências). Nas escalas de
+proficiência do Saeb, o intervalo que define cada nível é de 25 pontos (correspondente a meio desvio-
+padrão)”.
+8.2.5. 	A intepretação pedagógica considera que alunos com proficiência em determinado nível
+são capazes de fazer tarefas implícitas nos itens localizados em níveis menores, essa interpretação é
+ú1l para diagnós1co e acompanhamento de polí1cas educacionais, mas não há definição pacificada
+de quais níveis na escala do Saeb são considerados adequados. Acrescenta-se que a escolha de um
+ponto de corte pode mascarar possíveis desigualdades no aprendizado em pontos longe do corte.
+
+-- 11 of 18 --
+
+Segundo Soares J.F. “a definição de apenas um ponto de corte pode ensejar a1tudes pouco razoáveis.
+Por exemplo, os alunos que es1verem muito abaixo desse ponto não receberão atenção nas suas
+escolas, pois dificilmente alcançarão o nível desejado em prazos curtos. Em compensação, todas as
+escolas devem ter excelência acadêmica, o que implica que alguns de seus alunos tenham
+desempenho além do esperado.”
+8.2.6. 	Dado as considerações apresentadas, é proposto que uma medida de equidade da
+aprendizagem representada pelo Índice de Distribuição do Nível de Escala (INE). O INE guarda
+similaridade com o Índice de Desenvolvimento da Educação de São Paulo (IDESP), o obje1vo do INE é
+incorporar a equidade no indicador de melhoria de aprendizagem ao inserir uma medida baseada nos
+percentuais de alunos nos níveis de escala de proficiência do Saeb. Calcula-se o 	INE atribuindo
+valores entre 0 a 2 para cada nível de escala de proficiência do Saeb e observando o percentual de
+alunos para cada nível de escala, de modo que a rede de ensino que 1ver todos alunos no nível mais
+baixo da escala terá o INE igual a 0 e a rede de ensino que 1ver todos alunos no nível mais alto da
+escala terá o INE igual a 2. Por exemplo, a expressão do INE para o 5° ano do Ensino Fundamental em
+Língua Portuguesa é dada a seguir.
+8.2.6.1. 	O INE para Matemática do 5° ano do Ensino Fundamental é dado por:
+Onde:
+8.2.6.2. 	O INE do 5° ano do Ensino Fundamental para rede de ensino k e ano t é dado pela média
+dos INEs das duas disciplinas avaliadas:
+8.2.6.3. 	O INE da rede de ensino k e ano t é calculado pela média dos INEs de cada etapa de
+ensino avaliada, ponderados pelo número de matrículas dos anos avaliados.
+8.2.6.4. 	Na expressão acima, n representa as matrículas das etapas avaliadas pelo Saeb,
+podendo incluir todas as etapas de ensino presentes na expressão ou algumas delas, a depender da
+população de referência na rede de ensino.
+
+-- 12 of 18 --
+
+8.2.6.5. 	O quadro abaixo detalha os valores atribuídos aos alunos de acordo com os níveis de
+escala de proficiência para cada competência e etapa de ensino avaliada.
+
+-- 13 of 18 --
+
+
+
+-- 14 of 18 --
+
+8.2.7. 	Além do INE, a equidade, também, será representada no IPA pelo Índice de Diferença
+Racial Educacional[3] (IDERaca), que é a razão da média da proficiência normalizada do grupo 2
+(pretos, pardos e indígenas) sobre a média da proficiência normalizada do grupo 1 (brancos e
+amarelos).
+8.2.8. 	E pelo Índice de Diferença Socioeconômica Educacional (IDESocial), que é a razão da
+média da proficiência normalizada do grupo 2 (1° quar1l do INSE) sobre a média da proficiência
+normalizada do grupo 1 (4° quartil do INSE).
+8.2.9. 	Retomando, o componente aprendizagem do Indicador Progresso e Aprendizagem (IPA)
+será composto pela medida de aprendizagem ( 	), Índice de Distribuição de nível de Escala de (
+), o Índice de Diferença Racial de Educacional ( 	) e o Índice de Diferença Social
+de Educacional ( 	). Conforme equação abaixo:
+8.2.10. 	E o componente progresso (avanço) da aprendizagem do IPA será medido pela variação
+de cada item que compõem o componente aprendizagem entre duas edições do Saeb. Conforme
+equação abaixo:
+
+-- 15 of 18 --
+
+8.2.11. 	Assim, o Indicador de Progresso e Aprendizagem ( 	) para rede de ensino k e ano
+t é dado por:
+8.2.12. 	Esclarece-se que o maior peso para avanço (progresso) visa cumprir as determinações
+da lei. Concluindo, o indicador de melhoria de aprendizagem para rede de ensino k e ano t é composto
+pelo 	.
+8.3. 	Dado a definição do indicador de melhoria da aprendizagem com equidade, é
+necessário lembrar que essa medida visa distribuir recursos às redes que foram habilitadas nas cinco
+condicionalidades e apresentaram melhoria na aprendizagem. Para averiguação de melhorias na
+aprendizagem será u1lizado a média das proficiências normalizadas entre o Saeb 2017 e 2019. As
+redes que cumprirem as cinco condicionalidades e melhorarem a proficiências médias serão
+beneficiadas com complementação-VAAR aprendizagem.
+8.4. 	Com a finalidade de diminuir distorções na distribuição dos recursos propõem- se que: a
+complementação-VAAR aprendizagem a ser recebida por cada rede pública considere as matrículas na
+Educação Básica, de modo que o valor per capita da parcela VAAR aprendizagem não apresente
+discrepâncias extremas, e a transformação do indicador de melhoria na aprendizagem com equidade
+em peso para matrículas por meio da função exponencial limitada com taxas de crescimento igual a 4,
+peso mínimo 1 e peso máximo 2.
+Onde:
+Componente Descrição
+B 	limite superior do peso
+(B-A) 	limite inferior do peso
+K 	taxa de crescimento
+8.5. 	A escolha do peso máximo 2 evita grandes discrepâncias no valor per capita da
+premiação a ser paga, e o peso como função do indicador de melhoria da aprendizagem com equidade
+assegura que um maior peso da matrícula para efeito de par1cipação na complementação-VAAR
+aprendizagem seja atribuído à rede com melhor indicador de melhoria de aprendizagem com equidade.
+Após a definição dos pesos das matrículas na Educação Básica é possível calcular a matrícula
+ponderada 	que é número de matrículas na Educação Básica da rede k
+no ano t ponderada pelo peso das matrículas na rede k e ano t.
+8.6. 	Coeficiente de par1cipação na complementação-VAAR aprendizagem na rede de ensino
+k e ano t 	é resultante da divisão da matrícula ponderada da rede de ensino k e ano t pelo
+somatório das matrículas ponderadas das redes beneficiadas com parcela aprendizagem da
+complementação-VAAR.
+
+-- 16 of 18 --
+
+8.7. 	E o valor em reais da complementação-VAAR devido ao indicador de melhoria de
+aprendizagem com equidade para rede de ensino k e ano t 	é:
+9. 	SÍNTESE DA PROPOSTA METODOLÓGICA PARA INDICADORES E COEFICIENTES DE
+PARTICIPAÇÃO DA COMPLEMENTAÇÃO-VAAR
+9.1. 	Relembrando, foi proposto que o total da complementação-VAAR a ser distribuída pela
+União em cada exercício t, denominada VAART, seja composto pela soma pela parcela VAAR
+atendimento e parcela VAAR aprendizagem com equidade.
+9.2. 	As parcelas são equivalentes e dada por:
+9.3. 	O indicador de melhoria do atendimento, responsável pela distribuição da parcela VAAR
+atendimento, é composto pelo Índice de Expansão Escolar (IEE) e Índice de Abandono Escolar (IAE).
+9.4. 	O indicador de atendimento é transformado em peso para matrículas da Educação
+Básica, por meio da função exponencial limitada com taxas de crescimento igual a 4, peso mínimo
+igual a 1 e máximo igual a 2.
+9.5. 	A definição coeficiente de par1cipação da complementação-VAAR atendimento é dada
+por:
+9.6. 	E o valor em reais da complementação-VAAR atendimento ( 	) é dado por:
+9.7. 	O indicador de melhoria na aprendizagem com equidade é determinado pelo Índice de
+Aprovação Escolar (IAPE) e Índice de Progresso e Aprendizagem (IPA). Conforme equação abaixo:
+9.8. 	O indicador é transformado em peso para matrículas da Educação Básica aplicando
+função exponencial limitada com taxas de crescimento igual a 4, peso mínimo igual a 1 e máximo
+igual a 2.
+
+-- 17 of 18 --
+
+9.9. 	O coeficiente de par1cipação da complementação-VAAR aprendizagem com equidade é
+dada por:
+9.10. 	E o valor em reais da complementação-VAAR devido ao indicador de melhoria de
+aprendizagem com equidade para rede de ensino k e ano t ( 	) é:
+[1] População-alvo é o conjunto de etapas de ensino que a pesquisa pretende abranger.
+[2] População de referência são as turmas que efetivamente é realizada a aplicação do Saeb, é
+composta da população alvo menos algumas exceções.
+[3] Detalhamento das medidas de equidade na nota técnica n° 17 constante nesse processo.
+JOELSON SEVERO DOS SANTOS AZEVEDO
+Coordenador-Geral de Instrumentos e Medidas
+RUBENS CAMPOS DE LACERDA JÚNIOR
+Diretor da Avaliação do Ensino Básica
+ADRIANO SOUZA SENKEVICS
+Coordenador-Geral de Estudos Educacionais
+MARIA TERESA GONZAGA ALVES
+Diretora de Estudos Educacionais
+Documento assinado eletronicamente por Rubens Campos de Lacerda Junior, Diretor(a), em
+28/04/2023, às 18:21, conforme horário oficial de Brasília, com fundamento no art. 6º, § 1º, do
+Decreto nº 8.539, de 8 de outubro de 2015.
+Documento assinado eletronicamente por Adriano Souza Senkevics, Coordenador(a) - Geral,
+em 28/04/2023, às 18:30, conforme horário oficial de Brasília, com fundamento no art. 6º, § 1º,
+do Decreto nº 8.539, de 8 de outubro de 2015.
+Documento assinado eletronicamente por MARIA TERESA GONZAGA ALVES, Diretor(a), em
+28/04/2023, às 18:40, conforme horário oficial de Brasília, com fundamento no art. 6º, § 1º, do
+Decreto nº 8.539, de 8 de outubro de 2015.
+Documento assinado eletronicamente por Joelson Severo dos Santos Azevêdo,
+Coordenador(a) - Geral, em 28/04/2023, às 19:05, conforme horário oficial de Brasília, com
+fundamento no art. 6º, § 1º, do Decreto nº 8.539, de 8 de outubro de 2015.
+A autenticidade deste documento pode ser conferida no site
+https://sei.inep.gov.br/sei/controlador_externo.php?
+acao=documento_conferir&id_orgao_acesso_externo=0, informando o código verificador
+1153187 e o código CRC 8421B245.
+Referência: Proces s o nº 23036.004760/2023-89 	SEI nº 1153187
+
+-- 18 of 18 --
+

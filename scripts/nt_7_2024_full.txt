@@ -1,0 +1,833 @@
+INSTITUTO NACIONAL DE ESTUDOS E PESQUISAS EDUCACIONAIS ANÍSIO TEIXEIRA
+NOTA TÉCNICA Nº 7/2024/CGEE/DIRED-INEP
+Processo Nº 23036.004760/2023-89
+1. 	ASSUNTO
+Proposta metodológica para o cálculo do Indicador de Atendimento (VAAR-Atendimento) e do
+Indicador de Aprendizagem com Redução das Desigualdades (VAAR-Aprendizagem), no âmbito do
+complemento-VAAR, conforme Lei nº 14.113/2020, que trata da regulamentação do Fundo de
+Manutenção e Desenvolvimento da Educação Básica e de Valorização dos Profissionais da Educação
+(Fundeb), Art. 5º, inciso III e art. 14, § 2º.
+2. 	REFERÊNCIAS
+ALVES, M. T. G.; FERRÃO, M. E. (2019). Uma década da Prova Brasil: evolução do desempenho e da
+aprovação. Estudos em Avaliação Educacional, v. 30, n. 75, p. 688-720.
+ALVES, M. T. G.; SOARES, J. F.; XAVIER, F. P. (2016). Desigualdades Educacionais no Ensino
+Fundamental de 2005 a 2013: hiato entre grupos sociais. Revista Brasileira de Sociologia, v. 4, p. 49-
+81.
+BOF, A. (2022). Quais são os níveis adequados de aprendizado para os estudantes brasileiros da
+educação básica: construindo uma proposta nacional. Cadernos de Estudos e Pesquisas em Polícas
+Educacionais: estratégias do Plano Nacional de Educação II, vol. 6, pp. 11-47, Inep.
+BOURDIEU, P.; PASSERON, J.-C. (2008). A reprodução: elementos para uma teoria do sistema de
+ensino. (6a ed.) Petrópolis: Vozes.
+BROOKE, Nigel; SOARES, José Francisco (Ed.). (2008). Pesquisa em eficácia escolar: origem e
+trajetórias. Belo Horizonte: Editora UFMG.
+CASASSUS, J. (2007). A escola e a desigualdade. Brasília: Unesco; Liber Livro.
+CARNOY, M.; RODRIGUES, E. (2024). Achievement gains in na unequal Society: analyzing academic
+performance among brazilian school districts, 2007-2017. Internaonal Journal of Educaonal
+Development, Volume 107, 103049, https://doi.org/10.1016/j.ijedudev.2024.103049.
+DUBET, F. (2004). O que é uma escola justa? Cadernos de Pesquisa, v. 34, n. 123, p. 539-555.
+ERNICA, M.; RODRIGUES, E. C.; SOARES, J. F. (2024). Desigualdades educacionais no Brasil
+contemporâneo: definição, medida e resultados. (Scielo preprint).
+FERNANDES, R. (2007). Índice de Desenvolvimento da Educação Básica (Ideb). Brasília: InsPtuto
+Nacional de Estudos e Pesquisas Educacionais Anísio Teixeira (Série Documental. Textos para
+Discussão, 26).
+_____. (2010) Ensino Médio: como aumentar a atraPvidade e reduzir a evasão? InsPtuto Unibanco.
+Universidade 	de 	São 	Paulo 	Disponível 	em: https://www.institutounibanco.org.br/wp-
+content/uploads/2013/07/ensino_medio-como_aumentar_a_atratividade_e_evitar_a_evasao.pdf
+FERRÃO, M. E.; COSTA, P. M.; MATOS, D. A. S. (2017). The relevance of the school socioeconomic
+composiPon and school proporPon of repeaters on grade repePPon in Brazil: a mulPlevel logisPc
+model of PISA 2012. Large-scale Assessments in Education, v. 5, n. 1.
+FONTANIVE, N. (2013). A divulgação dos resultados das avaliações dos sistemas escolares: limitações
+e perspecPvas. Ensaio: Avaliação e PolíPcas Públicas em Educação, Rio de Janeiro, v. 21, n. 78, p. 83-
+100, jan./mar.
+INEP. (2004). Nota Técnica Conjunta nº 23/2023. Metodologia dos indicadores para distribuição da
+complementação-VAAR do Fundeb, constante na Emenda ConsPtucional n°10/8/2020 e Lei
+n°14.113/2020. Disponível em: <hXps://www.gov.br/mec/pt-br/acesso-a-informacao/parPcipacao-
+
+-- 1 of 20 --
+
+social/conselhos-e-orgaos-colegiados/comissao-intergovernamental-
+fundeb/Nota_Tecnica_Conjunta_23_2023.pdf>. Acesso em: 16 abr. 2024.
+_____. (2022). Relatório do 4º ciclo de monitoramento das metas do Plano Nacional de Educação –
+2020 [recurso eletrônico]. Brasília: Inep.
+_____. (2023). SAEB – Sistema de Avaliação da Educação Básica. Disponível em:
+https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/saeb.
+KLEIN, R. (2003). Produção e uPlização de indicadores educacionais: metodologia de cálculo dos
+indicadores de fluxo escolar da educação básica. Revista Brasileira de Estudos Pedagógicos, v.84, n
+206/207/208, p. 107-157, jan./dez.
+OLIVEIRA, R. P.; ARAUJO, G. C. (2005). Qualidade do ensino: uma nova dimensão da luta pelo direito à
+educação. Revista Brasileira de Educação, Rio de Janeiro, n. 28, p. 5-23, jan./abr.
+NERI, M. C. (2009). “O Paradoxo da Evasão e as Motivações dos sem Escola”. In: Veloso, F.; Pessôa, S.;
+Henriques, R. e Giambiagi, F. (orgs), Educação Básica no Brasil: Construindo o País do Futuro. Elsevier,
+Rio de Janeiro, p.171-188.
+RIANI, J. L. R.; GOLGHER, A. B. (2004). Indicadores educacionais confeccionados a parPr de bases de
+dados do IBGE. In. RIOS-NETO, Eduardo Luis; RIANE, Juliana. L. R. (Org.). Introdução à demografia da
+educação, Campinas: Associação Brasileira de Estudos Populacionais - ABEP, p. 89-127.
+RIGOTTI, J. I. R.; CERQUEIRA, C. A. (2004). As bases de dados do INEP e os indicadores educacionais:
+conceitos e aplicações. In. RIOS-NETO, E. L.; RIANE, J. L. R. (org.). Introdução à demografia da
+educação. Campinas: Associação Brasileira de Estudos Populacionais (Abep), p. 73-87.
+SIMÕES, A. (2019). Acesso à educação básica e sua universalização: missão a ser cumprida. Cadernos
+de Estudos e Pesquisas em Política Educacional, Inep, vol. 2, pp. 17-72.
+SOARES, J. F. (2009). Índice de desenvolvimento da Educação de São Paulo – IDESP: bases
+metodológicas. São Paulo em Perspectiva, São Paulo, v. 23, n. 1, p. 29-41, jan./jun.
+SOARES, J.F.; ALVES, M. T. G. (2003). Desigualdades raciais no sistema brasileiro de educação básica.
+Educação e Pesquisa, São Paulo, v.29, n.1, p. 147-165, jan./jun.
+SOARES, J.F.; ALVES, M.T.G; FONSECA, J.G. (2021). Trajetórias educacionais como evidência da
+qualidade da educação básica brasileira. Revista Brasileira de Estudos de População, v.38, p. e0167.
+SOARES, J. F.; DELGADO, V. M. S. (2016). Medida das desigualdades de aprendizado entre estudantes
+de ensino fundamental. Estudos em Avaliação Educacional (Impresso), v. 27, p. 754-780.
+SOARES, J. F.; XAVIER, F. P. (2013). Pressupostos educacionais e estadsPcos do Ideb. Educação &
+Sociedade, v. 34, n. 124, p. 903–923, jul.
+UNESCO - InsPtute for StaPsPcs. (2018). Handbook on Measuring Equity in Educaon. Montréal:
+UNESCO-UIS.
+UNESCO 	(2022). 	Unesco 	InsPtute 	for 	StaPsPcs 	Glossary: 	EducaPon.
+https://uis.unesco.org/sites/default/files/documents/uis_glossary_education_20200921.pdf
+WALTENBERG, F. (2013). Elementos para uma definição de jusPça em educação. Cadernos Cenpec, v.
+3, n. 1, p. 41-62.
+3. 	SUMÁRIO EXECUTIVO
+A complementação-VAAR do Fundeb foi insPtuída pela Emenda ConsPtucional n° 108,
+de 26 de agosto de 2020, que prevê, na alínea (c), inciso V, Art. 212-A, que a União transferirá às
+redes públicas de ensino o equivalente a 2,5 pontos percentuais do valor total do Fundeb, uma vez
+atendidas cinco condicionalidades de gestão e a evolução de indicadores de atendimento e de
+aprendizagem com redução das desigualdades. O Art. 14 da Lei n° 14.113/2020 apresenta os
+indicadores que deverão, obrigatoriamente, ser considerados para a distribuição dessa
+complementação entre os entes habilitados nas condicionalidades.
+Entre os parâmetros definidos pela Lei, constam critérios como o nível e o avanço nos
+resultados das avaliações nacionais, taxas de aprovação escolar e de atendimento na educação
+básica, além de uma medida de equidade de aprendizagem que pondera os resultados de
+aprendizagem entre diferentes grupos socioeconômicos e raciais. Essas disposições visam garanPr
+que o financiamento da educação seja direcionado de forma a promover um ensino de qualidade e o
+enfrentamento de disparidades sociais.
+
+-- 2 of 20 --
+
+Nesta nota técnica, são apresentadas as propostas metodológicas de dois indicadores –
+o Indicador do VAAR-Atendimento e o Indicador do VAAR-Aprendizagem – que visam operacionalizar
+os dispositivos constantes nos parágrafos 2º e 3º do Art. 14 da Lei nº 14.113/2020.
+O primeiro deles (VAAR-Atendimento) busca operacionalizar a mensuração do acesso à
+educação com o conceito de “não atendimento”, medido por meio do abandono escolar. Essa
+abordagem é moPvada pela observação de que, apesar da quase universalização do acesso à escola
+para crianças e adolescentes entre 4 e 17 anos, a permanência e progressão dentro do sistema
+educacional ainda enfrenta desafios significaPvos, com altas taxas de desistência, especialmente na
+transição do ensino fundamental para o médio. A legislação do Fundeb reconhece a importância de
+focar na melhoria do atendimento em termos de combate à evasão escolar. Assim, a metodologia ora
+proposta visa monitorar o abandono escolar para permiPr intervenções tempesPvas e eficazes no
+senPdo de garanPr a permanência de estudantes na escola. Esse indicador é calculado com dados do
+Censo Escolar 2023, uma vez que a taxa de abandono escolar é computada após a apuração do
+rendimento dos estudantes do ano posterior ao ano de referência.
+A proposta metodológica para o indicador do VAAR-Aprendizagem, focada na redução
+das desigualdades educacionais, prioriza o monitoramento das habilidades e competências
+demonstradas pelos estudantes no Sistema de Avaliação da Educação Básica (Saeb). A avaliação do
+Saeb, que inclui disciplinas como Língua Portuguesa e Matemática, é fundamental para compreender a
+proficiência dos estudantes nas etapas fundamentais de sua trajetória educacional, uPlizando uma
+escala intervalar de proficiência que reflete o domínio dos estudantes sobre as competências
+avaliadas. Essa metodologia considera também a selePvidade dos estudantes que parPcipam do Saeb,
+evitando distorções nos resultados que poderiam favorecer estudantes de melhor desempenho em
+detrimento da representaPvidade e equidade. Além disso, a proposta inclui a ponderação pela taxa de
+aprovação escolar e dá destaque a uma medida de equidade de aprendizagem com componentes
+socioeconômicos e raciais. Esse indicador, que será calculado a parPr dos dados do Saeb 2019 e 2023,
+da taxa de aprovação escolar e das matrículas no Censo Escolar, é projetado para reflePr o progresso
+na aprendizagem e diminuição das desigualdades entre os estudantes, formando uma medida integral
+que orientará a distribuição de recursos do Fundeb para o exercício financeiro de 2025.
+4. 	BASE LEGAL
+4.1. 	Constituição Federal de 1988
+Conforme o Art. 212 da ConsPtuição Federal, a União aplicará, anualmente, nunca
+menos de dezoito, e os Estados, o Distrito Federal e os Municípios vinte e cinco por cento, no mínimo,
+da receita resultante de impostos, compreendida a proveniente de transferências, na manutenção e
+desenvolvimento do ensino. No parágrafo 3º, diz-se que a distribuição dos recursos públicos
+assegurará prioridade ao atendimento das necessidades do ensino obrigatório, no que se refere a
+universalização, garanPa de padrão de qualidade e equidade, nos termos do plano nacional de
+educação (Redação dada pela Emenda Constitucional nº 59, de 2009).
+O Art. 212-A estabelece que os Estados, o Distrito Federal e os Municípios desPnarão
+parte dos recursos a que se refere o caput do Art. 212 da ConsPtuição à manutenção e ao
+desenvolvimento do ensino na educação básica e à remuneração condigna de seus profissionais,
+respeitadas um conjunto de disposições. (Incluído pela Emenda Constitucional nº 108, de 2020)
+Ainda, no inciso V do Art. 212-A, diz-se que a complementação da União será
+equivalente a, no mínimo, 23% (vinte e três por cento) do total de recursos a que se refere o inciso II
+do caput deste arPgo, distribuída da seguinte forma: (Incluído pela Emenda ConsPtucional nº 108, de
+2020)
+a) ...
+b) ...
+c) 2,5 (dois inteiros e cinco décimos) pontos percentuais nas redes públicas que,
+cumpridas condicionalidades de melhoria de gestão previstas em lei, alcançarem
+evolução de indicadores a serem definidos, de atendimento e melhoria da
+aprendizagem com redução das desigualdades, nos termos do sistema nacional de
+avaliação da educação básica; (Incluído pela Emenda ConsPtucional nº 108, de 2020)
+Nesse trecho da redação consPtucional, fica explicitada a necessidade de serem
+definidos indicadores que contemplem duas dimensões dos resultados educacionais: atendimento e
+aprendizagem com redução das desigualdades.
+
+-- 3 of 20 --
+
+No inciso VII do Art. 212-A, fica claro que os recursos do fundo deverão ser aplicados
+pelos Estados e pelos Municípios exclusivamente nos respec7vos âmbitos de atuação prioritária,
+conforme estabelecido nos §§ 2º e 3º do art. 211 da ConsPtuição (Incluído pela Emenda
+Constitucional nº 108, de 2020).
+Observa-se que as citações da ConsPtuição Federal de 1988 mostram que os recursos
+públicos devem assegurar, prioritariamente, o atendimento das necessidades do ensino obrigatório e
+devem ser aplicados pelos Estados e Municípios exclusivamente nos âmbitos de atuação prioritária.
+4.2. 	Lei 14.113, de 25 de dezembro de 2020
+A Lei 14.113/2020, em seu Art. 14, estabelece que a complementação-VAAR da União
+será distribuída às redes públicas de ensino que cumprirem as cinco condicionalidades de gestão e
+apresentarem melhoria dos indicadores referidos no inciso III do caput do Art. 5º desta Lei, ou seja,
+melhoria nos indicadores de atendimento e aprendizagem com redução das desigualdades.
+No que tange especificamente aos elementos que devem estar conPdos na elaboração
+da metodologia de cálculo, o parágrafo 2º do Art. 14 detalha o seguinte:
+§ 2º A metodologia de cálculo dos indicadores referidos no caput deste arPgo
+considerará obrigatoriamente:
+I - o nível e o avanço, com maior peso para o avanço, dos resultados médios dos
+estudantes de cada rede pública estadual e municipal nos exames nacionais do
+sistema nacional de avaliação da educação básica, ponderados pela taxa de
+participação nesses exames e por medida de equidade de aprendizagem;
+II – as taxas de aprovação no ensino fundamental e médio em cada rede estadual e
+municipal;
+III - as taxas de atendimento escolar das crianças e jovens na educação básica
+presencial em cada ente federado, definido de modo a captar, direta ou
+indiretamente, a evasão no ensino fundamental e médio.
+Ainda no Art. 14, o parágrafo 3º traz um detalhamento de aspectos que devem compor a
+medida de equidade de aprendizagem:
+§ 3º A medida de equidade de aprendizagem, prevista no inciso I do § 2º deste
+artigo: (Redação dada pela Lei nº 14.276, de 2021)
+I - será baseada na escala de níveis de aprendizagem, definida pelo Inep, com relação
+aos resultados dos estudantes nos exames nacionais referidos no inciso I do § 2º
+deste artigo; (Incluído pela Lei nº 14.276, de 2021)
+II - considerará em seu cálculo a proporção de estudantes cujos resultados de
+aprendizagem estejam em níveis abaixo do nível adequado, com maior peso para:
+(Incluído pela Lei nº 14.276, de 2021)
+a) os estudantes com resultados mais distantes desse nível; (Incluído pela Lei nº
+14.276, de 2021)
+b) as desigualdades de resultados nos diferentes grupos de nível socioeconômico e
+de raça e dos estudantes com deficiência em cada rede pública. (Incluído pela Lei nº
+14.276, de 2021)
+5. 	PROPOSTA METODOLÓGICA PARA O INDICADOR DE ATENDIMENTO
+5.1. 	O conceito de atendimento escolar e sua antítese, o não atendimento
+Considerando a obrigatoriedade do ensino dos 4 aos 17 anos de idade, conforme
+Emenda ConsPtucional no 59/2009, o atendimento escolar diz respeito à matrícula ou à presença das
+crianças, adolescentes e jovens nas insPtuições de ensino. De acordo com o glossário educacional da
+Unesco, o atendimento escolar é comumente medido pela presença do indivíduo em um determinado
+ano/série escolar por, pelo menos, um dia durante o ano lePvo de referência (Unesco, 2022). Nas
+pesquisas domiciliares amostrais (Pnad-C) ou censitárias (Censo Demográfico) produzidas pelo IBGE,
+regularmente uPlizadas na literatura educacional e no monitoramento das metas de
+acesso/atendimento escolar do Plano Nacional de Educação, considera-se que um indivíduo está na
+escola se ele frequenta escola ou creche na data de referência da coleta dos dados (Riani e Golgher,
+2004; Rigotti e Cerqueira, 2004; INEP, 2022).
+A andtese do atendimento escolar é o não atendimento, caracterizado pelas crianças,
+adolescentes ou jovens que não estão matriculados nas insPtuições de ensino, ou seja, aqueles que
+
+-- 4 of 20 --
+
+estão fora da escola. Essas pessoas podem nunca terem sido matriculadas – o que tem se tornado
+cada vez menos frequente na faixa etária obrigatória dos 4 aos 17 anos – ou podem ter frequentado a
+escola em algum momento e evadido posteriormente – o que representa a maioria dos casos de não
+atendimento nesse grupo etário (Simões, 2019).
+Dados do mais recente monitoramento do acesso à educação infanPl (4 a 5 anos), ao
+ensino fundamental (6 a 14 anos) e ao ensino médio (15 a 17 anos), no ano de 2022, mostram que
+93,0%, 96,3% e 94,4% dessas populações, respecPvamente, estavam matriculadas no sistema de
+ensino (INEP, 2022). Com exceção das crianças de 4 a 5 anos da educação infanPl, cuja probabilidade
+de não terem Pdo a primeira matrícula é mais elevada, praPcamente todos aqueles na faixa etária dos
+6 aos 17 anos já acessaram a escola em algum momento de suas vidas. Portanto, o percentual
+residual que não frequenta a escola na faixa etária dos 6 aos 17 anos, em um dado período recente,
+está relacionado à saída precoce da escola, e não necessariamente ao fato de nunca terem sido
+matriculados.
+Há um limite metodológico para o cálculo do indicador de atendimento nas redes
+municipais, dada a ausência de dados populacionais com periodicidade anual. O único dado disponível
+com alcance municipal é o Censo Demográfico, o qual tem um intersdcio de, pelo menos, 10 anos.
+Ademais, considerando a tendência de universalização do acesso à escola das crianças em idade
+escolar obrigatória, a medida do atendimento escolar torna-se inócua para avaliar avanços no
+indicador. Por outro lado, estudos mostram que embora o acesso tenha sido praPcamente
+universalizado, a permanência desses estudantes na escola está compromePda, o que afeta, também,
+a progressão desses estudantes para o ensino médio. A não frequência no ensino médio é uma soma
+daqueles que deixaram de frequentar a escola ainda no ensino fundamental, bem como daqueles que
+deixaram de frequentar no próprio ensino médio. A progressão do fundamental para o médio é um
+gargalo onde ocorrem as maiores desistências (Neri, 2009; Reynaldo, 2010; Soares, Alves e Fonseca,
+2021). Apesar de um acesso escolar que tende à universalização, vê-se que o abandono e a evasão
+escolares estão presentes ao longo de toda a trajetória escolar e são os maiores desafios atuais para
+garanPr e assegurar o atendimento universal na educação básica (Simões, 2019; Soares, Alves e
+Fonseca, 2021).
+Nesse senPdo, sugere-se operacionalizar o atendimento pela sua andtese: o “não
+atendimento”, que pode ser entendido como abandono ou evasão escolar. A Lei do Fundeb (nº
+14.113/2020) diz em seu Art. 14, parágrafo 2º, inciso III que o indicador de atendimento deve ser
+definido de modo a captar direta ou indiretamente a evasão no ensino fundamental e ensino
+médio. Ou seja, a própria Lei estabelece que o indicador pode ser definido de tal forma que seja o
+oposto do atendimento escolar. Ainda em relação a esse ponto, há solicitações, registradas na ata da
+reunião de 21 e 22 de junho de 2023, da Comissão Intergovernamental de Financiamento da Educação
+Básica de Qualidade (CIF), de uso de medidas de abandono escolar: “Adicionalmente, houve pedido
+para que a metodologia seja aprimorada para os próximos exercícios, de forma a buscar transparência
+e adequado equilíbrio entre as variáveis que compõem o indicador. Pontos destacados foram o desafio
+de se conciliar variáveis diferentes para estados e municípios. Prevaleceu entendimento de que o
+desafio da expansão da educação infanl e o desafio de redução do abandono no Ensino Médio são
+questões que podem preponderar no indicador”.
+Conforme mostra a literatura, abandono e evasão escolares são conceitos disPntos
+(Klein, 2003). O abandono escolar é medido no mesmo ano lePvo da matrícula. Por exemplo, ao final
+de determinado ano lePvo, os estudantes do ensino fundamental e médio têm sua situação definida
+como aprovado, reprovado, deixou de frequentar (afastado por abandono), falecido ou transferido. No
+ano lePvo subsequente, os estudantes afastados por abandono podem ser considerados repetentes ou
+evadidos. A evasão, por sua vez, depende de, pelo menos, dois anos lePvos para ser mensurada. No
+caso dos dados longitudinais produzidos pelo Inep, fonte oficial para informações sobre evasão
+escolar, essa medida é fornecida com defasagem de três anos (ex.: em 2023, foi divulgada a evasão
+do ano letivo de 2020; em 2024, será divulgada a evasão no ano letivo de 2021; e assim por diante)[1].
+Para compor a cesta de indicadores do Fundeb, entende-se que a medida do abandono
+escolar é mais adequada para a idenPficação do não atendimento educacional, quando comparada à
+medida da evasão. Isso se deve ao fato de o dado do abandono escolar ser obPdo de forma mais
+tempesPva, o que garante o monitoramento dessa condição no tempo mais atual possível e no tempo
+de governabilidade de determinada gestão escolar. Pretende-se, com esse indicador, fazer com que os
+dirigentes municipais acompanhem de perto aqueles estudantes em risco de abandono para assegurar
+a permanência deles no sistema de ensino. No médio e longo prazo, espera-se que esse
+monitoramento e as respecPvas ações pedagógicas voltadas para a redução do abandono impactem
+
+-- 5 of 20 --
+
+monitoramento e as respecPvas ações pedagógicas voltadas para a redução do abandono impactem
+positivamente na diminuição da evasão escolar.
+Ademais, diferentemente da metodologia vigente nos exercícios financeiros de 2023 e
+2024, que focava na expansão de matrículas da educação infanPl e do ensino médio, esta nova
+proposta, ao se concentrar na medida do abandono escolar, parte de um entendimento de que
+monitorar e assegurar a redução do abandono está muito mais próximo da área de atuação dos
+gestores municipais de educação do que a expansão das matrículas, visto que o aumento de
+matrículas depende de fatores externos às políPcas educacionais e podem ser impactados, por
+exemplo, por mudanças na dinâmica demográfica da população. É também oportuno reforçar que
+existe limitação de dados populacionais para cálculo de taxas de atendimento anuais em âmbito
+municipal.
+[1] A explicação para essa defasagem temporal na mensuração da evasão está na Nota Técnica
+https://download.inep.gov.br/informacoes_estatisticas/indicadores_educacionais/2007_2016/nota_tecnica_taxas_transicao_2007_2016.pdf
+5.2. 	Elementos para o cálculo do indicador do VAAR-Atendimento
+5.2.1. 	Os dados uPlizados para calcular o indicador de abandono escolar serão coletados por
+meio do Censo Escolar da Educação Básica. Para o exercício financeiro de 2025, serão uPlizados os
+resultados de abandono do Censo Escolar de 2023 comparados aos resultados de abandono coletados
+no Censo Escolar de 2022. Ou seja, serão utilizados os dados mais recentes disponíveis.
+Para as redes municipais de ensino, considerar-se-á o abandono na pré-escola e em
+todos os anos do ensino fundamental. Para as redes estaduais de ensino, considerar-se-á o abandono
+em todos os anos do ensino fundamental e em todas as séries do ensino médio. O Quadro 1 apresenta
+os anos/séries escolares e etapas prioritárias de cada rede municipal e estadual.
+Quadro 1. Anos/séries escolares avaliados para a mensuração do abandono escolar
+Ao final de cada ano lePvo, o dirigente escolar dessas etapas de ensino precisa
+informar ao sistema de coleta do Censo Escolar a situação de movimento de cada um de seus
+estudantes. O abandono escolar é uma das opções disponíveis para preenchimento para todos os
+estudantes da educação básica[2], conforme mostra o Quadro 2. É esta a informação que será
+utilizada para o cálculo da taxa de abandono escolar.
+Quadro 2. Situação do estudante ao final do ano letivo
+
+-- 6 of 20 --
+
+Em acréscimo à informação acima, também se considera a taxa de não resposta do
+rendimento ou movimento escolar, isto é, o percentual de matrículas para as quais não houve
+declaração da situação do aluno ao término do ano lePvo. Essa taxa será incluída nos cálculos como
+uma penalização do indicador para desincenPvar a subnoPficação dos dados, ou seja, para evitar que
+os entes federados passem a não informar o eventual abandono de seus estudantes como uma
+estratégia para aprimorar os resultados do indicador.
+Importante ressalvar que essa não informação de rendimento ou movimento é captada
+apenas no ensino fundamental e ensino médio, não sendo captada na pré-escola. Como não é
+obrigatório aos entes informar o rendimento ou movimento escolar ao final do ano lePvo na educação
+infanPl, a subnoPficação nessa etapa de ensino é elevada. Portanto, para evitar uma penalização
+desproporcionalmente alta para os municípios, será considerada apenas a penalização pela não
+resposta no ensino fundamental.
+5.2.2. 	Método de cálculo
+Para avaliar se o ente subnacional conseguiu reduzir o abandono escolar entre 2022 e
+2023, calcula-se, inicialmente, a taxa de abandono medida a parPr da proporção de estudantes que
+abandonaram a escola em cada rede estadual e municipal r, em cada ano t, dentro de suas
+respectivas etapas escolares de atuação prioritária, conforme Equação 1:
+Em que:
+Observa-se, pela Equação 1, que a proporção de estudantes que abandonaram a escola
+é penalizada pela não informação de movimento escolar ao final do ano lePvo. Conforme metodologia
+de coleta de dados do Censo Escolar, todos os estudantes das etapas de ensino referentes ao ensino
+fundamental e ao ensino médio regular precisam ter alguma informação de rendimento (aprovação ou
+
+-- 7 of 20 --
+
+reprovação) e movimento (transferido, deixou de frequentar, falecido) ao final do ano letivo.
+Portanto, é fundamental que os dirigentes escolares informem o rendimento ou
+movimento do estudante ao final do ano lePvo, pois a não informação irá penalizar a taxa de
+abandono. Por exemplo, suponha que uma rede de ensino X possua uma proporção de abandono igual
+a 0,10 (o que representaria uma taxa de 10%) e uma proporção de não resposta sobre a situação de
+rendimento ou movimento dos estudantes ao final do ano lePvo igual a 0,01 (o que representaria uma
+taxa de 1%). A proporção de abandono penalizada pela não resposta desta rede de ensino X seria igual
+a 0,101 ou 10,1%.
+Como já dito anteriormente, a não resposta é captada apenas no ensino fundamental e
+ensino médio, não sendo captada na pré-escola. Para o cálculo da proporção de abandono, serão
+desconsiderados os estudantes que deixaram de frequentar a escola por falecimento (situação 3 do
+Quadro 2).
+5.2.3. 	Melhoria no indicador de (não) atendimento escolar
+A melhoria no indicador de não atendimento escolar, isto é, indicador de abandono
+escolar, será avaliada pela diferença absoluta entre a proporção de abandono penalizada pela não
+resposta entre os anos de 2022 e 2023, conforme dados apurados pelo Censo Escolar:
+O ente subnacional recebe a parcela VAAR-Atendimento quando:
+a) Apresenta redução na proporção de estudantes que abandonaram a escola entre
+2022 e 2023, ou seja, quando a variação ΔVAAR-Atendimentor é negativa;
+b) Tem uma proporção de abandono no ano de 2023 igual a zero, ou seja, não há
+estudantes em situação de abandono escolar no ano de 2023 na rede de ensino r.
+Em uma próxima nota técnica, será apresentada a metodologia para transformação do
+resultado no VAAR-Atendimento em um coeficiente de parPcipação na distribuição dos recursos da
+complementação-VAAR. Por ora, este texto focou na apresentação do indicador de atendimento a ser
+utilizado na aferição do VAAR-Atendimento.
+[2] Diferentemente da situação de reprovação e aprovação, preenchidas exclusivamente para os estudantes do ensino
+fundamental e médio, mas não para estudantes da educação infantil.
+6. 	PROPOSTA METODOLÓGICA PARA O INDICADOR DE APRENDIZAGEM
+6.1. 	O conceito de aprendizagem com redução das desigualdades
+O atendimento escolar, medido pela frequência a uma insPtuição de ensino, é o direito
+educacional mais elementar das crianças, adolescentes e jovens brasileiros com idade entre 4 e 17
+anos (Brasil, 1988). Entretanto, a cada ano, muitos estudantes não prosseguem os estudos para a
+série seguinte porque não aPngiram o desempenho esperado e são reprovados (Alves e Ferrão, 2019).
+Aqueles que reprovam têm mais chances de repePr o insucesso, abandonar a escola e evadir antes de
+concluir a educação básica obrigatória (Ferrão, Costa e Matos, 2017; Soares, Alves e Fonseca, 2021). A
+aprendizagem dos estudantes é, portanto, uma das dimensões importantes na avaliação da qualidade
+da educação (Oliveira e Araujo, 2005).
+O Sistema de Avaliação da Educação Básica (Saeb) é a avaliação nacional que monitora
+a aprendizagem dos estudantes nas escolas públicas e uma amostra de escolas privadas. Criado na
+década de 1990, o Saeb passou por uma série de aprimoramentos teórico-metodológicos ao longo das
+edições para ampliar sua cobertura e aprimorar seus instrumentos de avaliação. Por meio de testes e
+quesPonários, aplicados a cada dois anos, o Saeb reflete os níveis de aprendizagem demonstrados
+pelos estudantes avaliados, explicando esses resultados a parPr de uma série de informações
+contextuais (INEP, 2023).
+No cálculo dos indicadores do Fundeb que avaliam a aprendizagem, são considerados
+os resultados de Língua Portuguesa e MatemáPca – duas disciplinas historicamente avaliadas desde a
+implementação do Saeb –, por serem as únicas aplicadas de forma censitária nos 5º e 9º anos do
+ensino fundamental e 3ª/4ª série do ensino médio. Esses resultados são representaPvos da educação
+
+-- 8 of 20 --
+
+básica nacional, nas regiões, estados, município e em outros recortes de interesse sobre os
+estabelecimentos de ensino e sobre características sociodemográficas dos estudantes.
+No Saeb, a aprendizagem é definida como as habilidades que os estudantes
+demonstram ter dominado relacionadas às competências avaliadas no ensino fundamental e médio.
+Os resultados dos testes – chamados de proficiência – são assumidos como evidência dessa
+aprendizagem nas escolas e sistemas de ensino, uma vez que o foco não é a avaliação individualizada
+dos alunos (Fontanive, 2013).
+A proficiência medida pelo Saeb é apresentada em uma escala intervalar, que ordena o
+desempenho dos estudantes do menor para o maior em um continuum. Por meio de modelos
+matemáPcos e estadsPcos, essa escala é associada aos itens aplicados nos testes. Uma vez que
+esses itens são elaborados a parPr de uma matriz de referência com validade curricular, assume-se
+que o estudante que aPnge uma pontuação na escala de proficiência tem uma aprendizagem
+compadvel com as habilidades descritas no intervalo que corresponde à sua proficiência e domina
+todas as descritas nos intervalos anteriores.
+6.1.1. 	Nível de aprendizagem
+O conceito de proficiência pressupõe que exista um nível na escala da avaliação a partir
+do qual se considera que os estudantes alcançaram o estágio de aprendizagem esperado na etapa
+escolar em que se encontram. Isso depende não só dos modelos estadsPcos, mas também da análise
+de especialistas nas competências avaliadas sobre itens associados aos intervalos da escala
+conforme os padrões curriculares de cada etapa (Fontanive; 2013; Soares, 2009).
+Como resultado dessa análise, a escala de proficiência intervalar é seccionada em
+níveis que possuem uma interpretação pedagógica e normaPva sobre a aprendizagem considerada
+suficiente para que o estudante conclua com sucesso todas as etapas de sua trajetória escolar. Nas
+avaliações educacionais em larga escala realizadas no Brasil, a maioria delas divide a escala de
+proficiência em três ou quatro níveis. Em geral, espera-se que a maioria dos estudantes estejam
+acima do nível adequado, também denominado de nível recomendado ou proficiente (Bolf, 2021).
+O Saeb ainda não produziu esse Ppo de análise da escala para as etapas consideradas
+no Fundeb. Entretanto, como as avaliações realizadas nos estados uPlizam a mesma escala do Saeb
+para fins de comparação, é possível considerar válidas as interpretações produzidas nessas avaliações
+estaduais para refletir os níveis de aprendizagem no Saeb.
+A análise da aprendizagem por níveis tem a vantagem de permiPr o monitoramento da
+proporção de estudantes em cada nível por escolas e sistemas de ensino que melhoram seu
+desempenho. No final de cada etapa de ensino, não se espera que haja muitos estudantes com
+desempenho abaixo do nível adequado. Os estudantes com aprendizado insuficiente merecem
+atenção especial para que a sua recuperação ocorra no ano escolar e se evite a reprovação. Porém, se
+há muitos estudantes nessa situação, o trabalho pedagógico se torna muito diicil para todos os
+sujeitos escolares. Portanto, o monitoramento dos níveis de aprendizagem nas redes de ensino
+permite acompanhar os esforços para que todos os estudantes avancem e, assim, se reduza a
+proporção daqueles com desempenho insuficiente.
+6.1.2. 	Desigualdades de desempenho
+Estudantes com desempenho insuficiente nas avaliações do Saeb possuem
+caracterísPcas muito específicas: em sua maioria, são estudantes de baixo nível socioeconômico,
+pretos, pardos e indígenas (Soares e Alves, 2003; Alves, Soares e Xavier, 2016; Soares e Delgado,
+2016). Esse é um resultado convergente com evidências empíricas em vários países e em diferentes
+épocas. Desde a década de 1960, constata-se que o desempenho escolar reflete de forma muito direta
+as caracterísPcas sociais, demográficas e culturais dos estudantes, ao passo que os sistemas de
+ensino tendem a reproduzir as vantagens dos grupos sociais mais privilegiados, ampliando as
+desigualdades educacionais (Bourdieu e Passeron, 2008; Brooke e Soares, 2008; Cangussus, 2007).
+As políPcas de equidade buscam eliminar essas desigualdades e promover a jusPça
+social. Na educação, essas políPcas visam garanPr que todos os estudantes, independentemente de
+sua origem socioeconômica, étnica, de gênero ou outras caracterísPcas, tenham igualdade de acesso
+a uma educação de qualidade (Unesco-UIS, 2018). Não se espera que todos os estudantes tenham
+desempenho igual em uma avaliação educacional em larga escala. Todavia, quando alguns grupos
+
+-- 9 of 20 --
+
+sociais têm sistemaPcamente desempenho insuficiente, caracteriza-se uma situação injusta, que
+precisa ser enfrentada por meio de políPcas e programas voltados para as populações mais
+vulneráveis.
+A literatura mostra que recuperar o desempenho desses estudantes e fazer com que
+eles avancem para um nível adequado de aprendizagem impacta posiPvamente a redução das
+desigualdades educacionais (Ernica, Rodrigues e Soares, 2023; Carnoy e Rodrigues, 2024). Assim,
+nesta proposta metodológica, considera-se que a redução das desigualdades educacionais de
+aprendizagem será alcançada mediante um processo de recuperação e reforço das aprendizagens dos
+estudantes em vulnerabilidade. À medida que eles avançarem para níveis adequados de
+aprendizagem, encontrar-se-ão mais próximos do nível de desempenho obPdo por estudantes de
+camadas sociais mais privilegiadas.
+É sabido que desigualdades existem ao longo de toda a distribuição de desempenho,
+isto é, desde os níveis de proficiência considerados “insuficientes” (abaixo do nível adequado) até os
+considerados “excelentes” (acima do nível avançado) (Ernica, Rodrigues e Soares, 2023). Aqui, parte-
+se de uma teoria de jusPça escolar que visa à eliminação da insuficiência de aprendizado, ou seja, a
+garanPa de que nenhum estudante estará abaixo de um nível adequado de aprendizagem,
+independentemente de sua origem regional, raça/cor ou nível socioeconômico. Essa perspecPva
+alinha-se à uma abordagem de justiça distributiva (Waltenberg, 2013) baseada na ideia de garantia de
+competências mínimas (Dubet, 2004), por meio da qual as políPcas de equidade lançam luz sobre o
+grupo de estudantes com insuficiência de seu aprendizado, com vistas à construção de uma sociedade
+justa, igualitária e alicerçada em patamares elementares de cidadania e desenvolvimento social.
+6.1.3. 	Seletividade de estudantes
+O diagnósPco sobre o desempenho dos estudantes realizado com os dados do Saeb é
+crucial para a formulação das políPcas públicas para a melhoria da aprendizagem e a redução das
+desigualdades. Entretanto, é importante que os resultados almejados não sejam obPdos por meio da
+seleção de estudantes que fazem o teste.
+O Índice de desenvolvimento da Educação Básica (Ideb), criado em 2007, lançou luz
+sobre o risco de basear programas educacionais apenas nos resultados dos testes aplicados nas
+avaliações educacionais e agravar a repetência e a evasão escolar. Para evitar isso, a fórmula de
+cálculo do Ideb é resultado do produto da média de desempenho dos estudantes “descontada” pelo
+tempo excedente esperado para concluir a etapa de ensino em consideração (Fernandes, 2007). Dessa
+forma, quanto maior a taxa de aprovação na escola ou sistema de ensino, menor será a penalização
+na proficiência média no Saeb.
+Ainda assim, há risco de superesPmação do desempenho se muitos estudantes faltam à
+escola no dia da aplicação do Saeb. Segundo a portaria do Inep sobre o Ideb, o indicador é calculado
+desde que mais de 50% dos alunos da escola tenham comparecido (Inep, 2023). A Lei do Fundeb é
+mais exigente em relação à parPcipação no Saeb. Para ser habilitado para a complementação-VAAR,
+uma das cinco condicionalidades de melhoria de gestão é a parPcipação de, pelo menos, 80% dos
+estudantes de cada ano escolar periodicamente avaliado em cada rede de ensino por meio do Saeb
+(Brasil, 2000).
+Os entes habilitados nas cinco condicionalidades serão analisados em relação à
+melhoria dos indicadores de atendimento e aprendizagem e a metodologia de cálculo desses
+indicadores deverá prever a ponderação pela taxa de parPcipação no Saeb. Com isso, busca-se evitar
+que, mesmo mantendo-se dentro da exigência mínima da Lei, as escolas priorizem que somente seus
+alunos de melhor desempenho respondam às provas do Saeb (Soares e Xavier, 2013).
+6.1.4. 	A concepção do VAAR-Aprendizagem
+O VAAR-Aprendizagem foi concebido como uma políPca de responsabilização, que
+apresenta uma série de requisitos para que os entes façam jus à complementação financeira dessa
+componente do Fundeb. O seu foco principal é apoiar os entes que apresentem melhoria dos
+indicadores de atendimento e de aprendizagem, com redução das desigualdades.
+A proposta metodológica do VAAR-Aprendizagem, que será descrita na próxima seção,
+guarda proximidade com dois indicadores de qualidade da educação amplamente conhecidos: o Ideb,
+já mencionado, e o Índice de Desenvolvimento da Educação de São Paulo (Idesp). A ideia básica de
+
+-- 10 of 20 --
+
+agregação dos indicadores de desempenho e de fluxo (taxa de aprovação) está presente no Ideb e no
+Idesp. Entretanto, o desempenho no Ideb é definido com a média das proficiências padronizadas e, no
+Idesp, é descrito pela proporção de estudantes em níveis de aprendizagem (Soares, 2009), opção
+escolhida nesta proposta. Assim como esses dois índices, o resultado do VAAR-Aprendizagem também
+é expresso em uma escala de 0 a 10, o que facilita a compreensão do indicador.
+Para induzir as melhorias em contraparPda ao valor da complementação-VAAR, a Lei do
+Fundeb introduziu outras dimensões que devem ser consideradas no componente de aprendizagem do
+VAAR. Dessa forma, a indicador é uma síntese numérica do nível de proficiência dos estudantes entre
+dois ciclos do Saeb, de forma a captar o avanço na proporção de estudantes no nível adequado de
+aprendizagem. Esse resultado é ponderado pela taxa de aprovação e taxa de parPcipação para, de um
+lado, esPmular a recuperação dos estudantes sem reprovação e, de outro, evitar a seleção dos que
+fazem o Saeb. O VAAR-Aprendizagem levará em conta uma medida de equidade socioeconômica e
+racial, conforme disposta na Lei.
+Embora formados por muitos subindicadores, em decorrência das especificações da Lei,
+o VAAR-Aprendizagem é intuiPvamente de fácil compreensão, o que ajuda na comunicação e
+apropriação de sua metodologia por parte dos gestores municipais e estaduais.
+6.2. 	Elementos para o cálculo do indicador do VAAR-Aprendizagem
+6.2.1. 	Base de dados
+Para o exercício financeiro de 2025, o Indicador do VAAR-Aprendizagem será calculado
+considerando os dados das edições 2019 e 2023 do Saeb, e a taxa de aprovação calculada com dados
+do Censo Escolar da Educação Básica 2023.
+O Saeb é realizado bianualmente, em anos ímpares. Entretanto, os dados do Saeb 2021
+não serão considerados em razão de sua aplicação ter acontecido durante a pandemia de Covid-19.
+Naquele ano, muitas escolas não estavam com o funcionamento regular, a parPcipação foi adpica e
+diversos estudantes não puderam fazer o teste. Ressalta-se que se encontra amparada nas
+deliberações da CIF a decisão de desconsiderar os dados da edição de 2021 em consonância com o
+Art. 14, § 4º, da Lei nº 14.113/2020. Desse modo, o avanço na aprendizagem será analisado
+considerando o intervalo de quatro anos. Para os indicadores de parPcipação no Saeb e de equidade
+calculados com os dados do Saeb, será utilizado o dado mais atual referente a 2023.
+O uso da taxa de aprovação em 2023 se jusPfica porque a estadsPca só pode ser
+calculada no início do ano lePvo seguinte, quando as informações sobre o rendimento dos estudantes
+(aprovação, reprovação e abandono) no ano t-1 são computadas no ano t.
+O resultado do indicador do VAAR-Aprendizagem, junto com o VAAR-Atendimento, será
+transformado em um coeficiente de parPcipação na distribuição dos recursos da complementação-
+VAAR. Para isso, serão consideradas as matrículas dos entes contabilizadas no Censo Escolar com
+homologação mais recente.
+6.2.2. 	Modelo de Análise
+O Indicador do VAAR-Aprendizagemé um índice que deve representar a melhoria de
+aprendizagem com redução das desigualdades, sendo formado por dois indicadores compostos e um
+indicador simples, conforme a Figura 1. O primeiro deles é o Índice de Nível e Avanço de
+Desempenho (Inad), que expressa o nível e o avanço dos resultados médios dos estudantes no Saeb,
+com mais peso para o avanço. O segundo indicador é o ponderador do Indicador de Par7cipação no
+Saeb (IPSaeb), referente à proporção de estudantes presentes na avaliação do Saeb em relação ao
+público-alvo da avaliação. Finalmente, o terceiro indicador é o Índice de Equidade (IndEqui), uma
+medida de equidade de aprendizagem com componentes socioeconômicos e raciais. Esses indicadores
+visam refletir os dispositivos da Lei nº 14.113 em seu Art. 14, §§ 2º e 3º.
+Figura 1. Diagrama esquemático do indicador do VAAR-Aprendizagem.
+
+-- 11 of 20 --
+
+Fonte: Elaboração Própria.
+De maneira simplificada, a Equação 3 exprime a relação entre os três indicadores: o
+Indicador do VAAR-Aprendizagem é calculado, para cada rede de ensino r, pela mulPplicação de cada
+uma dessas parcelas. Uma vez que a Lei esPpula que deve ser considerado o nível e o avanço de
+desempenho, o Inad uPliza dados de dois ciclos do Saeb, no caso, dos anos de 2023 (t), por se tratar
+do mais recente disponível, e 2019 (t-1). Já para os demais indicadores – IP Saeb e IndEqui –, serão
+considerados os dados somente da edição mais recente (2023).
+Para se explicar o cômputo de cada componente do VAAR-Aprendizagem, o texto será
+dividido em seções específicas.
+6.2.3. 	Índice de Nível e Avanço de Desempenho (Inad)
+O Inad é uma medida de aprendizagem que considera o desempenho de todos os
+estudantes avaliados pelo Saeb matriculados nas etapas de atuação prioritária dos entes municipais e
+estaduais. São considerados os resultados na avaliação dos estudantes dos 5º e 9º anos do ensino
+fundamental e da 3ª/4ª série do ensino médio, em Língua Portuguesa e MatemáPca, de escolas
+públicas estaduais e municipais.
+De acordo com a Lei do Fundeb (Art. 14, § 2º), a medida de aprendizagem deve levar em
+consideração o nível e o avanço dos resultados médios no Saeb, com mais peso para o avanço. Para
+tanto, o Inad é composto de dois subindicadores: o Indicador de Nível de Desempenho (IND), com
+peso de 0,3, e o Indicador de Avanço de Desempenho (IAD), com peso de 0,7, agregados conforme a
+Equação 4.
+Em que:
+
+-- 12 of 20 --
+
+Os respecPvos pesos de 0,3 para o nível e 0,7 para o avanço seguem a definição em
+vigor desde o exercício financeiro de 2023. Por ora, serão manPdos esses pesos com o intuito de
+garanPr maior esdmulo à necessidade de se avançar para níveis mais elevados de desempenho. No
+entanto, é possível que esses pesos sejam rediscuPdos posteriormente, à medida que as redes
+passarem a consolidar maiores avanços de aprendizagem – momento em que será possível reduzir o
+peso para o avanço e aumentar para o nível, a fim de estimular a manutenção de níveis elevados.
+Os subcomponentes do Inad são desenvolvidos nas subseções abaixo.
+6.2.3.1. 	Indicador de Nível de Desempenho (IND)
+O IN D é a proporção de estudantes que alcançaram pelo menos o nível adequado de
+aprendizado, mulPplicado pela taxa de aprovação penalizada pela não resposta. O intuito do indicador
+é sintePzar o nível de desempenho no ano t (e.g., 2023), com base na distribuição pelos níveis de
+proficiência, privilegiando um corte da escala proposto a partir de uma interpretação pedagógica.
+O cálculo do IND é exposto na Equação 5:
+Em que:
+Após a mulPplicação do 	pela TAp, o produto é mulPplicado por 10, de modo
+que se tenha um IND variante de 0 a 10, em referência direta a outros índices de qualidade, a exemplo
+do Ideb e do Idesp. Assim, esse indicador ora proposto se assemelha a uma nota conferida a cada
+rede de ensino em uma escala próxima à que é utilizada em salas de aula.
+6.2.3.1.1. 	Desempenho igual ou acima do nível adequado
+Para seguir as exigências da Lei nº 14.113/2020, tal indicador deve considerar, em seu
+cálculo, o ponto de corte na escala pedagógica que representa o desempenho adequado dos
+estudantes. Enquanto não houver uma definição oficial do Inep quanto ao que seria um ponto de corte
+na escala do Saeb para o desempenho adequado no 5º e 9º anos do EF e 3ª/4ª série do EM, propõe-se
+uPlizar o ponto de corte uPlizado pela maioria das redes estaduais em seus sistemas estaduais de
+avaliação, conforme a Tabela 1:
+
+-- 13 of 20 --
+
+Para se calcular a proporção de estudantes de uma determinada rede de ensino, em
+uma dada edição do Saeb, que alcançaram, pelo menos, o desempenho considerado como adequado,
+é preciso somar o quanPtaPvo de estudantes nos anos/séries avaliados que superaram os respecPvos
+pontos de corte da Tabela 1, considerando-se os pesos de cada estudante para correção da não
+parPcipação nas avaliações censitárias, e dividir pelo quanPtaPvo de estudantes nos anos/séries
+avaliados. Esse cálculo está expresso na Equação 6:
+Em que:
+PAdeqr,d,t = Proporção de estudantes com desempenho igual ou acima do nível
+adequado na rede de ensino r, disciplina d e ano t;
+xi,r,d,t = Medida do desempenho escolar do i-ésimo estudante da rede r, disciplina d,
+e ano t; a função f retorna 1, se o valor de i-ésimo esPver igual ou acima do nível adequado de
+desempenho, e retorna 0, caso contrário;
+wi,r,d,t = Peso do Saeb do i-ésimo estudante da rede r, disciplina d e ano t.
+Em seguida, calcula-se a média aritméPca entre a proporção de estudantes nas
+disciplinas de língua portuguesa (LP) e matemáPca (MT) com desempenho igual ou acima do nível
+adequado 	, para que se tenha uma única medida da proporção que represente o resultado
+nessas duas disciplinas, em cada rede r e ano t, conforme a Equação 7:
+Feitos esses passos, tem-se a proporção média de estudantes com desempenho igual
+ou acima do nível adequada em Língua Portuguesa e MatemáPca para cada rede de ensino em
+determinada edição do Saeb. Em paralelo a esse cálculo, é preciso esPmar a taxa de aprovação de
+cada rede de ensino – descrita na subseção abaixo – para, em seguida, computar o IND.
+6.2.3.1.2. 	Taxa de aprovação penalizada pela não resposta
+Com relação à taxa de aprovação penalizada pela não resposta, é calculada com base
+em procedimentos similares às da taxa de abandono penalizada pela não resposta do indicador do
+VAAR-Atendimento, com a diferença de que, para os municípios, são uPlizados exclusivamente os
+dados do ensino fundamental (i.e., não é calculada uma taxa de aprovação para a pré-escola).
+O Quadro 3 apresenta os anos/séries escolares e etapas prioritárias de cada rede
+municipal e estadual.
+Quadro 3. Anos/séries escolares avaliados para a mensuração da aprovação escolar
+
+-- 14 of 20 --
+
+Para esPmar a taxa de aprovação escolar (TAp) de cada ente subnacional, calcula-se a
+proporção de estudantes que foram aprovados ao final do ano lePvo em cada rede estadual e
+municipal r, em cada ano t, dentro de suas respecPvas etapas escolares de atuação prioritária,
+conforme Equação 8:
+Em que:
+Nota-se que, assim como calculado para o VAAR-Atendimento, aqui também é
+considerada uma penalização pela não informação de rendimento ou movimento ao final do ano letivo.
+Quanto maior a ausência de informação (SI), menor será a taxa de aprovação (TAp) resultante da
+equação acima. Com isso, mantém-se um paralelismo entre as duas parcelas da complementação-
+VAAR no sentido de estimular a informação de rendimento ou movimento escolar ao final do ano letivo
+para a totalidade do corpo discente brasileiro.
+6.2.3.2. 	Indicador de Avanço de Desempenho (IAD)
+O IAD é a diferença absoluta entre o IN D de duas edições do Saeb, isto é, a subtração
+
+-- 15 of 20 --
+
+entre o IND na edição t e o IND na edição t-1. Para o exercício financeiro de 2025, serão comparadas
+as edições de 2023 e 2019. O IAD para o exercício de 2025 é dado pela Equação 9:
+Uma vez que o IND varia em escala de 0 a 10, a subtração de IN D de edições disPntas
+do Saeb pode resultar, teoricamente, em um IA D variante na escala de -10 a 10. É possível, embora
+não seja desejável, que um ente que tenha apresentado queda no I N D venha a apresentar um IAD
+negaPvo. No entanto, esse resultado não compromete a esPmaPva do indicador, pois, além da
+inclusão dos demais componentes do cálculo do VAAR-Aprendizagem, transformações serão
+realizadas na escala do indicador quando do cômputo dos coeficientes de distribuição da
+complementação-VAAR.
+Finalmente, o resultado obPdo por essa subtração é uPlizado para o cômputo do Inad na
+Equação 4, já apresentada.
+6.2.4. 	Indicador de Participação no Saeb (IPSaeb)
+O Indicador de ParPcipação no Saeb (IPSaeb) corresponde à proporção de estudantes
+matriculados nos 5º e 9º anos do ensino fundamental e 3ª/4ª série do ensino médio que esPveram
+presentes nas avaliações do Saeb, em relação ao quanPtaPvo de estudantes do público-alvo previsto
+para a avaliação. Essa taxa é calculada por ente federado, respeitados os âmbitos de atuação
+prioritária de cada rede de ensino.
+Em síntese, o IPSaeb é calculado conforme a Equação 10:
+Em que:
+Importa notar que, para o cálculo do IPSaeb, os anos ou séries escolares são
+considerados conjuntamente, isto é, as taxas de parPcipação no Saeb não são calculadas
+separadamente para cada ano ou série escolar. A dtulo de ilustração, para se calcular o IPSaeb de um
+determinado Estado ou do Distrito Federal, o numerador é a soma do quanPtaPvo de estudantes dos
+5º e 9º anos do ensino fundamental e da 3ª/4ª série do ensino médio presentes na aplicação do Saeb;
+já o denominador é a soma do quanPtaPvo de estudantes matriculados nesses anos ou séries
+escolares que configurem o público-alvo previsto para a aplicação.
+A rigor, essas proporções variam de 0,0 a valores superiores a 1,0. No entanto, três
+regras adicionais determinam o cálculo do IPSaeb:
+1. 	Caso os entes apresentem uma taxa de parPcipação no Saeb superior a 1,0, será
+imposto um teto de 1,0, entendendo que o limite de parPcipação é o quanPtaPvo total de estudantes
+previstos para a aplicação;
+2. 	Em razão da Condicionalidade II (Art. 14º, § 1º, inciso II da Lei nº 14.113/2020) exigir
+que os entes federados devam aPngir, pelo menos, uma taxa de parPcipação de 80% dos estudantes
+de cada ano escolar periodicamente avaliado em cada rede de ensino por meio do Saeb, o IPSaeb
+variará, na prática, de 0,8 a 1,0;
+3. 	Em situações adpicas de calamidade pública, desastres naturais ou excepcionalidades
+de força maior em nível nacional, previstas no § 4º do Art. 14 da Lei, a Condicionalidade II poderá ser
+suspensa para fins de distribuição da complementação-VAAR. Neste caso, recomenda-se o seguinte
+
+-- 16 of 20 --
+
+encaminhamento:
+a) Caso tais situações adpicas sejam de escala nacional e suspendam a
+Condicionalidade II para todas as redes de ensino, será imputado o valor de 1,0 para
+o IPSaeb, de modo que nenhum ente federado seja prejudicado por apresentar taxas
+de participação no Saeb inferiores a 100%;
+b) Caso tais situações adpicas sejam de escala local ou regional, o IPSaeb será
+aplicado conforme a taxa de parPcipação no Saeb apurada, aplicando-se um piso de
+0,8 para não prejudicar sobremaneira entes que porventura alcancem taxas de
+participação inferiores a 80%.
+Com base nas considerações acima, é possível esPmar um único IPSaeb para cada rede
+de ensino no ano mais recente de aplicação da avaliação (no caso, 2023) que varie entre 0,8 e 1,0.
+Para a esPmação do IPSaeb a ser uPlizado no indicador do VAAR-Aprendizagem, será uPlizado o
+cálculo fornecido pela Diretoria de Avaliação da Educação Básica (Daeb) do Inep.
+6.2.5. 	Índice de Equidade (IndEqui)
+Para concluir o cômputo do VAAR-Aprendizagem, é preciso calcular o ponderador
+referente a uma medida de equidade de aprendizagem, conforme os §§ 2º e 3º do Art. 14 da Lei nº
+14.113/2020. De acordo com a legislação, é preciso que essa medida de equidade de aprendizagem
+seja baseada na escala de níveis de proficiência com base no Saeb, considere os estudantes que
+estejam mais distantes de um nível abaixo do adequado e as disparidades socioeconômicas e raciais.
+Para tanto, essa medida de equidade de aprendizagem foi traduzida em um Índice de
+Equidade (IndEqui), calculado a parPr da média aritméPca do Indicador de Equidade Socioeconômica
+(INE-S) e o Indicador de Equidade Racial (INE-R), em consonância com a Equação 11:
+Em que:
+Ambos os indicadores de equidade são calculados por metodologias bastante similares.
+A aferição das desigualdades educacionais socioeconômicas e raciais será medida pela razão das
+proporções de estudantes em condição de vulnerabilidade com desempenho igual ou acima do nível
+adequado em relação ao respecPvo grupo de referência. Para o exercício financeiro de 2025, serão
+utilizados os resultados de Língua Portuguesa e Matemática do Saeb 2023.
+Os grupos raciais são definidos pois dois conjuntos: (1) estudantes pretos, pardos e
+indígenas (PPI) e (2) estudantes brancos e amarelos (BrAm).
+Assim como proposto na Nota Técnica nº 5/2024/CGEE/DIRED (SEI nº 1371221), a
+definição dos grupos de nível socioeconômico (NSE) pode variar em função do tamanho da rede. O
+grupo de baixo nível socioeconômico, por sua vez, é formado pelo quanPl inferior da distribuição do
+escore individual de NSE dentro de cada ente subnacional. Isto é, poderá ser o 1º quarto, o 1º terço ou
+a mediana inferior da distribuição, a depender do quanPtaPvo da população discente. À guisa de
+exemplo, em redes municipais com 20 estudantes, será adotada a mediana, pois o grupo de baixo
+nível socioeconômico tem que ter, no mínimo, 10 estudantes para o cálculo das proporções. Em redes
+municipais com 30 estudantes, poderão ser adotados os tercis. A parPr de uma população de 40
+estudantes, poderão ser adotados os quarPs. Em todo caso, as comparações ocorrerão entre os
+respecPvos extremos do gradiente socioeconômico: 1º quarto em relação ao 4º quarto; 1º terço em
+relação ao 3º terço; ou metade inferior em relação à metade superior. Nesta nota, uPliza-se a NSEa
+como a notação para “nível socioeconômico alto” (4º quarto, 3º terço ou metade superior) a NSEb
+como a notação para “nível socioeconômico baixo” (1º quarto, 1º terço ou metade inferior).
+O primeiro passo é calcular as proporções de estudantes, em cada um dos grupos racial
+
+-- 17 of 20 --
+
+e de baixo nível socioeconômico, com desempenho igual ou acima do nível adequado na escala do
+Saeb, conforme a Equação 12:
+Em que:
+Em seguida, assim como foi realizado para o cômputo do IND, é preciso calcular a
+média aritméPca simples do PAdeq em Língua Portuguesa (LP) e MatemáPca (MT) na rede de ensino
+r, grupo g e ano t, como ilustrado na Equação 13:
+Ato condnuo, é preciso esPmar os indicadores de equidade calculando-se a razão entre
+o grupo vulnerável e o grupo de referência. Para tanto, o INE-S é dado pela razão 	dos
+estudantes de nível socioeconômico baixo (NSEb) em relação aos de nível socioeconômico alto
+(NSEa), ao passo que o INE-R é dado pela razão 	dos estudantes pretos, pardos e indígenas
+(PPI) em relação aos brancos e amarelos (BrAm). As Equações 14 e 15 expressam o cálculo desses
+respectivos indicadores:
+Caso haja uma situação de igualdade, as razões subjacentes ao INE-S e ao INE-R devem
+igualar a 1,0. No entanto, é recorrente que estudantes de baixo NSE ou pertencentes a grupos étnico-
+raciais discriminados apresentem desempenho inferiores se comparado a populações que usufruem
+de maiores oportunidades educacionais. Logo, é usual que os indicadores INE-S e INE-R apresentem
+valores inferiores a 1,0 de modo que, quanto mais próximo de zero, mais aguda é a desigualdade
+observada.
+Embora seja possível que o INE-S e o INE-R apresentem valores superiores a 1,0 (i.e., o
+desempenho dos grupos vulneráveis pode superar o dos grupos de referência), impõe-se um teto de
+1,0 para o cômputo dos indicadores. Essa escolha embasa-se na noção de que o que se busca com o
+VAAR é uma situação de igualdade, ou seja, em que há ausência de desigualdades de aprendizado
+entre subpopulações estudanPs. Portanto, entende-se que um sistema de ensino que alcance
+desempenho superior para grupos vulneráveis é bem-sucedida na garanPa de equidade de
+
+-- 18 of 20 --
+
+aprendizado. Além disso, é preciso ter em mente que situações como essa tendem a ocorrer em redes
+de ensino com baixo quanPtaPvo de estudantes avaliados e que, assim, pode não reflePr uma
+reversão de desigualdades em prol de grupos vulneráveis, mas tão somente erros de medida no
+cálculo das razões.
+Finalmente, o IndEqui é calculado pela média aritméPca do INE-S e do INE-R, conforme
+já expresso na Equação 11.
+6.2.6. 	Melhoria no indicador de aprendizagem com redução das desigualdades
+A melhoria no indicador de aprendizagem com redução das desigualdades (VAAR-
+Aprendizagem) é avaliada pela diferença absoluta entre o VAAR-Aprendizagem da rede de ensino r
+em 2023 em relação ao de 2019, conforme a Equação 16:
+O ente subnacional recebe a parcela VAAR-Aprendizagem quando apresenta evolução
+nos indicadores de aprendizagem com redução das desigualdades, ou seja, quando a variação
+é positiva; ou quando apresenta estagnação nesse indicador, dentro
+de uma margem de erro a ser definida posteriormente.
+Em uma próxima nota técnica, será apresentada a metodologia para transformação do
+resultado no VAAR-Aprendizagem em um coeficiente de distribuição dos recursos da complementação-
+VAAR. Por ora, este texto focou na apresentação do indicador de atendimento a ser uPlizado na
+aferição do VAAR-Aprendizagem.
+7. 	CONCLUSÃO
+A legislação educacional brasileira estabelece uma estrutura robusta e complexa para o
+financiamento e a avaliação da educação, com ênfase na garanPa do atendimento e na qualidade da
+aprendizagem nas escolas públicas. As recentes emendas consPtucionais e legislações como a da Lei
+do Fundeb introduziram mecanismos que visam melhorar a distribuição de recursos baseada em
+indicadores de desempenho, tais como atendimento escolar e aprendizagem com redução das
+desigualdades.
+À luz da experiência com dois exercícios financeiros da complementação-VAAR,
+referentes aos anos de 2023 e 2024, e intensos debates travados entre gestores, docentes,
+pesquisadores e demais especialistas em educação, esta Nota Técnica propõe uma reformulação
+completa dos indicadores do VAAR-Atendimento e do VAAR-Aprendizagem. O intuito é tornar os
+indicadores mais facilmente compreensíveis por parte dos gestores das redes de ensino, aprimorar a
+comunicação das intencionalidades subjacentes a cada uma das medidas que o compõem e sinalizar
+que o objePvo maior da complementação-VAAR, em consonância com o espírito da legislação, é
+garanPr a evolução de resultados educacionais com atenção à superação das desigualdades que tanto
+marcam a trajetórias de crianças e jovens no Brasil.
+Esses novos indicadores, cuidadosamente desenvolvidos para captar nuances como o
+abandono escolar e a evolução da proficiência dos estudantes em competências essenciais, são
+fundamentais para orientar as políPcas educacionais em direção à equidade e à eficácia. A aplicação
+desses indicadores permite que os gestores educacionais e os formuladores de políPcas monitorem e
+respondam mais efePvamente às necessidades dos estudantes, priorizando intervenções que
+assegurem não apenas o acesso universal à educação, mas também um progresso significaPvo na
+qualidade do ensino e na diminuição das desigualdades sociais e educacionais. Por meio dessa
+abordagem integrada que enfaPza a necessidade de superar as iniquidades educacionais, espera-se
+que o sistema educacional brasileiro avance em direção a um futuro em que cada estudante tenha a
+oportunidade de alcançar seu pleno potencial.
+Clarissa Guimarães Rodrigues
+Chefe de Serviço de Formação em Monitoramento e Avaliação Educacional
+Adriano Souza Senkevics
+Coordenador-Geral de Estudos Educacionais – Substituto
+
+-- 19 of 20 --
+
+Maria Teresa Gonzaga Alves
+Diretora de Estudos Educacionais
+Documento assinado eletronicamente por Clarissa Guimarães Rodrigues, Servidor Público
+Federal, em 30/04/2024, às 15:50, conforme horário oficial de Brasília, com fundamento no art.
+6º, § 1º, do Decreto nº 8.539, de 8 de outubro de 2015.
+Documento assinado eletronicamente por Adriano Souza Senkevics, Coordenador(a) - Geral,
+Substituto(a), em 30/04/2024, às 15:52, conforme horário oficial de Brasília, com fundamento
+no art. 6º, § 1º, do Decreto nº 8.539, de 8 de outubro de 2015.
+Documento assinado eletronicamente por MARIA TERESA GONZAGA ALVES, Diretor(a), em
+30/04/2024, às 16:07, conforme horário oficial de Brasília, com fundamento no art. 6º, § 1º, do
+Decreto nº 8.539, de 8 de outubro de 2015.
+A autenticidade deste documento pode ser conferida no site
+https://sei.inep.gov.br/sei/controlador_externo.php?
+acao=documento_conferir&id_orgao_acesso_externo=0, informando o código verificador
+1382664 e o código CRC D378C753.
+Referência: Proces s o nº 23036.004760/2023-89 	SEI nº 1382664
+
+-- 20 of 20 --
+

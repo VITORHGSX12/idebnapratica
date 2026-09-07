@@ -18,6 +18,20 @@
             icon: 'layout-dashboard',
             category: 'visao-geral'
         },
+        'calculo-ideb': {
+            id: 'calculo-ideb',
+            title: 'Cálculo Oficial do IDEB & VAAR (INEP)',
+            subtitle: 'Metodologia oficial de cálculo do IDEB (N × P), indicadores do VAAR/FUNDEB e simulador interativo em tempo real.',
+            icon: 'calculator',
+            category: 'visao-geral'
+        },
+        'manual-calculo-ideb': {
+            id: 'calculo-ideb',
+            title: 'Cálculo Oficial do IDEB & VAAR (INEP)',
+            subtitle: 'Metodologia oficial de cálculo do IDEB (N × P), indicadores do VAAR/FUNDEB e simulador interativo em tempo real.',
+            icon: 'calculator',
+            category: 'visao-geral'
+        },
         'escolas-panel': {
             id: 'escolas-panel',
             title: 'Escolas da Rede',

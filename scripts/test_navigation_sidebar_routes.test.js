@@ -95,6 +95,7 @@ async function runNavigationAndSidebarTestSuite() {
     loadScript('js/modules/avaliacoes/avaliacoes_events.js');
     loadScript('js/data/official_users_directory.js');
     loadScript('js/core/auth.js');
+    loadScript('js/modules/metas/metas_calculo_manual.js');
     loadScript('app.js');
 
     // -------------------------------------------------------------------------
@@ -103,6 +104,7 @@ async function runNavigationAndSidebarTestSuite() {
     console.log('--- TESTE 1: Catálogo Centralizado de Metadados (navigation_meta.js) ---');
     const expectedTabs = [
         'dashboard',
+        'calculo-ideb',
         'escolas-panel',
         'alunos-panel',
         'metas-ideb',
@@ -119,7 +121,7 @@ async function runNavigationAndSidebarTestSuite() {
         'admin-panel'
     ];
 
-    test('getTabMeta retorna metadados completos para todas as 15 rotas canônicas', () => {
+    test('getTabMeta retorna metadados completos para todas as 16 rotas canônicas (incluindo calculo-ideb)', () => {
         assert(typeof mockWindow.getTabMeta === 'function', 'getTabMeta deve existir');
         expectedTabs.forEach(tabId => {
             const meta = mockWindow.getTabMeta(tabId);
@@ -189,6 +191,42 @@ async function runNavigationAndSidebarTestSuite() {
         const semed = mockWindow.OFFICIAL_REGISTERED_USERS.find(u => u.email === 'semed@goncalvesdias.ma.gov.br');
         assert(semed, 'Perfil da SEMED deve existir');
         assert.strictEqual(semed.role, 'Gestor da Rede');
+    });
+
+    // -------------------------------------------------------------------------
+    // TESTE 7: Motor Oficial de Cálculo IDEB & VAAR (metas_calculo_manual.js)
+    // -------------------------------------------------------------------------
+    console.log('\n--- TESTE 7: Motor de Cálculo Oficial IDEB & VAAR (metas_calculo_manual.js) ---');
+    test('calcularIdebClassico computa N x P fielmente às Notas Técnicas', () => {
+        assert(typeof mockWindow.calcularIdebClassico === 'function', 'calcularIdebClassico deve existir');
+        const res5 = mockWindow.calcularIdebClassico(205.0, 215.0, 96.0, '5');
+        assert.strictEqual(res5.nLp, 4.20);
+        assert.strictEqual(res5.nMat, 4.60);
+        assert.strictEqual(res5.nMedio, 4.40);
+        assert.strictEqual(res5.ideb, 4.22);
+
+        const res9 = mockWindow.calcularIdebClassico(278.0, 295.0, 94.5, '9');
+        assert(res9.ideb > 0 && res9.ideb <= 10, 'IDEB do 9º ano deve estar no intervalo válido');
+    });
+
+    test('calcularIndicadoresVaar avalia IND, IAD, Inad e Habilitação FUNDEB', () => {
+        assert(typeof mockWindow.calcularIndicadoresVaar === 'function', 'calcularIndicadoresVaar deve existir');
+        const vaarOk = mockWindow.calcularIndicadoresVaar(58, 52, 96.0, 88.0, 4.8);
+        assert.strictEqual(vaarOk.habilitado, true);
+        assert.strictEqual(vaarOk.ind, 5.28);
+        assert.strictEqual(vaarOk.iad, 0.48);
+
+        const vaarAlerta = mockWindow.calcularIndicadoresVaar(60, 55, 95.0, 72.0, 4.8);
+        assert.strictEqual(vaarAlerta.habilitado, false, 'Presença < 80% deve desabilitar');
+        assert(vaarAlerta.motivoAlerta.includes('80%'));
+    });
+
+    test('Catálogo de Presets do IDEB possui todos os cenários cadastrados', () => {
+        assert(mockWindow.IDEB_PRESETS, 'IDEB_PRESETS deve existir');
+        assert(mockWindow.IDEB_PRESETS['atual-5ano'], 'Preset atual-5ano deve existir');
+        assert(mockWindow.IDEB_PRESETS['meta-pde-2025'], 'Preset meta-pde-2025 deve existir');
+        assert(mockWindow.IDEB_PRESETS['anos-finais-9ano'], 'Preset anos-finais-9ano deve existir');
+        assert(mockWindow.IDEB_PRESETS['alerta-presenca'], 'Preset alerta-presenca deve existir');
     });
 
     console.log('\n================================================================');

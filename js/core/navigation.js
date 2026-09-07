@@ -12,6 +12,10 @@
     // Mapeamento de aliases de abas para IDs de seções do DOM
     var TAB_MAP = {
         'dashboard': 'dashboard',
+        'calculo-ideb': 'calculo-ideb',
+        'calculo-do-ideb': 'calculo-ideb',
+        'manual-calculo-ideb': 'calculo-ideb',
+        'ideb-calculo': 'calculo-ideb',
         'escolas-panel': 'escolas-panel',
         'alunos-panel': 'alunos-panel',
         'metas-ideb': 'metas-ideb',
@@ -150,6 +154,9 @@
             } else if (resolvedId === 'dashboard' || resolvedId === 'sec-dashboard') {
                 if (typeof global.renderDashboardComplete === 'function') global.renderDashboardComplete();
                 if (typeof global.initDashboardScrollReveal === 'function') global.initDashboardScrollReveal();
+            } else if (resolvedId === 'calculo-ideb') {
+                if (typeof global.initIdebVaarCalculator === 'function') global.initIdebVaarCalculator();
+                if (typeof global.updateIdebVaarSimulator === 'function') global.updateIdebVaarSimulator();
             } else if (resolvedId === 'escolas-panel') {
                 if (typeof global.renderDbSchools === 'function') global.renderDbSchools();
             } else if (resolvedId === 'alunos-panel') {
@@ -209,6 +216,11 @@
                     <div class="menu-active-indicator"></div>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
                     <span>Painel Executivo</span>
+                </a>
+                <a href="#calculo-ideb" onclick="switchTab('calculo-ideb'); return false;" class="menu-item ${currentTab === 'calculo-ideb' ? 'active' : ''}" data-target="calculo-ideb" data-tooltip="Cálculo do IDEB">
+                    <div class="menu-active-indicator"></div>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
+                    <span>Cálculo do IDEB</span>
                 </a>
                 <a href="#escolas-panel" onclick="switchTab('escolas-panel'); return false;" class="menu-item ${currentTab === 'escolas-panel' ? 'active' : ''}" data-target="escolas-panel" data-tooltip="Escolas da Rede">
                     <div class="menu-active-indicator"></div>
