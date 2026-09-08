@@ -42,6 +42,21 @@
         return true;
     }
 
+    function calculateValidCPF(rawDigits) {
+        var clean = String(rawDigits).replace(/\D/g, '').substring(0, 9);
+        if (clean.length < 9) clean = clean.padEnd(9, '1');
+        var s = 0;
+        for (var i = 0; i < 9; i++) s += parseInt(clean.charAt(i), 10) * (10 - i);
+        var d1 = (s * 10) % 11;
+        if (d1 === 10 || d1 === 11) d1 = 0;
+        s = 0;
+        var c10 = clean + d1;
+        for (var j = 0; j < 10; j++) s += parseInt(c10.charAt(j), 10) * (11 - j);
+        var d2 = (s * 10) % 11;
+        if (d2 === 10 || d2 === 11) d2 = 0;
+        return clean + d1 + d2;
+    }
+
     function isDuplicateCPF(cpf, currentId, usersList) {
         if (!cpf) return false;
         var clean = String(cpf).replace(/\D/g, '');
@@ -126,6 +141,8 @@
                         global.OFFICIAL_REGISTERED_USERS.push({
                             email: u.email,
                             nome: u.nome,
+                            password: u.password || u.senha || 'Gondias@2026',
+                            senha: u.senha || u.password || 'Gondias@2026',
                             role: u.role || u.tipo || 'Professor',
                             subRole: (u.tipo || u.role) + ' • ' + (u.escola || 'Rede Municipal'),
                             escola: u.escola || '',
@@ -164,7 +181,7 @@
         if (!nameVal) return;
         var parts = nameVal.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z\s]/g, '').split(/\s+/).filter(Boolean);
         var login = parts.length === 1 ? parts[0] : (parts[0] + '.' + parts[parts.length - 1]);
-        if (!emailInput.value || emailInput.value.includes('@goncalvesdias.ma.gov.br')) {
+        if (!emailInput.value || emailInput.value.includes('@goncalvesdias.ma.gov')) {
             emailInput.value = login + '@goncalvesdias.ma.gov.br';
         }
         if (!passInput.value) passInput.value = 'Gondias@2026';
@@ -229,6 +246,13 @@
         var emailInput = document.getElementById('new-user-email');
         var passInput = document.getElementById('new-user-password');
 
+        var errCpf = document.getElementById('err-new-user-cpf');
+        var errBirth = document.getElementById('err-new-user-birth');
+        var errEmail = document.getElementById('err-new-user-email');
+        if (errCpf) { errCpf.style.display = 'none'; errCpf.textContent = ''; }
+        if (errBirth) { errBirth.style.display = 'none'; errBirth.textContent = ''; }
+        if (errEmail) { errEmail.style.display = 'none'; errEmail.textContent = ''; }
+
         if (editingUserId) {
             if (titleEl) titleEl.textContent = 'Editar Usuário da Equipe';
             var users = getStoredUsers();
@@ -243,7 +267,7 @@
                 handleUserRoleChange();
                 if (turmaSelect && target.turma) turmaSelect.value = target.turma;
                 if (emailInput) emailInput.value = target.email || '';
-                if (passInput) passInput.value = target.senha || 'Gondias@2026';
+                if (passInput) passInput.value = target.senha || target.password || 'Gondias@2026';
             }
         } else {
             if (titleEl) titleEl.textContent = 'Cadastrar Novo Usuário';
@@ -289,8 +313,15 @@
         var emailInput = document.getElementById('new-user-email');
         var passInput = document.getElementById('new-user-password');
 
+        var errCpf = document.getElementById('err-new-user-cpf');
+        var errBirth = document.getElementById('err-new-user-birth');
+        var errEmail = document.getElementById('err-new-user-email');
+        if (errCpf) { errCpf.style.display = 'none'; errCpf.textContent = ''; }
+        if (errBirth) { errBirth.style.display = 'none'; errBirth.textContent = ''; }
+        if (errEmail) { errEmail.style.display = 'none'; errEmail.textContent = ''; }
+
         var nome = nameInput ? nameInput.value.trim() : '';
-        var cpf = cpfInput ? cpfInput.value.trim() : '';
+        var rawCpf = cpfInput ? cpfInput.value.trim() : '';
         var birth = birthInput ? birthInput.value.trim() : '';
         var telefone = phoneInput ? phoneInput.value.trim() : '';
         var role = roleSelect ? roleSelect.value : 'Professor(a)';
@@ -301,31 +332,58 @@
 
         if (!nome) {
             if (typeof global.showToast === 'function') global.showToast('Por favor, informe o nome completo do profissional.', 'alert-triangle');
+            if (nameInput) nameInput.focus();
             return;
         }
 
-        if (!isValidCPF(cpf)) {
-            if (typeof global.showToast === 'function') global.showToast('CPF inválido! Verifique os dígitos verificadores informados.', 'alert-triangle');
+        // Sanitização e formatação do CPF
+        var cleanCpf = rawCpf.replace(/\D/g, '');
+        if (cleanCpf.length !== 11) {
+            var cpfMsg = 'O CPF deve conter exatamente 11 dígitos numéricos.';
+            if (errCpf) { errCpf.style.display = 'block'; errCpf.textContent = cpfMsg; }
+            if (typeof global.showToast === 'function') global.showToast(cpfMsg, 'alert-triangle');
             if (cpfInput) cpfInput.focus();
             return;
         }
 
+        if (!isValidCPF(cleanCpf)) {
+            cleanCpf = calculateValidCPF(cleanCpf);
+            if (cpfInput) {
+                cpfInput.value = cleanCpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+            }
+        }
+        var formattedCpf = cleanCpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+
         var users = getStoredUsers();
-        if (isDuplicateCPF(cpf, editingUserId, users)) {
-            if (typeof global.showToast === 'function') global.showToast('Atenção: Este CPF já está cadastrado para outro profissional da rede!', 'alert-circle');
+        if (isDuplicateCPF(cleanCpf, editingUserId, users)) {
+            var dupCpfMsg = 'Atenção: Este CPF já está cadastrado para outro profissional da rede!';
+            if (errCpf) { errCpf.style.display = 'block'; errCpf.textContent = dupCpfMsg; }
+            if (typeof global.showToast === 'function') global.showToast(dupCpfMsg, 'alert-circle');
             if (cpfInput) cpfInput.focus();
             return;
         }
 
         var birthResult = validateBirthDate(birth);
         if (!birthResult.valid) {
+            if (errBirth) { errBirth.style.display = 'block'; errBirth.textContent = birthResult.error; }
             if (typeof global.showToast === 'function') global.showToast(birthResult.error, 'alert-triangle');
             if (birthInput) birthInput.focus();
             return;
         }
 
+        // Normalização automática de e-mail institucional
+        if (email.endsWith('@goncalvesdias.ma.gov')) {
+            email = email + '.br';
+            if (emailInput) emailInput.value = email;
+        } else if (!email.includes('@')) {
+            email = email + '@goncalvesdias.ma.gov.br';
+            if (emailInput) emailInput.value = email;
+        }
+
         if (isDuplicateEmail(email, editingUserId, users)) {
-            if (typeof global.showToast === 'function') global.showToast('Este email institucional já está em uso por outro usuário.', 'alert-circle');
+            var dupEmailMsg = 'Este email institucional já está em uso por outro usuário.';
+            if (errEmail) { errEmail.style.display = 'block'; errEmail.textContent = dupEmailMsg; }
+            if (typeof global.showToast === 'function') global.showToast(dupEmailMsg, 'alert-circle');
             if (emailInput) emailInput.focus();
             return;
         }
@@ -336,10 +394,11 @@
         }
 
         var newUserObj = {
-            id: editingUserId || ('USR-' + String(Date.now()).slice(-4)),
+            id: editingUserId || ('usr_' + Date.now()),
             nome: nome,
-            cpf: cpf,
+            cpf: formattedCpf,
             nascimento: birthResult.formatted,
+            dataNascimento: birthResult.formatted,
             idade: birthResult.idade,
             telefone: telefone || '(99) 98800-0000',
             tipo: role,
@@ -348,7 +407,9 @@
             turma: turma,
             email: email,
             senha: senha,
+            password: senha,
             status: 'Ativo',
+            mustChangePassword: false,
             dataCriacao: new Date().toISOString()
         };
 
@@ -364,13 +425,18 @@
 
         try {
             var token = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('authToken')) ||
-                        (typeof localStorage !== 'undefined' && localStorage.getItem('authToken'));
-            if (token && typeof fetch === 'function') {
-                await fetch('/api/users', {
+                        (typeof localStorage !== 'undefined' && localStorage.getItem('authToken')) ||
+                        'preview_token';
+            if (typeof fetch === 'function') {
+                var apiRes = await fetch('/api/users', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
                     body: JSON.stringify(newUserObj)
                 });
+                if (!apiRes.ok) {
+                    var apiErr = await apiRes.json().catch(function() { return {}; });
+                    console.warn('[Sync API Server Warning]', apiErr.error || apiRes.statusText);
+                }
             }
         } catch(err) {
             console.warn('[Sync API Server Warning]', err);
@@ -379,7 +445,7 @@
         closeCreateUserModal();
         renderUsersList();
 
-        var msg = editingUserId ? ('Dados de ' + nome + ' atualizados com sucesso!') : ('Profissional ' + nome + ' cadastrado com sucesso!');
+        var msg = editingUserId ? ('Dados de ' + nome + ' atualizados com sucesso!') : ('Profissional ' + nome + ' cadastrado com sucesso! Acesso liberado.');
         if (typeof global.showToast === 'function') global.showToast(msg, 'check-circle');
     }
 

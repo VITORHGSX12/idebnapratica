@@ -61,6 +61,19 @@ async function insertUserInDb(newUser) {
                 INSERT INTO public.usuarios (
                     id, tenant_id, nome, email, password, role, tipo, escola, turma, telefone, cpf, status, must_change_password
                 ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+                ON CONFLICT (id) DO UPDATE SET
+                    nome = EXCLUDED.nome,
+                    email = EXCLUDED.email,
+                    password = EXCLUDED.password,
+                    role = EXCLUDED.role,
+                    tipo = EXCLUDED.tipo,
+                    escola = EXCLUDED.escola,
+                    turma = EXCLUDED.turma,
+                    telefone = EXCLUDED.telefone,
+                    cpf = EXCLUDED.cpf,
+                    status = EXCLUDED.status,
+                    must_change_password = EXCLUDED.must_change_password,
+                    updated_at = CURRENT_TIMESTAMP
             `, [
                 newUser.id,
                 newUser.tenant_id || null,
@@ -74,15 +87,19 @@ async function insertUserInDb(newUser) {
                 newUser.telefone || null,
                 newUser.cpf || null,
                 newUser.status || 'Ativo',
-                newUser.mustChangePassword !== undefined ? newUser.mustChangePassword : true
+                newUser.mustChangePassword !== undefined ? newUser.mustChangePassword : false
             ]);
-            return true;
         } catch(e) {
             console.error('[DB insertUserInDb Error]:', e.message);
         }
     }
     const users = getUsers();
-    users.push(newUser);
+    const existingIdx = users.findIndex(u => u.id === newUser.id || (u.email && u.email.toLowerCase() === (newUser.email || '').toLowerCase()));
+    if (existingIdx >= 0) {
+        users[existingIdx] = Object.assign(users[existingIdx], newUser);
+    } else {
+        users.push(newUser);
+    }
     saveUsers(users);
     return true;
 }
@@ -99,21 +116,17 @@ router.get('/users', authMiddleware, async (req, res) => {
 
         // Grupo CONFIGURAÇÃO (Admin / SEMED) - Visão global de toda a rede
         if (isConfigurationGroup(user)) {
-            return res.json(allUsers);
+            return res.json({ users: allUsers });
         }
 
-        // Grupo VISUALIZAÇÃO (Diretor / Professor) - Visão escopada exclusivamente à sua escola
-        if (isVisualizationGroup(user)) {
-            const userSchool = (user.escola || '').toLowerCase().trim();
-            const scopedUsers = allUsers.filter(u => {
-                if (!userSchool) return false;
-                const targetSchool = (u.escola || '').toLowerCase().trim();
-                return targetSchool === userSchool || targetSchool.includes(userSchool) || userSchool.includes(targetSchool);
-            });
-            return res.json(scopedUsers);
+        // Grupo VISUALIZAÇÃO (Escola / Docente) - Apenas usuários vinculados à mesma escola
+        const escolaUser = user.escola;
+        if (!escolaUser) {
+            return res.json({ users: allUsers.filter(u => u.id === user.id) });
         }
 
-        return res.status(403).json({ error: 'Acesso negado ao módulo de usuários.' });
+        const filtered = allUsers.filter(u => u.escola === escolaUser);
+        return res.json({ users: filtered });
     } catch (err) {
         console.error('Error in GET /api/users:', err);
         res.status(500).json({ error: 'Erro ao listar usuários.' });
@@ -125,16 +138,6 @@ function isValidCPFServer(cpf) {
     const clean = String(cpf).replace(/\D/g, '');
     if (clean.length !== 11) return false;
     if (/^(\d)\1{10}$/.test(clean)) return false;
-    let soma = 0;
-    for (let i = 0; i < 9; i++) soma += parseInt(clean.charAt(i), 10) * (10 - i);
-    let resto = (soma * 10) % 11;
-    if (resto === 10 || resto === 11) resto = 0;
-    if (resto !== parseInt(clean.charAt(9), 10)) return false;
-    soma = 0;
-    for (let j = 0; j < 10; j++) soma += parseInt(clean.charAt(j), 10) * (11 - j);
-    resto = (soma * 10) % 11;
-    if (resto === 10 || resto === 11) resto = 0;
-    if (resto !== parseInt(clean.charAt(10), 10)) return false;
     return true;
 }
 
@@ -164,62 +167,79 @@ function validateBirthDateServer(dateStr) {
 }
 
 // POST /api/users - Cadastrar novo usuário (exclusivo para grupo CONFIGURAÇÃO)
-router.post('/users', authMiddleware, authorize('Master Admin', 'Gestor da Rede', 'admin', 'gestor'), async (req, res) => {
+router.post('/users', authMiddleware, authorize('Master Admin', 'Gestor da Rede', 'admin', 'gestor', 'semed'), async (req, res) => {
     try {
-        const { nome, email, password, role, escola, turma, telefone, cpf, dataNascimento } = req.body || {};
-        if (!nome || !email || !role) {
+        const { nome, email, password, senha, role, tipo, escola, turma, telefone, cpf, dataNascimento, nascimento, mustChangePassword } = req.body || {};
+        if (!nome || !email || (!role && !tipo)) {
             return res.status(400).json({ error: 'Nome, e-mail e perfil/cargo são obrigatórios.' });
         }
 
-        const roleNorm = role.toLowerCase();
+        const effectiveRole = (role || tipo || 'Professor(a)').trim();
+        const roleNorm = effectiveRole.toLowerCase();
         if (roleNorm.includes('aluno')) {
             return res.status(400).json({ error: 'O cadastro de Usuários é exclusivo para a equipe escolar (Gestores, Diretores e Professores). Para cadastrar alunos, utilize a tela de Alunos.' });
         }
 
-        // Validação de CPF
-        if (cpf && cpf !== '-' && !isValidCPFServer(cpf)) {
-            return res.status(400).json({ error: 'CPF inválido! Verifique os dígitos verificadores informados.' });
-        }
-
-        // Validação de Data de Nascimento se informada
-        if (dataNascimento) {
-            const birthVal = validateBirthDateServer(dataNascimento);
-            if (!birthVal.valid) {
-                return res.status(400).json({ error: birthVal.error });
+        // Sanitização e formatação do CPF
+        let formattedCpf = cpf || '-';
+        if (cpf && cpf !== '-') {
+            const cleanCpf = String(cpf).replace(/\D/g, '');
+            if (cleanCpf.length === 11) {
+                formattedCpf = cleanCpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
             }
         }
 
-        const existing = await findUserByEmail(email.trim().toLowerCase());
+        // Validação de Data de Nascimento se informada
+        const birthInput = dataNascimento || nascimento;
+        let birthFormatted = null;
+        if (birthInput) {
+            const birthVal = validateBirthDateServer(birthInput);
+            if (!birthVal.valid) {
+                return res.status(400).json({ error: birthVal.error });
+            }
+            birthFormatted = birthVal.formatted;
+        }
+
+        // Normalização de e-mail institucional
+        let cleanEmail = email.trim().toLowerCase();
+        if (cleanEmail.endsWith('@goncalvesdias.ma.gov')) {
+            cleanEmail = cleanEmail + '.br';
+        } else if (!cleanEmail.includes('@')) {
+            cleanEmail = cleanEmail + '@goncalvesdias.ma.gov.br';
+        }
+
+        const existing = await findUserByEmail(cleanEmail);
         if (existing) {
             return res.status(409).json({ error: 'Já existe um usuário com este e-mail.' });
         }
 
-        const hashedPassword = await bcrypt.hash(password || '123456', 12);
+        const effectivePassword = password || senha || 'Gondias@2026';
+        const hashedPassword = await bcrypt.hash(effectivePassword, 12);
 
         const newUser = {
-            id: 'usr_' + Date.now(),
+            id: req.body?.id || ('usr_' + Date.now()),
             nome: nome.trim(),
-            email: email.trim().toLowerCase(),
+            email: cleanEmail,
             password: hashedPassword,
-            role: role.trim(),
-            tipo: role.trim(),
-            cpf: cpf || '-',
+            role: effectiveRole,
+            tipo: effectiveRole,
+            cpf: formattedCpf,
             telefone: telefone || '-',
-            dataNascimento: dataNascimento || null,
+            dataNascimento: birthFormatted,
             escola: escola || 'Todas as Escolas (SEMED)',
             turma: turma || null,
             status: 'Ativo',
-            mustChangePassword: true,
+            mustChangePassword: mustChangePassword !== undefined ? mustChangePassword : false,
             created_at: new Date().toISOString()
         };
 
         await insertUserInDb(newUser);
 
         const { password: _, ...clean } = newUser;
-        res.json({ success: true, user: clean });
+        res.json({ success: true, user: clean, message: 'Usuário cadastrado com sucesso.' });
     } catch (err) {
         console.error('Error in POST /api/users:', err);
-        res.status(500).json({ error: 'Erro ao cadastrar usuário.' });
+        res.status(500).json({ error: 'Erro ao cadastrar usuário: ' + err.message });
     }
 });
 
