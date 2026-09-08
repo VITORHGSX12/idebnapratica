@@ -26,9 +26,24 @@
         var userRole = (user.role || sessionStorage.getItem('userRole') || 'Master Admin').toUpperCase();
         var userEscola = (user.escola || sessionStorage.getItem('userEscola') || '').toUpperCase().trim();
 
+        var userTurma = (user.turma || sessionStorage.getItem('userTurma') || '').toUpperCase().trim();
+
         var permittedStudents = cachedAvaliados;
 
-        if (userRole.includes('PROFESSOR') || userRole.includes('DIRETOR')) {
+        if (userRole.includes('PROFESSOR')) {
+            if (userEscola) {
+                permittedStudents = cachedAvaliados.filter(function (a) {
+                    var escName = (a.escolaNome || a.escolaId || '').toUpperCase();
+                    var matchEscola = escName.includes(userEscola) || userEscola.includes(escName);
+                    if (!matchEscola) return false;
+                    if (userTurma && userTurma !== 'TODAS AS TURMAS') {
+                        var tName = (a.turmaNome || a.turma || '').toUpperCase();
+                        return tName.includes(userTurma) || userTurma.includes(tName);
+                    }
+                    return true;
+                });
+            }
+        } else if (userRole.includes('DIRETOR')) {
             if (userEscola) {
                 permittedStudents = cachedAvaliados.filter(function (a) {
                     var escName = (a.escolaNome || a.escolaId || '').toUpperCase();

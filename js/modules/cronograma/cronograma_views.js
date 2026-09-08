@@ -12,6 +12,42 @@
     let currentTurmaContext = 'UI JOSE CORREA LIMA — 2º Ano A';
     let currentScheduleMainView = 'monthly'; // 'monthly' | 'weekly' | 'comparison'
 
+    function initScheduleTurmaContext() {
+        const select = document.getElementById('cal-filter-turma-context');
+        if (!select) return;
+
+        const userRole = (sessionStorage.getItem('userRole') || localStorage.getItem('userRole') || 'Master Admin').toLowerCase();
+        const userEscola = (sessionStorage.getItem('userEscola') || localStorage.getItem('userEscola') || '').trim();
+        const userTurma = (sessionStorage.getItem('userTurma') || localStorage.getItem('userTurma') || '').trim();
+        const isTeacher = userRole.includes('professor');
+        const isDirector = userRole.includes('diretor');
+
+        if (isTeacher && userEscola && userTurma && userTurma !== 'Todas as Turmas') {
+            const contextStr = `${userEscola} — ${userTurma}`;
+            select.innerHTML = `<option value="${contextStr}" selected>${contextStr}</option>`;
+            select.disabled = true;
+            currentTurmaContext = contextStr;
+        } else if (isDirector && userEscola) {
+            select.disabled = false;
+            const allOptions = Array.from(select.options);
+            const filteredOptions = allOptions.filter(opt => {
+                const text = opt.text.toLowerCase();
+                const u = userEscola.toLowerCase();
+                return text.includes(u) || u.includes(text);
+            });
+            if (filteredOptions.length > 0) {
+                select.innerHTML = '';
+                filteredOptions.forEach(opt => select.appendChild(opt));
+                select.selectedIndex = 0;
+                currentTurmaContext = select.value;
+            }
+        } else {
+            select.disabled = false;
+        }
+
+        handleTurmaContextChange();
+    }
+
     function handleTurmaContextChange() {
         const select = document.getElementById('cal-filter-turma-context');
         if (select) {
@@ -89,6 +125,7 @@
     }
 
     // Exposição Global
+    window.initScheduleTurmaContext = initScheduleTurmaContext;
     window.handleTurmaContextChange = handleTurmaContextChange;
     window.switchScheduleMainView = switchScheduleMainView;
     window.renderActiveScheduleView = renderActiveScheduleView;

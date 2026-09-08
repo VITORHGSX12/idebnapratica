@@ -29,18 +29,37 @@
             }
         }
 
+        var userRole = (sessionStorage.getItem('userRole') || localStorage.getItem('userRole') || 'Master Admin').toLowerCase();
+        var userEscola = (sessionStorage.getItem('userEscola') || localStorage.getItem('userEscola') || '').trim();
+        var userTurma = (sessionStorage.getItem('userTurma') || localStorage.getItem('userTurma') || '').trim();
+        var isTeacher = userRole.includes('professor');
+        var isDirector = userRole.includes('diretor');
+
         if (schoolSelect) {
             var allEscolas = typeof global.getOfficialSchoolsState === 'function' 
                 ? global.getOfficialSchoolsState() 
                 : (Array.isArray(global.dbEscolas) ? global.dbEscolas : []);
 
-            var schoolOpts = '<option value="all" selected>Todas as Escolas (Rede Municipal)</option>';
-            allEscolas.forEach(function(esc) {
-                var nome = esc.nome || esc.name || esc.escola || esc.id;
-                var id = esc.id || esc.codigo_inep || esc.inep || nome;
-                schoolOpts += `<option value="${id}">${nome}</option>`;
-            });
-            schoolSelect.innerHTML = schoolOpts;
+            if ((isDirector || isTeacher) && userEscola) {
+                var matchedEscola = allEscolas.find(function(e) {
+                    var n = (e.nome || e.name || '').toLowerCase();
+                    var u = userEscola.toLowerCase();
+                    return n.includes(u) || u.includes(n);
+                });
+                var escNome = matchedEscola ? (matchedEscola.nome || matchedEscola.name) : userEscola;
+                var escId = matchedEscola ? (matchedEscola.id || matchedEscola.codigo_inep || escNome) : userEscola;
+                schoolSelect.innerHTML = `<option value="${escId}" selected>${escNome}</option>`;
+                schoolSelect.disabled = true;
+            } else {
+                schoolSelect.disabled = false;
+                var schoolOpts = '<option value="all" selected>Todas as Escolas (Rede Municipal)</option>';
+                allEscolas.forEach(function(esc) {
+                    var nome = esc.nome || esc.name || esc.escola || esc.id;
+                    var id = esc.id || esc.codigo_inep || esc.inep || nome;
+                    schoolOpts += `<option value="${id}">${nome}</option>`;
+                });
+                schoolSelect.innerHTML = schoolOpts;
+            }
         }
 
         function syncTurmasSaeb() {
@@ -48,19 +67,35 @@
             var selSchool = schoolSelect.value;
             if (selSchool === 'all') {
                 classSelect.innerHTML = '<option value="all" selected>Todas as Turmas</option>';
+                classSelect.disabled = false;
             } else {
                 var turmas = typeof global.getTurmasPorEscola === 'function'
                     ? global.getTurmasPorEscola(selSchool)
                     : [];
-                var opts = '<option value="all" selected>Todas as Turmas desta Escola</option>';
-                turmas.forEach(function(t) {
-                    var label = t.nome + (t.serie ? ' (' + t.serie + ')' : '');
-                    opts += `<option value="${t.id}">${label}</option>`;
-                });
-                classSelect.innerHTML = opts;
+
+                if (isTeacher && userTurma && userTurma !== 'Todas as Turmas') {
+                    var matchedTurma = turmas.find(function(t) {
+                        return (t.nome || '').toLowerCase().includes(userTurma.toLowerCase()) || 
+                               userTurma.toLowerCase().includes((t.nome || '').toLowerCase());
+                    });
+                    var tLabel = matchedTurma ? (matchedTurma.nome + (matchedTurma.serie ? ' (' + matchedTurma.serie + ')' : '')) : userTurma;
+                    var tId = matchedTurma ? matchedTurma.id : userTurma;
+                    classSelect.innerHTML = `<option value="${tId}" selected>${tLabel}</option>`;
+                    classSelect.disabled = true;
+                } else {
+                    classSelect.disabled = false;
+                    var opts = '<option value="all" selected>Todas as Turmas desta Escola</option>';
+                    turmas.forEach(function(t) {
+                        var label = t.nome + (t.serie ? ' (' + t.serie + ')' : '');
+                        opts += `<option value="${t.id}">${label}</option>`;
+                    });
+                    classSelect.innerHTML = opts;
+                }
             }
             renderSaebProficiencyDashboard();
         }
+
+        syncTurmasSaeb();
 
         if (schoolSelect) schoolSelect.onchange = syncTurmasSaeb;
         if (evalSelect) evalSelect.onchange = renderSaebProficiencyDashboard;

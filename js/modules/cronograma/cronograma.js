@@ -21,6 +21,10 @@
             window.setup7ColCalendarEvents();
         }
 
+        if (typeof window.initScheduleTurmaContext === 'function') {
+            window.initScheduleTurmaContext();
+        }
+
         // 2. Renderizar Visões Principais
         if (typeof window.renderActiveScheduleView === 'function') {
             window.renderActiveScheduleView();
