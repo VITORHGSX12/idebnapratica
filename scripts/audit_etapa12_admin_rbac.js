@@ -267,11 +267,17 @@ const mockWindow = {
 
 // 4. Executar os scripts do módulo admin em VM
 const dataScript = fs.readFileSync(path.join(__dirname, '../js/modules/admin/admin_data.js'), 'utf8');
+const valScript = fs.readFileSync(path.join(__dirname, '../js/modules/admin/users/admin_users_validation.js'), 'utf8');
+const formScript = fs.readFileSync(path.join(__dirname, '../js/modules/admin/users/admin_users_form.js'), 'utf8');
+const tableScript = fs.readFileSync(path.join(__dirname, '../js/modules/admin/users/admin_users_table.js'), 'utf8');
 const usersScript = fs.readFileSync(path.join(__dirname, '../js/modules/admin/admin_users.js'), 'utf8');
 const tenantsScript = fs.readFileSync(path.join(__dirname, '../js/modules/admin/admin_tenants.js'), 'utf8');
 
 const ctx = vm.createContext(mockWindow);
 vm.runInContext(dataScript, ctx);
+vm.runInContext(valScript, ctx);
+vm.runInContext(formScript, ctx);
+vm.runInContext(tableScript, ctx);
 vm.runInContext(usersScript, ctx);
 vm.runInContext(tenantsScript, ctx);
 
@@ -295,7 +301,7 @@ async function runAudit() {
     // Item 1: Header do Módulo, Título & Botão de Cadastro de Usuário
     try {
         const hasSection = checkHtmlContains('id="admin-panel"');
-        const hasTitle = checkHtmlContains('USUÁRIOS & EQUIPE');
+        const hasTitle = checkHtmlContains('USUÁRIOS & EQUIPE') || checkHtmlContains('Gestão de Usuários & Equipe Escolar');
         const hasBtnCreate = checkHtmlContains('id="btn-open-create-user-modal"');
         const hasCallModal = checkHtmlContains('openCreateUserModal()');
 

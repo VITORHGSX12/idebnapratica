@@ -38,7 +38,19 @@ const globalMock = {
     showToast: function(msg, type) {}
 };
 
-// Carregar script admin_users.js no mock
+// Carregar scripts no mock
+const validationCode = fs.readFileSync(path.join(__dirname, '../js/modules/admin/users/admin_users_validation.js'), 'utf8');
+const runValInMock = new Function('global', validationCode);
+runValInMock.call(globalMock, globalMock);
+
+const formCode = fs.readFileSync(path.join(__dirname, '../js/modules/admin/users/admin_users_form.js'), 'utf8');
+const runFormInMock = new Function('global', formCode);
+runFormInMock.call(globalMock, globalMock);
+
+const tableCode = fs.readFileSync(path.join(__dirname, '../js/modules/admin/users/admin_users_table.js'), 'utf8');
+const runTableInMock = new Function('global', tableCode);
+runTableInMock.call(globalMock, globalMock);
+
 const adminUsersCode = fs.readFileSync(path.join(__dirname, '../js/modules/admin/admin_users.js'), 'utf8');
 const runInMock = new Function('global', adminUsersCode);
 runInMock.call(globalMock, globalMock);
