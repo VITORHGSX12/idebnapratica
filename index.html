@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" href="assets/brand/ideb_symbol_app_icon.svg">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="design-tokens.css?v=20260830_v2">
-    <link rel="stylesheet" href="styles.css?v=d3a6f78ba5_mttb19sa">
+    <link rel="stylesheet" href="styles.css?v=401e2b9ee4_mttbnx4g">
     <link rel="stylesheet" href="login-premium.css?v=20260830_v2">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -819,6 +819,19 @@
                 <button type="button" class="sidebar-theme-collapsed-btn" id="sidebar-theme-collapsed-btn" onclick="if(typeof toggleThemeMode==='function') toggleThemeMode();" title="Alternar Tema" data-tooltip="Alternar Tema">
                     <svg id="theme-collapsed-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
                 </button>
+
+                <!-- Active Profile Switcher (Aparece dinamicamente se o usuário tiver múltiplos perfis) -->
+                <div id="sidebar-profile-switcher" class="sidebar-profile-switcher" style="display: none; margin-bottom: 8px; padding: 8px 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md);">
+                    <div class="sidebar-profile-switcher-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                        <span class="switcher-label" style="font-size: 0.65rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">Perfil Ativo</span>
+                        <span class="switcher-badge badge badge-blue" id="sidebar-active-profile-badge" style="font-size: 0.65rem; padding: 2px 6px;">Docente</span>
+                    </div>
+                    <div class="sidebar-profile-switcher-control">
+                        <select id="select-active-session-profile" class="form-select profile-select" onchange="if(window.switchActiveSessionProfile) window.switchActiveSessionProfile(this.value);" title="Alternar perfil ativo" style="width: 100%; height: 32px; font-size: 0.78rem; font-weight: 600; background: #0f172a; color: #ffffff; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; cursor: pointer;">
+                            <!-- Inserido dinamicamente via JS -->
+                        </select>
+                    </div>
+                </div>
 
                 <!-- User Navigation Card (Direct Profile Action) -->
                 <button type="button" class="user-profile-nav-card" id="user-menu-btn" onclick="if(typeof openUserProfileModal==='function') openUserProfileModal();" title="Ver e Editar Meu Perfil" data-tooltip="Meu Perfil">
@@ -4626,21 +4639,44 @@
                                     </div>
                                 </div>
 
-                                <div class="grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-                                    <div class="form-group">
-                                        <label for="new-user-phone" style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Telefone / WhatsApp</label>
-                                        <input type="text" id="new-user-phone" class="form-input-text" placeholder="(99) 98888-7777" style="width:100%; height:38px;">
+                                <div class="form-group">
+                                    <label for="new-user-phone" style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Telefone / WhatsApp</label>
+                                    <input type="text" id="new-user-phone" class="form-input-text" placeholder="(99) 98888-7777" style="width:100%; height:38px;">
+                                </div>
+
+                                <div class="form-group">
+                                    <label style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                                        <span>Grupos de Acesso / Perfis do Profissional * <span style="font-weight:400; color:var(--text-muted); font-size:0.75rem;">(Vincule 1 ou mais)</span></span>
+                                        <span id="new-user-roles-count" class="badge badge-blue" style="font-size:0.7rem; font-weight:700;">1 selecionado</span>
+                                    </label>
+                                    <div id="new-user-roles-container" class="multi-role-checklist" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:8px; background:var(--bg-tertiary); padding:10px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+                                        <label class="role-checkbox-card" style="display:flex; align-items:center; gap:8px; padding:6px 10px; background:var(--bg-secondary); border-radius:6px; border:1px solid var(--border-color); cursor:pointer; font-size:0.8rem; font-weight:600; color:var(--text-primary);">
+                                            <input type="checkbox" name="user-roles" value="Professor(a)" checked onchange="if(window.handleUserRoleChange) window.handleUserRoleChange();">
+                                            <span>👨‍🏫 Professor(a)</span>
+                                        </label>
+                                        <label class="role-checkbox-card" style="display:flex; align-items:center; gap:8px; padding:6px 10px; background:var(--bg-secondary); border-radius:6px; border:1px solid var(--border-color); cursor:pointer; font-size:0.8rem; font-weight:600; color:var(--text-primary);">
+                                            <input type="checkbox" name="user-roles" value="Coordenador(a)" onchange="if(window.handleUserRoleChange) window.handleUserRoleChange();">
+                                            <span>📋 Coordenador(a)</span>
+                                        </label>
+                                        <label class="role-checkbox-card" style="display:flex; align-items:center; gap:8px; padding:6px 10px; background:var(--bg-secondary); border-radius:6px; border:1px solid var(--border-color); cursor:pointer; font-size:0.8rem; font-weight:600; color:var(--text-primary);">
+                                            <input type="checkbox" name="user-roles" value="Diretor(a) Escolar" onchange="if(window.handleUserRoleChange) window.handleUserRoleChange();">
+                                            <span>🏫 Diretor(a) Escolar</span>
+                                        </label>
+                                        <label class="role-checkbox-card" style="display:flex; align-items:center; gap:8px; padding:6px 10px; background:var(--bg-secondary); border-radius:6px; border:1px solid var(--border-color); cursor:pointer; font-size:0.8rem; font-weight:600; color:var(--text-primary);">
+                                            <input type="checkbox" name="user-roles" value="Gestor SEMED" onchange="if(window.handleUserRoleChange) window.handleUserRoleChange();">
+                                            <span>🏛️ Gestor SEMED</span>
+                                        </label>
+                                        <label class="role-checkbox-card" style="display:flex; align-items:center; gap:8px; padding:6px 10px; background:var(--bg-secondary); border-radius:6px; border:1px solid var(--border-color); cursor:pointer; font-size:0.8rem; font-weight:600; color:var(--text-primary);">
+                                            <input type="checkbox" name="user-roles" value="Master Admin" onchange="if(window.handleUserRoleChange) window.handleUserRoleChange();">
+                                            <span>⚙️ Master Admin</span>
+                                        </label>
+                                        <label class="role-checkbox-card" style="display:flex; align-items:center; gap:8px; padding:6px 10px; background:var(--bg-secondary); border-radius:6px; border:1px solid var(--border-color); cursor:pointer; font-size:0.8rem; font-weight:600; color:var(--text-primary);">
+                                            <input type="checkbox" name="user-roles" value="Professor AEE" onchange="if(window.handleUserRoleChange) window.handleUserRoleChange();">
+                                            <span>🌟 Professor AEE</span>
+                                        </label>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="new-user-role" style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Perfil / Cargo *</label>
-                                        <select id="new-user-role" class="form-select" required onchange="handleUserRoleChange(this.value);" style="width:100%; height:38px; background:var(--bg-tertiary);">
-                                            <option value="Professor(a)" selected>Professor(a)</option>
-                                            <option value="Diretor(a)">Diretor(a) Escolar</option>
-                                            <option value="Coordenador(a)">Coordenador(a) Pedagógico</option>
-                                            <option value="Gestor SEMED">Gestor SEMED</option>
-                                            <option value="Master Admin">Administrador (TI/DPO)</option>
-                                        </select>
-                                    </div>
+                                    <input type="hidden" id="new-user-role" value="Professor(a)">
+                                    <small id="err-new-user-roles" style="display:none; color:#ef4444; font-size:0.72rem; font-weight:600; margin-top:4px;">Selecione ao menos um grupo de acesso para o profissional.</small>
                                 </div>
 
                                 <div class="grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
@@ -7278,94 +7314,94 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=341bc2b5e3_mttb19sa"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=daec643646_mttb19sa"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mttb19sa"></script>
-    <script src="bncc_habilidades_oficial.js?v=2f802bf604_mttb19sa"></script>
-    <script src="ideb_publico_db.js?v=fa7edb185f_mttb19sa"></script>
-    <script src="alunos_db.js?v=e23fe3179f_mttb19sa"></script>
-    <script src="js/data/official_students_seed.js?v=876be25c9a_mttb19sa"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=341bc2b5e3_mttbnx4g"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=daec643646_mttbnx4g"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mttbnx4g"></script>
+    <script src="bncc_habilidades_oficial.js?v=2f802bf604_mttbnx4g"></script>
+    <script src="ideb_publico_db.js?v=fa7edb185f_mttbnx4g"></script>
+    <script src="alunos_db.js?v=e23fe3179f_mttbnx4g"></script>
+    <script src="js/data/official_students_seed.js?v=876be25c9a_mttbnx4g"></script>
 
     <!-- Módulos do Core -->
-    <script src="js/core/security.js?v=9d4fc4a791_mttb19sa"></script>
-    <script src="js/core/helpers.js?v=7656a2a6bb_mttb19sa"></script>
-    <script src="js/core/theme-toast.js?v=c181c006e0_mttb19sa"></script>
-    <script src="js/core/chart-theme.js?v=c8e29467a8_mttb19sa"></script>
-    <script src="js/core/user-profile.js?v=c1db21eb55_mttb19sa"></script>
-    <script src="js/data/official_users_directory.js?v=24a756e04c_mttb19sa"></script>
-    <script src="js/core/login-animation.js?v=414e14bbcd_mttb19sa"></script>
-    <script src="js/core/auth/auth_password.js?v=53356702d7_mttb19sa"></script>
-    <script src="js/core/auth/auth_login.js?v=b5f6be2503_mttb19sa"></script>
-    <script src="js/core/auth.js?v=46bed59cde_mttb19sa"></script>
-    <script src="js/core/navigation/navigation_meta.js?v=256a33a6c1_mttb19sa"></script>
-    <script src="js/core/navigation/navigation_history.js?v=a09c33f4ae_mttb19sa"></script>
-    <script src="js/core/navigation/navigation_events.js?v=7e416c2fa3_mttb19sa"></script>
-    <script src="js/core/navigation.js?v=0ee55dd7e3_mttb19sa"></script>
-    <script src="js/core/sync.js?v=73ebd2560a_mttb19sa"></script>
+    <script src="js/core/security.js?v=9d4fc4a791_mttbnx4g"></script>
+    <script src="js/core/helpers.js?v=7656a2a6bb_mttbnx4g"></script>
+    <script src="js/core/theme-toast.js?v=c181c006e0_mttbnx4g"></script>
+    <script src="js/core/chart-theme.js?v=c8e29467a8_mttbnx4g"></script>
+    <script src="js/core/user-profile.js?v=7047b260a3_mttbnx4g"></script>
+    <script src="js/data/official_users_directory.js?v=24a756e04c_mttbnx4g"></script>
+    <script src="js/core/login-animation.js?v=414e14bbcd_mttbnx4g"></script>
+    <script src="js/core/auth/auth_password.js?v=53356702d7_mttbnx4g"></script>
+    <script src="js/core/auth/auth_login.js?v=b5f6be2503_mttbnx4g"></script>
+    <script src="js/core/auth.js?v=46bed59cde_mttbnx4g"></script>
+    <script src="js/core/navigation/navigation_meta.js?v=256a33a6c1_mttbnx4g"></script>
+    <script src="js/core/navigation/navigation_history.js?v=a09c33f4ae_mttbnx4g"></script>
+    <script src="js/core/navigation/navigation_events.js?v=7e416c2fa3_mttbnx4g"></script>
+    <script src="js/core/navigation.js?v=0ee55dd7e3_mttbnx4g"></script>
+    <script src="js/core/sync.js?v=73ebd2560a_mttbnx4g"></script>
 
     <!-- Módulos de Domínio -->
-    <script src="js/modules/dashboard/dashboard_kpis.js?v=1ed1f8c921_mttb19sa"></script>
-    <script src="js/modules/dashboard/dashboard_charts.js?v=de1a05b8a6_mttb19sa"></script>
-    <script src="js/modules/dashboard/dashboard_analytics.js?v=a7db1260ed_mttb19sa"></script>
-    <script src="js/modules/dashboard/dashboard_scales.js?v=38ef0c5f91_mttb19sa"></script>
-    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=8a942cafe9_mttb19sa"></script>
-    <script src="js/modules/dashboard/dashboard_scroll_reveal.js?v=765a5ac049_mttb19sa"></script>
-    <script src="js/modules/alunos/alunos_progression_modal.js?v=9b35c9ce79_mttb19sa"></script>
-    <script src="js/modules/alunos/alunos_list.js?v=1680ba1e32_mttb19sa"></script>
-    <script src="js/modules/alunos/alunos_forms.js?v=d65581afbc_mttb19sa"></script>
-    <script src="js/modules/turmas/turmas_crud.js?v=7b6d46585b_mttb19sa"></script>
-    <script src="js/modules/turmas/turmas_diario.js?v=edae66f43a_mttb19sa"></script>
-    <script src="js/modules/metas/metas_regional.js?v=7556fbb4b6_mttb19sa"></script>
-    <script src="js/modules/metas/metas_pactuacao.js?v=55531875c5_mttb19sa"></script>
-    <script src="js/modules/metas/metas_escolas_ranking.js?v=d2cab5c654_mttb19sa"></script>
-    <script src="js/modules/metas/metas_calculo_manual.js?v=db8734a78d_mttb19sa"></script>
-    <script src="js/modules/metas/metas_ideb.js?v=17b2b704aa_mttb19sa"></script>
-    <script src="js/modules/escolas/escolas.js?v=6156cfb8f2_mttb19sa"></script>
-    <script src="js/modules/escolas/escolas_workspace.js?v=cbd14d4cc2_mttb19sa"></script>
-    <script src="js/modules/escolas/escolas_modals.js?v=d32d052d1d_mttb19sa"></script>
-    <script src="js/modules/matrizes/matrizes.js?v=d2df1a4b54_mttb19sa"></script>
-    <script src="js/modules/cronograma/cronograma_state.js?v=291ef65907_mttb19sa"></script>
-    <script src="js/modules/cronograma/cronograma_views_monthly.js?v=8d7fe9a8d7_mttb19sa"></script>
-    <script src="js/modules/cronograma/cronograma_views_weekly.js?v=17318533ba_mttb19sa"></script>
-    <script src="js/modules/cronograma/cronograma_views_comparison.js?v=9875be98c6_mttb19sa"></script>
-    <script src="js/modules/cronograma/cronograma_progress_modal.js?v=f327132831_mttb19sa"></script>
-    <script src="js/modules/cronograma/cronograma_views.js?v=736673a1aa_mttb19sa"></script>
-    <script src="js/modules/cronograma/cronograma_planner.js?v=5e9c900526_mttb19sa"></script>
-    <script src="js/modules/cronograma/cronograma_trash.js?v=b1408ecbe3_mttb19sa"></script>
-    <script src="js/modules/cronograma/cronograma_calendar_40w.js?v=310bf5af0c_mttb19sa"></script>
-    <script src="js/modules/cronograma/cronograma.js?v=fa42f11d98_mttb19sa"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_state.js?v=9246c014a5_mttb19sa"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_wizard.js?v=23d3745407_mttb19sa"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_events.js?v=291641d46e_mttb19sa"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_espelho.js?v=be2165b923_mttb19sa"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_analytics.js?v=c02f843b04_mttb19sa"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_print.js?v=4bbcca0d65_mttb19sa"></script>
-    <script src="js/modules/questoes/questoes_generator.js?v=8e44d7592b_mttb19sa"></script>
-    <script src="js/modules/questoes/questoes_list.js?v=5543a2c1d7_mttb19sa"></script>
-    <script src="js/modules/questoes/questoes_import_export.js?v=c7d3bb36d0_mttb19sa"></script>
-    <script src="js/modules/diagnostico/diagnostico.js?v=e5116c8aaa_mttb19sa"></script>
-    <script src="js/modules/saeb/saeb_state.js?v=178da7f734_mttb19sa"></script>
-    <script src="js/modules/saeb/saeb_distribution_view.js?v=ae0be00c12_mttb19sa"></script>
-    <script src="js/modules/saeb/saeb_comparativo_turmas.js?v=22f1b3636c_mttb19sa"></script>
-    <script src="js/modules/saeb/saeb_ficha_individual.js?v=a41dbdf173_mttb19sa"></script>
-    <script src="js/modules/saeb/saeb_boletim.js?v=f2fbc9e7e7_mttb19sa"></script>
-    <script src="js/modules/saeb/saeb_intervencoes_comparativo.js?v=3002c919ef_mttb19sa"></script>
-    <script src="js/modules/saeb/saeb.js?v=b4e224328a_mttb19sa"></script>
-    <script src="js/modules/biblioteca/biblioteca_reader.js?v=743943d3d7_mttb19sa"></script>
-    <script src="js/modules/biblioteca/biblioteca_upload.js?v=98b16c4eda_mttb19sa"></script>
-    <script src="js/modules/biblioteca/biblioteca.js?v=d101f88443_mttb19sa"></script>
-    <script src="js/modules/admin/admin_data.js?v=4146d4760b_mttb19sa"></script>
-    <script src="js/modules/admin/users/admin_users_validation.js?v=b5f30bc4f4_mttb19sa"></script>
-    <script src="js/modules/admin/users/admin_users_form.js?v=5c8d53147a_mttb19sa"></script>
-    <script src="js/modules/admin/users/admin_users_table.js?v=6081666f8e_mttb19sa"></script>
-    <script src="js/modules/admin/admin_users.js?v=fad2e74306_mttb19sa"></script>
-    <script src="js/modules/admin/admin_tenants.js?v=ae5a501f46_mttb19sa"></script>
-    <script src="js/modules/onboarding/onboarding_tour.js?v=e8a0416e78_mttb19sa"></script>
-    <script src="js/modules/onboarding/tab_context_tours.js?v=a447973a01_mttb19sa"></script>
+    <script src="js/modules/dashboard/dashboard_kpis.js?v=1ed1f8c921_mttbnx4g"></script>
+    <script src="js/modules/dashboard/dashboard_charts.js?v=de1a05b8a6_mttbnx4g"></script>
+    <script src="js/modules/dashboard/dashboard_analytics.js?v=a7db1260ed_mttbnx4g"></script>
+    <script src="js/modules/dashboard/dashboard_scales.js?v=38ef0c5f91_mttbnx4g"></script>
+    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=8a942cafe9_mttbnx4g"></script>
+    <script src="js/modules/dashboard/dashboard_scroll_reveal.js?v=765a5ac049_mttbnx4g"></script>
+    <script src="js/modules/alunos/alunos_progression_modal.js?v=9b35c9ce79_mttbnx4g"></script>
+    <script src="js/modules/alunos/alunos_list.js?v=1680ba1e32_mttbnx4g"></script>
+    <script src="js/modules/alunos/alunos_forms.js?v=d65581afbc_mttbnx4g"></script>
+    <script src="js/modules/turmas/turmas_crud.js?v=7b6d46585b_mttbnx4g"></script>
+    <script src="js/modules/turmas/turmas_diario.js?v=edae66f43a_mttbnx4g"></script>
+    <script src="js/modules/metas/metas_regional.js?v=7556fbb4b6_mttbnx4g"></script>
+    <script src="js/modules/metas/metas_pactuacao.js?v=55531875c5_mttbnx4g"></script>
+    <script src="js/modules/metas/metas_escolas_ranking.js?v=d2cab5c654_mttbnx4g"></script>
+    <script src="js/modules/metas/metas_calculo_manual.js?v=db8734a78d_mttbnx4g"></script>
+    <script src="js/modules/metas/metas_ideb.js?v=17b2b704aa_mttbnx4g"></script>
+    <script src="js/modules/escolas/escolas.js?v=6156cfb8f2_mttbnx4g"></script>
+    <script src="js/modules/escolas/escolas_workspace.js?v=cbd14d4cc2_mttbnx4g"></script>
+    <script src="js/modules/escolas/escolas_modals.js?v=d32d052d1d_mttbnx4g"></script>
+    <script src="js/modules/matrizes/matrizes.js?v=d2df1a4b54_mttbnx4g"></script>
+    <script src="js/modules/cronograma/cronograma_state.js?v=291ef65907_mttbnx4g"></script>
+    <script src="js/modules/cronograma/cronograma_views_monthly.js?v=8d7fe9a8d7_mttbnx4g"></script>
+    <script src="js/modules/cronograma/cronograma_views_weekly.js?v=17318533ba_mttbnx4g"></script>
+    <script src="js/modules/cronograma/cronograma_views_comparison.js?v=9875be98c6_mttbnx4g"></script>
+    <script src="js/modules/cronograma/cronograma_progress_modal.js?v=f327132831_mttbnx4g"></script>
+    <script src="js/modules/cronograma/cronograma_views.js?v=736673a1aa_mttbnx4g"></script>
+    <script src="js/modules/cronograma/cronograma_planner.js?v=5e9c900526_mttbnx4g"></script>
+    <script src="js/modules/cronograma/cronograma_trash.js?v=b1408ecbe3_mttbnx4g"></script>
+    <script src="js/modules/cronograma/cronograma_calendar_40w.js?v=310bf5af0c_mttbnx4g"></script>
+    <script src="js/modules/cronograma/cronograma.js?v=fa42f11d98_mttbnx4g"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_state.js?v=9246c014a5_mttbnx4g"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_wizard.js?v=23d3745407_mttbnx4g"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_events.js?v=291641d46e_mttbnx4g"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_espelho.js?v=be2165b923_mttbnx4g"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_analytics.js?v=c02f843b04_mttbnx4g"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_print.js?v=4bbcca0d65_mttbnx4g"></script>
+    <script src="js/modules/questoes/questoes_generator.js?v=8e44d7592b_mttbnx4g"></script>
+    <script src="js/modules/questoes/questoes_list.js?v=5543a2c1d7_mttbnx4g"></script>
+    <script src="js/modules/questoes/questoes_import_export.js?v=c7d3bb36d0_mttbnx4g"></script>
+    <script src="js/modules/diagnostico/diagnostico.js?v=e5116c8aaa_mttbnx4g"></script>
+    <script src="js/modules/saeb/saeb_state.js?v=178da7f734_mttbnx4g"></script>
+    <script src="js/modules/saeb/saeb_distribution_view.js?v=ae0be00c12_mttbnx4g"></script>
+    <script src="js/modules/saeb/saeb_comparativo_turmas.js?v=22f1b3636c_mttbnx4g"></script>
+    <script src="js/modules/saeb/saeb_ficha_individual.js?v=a41dbdf173_mttbnx4g"></script>
+    <script src="js/modules/saeb/saeb_boletim.js?v=f2fbc9e7e7_mttbnx4g"></script>
+    <script src="js/modules/saeb/saeb_intervencoes_comparativo.js?v=3002c919ef_mttbnx4g"></script>
+    <script src="js/modules/saeb/saeb.js?v=b4e224328a_mttbnx4g"></script>
+    <script src="js/modules/biblioteca/biblioteca_reader.js?v=743943d3d7_mttbnx4g"></script>
+    <script src="js/modules/biblioteca/biblioteca_upload.js?v=98b16c4eda_mttbnx4g"></script>
+    <script src="js/modules/biblioteca/biblioteca.js?v=d101f88443_mttbnx4g"></script>
+    <script src="js/modules/admin/admin_data.js?v=4146d4760b_mttbnx4g"></script>
+    <script src="js/modules/admin/users/admin_users_validation.js?v=b5f30bc4f4_mttbnx4g"></script>
+    <script src="js/modules/admin/users/admin_users_form.js?v=52c7745115_mttbnx4g"></script>
+    <script src="js/modules/admin/users/admin_users_table.js?v=c09d93f302_mttbnx4g"></script>
+    <script src="js/modules/admin/admin_users.js?v=fad2e74306_mttbnx4g"></script>
+    <script src="js/modules/admin/admin_tenants.js?v=ae5a501f46_mttbnx4g"></script>
+    <script src="js/modules/onboarding/onboarding_tour.js?v=e8a0416e78_mttbnx4g"></script>
+    <script src="js/modules/onboarding/tab_context_tours.js?v=a447973a01_mttbnx4g"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=82382debd8_mttb19sa"></script>
-    <script src="js/core/global_cards_animation.js?v=e748bd59fe_mttb19sa"></script>
-    <script src="js/core/global_button_handlers.js?v=38a379ca14_mttb19sa"></script>
+    <script src="app.js?v=82382debd8_mttbnx4g"></script>
+    <script src="js/core/global_cards_animation.js?v=e748bd59fe_mttbnx4g"></script>
+    <script src="js/core/global_button_handlers.js?v=38a379ca14_mttbnx4g"></script>
 </body>
 </html>

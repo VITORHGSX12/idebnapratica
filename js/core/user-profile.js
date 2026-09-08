@@ -67,6 +67,134 @@
     }
 
     /**
+     * Retorna todos os perfis vinculados ao usuário na sessão
+     * @returns {Array<string>}
+     */
+    function getUserPerfis() {
+        try {
+            var raw = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('userPerfis')) ||
+                      (typeof localStorage !== 'undefined' && localStorage.getItem('userPerfis'));
+            if (raw) {
+                var parsed = JSON.parse(raw);
+                if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+            }
+        } catch(e) {}
+        var active = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('userRole')) ||
+                     (typeof localStorage !== 'undefined' && localStorage.getItem('userRole')) || 'Master Admin';
+        return [active];
+    }
+
+    /**
+     * Renderiza dinamicamente o seletor de perfil ativo na sidebar quando houver 2+ perfis
+     */
+    function renderSidebarProfileSwitcher() {
+        if (typeof document === 'undefined') return;
+        var switcherEl = document.getElementById('sidebar-profile-switcher');
+        var selectEl = document.getElementById('select-active-session-profile');
+        var badgeEl = document.getElementById('sidebar-active-profile-badge');
+        if (!switcherEl || !selectEl) return;
+
+        var perfis = getUserPerfis();
+        var activeRole = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('userRole')) ||
+                         (typeof localStorage !== 'undefined' && localStorage.getItem('userRole')) || perfis[0];
+
+        // Se o usuário tiver apenas 1 grupo, oculta o seletor (comportamento atual permanece)
+        if (!perfis || perfis.length <= 1) {
+            switcherEl.style.display = 'none';
+            return;
+        }
+
+        // Se o usuário tiver 2+ grupos, exibe o seletor para alternância em tempo real
+        switcherEl.style.display = 'block';
+
+        if (badgeEl) {
+            var shortRole = activeRole.replace(/\(a\)/g, '').replace('Escolar', '').replace('Pedagógico', '').trim();
+            badgeEl.textContent = shortRole;
+        }
+
+        selectEl.innerHTML = perfis.map(function(r) {
+            var isSelected = (r.toLowerCase() === activeRole.toLowerCase()) ? 'selected' : '';
+            return '<option value="' + r + '" ' + isSelected + '>' + r + '</option>';
+        }).join('');
+    }
+
+    /**
+     * Alterna o perfil ativo da sessão sem necessidade de deslogar
+     * @param {string} newRole 
+     */
+    async function switchActiveSessionProfile(newRole) {
+        if (!newRole) return;
+        try {
+            var token = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('authToken')) ||
+                        (typeof localStorage !== 'undefined' && localStorage.getItem('authToken'));
+
+            if (token && typeof fetch === 'function') {
+                try {
+                    var res = await fetch('/api/sessao/perfil-ativo', {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify({ role: newRole })
+                    });
+
+                    if (res.ok) {
+                        var data = await res.json();
+                        if (data.token) {
+                            sessionStorage.setItem('authToken', data.token);
+                            localStorage.setItem('authToken', data.token);
+                        }
+                        if (data.perfisDisponiveis) {
+                            sessionStorage.setItem('userPerfis', JSON.stringify(data.perfisDisponiveis));
+                            localStorage.setItem('userPerfis', JSON.stringify(data.perfisDisponiveis));
+                        }
+                    } else {
+                        var errData = await res.json().catch(function() { return {}; });
+                        console.warn('[Profile Switch API Warning]', errData.error || res.statusText);
+                    }
+                } catch(fetchErr) {
+                    console.warn('[Profile Switch Offline/Fallback]', fetchErr);
+                }
+            }
+
+            // Atualiza armazenamento local e de sessão
+            sessionStorage.setItem('userRole', newRole);
+            localStorage.setItem('userRole', newRole);
+
+            // Atualiza perfil corrente
+            var profile = getCurrentUserProfile();
+            profile.role = newRole;
+            try {
+                localStorage.setItem(STORAGE_KEY_USER_PROFILE, JSON.stringify(profile));
+            } catch(e) {}
+
+            // Atualiza UI de forma reativa e instantânea
+            updateUserHeaderUI();
+            if (typeof global.updateMenuVisibilityByRole === 'function') {
+                global.updateMenuVisibilityByRole();
+            }
+            renderDashboardWelcomeBanner();
+
+            // Dispara evento customizado para outros módulos ouvintes
+            try {
+                if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+                    window.dispatchEvent(new CustomEvent('activeProfileChanged', { detail: { role: newRole } }));
+                }
+            } catch(e) {}
+
+            if (typeof global.showToast === 'function') {
+                global.showToast('Função ativa alternada para: ' + newRole, 'check-circle');
+            }
+        } catch(err) {
+            console.error('[switchActiveSessionProfile Error]:', err);
+            if (typeof global.showToast === 'function') {
+                global.showToast('Erro ao alternar função de acesso.', 'alert-triangle');
+            }
+        }
+    }
+
+    /**
      * Atualiza as informações visuais no Header e no rodapé da Sidebar
      */
     function updateUserHeaderUI() {
@@ -84,7 +212,7 @@
             }
         }
 
-        // 2. Sidebar Footer (Novo Card de Navegação de Perfil)
+        // 2. Sidebar Footer (Card de Perfil e Seletor Ativo)
         var sidebarName = document.getElementById('sidebar-user-name') || document.querySelector('.sidebar-footer .user-name-label') || document.querySelector('.sidebar-footer .user-name');
         var sidebarRole = document.getElementById('sidebar-user-role') || document.querySelector('.sidebar-footer .user-role-label') || document.querySelector('.sidebar-footer .user-role');
         var sidebarAvatar = document.getElementById('sidebar-user-avatar') || document.querySelector('.sidebar-footer .user-avatar-circle') || document.querySelector('.sidebar-footer .avatar');
@@ -101,6 +229,9 @@
                 sidebarAvatar.innerHTML = '<img src="assets/icons/profile.svg" alt="' + (profile.name || 'Perfil') + '" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">';
             }
         }
+
+        // Renderiza o seletor de perfis na sidebar
+        renderSidebarProfileSwitcher();
     }
 
     /**
@@ -446,5 +577,8 @@
     global.selectProfileAvatar = selectProfileAvatar;
     global.previewProfilePhotoUrl = previewProfilePhotoUrl;
     global.handleSaveUserProfile = handleSaveUserProfile;
+    global.getUserPerfis = getUserPerfis;
+    global.renderSidebarProfileSwitcher = renderSidebarProfileSwitcher;
+    global.switchActiveSessionProfile = switchActiveSessionProfile;
 
 })(typeof window !== 'undefined' ? window : this);

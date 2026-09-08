@@ -1,5 +1,5 @@
 // =========================================================================
-// GESTÃO DE USUÁRIOS & CONTROLE RBAC - FORMULÁRIO & MODAL
+// GESTÃO DE USUÁRIOS & CONTROLE RBAC - FORMULÁRIO & MODAL (MULTI-PERFIL)
 // SEMED Gonçalves Dias - MA • IDEB na Prática
 // =========================================================================
 
@@ -41,23 +41,88 @@
         if (!passInput.value) passInput.value = 'Gondias@2026';
     }
 
+    /**
+     * Retorna a lista de perfis selecionados nos checkboxes do formulário
+     */
+    function getSelectedUserRoles() {
+        if (typeof document === 'undefined') return ['Professor(a)'];
+        var checkboxes = document.querySelectorAll('input[name="user-roles"]:checked');
+        if (checkboxes && checkboxes.length > 0) {
+            var list = [];
+            checkboxes.forEach(function(cb) { list.push(cb.value); });
+            return list;
+        }
+        var singleRole = document.getElementById('new-user-role');
+        return singleRole && singleRole.value ? [singleRole.value] : ['Professor(a)'];
+    }
+
+    /**
+     * Define os perfis marcados nos checkboxes do formulário
+     */
+    function setSelectedUserRoles(rolesList) {
+        if (typeof document === 'undefined') return;
+        var normalized = (Array.isArray(rolesList) ? rolesList : [rolesList]).map(function(r) { return String(r).trim(); });
+        var checkboxes = document.querySelectorAll('input[name="user-roles"]');
+        if (checkboxes && checkboxes.length > 0) {
+            checkboxes.forEach(function(cb) {
+                cb.checked = normalized.some(function(n) {
+                    return n.toLowerCase() === cb.value.toLowerCase() ||
+                           (cb.value.includes('Admin') && n.toLowerCase().includes('admin')) ||
+                           (cb.value.includes('Diretor') && n.toLowerCase().includes('diretor')) ||
+                           (cb.value.includes('Coordenador') && n.toLowerCase().includes('coordenador')) ||
+                           (cb.value.includes('Gestor') && n.toLowerCase().includes('gestor')) ||
+                           (cb.value.includes('SEMED') && n.toLowerCase().includes('semed')) ||
+                           (cb.value.includes('AEE') && n.toLowerCase().includes('aee')) ||
+                           (cb.value.includes('Professor') && n.toLowerCase().includes('professor'));
+                });
+            });
+        }
+        var singleRole = document.getElementById('new-user-role');
+        if (singleRole && normalized.length > 0) {
+            singleRole.value = normalized[0];
+        }
+        handleUserRoleChange();
+    }
+
     function handleUserRoleChange() {
         if (typeof document === 'undefined') return;
-        var roleSelect = document.getElementById('new-user-role');
+        var selectedRoles = getSelectedUserRoles();
         var schoolSelect = document.getElementById('new-user-school');
         var turmaContainer = document.getElementById('new-user-turma-container');
-        if (!roleSelect) return;
-        var role = roleSelect.value;
-        var isDocente = role === 'Professor(a)';
+        var countBadge = document.getElementById('new-user-roles-count');
+        var errRoles = document.getElementById('err-new-user-roles');
+        var singleRole = document.getElementById('new-user-role');
+
+        if (countBadge) {
+            countBadge.textContent = selectedRoles.length + (selectedRoles.length === 1 ? ' selecionado' : ' selecionados');
+            countBadge.className = selectedRoles.length > 0 ? 'badge badge-blue' : 'badge badge-warning';
+        }
+
+        if (errRoles) {
+            if (selectedRoles.length > 0) {
+                errRoles.style.display = 'none';
+            }
+        }
+
+        if (singleRole && selectedRoles.length > 0) {
+            singleRole.value = selectedRoles[0];
+        }
+
+        var isDocente = selectedRoles.some(function(r) { return r.includes('Professor'); });
+        var isExclusivelyAdministrative = selectedRoles.every(function(r) {
+            var rl = r.toLowerCase();
+            return rl.includes('admin') || rl.includes('gestor') || rl.includes('semed');
+        });
 
         if (turmaContainer) {
             turmaContainer.style.display = isDocente ? 'block' : 'none';
             if (isDocente) handleUserSchoolChange();
         }
+
         if (schoolSelect) {
             var semedOption = schoolSelect.querySelector('option[value="Todas as Escolas (SEMED)"]');
             if (semedOption) {
-                if (isDocente || role === 'Diretor(a) Escolar' || role === 'Coordenador(a)') {
+                if (isDocente && !isExclusivelyAdministrative) {
                     semedOption.disabled = true;
                     if (schoolSelect.value === 'Todas as Escolas (SEMED)') schoolSelect.value = 'UI JOSE CORREA LIMA';
                 } else {
@@ -94,7 +159,6 @@
         var cpfInput = document.getElementById('new-user-cpf');
         var birthInput = document.getElementById('new-user-birth');
         var phoneInput = document.getElementById('new-user-phone');
-        var roleSelect = document.getElementById('new-user-role');
         var schoolSelect = document.getElementById('new-user-school');
         var turmaSelect = document.getElementById('new-user-turma');
         var emailInput = document.getElementById('new-user-email');
@@ -103,9 +167,11 @@
         var errCpf = document.getElementById('err-new-user-cpf');
         var errBirth = document.getElementById('err-new-user-birth');
         var errEmail = document.getElementById('err-new-user-email');
+        var errRoles = document.getElementById('err-new-user-roles');
         if (errCpf) { errCpf.style.display = 'none'; errCpf.textContent = ''; }
         if (errBirth) { errBirth.style.display = 'none'; errBirth.textContent = ''; }
         if (errEmail) { errEmail.style.display = 'none'; errEmail.textContent = ''; }
+        if (errRoles) { errRoles.style.display = 'none'; }
 
         if (editingUserId) {
             if (titleEl) titleEl.textContent = 'Editar Usuário da Equipe';
@@ -116,16 +182,18 @@
                 if (cpfInput) cpfInput.value = target.cpf || '';
                 if (birthInput) birthInput.value = target.nascimento || target.dataNascimento || '';
                 if (phoneInput) phoneInput.value = target.telefone || '';
-                if (roleSelect) roleSelect.value = target.tipo || target.role || 'Professor(a)';
                 if (schoolSelect) schoolSelect.value = target.escola || 'UI JOSE CORREA LIMA';
-                handleUserRoleChange();
+                
+                var rolesToSet = target.perfis || [target.tipo || target.role || 'Professor(a)'];
+                setSelectedUserRoles(rolesToSet);
+
                 if (turmaSelect && target.turma) turmaSelect.value = target.turma;
                 if (emailInput) emailInput.value = target.email || '';
                 if (passInput) passInput.value = target.senha || target.password || 'Gondias@2026';
             }
         } else {
             if (titleEl) titleEl.textContent = 'Cadastrar Novo Usuário';
-            if (roleSelect) roleSelect.value = 'Professor(a)';
+            setSelectedUserRoles(['Professor(a)']);
             if (schoolSelect) schoolSelect.value = 'UI JOSE CORREA LIMA';
             handleUserRoleChange();
             if (nameInput) {
@@ -135,7 +203,6 @@
             }
         }
 
-        if (roleSelect) roleSelect.onchange = handleUserRoleChange;
         if (schoolSelect) schoolSelect.onchange = handleUserSchoolChange;
 
         modal.classList.remove('hidden');
@@ -168,7 +235,6 @@
         var cpfInput = document.getElementById('new-user-cpf');
         var birthInput = document.getElementById('new-user-birth');
         var phoneInput = document.getElementById('new-user-phone');
-        var roleSelect = document.getElementById('new-user-role');
         var schoolSelect = document.getElementById('new-user-school');
         var turmaSelect = document.getElementById('new-user-turma');
         var emailInput = document.getElementById('new-user-email');
@@ -177,17 +243,20 @@
         var errCpf = document.getElementById('err-new-user-cpf');
         var errBirth = document.getElementById('err-new-user-birth');
         var errEmail = document.getElementById('err-new-user-email');
+        var errRoles = document.getElementById('err-new-user-roles');
         if (errCpf) { errCpf.style.display = 'none'; errCpf.textContent = ''; }
         if (errBirth) { errBirth.style.display = 'none'; errBirth.textContent = ''; }
         if (errEmail) { errEmail.style.display = 'none'; errEmail.textContent = ''; }
+        if (errRoles) { errRoles.style.display = 'none'; }
 
         var nome = nameInput ? nameInput.value.trim() : '';
         var rawCpf = cpfInput ? cpfInput.value.trim() : '';
         var birth = birthInput ? birthInput.value.trim() : '';
         var telefone = phoneInput ? phoneInput.value.trim() : '';
-        var role = roleSelect ? roleSelect.value : 'Professor(a)';
+        var selectedRoles = getSelectedUserRoles();
         var escola = schoolSelect ? schoolSelect.value : 'UI JOSE CORREA LIMA';
-        var turma = (role === 'Professor(a)' && turmaSelect) ? turmaSelect.value : '';
+        var hasDocenteRole = selectedRoles.some(function(r) { return r.includes('Professor'); });
+        var turma = (hasDocenteRole && turmaSelect) ? turmaSelect.value : '';
         var email = emailInput ? emailInput.value.trim().toLowerCase() : '';
         var senha = passInput ? passInput.value.trim() : 'Gondias@2026';
 
@@ -196,6 +265,15 @@
             if (nameInput) nameInput.focus();
             return;
         }
+
+        // Validação de grupos de acesso: Ao menos 1 grupo deve estar selecionado
+        if (!selectedRoles || selectedRoles.length === 0) {
+            if (errRoles) { errRoles.style.display = 'block'; }
+            if (typeof global.showToast === 'function') global.showToast('Selecione ao menos um perfil de acesso para o profissional.', 'alert-triangle');
+            return;
+        }
+
+        var primaryRole = selectedRoles[0];
 
         // Sanitização e validação de CPF
         var cleanCpf = rawCpf.replace(/\D/g, '');
@@ -249,7 +327,7 @@
             return;
         }
 
-        if (role === 'Professor(a)' && !turma) {
+        if (hasDocenteRole && !turma) {
             if (typeof global.showToast === 'function') global.showToast('Selecione a turma vinculada ao professor.', 'alert-triangle');
             return;
         }
@@ -262,8 +340,9 @@
             dataNascimento: birthResult.formatted,
             idade: birthResult.idade,
             telefone: telefone || '(99) 98800-0000',
-            tipo: role,
-            role: role,
+            tipo: primaryRole,
+            role: primaryRole,
+            perfis: selectedRoles,
             escola: escola,
             turma: turma,
             email: email,
@@ -291,8 +370,10 @@
                         (typeof localStorage !== 'undefined' && localStorage.getItem('authToken')) ||
                         'preview_token';
             if (typeof fetch === 'function') {
-                var apiRes = await fetch('/api/users', {
-                    method: 'POST',
+                var endpoint = editingUserId ? ('/api/users/' + editingUserId) : '/api/users';
+                var method = editingUserId ? 'PUT' : 'POST';
+                var apiRes = await fetch(endpoint, {
+                    method: method,
                     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
                     body: JSON.stringify(newUserObj)
                 });
@@ -315,6 +396,8 @@
     var AdminUsersForm = {
         ESCOLAS_TURMAS_MAP: ESCOLAS_TURMAS_MAP,
         generateAutoCredentials: generateAutoCredentials,
+        getSelectedUserRoles: getSelectedUserRoles,
+        setSelectedUserRoles: setSelectedUserRoles,
         handleUserRoleChange: handleUserRoleChange,
         handleUserSchoolChange: handleUserSchoolChange,
         openCreateUserModal: openCreateUserModal,
@@ -324,6 +407,8 @@
 
     global.AdminUsersForm = AdminUsersForm;
     global.generateAutoCredentials = generateAutoCredentials;
+    global.getSelectedUserRoles = getSelectedUserRoles;
+    global.setSelectedUserRoles = setSelectedUserRoles;
     global.handleUserRoleChange = handleUserRoleChange;
     global.handleUserSchoolChange = handleUserSchoolChange;
     global.openCreateUserModal = openCreateUserModal;

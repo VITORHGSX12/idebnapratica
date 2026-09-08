@@ -5,6 +5,7 @@
   "main": "index.html",
   "scripts": {
     "build": "node cache-buster.js",
+    "test": "node scripts/test_multi_perfil_rbac.test.js",
     "start": "node cache-buster.js && node server.js",
     "dev": "node cache-buster.js && npx -y http-server -p 8080",
     "import-data": "node scripts/import_inep_csv.js",

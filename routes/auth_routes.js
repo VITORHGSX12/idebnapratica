@@ -185,12 +185,16 @@ router.post(['/login', '/auth/login'], async (req, res) => {
 
         const mustChange = !!user.mustChangePassword;
 
+        const { getUserLinkedProfiles } = require('../services/rbac_service');
+        const userPerfis = await getUserLinkedProfiles(user.id, user.role);
+
         if (mustChange) {
             const tempToken = jwt.sign(
                 {
                     id: user.id,
                     email: user.email,
                     role: user.role,
+                    perfis: userPerfis,
                     scope: 'FORCE_PASSWORD_CHANGE',
                     mustChangePassword: true
                 },
@@ -209,6 +213,8 @@ router.post(['/login', '/auth/login'], async (req, res) => {
                     nome: user.nome,
                     email: user.email,
                     role: user.role,
+                    tipo: user.role,
+                    perfis: userPerfis,
                     escola: user.escola,
                     turma: user.turma,
                     mustChangePassword: true
@@ -223,6 +229,7 @@ router.post(['/login', '/auth/login'], async (req, res) => {
                 email: user.email,
                 nome: user.nome,
                 role: user.role,
+                perfis: userPerfis,
                 escola: user.escola,
                 turma: user.turma,
                 mustChangePassword: false,
@@ -242,6 +249,8 @@ router.post(['/login', '/auth/login'], async (req, res) => {
                 nome: user.nome,
                 email: user.email,
                 role: user.role,
+                tipo: user.role,
+                perfis: userPerfis,
                 escola: user.escola,
                 turma: user.turma,
                 mustChangePassword: false
@@ -307,12 +316,16 @@ router.post(['/change-password', '/auth/change-password'], async (req, res) => {
         const newHash = await bcrypt.hash(newPassword, 12);
         await updateUserPasswordInDb(user.id, cleanEmail, newHash);
 
+        const { getUserLinkedProfiles } = require('../services/rbac_service');
+        const userPerfis = await getUserLinkedProfiles(user.id, user.role);
+
         const fullToken = jwt.sign(
             {
                 id: user.id,
                 email: user.email,
                 nome: user.nome,
                 role: user.role,
+                perfis: userPerfis,
                 escola: user.escola,
                 turma: user.turma,
                 mustChangePassword: false,
@@ -333,6 +346,8 @@ router.post(['/change-password', '/auth/change-password'], async (req, res) => {
                 nome: user.nome,
                 email: user.email,
                 role: user.role,
+                tipo: user.role,
+                perfis: userPerfis,
                 escola: user.escola,
                 turma: user.turma,
                 mustChangePassword: false

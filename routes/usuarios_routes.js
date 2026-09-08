@@ -8,6 +8,16 @@ const bcrypt = require('bcryptjs');
 const db = require('../db');
 const { authMiddleware, authorize } = require('../middleware/auth');
 const { getUsers, saveUsers, findUserByEmail } = require('./auth_routes');
+const {
+    DEFAULT_GRUPOS_ACESSO,
+    normalizeRoleName,
+    getAvailableAccessGroups,
+    getUserLinkedProfiles,
+    syncUserProfiles,
+    linkUserProfile,
+    unlinkUserProfile,
+    switchActiveSessionProfile
+} = require('../services/rbac_service');
 
 // Helper para validação de Grupos RBAC
 function isConfigurationGroup(user) {
@@ -23,6 +33,7 @@ function isVisualizationGroup(user) {
 }
 
 async function fetchAllUsersFromDb() {
+    let usersList = [];
     if (!db.useLocalFallback) {
         try {
             const res = await db.query(`
@@ -31,7 +42,7 @@ async function fetchAllUsersFromDb() {
                 ORDER BY nome ASC
             `);
             if (res.rows && res.rows.length > 0) {
-                return res.rows.map(r => ({
+                usersList = res.rows.map(r => ({
                     id: r.id,
                     nome: r.nome,
                     email: r.email,
@@ -51,10 +62,28 @@ async function fetchAllUsersFromDb() {
             console.error('[DB fetchAllUsersFromDb Error]:', e.message);
         }
     }
-    return getUsers();
+    
+    if (usersList.length === 0) {
+        usersList = getUsers();
+    }
+
+    // Carregar vínculos N:N de perfis para cada usuário
+    for (const u of usersList) {
+        u.perfis = await getUserLinkedProfiles(u.id, u.role || u.tipo);
+    }
+
+    return usersList;
 }
 
 async function insertUserInDb(newUser) {
+    const rawPerfis = newUser.perfis || [newUser.role || newUser.tipo || 'Professor(a)'];
+    const normalizedPerfis = rawPerfis.map(normalizeRoleName);
+    const primaryRole = normalizedPerfis[0] || normalizeRoleName(newUser.role);
+
+    newUser.role = primaryRole;
+    newUser.tipo = primaryRole;
+    newUser.perfis = normalizedPerfis;
+
     if (!db.useLocalFallback) {
         try {
             await db.query(`
@@ -81,7 +110,7 @@ async function insertUserInDb(newUser) {
                 newUser.email,
                 newUser.password,
                 newUser.role,
-                newUser.tipo || newUser.role,
+                newUser.tipo,
                 newUser.escola || null,
                 newUser.turma || null,
                 newUser.telefone || null,
@@ -93,6 +122,10 @@ async function insertUserInDb(newUser) {
             console.error('[DB insertUserInDb Error]:', e.message);
         }
     }
+
+    // Sincroniza tabela associativa N:N (usuario_grupo_acesso) e users.json
+    await syncUserProfiles(newUser.id, normalizedPerfis, newUser.email);
+
     const users = getUsers();
     const existingIdx = users.findIndex(u => u.id === newUser.id || (u.email && u.email.toLowerCase() === (newUser.email || '').toLowerCase()));
     if (existingIdx >= 0) {
@@ -104,7 +137,121 @@ async function insertUserInDb(newUser) {
     return true;
 }
 
-// GET /api/users - Listar usuários cadastrados (escopado por RBAC)
+// =============================================================================
+// ENDPOINTS DE GESTÃO N:N DE GRUPOS DE ACESSO & SESSÃO ATIVA
+// =============================================================================
+
+// GET /api/usuarios/:id/grupos-acesso e GET /api/users/:id/grupos-acesso
+router.get(['/usuarios/:id/grupos-acesso', '/users/:id/grupos-acesso'], authMiddleware, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const linked = await getUserLinkedProfiles(id);
+        const available = await getAvailableAccessGroups();
+
+        res.json({
+            usuarioId: id,
+            gruposVinculados: linked,
+            gruposDisponiveis: available
+        });
+    } catch (err) {
+        console.error('Error in GET /grupos-acesso:', err);
+        res.status(500).json({ error: 'Erro ao listar grupos de acesso do usuário.' });
+    }
+});
+
+// POST /api/usuarios/:id/grupos-acesso e POST /api/users/:id/grupos-acesso
+router.post(['/usuarios/:id/grupos-acesso', '/users/:id/grupos-acesso'], authMiddleware, authorize('Master Admin', 'Gestor da Rede', 'admin', 'gestor', 'semed'), async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { grupoId, grupo_acesso_id } = req.body || {};
+        const targetGroup = grupoId || grupo_acesso_id;
+
+        if (!targetGroup) {
+            return res.status(400).json({ error: 'ID do grupo de acesso é obrigatório.' });
+        }
+
+        await linkUserProfile(id, targetGroup);
+        const updatedProfiles = await getUserLinkedProfiles(id);
+
+        res.json({
+            success: true,
+            message: `Grupo "${targetGroup}" vinculado ao usuário com sucesso.`,
+            gruposVinculados: updatedProfiles
+        });
+    } catch (err) {
+        console.error('Error in POST /grupos-acesso:', err);
+        res.status(500).json({ error: 'Erro ao vincular grupo de acesso: ' + err.message });
+    }
+});
+
+// DELETE /api/usuarios/:id/grupos-acesso/:grupoId e DELETE /api/users/:id/grupos-acesso/:grupoId
+router.delete(['/usuarios/:id/grupos-acesso/:grupoId', '/users/:id/grupos-acesso/:grupoId'], authMiddleware, authorize('Master Admin', 'Gestor da Rede', 'admin', 'gestor', 'semed'), async (req, res) => {
+    try {
+        const { id, grupoId } = req.params;
+        await unlinkUserProfile(id, grupoId);
+        const updatedProfiles = await getUserLinkedProfiles(id);
+
+        res.json({
+            success: true,
+            message: `Grupo "${grupoId}" desvinculado com sucesso.`,
+            gruposVinculados: updatedProfiles
+        });
+    } catch (err) {
+        const statusCode = err.statusCode || 500;
+        res.status(statusCode).json({ error: err.message || 'Erro ao desvincular grupo de acesso.' });
+    }
+});
+
+// PATCH /api/sessao/perfil-ativo e PATCH /sessao/perfil-ativo - Troca de perfil ativo da sessão
+router.patch(['/sessao/perfil-ativo', '/auth/perfil-ativo'], authMiddleware, async (req, res) => {
+    try {
+        const { role, perfil_id, grupo_acesso_id } = req.body || {};
+        const targetRole = role || perfil_id || grupo_acesso_id;
+
+        if (!targetRole) {
+            return res.status(400).json({ error: 'Perfil alvo é obrigatório para troca de contexto de sessão.' });
+        }
+
+        const ip = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '127.0.0.1';
+        const userAgent = req.headers['user-agent'] || 'Browser';
+
+        const switchResult = await switchActiveSessionProfile(req.user, targetRole, { ip, userAgent });
+        res.json(switchResult);
+    } catch (err) {
+        const statusCode = err.statusCode || 500;
+        res.status(statusCode).json({ error: err.message || 'Erro ao alternar perfil ativo.' });
+    }
+});
+
+// GET /api/sessao/perfil-ativo - Consulta perfil ativo e lista de perfis disponíveis
+router.get(['/sessao/perfil-ativo', '/auth/perfil-ativo'], authMiddleware, async (req, res) => {
+    try {
+        const user = req.user;
+        const linkedProfiles = await getUserLinkedProfiles(user.id, user.role);
+
+        res.json({
+            perfilAtivo: user.role,
+            perfisDisponiveis: linkedProfiles,
+            usuario: {
+                id: user.id,
+                nome: user.nome,
+                email: user.email,
+                role: user.role,
+                escola: user.escola,
+                turma: user.turma
+            }
+        });
+    } catch (err) {
+        console.error('Error in GET /sessao/perfil-ativo:', err);
+        res.status(500).json({ error: 'Erro ao consultar perfil ativo da sessão.' });
+    }
+});
+
+// =============================================================================
+// ENDPOINTS REST PADRÃO DE USUÁRIOS
+// =============================================================================
+
+// GET /api/users - Listar usuários cadastrados (escopado por RBAC com perfis N:N)
 router.get('/users', authMiddleware, async (req, res) => {
     try {
         const user = req.user;
@@ -166,19 +313,20 @@ function validateBirthDateServer(dateStr) {
     return { valid: true, idade, formatted: `${String(dia).padStart(2, '0')}/${String(mes).padStart(2, '0')}/${ano}` };
 }
 
-// POST /api/users - Cadastrar novo usuário (exclusivo para grupo CONFIGURAÇÃO)
+// POST /api/users - Cadastrar novo usuário com múltiplos perfis
 router.post('/users', authMiddleware, authorize('Master Admin', 'Gestor da Rede', 'admin', 'gestor', 'semed'), async (req, res) => {
     try {
-        const { nome, email, password, senha, role, tipo, escola, turma, telefone, cpf, dataNascimento, nascimento, mustChangePassword } = req.body || {};
-        if (!nome || !email || (!role && !tipo)) {
-            return res.status(400).json({ error: 'Nome, e-mail e perfil/cargo são obrigatórios.' });
+        const { nome, email, password, senha, role, tipo, perfis, escola, turma, telefone, cpf, dataNascimento, nascimento, mustChangePassword } = req.body || {};
+        
+        const rawPerfis = Array.isArray(perfis) && perfis.length > 0 ? perfis : [role || tipo];
+        const validPerfis = rawPerfis.filter(Boolean);
+
+        if (!nome || !email || validPerfis.length === 0) {
+            return res.status(400).json({ error: 'Nome, e-mail e ao menos um perfil de acesso são obrigatórios.' });
         }
 
-        const effectiveRole = (role || tipo || 'Professor(a)').trim();
-        const roleNorm = effectiveRole.toLowerCase();
-        if (roleNorm.includes('aluno')) {
-            return res.status(400).json({ error: 'O cadastro de Usuários é exclusivo para a equipe escolar (Gestores, Diretores e Professores). Para cadastrar alunos, utilize a tela de Alunos.' });
-        }
+        const normalizedPerfis = validPerfis.map(normalizeRoleName);
+        const primaryRole = normalizedPerfis[0];
 
         // Sanitização e formatação do CPF
         let formattedCpf = cpf || '-';
@@ -221,8 +369,9 @@ router.post('/users', authMiddleware, authorize('Master Admin', 'Gestor da Rede'
             nome: nome.trim(),
             email: cleanEmail,
             password: hashedPassword,
-            role: effectiveRole,
-            tipo: effectiveRole,
+            role: primaryRole,
+            tipo: primaryRole,
+            perfis: normalizedPerfis,
             cpf: formattedCpf,
             telefone: telefone || '-',
             dataNascimento: birthFormatted,
@@ -243,15 +392,20 @@ router.post('/users', authMiddleware, authorize('Master Admin', 'Gestor da Rede'
     }
 });
 
-// PUT /api/users/:id - Atualizar dados do usuário
+// PUT /api/users/:id - Atualizar dados e perfis do usuário
 router.put('/users/:id', authMiddleware, authorize('Master Admin', 'Gestor da Rede', 'admin', 'gestor'), async (req, res) => {
     try {
         const { id } = req.params;
-        const { nome, email, password, role, escola, turma, telefone, cpf, status } = req.body || {};
+        const { nome, email, password, role, tipo, perfis, escola, turma, telefone, cpf, status } = req.body || {};
 
-        if (role && role.toLowerCase().includes('aluno')) {
-            return res.status(400).json({ error: 'Perfil inválido. O módulo de Usuários aceita apenas funções de equipe.' });
+        let updatedPerfis = null;
+        if (Array.isArray(perfis) && perfis.length > 0) {
+            updatedPerfis = perfis.map(normalizeRoleName);
+        } else if (role || tipo) {
+            updatedPerfis = [normalizeRoleName(role || tipo)];
         }
+
+        const primaryRole = updatedPerfis ? updatedPerfis[0] : (role ? normalizeRoleName(role) : null);
 
         let updatedUser = null;
 
@@ -282,7 +436,7 @@ router.put('/users/:id', authMiddleware, authorize('Master Admin', 'Gestor da Re
                     nome ? nome.trim() : null,
                     email ? email.trim().toLowerCase() : null,
                     passHash,
-                    role ? role.trim() : null,
+                    primaryRole,
                     escola !== undefined ? escola : null,
                     turma !== undefined ? turma : null,
                     telefone !== undefined ? telefone : null,
@@ -299,6 +453,10 @@ router.put('/users/:id', authMiddleware, authorize('Master Admin', 'Gestor da Re
             }
         }
 
+        if (updatedPerfis) {
+            await syncUserProfiles(id, updatedPerfis, email);
+        }
+
         if (!updatedUser) {
             let users = getUsers();
             const userIndex = users.findIndex(u => u.id === id);
@@ -311,9 +469,12 @@ router.put('/users/:id', authMiddleware, authorize('Master Admin', 'Gestor da Re
             if (password) {
                 users[userIndex].password = await bcrypt.hash(password, 12);
             }
-            if (role) {
-                users[userIndex].role = role.trim();
-                users[userIndex].tipo = role.trim();
+            if (primaryRole) {
+                users[userIndex].role = primaryRole;
+                users[userIndex].tipo = primaryRole;
+            }
+            if (updatedPerfis) {
+                users[userIndex].perfis = updatedPerfis;
             }
             if (escola !== undefined) users[userIndex].escola = escola;
             if (turma !== undefined) users[userIndex].turma = turma;
@@ -327,6 +488,7 @@ router.put('/users/:id', authMiddleware, authorize('Master Admin', 'Gestor da Re
             updatedUser = clean;
         }
 
+        updatedUser.perfis = updatedPerfis || await getUserLinkedProfiles(id, updatedUser.role);
         res.json({ success: true, user: updatedUser });
     } catch (err) {
         console.error('Error in PUT /api/users/:id:', err);
@@ -343,6 +505,9 @@ router.delete('/users/:id', authMiddleware, authorize('Master Admin', 'admin'), 
             try {
                 const resDb = await db.query('DELETE FROM public.usuarios WHERE id = $1 RETURNING id', [id]);
                 if (resDb.rows && resDb.rows.length > 0) {
+                    try {
+                        await db.query('DELETE FROM public.usuario_grupo_acesso WHERE usuario_id = $1', [id]);
+                    } catch(e) {}
                     return res.json({ success: true });
                 }
             } catch(e) {

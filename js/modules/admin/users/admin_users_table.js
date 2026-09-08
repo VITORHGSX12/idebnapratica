@@ -1,5 +1,5 @@
 // =========================================================================
-// GESTÃO DE USUÁRIOS & CONTROLE RBAC - LISTAGEM & TABELA
+// GESTÃO DE USUÁRIOS & CONTROLE RBAC - LISTAGEM & TABELA (MULTI-PERFIL)
 // SEMED Gonçalves Dias - MA • IDEB na Prática
 // =========================================================================
 
@@ -33,6 +33,24 @@
         if (typeof global.saveStoredUsers === 'function') global.saveStoredUsers(users);
     }
 
+    function getRoleBadgeClass(role) {
+        var r = String(role || '').toLowerCase();
+        if (r.includes('admin') || r.includes('dpo') || r.includes('ti')) return 'badge-purple';
+        if (r.includes('gestor') || r.includes('semed')) return 'badge-purple';
+        if (r.includes('diretor')) return 'badge-blue';
+        if (r.includes('coordenador')) return 'badge-blue';
+        if (r.includes('aee')) return 'badge-indigo';
+        return 'badge-green';
+    }
+
+    function renderUserRoleBadges(u) {
+        var rolesList = (Array.isArray(u.perfis) && u.perfis.length > 0) ? u.perfis : [u.tipo || u.role || 'Professor(a)'];
+        return '<div style="display:flex; flex-wrap:wrap; gap:4px;">' + rolesList.map(function(r) {
+            var bClass = getRoleBadgeClass(r);
+            return '<span class="badge ' + bClass + '" style="font-size:0.7rem; font-weight:600; padding:2px 8px;">' + r + '</span>';
+        }).join('') + '</div>';
+    }
+
     function renderUsersList() {
         if (typeof document === 'undefined') return;
         var tbody = document.getElementById('users-table-body');
@@ -55,8 +73,8 @@
                 if (u.escola && u.escola !== 'Todas as Escolas (SEMED)' && u.escola !== userSchool) return false;
             }
             if (typeVal && typeVal !== 'all') {
-                var uRole = (u.tipo || u.role || '').toLowerCase();
-                if (!uRole.includes(typeVal.toLowerCase())) return false;
+                var uRoles = (Array.isArray(u.perfis) && u.perfis.length > 0) ? u.perfis.join(' ').toLowerCase() : (u.tipo || u.role || '').toLowerCase();
+                if (!uRoles.includes(typeVal.toLowerCase())) return false;
             }
             if (statusVal && statusVal !== 'all') {
                 if ((u.status || 'Ativo').toLowerCase() !== statusVal.toLowerCase()) return false;
@@ -77,10 +95,10 @@
         }
 
         tbody.innerHTML = filtered.map(function(u) {
-            var roleBadge = u.tipo === 'Master Admin' ? 'badge-purple' : (u.tipo === 'Diretor(a) Escolar' ? 'badge-blue' : 'badge-green');
             var statusBadge = (u.status || 'Ativo') === 'Ativo' ? 'badge-success' : 'badge-warning';
             var safeSenha = (u.senha || 'Gondias@2026').replace(/'/g, "\\'");
             var safeEmail = (u.email || '').replace(/'/g, "\\'");
+            var badgesHtml = renderUserRoleBadges(u);
 
             return [
                 '<tr>',
@@ -89,7 +107,7 @@
                 '    <div class="font-bold text-gray-900">' + (u.nome || '-') + '</div>',
                 '    <div class="text-xs text-gray-500">' + (u.email || '-') + (u.cpf ? ' • CPF: ' + u.cpf : '') + '</div>',
                 '  </td>',
-                '  <td><span class="badge ' + roleBadge + '">' + (u.tipo || u.role || 'Usuário') + '</span></td>',
+                '  <td>' + badgesHtml + '</td>',
                 '  <td>',
                 '    <div class="text-xs font-medium text-gray-800">' + (u.escola || 'Todas as Escolas (SEMED)') + '</div>',
                 '    ' + (u.turma ? '<span class="text-xs text-blue-600 font-semibold">' + u.turma + '</span>' : ''),
@@ -153,7 +171,11 @@
             };
         }
 
-        var isConfigRole = (user.tipo || user.role || '').toLowerCase().includes('admin') || (user.tipo || user.role || '').toLowerCase().includes('gestor') || (user.tipo || user.role || '').toLowerCase().includes('semed');
+        var rolesList = (Array.isArray(user.perfis) && user.perfis.length > 0) ? user.perfis : [user.tipo || user.role || 'Usuário'];
+        var isConfigRole = rolesList.some(function(r) {
+            var rl = r.toLowerCase();
+            return rl.includes('admin') || rl.includes('gestor') || rl.includes('semed');
+        });
 
         var nameEl = document.getElementById('profile-user-display-name');
         var badgeEl = document.getElementById('profile-user-type-badge');
@@ -169,7 +191,9 @@
         var rbacDesc = document.getElementById('profile-rbac-group-desc');
 
         if (nameEl) nameEl.textContent = user.nome;
-        if (badgeEl) badgeEl.textContent = user.tipo || user.role || 'Usuário';
+        if (badgeEl) {
+            badgeEl.innerHTML = renderUserRoleBadges(user);
+        }
         if (idEl) idEl.textContent = user.id;
         if (cpfEl) cpfEl.textContent = user.cpf || '-';
         if (statusEl) statusEl.textContent = user.status || 'Ativo';
@@ -257,6 +281,8 @@
 
     var AdminUsersTable = {
         renderUsersList: renderUsersList,
+        renderUserRoleBadges: renderUserRoleBadges,
+        getRoleBadgeClass: getRoleBadgeClass,
         handleResetUserPassword: handleResetUserPassword,
         handleViewUserProfile: handleViewUserProfile,
         openUserProfileDetail: openUserProfileDetail,
@@ -268,6 +294,7 @@
     global.AdminUsersTable = AdminUsersTable;
     global.renderUsersList = renderUsersList;
     global.loadUsersList = renderUsersList;
+    global.renderUserRoleBadges = renderUserRoleBadges;
     global.handleResetUserPassword = handleResetUserPassword;
     global.handleViewUserProfile = handleViewUserProfile;
     global.openUserProfileDetail = openUserProfileDetail;

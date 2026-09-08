@@ -8647,4 +8647,48 @@ body.dark-mode .metrics-grid .metric-card:hover {
     }
 }
 
+/* =========================================================================
+   MULTI-PERFIL RBAC & PROFILE SWITCHER STYLES
+   ========================================================================= */
+.multi-role-checklist {
+    transition: all 0.2s ease;
+}
+.role-checkbox-card {
+    transition: all 0.15s ease;
+    user-select: none;
+}
+.role-checkbox-card:hover {
+    border-color: var(--color-brand-primary, #2563eb) !important;
+    background: rgba(37, 99, 235, 0.08) !important;
+}
+.role-checkbox-card input[type="checkbox"] {
+    accent-color: var(--color-brand-primary, #2563eb);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+.badge-indigo {
+    background: rgba(99, 102, 241, 0.15);
+    color: #4f46e5;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+}
+.dark-mode .badge-indigo {
+    background: rgba(99, 102, 241, 0.25);
+    color: #a5b4fc;
+    border-color: rgba(99, 102, 241, 0.4);
+}
+.sidebar-profile-switcher {
+    transition: all 0.2s ease-in-out;
+}
+.sidebar-profile-switcher:hover {
+    border-color: rgba(255, 255, 255, 0.25) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+.sidebar-profile-switcher select.profile-select:focus {
+    outline: none;
+    border-color: #38bdf8 !important;
+    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.35);
+}
+
+
 
