@@ -103,6 +103,8 @@
     --font-display: 'Lexend', 'Plus Jakarta Sans', -apple-system, sans-serif;
     --font-body:    'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     --font-mono:    'JetBrains Mono', 'SF Mono', Consolas, Courier, monospace;
+    --font-family-display: var(--font-display);
+    --font-family-body:    var(--font-body);
 
     /* ---------------------------------------------------------------------
        8. ESCALA TIPOGRÁFICA INSTITUCIONAL

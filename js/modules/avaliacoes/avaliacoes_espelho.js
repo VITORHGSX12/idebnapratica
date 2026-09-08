@@ -289,7 +289,7 @@
             bannerRbac.style.cssText = 'background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: var(--radius-md); padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; color: var(--text-primary); font-size: 0.85rem;';
             bannerRbac.innerHTML = `
                 <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-brand-primary); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px;">
-                    🔒
+                    <i data-lucide="lock" style="width: 16px; height: 16px;"></i>
                 </div>
                 <div style="flex: 1;">
                     <strong style="color: var(--color-brand-primary); display: block; margin-bottom: 2px;">Visualização de Resultados — Correção Centralizada pela SEMED</strong>

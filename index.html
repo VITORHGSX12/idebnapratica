@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" href="assets/brand/ideb_symbol_app_icon.svg">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="design-tokens.css?v=20260830_v2">
-    <link rel="stylesheet" href="styles.css?v=0b3dd98a16_mtt0pl5a">
+    <link rel="stylesheet" href="styles.css?v=d3a6f78ba5_mtt1kes1">
     <link rel="stylesheet" href="login-premium.css?v=20260830_v2">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1306,18 +1306,24 @@
                 <section id="escolas-panel" class="tab-content">
                     <!-- VIEW 1: LISTA GERAL DE ESCOLAS DA REDE -->
                     <div id="schools-overview-container">
-                        <div class="schools-header-row">
-                            <div class="schools-header-title">
-                                <h2>Escolas da Rede Municipal</h2>
-                                <p>Gestão e Acompanhamento das 9 Unidades Escolares de Gonçalves Dias - MA</p>
-                            </div>
-                            <div class="schools-header-actions">
-                                <button class="btn-export-outline" id="btn-export-schools-list" onclick="if(window.exportSchoolsList) window.exportSchoolsList();">
-                                    <i data-lucide="file-spreadsheet" style="width:16px; height:16px;"></i> Exportar Lista
-                                </button>
-                                <button class="btn-refresh-circle" id="btn-refresh-schools-list" onclick="if(window.refreshSchoolsList) window.refreshSchoolsList();" title="Recarregar Escolas">
-                                    <i data-lucide="rotate-cw" style="width:16px; height:16px;"></i>
-                                </button>
+                        <div class="tab-hero-banner">
+                            <div class="tab-hero-content">
+                                <div>
+                                    <div class="tab-hero-tag">
+                                        <i data-lucide="building-2" style="width: 14px; height: 14px;"></i>
+                                        <span>Rede Municipal Oficial • Gonçalves Dias - MA</span>
+                                    </div>
+                                    <h2 class="tab-hero-title">Escolas da Rede Municipal de Ensino</h2>
+                                    <p class="tab-hero-subtitle">Gestão institucional, infraestrutura e monitoramento pedagógico das 9 unidades escolares municipais.</p>
+                                </div>
+                                <div class="tab-hero-actions">
+                                    <button class="btn-hero-white" id="btn-export-schools-list" onclick="if(window.exportSchoolsList) window.exportSchoolsList();">
+                                        <i data-lucide="file-spreadsheet" style="width:16px; height:16px;"></i> Exportar Lista
+                                    </button>
+                                    <button class="btn-hero-outline" id="btn-refresh-schools-list" onclick="if(window.refreshSchoolsList) window.refreshSchoolsList();" title="Recarregar Escolas">
+                                        <i data-lucide="rotate-cw" style="width:16px; height:16px;"></i> Atualizar
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -1444,17 +1450,26 @@
 
                 <!-- ==================== ALUNOS PANEL TAB ==================== -->
                 <section id="alunos-panel" class="tab-content">
-                    <div class="card card-full margin-bottom-lg">
-                        <div class="card-header flex-between flex-wrap gap-md">
-                            <div style="flex-grow: 1;">
-                                <h3>Ficha Cadastral dos Alunos</h3>
-                                <p class="card-subtitle">Visualize, filtre e pesquise os dados cadastrais dos 526 alunos avaliados no Ensino Fundamental das 9 escolas do SAEB.</p>
+                    <div class="tab-hero-banner">
+                        <div class="tab-hero-content">
+                            <div>
+                                <div class="tab-hero-tag">
+                                    <i data-lucide="users" style="width: 14px; height: 14px;"></i>
+                                    <span>Censo Escolar & Matrículas Ativas</span>
+                                </div>
+                                <h2 class="tab-hero-title">Ficha Cadastral dos Alunos & Turmas</h2>
+                                <p class="tab-hero-subtitle">Consulte, pesquise e gerencie os dados cadastrais e histórico de proficiência dos estudantes avaliados na rede municipal.</p>
                             </div>
-                            <button class="btn btn-primary" id="btn-open-create-student-modal" onclick="openCreateStudentModal(); return false;" style="display: flex; align-items: center; gap: 8px; font-weight: 700; background: #2563eb; border-color: #2563eb;">
-                                <i data-lucide="user-plus" style="width:16px; height:16px; margin-right:4px;"></i> Novo Aluno
-                            </button>
+                            <div class="tab-hero-actions">
+                                <button class="btn-hero-white" id="btn-open-create-student-modal" onclick="openCreateStudentModal(); return false;">
+                                    <i data-lucide="user-plus" style="width:16px; height:16px;"></i> + Novo Aluno
+                                </button>
+                            </div>
                         </div>
-                        <div class="card-header border-top flex-between flex-wrap gap-md" style="background-color: var(--bg-tertiary); padding: 12px 24px;">
+                    </div>
+
+                    <div class="card card-full margin-bottom-lg">
+                        <div class="card-header flex-between flex-wrap gap-md" style="background-color: var(--bg-tertiary); padding: 16px 24px; border-radius: var(--radius-card);" style="background-color: var(--bg-tertiary); padding: 12px 24px;">
                             <div class="flex-between gap-md flex-wrap" style="width: 100%;">
                                 <div class="form-group" style="flex-grow: 1; min-width: 240px;">
                                     <input type="text" id="db-student-search" class="form-input-text" placeholder="Buscar aluno por nome, matrícula ou CPF...">
@@ -1510,27 +1525,28 @@
                 <!-- ==================== METAS E PLANOS DE DESENVOLVIMENTO ESCOLAR (PDE) TAB ==================== -->
                                 <!-- ==================== METAS E PLANOS DE DESENVOLVIMENTO ESCOLAR (PDE) TAB ==================== -->
                 <section id="metas-ideb" class="tab-content">
-                    <div class="card card-full margin-bottom-lg" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
-                        <div class="card-header flex-between flex-wrap gap-md" style="padding-bottom: 16px; border-bottom: 1px solid var(--border-color);">
+                    <div class="tab-hero-banner">
+                        <div class="tab-hero-content">
                             <div>
-                                <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(74, 127, 167,  0.1); color:#4A7FA7; padding:3px 10px; border-radius:12px; font-size:0.75rem; font-weight:700; margin-bottom:6px;">
-                                    <i data-lucide="target" style="width:12px; height:12px;"></i> PLANOS DE DESENVOLVIMENTO ESCOLAR (PDE)
+                                <div class="tab-hero-tag">
+                                    <i data-lucide="target" style="width: 14px; height: 14px;"></i>
+                                    <span>Planos de Desenvolvimento Escolar (PDE)</span>
                                 </div>
-                                <h3 style="margin: 0; font-size: 1.35rem; font-weight: 800; color: var(--text-primary);">Metas e Planos de Desenvolvimento Escolar</h3>
-                                <p class="card-subtitle" style="margin: 4px 0 0 0;">Mapeamento das escolas da rede municipal de Gonçalves Dias, metas pactuadas e execução de Planos de Intervenção Pedagógica (PDE).</p>
+                                <h2 class="tab-hero-title">Metas Municipais & Planos de Intervenção PDE</h2>
+                                <p class="tab-hero-subtitle">Mapeamento de metas pactuadas por escola, diagnóstico de defasagem (GAP) e execução estratégica de intervenções pedagógicas.</p>
                             </div>
-                            <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-                                <button class="btn btn-primary" id="btn-generate-all-pde-plans" onclick="handleAutoGenerateAllPdePlans()" style="display: flex; align-items: center; gap: 8px; font-weight: 700; background: linear-gradient(135deg, #1A3D63, #4A7FA7); border: none;">
-                                    <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i>
-                                    <span>Gerar conforme dados atuais (Escolas com Gap)</span>
+                            <div class="tab-hero-actions">
+                                <button class="btn-hero-white" id="btn-generate-all-pde-plans" onclick="handleAutoGenerateAllPdePlans()">
+                                    <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i> Gerar Planos (Escolas com Gap)
                                 </button>
-                                <button class="btn btn-outline" id="btn-export-pde-report" onclick="handleExportPdeReportPdf()" style="display: flex; align-items: center; gap: 8px; font-weight: 700;">
-                                    <i data-lucide="download" style="width: 16px; height: 16px;"></i>
-                                    <span>Exportar Relatório PDE (PDF)</span>
+                                <button class="btn-hero-outline" id="btn-export-pde-report" onclick="handleExportPdeReportPdf()">
+                                    <i data-lucide="download" style="width: 16px; height: 16px;"></i> Exportar Relatório PDE
                                 </button>
                             </div>
                         </div>
+                    </div>
 
+                    <div class="card card-full margin-bottom-lg" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
                         <div class="card-body" style="padding: 20px;">
                             <!-- Toolbar de Filtros do Módulo Metas e Planos -->
                             <div class="card margin-bottom-md" style="padding: 14px 18px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); margin-bottom: 20px;">
@@ -1618,22 +1634,22 @@
                 <section id="ideb-comparativo" class="tab-content">
                     <!-- Banner de Destaque Oficial Gonçalves Dias - MA -->
                     <!-- Banner de Destaque Oficial Gonçalves Dias - MA -->
-                    <div class="card margin-bottom-lg" style="background: linear-gradient(135deg, #1A2D42 0%, #2E4156 100%); border-radius: var(--radius-lg); padding: 24px 28px; color: #ffffff; box-shadow: 0 10px 25px -5px rgba(26, 45, 66, 0.35); border: 1px solid rgba(255, 255, 255, 0.15);">
-                        <div class="flex-between flex-wrap gap-md" style="align-items: center;">
+                    <div class="tab-hero-banner">
+                        <div class="tab-hero-content">
                             <div>
-                                <div id="ideb-period-badge" style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); padding: 4px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.25);">
-                                    <i data-lucide="award" style="width: 13px; height: 13px;"></i>
+                                <div id="ideb-period-badge" class="tab-hero-tag">
+                                    <i data-lucide="award" style="width: 14px; height: 14px;"></i>
                                     <span id="ideb-period-badge-text">Dados Oficiais INEP • Ciclos 2015 a 2025</span>
                                 </div>
-                                <h2 style="font-size: 1.7rem; font-weight: 800; margin: 0 0 6px 0; color: #ffffff;">
+                                <h2 class="tab-hero-title">
                                     Comparativo Regional do IDEB — Gonçalves Dias (MA)
                                 </h2>
-                                <p style="font-size: 0.85rem; color: rgba(255,255,255,0.85); margin: 0; line-height: 1.45;">
+                                <p class="tab-hero-subtitle">
                                     Acompanhamento estratégico dos resultados e evolução histórica do IDEB no município, nas <strong>19 UREs do Maranhão</strong>, no <strong>Ranking Estadual (217 Municípios)</strong> e nas <strong>4.798 Escolas</strong>.
                                 </p>
                             </div>
-                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                <button class="btn btn-outline" id="btn-export-ideb-regional-pdf" onclick="window.print();" style="background: #ffffff; color: #1A2D42; font-weight: 700; border: 1px solid #C0C8CA; display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; padding: 8px 16px; border-radius: var(--radius-md); box-shadow: 0 2px 4px rgba(0,0,0,0.06); cursor: pointer;">
+                            <div class="tab-hero-actions">
+                                <button class="btn-hero-white" id="btn-export-ideb-regional-pdf" onclick="window.print();">
                                     <i data-lucide="printer" style="width: 15px; height: 15px;"></i>
                                     <span>Exportar Relatório Regional</span>
                                 </button>
@@ -1976,22 +1992,22 @@
                 <!-- ==================== CÁLCULO DO IDEB & VAAR TAB ==================== -->
                 <section id="calculo-ideb" class="tab-content hidden">
                     <!-- Banner de Destaque Oficial: Cálculo do IDEB & VAAR -->
-                    <div class="card margin-bottom-lg" style="background: linear-gradient(135deg, #0A1931 0%, #1A3D63 100%); border-radius: var(--radius-lg); padding: 24px 28px; color: #ffffff; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 10px 25px -5px rgba(10, 25, 49, 0.4);">
-                        <div class="flex-between flex-wrap gap-md" style="align-items: center;">
+                    <div class="tab-hero-banner">
+                        <div class="tab-hero-content">
                             <div>
-                                <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); padding: 4px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.25);">
+                                <div class="tab-hero-tag">
                                     <i data-lucide="book-open" style="width: 14px; height: 14px;"></i>
-                                    <span>Notas Técnicas INEP/MEC: NT Conjunta 23/2023 • NT 7/2024 • Errata 12/2024 • Fernandes (2007)</span>
+                                    <span>Notas Técnicas INEP/MEC: NT Conjunta 23/2023 • NT 7/2024 • Fernandes (2007)</span>
                                 </div>
-                                <h2 style="font-size: 1.6rem; font-weight: 800; margin: 0 0 6px 0; color: #ffffff;">
-                                    Como se Calcula o IDEB & os Indicadores do VAAR / FUNDEB
+                                <h2 class="tab-hero-title">
+                                    Como se Calcula o IDEB & Indicadores VAAR / FUNDEB
                                 </h2>
-                                <p style="font-size: 0.88rem; color: rgba(255,255,255,0.85); margin: 0; line-height: 1.5; max-width: 900px;">
-                                    Guia metodológico oficial de cálculo do IDEB clássico e dos novos indicadores de aprendizagem, fluxo e equidade para fins do FUNDEB (Lei nº 14.113/2020), com simulador interativo em tempo real para a rede municipal.
+                                <p class="tab-hero-subtitle">
+                                    Guia metodológico oficial de cálculo do IDEB clássico e dos novos indicadores de aprendizagem, fluxo e equidade para fins do FUNDEB (Lei nº 14.113/2020), com simulador interativo em tempo real.
                                 </p>
                             </div>
-                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                <button class="btn btn-outline" id="btn-export-calculo-ideb-pdf" onclick="window.print();" style="background: #ffffff; color: #1A2D42; font-weight: 700; border: 1px solid #C0C8CA; display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; padding: 8px 16px; border-radius: var(--radius-md); box-shadow: 0 2px 4px rgba(0,0,0,0.06); cursor: pointer;">
+                            <div class="tab-hero-actions">
+                                <button class="btn-hero-white" id="btn-export-calculo-ideb-pdf" onclick="window.print();">
                                     <i data-lucide="printer" style="width: 15px; height: 15px;"></i>
                                     <span>Exportar Manual / Relatório</span>
                                 </button>
@@ -2378,16 +2394,20 @@
                 <!-- ==================== MATRIZ & DESCRITORES TAB ==================== -->
                 <!-- ==================== MATRIZ & DESCRITORES TAB ==================== -->
                 <section id="matriz-descritores" class="tab-content">
-                    <div class="card card-full margin-bottom-lg" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
-                        <div class="card-header flex-between flex-wrap gap-md" style="padding-bottom: 16px; border-bottom: 1px solid var(--border-color);">
+                    <div class="tab-hero-banner">
+                        <div class="tab-hero-content">
                             <div>
-                                <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(74, 127, 167,  0.1); color:#4A7FA7; padding:4px 10px; border-radius:16px; font-size:0.75rem; font-weight:700; margin-bottom:6px;">
-                                    📚 MATRIZES SAEB, SEAMA & HABILIDADES DA BNCC
+                                <div class="tab-hero-tag">
+                                    <i data-lucide="book-open" style="width: 14px; height: 14px;"></i>
+                                    <span>Matrizes de Referência & BNCC Oficial</span>
                                 </div>
-                                <h3 style="margin:0; font-size:1.35rem; font-weight:800; color:var(--text-primary);">Matrizes de Referência & Habilidades da BNCC</h3>
-                                <p class="card-subtitle" style="margin:4px 0 0 0;">Navegação estruturada por descritores cognitivos de avaliações externas e catálogo completo de habilidades da BNCC por componente curricular.</p>
+                                <h2 class="tab-hero-title">Matrizes de Referência SAEB, SEAMA & BNCC</h2>
+                                <p class="tab-hero-subtitle">Navegação estruturada por descritores cognitivos de avaliações externas e catálogo completo de habilidades da BNCC por componente curricular.</p>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="card card-full margin-bottom-lg" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-card); overflow: hidden;">
 
                         <!-- Sub-Navegação: 1. Matrizes SAEB/SEAMA • 2. Explorador da BNCC -->
                         <div style="display: flex; gap: 8px; padding: 12px 20px; border-bottom: 1px solid var(--border-color); background: var(--bg-tertiary); overflow-x: auto;">
@@ -2566,6 +2586,19 @@
 
                 <!-- ==================== CRIAR AVALIAÇÕES TAB (RESTORED ORIGINAL) ==================== -->
 <section id="sec-criar-avaliacoes" class="tab-content">
+                    <div class="tab-hero-banner">
+                        <div class="tab-hero-content">
+                            <div>
+                                <div class="tab-hero-tag">
+                                    <i data-lucide="file-check" style="width: 14px; height: 14px;"></i>
+                                    <span>Gestão de Avaliações & Simulados Municipais</span>
+                                </div>
+                                <h2 class="tab-hero-title">Avaliações, Simulados & Instrumentos Diagnósticos</h2>
+                                <p class="tab-hero-subtitle">Criação de simulados padronizados SAEB/SEAMA, lançamento de cartões-resposta e acompanhamento de proficiência em tempo real.</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Top Sub-Navigation for Avaliações Module -->
                     <div class="card card-full margin-bottom-md" style="padding: 0; background-color: var(--bg-secondary);">
                         <div style="display: flex; gap: 20px; padding: 16px 24px; border-bottom: 1px solid var(--border-color); overflow-x: auto;">
@@ -3128,11 +3161,20 @@
 
                 <!-- ==================== APLICAÇÃO DE PROVAS TAB (RESTORED ORIGINAL) ==================== -->
 <section id="sec-aplicacao-provas" class="tab-content">
-                    <div class="card card-full margin-bottom-lg">
-                        <div class="card-header">
-                            <h3>Painel de Acompanhamento de Aplicação</h3>
-                            <p class="card-subtitle">Monitore a digitação de cartões-resposta, taxa de presença e consolidação de proficiência por escola.</p>
+                    <div class="tab-hero-banner">
+                        <div class="tab-hero-content">
+                            <div>
+                                <div class="tab-hero-tag">
+                                    <i data-lucide="activity" style="width: 14px; height: 14px;"></i>
+                                    <span>Operação & Monitoramento em Tempo Real</span>
+                                </div>
+                                <h2 class="tab-hero-title">Painel de Acompanhamento de Aplicação</h2>
+                                <p class="tab-hero-subtitle">Monitore a digitação de cartões-resposta, taxa de presença dos alunos e consolidação de proficiência em cada unidade escolar.</p>
+                            </div>
                         </div>
+                    </div>
+
+                    <div class="card card-full margin-bottom-lg">
                         <div class="card-body">
                             <!-- Progress of Ongoing Assessments -->
                             <div id="ongoing-assessments-list" style="display:flex; flex-direction:column; gap:16px;">
@@ -3146,53 +3188,50 @@
                                 <!-- ==================== CRONOGRAMA & PLANEJAMENTO ESCOLAR ==================== -->
                                 <!-- ==================== CRONOGRAMA & PLANEJAMENTO ESCOLAR V2 ==================== -->
                 <section id="cronograma-habilidades" class="tab-content">
-                    <div class="card card-full margin-bottom-lg" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 0; overflow: hidden;">
-                        
-                        <!-- Top Header com Título, Segmented Control (3 Visões), Lixeira e Botão + Novo Planejamento -->
-                        <div style="padding: 20px 24px; border-bottom: 1px solid var(--border-color); background: var(--bg-primary); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                    <div class="tab-hero-banner">
+                        <div class="tab-hero-content">
                             <div>
-                                <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(74, 127, 167,  0.1); color:#4A7FA7; padding:3px 10px; border-radius:12px; font-size:0.75rem; font-weight:700; margin-bottom:6px;">
-                                    <i data-lucide="calendar-check" style="width:13px; height:13px;"></i> ROTINAS POR TURMA & AGENDA PEDAGÓGICA
+                                <div class="tab-hero-tag">
+                                    <i data-lucide="calendar-check" style="width: 14px; height: 14px;"></i>
+                                    <span>Rotinas por Turma & Agenda Pedagógica</span>
                                 </div>
-                                <h2 style="margin: 0; font-size: 1.4rem; font-weight: 800; color: var(--text-primary);">
-                                    Cronograma e Planejamento Escolar
-                                </h2>
-                                <p style="margin: 4px 0 0 0; font-size: 0.82rem; color: var(--text-secondary);">
-                                    Planeje aulas vinculadas à turma específica, acompanhe atrasos, compare turmas e rastreie habilidades da BNCC.
-                                </p>
+                                <h2 class="tab-hero-title">Cronograma & Planejamento Escolar</h2>
+                                <p class="tab-hero-subtitle">Planeje aulas vinculadas às turmas, acompanhe prazos de execução, compare turmas e rastreie habilidades da BNCC.</p>
                             </div>
 
-                            <!-- Botões de Ação e Segmented Control: [ Mensal | Semanal | Comparativo ] -->
-                            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                            <div class="tab-hero-actions">
                                 <!-- Segmented Control de 3 Visões -->
-                                <div class="schedule-view-switcher" style="display: inline-flex; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 30px; padding: 3px;">
+                                <div class="schedule-view-switcher" style="display: inline-flex; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.25); border-radius: 30px; padding: 3px;">
                                     <button type="button" id="btn-view-monthly" onclick="switchScheduleMainView('monthly'); return false;" class="schedule-tab-btn active" style="display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 24px; font-size: 0.8rem; font-weight: 700; border: none; cursor: pointer; transition: all 0.2s ease;">
                                         <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
                                         <span>Mensal</span>
                                     </button>
-                                    <button type="button" id="btn-view-weekly" onclick="switchScheduleMainView('weekly'); return false;" class="schedule-tab-btn" style="display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 24px; font-size: 0.8rem; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s ease; background: transparent; color: var(--text-secondary);">
+                                    <button type="button" id="btn-view-weekly" onclick="switchScheduleMainView('weekly'); return false;" class="schedule-tab-btn" style="display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 24px; font-size: 0.8rem; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s ease; background: transparent; color: #ffffff;">
                                         <i data-lucide="layout-grid" style="width: 14px; height: 14px;"></i>
                                         <span>Semanal (Grade)</span>
                                     </button>
-                                    <button type="button" id="btn-view-comparison" onclick="switchScheduleMainView('comparison'); return false;" class="schedule-tab-btn" style="display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 24px; font-size: 0.8rem; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s ease; background: transparent; color: var(--text-secondary);">
+                                    <button type="button" id="btn-view-comparison" onclick="switchScheduleMainView('comparison'); return false;" class="schedule-tab-btn" style="display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 24px; font-size: 0.8rem; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s ease; background: transparent; color: #ffffff;">
                                         <i data-lucide="git-compare" style="width: 14px; height: 14px;"></i>
                                         <span>Comparativo</span>
                                     </button>
                                 </div>
 
                                 <!-- Botão Lixeira Pedagógica -->
-                                <button type="button" class="btn btn-outline" onclick="openScheduleTrashModal(); return false;" style="font-size: 0.8rem; padding: 8px 12px; height: 38px; display: flex; align-items: center; gap: 6px; color: var(--text-secondary);" title="Lixeira de Aulas Excluídas (30 dias)">
+                                <button type="button" class="btn-hero-outline" onclick="openScheduleTrashModal(); return false;" title="Lixeira de Aulas Excluídas (30 dias)">
                                     <i data-lucide="trash-2" style="width: 15px; height: 15px;"></i>
                                     <span id="trash-count-badge">Lixeira (0)</span>
                                 </button>
 
                                 <!-- CTA Principal: + Novo Planejamento / Agendar Aula -->
-                                <button type="button" class="btn btn-primary" onclick="openNewSchedulePlanModal(); return false;">
-                                    <i data-lucide="plus-circle" style="width: 16px; height: 16px;"></i>
-                                    <span>Novo Planejamento</span>
+                                <button type="button" class="btn-hero-white" onclick="openNewSchedulePlanModal(); return false;">
+                                    <i data-lucide="plus" style="width: 15px; height: 15px;"></i>
+                                    <span>+ Novo Planejamento</span>
                                 </button>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="card card-full margin-bottom-lg" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-card); padding: 0; overflow: hidden;">
 
                         <!-- Barra Superior: Contexto da Turma Ativa + Busca de Habilidade BNCC + Navegação Temporal -->
                         <div style="padding: 14px 24px; background: var(--color-surface-subtle); border-bottom: 1px solid var(--color-border-subtle); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
@@ -3465,6 +3504,19 @@
 
                 <!-- ==================== GESTÃO PEDAGÓGICA TAB ==================== -->
                 <section id="gestao-pedagogica" class="tab-content">
+                    <div class="tab-hero-banner">
+                        <div class="tab-hero-content">
+                            <div>
+                                <div class="tab-hero-tag">
+                                    <i data-lucide="award" style="width: 14px; height: 14px;"></i>
+                                    <span>Diagnóstico Cognitivo & Intervenções Pedagógicas</span>
+                                </div>
+                                <h2 class="tab-hero-title">Gestão Pedagógica & Análise SAEB</h2>
+                                <p class="tab-hero-subtitle">Classificação por níveis de proficiência (0 a 5), laudos técnicos diagnósticos por estudante e modelos de intervenção escolar.</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="card card-full margin-bottom-md" style="padding: 0; background-color: var(--bg-secondary);">
                         <div style="display: flex; gap: 20px; padding: 16px 24px; border-bottom: 1px solid var(--border-color); overflow-x: auto;">
                             <button class="pedagogic-subtab-btn active" data-subtab="niveis-saeb-sub" style="background:none; border:none; color:var(--purple-light); font-weight:600; cursor:pointer; padding-bottom:8px; border-bottom: 2px solid var(--purple); font-size:0.95rem; white-space:nowrap; transition: var(--transition);">Níveis de Proficiência SAEB (0 a 5)</button>
@@ -3788,27 +3840,26 @@
                 <!-- ==================== QUESTIONS TAB (BANCO DE QUESTÕES 2.0 COM IA INTEGRADA) ==================== -->
                 <section id="banco-questoes" class="tab-content">
                     <!-- Banner de Destaque / Ações Rápidas -->
-                    <div class="card margin-bottom-md" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(59, 130, 246, 0.05) 100%); border-left: 4px solid var(--purple);">
-                        <div class="flex-between" style="flex-wrap: wrap; gap: 14px;">
+                    <div class="tab-hero-banner">
+                        <div class="tab-hero-content">
                             <div>
-                                <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
-                                    <i data-lucide="file-question" style="color: var(--purple-light);"></i>
-                                    Banco de Questões & Gerador com IA Integrada (SAEB / SEAMA / BNCC)
-                                </h3>
-                                <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;">
-                                    Crie itens calibrados por IA, importe lotes de arquivos (PDF/Word) com nosso gabarito padrão, ou cadastre questões manualmente para suas avaliações.
-                                </p>
+                                <div class="tab-hero-tag">
+                                    <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i>
+                                    <span>Banco de Itens & Inteligência Artificial</span>
+                                </div>
+                                <h2 class="tab-hero-title">Banco de Questões & Gerador com IA Integrada</h2>
+                                <p class="tab-hero-subtitle">Crie itens calibrados por IA, importe lotes de arquivos (PDF/Word) com gabarito padrão, ou monte cadernos completos de simulados.</p>
                             </div>
-                            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
-                                <button class="btn btn-outline btn-sm" id="btn-download-word-template" style="display:flex; align-items:center; gap:6px; font-size:0.78rem;">
+                            <div class="tab-hero-actions">
+                                <button class="btn-hero-outline" id="btn-download-word-template">
                                     <i data-lucide="file-down"></i>
                                     <span>Baixar Modelo Word (.docx)</span>
                                 </button>
-                                <button class="btn btn-outline btn-sm" id="btn-config-ai-key" style="display:flex; align-items:center; gap:6px; font-size:0.78rem; border-color: var(--purple-light); color: var(--purple-light);">
+                                <button class="btn-hero-outline" id="btn-config-ai-key">
                                     <i data-lucide="key-round"></i>
                                     <span>Configurar Chave IA</span>
                                 </button>
-                                <button class="btn btn-primary btn-sm" id="btn-open-create-exam-from-q" style="display:flex; align-items:center; gap:6px; font-size:0.78rem;">
+                                <button class="btn-hero-white" id="btn-open-create-exam-from-q">
                                     <i data-lucide="printer"></i>
                                     <span>Montar Simulado com Itens</span>
                                 </button>
@@ -4140,27 +4191,22 @@
                 <!-- ==================== BIBLIOTECA PEDAGÓGICA ==================== -->
                 <section id="biblioteca-recursos" class="tab-content">
                     <!-- Hero Header Institucional -->
-                    <div class="mec-library-hero" style="background: var(--color-brand-primary); border-radius: var(--radius-md); padding: 28px 32px; color: #fff; margin-bottom: 24px; position: relative; overflow: hidden; border: 1px solid var(--color-brand-primary);">
-                        <div style="position: relative; z-index: 2; max-width: 760px;">
-                            <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.12); padding: 4px 12px; border-radius: var(--radius-sm); font-size: var(--text-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.2);">
-                                <i data-lucide="book-open" style="width: 13px; height: 13px;"></i>
-                                Acervo Digital Oficial • SEMED Gonçalves Dias - MA
-                            </div>
-                            <h2 style="font-size: var(--text-title-lg); font-weight: 800; margin: 0 0 8px 0; color: #ffffff; letter-spacing: -0.5px;">
-                                Biblioteca Pedagógica de Provas & Cadernos Didáticos
-                            </h2>
-                            <p style="font-size: var(--text-body); color: rgba(255, 255, 255, 0.85); margin: 0 0 18px 0; line-height: 1.5;">
-                                Acesso institucional aos cadernos de simulados impressos padrão SAEB/SEAMA, matrizes curriculares comentadas, guias do professor e sequências didáticas para sala de aula.
-                            </p>
-                            <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
-                                <div>
-                                    <button class="btn btn-primary" id="btn-bib-print-direct" onclick="openCombinedCadernoModal();" style="background: #ffffff; color: var(--color-brand-primary); font-weight: 700; border: none; padding: 10px 18px; display: flex; align-items: center; gap: 8px;">
-                                        <i data-lucide="printer" style="width:16px; height:16px;"></i>
-                                        <span>Gerar Caderno A4 Completo</span>
-                                    </button>
-                                    <span style="display: block; font-size: var(--text-xs); color: rgba(255,255,255,0.8); margin-top: 4px;">Combine vários simulados filtrados em um único caderno para impressão</span>
+                    <div class="tab-hero-banner">
+                        <div class="tab-hero-content">
+                            <div>
+                                <div class="tab-hero-tag">
+                                    <i data-lucide="book-open" style="width: 14px; height: 14px;"></i>
+                                    <span>Acervo Digital Oficial • SEMED Gonçalves Dias - MA</span>
                                 </div>
-                                <button class="btn btn-outline" id="btn-bib-upload-new" onclick="openUploadPedagogicModal(); return false;" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: #ffffff; font-weight: 600; padding: 10px 18px; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <h2 class="tab-hero-title">Biblioteca Pedagógica de Provas & Cadernos Didáticos</h2>
+                                <p class="tab-hero-subtitle">Acesso institucional aos cadernos de simulados impressos padrão SAEB/SEAMA, matrizes curriculares comentadas e guias do professor.</p>
+                            </div>
+                            <div class="tab-hero-actions">
+                                <button class="btn-hero-white" id="btn-bib-print-direct" onclick="openCombinedCadernoModal();">
+                                    <i data-lucide="printer" style="width:16px; height:16px;"></i>
+                                    <span>Gerar Caderno A4 Completo</span>
+                                </button>
+                                <button class="btn-hero-outline" id="btn-bib-upload-new" onclick="openUploadPedagogicModal(); return false;">
                                     <i data-lucide="upload-cloud" style="width:16px; height:16px;"></i>
                                     <span>Adicionar Material ao Acervo</span>
                                 </button>
@@ -4358,19 +4404,23 @@
                     
                     <!-- ==================== VISTA 1: LISTAGEM DE USUÁRIOS (EQUIPE ESCOLAR & SEMED) ==================== -->
                     <div id="users-list-view-container">
-                        <div class="flex-between margin-bottom-md" style="align-items: center;">
-                            <div>
-                                <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin: 0; text-transform: uppercase; letter-spacing: -0.5px;">
-                                    USUÁRIOS & EQUIPE
-                                </h2>
-                                <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 2px 0 0 0;">
-                                    Gestão centralizada de professores, diretores escolares e equipe técnica da SEMED Gonçalves Dias.
-                                </p>
+                        <div class="tab-hero-banner">
+                            <div class="tab-hero-content">
+                                <div>
+                                    <div class="tab-hero-tag">
+                                        <i data-lucide="shield-check" style="width: 14px; height: 14px;"></i>
+                                        <span>Controle de Acesso & Gestão de Equipe</span>
+                                    </div>
+                                    <h2 class="tab-hero-title">Gestão de Usuários & Equipe Escolar</h2>
+                                    <p class="tab-hero-subtitle">Gestão centralizada de professores, diretores escolares, coordenadores e equipe técnica da SEMED Gonçalves Dias.</p>
+                                </div>
+                                <div class="tab-hero-actions">
+                                    <button class="btn-hero-white" id="btn-open-create-user-modal" onclick="openCreateUserModal(); return false;">
+                                        <i data-lucide="user-plus"></i>
+                                        <span>+ Cadastrar Novo Usuário</span>
+                                    </button>
+                                </div>
                             </div>
-                            <button class="btn btn-primary" id="btn-open-create-user-modal" onclick="openCreateUserModal(); return false;">
-                                <i data-lucide="user-plus"></i>
-                                <span>+ Cadastrar Novo Usuário</span>
-                            </button>
                         </div>
 
                         <!-- Barra de Filtros (Perfil Staff & Status) -->
@@ -5499,8 +5549,9 @@
 
                     <div class="modal-footer flex-end" style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px; border-top:1px solid var(--border-color); padding-top:14px;">
                         <button type="button" class="btn btn-outline" id="btn-cancel-upload-pedagogic" onclick="closeUploadPedagogicModal();">Cancelar</button>
-                        <button type="submit" id="btn-submit-upload-pedagogic" class="btn btn-primary" style="font-weight:700; background:linear-gradient(135deg, #1A3D63, #2563eb); border:none; padding:10px 20px;">
-                            💾 Salvar e Catalogar no Acervo
+                        <button type="submit" id="btn-submit-upload-pedagogic" class="btn btn-primary" style="font-weight:700; background:linear-gradient(135deg, #1A3D63, #2563eb); border:none; padding:10px 20px; display: inline-flex; align-items: center; gap: 6px;">
+                            <i data-lucide="save" style="width: 16px; height: 16px;"></i>
+                            <span>Salvar e Catalogar no Acervo</span>
                         </button>
                     </div>
                 </form>
@@ -5522,7 +5573,7 @@
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             <span>Alunos</span>
         </a>
-        <a href="#aplicacao-provas" onclick="switchTab('aplicacao-provas'); return false;" class="menu-item" data-target="aplicacao-provas">
+        <a href="#sec-aplicacao-provas" onclick="switchTab('sec-aplicacao-provas'); return false;" class="menu-item" data-target="sec-aplicacao-provas">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
             <span>Provas</span>
         </a>
@@ -5545,9 +5596,13 @@
                 <div class="mobile-sheet-group">
                     <span class="mobile-sheet-group-title">Avaliação</span>
                     <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <a href="#calculo-ideb" onclick="switchTab('calculo-ideb'); return false;" class="menu-item" data-target="calculo-ideb">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
+                            <span>Cálculo do IDEB</span>
+                        </a>
                         <a href="#metas-ideb" onclick="switchTab('metas-ideb'); return false;" class="menu-item" data-target="metas-ideb">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                            <span>Metas e Planos (PDE)</span>
+                            <span>Metas Municipais (PDE)</span>
                         </a>
                         <a href="#ideb-comparativo" onclick="switchTab('ideb-comparativo'); return false;" class="menu-item" data-target="ideb-comparativo">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
@@ -5561,15 +5616,15 @@
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>
                             <span>Cronograma de Habilidades</span>
                         </a>
-                        <a href="#criar-avaliacoes" onclick="switchTab('criar-avaliacoes'); return false;" class="menu-item" data-target="criar-avaliacoes">
+                        <a href="#sec-criar-avaliacoes" onclick="switchTab('sec-criar-avaliacoes'); return false;" class="menu-item" data-target="sec-criar-avaliacoes">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M12 14v4"/><path d="M10 16h4"/></svg>
-                            <span>Criar Avaliações</span>
+                            <span>Avaliações & Simulados</span>
                         </a>
-                        <a href="#aplicacao-provas" onclick="switchTab('aplicacao-provas'); return false;" class="menu-item" data-target="aplicacao-provas">
+                        <a href="#sec-aplicacao-provas" onclick="switchTab('sec-aplicacao-provas'); return false;" class="menu-item" data-target="sec-aplicacao-provas">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
                             <span>Aplicação de Provas</span>
                         </a>
-                        <a href="#questions" onclick="switchTab('questions'); return false;" class="menu-item" data-target="questions">
+                        <a href="#banco-questoes" onclick="switchTab('banco-questoes'); return false;" class="menu-item" data-target="banco-questoes">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><circle cx="10" cy="13" r="1"/><path d="M9.1 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3"/></svg>
                             <span>Banco de Questões</span>
                         </a>
@@ -5578,10 +5633,6 @@
                 <div class="mobile-sheet-group" style="margin-top: 16px;">
                     <span class="mobile-sheet-group-title">Pedagógico & Sistema</span>
                     <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <a href="#ai-playground" onclick="switchTab('ai-playground'); return false;" class="menu-item" data-target="ai-playground">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
-                            <span>Relatórios & Monitoramento</span>
-                        </a>
                         <a href="#gestao-pedagogica" onclick="switchTab('gestao-pedagogica'); return false;" class="menu-item" data-target="gestao-pedagogica">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M12 18v4"/><path d="M8 22h8"/></svg>
                             <span>Gestão Pedagógica</span>
@@ -7227,89 +7278,89 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=341bc2b5e3_mtt0pl5a"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=daec643646_mtt0pl5a"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mtt0pl5a"></script>
-    <script src="bncc_habilidades_oficial.js?v=2f802bf604_mtt0pl5a"></script>
-    <script src="ideb_publico_db.js?v=fa7edb185f_mtt0pl5a"></script>
-    <script src="alunos_db.js?v=e23fe3179f_mtt0pl5a"></script>
-    <script src="js/data/official_students_seed.js?v=876be25c9a_mtt0pl5a"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=341bc2b5e3_mtt1kes1"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=daec643646_mtt1kes1"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mtt1kes1"></script>
+    <script src="bncc_habilidades_oficial.js?v=2f802bf604_mtt1kes1"></script>
+    <script src="ideb_publico_db.js?v=fa7edb185f_mtt1kes1"></script>
+    <script src="alunos_db.js?v=e23fe3179f_mtt1kes1"></script>
+    <script src="js/data/official_students_seed.js?v=876be25c9a_mtt1kes1"></script>
 
     <!-- Módulos do Core -->
-    <script src="js/core/security.js?v=9d4fc4a791_mtt0pl5a"></script>
-    <script src="js/core/helpers.js?v=7656a2a6bb_mtt0pl5a"></script>
-    <script src="js/core/theme-toast.js?v=c181c006e0_mtt0pl5a"></script>
-    <script src="js/core/chart-theme.js?v=c8e29467a8_mtt0pl5a"></script>
-    <script src="js/core/user-profile.js?v=c1db21eb55_mtt0pl5a"></script>
-    <script src="js/data/official_users_directory.js?v=24a756e04c_mtt0pl5a"></script>
-    <script src="js/core/login-animation.js?v=414e14bbcd_mtt0pl5a"></script>
-    <script src="js/core/auth.js?v=20d2c316a9_mtt0pl5a"></script>
-    <script src="js/core/navigation/navigation_meta.js?v=256a33a6c1_mtt0pl5a"></script>
-    <script src="js/core/navigation/navigation_history.js?v=a09c33f4ae_mtt0pl5a"></script>
-    <script src="js/core/navigation/navigation_events.js?v=7e416c2fa3_mtt0pl5a"></script>
-    <script src="js/core/navigation.js?v=0ee55dd7e3_mtt0pl5a"></script>
-    <script src="js/core/sync.js?v=73ebd2560a_mtt0pl5a"></script>
+    <script src="js/core/security.js?v=9d4fc4a791_mtt1kes1"></script>
+    <script src="js/core/helpers.js?v=7656a2a6bb_mtt1kes1"></script>
+    <script src="js/core/theme-toast.js?v=c181c006e0_mtt1kes1"></script>
+    <script src="js/core/chart-theme.js?v=c8e29467a8_mtt1kes1"></script>
+    <script src="js/core/user-profile.js?v=c1db21eb55_mtt1kes1"></script>
+    <script src="js/data/official_users_directory.js?v=24a756e04c_mtt1kes1"></script>
+    <script src="js/core/login-animation.js?v=414e14bbcd_mtt1kes1"></script>
+    <script src="js/core/auth.js?v=20d2c316a9_mtt1kes1"></script>
+    <script src="js/core/navigation/navigation_meta.js?v=256a33a6c1_mtt1kes1"></script>
+    <script src="js/core/navigation/navigation_history.js?v=a09c33f4ae_mtt1kes1"></script>
+    <script src="js/core/navigation/navigation_events.js?v=7e416c2fa3_mtt1kes1"></script>
+    <script src="js/core/navigation.js?v=0ee55dd7e3_mtt1kes1"></script>
+    <script src="js/core/sync.js?v=73ebd2560a_mtt1kes1"></script>
 
     <!-- Módulos de Domínio -->
-    <script src="js/modules/dashboard/dashboard_kpis.js?v=1ed1f8c921_mtt0pl5a"></script>
-    <script src="js/modules/dashboard/dashboard_charts.js?v=de1a05b8a6_mtt0pl5a"></script>
-    <script src="js/modules/dashboard/dashboard_analytics.js?v=a7db1260ed_mtt0pl5a"></script>
-    <script src="js/modules/dashboard/dashboard_scales.js?v=38ef0c5f91_mtt0pl5a"></script>
-    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=8a942cafe9_mtt0pl5a"></script>
-    <script src="js/modules/dashboard/dashboard_scroll_reveal.js?v=765a5ac049_mtt0pl5a"></script>
-    <script src="js/modules/alunos/alunos_progression_modal.js?v=9b35c9ce79_mtt0pl5a"></script>
-    <script src="js/modules/alunos/alunos_list.js?v=1680ba1e32_mtt0pl5a"></script>
-    <script src="js/modules/alunos/alunos_forms.js?v=d65581afbc_mtt0pl5a"></script>
-    <script src="js/modules/turmas/turmas_crud.js?v=7b6d46585b_mtt0pl5a"></script>
-    <script src="js/modules/turmas/turmas_diario.js?v=edae66f43a_mtt0pl5a"></script>
-    <script src="js/modules/metas/metas_regional.js?v=7556fbb4b6_mtt0pl5a"></script>
-    <script src="js/modules/metas/metas_pactuacao.js?v=55531875c5_mtt0pl5a"></script>
-    <script src="js/modules/metas/metas_escolas_ranking.js?v=d2cab5c654_mtt0pl5a"></script>
-    <script src="js/modules/metas/metas_calculo_manual.js?v=db8734a78d_mtt0pl5a"></script>
-    <script src="js/modules/metas/metas_ideb.js?v=17b2b704aa_mtt0pl5a"></script>
-    <script src="js/modules/escolas/escolas.js?v=6156cfb8f2_mtt0pl5a"></script>
-    <script src="js/modules/escolas/escolas_workspace.js?v=cbd14d4cc2_mtt0pl5a"></script>
-    <script src="js/modules/escolas/escolas_modals.js?v=d32d052d1d_mtt0pl5a"></script>
-    <script src="js/modules/matrizes/matrizes.js?v=d2df1a4b54_mtt0pl5a"></script>
-    <script src="js/modules/cronograma/cronograma_state.js?v=291ef65907_mtt0pl5a"></script>
-    <script src="js/modules/cronograma/cronograma_views_monthly.js?v=8d7fe9a8d7_mtt0pl5a"></script>
-    <script src="js/modules/cronograma/cronograma_views_weekly.js?v=17318533ba_mtt0pl5a"></script>
-    <script src="js/modules/cronograma/cronograma_views_comparison.js?v=9875be98c6_mtt0pl5a"></script>
-    <script src="js/modules/cronograma/cronograma_progress_modal.js?v=f327132831_mtt0pl5a"></script>
-    <script src="js/modules/cronograma/cronograma_views.js?v=736673a1aa_mtt0pl5a"></script>
-    <script src="js/modules/cronograma/cronograma_planner.js?v=5e9c900526_mtt0pl5a"></script>
-    <script src="js/modules/cronograma/cronograma_trash.js?v=b1408ecbe3_mtt0pl5a"></script>
-    <script src="js/modules/cronograma/cronograma_calendar_40w.js?v=310bf5af0c_mtt0pl5a"></script>
-    <script src="js/modules/cronograma/cronograma.js?v=fa42f11d98_mtt0pl5a"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_state.js?v=9246c014a5_mtt0pl5a"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_wizard.js?v=23d3745407_mtt0pl5a"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_events.js?v=291641d46e_mtt0pl5a"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_espelho.js?v=40f93638e1_mtt0pl5a"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_analytics.js?v=c02f843b04_mtt0pl5a"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_print.js?v=4bbcca0d65_mtt0pl5a"></script>
-    <script src="js/modules/questoes/questoes_generator.js?v=8e44d7592b_mtt0pl5a"></script>
-    <script src="js/modules/questoes/questoes_list.js?v=5543a2c1d7_mtt0pl5a"></script>
-    <script src="js/modules/questoes/questoes_import_export.js?v=c7d3bb36d0_mtt0pl5a"></script>
-    <script src="js/modules/diagnostico/diagnostico.js?v=e5116c8aaa_mtt0pl5a"></script>
-    <script src="js/modules/saeb/saeb_state.js?v=178da7f734_mtt0pl5a"></script>
-    <script src="js/modules/saeb/saeb_distribution_view.js?v=ae0be00c12_mtt0pl5a"></script>
-    <script src="js/modules/saeb/saeb_comparativo_turmas.js?v=22f1b3636c_mtt0pl5a"></script>
-    <script src="js/modules/saeb/saeb_ficha_individual.js?v=a41dbdf173_mtt0pl5a"></script>
-    <script src="js/modules/saeb/saeb_boletim.js?v=f2fbc9e7e7_mtt0pl5a"></script>
-    <script src="js/modules/saeb/saeb_intervencoes_comparativo.js?v=3002c919ef_mtt0pl5a"></script>
-    <script src="js/modules/saeb/saeb.js?v=b4e224328a_mtt0pl5a"></script>
-    <script src="js/modules/biblioteca/biblioteca_reader.js?v=743943d3d7_mtt0pl5a"></script>
-    <script src="js/modules/biblioteca/biblioteca_upload.js?v=98b16c4eda_mtt0pl5a"></script>
-    <script src="js/modules/biblioteca/biblioteca.js?v=d101f88443_mtt0pl5a"></script>
-    <script src="js/modules/admin/admin_data.js?v=4146d4760b_mtt0pl5a"></script>
-    <script src="js/modules/admin/admin_users.js?v=3fceeceab0_mtt0pl5a"></script>
-    <script src="js/modules/admin/admin_tenants.js?v=ae5a501f46_mtt0pl5a"></script>
-    <script src="js/modules/onboarding/onboarding_tour.js?v=e8a0416e78_mtt0pl5a"></script>
-    <script src="js/modules/onboarding/tab_context_tours.js?v=a447973a01_mtt0pl5a"></script>
+    <script src="js/modules/dashboard/dashboard_kpis.js?v=1ed1f8c921_mtt1kes1"></script>
+    <script src="js/modules/dashboard/dashboard_charts.js?v=de1a05b8a6_mtt1kes1"></script>
+    <script src="js/modules/dashboard/dashboard_analytics.js?v=a7db1260ed_mtt1kes1"></script>
+    <script src="js/modules/dashboard/dashboard_scales.js?v=38ef0c5f91_mtt1kes1"></script>
+    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=8a942cafe9_mtt1kes1"></script>
+    <script src="js/modules/dashboard/dashboard_scroll_reveal.js?v=765a5ac049_mtt1kes1"></script>
+    <script src="js/modules/alunos/alunos_progression_modal.js?v=9b35c9ce79_mtt1kes1"></script>
+    <script src="js/modules/alunos/alunos_list.js?v=1680ba1e32_mtt1kes1"></script>
+    <script src="js/modules/alunos/alunos_forms.js?v=d65581afbc_mtt1kes1"></script>
+    <script src="js/modules/turmas/turmas_crud.js?v=7b6d46585b_mtt1kes1"></script>
+    <script src="js/modules/turmas/turmas_diario.js?v=edae66f43a_mtt1kes1"></script>
+    <script src="js/modules/metas/metas_regional.js?v=7556fbb4b6_mtt1kes1"></script>
+    <script src="js/modules/metas/metas_pactuacao.js?v=55531875c5_mtt1kes1"></script>
+    <script src="js/modules/metas/metas_escolas_ranking.js?v=d2cab5c654_mtt1kes1"></script>
+    <script src="js/modules/metas/metas_calculo_manual.js?v=db8734a78d_mtt1kes1"></script>
+    <script src="js/modules/metas/metas_ideb.js?v=17b2b704aa_mtt1kes1"></script>
+    <script src="js/modules/escolas/escolas.js?v=6156cfb8f2_mtt1kes1"></script>
+    <script src="js/modules/escolas/escolas_workspace.js?v=cbd14d4cc2_mtt1kes1"></script>
+    <script src="js/modules/escolas/escolas_modals.js?v=d32d052d1d_mtt1kes1"></script>
+    <script src="js/modules/matrizes/matrizes.js?v=d2df1a4b54_mtt1kes1"></script>
+    <script src="js/modules/cronograma/cronograma_state.js?v=291ef65907_mtt1kes1"></script>
+    <script src="js/modules/cronograma/cronograma_views_monthly.js?v=8d7fe9a8d7_mtt1kes1"></script>
+    <script src="js/modules/cronograma/cronograma_views_weekly.js?v=17318533ba_mtt1kes1"></script>
+    <script src="js/modules/cronograma/cronograma_views_comparison.js?v=9875be98c6_mtt1kes1"></script>
+    <script src="js/modules/cronograma/cronograma_progress_modal.js?v=f327132831_mtt1kes1"></script>
+    <script src="js/modules/cronograma/cronograma_views.js?v=736673a1aa_mtt1kes1"></script>
+    <script src="js/modules/cronograma/cronograma_planner.js?v=5e9c900526_mtt1kes1"></script>
+    <script src="js/modules/cronograma/cronograma_trash.js?v=b1408ecbe3_mtt1kes1"></script>
+    <script src="js/modules/cronograma/cronograma_calendar_40w.js?v=310bf5af0c_mtt1kes1"></script>
+    <script src="js/modules/cronograma/cronograma.js?v=fa42f11d98_mtt1kes1"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_state.js?v=9246c014a5_mtt1kes1"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_wizard.js?v=23d3745407_mtt1kes1"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_events.js?v=291641d46e_mtt1kes1"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_espelho.js?v=be2165b923_mtt1kes1"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_analytics.js?v=c02f843b04_mtt1kes1"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_print.js?v=4bbcca0d65_mtt1kes1"></script>
+    <script src="js/modules/questoes/questoes_generator.js?v=8e44d7592b_mtt1kes1"></script>
+    <script src="js/modules/questoes/questoes_list.js?v=5543a2c1d7_mtt1kes1"></script>
+    <script src="js/modules/questoes/questoes_import_export.js?v=c7d3bb36d0_mtt1kes1"></script>
+    <script src="js/modules/diagnostico/diagnostico.js?v=e5116c8aaa_mtt1kes1"></script>
+    <script src="js/modules/saeb/saeb_state.js?v=178da7f734_mtt1kes1"></script>
+    <script src="js/modules/saeb/saeb_distribution_view.js?v=ae0be00c12_mtt1kes1"></script>
+    <script src="js/modules/saeb/saeb_comparativo_turmas.js?v=22f1b3636c_mtt1kes1"></script>
+    <script src="js/modules/saeb/saeb_ficha_individual.js?v=a41dbdf173_mtt1kes1"></script>
+    <script src="js/modules/saeb/saeb_boletim.js?v=f2fbc9e7e7_mtt1kes1"></script>
+    <script src="js/modules/saeb/saeb_intervencoes_comparativo.js?v=3002c919ef_mtt1kes1"></script>
+    <script src="js/modules/saeb/saeb.js?v=b4e224328a_mtt1kes1"></script>
+    <script src="js/modules/biblioteca/biblioteca_reader.js?v=743943d3d7_mtt1kes1"></script>
+    <script src="js/modules/biblioteca/biblioteca_upload.js?v=98b16c4eda_mtt1kes1"></script>
+    <script src="js/modules/biblioteca/biblioteca.js?v=d101f88443_mtt1kes1"></script>
+    <script src="js/modules/admin/admin_data.js?v=4146d4760b_mtt1kes1"></script>
+    <script src="js/modules/admin/admin_users.js?v=3fceeceab0_mtt1kes1"></script>
+    <script src="js/modules/admin/admin_tenants.js?v=ae5a501f46_mtt1kes1"></script>
+    <script src="js/modules/onboarding/onboarding_tour.js?v=e8a0416e78_mtt1kes1"></script>
+    <script src="js/modules/onboarding/tab_context_tours.js?v=a447973a01_mtt1kes1"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=82382debd8_mtt0pl5a"></script>
-    <script src="js/core/global_cards_animation.js?v=e748bd59fe_mtt0pl5a"></script>
-    <script src="js/core/global_button_handlers.js?v=38a379ca14_mtt0pl5a"></script>
+    <script src="app.js?v=82382debd8_mtt1kes1"></script>
+    <script src="js/core/global_cards_animation.js?v=e748bd59fe_mtt1kes1"></script>
+    <script src="js/core/global_button_handlers.js?v=38a379ca14_mtt1kes1"></script>
 </body>
 </html>

@@ -909,6 +909,154 @@ body.dark-mode .navbar-brand-logo.brand-logo-dark {
     user-select: none;
 }
 
+/* =========================================================================
+   PADRÃO VISUAL GLOBAL DE TOPOS DE PÁGINA (HERO BANNERS AZUL ESCURO / GRADIENTE)
+   Unifica a identidade visual de todas as abas e menus do sistema
+   ========================================================================= */
+.tab-hero-banner {
+    background: var(--gradient-banner, linear-gradient(135deg, #0B2545 0%, #10376B 50%, #2F6FED 100%));
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-card, 16px);
+    padding: 22px 28px;
+    margin-bottom: 22px;
+    box-shadow: 0 10px 25px -5px rgba(10, 25, 49, 0.22);
+    position: relative;
+    overflow: hidden;
+    color: #FFFFFF;
+}
+
+.tab-hero-banner::after {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -8%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
+    pointer-events: none;
+}
+
+.tab-hero-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    position: relative;
+    z-index: 2;
+}
+
+.tab-hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #FFFFFF;
+}
+
+.tab-hero-title {
+    font-size: 1.55rem;
+    font-weight: 800;
+    margin: 0 0 6px 0;
+    color: #FFFFFF !important;
+    line-height: 1.22;
+    letter-spacing: -0.02em;
+}
+
+.tab-hero-subtitle {
+    font-size: 0.86rem;
+    color: rgba(255, 255, 255, 0.88) !important;
+    margin: 0;
+    line-height: 1.5;
+    max-width: 880px;
+}
+
+.tab-hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 2;
+}
+
+.btn-hero-white,
+.tab-hero-actions .btn-primary {
+    background: #FFFFFF !important;
+    color: #0B2545 !important;
+    border: 1px solid #FFFFFF !important;
+    font-weight: 700 !important;
+    padding: 8px 16px;
+    border-radius: var(--radius-md, 8px);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.84rem;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.btn-hero-white:hover,
+.tab-hero-actions .btn-primary:hover {
+    background: #F0F4F8 !important;
+    color: #051329 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.18);
+}
+
+.btn-hero-outline,
+.tab-hero-actions .btn-outline {
+    background: rgba(255, 255, 255, 0.12) !important;
+    color: #FFFFFF !important;
+    border: 1px solid rgba(255, 255, 255, 0.32) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    font-weight: 600 !important;
+    padding: 8px 16px;
+    border-radius: var(--radius-md, 8px);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.84rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.btn-hero-outline:hover,
+.tab-hero-actions .btn-outline:hover {
+    background: rgba(255, 255, 255, 0.22) !important;
+    border-color: #FFFFFF !important;
+    color: #FFFFFF !important;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    .tab-hero-banner {
+        padding: 18px 20px;
+        margin-bottom: 16px;
+    }
+    .tab-hero-title {
+        font-size: 1.3rem;
+    }
+    .tab-hero-subtitle {
+        font-size: 0.82rem;
+    }
+}
+
+
 @media (max-width: 900px) {
     .welcome-banner-illustration {
         display: none;
