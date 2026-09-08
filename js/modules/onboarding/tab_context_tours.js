@@ -510,7 +510,6 @@
             'sec-aplicacao-provas': 'Aplicação de Provas',
             'gestao-pedagogica': 'Gestão Pedagógica',
             'biblioteca-recursos': 'Biblioteca Pedagógica',
-            'doc-tecnica': 'Documentação Técnica',
             'admin-panel': 'Área Administrativa'
         };
 

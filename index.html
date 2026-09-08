@@ -16,7 +16,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="design-tokens.css?v=20260830_v2">
-    <link rel="stylesheet" href="styles.css?v=a65da411bf_mts1qhp1">
+    <link rel="stylesheet" href="styles.css?v=a65da411bf_mts22bmf">
     <link rel="stylesheet" href="login-premium.css?v=20260830_v2">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -833,11 +833,6 @@
                         <div class="menu-active-indicator"></div>
                         <img src="assets/icons/suporte.svg" class="menu-icon-svg" alt="" aria-hidden="true">
                         <span>Biblioteca Pedagógica</span>
-                    </a>
-                    <a href="#doc-tecnica" onclick="switchTab('doc-tecnica'); return false;" class="menu-item" data-target="doc-tecnica" data-tooltip="Documentação Técnica">
-                        <div class="menu-active-indicator"></div>
-                        <img src="assets/icons/suporte.svg" class="menu-icon-svg" alt="" aria-hidden="true">
-                        <span>Documentação Técnica</span>
                     </a>
                     <a href="#admin-panel" onclick="switchTab('admin-panel'); return false;" class="menu-item" data-target="admin-panel" data-tooltip="Área Administrativa">
                         <div class="menu-active-indicator"></div>
@@ -3784,299 +3779,6 @@
                             </div>
                         </div>
                     </div>
-
-</section>
-
-                <!-- ==================== DOCUMENTAÇÃO TÉCNICA TAB ==================== -->
-                <section id="doc-tecnica" class="tab-content">
-                    <div class="card margin-bottom-lg" style="background: linear-gradient(135deg, rgba(225, 29, 72, 0.06) 0%, rgba(147, 51, 234, 0.04) 100%); border-left: 4px solid var(--red-light); padding: 18px 24px;">
-                        <div class="flex-between flex-wrap gap-md">
-                            <div>
-                                <div style="display:inline-flex; align-items:center; gap:6px; background:#ffe4e6; color:#e11d48; padding:3px 10px; border-radius:12px; font-size:0.75rem; font-weight:700; margin-bottom:6px;">
-                                    <i data-lucide="shield" style="width:12px; height:12px;"></i> GOVERNANÇA & TI
-                                </div>
-                                <h3 style="font-size:1.25rem; font-weight:700; color:var(--text-primary); margin:0 0 4px 0;">Especificação Técnica & Arquitetura de Dados</h3>
-                                <p style="font-size:0.85rem; color:var(--text-secondary); margin:0;">Controle RBAC Ativo • Conformidade LGPD • Sincronização Postgres & Modelo Relacional ERD</p>
-                            </div>
-                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                                <button class="btn btn-outline btn-sm" onclick="window.navigateToTab('admin-panel')"><i data-lucide="users"></i> Usuários & RBAC</button>
-                                <button class="btn btn-outline btn-sm" onclick="window.navigateToTab('escolas-panel')"><i data-lucide="school"></i> Base de Escolas</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="db-tabs-header">
-                        <button class="db-tab-btn active" data-tech-tab="modules">Módulos do Sistema</button>
-                        <button class="db-tab-btn" data-tech-tab="erd">Modelo de Dados (ERD)</button>
-                        <button class="db-tab-btn" data-tech-tab="sql">DDL SQL (Postgres)</button>
-                        <button class="db-tab-btn" data-tech-tab="apis">APIs RESTful Explorer</button>
-                        <button class="db-tab-btn" data-tech-tab="architecture">Arquitetura de IA</button>
-                    </div>
-
-                    <div class="db-tabs-content">
-                        <!-- Módulos do Sistema -->
-                        <div class="db-panel active" id="tech-panel-modules">
-                            <div class="modules-container">
-                                <div class="modules-sidebar">
-                                    <button class="module-tab-btn active" data-module="1">Módulo 1: Gestão & Enturmação</button>
-                                    <button class="module-tab-btn" data-module="2">Módulo 2: Materiais & Apoio</button>
-                                    <button class="module-tab-btn" data-module="3">Módulo 3: Banco de Questões (BNCC)</button>
-                                    <button class="module-tab-btn" data-module="4">Módulo 4: Engine de Avaliações</button>
-                                    <button class="module-tab-btn" data-module="5">Módulo 5: Painel Longitudinal & IA</button>
-                                </div>
-                                <div class="modules-content">
-                                    <!-- Module 1 Content -->
-                                    <div class="module-panel active" id="module-panel-1">
-                                        <h3>Módulo 1: Gestão Escolar e Enturmação</h3>
-                                        <p class="lead">Estruturação básica da rede e organização das turmas para monitoramento contínuo.</p>
-                                        <div class="spec-block">
-                                            <h4>Escolas e Turmas</h4>
-                                            <ul>
-                                                <li><strong>Cadastro de Redes & Escolas:</strong> Permite configurar a hierarquia escolar corporativa ou da rede municipal/estadual.</li>
-                                                <li><strong>Criação de Turmas:</strong> Alocação física e lógica por turnos e anos letivos.</li>
-                                                <li><strong>Atribuição Docente:</strong> Associação flexível de professores regentes e especialistas às suas respectivas turmas e disciplinas.</li>
-                                            </ul>
-                                        </div>
-                                        <div class="spec-block">
-                                            <h4>Alunos e Matrículas</h4>
-                                            <ul>
-                                                <li><strong>Código de Matrícula Único:</strong> Cada aluno recebe um ID nacional/único que preserva seu histórico de evolução.</li>
-                                                <li><strong>Enturmação Eficiente:</strong> Distribuição dos estudantes em suas turmas com controle dinâmico de status (Ativo, Transferido, Evadido).</li>
-                                                <li><strong>Acompanhamento Longitudinal:</strong> A matrícula vincula permanentemente as notas das avaliações do aluno ao longo de todo o ano letivo.</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <!-- Module 2 Content -->
-                                    <div class="module-panel" id="module-panel-2">
-                                        <h3>Módulo 2: Materiais e Apoio Pedagógico</h3>
-                                        <p class="lead">Centralização de recursos pedagógicos para apoiar o reforço e a recuperação de habilidades.</p>
-                                        <div class="spec-block">
-                                            <h4>Acervo Digital de Apoio</h4>
-                                            <ul>
-                                                <li><strong>Materiais Complementares:</strong> Gestão de apostilas digitais, livros didáticos, listas de exercícios resolvidas e videoaulas de apoio.</li>
-                                                <li><strong>Conteúdos de Reforço:</strong> Associa materiais de estudo diretamente a competências específicas, auxiliando na recuperação.</li>
-                                            </ul>
-                                        </div>
-                                        <div class="spec-block">
-                                            <h4>Filtros Pedagógicos Hierárquicos</h4>
-                                            <p>Organização inteligente dos materiais estruturada por:</p>
-                                            <ul class="taxonomy-list">
-                                                <li><strong>Etapa de Ensino:</strong> Educação Infantil, Ensino Fundamental I (Anos Iniciais), Ensino Fundamental II (Anos Finais) e Ensino Médio.</li>
-                                                <li><strong>Disciplina / Componente Curricular:</strong> Matemática, Ciências, Língua Portuguesa, História, etc.</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <!-- Module 3 Content -->
-                                    <div class="module-panel" id="module-panel-3">
-                                        <h3>Módulo 3: Banco de Questões e Montagem de Provas (Foco BNCC)</h3>
-                                        <p class="lead">Repositório corporativo para catalogação e geração de instrumentos de avaliação.</p>
-                                        <div class="spec-block">
-                                            <h4>Busca Direta por Código BNCC</h4>
-                                            <ul>
-                                                <li><strong>Pesquisa Parametrizada:</strong> Filtre instantaneamente as questões por código exato de habilidade (ex: <code>EF05MA01</code>, <code>EM13LPT02</code>).</li>
-                                                <li><strong>Filtros Avançados:</strong> Busca integrada por componente curricular, palavras-chave de enunciados e níveis cognitivos da Taxonomia de Bloom.</li>
-                                            </ul>
-                                        </div>
-                                        <div class="spec-block">
-                                            <h4>Estrutura dos Itens Avaliativos</h4>
-                                            <p>Cada item cadastrado possui uma estrutura técnica padronizada contendo:</p>
-                                            <ul>
-                                                <li><strong>Texto-Base:</strong> Imagens, gráficos, tabelas ou passagens literárias de suporte.</li>
-                                                <li><strong>Enunciado claro:</strong> A pergunta objetiva ou comando discursivo principal.</li>
-                                                <li><strong>Opções e Gabarito:</strong> Letras ordenadas e a indicação de qual alternativa é correta.</li>
-                                                <li><strong>Associação BNCC Obrigatória:</strong> Impedimento de criação de itens sem o código de competência correspondente da BNCC.</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <!-- Module 4 Content -->
-                                    <div class="module-panel" id="module-panel-4">
-                                        <h3>Módulo 4: Engine de Avaliações, Eventos e Gabarito Técnico</h3>
-                                        <p class="lead">Motor de processamento de exames periódicos e coleta ágil de respostas.</p>
-                                        <div class="spec-block">
-                                            <h4>Criação e Agendamento de Eventos</h4>
-                                            <ul>
-                                                <li><strong>Tipologia de Avaliação:</strong> Classificação em avaliações Diagnósticas, Formativas ou Simulados.</li>
-                                                <li><strong>Janelas de Aplicação:</strong> Agendamento de datas e horários de aplicação distribuídos de forma massiva ou por turmas específicas.</li>
-                                            </ul>
-                                        </div>
-                                        <div class="spec-block">
-                                            <h4>Gabarito com Matriz BNCC</h4>
-                                            <ul>
-                                                <li><strong>Matriz de Habilidades:</strong> Para cada prova, o sistema vincula o gabarito oficial com a matriz BNCC correspondente, permitindo rastrear o aproveitamento exato de cada habilidade por questão.</li>
-                                                <li><strong>Pesos dos Itens:</strong> Atribuição de valores distintos às questões conforme a complexidade.</li>
-                                            </ul>
-                                        </div>
-                                        <div class="spec-block">
-                                            <h4>Lançamento de Respostas</h4>
-                                            <ul>
-                                                <li><strong>Digitação Rápida:</strong> Interface otimizada (via teclado) para lançamento rápido de cartões-resposta físicos pelos professores.</li>
-                                                <li><strong>Leitura Óptica Integrada:</strong> Pré-disposição para APIs de reconhecimento de imagem via câmera de celular.</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <!-- Module 5 Content -->
-                                    <div class="module-panel" id="module-panel-5">
-                                        <h3>Módulo 5: Painel de Desempenho Longitudinal e Diagnóstico por IA</h3>
-                                        <p class="lead">A inteligência analítica do IDEB na Prática gerando diagnósticos e acompanhamento contínuo.</p>
-                                        <div class="spec-block">
-                                            <h4>Matriz de Evolução Longitudinal</h4>
-                                            <ul>
-                                                <li><strong>Rastreamento Contínuo:</strong> Acompanha a evolução percentual de acertos por habilidade do aluno de forma contínua ao longo dos bimestres/trimestres do ano letivo.</li>
-                                                <li><strong>Visão Histórica:</strong> Detecção visual se uma lacuna de aprendizagem do 1º Bimestre foi sanada ou se persiste no 3º Bimestre.</li>
-                                            </ul>
-                                        </div>
-                                        <div class="spec-block">
-                                            <h4>Mecanismo Diagnóstico com IA</h4>
-                                            <p>Integração com LLM (Gemini API) para ler o histórico completo e gerar um laudo pedagógico em três partes:</p>
-                                            <ul>
-                                                <li><strong>Pontos Fortes:</strong> Habilidades já dominadas e consolidadas (aproveitamento ≥ 70%).</li>
-                                                <li><strong>Pontos de Atenção:</strong> Habilidades críticas deficitárias (< 50%) com hipótese diagnóstica da causa básica.</li>
-                                                <li><strong>Evolução ao Longo do Ano:</strong> Comparativo detalhado do progresso entre as avaliações passadas e a avaliação atual, mostrando se a curva de aprendizado é ascendente ou requer intervenção urgente.</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Diagrama ERD -->
-                        <div class="db-panel" id="tech-panel-erd">
-                            <div class="card card-full">
-                                <div class="card-header flex-between">
-                                    <div>
-                                        <h3>Diagrama ERD Interativo (Mermaid)</h3>
-                                        <p class="card-subtitle">Relacionamento físico-lógico das tabelas centrais de gerenciamento pedagógico.</p>
-                                    </div>
-                                    <button class="btn btn-outline" id="render-erd-btn"><i data-lucide="refresh-cw"></i> Recarregar ERD</button>
-                                </div>
-                                <div class="card-body">
-                                    <div class="erd-scroll-wrapper">
-                                        <div class="mermaid" id="mermaid-container">
-                                            %% Mermaid Diagram Code will be rendered here dynamically %%
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- DDL SQL -->
-                        <div class="db-panel" id="tech-panel-sql">
-                            <div class="card card-full">
-                                <div class="card-header flex-between">
-                                    <div>
-                                        <h3>Script DDL SQL Completo</h3>
-                                        <p class="card-subtitle">Tabelas, chaves primárias, chaves estrangeiras e índices otimizados para PostgreSQL.</p>
-                                    </div>
-                                    <button class="btn btn-outline" id="copy-sql-btn">
-                                        <i data-lucide="copy"></i> Copiar Código
-                                    </button>
-                                </div>
-                                <div class="card-body no-padding">
-                                    <pre class="code-block-container"><code class="language-sql" id="sql-code-display">
--- O código DDL será preenchido pelo app.js --
-                                    </code></pre>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- APIs RESTful -->
-                        <div class="db-panel" id="tech-panel-apis">
-                            <div class="card card-full">
-                                <div class="card-header">
-                                    <h3>Documentação de Endpoints da API RESTful</h3>
-                                    <p class="card-subtitle">Lista de recursos expostos pela plataforma pedagógica.</p>
-                                </div>
-                                <div class="card-body no-padding">
-                                    <div class="api-explorer">
-                                        <div class="api-nav">
-                                            <button class="api-nav-btn active" data-endpoint="agendamento">
-                                                <span class="http-method post">POST</span>
-                                                <span class="endpoint-path">/avaliacoes/evento</span>
-                                            </button>
-                                            <button class="api-nav-btn" data-endpoint="busca-questoes">
-                                                <span class="http-method get">GET</span>
-                                                <span class="endpoint-path">/questoes/busca</span>
-                                            </button>
-                                            <button class="api-nav-btn" data-endpoint="diagnostico-ia">
-                                                <span class="http-method post">POST</span>
-                                                <span class="endpoint-path">/diagnostico/gerar-resumo-ia</span>
-                                            </button>
-                                        </div>
-                                        <div class="api-details">
-                                            <div class="endpoint-info-block active" id="endpoint-agendamento">
-                                                <h4>Agendar Nova Aplicação de Avaliação</h4>
-                                                <p class="endpoint-desc">Cria um evento de aplicação para uma avaliação específica, agendando o intervalo no qual as turmas associadas poderão realizar a prova.</p>
-                                                <div class="grid-2">
-                                                    <div>
-                                                        <h5>JSON de Requisição</h5>
-                                                        <pre><code class="language-json" id="req-agendamento-code"></code></pre>
-                                                    </div>
-                                                    <div>
-                                                        <h5>JSON de Resposta (201)</h5>
-                                                        <pre><code class="language-json" id="res-agendamento-code"></code></pre>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="endpoint-info-block" id="endpoint-busca-questoes">
-                                                <h4>Buscar Questões Mapeadas pela BNCC</h4>
-                                                <p class="endpoint-desc">Retorna a lista de itens alinhados a um código de habilidade da BNCC.</p>
-                                                <div class="grid-2">
-                                                    <div>
-                                                        <h5>Parâmetros</h5>
-                                                        <p><code>bncc_code</code> (Sim), <code>dificuldade</code> (Não)</p>
-                                                    </div>
-                                                    <div>
-                                                        <h5>JSON de Resposta (200)</h5>
-                                                        <pre><code class="language-json" id="res-busca-questoes-code"></code></pre>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="endpoint-info-block" id="endpoint-diagnostico-ia">
-                                                <h4>Gerar Resumo Diagnóstico com IA</h4>
-                                                <p class="endpoint-desc">Envia notas do aluno por habilidade para o back-end que aciona a LLM.</p>
-                                                <div class="grid-2">
-                                                    <div>
-                                                        <h5>JSON de Requisição</h5>
-                                                        <pre><code class="language-json" id="req-diagnostico-code"></code></pre>
-                                                    </div>
-                                                    <div>
-                                                        <h5>JSON de Resposta (200)</h5>
-                                                        <pre><code class="language-json" id="res-diagnostico-code"></code></pre>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Arquitetura de IA -->
-                        <div class="db-panel" id="tech-panel-architecture">
-                            <div class="card card-full">
-                                <div class="card-header">
-                                    <h3>Arquitetura de Microsserviços e Motor IA</h3>
-                                    <p class="card-subtitle">Estrutura de processamento e integração das LLMs.</p>
-                                </div>
-                                <div class="card-body">
-                                    <div class="grid-2">
-                                        <div class="card-outline">
-                                            <h5>Stack Tecnológica Recomendada</h5>
-                                            <p><strong>Frontend:</strong> Next.js 14 / React com SSR para painéis e TailwindCSS.</p>
-                                            <p><strong>Backend:</strong> Node.js (NestJS) ou Python (FastAPI) para processamento pesado.</p>
-                                            <p><strong>Banco:</strong> PostgreSQL com extensão <code>pgvector</code> para inteligência e similaridade semântica.</p>
-                                        </div>
-                                        <div class="card-outline">
-                                            <h5>Fluxo de Consolidação e IA</h5>
-                                            <p>1. Lançamento rápido de gabaritos (Digitação/Óptica).</p>
-                                            <p>2. Agrupamento em série histórica longitudinal por estudante.</p>
-                                            <p>3. Processamento de laudo pedagógico no Gemini 1.5 Flash via back-end.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </section>
 
                 <!-- ==================== PLAYGROUND IA TAB ==================== -->
@@ -5950,10 +5652,6 @@
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                             <span>Biblioteca Pedagógica</span>
                         </a>
-                        <a href="#doc-tecnica" onclick="switchTab('doc-tecnica'); return false;" class="menu-item" data-target="doc-tecnica">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
-                            <span>Documentação Técnica</span>
-                        </a>
                         <a href="#admin-panel" onclick="switchTab('admin-panel'); return false;" class="menu-item" data-target="admin-panel">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
                             <span>Área Administrativa</span>
@@ -7591,88 +7289,87 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=341bc2b5e3_mts1qhp1"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=daec643646_mts1qhp1"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mts1qhp1"></script>
-    <script src="bncc_habilidades_oficial.js?v=2f802bf604_mts1qhp1"></script>
-    <script src="ideb_publico_db.js?v=fa7edb185f_mts1qhp1"></script>
-    <script src="alunos_db.js?v=e23fe3179f_mts1qhp1"></script>
-    <script src="js/data/official_students_seed.js?v=876be25c9a_mts1qhp1"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=341bc2b5e3_mts22bmf"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=daec643646_mts22bmf"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mts22bmf"></script>
+    <script src="bncc_habilidades_oficial.js?v=2f802bf604_mts22bmf"></script>
+    <script src="ideb_publico_db.js?v=fa7edb185f_mts22bmf"></script>
+    <script src="alunos_db.js?v=e23fe3179f_mts22bmf"></script>
+    <script src="js/data/official_students_seed.js?v=876be25c9a_mts22bmf"></script>
 
     <!-- Módulos do Core -->
-    <script src="js/core/security.js?v=9d4fc4a791_mts1qhp1"></script>
-    <script src="js/core/helpers.js?v=7656a2a6bb_mts1qhp1"></script>
-    <script src="js/core/theme-toast.js?v=c181c006e0_mts1qhp1"></script>
-    <script src="js/core/chart-theme.js?v=c8e29467a8_mts1qhp1"></script>
-    <script src="js/core/user-profile.js?v=c1db21eb55_mts1qhp1"></script>
-    <script src="js/data/official_users_directory.js?v=24a756e04c_mts1qhp1"></script>
-    <script src="js/core/login-animation.js?v=414e14bbcd_mts1qhp1"></script>
-    <script src="js/core/auth.js?v=fc3f5dd497_mts1qhp1"></script>
-    <script src="js/core/navigation/navigation_meta.js?v=8c84252ce2_mts1qhp1"></script>
-    <script src="js/core/navigation/navigation_history.js?v=a09c33f4ae_mts1qhp1"></script>
-    <script src="js/core/navigation/navigation_events.js?v=7e416c2fa3_mts1qhp1"></script>
-    <script src="js/core/navigation.js?v=b876bba488_mts1qhp1"></script>
-    <script src="js/core/sync.js?v=73ebd2560a_mts1qhp1"></script>
+    <script src="js/core/security.js?v=9d4fc4a791_mts22bmf"></script>
+    <script src="js/core/helpers.js?v=7656a2a6bb_mts22bmf"></script>
+    <script src="js/core/theme-toast.js?v=c181c006e0_mts22bmf"></script>
+    <script src="js/core/chart-theme.js?v=c8e29467a8_mts22bmf"></script>
+    <script src="js/core/user-profile.js?v=c1db21eb55_mts22bmf"></script>
+    <script src="js/data/official_users_directory.js?v=24a756e04c_mts22bmf"></script>
+    <script src="js/core/login-animation.js?v=414e14bbcd_mts22bmf"></script>
+    <script src="js/core/auth.js?v=fc3f5dd497_mts22bmf"></script>
+    <script src="js/core/navigation/navigation_meta.js?v=256a33a6c1_mts22bmf"></script>
+    <script src="js/core/navigation/navigation_history.js?v=a09c33f4ae_mts22bmf"></script>
+    <script src="js/core/navigation/navigation_events.js?v=7e416c2fa3_mts22bmf"></script>
+    <script src="js/core/navigation.js?v=b57ceb7629_mts22bmf"></script>
+    <script src="js/core/sync.js?v=73ebd2560a_mts22bmf"></script>
 
     <!-- Módulos de Domínio -->
-    <script src="js/modules/dashboard/dashboard_kpis.js?v=661c48df5d_mts1qhp1"></script>
-    <script src="js/modules/dashboard/dashboard_charts.js?v=de1a05b8a6_mts1qhp1"></script>
-    <script src="js/modules/dashboard/dashboard_analytics.js?v=a7db1260ed_mts1qhp1"></script>
-    <script src="js/modules/dashboard/dashboard_scales.js?v=38ef0c5f91_mts1qhp1"></script>
-    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=89dad60f6a_mts1qhp1"></script>
-    <script src="js/modules/dashboard/dashboard_scroll_reveal.js?v=765a5ac049_mts1qhp1"></script>
-    <script src="js/modules/alunos/alunos_progression_modal.js?v=9b35c9ce79_mts1qhp1"></script>
-    <script src="js/modules/alunos/alunos_list.js?v=1680ba1e32_mts1qhp1"></script>
-    <script src="js/modules/alunos/alunos_forms.js?v=d65581afbc_mts1qhp1"></script>
-    <script src="js/modules/turmas/turmas_crud.js?v=7b6d46585b_mts1qhp1"></script>
-    <script src="js/modules/turmas/turmas_diario.js?v=edae66f43a_mts1qhp1"></script>
-    <script src="js/modules/metas/metas_regional.js?v=7556fbb4b6_mts1qhp1"></script>
-    <script src="js/modules/metas/metas_pactuacao.js?v=55531875c5_mts1qhp1"></script>
-    <script src="js/modules/metas/metas_escolas_ranking.js?v=d2cab5c654_mts1qhp1"></script>
-    <script src="js/modules/metas/metas_calculo_manual.js?v=db8734a78d_mts1qhp1"></script>
-    <script src="js/modules/metas/metas_ideb.js?v=17b2b704aa_mts1qhp1"></script>
-    <script src="js/modules/escolas/escolas.js?v=6156cfb8f2_mts1qhp1"></script>
-    <script src="js/modules/escolas/escolas_workspace.js?v=cbd14d4cc2_mts1qhp1"></script>
-    <script src="js/modules/escolas/escolas_modals.js?v=d32d052d1d_mts1qhp1"></script>
-    <script src="js/modules/matrizes/matrizes.js?v=d2df1a4b54_mts1qhp1"></script>
-    <script src="js/modules/cronograma/cronograma_state.js?v=291ef65907_mts1qhp1"></script>
-    <script src="js/modules/cronograma/cronograma_views_monthly.js?v=8d7fe9a8d7_mts1qhp1"></script>
-    <script src="js/modules/cronograma/cronograma_views_weekly.js?v=17318533ba_mts1qhp1"></script>
-    <script src="js/modules/cronograma/cronograma_views_comparison.js?v=9875be98c6_mts1qhp1"></script>
-    <script src="js/modules/cronograma/cronograma_progress_modal.js?v=f327132831_mts1qhp1"></script>
-    <script src="js/modules/cronograma/cronograma_views.js?v=3254fb7223_mts1qhp1"></script>
-    <script src="js/modules/cronograma/cronograma_planner.js?v=5e9c900526_mts1qhp1"></script>
-    <script src="js/modules/cronograma/cronograma_trash.js?v=b1408ecbe3_mts1qhp1"></script>
-    <script src="js/modules/cronograma/cronograma_calendar_40w.js?v=310bf5af0c_mts1qhp1"></script>
-    <script src="js/modules/cronograma/cronograma.js?v=69486dcbc3_mts1qhp1"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_state.js?v=9246c014a5_mts1qhp1"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_wizard.js?v=23d3745407_mts1qhp1"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_events.js?v=291641d46e_mts1qhp1"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_espelho.js?v=5aab2a44bf_mts1qhp1"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_analytics.js?v=c02f843b04_mts1qhp1"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_print.js?v=947e5a0916_mts1qhp1"></script>
-    <script src="js/modules/questoes/questoes_generator.js?v=8e44d7592b_mts1qhp1"></script>
-    <script src="js/modules/questoes/questoes_list.js?v=5543a2c1d7_mts1qhp1"></script>
-    <script src="js/modules/questoes/questoes_import_export.js?v=c7d3bb36d0_mts1qhp1"></script>
-    <script src="js/modules/diagnostico/diagnostico.js?v=ec60d9c822_mts1qhp1"></script>
-    <script src="js/modules/saeb/saeb_state.js?v=178da7f734_mts1qhp1"></script>
-    <script src="js/modules/saeb/saeb_distribution_view.js?v=f34fc319b7_mts1qhp1"></script>
-    <script src="js/modules/saeb/saeb_comparativo_turmas.js?v=22f1b3636c_mts1qhp1"></script>
-    <script src="js/modules/saeb/saeb_ficha_individual.js?v=ed681a95a5_mts1qhp1"></script>
-    <script src="js/modules/saeb/saeb_boletim.js?v=f2fbc9e7e7_mts1qhp1"></script>
-    <script src="js/modules/saeb/saeb_intervencoes_comparativo.js?v=2921169748_mts1qhp1"></script>
-    <script src="js/modules/saeb/saeb.js?v=6f18f413e8_mts1qhp1"></script>
-    <script src="js/modules/biblioteca/biblioteca_reader.js?v=743943d3d7_mts1qhp1"></script>
-    <script src="js/modules/biblioteca/biblioteca_upload.js?v=98b16c4eda_mts1qhp1"></script>
-    <script src="js/modules/biblioteca/biblioteca.js?v=d101f88443_mts1qhp1"></script>
-    <script src="js/modules/admin/admin_data.js?v=4146d4760b_mts1qhp1"></script>
-    <script src="js/modules/admin/admin_users.js?v=29d8ce4771_mts1qhp1"></script>
-    <script src="js/modules/admin/admin_tenants.js?v=ae5a501f46_mts1qhp1"></script>
-    <script src="js/modules/doc_tecnica/doc_tecnica.js?v=72dc8618e4_mts1qhp1"></script>
-    <script src="js/modules/onboarding/onboarding_tour.js?v=e8a0416e78_mts1qhp1"></script>
-    <script src="js/modules/onboarding/tab_context_tours.js?v=a697f7596f_mts1qhp1"></script>
+    <script src="js/modules/dashboard/dashboard_kpis.js?v=661c48df5d_mts22bmf"></script>
+    <script src="js/modules/dashboard/dashboard_charts.js?v=de1a05b8a6_mts22bmf"></script>
+    <script src="js/modules/dashboard/dashboard_analytics.js?v=a7db1260ed_mts22bmf"></script>
+    <script src="js/modules/dashboard/dashboard_scales.js?v=38ef0c5f91_mts22bmf"></script>
+    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=89dad60f6a_mts22bmf"></script>
+    <script src="js/modules/dashboard/dashboard_scroll_reveal.js?v=765a5ac049_mts22bmf"></script>
+    <script src="js/modules/alunos/alunos_progression_modal.js?v=9b35c9ce79_mts22bmf"></script>
+    <script src="js/modules/alunos/alunos_list.js?v=1680ba1e32_mts22bmf"></script>
+    <script src="js/modules/alunos/alunos_forms.js?v=d65581afbc_mts22bmf"></script>
+    <script src="js/modules/turmas/turmas_crud.js?v=7b6d46585b_mts22bmf"></script>
+    <script src="js/modules/turmas/turmas_diario.js?v=edae66f43a_mts22bmf"></script>
+    <script src="js/modules/metas/metas_regional.js?v=7556fbb4b6_mts22bmf"></script>
+    <script src="js/modules/metas/metas_pactuacao.js?v=55531875c5_mts22bmf"></script>
+    <script src="js/modules/metas/metas_escolas_ranking.js?v=d2cab5c654_mts22bmf"></script>
+    <script src="js/modules/metas/metas_calculo_manual.js?v=db8734a78d_mts22bmf"></script>
+    <script src="js/modules/metas/metas_ideb.js?v=17b2b704aa_mts22bmf"></script>
+    <script src="js/modules/escolas/escolas.js?v=6156cfb8f2_mts22bmf"></script>
+    <script src="js/modules/escolas/escolas_workspace.js?v=cbd14d4cc2_mts22bmf"></script>
+    <script src="js/modules/escolas/escolas_modals.js?v=d32d052d1d_mts22bmf"></script>
+    <script src="js/modules/matrizes/matrizes.js?v=d2df1a4b54_mts22bmf"></script>
+    <script src="js/modules/cronograma/cronograma_state.js?v=291ef65907_mts22bmf"></script>
+    <script src="js/modules/cronograma/cronograma_views_monthly.js?v=8d7fe9a8d7_mts22bmf"></script>
+    <script src="js/modules/cronograma/cronograma_views_weekly.js?v=17318533ba_mts22bmf"></script>
+    <script src="js/modules/cronograma/cronograma_views_comparison.js?v=9875be98c6_mts22bmf"></script>
+    <script src="js/modules/cronograma/cronograma_progress_modal.js?v=f327132831_mts22bmf"></script>
+    <script src="js/modules/cronograma/cronograma_views.js?v=3254fb7223_mts22bmf"></script>
+    <script src="js/modules/cronograma/cronograma_planner.js?v=5e9c900526_mts22bmf"></script>
+    <script src="js/modules/cronograma/cronograma_trash.js?v=b1408ecbe3_mts22bmf"></script>
+    <script src="js/modules/cronograma/cronograma_calendar_40w.js?v=310bf5af0c_mts22bmf"></script>
+    <script src="js/modules/cronograma/cronograma.js?v=69486dcbc3_mts22bmf"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_state.js?v=9246c014a5_mts22bmf"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_wizard.js?v=23d3745407_mts22bmf"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_events.js?v=291641d46e_mts22bmf"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_espelho.js?v=5aab2a44bf_mts22bmf"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_analytics.js?v=c02f843b04_mts22bmf"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_print.js?v=947e5a0916_mts22bmf"></script>
+    <script src="js/modules/questoes/questoes_generator.js?v=8e44d7592b_mts22bmf"></script>
+    <script src="js/modules/questoes/questoes_list.js?v=5543a2c1d7_mts22bmf"></script>
+    <script src="js/modules/questoes/questoes_import_export.js?v=c7d3bb36d0_mts22bmf"></script>
+    <script src="js/modules/diagnostico/diagnostico.js?v=ec60d9c822_mts22bmf"></script>
+    <script src="js/modules/saeb/saeb_state.js?v=178da7f734_mts22bmf"></script>
+    <script src="js/modules/saeb/saeb_distribution_view.js?v=f34fc319b7_mts22bmf"></script>
+    <script src="js/modules/saeb/saeb_comparativo_turmas.js?v=22f1b3636c_mts22bmf"></script>
+    <script src="js/modules/saeb/saeb_ficha_individual.js?v=ed681a95a5_mts22bmf"></script>
+    <script src="js/modules/saeb/saeb_boletim.js?v=f2fbc9e7e7_mts22bmf"></script>
+    <script src="js/modules/saeb/saeb_intervencoes_comparativo.js?v=2921169748_mts22bmf"></script>
+    <script src="js/modules/saeb/saeb.js?v=6f18f413e8_mts22bmf"></script>
+    <script src="js/modules/biblioteca/biblioteca_reader.js?v=743943d3d7_mts22bmf"></script>
+    <script src="js/modules/biblioteca/biblioteca_upload.js?v=98b16c4eda_mts22bmf"></script>
+    <script src="js/modules/biblioteca/biblioteca.js?v=d101f88443_mts22bmf"></script>
+    <script src="js/modules/admin/admin_data.js?v=4146d4760b_mts22bmf"></script>
+    <script src="js/modules/admin/admin_users.js?v=29d8ce4771_mts22bmf"></script>
+    <script src="js/modules/admin/admin_tenants.js?v=ae5a501f46_mts22bmf"></script>
+    <script src="js/modules/onboarding/onboarding_tour.js?v=e8a0416e78_mts22bmf"></script>
+    <script src="js/modules/onboarding/tab_context_tours.js?v=a447973a01_mts22bmf"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=826c28719e_mts1qhp1"></script>
+    <script src="app.js?v=c56090f1ef_mts22bmf"></script>
 </body>
 </html>

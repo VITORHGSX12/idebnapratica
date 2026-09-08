@@ -119,9 +119,6 @@ var TAB_LIFECYCLE_HOOKS = {
         if (typeof recalculateNetworkStats === 'function') recalculateNetworkStats();
         if (typeof renderHeatmapGrid === 'function') renderHeatmapGrid();
     },
-    'doc-tecnica': function() {
-        if (typeof renderMermaidDiagram === 'function') renderMermaidDiagram();
-    },
     'cronograma-habilidades': function() {
         if (typeof renderSkillsSchedule === 'function') renderSkillsSchedule();
     },

@@ -213,8 +213,8 @@ async function runFullVerification() {
 
         console.log('   Resultado pós-login:', JSON.stringify(appStateAfterLogin.result.value, null, 2));
 
-        // 3. Testar todas as 16 rotas de navegação
-        console.log('\n▶ [TESTE 3] Verificando Todas as 16 Rotas do Roteador SPA...');
+        // 3. Testar todas as 15 rotas oficiais de navegação
+        console.log('\n▶ [TESTE 3] Verificando Todas as 15 Rotas Oficiais do Roteador SPA...');
         const routes = [
             'dashboard',
             'calculo-ideb',
@@ -229,7 +229,6 @@ async function runFullVerification() {
             'ai-playground',
             'questions',
             'gestao-pedagogica',
-            'doc-tecnica',
             'biblioteca-recursos',
             'admin-panel'
         ];

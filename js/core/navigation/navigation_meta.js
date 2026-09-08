@@ -109,13 +109,6 @@
             icon: 'trending-up',
             category: 'gestao-estrategica'
         },
-        'doc-tecnica': {
-            id: 'doc-tecnica',
-            title: 'Documentação Técnica',
-            subtitle: 'Especificação técnica dos módulos, modelo relacional ERD, script DDL SQL e APIs do sistema.',
-            icon: 'code-2',
-            category: 'sistema'
-        },
         'biblioteca-recursos': {
             id: 'biblioteca-recursos',
             title: 'Biblioteca Pedagógica & Provas Impressas',
