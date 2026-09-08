@@ -3033,15 +3033,15 @@ h4 svg, h4 i,
 }
 
 .hero-top-brand-logo {
-    margin-bottom: 42px;
+    margin-bottom: 48px;
     display: flex;
     align-items: center;
 }
 
 .hero-logo-inverted-img {
-    height: 64px;
+    height: 110px;
     width: auto;
-    max-width: 290px;
+    max-width: 360px;
     object-fit: contain;
 }
 
