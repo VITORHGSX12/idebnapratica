@@ -1,0 +1,1661 @@
+/* =========================================================================
+   IDEB NA PRÁTICA — REFINAMENTO VISUAL PREMIUM DA TELA DE LOGIN (FINAL)
+   Design System Oficial: Tokens Técnicos, Timeline de Abertura em 2 Trilhas,
+   Gradient Mesh + Partículas, Coreografia do Gráfico & Microinterações
+   ========================================================================= */
+
+/* -------------------------------------------------------------------------
+   1. TOKENS DE DESIGN (CONFORME SEÇÃO 1 DO COMANDO)
+   ------------------------------------------------------------------------- */
+:root {
+    /* Painel esquerdo (institucional) */
+    --panel-dark-bg-start: #0A1931;
+    --panel-dark-bg-mid:   #0E2242;
+    --panel-dark-bg-end:   #1A3D63;
+
+    /* Painel direito (formulário) */
+    --panel-light-bg:      #F6FAFD;
+    --panel-light-bg-soft: #FFFFFF;
+
+    /* Marca */
+    --brand-accent-green:      #22C55E;
+    --brand-accent-green-glow: rgba(34, 197, 94, 0.35);
+    --brand-blue:              #4A7FA7;
+    --brand-blue-hover:        #1A3D63;
+    --brand-blue-dark:         #0A1931;
+    --brand-red-error:         #EF4444;
+    --brand-red-error-glow:    rgba(239, 68, 68, 0.15);
+
+    /* Texto */
+    --text-on-dark-primary:    #F6FAFD;
+    --text-on-dark-secondary:  #B3CFE5;
+    --text-on-light-primary:   #0A1931;
+    --text-on-light-secondary: #1A3D63;
+
+    /* Superfícies */
+    --card-bg:            #FFFFFF;
+    --card-shadow:        0 20px 60px -15px rgba(15, 23, 42, 0.25);
+    --card-shadow-accent: 0 20px 60px -20px var(--brand-accent-green-glow);
+
+    /* Timing */
+    --ease-premium:     cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-soft:        cubic-bezier(0.4, 0, 0.2, 1);
+    --duration-micro:   150ms;   /* foco de input, hover simples */
+    --duration-fast:    250ms;   /* transições de estado curtas */
+    --duration-base:    400ms;   /* entradas de elementos */
+    --duration-slow:    800ms;   /* entrada do card, headline */
+    --duration-ambient: 6000ms;  /* respiração de fundo, glow contínuo */
+}
+
+/* -------------------------------------------------------------------------
+   2. VIEWPORT AUTO-FIT CONTAINER & SPLIT LAYOUT
+   ------------------------------------------------------------------------- */
+.login-screen {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100dvh;
+    z-index: 9998;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    font-family: var(--font-body, 'Plus Jakarta Sans', -apple-system, sans-serif);
+    color: var(--text-on-light-primary);
+    background-color: var(--panel-dark-bg-start);
+    transition: opacity var(--duration-base) var(--ease-premium), transform var(--duration-base) var(--ease-premium);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: flex;
+    align-items: stretch;
+}
+
+.login-screen.fade-out {
+    opacity: 0;
+    transform: scale(1.015);
+    pointer-events: none;
+}
+
+.login-split-container {
+    display: grid;
+    grid-template-columns: 1.15fr 0.95fr;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    max-height: 100dvh;
+    position: relative;
+    background-color: var(--panel-light-bg);
+    overflow: hidden;
+}
+
+/* -------------------------------------------------------------------------
+   3. PAINEL ESQUERDO — BACKGROUND FOTO EDUCACIONAL + OVERLAY AZUL MARINHO
+   ------------------------------------------------------------------------- */
+.login-left-panel {
+    position: relative;
+    padding: clamp(16px, 2.8vh, 36px) clamp(24px, 3.5vw, 54px);
+    background: var(--panel-dark-bg-start, #0A1931);
+    color: var(--text-on-dark-primary);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    max-height: 100dvh;
+    box-sizing: border-box;
+    z-index: 1;
+}
+
+/* Background Photo com Overlay Institucional & Blur */
+.login-bg-photo {
+    position: absolute;
+    inset: 0;
+    background-image: url('assets/login-bg-education.jpg');
+    background-size: cover;
+    background-position: center 35%;
+    z-index: 0;
+    filter: blur(1.5px) saturate(0.85);
+    transform: scale(1.04);
+    will-change: transform;
+}
+
+.login-bg-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(145deg, rgba(10, 25, 49, 0.85) 0%, rgba(14, 34, 66, 0.82) 50%, rgba(26, 61, 99, 0.80) 100%);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 0;
+}
+
+/* Container de Background Mesh */
+.login-mesh-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+/* 3 Blobs Radiais com Animação Desincronizada (12-18s) */
+.mesh-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(50px);
+    will-change: transform, opacity;
+}
+
+.mesh-blob.blob-1 {
+    top: -15%;
+    left: -10%;
+    width: 65%;
+    height: 65%;
+    background: radial-gradient(circle, rgba(47, 111, 237, 0.12) 0%, rgba(30, 58, 138, 0.08) 50%, transparent 70%);
+    animation: blobMove1 14s ease-in-out infinite alternate;
+}
+
+.mesh-blob.blob-2 {
+    bottom: -15%;
+    left: 20%;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(circle, rgba(34, 197, 94, 0.09) 0%, rgba(15, 29, 51, 0.05) 55%, transparent 75%);
+    animation: blobMove2 18s ease-in-out 2s infinite alternate-reverse;
+}
+
+.mesh-blob.blob-3 {
+    top: 30%;
+    right: -10%;
+    width: 55%;
+    height: 55%;
+    background: radial-gradient(circle, rgba(47, 111, 237, 0.10) 0%, rgba(11, 20, 36, 0.06) 60%, transparent 70%);
+    animation: blobMove3 16s ease-in-out 4s infinite alternate;
+}
+
+@keyframes blobMove1 {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(18px, -15px) scale(1.05); }
+    100% { transform: translate(-14px, 16px) scale(0.96); }
+}
+
+@keyframes blobMove2 {
+    0% { transform: translate(0, 0) scale(0.96); }
+    50% { transform: translate(-18px, 12px) scale(1.04); }
+    100% { transform: translate(16px, -18px) scale(1); }
+}
+
+@keyframes blobMove3 {
+    0% { transform: translate(0, 0) scale(1.02); }
+    50% { transform: translate(15px, 18px) scale(0.95); }
+    100% { transform: translate(-16px, -12px) scale(1.04); }
+}
+
+/* Textura de Pontos (Dot-Grid) com Opacidade de 0.04 */
+.mesh-dot-grid {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(248, 250, 252, 0.35) 1px, transparent 1px);
+    background-size: 24px 24px;
+    opacity: 0.04;
+    pointer-events: none;
+}
+
+/* Glow Desfocado na Borda */
+.mesh-glow-edge {
+    position: absolute;
+    top: 25%;
+    right: -30px;
+    width: 90px;
+    height: 50%;
+    background: radial-gradient(ellipse at center, rgba(34, 197, 94, 0.15) 0%, transparent 70%);
+    filter: blur(25px);
+    pointer-events: none;
+    animation: edgeGlowPulse var(--duration-ambient) ease-in-out infinite alternate;
+}
+
+@keyframes edgeGlowPulse {
+    0% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.04); opacity: 0.85; }
+    100% { transform: scale(1); opacity: 0.6; }
+}
+
+/* 8 Partículas Sutis (GPU Transform, Opacidade 0.15-0.35) */
+.mesh-particle {
+    position: absolute;
+    border-radius: 50%;
+    background: #FFFFFF;
+    pointer-events: none;
+    opacity: 0.2;
+    will-change: transform, opacity;
+}
+
+.mesh-particle.p1 { width: 3px; height: 3px; top: 20%; left: 25%; animation: particleFloat1 11s ease-in-out 400ms infinite alternate; }
+.mesh-particle.p2 { width: 4px; height: 4px; top: 45%; left: 75%; background: var(--brand-accent-green); box-shadow: 0 0 6px var(--brand-accent-green); animation: particleFloat2 14s ease-in-out 1s infinite alternate; }
+.mesh-particle.p3 { width: 2.5px; height: 2.5px; top: 70%; left: 35%; animation: particleFloat3 12s ease-in-out 2s infinite alternate; }
+.mesh-particle.p4 { width: 4px; height: 4px; top: 15%; left: 65%; background: var(--brand-blue); box-shadow: 0 0 6px var(--brand-blue); animation: particleFloat1 16s ease-in-out 3s infinite alternate; }
+.mesh-particle.p5 { width: 3px; height: 3px; top: 85%; left: 80%; animation: particleFloat2 13s ease-in-out 1.5s infinite alternate; }
+.mesh-particle.p6 { width: 2px; height: 2px; top: 35%; left: 15%; animation: particleFloat3 15s ease-in-out 4s infinite alternate; }
+.mesh-particle.p7 { width: 3.5px; height: 3.5px; top: 60%; left: 60%; background: var(--brand-accent-green); box-shadow: 0 0 4px var(--brand-accent-green); animation: particleFloat1 17s ease-in-out 2.5s infinite alternate; }
+.mesh-particle.p8 { width: 2px; height: 2px; top: 80%; left: 20%; animation: particleFloat2 10s ease-in-out 5s infinite alternate; }
+
+@keyframes particleFloat1 {
+    0% { transform: translate(0, 0); opacity: 0.15; }
+    50% { opacity: 0.35; }
+    100% { transform: translate(12px, -18px); opacity: 0.15; }
+}
+
+@keyframes particleFloat2 {
+    0% { transform: translate(0, 0); opacity: 0.2; }
+    50% { opacity: 0.35; }
+    100% { transform: translate(-15px, 14px); opacity: 0.18; }
+}
+
+@keyframes particleFloat3 {
+    0% { transform: translate(0, 0); opacity: 0.15; }
+    50% { opacity: 0.30; }
+    100% { transform: translate(10px, 15px); opacity: 0.12; }
+}
+
+/* -------------------------------------------------------------------------
+   4. REDE VETORIAL & ELEMENTOS EDUCACIONAIS SUTIS (OPACIDADE 8-14%)
+   ------------------------------------------------------------------------- */
+.mesh-network-constellation {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.85;
+    animation: constellationBreathe 20s ease-in-out infinite alternate;
+}
+
+@keyframes constellationBreathe {
+    0% { transform: scale(1) translate(0, 0); opacity: 0.75; }
+    50% { transform: scale(1.02) translate(-6px, 4px); opacity: 0.95; }
+    100% { transform: scale(0.99) translate(4px, -6px); opacity: 0.75; }
+}
+
+.mesh-edu-item {
+    position: absolute;
+    color: #93C5FD;
+    pointer-events: none;
+    z-index: 1;
+    will-change: transform, opacity;
+}
+
+.mesh-edu-item svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.mesh-edu-item.item-book {
+    top: 14%;
+    right: 12%;
+    width: 44px;
+    height: 44px;
+    opacity: 0.11;
+    animation: eduFloatBook 16s ease-in-out 1s infinite alternate;
+}
+
+.mesh-edu-item.item-cap {
+    bottom: 22%;
+    right: 18%;
+    width: 52px;
+    height: 52px;
+    opacity: 0.09;
+    animation: eduFloatCap 20s ease-in-out 2s infinite alternate;
+}
+
+.mesh-edu-item.item-chart {
+    top: 48%;
+    left: 8%;
+    width: 38px;
+    height: 38px;
+    opacity: 0.10;
+    animation: eduFloatChart 18s ease-in-out infinite alternate;
+}
+
+.mesh-edu-item.item-award {
+    bottom: 12%;
+    left: 14%;
+    width: 40px;
+    height: 40px;
+    opacity: 0.10;
+    animation: eduFloatAward 22s ease-in-out 3s infinite alternate;
+}
+
+@keyframes eduFloatBook {
+    0% { transform: translate(0, 0) rotate(0deg); opacity: 0.09; }
+    50% { opacity: 0.14; }
+    100% { transform: translate(-10px, 12px) rotate(-4deg); opacity: 0.10; }
+}
+
+@keyframes eduFloatCap {
+    0% { transform: translate(0, 0) rotate(0deg); opacity: 0.08; }
+    50% { opacity: 0.12; }
+    100% { transform: translate(12px, -14px) rotate(6deg); opacity: 0.09; }
+}
+
+@keyframes eduFloatChart {
+    0% { transform: translate(0, 0); opacity: 0.08; }
+    50% { opacity: 0.13; }
+    100% { transform: translate(14px, 10px); opacity: 0.09; }
+}
+
+@keyframes eduFloatAward {
+    0% { transform: translate(0, 0) rotate(0deg); opacity: 0.08; }
+    50% { opacity: 0.12; }
+    100% { transform: translate(-8px, -12px) rotate(-5deg); opacity: 0.09; }
+}
+
+.mesh-float-badge {
+    position: absolute;
+    font-family: var(--font-mono, monospace);
+    font-size: 10px;
+    font-weight: 700;
+    color: #93C5FD;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(147, 197, 253, 0.12);
+    padding: 3px 8px;
+    border-radius: 9999px;
+    pointer-events: none;
+    z-index: 1;
+    backdrop-filter: blur(4px);
+}
+
+.mesh-float-badge.badge-ideb {
+    top: 30%;
+    right: 8%;
+    opacity: 0.12;
+    animation: eduFloatChart 15s ease-in-out 0.5s infinite alternate;
+}
+
+.mesh-float-badge.badge-saeb {
+    bottom: 34%;
+    left: 6%;
+    opacity: 0.11;
+    animation: eduFloatBook 17s ease-in-out 2.5s infinite alternate;
+}
+
+/* -------------------------------------------------------------------------
+   5. CURVA CENTRAL ORGÂNICA COM PONTO DE LUZ SUTIL
+   ------------------------------------------------------------------------- */
+.login-curve-divider {
+    position: absolute;
+    top: 0;
+    right: -1px;
+    bottom: 0;
+    width: clamp(40px, 4vw, 56px);
+    pointer-events: none;
+    z-index: 2;
+    overflow: hidden;
+}
+
+.login-curve-divider svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    filter: drop-shadow(-4px 0 10px rgba(11, 20, 36, 0.35));
+    animation: curveBreathe 14s ease-in-out infinite alternate;
+    transform-origin: center right;
+}
+
+@keyframes curveBreathe {
+    0% { transform: scaleX(1) translateX(0); }
+    50% { transform: scaleX(1.06) translateX(-2px); }
+    100% { transform: scaleX(0.97) translateX(1px); }
+}
+
+.login-curve-divider::after {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: 4px;
+    width: 8px;
+    height: 40px;
+    background: radial-gradient(circle, rgba(47, 111, 237, 0.35) 0%, transparent 80%);
+    border-radius: 50%;
+    filter: blur(2px);
+    animation: curveLightSweep 7s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes curveLightSweep {
+    0% { top: -10%; opacity: 0; }
+    20% { opacity: 0.6; }
+    80% { opacity: 0.6; }
+    100% { top: 110%; opacity: 0; }
+}
+
+/* -------------------------------------------------------------------------
+   6. LOGOTIPO AMPLIADO & ANIMAÇÃO DE LÂMPADA ACENDENDO (TRILHA A: 150ms)
+   ------------------------------------------------------------------------- */
+.login-left-panel .brand,
+.login-brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    position: relative;
+    z-index: 3;
+    animation: logoEntrance var(--duration-base) var(--ease-premium) 150ms both;
+}
+
+@keyframes logoEntrance {
+    0% {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animação da Lâmpada "Acendendo" no Carregamento Inicial (850ms) */
+@keyframes lampIgnite {
+    0% {
+        opacity: 0.35;
+        filter: brightness(0.4) saturate(0.35) drop-shadow(0 0 0 transparent);
+        transform: scale(0.93);
+    }
+    45% {
+        opacity: 0.85;
+        filter: brightness(0.95) saturate(0.85) drop-shadow(0 0 10px rgba(56, 189, 248, 0.4));
+        transform: scale(1.02);
+    }
+    75% {
+        opacity: 1;
+        filter: brightness(1.25) saturate(1.15) drop-shadow(0 0 18px rgba(56, 189, 248, 0.65)) drop-shadow(0 0 26px rgba(251, 191, 36, 0.45));
+        transform: scale(1.03);
+    }
+    100% {
+        opacity: 1;
+        filter: brightness(1) saturate(1) drop-shadow(0 6px 18px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 12px rgba(56, 189, 248, 0.3));
+        transform: scale(1);
+    }
+}
+
+.login-left-panel .brand-mark,
+.login-brand-mark {
+    width: clamp(52px, 5.8vh, 62px);
+    height: clamp(52px, 5.8vh, 62px);
+    border-radius: 14px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.4);
+    transition: transform var(--duration-fast) var(--ease-soft);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.login-brand:hover .brand-mark {
+    transform: scale(1.05) rotate(-2deg);
+}
+
+.login-left-panel .brand-mark img,
+.login-brand-mark img,
+.brand-logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 14px;
+    animation: lampIgnite 850ms cubic-bezier(0.16, 1, 0.3, 1) 150ms 1 forwards;
+    will-change: filter, transform, opacity;
+}
+
+.login-left-panel .brand-text .name,
+.login-brand-text .name {
+    font-family: var(--font-display, 'Lexend', sans-serif);
+    font-weight: 800;
+    font-size: clamp(21px, 2.6vh, 25px);
+    color: #FFFFFF;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.login-left-panel .brand-text .tag,
+.login-brand-text .tag {
+    font-size: clamp(10px, 1.2vh, 11.5px);
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    color: var(--text-on-dark-secondary, #B3CFE5);
+    text-transform: uppercase;
+    margin-top: 3px;
+}
+
+/* Container do Carrossel de 3 Frases (Trilha A: 300ms) */
+.login-headline-wrapper {
+    margin-top: clamp(8px, 1.6vh, 20px);
+    margin-bottom: clamp(6px, 1.4vh, 14px);
+    min-height: clamp(52px, 6.8vh, 68px);
+    max-height: clamp(56px, 7.5vh, 74px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 3;
+    animation: loginFadeDown var(--duration-base) var(--ease-premium) 300ms both;
+}
+
+.login-left-panel .headline,
+.login-headline {
+    margin: 0;
+    font-family: var(--font-display, 'Lexend', sans-serif);
+    font-weight: 800;
+    font-size: clamp(18px, 2.3vh, 23px);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    max-width: 480px;
+    position: relative;
+    z-index: 3;
+    color: var(--text-on-dark-primary);
+    transition: opacity var(--duration-fast) ease, transform var(--duration-base) var(--ease-premium);
+    will-change: opacity, transform;
+}
+
+.login-headline .headline-line-1 {
+    display: block;
+    color: var(--text-on-dark-primary);
+    font-weight: 800;
+    white-space: nowrap;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.login-headline .headline-line-2 {
+    display: block;
+    background: linear-gradient(135deg, #4ADE80 0%, var(--brand-accent-green) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+/* 3 Indicadores Discretos (Dots) da Frase Ativa */
+.login-headline-dots {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    user-select: none;
+}
+
+.headline-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.22);
+    transition: all var(--duration-base) var(--ease-premium);
+}
+
+.headline-dot.active {
+    width: 18px;
+    background: var(--brand-accent-green);
+    box-shadow: 0 0 8px var(--brand-accent-green-glow);
+}
+
+/* -------------------------------------------------------------------------
+   6. CARD DO GRÁFICO IDEB & COREOGRAFIA (TRILHA A: 450ms, 600ms, 700ms)
+   ------------------------------------------------------------------------- */
+.chart-card,
+.login-chart-card {
+    margin-top: 0;
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 14px;
+    box-shadow: var(--card-shadow);
+    padding: clamp(10px, 1.6vh, 16px) clamp(14px, 1.8vw, 20px) clamp(8px, 1.3vh, 12px);
+    max-width: 480px;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 3;
+    color: var(--text-on-light-primary);
+    animation: loginFadeUp var(--duration-base) var(--ease-premium) 450ms both;
+    transition: transform var(--duration-fast) var(--ease-soft), box-shadow var(--duration-fast) var(--ease-soft), opacity var(--duration-fast) ease;
+    will-change: transform, opacity;
+}
+
+.chart-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 24px 50px -12px rgba(15, 23, 42, 0.35);
+}
+
+.chart-head,
+.login-chart-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    margin-bottom: clamp(8px, 1.2vh, 12px);
+}
+
+.chart-title,
+.login-chart-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: clamp(11.5px, 1.4vh, 12.5px);
+    font-weight: 700;
+    color: var(--text-on-light-primary);
+}
+
+.chart-title .dot,
+.login-pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--brand-blue);
+    position: relative;
+    flex-shrink: 0;
+}
+
+.chart-title .dot::after,
+.login-pulse-dot::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: rgba(47, 111, 237, 0.35);
+    animation: beaconPulse 2s ease-in-out infinite;
+}
+
+@keyframes beaconPulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.6); opacity: 0; }
+    100% { transform: scale(1); opacity: 0; }
+}
+
+.badge-meta,
+.login-badge-meta {
+    background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+    color: #065F46;
+    border: 1px solid #A7F3D0;
+    font-size: clamp(10px, 1.2vh, 11px);
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 9999px;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: 0 2px 6px rgba(34, 197, 94, 0.15);
+    transition: transform var(--duration-fast) var(--ease-premium), box-shadow var(--duration-fast) var(--ease-premium);
+}
+
+.badge-meta::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--brand-accent-green);
+    box-shadow: 0 0 6px var(--brand-accent-green);
+    animation: beaconFlash 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes beaconFlash {
+    0% { transform: scale(0.9); opacity: 0.8; }
+    100% { transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 6px var(--brand-accent-green)); }
+}
+
+.chart-plot,
+.login-chart-plot {
+    height: clamp(105px, 14.5vh, 140px);
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    padding: 12px 14px 0;
+    gap: 10px;
+    position: relative;
+    overflow: hidden; /* 100% contido */
+}
+
+/* Grade de Fundo Sutil */
+.chart-plot::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    background-image: linear-gradient(to bottom, rgba(226, 232, 240, 0.6) 1px, transparent 1px);
+    background-size: 100% 28px;
+    pointer-events: none;
+}
+
+/* Linha da Meta 6.5 Animada com Stroke-Dashoffset */
+.goal-line,
+.login-goal-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 22%;
+    border-top: 2px dashed var(--brand-accent-green);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Feixe de Luz Percorrendo a Linha da Meta */
+.goal-line::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -20%;
+    width: 48px;
+    height: 4px;
+    background: linear-gradient(90deg, transparent 0%, var(--brand-accent-green) 50%, #86EFAC 100%);
+    border-radius: 4px;
+    filter: blur(1px);
+    opacity: 0.85;
+    animation: metaLaserBeam 4.5s ease-in-out infinite;
+}
+
+@keyframes metaLaserBeam {
+    0% { left: -15%; opacity: 0; }
+    15% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { left: 100%; opacity: 0; }
+}
+
+.goal-line::after,
+.login-goal-line::after {
+    content: 'Meta 6.5';
+    position: absolute;
+    left: 10px;
+    top: -18px;
+    font-size: 9.5px;
+    font-weight: 800;
+    color: #065F46;
+    background: #ECFDF5;
+    padding: 1px 6px;
+    border-radius: 4px;
+    border: 1px solid #A7F3D0;
+    box-shadow: 0 2px 4px rgba(34, 197, 94, 0.12);
+    z-index: 2;
+}
+
+/* Barras do Gráfico — GPU-Friendly ScaleY e Transição */
+.bar,
+.login-bar {
+    width: 14%;
+    max-width: 38px;
+    border-radius: 6px 6px 0 0;
+    background: linear-gradient(180deg, #3B82F6 0%, var(--brand-blue-dark) 100%);
+    position: relative;
+    z-index: 2;
+    height: 6%;
+    transform-origin: bottom center;
+    transition: height var(--duration-slow) var(--ease-premium), transform var(--duration-fast) var(--ease-soft), filter var(--duration-fast) ease, box-shadow var(--duration-fast) ease;
+    box-shadow: 0 4px 10px rgba(47, 111, 237, 0.2);
+    will-change: height;
+}
+
+.bar:hover {
+    transform: scaleY(1.03) scaleX(1.04);
+    filter: brightness(1.08);
+}
+
+.bar span,
+.login-bar span {
+    display: block;
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(9.5px, 1.2vh, 10.5px);
+    font-weight: 800;
+    font-family: var(--font-display, 'Lexend', sans-serif);
+    font-variant-numeric: tabular-nums;
+    color: var(--text-on-light-primary);
+    white-space: nowrap;
+    transition: opacity var(--duration-fast) ease;
+}
+
+/* Shimmer Reflexo de Luz Subindo pelas Barras */
+.bar-shimmer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.35) 50%, transparent 100%);
+    border-radius: inherit;
+    opacity: 0;
+    pointer-events: none;
+    animation: barShimmerSweep 3.5s ease-in-out infinite;
+}
+
+@keyframes barShimmerSweep {
+    0%, 40% { transform: translateY(100%); opacity: 0; }
+    50% { opacity: 0.8; }
+    60%, 100% { transform: translateY(-100%); opacity: 0; }
+}
+
+/* Alturas Padrão */
+.b1.grown { height: 38%; }
+.b2.grown { height: 47%; }
+.b3.grown { height: 58%; }
+.b4.grown { height: 66%; }
+
+/* Barra Meta 2025 com Destaque Verde e Glow Pulsante */
+.b5,
+.bar.bar-target {
+    background: linear-gradient(180deg, var(--brand-accent-green) 0%, #15803D 100%);
+    box-shadow: 0 6px 16px rgba(34, 197, 94, 0.35);
+}
+
+.b5.grown,
+.bar.bar-target.grown {
+    height: 78%;
+}
+
+.b5 span,
+.bar.bar-target span {
+    color: #065F46;
+    font-weight: 900;
+}
+
+/* Radar Beacon Pulsante no Topo da Barra de Meta */
+.bar-radar-beacon {
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 14px;
+    pointer-events: none;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bar-radar-beacon .beacon-core {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--brand-accent-green);
+    box-shadow: 0 0 8px var(--brand-accent-green), 0 0 14px rgba(74, 222, 128, 0.8);
+    animation: beaconFlash 1.6s ease-in-out infinite alternate;
+}
+
+.bar-radar-beacon .beacon-ring {
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(34, 197, 94, 0.6);
+    animation: radarRingPulse 2s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
+}
+
+.bar-radar-beacon .beacon-ring.r2 {
+    animation-delay: 0.7s;
+}
+
+@keyframes radarRingPulse {
+    0% { transform: scale(0.6); opacity: 1; }
+    100% { transform: scale(2.4); opacity: 0; }
+}
+
+.chart-foot,
+.login-chart-foot {
+    display: flex;
+    justify-content: space-around;
+    font-size: clamp(9.5px, 1.2vh, 10.5px);
+    color: var(--text-on-light-secondary);
+    font-weight: 700;
+    margin-top: clamp(6px, 1vh, 8px);
+    padding: 0 4px;
+}
+
+.chart-foot span:last-child {
+    color: #15803D;
+    font-weight: 800;
+}
+
+/* Selo Informativo com Shimmer Sutil Único */
+.pill-note,
+.login-pill-note {
+    margin-top: clamp(8px, 1.4vh, 14px);
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: clamp(10.5px, 1.3vh, 11.5px);
+    font-weight: 600;
+    color: #E2E8F0;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    padding: clamp(5px, 0.8vh, 7px) clamp(10px, 1.2vw, 14px);
+    border-radius: 9999px;
+    max-width: fit-content;
+    position: relative;
+    z-index: 3;
+    overflow: hidden;
+    animation: loginFadeUp var(--duration-base) var(--ease-premium) 480ms both;
+}
+
+/* Shimmer Único na Carga (1.4s) */
+.pill-note::after,
+.login-pill-note::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+    transform: skewX(-20deg);
+    animation: singleShimmer 1.4s ease-in-out 0.8s 1 forwards;
+}
+
+@keyframes singleShimmer {
+    0% { left: -100%; }
+    100% { left: 200%; }
+}
+
+.pill-note svg,
+.login-pill-note svg {
+    width: 13px;
+    height: 13px;
+    color: #38BDF8;
+    flex-shrink: 0;
+}
+
+.spacer,
+.login-spacer {
+    flex: 1 1 auto;
+    max-height: clamp(12px, 2vh, 32px);
+    min-height: 8px;
+}
+
+.left-footer,
+.login-left-footer {
+    padding-top: clamp(8px, 1.4vh, 14px);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: 3;
+    animation: loginFadeUp var(--duration-base) var(--ease-premium) 520ms both;
+}
+
+.footer-logo-img,
+.login-footer-logo-img {
+    height: clamp(28px, 3.8vh, 36px);
+    width: auto;
+    display: block;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
+    transition: opacity var(--duration-fast) ease;
+}
+
+.footer-logo-img:hover {
+    opacity: 1;
+}
+
+/* -------------------------------------------------------------------------
+   7. PAINEL DIREITO — TIMELINE TRILHA B & MICROINTERAÇÕES
+   ------------------------------------------------------------------------- */
+.login-right-panel {
+    background: linear-gradient(180deg, var(--panel-light-bg-soft) 0%, var(--panel-light-bg) 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(14px, 2.6vh, 34px) clamp(20px, 3vw, 44px);
+    height: 100%;
+    max-height: 100dvh;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 2;
+}
+
+/* Trilha B: 200ms — Selo "Gestão & Avaliação Pedagógica" */
+.badge-top,
+.login-badge-top {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    padding: clamp(4px, 0.7vh, 6px) clamp(10px, 1.2vw, 14px);
+    border-radius: 9999px;
+    font-size: clamp(10.5px, 1.3vh, 11.5px);
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: clamp(10px, 1.8vh, 18px);
+    box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.06);
+    animation: chipEntrance var(--duration-base) var(--ease-premium) 200ms both;
+}
+
+@keyframes chipEntrance {
+    0% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.badge-top svg,
+.login-badge-top svg {
+    width: 13px;
+    height: 13px;
+    color: var(--brand-blue);
+}
+
+/* Trilha B: 500ms — Card do Formulário com Sombra com Toque Verde */
+.card.login-form-container,
+.login-right-panel .card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--card-bg);
+    border-radius: 18px;
+    box-shadow: var(--card-shadow-accent), 0 0 0 1px rgba(226, 232, 240, 0.9);
+    padding: clamp(18px, 2.8vh, 28px) clamp(18px, 2.5vw, 26px);
+    box-sizing: border-box;
+    position: relative;
+    animation: loginCardEntrance var(--duration-slow) var(--ease-premium) 500ms both;
+    transition: transform var(--duration-fast) var(--ease-soft), box-shadow var(--duration-fast) var(--ease-soft);
+}
+
+.card.login-form-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 24px 60px -15px var(--brand-accent-green-glow), 0 0 0 1px rgba(203, 213, 225, 0.9);
+}
+
+@keyframes loginCardEntrance {
+    0% {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Trilha B: 700ms — Título */
+.login-right-panel .card h1,
+.login-card-title {
+    font-family: var(--font-display, 'Lexend', sans-serif);
+    font-size: clamp(19px, 2.5vh, 23px);
+    font-weight: 800;
+    text-align: center;
+    color: var(--text-on-light-primary);
+    letter-spacing: -0.02em;
+    margin-bottom: 0;
+    line-height: 1.2;
+    animation: loginFadeUp var(--duration-base) var(--ease-premium) 700ms both;
+}
+
+/* Trilha B: 800ms — Subtítulo */
+.login-right-panel .card .sub,
+.login-card-sub {
+    text-align: center;
+    font-size: clamp(11.5px, 1.4vh, 13px);
+    color: var(--text-on-light-secondary);
+    margin-top: 4px;
+    margin-bottom: 0;
+    line-height: 1.4;
+    animation: loginFadeUp var(--duration-base) var(--ease-premium) 800ms both;
+}
+
+/* Formulário de Login */
+.login-form-body {
+    margin-top: clamp(12px, 1.8vh, 18px);
+}
+
+/* Trilha B: 850ms & 920ms — Campos de E-mail / Senha */
+.field,
+.login-field,
+.login-input-group {
+    margin-top: clamp(10px, 1.6vh, 14px);
+    position: relative;
+    animation: loginFadeUp var(--duration-base) var(--ease-premium) 850ms both;
+}
+
+.field:nth-of-type(2) {
+    animation-delay: 920ms;
+}
+
+.field svg.icon,
+.login-field-icon,
+.login-input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: #94A3B8;
+    pointer-events: none;
+    transition: color var(--duration-micro) ease, transform var(--duration-micro) ease;
+}
+
+/* Inputs com Foco Moderno em --brand-blue + Glow */
+.field input,
+.login-input-field {
+    width: 100%;
+    padding: clamp(9px, 1.3vh, 12px) 14px clamp(9px, 1.3vh, 12px) 40px;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 10px;
+    font-size: clamp(12.5px, 1.5vh, 13.5px);
+    font-family: var(--font-body);
+    color: var(--text-on-light-primary);
+    outline: none;
+    background-color: #F8FAFC;
+    transition: border-color var(--duration-micro) var(--ease-soft), box-shadow var(--duration-micro) var(--ease-soft), background-color var(--duration-micro) var(--ease-soft);
+    box-sizing: border-box;
+}
+
+.field input::placeholder,
+.login-input-field::placeholder {
+    color: #94A3B8;
+}
+
+.field input:focus,
+.login-input-field:focus {
+    border-color: var(--brand-blue);
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0 4px rgba(47, 111, 237, 0.12);
+}
+
+.field:focus-within svg.icon {
+    color: var(--brand-blue);
+    transform: translateY(-50%) scale(1.05);
+}
+
+.field .eye,
+.login-password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    color: #94A3B8;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: color var(--duration-micro) ease, background-color var(--duration-micro) ease, transform var(--duration-micro) var(--ease-soft);
+}
+
+.field .eye:hover,
+.login-password-toggle:hover {
+    color: var(--text-on-light-primary);
+    background: #F1F5F9;
+}
+
+.field .eye:active,
+.login-password-toggle:active {
+    transform: translateY(-50%) scale(0.92);
+}
+
+.field .eye svg,
+.login-password-toggle svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Trilha B: 1000ms — Lembrar-me e Esqueci a Senha */
+.row-between,
+.login-row-between,
+.login-options-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: clamp(10px, 1.5vh, 14px);
+    font-size: clamp(11.5px, 1.3vh, 12.5px);
+    animation: loginFadeUp var(--duration-base) var(--ease-premium) 1000ms both;
+}
+
+.remember,
+.login-remember,
+.login-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #475569;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    transition: color var(--duration-micro) ease;
+}
+
+.remember:hover {
+    color: var(--text-on-light-primary);
+}
+
+.remember input,
+.login-checkbox-label input {
+    accent-color: var(--brand-blue);
+    width: 15px;
+    height: 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform var(--duration-micro) var(--ease-soft);
+}
+
+.remember input:active,
+.login-checkbox-label input:active {
+    transform: scale(0.8);
+}
+
+.row-between a,
+.login-forgot-link {
+    color: var(--brand-blue);
+    font-weight: 700;
+    text-decoration: none;
+    font-size: clamp(11.5px, 1.3vh, 12.5px);
+    position: relative;
+    transition: color var(--duration-micro) ease, transform var(--duration-micro) var(--ease-soft);
+}
+
+.row-between a:hover,
+.login-forgot-link:hover {
+    color: var(--brand-blue-dark);
+    text-decoration: underline;
+    transform: translateX(1.5px);
+}
+
+/* Trilha B: 1100ms — Botão de Login Primário */
+.btn-primary.btn-login-primary,
+.btn-primary {
+    margin-top: clamp(14px, 2vh, 18px);
+    width: 100%;
+    padding: clamp(10px, 1.5vh, 12.5px) 18px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--panel-dark-bg-end) 0%, var(--panel-dark-bg-start) 100%);
+    color: #FFFFFF;
+    font-family: var(--font-body);
+    font-size: clamp(13.5px, 1.6vh, 14.5px);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 5px 15px -2px rgba(15, 29, 46, 0.35);
+    transition: background var(--duration-micro) var(--ease-soft), filter var(--duration-micro) var(--ease-soft), transform var(--duration-micro) var(--ease-soft), box-shadow var(--duration-micro) var(--ease-soft);
+    animation: loginFadeUp var(--duration-base) var(--ease-premium) 1100ms both;
+}
+
+.btn-primary.btn-login-primary:hover:not(:disabled) {
+    background: var(--brand-blue-hover);
+    box-shadow: 0 8px 22px -2px rgba(47, 111, 237, 0.45);
+    transform: translateY(-1px);
+}
+
+.btn-primary.btn-login-primary:active:not(:disabled) {
+    transform: scale(0.98);
+    transition: transform var(--duration-micro);
+}
+
+.btn-primary.btn-login-primary:disabled {
+    opacity: 0.85;
+    cursor: not-allowed;
+    background: #475569;
+}
+
+.btn-primary svg {
+    width: 15px;
+    height: 15px;
+    transition: transform var(--duration-micro) var(--ease-soft);
+}
+
+.btn-primary:hover:not(:disabled) svg {
+    transform: translateX(4px);
+}
+
+/* Trilha B: 1200ms — Selo "Ambiente Seguro" com Pulso a cada 8s */
+.secure,
+.login-secure-badge {
+    margin-top: clamp(12px, 1.6vh, 16px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: clamp(10.5px, 1.3vh, 11.5px);
+    color: var(--text-on-light-secondary);
+    font-weight: 600;
+    animation: loginFadeUp var(--duration-base) var(--ease-premium) 1200ms both;
+}
+
+.secure svg,
+.login-secure-badge svg {
+    width: 14px;
+    height: 14px;
+    color: var(--brand-accent-green);
+    animation: secureIconPulse 8s ease-in-out infinite;
+}
+
+@keyframes secureIconPulse {
+    0%, 90%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(34, 197, 94, 0)); }
+    95% { transform: scale(1.18); filter: drop-shadow(0 0 6px var(--brand-accent-green)); }
+}
+
+/* Rodapé Institucional */
+.foot-copy,
+.login-footer {
+    text-align: center;
+    margin-top: clamp(10px, 1.8vh, 18px);
+    font-size: clamp(10.5px, 1.2vh, 11.5px);
+    color: var(--text-on-light-secondary);
+    line-height: 1.45;
+    animation: loginFadeUp var(--duration-base) var(--ease-premium) 1250ms both;
+}
+
+.copy-author {
+    display: block;
+    color: var(--text-on-light-secondary);
+    font-weight: 500;
+}
+
+.copy-org {
+    display: block;
+    color: #334155;
+    font-weight: 700;
+    text-decoration: none;
+    margin-top: 2px;
+    transition: color var(--duration-fast) ease;
+}
+
+.copy-org:hover {
+    color: var(--brand-blue);
+    text-decoration: underline;
+}
+
+/* -------------------------------------------------------------------------
+   8. ALERTAS E ESTADOS DE ERRO (SEÇÃO 13 — SHAKE SUTIL NO CAMPO)
+   ------------------------------------------------------------------------- */
+.login-error-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #FEF2F2;
+    border: 1.5px solid #FCA5A5;
+    border-radius: 10px;
+    padding: 10px 13px;
+    margin-bottom: 12px;
+    color: #991B1B;
+    font-size: 12px;
+    animation: alertShake var(--duration-fast) cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes alertShake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-3px); }
+    40% { transform: translateX(3px); }
+    60% { transform: translateX(-2px); }
+    80% { transform: translateX(2px); }
+}
+
+.login-error-alert svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: var(--brand-red-error);
+}
+
+.login-error-content {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    text-align: left;
+}
+
+.login-error-text {
+    font-weight: 700;
+    line-height: 1.35;
+    color: #991B1B;
+}
+
+.login-error-recovery-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--brand-red-error);
+    font-size: 11.5px;
+    font-weight: 700;
+    text-decoration: underline;
+    cursor: pointer;
+    text-align: left;
+    transition: color var(--duration-fast) ease;
+}
+
+.login-error-recovery-btn:hover {
+    color: #7F1D1D;
+}
+
+/* Campo com Erro (Shake Sutil de Atenção <= 4px) */
+.login-input-field.input-error {
+    border-color: var(--brand-red-error) !important;
+    background-color: #FFF5F5 !important;
+    box-shadow: 0 0 0 3.5px var(--brand-red-error-glow) !important;
+    animation: fieldShake var(--duration-fast) cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes fieldShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    50% { transform: translateX(3px); }
+    75% { transform: translateX(-2px); }
+}
+
+/* -------------------------------------------------------------------------
+   9. ANIMAÇÕES DE ENTRADA GERAIS
+   ------------------------------------------------------------------------- */
+@keyframes loginFadeDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes loginFadeUp {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Spinner de Loading com Opacity Crossfade */
+.login-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #FFFFFF;
+    border-radius: 50%;
+    animation: loginSpin 0.7s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@keyframes loginSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* -------------------------------------------------------------------------
+   10. RESPONSIVIDADE PRECISA (MOBILE, TABLET & DESKTOP)
+   ------------------------------------------------------------------------- */
+@media (max-width: 1080px) {
+    .login-split-container {
+        grid-template-columns: 1fr 1fr;
+    }
+    .login-left-panel {
+        padding: 24px 28px;
+    }
+    .login-right-panel {
+        padding: 24px 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .login-screen {
+        overflow-y: auto;
+        height: auto;
+        min-height: 100vh;
+        min-height: 100dvh;
+    }
+
+    .login-split-container {
+        grid-template-columns: 1fr;
+        height: auto;
+        min-height: 100vh;
+        min-height: 100dvh;
+    }
+    
+    .login-left-panel {
+        display: none;
+    }
+    
+    .login-right-panel {
+        min-height: 100vh;
+        min-height: 100dvh;
+        padding: 32px 20px 40px;
+        justify-content: center;
+    }
+    
+    .card.login-form-container {
+        max-width: 440px;
+        width: 100%;
+        box-shadow: 0 12px 32px -8px rgba(15, 23, 42, 0.08);
+    }
+}
+
+@media (max-width: 480px) {
+    .login-left-panel {
+        padding: 24px 16px 28px;
+    }
+    
+    .login-brand-text .name {
+        font-size: 18px;
+    }
+    
+    .login-headline {
+        font-size: 19px;
+        line-height: 1.25;
+    }
+
+    .login-headline .headline-line-1,
+    .login-headline .headline-line-2 {
+        white-space: normal;
+    }
+    
+    .chart-card {
+        padding: 12px 12px 10px;
+    }
+    
+    .chart-plot {
+        height: 120px;
+        padding: 10px 8px 0;
+        gap: 6px;
+    }
+    
+    .bar {
+        width: 15%;
+    }
+    
+    .bar span {
+        font-size: 9.5px;
+        top: -17px;
+    }
+    
+    .chart-foot {
+        font-size: 9px;
+    }
+    
+    .pill-note {
+        font-size: 10.5px;
+        padding: 5px 10px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .card.login-form-container {
+        padding: 20px 16px;
+        border-radius: 14px;
+    }
+    
+    .login-right-panel .card h1 {
+        font-size: 19px;
+    }
+    
+    .login-right-panel .card .sub {
+        font-size: 12px;
+    }
+    
+    .field input,
+    .login-input-field {
+        font-size: 13.5px;
+        padding: 10px 12px 10px 38px;
+    }
+    
+    .btn-primary.btn-login-primary {
+        padding: 11px 16px;
+        font-size: 13.5px;
+    }
+    
+    .row-between {
+        flex-direction: row;
+        gap: 8px;
+    }
+}
+
+/* -------------------------------------------------------------------------
+   11. PREFERS-REDUCED-MOTION (ACESSIBILIDADE)
+   ------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .login-curve-divider svg,
+    .login-curve-divider::after,
+    .goal-line::before,
+    .bar-radar-beacon .beacon-ring,
+    .bar-radar-beacon .beacon-core,
+    .bar-shimmer,
+    .mesh-blob,
+    .mesh-glow-edge,
+    .mesh-particle {
+        animation: none !important;
+    }
+    
+    .b1 { height: 38% !important; }
+    .b2 { height: 47% !important; }
+    .b3 { height: 58% !important; }
+    .b4 { height: 66% !important; }
+    .b5 { height: 78% !important; }
+}

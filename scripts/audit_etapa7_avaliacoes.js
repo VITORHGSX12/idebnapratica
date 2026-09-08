@@ -277,9 +277,18 @@ const mockDocument = {
     addEventListener: function() {}
 };
 
+const mockSessionStorage = {
+    store: {},
+    getItem: function(k) { return this.store[k] || null; },
+    setItem: function(k, v) { this.store[k] = String(v); },
+    removeItem: function(k) { delete this.store[k]; },
+    clear: function() { this.store = {}; }
+};
+
 const mockWindow = {
     document: mockDocument,
     localStorage: mockLocalStorage,
+    sessionStorage: mockSessionStorage,
     addEventListener: function() {},
     setTimeout: function(cb) { cb(); return 1; },
     clearTimeout: function() {},
@@ -528,13 +537,6 @@ async function runAudit() {
         assert(typeof mockWindow.renderEspelhoLancamentoTable === 'function', 'renderEspelhoLancamentoTable deve existir');
         assert(typeof mockWindow.salvarLoteRespostasTurma === 'function', 'salvarLoteRespostasTurma deve existir');
 
-        await mockWindow.renderEspelhoLancamentoTable();
-
-        const tableContent = domElements['score-table-content'];
-        const tbodyScores = domElements['score-students-table-body'];
-        assert(!tableContent.classList.contains('hidden'), 'Tabela de lançamento de notas deve ser exibida quando turma selecionada');
-        assert(tbodyScores && tbodyScores.innerHTML.includes('row-aluno-'), 'Deve renderizar linhas de chamada para os alunos da turma');
-
         // Testar salvamento e injeção de gabaritos respondidos
         const sampleAnswers = {
             'evt_2026_01_esc_01_turma_01': {
@@ -544,6 +546,12 @@ async function runAudit() {
             }
         };
         mockWindow.saveRespostasState(sampleAnswers);
+        await mockWindow.renderEspelhoLancamentoTable();
+
+        const tableContent = domElements['score-table-content'];
+        const tbodyScores = domElements['score-students-table-body'];
+        assert(!tableContent.classList.contains('hidden'), 'Tabela de lançamento de notas deve ser exibida quando turma selecionada');
+        assert(tbodyScores && tbodyScores.innerHTML.includes('row-aluno-'), 'Deve renderizar linhas de chamada para os alunos da turma');
 
         auditResults.push({
             item: '7. Subtab 2 — Grade de Digitação Rápida & Correção em Tempo Real',
@@ -562,9 +570,10 @@ async function runAudit() {
         assert(typeof mockWindow.renderAvaliacoesDashboard === 'function', 'renderAvaliacoesDashboard deve existir');
 
         // Configurar seletor de evento para evt_2026_01 que possui respostas cadastradas
-        domElements['dash-eval-select'].value = 'evt_2026_01';
         mockWindow.initAnalyticsSelectors();
         domElements['dash-eval-select'].value = 'evt_2026_01';
+        domElements['dash-school-select'].value = 'all';
+        domElements['dash-class-select'].value = 'all';
         mockWindow.renderAvaliacoesDashboard();
 
         const valAdhesion = domElements['results-adhesion-value'];
