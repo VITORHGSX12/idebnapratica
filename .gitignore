@@ -15,3 +15,5 @@ backups/
 
 
 .temp_edge_*/
+.temp_audit_*/
+.temp_*/
