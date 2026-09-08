@@ -199,8 +199,26 @@
         // =====================================================================
         // CÁLCULO REAL DE DESCRITORES & TAXAS
         // =====================================================================
-        var matrizDescritores = (eventoAtivo && Array.isArray(eventoAtivo.matrizDescritores)) ? eventoAtivo.matrizDescritores : [];
-        var gabaritoOficial = (eventoAtivo && Array.isArray(eventoAtivo.gabarito)) ? eventoAtivo.gabarito : [];
+        var matrizDescritores = [];
+        var gabaritoOficial = [];
+        if (eventoAtivo) {
+            if (Array.isArray(eventoAtivo.gabarito)) gabaritoOficial = eventoAtivo.gabarito;
+            if (Array.isArray(eventoAtivo.matrizDescritores)) matrizDescritores = eventoAtivo.matrizDescritores;
+
+            if (gabaritoOficial.length === 0 && eventoAtivo.gabaritoGeralJson) {
+                try {
+                    var parsedG = JSON.parse(eventoAtivo.gabaritoGeralJson);
+                    if (Array.isArray(parsedG) && parsedG[0]) {
+                        if (Array.isArray(parsedG[0].gabarito)) gabaritoOficial = parsedG[0].gabarito;
+                        if (Array.isArray(parsedG[0].habilidades)) {
+                            matrizDescritores = parsedG[0].habilidades.map(function(h) {
+                                return typeof h === 'object' ? h : { codigo: h, desc: 'Habilidade ' + h };
+                            });
+                        }
+                    }
+                } catch(e) {}
+            }
+        }
 
         var descritoresMap = {};
         var totalQuestoesRespondidas = 0;

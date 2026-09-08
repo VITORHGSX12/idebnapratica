@@ -33,9 +33,12 @@
         // Checagem rigorosa: existem respostas ou notas de simulados já lançadas?
         var hasEvaluations = false;
         try {
-            var savedRespostas = localStorage.getItem('gd_simulado_respostas_db');
+            var savedRespostas = localStorage.getItem('gd_simulado_respostas_db') || localStorage.getItem('gd_respostas_simulados_data');
             if (savedRespostas && savedRespostas !== '{}' && savedRespostas !== '[]') {
-                hasEvaluations = true;
+                var parsedTest = JSON.parse(savedRespostas);
+                if (parsedTest && Object.keys(parsedTest).length > 0) {
+                    hasEvaluations = true;
+                }
             }
         } catch(e) {}
 

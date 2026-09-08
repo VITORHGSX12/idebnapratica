@@ -259,15 +259,58 @@
         currentActiveTurma = turmaId;
 
         var numQuestoes = ev ? (ev.qtdQuestoes || 20) : 20;
-        var isLocked = ev && ev.status === 'ENCERRADO';
+        // Verificação RBAC: Somente SEMED e Master Admin podem digitar/corrigir cartões
+        var user = global.currentUser;
+        if (!user) {
+            try { user = JSON.parse(localStorage.getItem('user_session') || sessionStorage.getItem('user_session') || '{}'); } catch(e) {}
+        }
+        var userRole = (user && user.role ? user.role : (sessionStorage.getItem('userRole') || 'Master Admin')).toUpperCase();
+        var isReadOnlyRole = userRole.includes('PROFESSOR') || userRole.includes('DIRETOR');
+        var isLocked = (ev && ev.status === 'ENCERRADO') || isReadOnlyRole;
+
+        // Banner informativo sobre correção centralizada da SEMED para visualizadores
+        var existingRbacBanner = document.getElementById('espelho-semed-readonly-banner');
+        if (existingRbacBanner) existingRbacBanner.remove();
+
+        var saveBtn = document.getElementById('btn-save-all-scores');
+        if (saveBtn) {
+            if (isReadOnlyRole) {
+                saveBtn.disabled = true;
+                saveBtn.style.display = 'none';
+            } else {
+                saveBtn.disabled = isLocked;
+                saveBtn.style.display = 'inline-flex';
+            }
+        }
+
+        if (isReadOnlyRole) {
+            var bannerRbac = document.createElement('div');
+            bannerRbac.id = 'espelho-semed-readonly-banner';
+            bannerRbac.style.cssText = 'background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: var(--radius-md); padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; color: var(--text-primary); font-size: 0.85rem;';
+            bannerRbac.innerHTML = `
+                <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-brand-primary); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px;">
+                    🔒
+                </div>
+                <div style="flex: 1;">
+                    <strong style="color: var(--color-brand-primary); display: block; margin-bottom: 2px;">Visualização de Resultados — Correção Centralizada pela SEMED</strong>
+                    <span>A digitação e validação de cartões-resposta é de responsabilidade da SEMED. Professores e Diretores possuem acesso de leitura aos resultados e diagnósticos.</span>
+                </div>
+            `;
+            var cardWrap = tbody.closest('.card-body') || content;
+            if (cardWrap) cardWrap.insertBefore(bannerRbac, cardWrap.firstChild);
+        }
 
         var gabaritoOficial = [];
         try {
             var parsed = JSON.parse(ev.gabaritoGeralJson);
             if (Array.isArray(parsed) && parsed[0] && Array.isArray(parsed[0].gabarito)) {
                 gabaritoOficial = parsed[0].gabarito;
+            } else if (Array.isArray(ev.gabarito)) {
+                gabaritoOficial = ev.gabarito;
             }
-        } catch(e) {}
+        } catch(e) {
+            if (Array.isArray(ev.gabarito)) gabaritoOficial = ev.gabarito;
+        }
 
         while (gabaritoOficial.length < numQuestoes) {
             gabaritoOficial.push(['A', 'B', 'C', 'D'][gabaritoOficial.length % 4]);
@@ -312,7 +355,7 @@
                         maxlength="1" 
                         value="${val}" 
                         ${isLocked || isAusente ? 'disabled' : ''}
-                        style="width: 26px; height: 28px; text-align: center; font-weight: 800; font-family: var(--font-mono); font-size: 12px; border-radius: 4px; border: 1px solid var(--color-border-subtle); background: ${cellBg}; color: ${cellColor}; padding: 0; text-transform: uppercase; outline: none; margin: 0 1px;"
+                        style="width: 26px; height: 28px; text-align: center; font-weight: 800; font-family: var(--font-mono); font-size: 12px; border-radius: 4px; border: 1px solid var(--color-border-subtle); background: ${cellBg}; color: ${cellColor}; padding: 0; text-transform: uppercase; outline: none; margin: 0 1px; ${isReadOnlyRole ? 'cursor: default;' : ''}"
                     />
                 `;
             }).join('');
@@ -326,12 +369,12 @@
                         ${aluno.nome}
                     </td>
                     <td style="padding: 10px 14px; text-align: center; width: 140px;">
-                        <button type="button" onclick="alternarPresencaAluno('${aluno.id}', '${presenca}')" class="btn btn-outline btn-sm" style="font-size: 11px; padding: 2px 8px; height: 26px; border-radius: var(--radius-pill); font-weight: 700;">
+                        <button type="button" ${isReadOnlyRole ? 'disabled' : ''} onclick="alternarPresencaAluno('${aluno.id}', '${presenca}')" class="btn btn-outline btn-sm" style="font-size: 11px; padding: 2px 8px; height: 26px; border-radius: var(--radius-pill); font-weight: 700; ${isReadOnlyRole ? 'cursor: not-allowed; opacity: 0.8;' : ''}">
                             ${presenca === 'PRESENTE' ? '<span style="color:#10b981;font-weight:700;">Presente</span>' : '<span style="color:#ef4444;font-weight:700;">Ausente</span>'}
                         </button>
                     </td>
-                    <td style="padding: 8px 10px; text-align: center; white-space: nowrap;">
-                        <div style="display: inline-flex; align-items: center;">
+                    <td style="padding: 8px 10px; text-align: center; white-space: nowrap; min-width: 580px;">
+                        <div style="display: inline-flex; align-items: center; justify-content: center; gap: 2px;">
                             ${inputsHtml}
                         </div>
                     </td>
@@ -347,7 +390,9 @@
             `;
         }).join('');
 
-        attachKeyboardDataEntryEvents();
+        if (!isReadOnlyRole) {
+            attachKeyboardDataEntryEvents();
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -449,6 +494,16 @@
     }
 
     function alternarPresencaAluno(alunoId, currentPresenca) {
+        var user = global.currentUser;
+        if (!user) {
+            try { user = JSON.parse(localStorage.getItem('user_session') || sessionStorage.getItem('user_session') || '{}'); } catch(e) {}
+        }
+        var userRole = (user && user.role ? user.role : (sessionStorage.getItem('userRole') || 'Master Admin')).toUpperCase();
+        if (userRole.includes('PROFESSOR') || userRole.includes('DIRETOR')) {
+            if (typeof global.showToast === 'function') global.showToast('Alteração restrita à equipe da SEMED', 'alert');
+            return;
+        }
+
         var newPresenca = (currentPresenca === 'PRESENTE') ? 'AUSENTE' : 'PRESENTE';
         var respostasDb = typeof global.getRespostasState === 'function' ? global.getRespostasState() : {};
         var key = currentActiveEvent.id + '_' + currentActiveSchool + '_' + currentActiveTurma;
@@ -464,6 +519,13 @@
     }
 
     function triggerDebounceAutoSave() {
+        var user = global.currentUser;
+        if (!user) {
+            try { user = JSON.parse(localStorage.getItem('user_session') || sessionStorage.getItem('user_session') || '{}'); } catch(e) {}
+        }
+        var userRole = (user && user.role ? user.role : (sessionStorage.getItem('userRole') || 'Master Admin')).toUpperCase();
+        if (userRole.includes('PROFESSOR') || userRole.includes('DIRETOR')) return;
+
         if (debounceSaveTimeout) clearTimeout(debounceSaveTimeout);
         
         debounceSaveTimeout = setTimeout(function() {
@@ -472,6 +534,13 @@
     }
 
     function salvarLoteRespostasTurma(isAutoSave) {
+        var user = global.currentUser;
+        if (!user) {
+            try { user = JSON.parse(localStorage.getItem('user_session') || sessionStorage.getItem('user_session') || '{}'); } catch(e) {}
+        }
+        var userRole = (user && user.role ? user.role : (sessionStorage.getItem('userRole') || 'Master Admin')).toUpperCase();
+        if (userRole.includes('PROFESSOR') || userRole.includes('DIRETOR')) return;
+
         if (!currentActiveEvent || !currentActiveSchool || !currentActiveTurma) return;
 
         var key = currentActiveEvent.id + '_' + currentActiveSchool + '_' + currentActiveTurma;

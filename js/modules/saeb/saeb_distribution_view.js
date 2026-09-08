@@ -123,7 +123,19 @@
         var totalPresentes = 0;
         var totalAusentes = 0;
 
-        var gabaritoOficial = (eventoAtivo && Array.isArray(eventoAtivo.gabarito)) ? eventoAtivo.gabarito : [];
+        var gabaritoOficial = [];
+        if (eventoAtivo) {
+            if (Array.isArray(eventoAtivo.gabarito)) {
+                gabaritoOficial = eventoAtivo.gabarito;
+            } else if (eventoAtivo.gabaritoGeralJson) {
+                try {
+                    var parsedG = JSON.parse(eventoAtivo.gabaritoGeralJson);
+                    if (Array.isArray(parsedG) && parsedG[0] && Array.isArray(parsedG[0].gabarito)) {
+                        gabaritoOficial = parsedG[0].gabarito;
+                    }
+                } catch(e) {}
+            }
+        }
 
         Object.keys(respostasDb).forEach(function(key) {
             if (finalEventoId && !key.startsWith(finalEventoId + '_')) return;

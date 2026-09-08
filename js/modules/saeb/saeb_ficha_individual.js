@@ -103,8 +103,26 @@
 
         var nivel = typeof global.calcularNivelSaeb === 'function' ? global.calcularNivelSaeb(aluno.percentual) : 0;
         var nivelInfo = (global.SAEB_LEVELS_META && global.SAEB_LEVELS_META[nivel]) || { label: 'Nível ' + nivel, cor: '#6366f1', classBadge: 'badge-info' };
-        var matrizDescritores = (cachedEvento && Array.isArray(cachedEvento.matrizDescritores)) ? cachedEvento.matrizDescritores : [];
-        var gabarito = (cachedEvento && Array.isArray(cachedEvento.gabarito)) ? cachedEvento.gabarito : [];
+        var matrizDescritores = [];
+        var gabarito = [];
+        if (cachedEvento) {
+            if (Array.isArray(cachedEvento.gabarito)) gabarito = cachedEvento.gabarito;
+            if (Array.isArray(cachedEvento.matrizDescritores)) matrizDescritores = cachedEvento.matrizDescritores;
+
+            if (gabarito.length === 0 && cachedEvento.gabaritoGeralJson) {
+                try {
+                    var parsedG = JSON.parse(cachedEvento.gabaritoGeralJson);
+                    if (Array.isArray(parsedG) && parsedG[0]) {
+                        if (Array.isArray(parsedG[0].gabarito)) gabarito = parsedG[0].gabarito;
+                        if (Array.isArray(parsedG[0].habilidades)) {
+                            matrizDescritores = parsedG[0].habilidades.map(function(h) {
+                                return typeof h === 'object' ? h : { codigo: h, desc: 'Habilidade ' + h };
+                            });
+                        }
+                    }
+                } catch(e) {}
+            }
+        }
 
         var acertosLista = [];
         var errosLista = [];
