@@ -240,6 +240,23 @@ body.dark-mode {
     gap: 10px;
     cursor: pointer;
     text-decoration: none;
+    min-height: 34px;
+}
+
+.sidebar-brand-symbol {
+    display: none !important;
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.sidebar-brand-full {
+    display: block !important;
+    height: 30px;
+    width: auto;
+    max-width: 180px;
+    object-fit: contain;
+    transition: opacity 150ms ease;
 }
 
 .sidebar-logo-icon {
@@ -252,17 +269,6 @@ body.dark-mode {
     justify-content: center;
     flex-shrink: 0;
     overflow: hidden;
-}
-
-.sidebar-logo-icon img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border-radius: 8px;
-}
-
-body.dark-mode .sidebar-logo-icon {
-    background: transparent;
 }
 
 .sidebar-logo-icon i,
@@ -670,10 +676,54 @@ body.dark-mode .top-navbar {
     overflow: hidden;
 }
 
-.top-navbar .navbar-left > div {
+.top-navbar .navbar-left > div.navbar-title-wrap {
     min-width: 0;
     flex: 1;
     overflow: hidden;
+}
+
+.navbar-brand-header {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin-right: 4px;
+}
+
+.navbar-brand-logo {
+    height: 28px;
+    width: auto;
+    max-width: 160px;
+    object-fit: contain;
+}
+
+.navbar-brand-logo.brand-logo-dark {
+    display: none;
+}
+
+.navbar-brand-logo.brand-logo-light {
+    display: block;
+}
+
+body.dark-mode .navbar-brand-logo.brand-logo-light {
+    display: none;
+}
+
+body.dark-mode .navbar-brand-logo.brand-logo-dark {
+    display: block;
+}
+
+/* Marca d'água institucional / Brand watermark */
+.brand-watermark {
+    opacity: 0.15;
+    filter: grayscale(100%);
+    pointer-events: none;
+    user-select: none;
+}
+
+@media (max-width: 768px) {
+    .navbar-brand-header {
+        display: none;
+    }
 }
 
 .top-navbar #page-title {
@@ -3703,6 +3753,20 @@ body.collapsed-sidebar .sidebar-logo-block {
     gap: 0 !important;
     display: flex !important;
     align-items: center !important;
+    width: 100% !important;
+}
+
+body.collapsed-sidebar .sidebar-brand-symbol {
+    display: block !important;
+    width: 32px !important;
+    height: 32px !important;
+    margin: 0 auto !important;
+}
+
+body.collapsed-sidebar .sidebar-brand-full {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
 }
 
 body.collapsed-sidebar .sidebar-collapse-btn {

@@ -8,15 +8,11 @@
     <meta http-equiv="Expires" content="0">
     <title>IDEB na Prática | SEMED Gonçalves Dias</title>
     <!-- Favicon Oficial IDEB na Prática -->
-    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/svg+xml" href="assets/brand/ideb_symbol_favicon_24x24.svg">
+    <link rel="apple-touch-icon" href="assets/brand/ideb_symbol_app_icon.svg">
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="design-tokens.css?v=20260830_v2">
-    <link rel="stylesheet" href="styles.css?v=0985a0dc78_mtss8bnx">
+    <link rel="stylesheet" href="styles.css?v=91e2e761dc_mtssg46c">
     <link rel="stylesheet" href="login-premium.css?v=20260830_v2">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -435,7 +431,7 @@
                 <!-- Headline de Impacto com 4 Frases Rotativas em Tipografia Bold -->
                 <div class="hero-headline-wrap">
                     <div class="hero-brand-tag">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hero-brand-icon-svg"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                        <img src="assets/brand/ideb_symbol_sidebar.svg" alt="" width="18" height="18" class="hero-brand-icon-svg" style="object-fit: contain;">
                         <span>IDEB na Prática · SEMED Gonçalves Dias</span>
                     </div>
                     
@@ -561,7 +557,7 @@
         <div class="login-transition-card">
             <div class="login-transition-brand">
                 <div class="login-transition-icon-wrap" style="width: 44px; height: 44px; border-radius: 10px; background: transparent; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                    <img src="assets/sidebar-icon-128x128.png" alt="IDEB na Prática" style="width: 100%; height: 100%; object-fit: contain;">
+                    <img src="assets/brand/ideb_symbol_full.svg" alt="IDEB na Prática" style="width: 100%; height: 100%; object-fit: contain;">
                 </div>
                 <div class="login-transition-text-wrap">
                     <h2 class="login-transition-title">IDEB na Prática</h2>
@@ -709,13 +705,10 @@
             <div class="sidebar-header">
                 <div class="sidebar-header-top">
                     <div class="sidebar-logo-block" onclick="if(document.body.classList.contains('collapsed-sidebar')) toggleSidebarCollapse();" data-tooltip="IDEB na Prática">
-                        <div class="sidebar-logo-icon">
-                            <img src="assets/sidebar-icon-128x128.png" alt="IDEB na Prática" style="width: 28px; height: 28px; border-radius: 6px; object-fit: contain;">
-                        </div>
-                        <div class="sidebar-brand-text-wrap">
-                            <h1 class="sidebar-brand-title">IDEB na Prática</h1>
-                            <span class="sidebar-brand-subtitle">Painel Municipal</span>
-                        </div>
+                        <!-- Símbolo compacto para sidebar colapsada (24x24 / 32x32) -->
+                        <img src="assets/brand/ideb_symbol_sidebar.svg" alt="IDEB na Prática" class="sidebar-brand-symbol" width="32" height="32">
+                        <!-- Logotipo horizontal completo para sidebar expandida -->
+                        <img src="assets/brand/ideb_logo_horizontal_inverted.svg" alt="IDEB na Prática" class="sidebar-brand-full">
                     </div>
                     <button class="sidebar-collapse-btn" id="sidebar-collapse-toggle" onclick="toggleSidebarCollapse();" title="Recolher / Expandir Menu" aria-label="Recolher menu">
                         <img src="assets/icons/sidebar.svg" id="sidebar-toggle-svg" class="sidebar-toggle-icon" alt="" aria-hidden="true" style="width: 14px; height: 14px; filter: brightness(0) invert(1);">
@@ -863,7 +856,11 @@
                     <button class="btn-icon" id="mobile-menu-toggle" onclick="toggleMobileSidebar();" aria-label="Abrir menu lateral">
                         <img src="assets/icons/sidebar.svg" alt="" aria-hidden="true" style="width: 22px; height: 22px;">
                     </button>
-                    <div>
+                    <div class="navbar-brand-header">
+                        <img src="assets/brand/ideb_logo_horizontal_color.svg" alt="IDEB na Prática" class="navbar-brand-logo brand-logo-light">
+                        <img src="assets/brand/ideb_logo_horizontal_inverted.svg" alt="IDEB na Prática" class="navbar-brand-logo brand-logo-dark">
+                    </div>
+                    <div class="navbar-title-wrap">
                         <h2 id="page-title">IDEB na Prática</h2>
                         <p id="page-subtitle" class="text-muted">Visão geral do desempenho pedagógico e estatísticas operacionais da rede.</p>
                     </div>
@@ -7236,89 +7233,89 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=341bc2b5e3_mtss8bnx"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=daec643646_mtss8bnx"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mtss8bnx"></script>
-    <script src="bncc_habilidades_oficial.js?v=2f802bf604_mtss8bnx"></script>
-    <script src="ideb_publico_db.js?v=fa7edb185f_mtss8bnx"></script>
-    <script src="alunos_db.js?v=e23fe3179f_mtss8bnx"></script>
-    <script src="js/data/official_students_seed.js?v=876be25c9a_mtss8bnx"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=341bc2b5e3_mtssg46c"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=daec643646_mtssg46c"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mtssg46c"></script>
+    <script src="bncc_habilidades_oficial.js?v=2f802bf604_mtssg46c"></script>
+    <script src="ideb_publico_db.js?v=fa7edb185f_mtssg46c"></script>
+    <script src="alunos_db.js?v=e23fe3179f_mtssg46c"></script>
+    <script src="js/data/official_students_seed.js?v=876be25c9a_mtssg46c"></script>
 
     <!-- Módulos do Core -->
-    <script src="js/core/security.js?v=9d4fc4a791_mtss8bnx"></script>
-    <script src="js/core/helpers.js?v=7656a2a6bb_mtss8bnx"></script>
-    <script src="js/core/theme-toast.js?v=c181c006e0_mtss8bnx"></script>
-    <script src="js/core/chart-theme.js?v=c8e29467a8_mtss8bnx"></script>
-    <script src="js/core/user-profile.js?v=c1db21eb55_mtss8bnx"></script>
-    <script src="js/data/official_users_directory.js?v=24a756e04c_mtss8bnx"></script>
-    <script src="js/core/login-animation.js?v=414e14bbcd_mtss8bnx"></script>
-    <script src="js/core/auth.js?v=20d2c316a9_mtss8bnx"></script>
-    <script src="js/core/navigation/navigation_meta.js?v=256a33a6c1_mtss8bnx"></script>
-    <script src="js/core/navigation/navigation_history.js?v=a09c33f4ae_mtss8bnx"></script>
-    <script src="js/core/navigation/navigation_events.js?v=7e416c2fa3_mtss8bnx"></script>
-    <script src="js/core/navigation.js?v=0ee55dd7e3_mtss8bnx"></script>
-    <script src="js/core/sync.js?v=73ebd2560a_mtss8bnx"></script>
+    <script src="js/core/security.js?v=9d4fc4a791_mtssg46c"></script>
+    <script src="js/core/helpers.js?v=7656a2a6bb_mtssg46c"></script>
+    <script src="js/core/theme-toast.js?v=c181c006e0_mtssg46c"></script>
+    <script src="js/core/chart-theme.js?v=c8e29467a8_mtssg46c"></script>
+    <script src="js/core/user-profile.js?v=c1db21eb55_mtssg46c"></script>
+    <script src="js/data/official_users_directory.js?v=24a756e04c_mtssg46c"></script>
+    <script src="js/core/login-animation.js?v=414e14bbcd_mtssg46c"></script>
+    <script src="js/core/auth.js?v=20d2c316a9_mtssg46c"></script>
+    <script src="js/core/navigation/navigation_meta.js?v=256a33a6c1_mtssg46c"></script>
+    <script src="js/core/navigation/navigation_history.js?v=a09c33f4ae_mtssg46c"></script>
+    <script src="js/core/navigation/navigation_events.js?v=7e416c2fa3_mtssg46c"></script>
+    <script src="js/core/navigation.js?v=0ee55dd7e3_mtssg46c"></script>
+    <script src="js/core/sync.js?v=73ebd2560a_mtssg46c"></script>
 
     <!-- Módulos de Domínio -->
-    <script src="js/modules/dashboard/dashboard_kpis.js?v=1ed1f8c921_mtss8bnx"></script>
-    <script src="js/modules/dashboard/dashboard_charts.js?v=de1a05b8a6_mtss8bnx"></script>
-    <script src="js/modules/dashboard/dashboard_analytics.js?v=a7db1260ed_mtss8bnx"></script>
-    <script src="js/modules/dashboard/dashboard_scales.js?v=38ef0c5f91_mtss8bnx"></script>
-    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=8a942cafe9_mtss8bnx"></script>
-    <script src="js/modules/dashboard/dashboard_scroll_reveal.js?v=765a5ac049_mtss8bnx"></script>
-    <script src="js/modules/alunos/alunos_progression_modal.js?v=9b35c9ce79_mtss8bnx"></script>
-    <script src="js/modules/alunos/alunos_list.js?v=1680ba1e32_mtss8bnx"></script>
-    <script src="js/modules/alunos/alunos_forms.js?v=d65581afbc_mtss8bnx"></script>
-    <script src="js/modules/turmas/turmas_crud.js?v=7b6d46585b_mtss8bnx"></script>
-    <script src="js/modules/turmas/turmas_diario.js?v=edae66f43a_mtss8bnx"></script>
-    <script src="js/modules/metas/metas_regional.js?v=7556fbb4b6_mtss8bnx"></script>
-    <script src="js/modules/metas/metas_pactuacao.js?v=55531875c5_mtss8bnx"></script>
-    <script src="js/modules/metas/metas_escolas_ranking.js?v=d2cab5c654_mtss8bnx"></script>
-    <script src="js/modules/metas/metas_calculo_manual.js?v=db8734a78d_mtss8bnx"></script>
-    <script src="js/modules/metas/metas_ideb.js?v=17b2b704aa_mtss8bnx"></script>
-    <script src="js/modules/escolas/escolas.js?v=6156cfb8f2_mtss8bnx"></script>
-    <script src="js/modules/escolas/escolas_workspace.js?v=cbd14d4cc2_mtss8bnx"></script>
-    <script src="js/modules/escolas/escolas_modals.js?v=d32d052d1d_mtss8bnx"></script>
-    <script src="js/modules/matrizes/matrizes.js?v=d2df1a4b54_mtss8bnx"></script>
-    <script src="js/modules/cronograma/cronograma_state.js?v=291ef65907_mtss8bnx"></script>
-    <script src="js/modules/cronograma/cronograma_views_monthly.js?v=8d7fe9a8d7_mtss8bnx"></script>
-    <script src="js/modules/cronograma/cronograma_views_weekly.js?v=17318533ba_mtss8bnx"></script>
-    <script src="js/modules/cronograma/cronograma_views_comparison.js?v=9875be98c6_mtss8bnx"></script>
-    <script src="js/modules/cronograma/cronograma_progress_modal.js?v=f327132831_mtss8bnx"></script>
-    <script src="js/modules/cronograma/cronograma_views.js?v=736673a1aa_mtss8bnx"></script>
-    <script src="js/modules/cronograma/cronograma_planner.js?v=5e9c900526_mtss8bnx"></script>
-    <script src="js/modules/cronograma/cronograma_trash.js?v=b1408ecbe3_mtss8bnx"></script>
-    <script src="js/modules/cronograma/cronograma_calendar_40w.js?v=310bf5af0c_mtss8bnx"></script>
-    <script src="js/modules/cronograma/cronograma.js?v=fa42f11d98_mtss8bnx"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_state.js?v=9246c014a5_mtss8bnx"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_wizard.js?v=23d3745407_mtss8bnx"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_events.js?v=291641d46e_mtss8bnx"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_espelho.js?v=40f93638e1_mtss8bnx"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_analytics.js?v=c02f843b04_mtss8bnx"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_print.js?v=947e5a0916_mtss8bnx"></script>
-    <script src="js/modules/questoes/questoes_generator.js?v=8e44d7592b_mtss8bnx"></script>
-    <script src="js/modules/questoes/questoes_list.js?v=5543a2c1d7_mtss8bnx"></script>
-    <script src="js/modules/questoes/questoes_import_export.js?v=c7d3bb36d0_mtss8bnx"></script>
-    <script src="js/modules/diagnostico/diagnostico.js?v=e5116c8aaa_mtss8bnx"></script>
-    <script src="js/modules/saeb/saeb_state.js?v=178da7f734_mtss8bnx"></script>
-    <script src="js/modules/saeb/saeb_distribution_view.js?v=ae0be00c12_mtss8bnx"></script>
-    <script src="js/modules/saeb/saeb_comparativo_turmas.js?v=22f1b3636c_mtss8bnx"></script>
-    <script src="js/modules/saeb/saeb_ficha_individual.js?v=a41dbdf173_mtss8bnx"></script>
-    <script src="js/modules/saeb/saeb_boletim.js?v=f2fbc9e7e7_mtss8bnx"></script>
-    <script src="js/modules/saeb/saeb_intervencoes_comparativo.js?v=e1550cecbe_mtss8bnx"></script>
-    <script src="js/modules/saeb/saeb.js?v=b4e224328a_mtss8bnx"></script>
-    <script src="js/modules/biblioteca/biblioteca_reader.js?v=743943d3d7_mtss8bnx"></script>
-    <script src="js/modules/biblioteca/biblioteca_upload.js?v=98b16c4eda_mtss8bnx"></script>
-    <script src="js/modules/biblioteca/biblioteca.js?v=d101f88443_mtss8bnx"></script>
-    <script src="js/modules/admin/admin_data.js?v=4146d4760b_mtss8bnx"></script>
-    <script src="js/modules/admin/admin_users.js?v=3fceeceab0_mtss8bnx"></script>
-    <script src="js/modules/admin/admin_tenants.js?v=ae5a501f46_mtss8bnx"></script>
-    <script src="js/modules/onboarding/onboarding_tour.js?v=e8a0416e78_mtss8bnx"></script>
-    <script src="js/modules/onboarding/tab_context_tours.js?v=a447973a01_mtss8bnx"></script>
+    <script src="js/modules/dashboard/dashboard_kpis.js?v=1ed1f8c921_mtssg46c"></script>
+    <script src="js/modules/dashboard/dashboard_charts.js?v=de1a05b8a6_mtssg46c"></script>
+    <script src="js/modules/dashboard/dashboard_analytics.js?v=a7db1260ed_mtssg46c"></script>
+    <script src="js/modules/dashboard/dashboard_scales.js?v=38ef0c5f91_mtssg46c"></script>
+    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=8a942cafe9_mtssg46c"></script>
+    <script src="js/modules/dashboard/dashboard_scroll_reveal.js?v=765a5ac049_mtssg46c"></script>
+    <script src="js/modules/alunos/alunos_progression_modal.js?v=9b35c9ce79_mtssg46c"></script>
+    <script src="js/modules/alunos/alunos_list.js?v=1680ba1e32_mtssg46c"></script>
+    <script src="js/modules/alunos/alunos_forms.js?v=d65581afbc_mtssg46c"></script>
+    <script src="js/modules/turmas/turmas_crud.js?v=7b6d46585b_mtssg46c"></script>
+    <script src="js/modules/turmas/turmas_diario.js?v=edae66f43a_mtssg46c"></script>
+    <script src="js/modules/metas/metas_regional.js?v=7556fbb4b6_mtssg46c"></script>
+    <script src="js/modules/metas/metas_pactuacao.js?v=55531875c5_mtssg46c"></script>
+    <script src="js/modules/metas/metas_escolas_ranking.js?v=d2cab5c654_mtssg46c"></script>
+    <script src="js/modules/metas/metas_calculo_manual.js?v=db8734a78d_mtssg46c"></script>
+    <script src="js/modules/metas/metas_ideb.js?v=17b2b704aa_mtssg46c"></script>
+    <script src="js/modules/escolas/escolas.js?v=6156cfb8f2_mtssg46c"></script>
+    <script src="js/modules/escolas/escolas_workspace.js?v=cbd14d4cc2_mtssg46c"></script>
+    <script src="js/modules/escolas/escolas_modals.js?v=d32d052d1d_mtssg46c"></script>
+    <script src="js/modules/matrizes/matrizes.js?v=d2df1a4b54_mtssg46c"></script>
+    <script src="js/modules/cronograma/cronograma_state.js?v=291ef65907_mtssg46c"></script>
+    <script src="js/modules/cronograma/cronograma_views_monthly.js?v=8d7fe9a8d7_mtssg46c"></script>
+    <script src="js/modules/cronograma/cronograma_views_weekly.js?v=17318533ba_mtssg46c"></script>
+    <script src="js/modules/cronograma/cronograma_views_comparison.js?v=9875be98c6_mtssg46c"></script>
+    <script src="js/modules/cronograma/cronograma_progress_modal.js?v=f327132831_mtssg46c"></script>
+    <script src="js/modules/cronograma/cronograma_views.js?v=736673a1aa_mtssg46c"></script>
+    <script src="js/modules/cronograma/cronograma_planner.js?v=5e9c900526_mtssg46c"></script>
+    <script src="js/modules/cronograma/cronograma_trash.js?v=b1408ecbe3_mtssg46c"></script>
+    <script src="js/modules/cronograma/cronograma_calendar_40w.js?v=310bf5af0c_mtssg46c"></script>
+    <script src="js/modules/cronograma/cronograma.js?v=fa42f11d98_mtssg46c"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_state.js?v=9246c014a5_mtssg46c"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_wizard.js?v=23d3745407_mtssg46c"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_events.js?v=291641d46e_mtssg46c"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_espelho.js?v=40f93638e1_mtssg46c"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_analytics.js?v=c02f843b04_mtssg46c"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_print.js?v=4bbcca0d65_mtssg46c"></script>
+    <script src="js/modules/questoes/questoes_generator.js?v=8e44d7592b_mtssg46c"></script>
+    <script src="js/modules/questoes/questoes_list.js?v=5543a2c1d7_mtssg46c"></script>
+    <script src="js/modules/questoes/questoes_import_export.js?v=c7d3bb36d0_mtssg46c"></script>
+    <script src="js/modules/diagnostico/diagnostico.js?v=e5116c8aaa_mtssg46c"></script>
+    <script src="js/modules/saeb/saeb_state.js?v=178da7f734_mtssg46c"></script>
+    <script src="js/modules/saeb/saeb_distribution_view.js?v=ae0be00c12_mtssg46c"></script>
+    <script src="js/modules/saeb/saeb_comparativo_turmas.js?v=22f1b3636c_mtssg46c"></script>
+    <script src="js/modules/saeb/saeb_ficha_individual.js?v=a41dbdf173_mtssg46c"></script>
+    <script src="js/modules/saeb/saeb_boletim.js?v=f2fbc9e7e7_mtssg46c"></script>
+    <script src="js/modules/saeb/saeb_intervencoes_comparativo.js?v=3002c919ef_mtssg46c"></script>
+    <script src="js/modules/saeb/saeb.js?v=b4e224328a_mtssg46c"></script>
+    <script src="js/modules/biblioteca/biblioteca_reader.js?v=743943d3d7_mtssg46c"></script>
+    <script src="js/modules/biblioteca/biblioteca_upload.js?v=98b16c4eda_mtssg46c"></script>
+    <script src="js/modules/biblioteca/biblioteca.js?v=d101f88443_mtssg46c"></script>
+    <script src="js/modules/admin/admin_data.js?v=4146d4760b_mtssg46c"></script>
+    <script src="js/modules/admin/admin_users.js?v=3fceeceab0_mtssg46c"></script>
+    <script src="js/modules/admin/admin_tenants.js?v=ae5a501f46_mtssg46c"></script>
+    <script src="js/modules/onboarding/onboarding_tour.js?v=e8a0416e78_mtssg46c"></script>
+    <script src="js/modules/onboarding/tab_context_tours.js?v=a447973a01_mtssg46c"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=82382debd8_mtss8bnx"></script>
-    <script src="js/core/global_cards_animation.js?v=e748bd59fe_mtss8bnx"></script>
-    <script src="js/core/global_button_handlers.js?v=38a379ca14_mtss8bnx"></script>
+    <script src="app.js?v=82382debd8_mtssg46c"></script>
+    <script src="js/core/global_cards_animation.js?v=e748bd59fe_mtssg46c"></script>
+    <script src="js/core/global_button_handlers.js?v=38a379ca14_mtssg46c"></script>
 </body>
 </html>

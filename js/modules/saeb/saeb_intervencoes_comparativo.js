@@ -405,10 +405,13 @@
         var targetSchool = schoolName || 'Rede Municipal de Gonçalves Dias - MA';
         var docContent = [
             '<div style="font-family: Arial, sans-serif; padding: 30px; color: #1f2937; max-width: 800px; margin: 0 auto; line-height: 1.5;">',
-            '    <div style="border-bottom: 2px solid #4338ca; padding-bottom: 14px; margin-bottom: 20px;">',
-            '        <h2 style="margin: 0; color: #4338ca; font-size: 1.4rem;">PREFEITURA MUNICIPAL DE GONÇALVES DIAS - MA</h2>',
-            '        <h3 style="margin: 4px 0 0 0; color: #4b5563; font-size: 1.05rem;">SECRETARIA MUNICIPAL DE EDUCAÇÃO (SEMED) • IDEB NA PRÁTICA</h3>',
-            '        <p style="margin: 6px 0 0 0; font-size: 0.85rem; color: #6b7280;">Plano de Intervenção e Recomposição Pedagógica SAEB 2026</p>',
+            '    <div style="border-bottom: 2px solid #4338ca; padding-bottom: 14px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">',
+            '        <div>',
+            '            <h2 style="margin: 0; color: #4338ca; font-size: 1.3rem;">PREFEITURA MUNICIPAL DE GONÇALVES DIAS - MA</h2>',
+            '            <h3 style="margin: 4px 0 0 0; color: #4b5563; font-size: 1rem;">SECRETARIA MUNICIPAL DE EDUCAÇÃO (SEMED) • IDEB NA PRÁTICA</h3>',
+            '            <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: #6b7280;">Plano de Intervenção e Recomposição Pedagógica SAEB 2026</p>',
+            '        </div>',
+            '        <img src="assets/brand/ideb_logo_horizontal_color.svg" alt="IDEB na Prática" style="height: 38px; width: auto; object-fit: contain;">',
             '    </div>',
             '    <div style="background: #f3f4f6; padding: 14px 18px; border-radius: 6px; margin-bottom: 20px;">',
             '        <p style="margin: 0 0 6px 0; font-size: 0.9rem;"><strong>Unidade Escolar:</strong> ' + targetSchool + '</p>',

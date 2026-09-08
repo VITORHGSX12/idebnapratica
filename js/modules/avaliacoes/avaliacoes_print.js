@@ -119,8 +119,11 @@
             <body>
                 <div class="card-box">
                     <div class="header">
-                        <h2 style="margin:0; font-size:15px; text-transform:uppercase;">SECRETARIA MUNICIPAL DE EDUCAÇÃO — SEMED</h2>
-                        <h3 style="margin:4px 0 0 0; font-size:13px; color:#475569;">${ev ? ev.titulo : 'SIMULADO SAEB'}</h3>
+                        <div style="display:flex; justify-content:center; margin-bottom:6px;">
+                            <img src="assets/brand/ideb_logo_horizontal_black.svg" alt="IDEB na Prática" style="height:26px; width:auto; object-fit:contain;">
+                        </div>
+                        <h2 style="margin:0; font-size:14px; text-transform:uppercase;">SECRETARIA MUNICIPAL DE EDUCAÇÃO — SEMED</h2>
+                        <h3 style="margin:4px 0 0 0; font-size:12px; color:#475569;">${ev ? ev.titulo : 'SIMULADO SAEB'}</h3>
                         <p style="margin:4px 0 0 0; font-size:10px; color:#64748b;">FOLHA OFICIAL DE RESPOSTAS / LEITURA ÓPTICA</p>
                     </div>
                     <div style="font-size:11px; margin-bottom:12px; line-height:1.6;">
@@ -196,8 +199,11 @@
             </head>
             <body>
                 <div style="text-align:center; border-bottom:2px solid #0f172a; padding-bottom:8px;">
-                    <h2 style="margin:0; font-size:15px;">SECRETARIA MUNICIPAL DE EDUCAÇÃO — SEMED</h2>
-                    <h3 style="margin:4px 0; font-size:13px;">ATA DE APLICAÇÃO E LISTA DE PRESENÇA</h3>
+                    <div style="display:flex; justify-content:center; margin-bottom:6px;">
+                        <img src="assets/brand/ideb_logo_horizontal_black.svg" alt="IDEB na Prática" style="height:26px; width:auto; object-fit:contain;">
+                    </div>
+                    <h2 style="margin:0; font-size:14px;">SECRETARIA MUNICIPAL DE EDUCAÇÃO — SEMED</h2>
+                    <h3 style="margin:4px 0; font-size:12px;">ATA DE APLICAÇÃO E LISTA DE PRESENÇA</h3>
                     <p style="margin:0; font-size:11px; color:#475569;">${ev ? ev.titulo : 'Simulado 2026'}</p>
                 </div>
                 <table style="margin-top:10px; font-size:11px;">
