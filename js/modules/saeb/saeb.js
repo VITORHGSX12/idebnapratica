@@ -29,56 +29,72 @@
         }
     }
 
-    function bindPedagogicSubtabs() {
+    function switchPedagogicSubtab(targetId) {
+        if (!targetId) targetId = 'niveis-saeb-sub';
         var subtabBtns = document.querySelectorAll('.pedagogic-subtab-btn');
         var subtabContents = document.querySelectorAll('.pedagogic-subtab-content');
+
+        subtabBtns.forEach(function (b) {
+            if (b.getAttribute('data-subtab') === targetId) {
+                b.classList.add('active');
+                b.style.color = 'var(--purple-light)';
+                b.style.fontWeight = '600';
+                b.style.borderBottom = '2px solid var(--purple)';
+            } else {
+                b.classList.remove('active');
+                b.style.color = 'var(--text-secondary)';
+                b.style.fontWeight = '500';
+                b.style.borderBottom = 'none';
+            }
+        });
+
+        subtabContents.forEach(function (content) {
+            if (content.id === targetId) {
+                content.classList.remove('hidden');
+                content.style.display = 'block';
+            } else {
+                content.classList.add('hidden');
+                content.style.display = 'none';
+            }
+        });
+
+        if (targetId === 'niveis-saeb-sub') {
+            if (typeof global.renderSaebProficiencyDashboard === 'function') {
+                global.renderSaebProficiencyDashboard();
+            }
+        } else if (targetId === 'laudo-diagnostico-sub') {
+            if (typeof global.initDiagnosticoSelectors === 'function') {
+                global.initDiagnosticoSelectors();
+            }
+            if (typeof global.runDiagnosticoCalculation === 'function') {
+                global.runDiagnosticoCalculation();
+            }
+        } else if (targetId === 'planos-intervencao-sub') {
+            if (typeof global.initPedagogicPlansSubtab === 'function') {
+                global.initPedagogicPlansSubtab();
+            }
+        } else if (targetId === 'comparativo-saeb-sub') {
+            if (typeof global.renderSaebOficialComparativoTable === 'function') {
+                global.renderSaebOficialComparativoTable();
+            }
+        }
+    }
+
+    function bindPedagogicSubtabs() {
+        var subtabBtns = document.querySelectorAll('.pedagogic-subtab-btn');
 
         subtabBtns.forEach(function (btn) {
             btn.onclick = function (e) {
                 e.preventDefault();
                 var targetId = btn.getAttribute('data-subtab');
-
-                subtabBtns.forEach(function (b) {
-                    b.classList.remove('active');
-                    b.style.color = 'var(--text-secondary)';
-                    b.style.fontWeight = '500';
-                    b.style.borderBottom = 'none';
-                });
-
-                btn.classList.add('active');
-                btn.style.color = 'var(--purple-light)';
-                btn.style.fontWeight = '600';
-                btn.style.borderBottom = '2px solid var(--purple)';
-
-                subtabContents.forEach(function (content) {
-                    if (content.id === targetId) {
-                        content.classList.remove('hidden');
-                        content.style.display = 'block';
-                    } else {
-                        content.classList.add('hidden');
-                        content.style.display = 'none';
-                    }
-                });
-
-                if (targetId === 'niveis-saeb-sub') {
-                    if (typeof global.renderSaebProficiencyDashboard === 'function') {
-                        global.renderSaebProficiencyDashboard();
-                    }
-                } else if (targetId === 'planos-intervencao-sub') {
-                    if (typeof global.initPedagogicPlansSubtab === 'function') {
-                        global.initPedagogicPlansSubtab();
-                    }
-                } else if (targetId === 'comparativo-saeb-sub') {
-                    if (typeof global.renderSaebOficialComparativoTable === 'function') {
-                        global.renderSaebOficialComparativoTable();
-                    }
-                }
+                switchPedagogicSubtab(targetId);
             };
         });
     }
 
     // Exposição Global
     global.initSaebModule = initSaebModule;
+    global.switchPedagogicSubtab = switchPedagogicSubtab;
 
     // Inicialização automática
     if (document.readyState === 'loading') {

@@ -127,6 +127,8 @@ var TAB_LIFECYCLE_HOOKS = {
         if (typeof initPedagogicPlansSubtab === 'function') initPedagogicPlansSubtab();
         if (typeof renderSaebOficialComparativoTable === 'function') renderSaebOficialComparativoTable();
         if (typeof renderRiskGoalsTable === 'function') renderRiskGoalsTable();
+        if (typeof initDiagnosticoSelectors === 'function') initDiagnosticoSelectors();
+        if (typeof runDiagnosticoCalculation === 'function') runDiagnosticoCalculation();
     },
     'ideb-comparativo': function() {
         if (typeof updateIdebComparativoView === 'function') updateIdebComparativoView();

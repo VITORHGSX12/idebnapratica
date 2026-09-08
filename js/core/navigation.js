@@ -28,8 +28,8 @@
         'aplicacao-provas': 'sec-criar-avaliacoes',
         'banco-questoes': 'banco-questoes',
         'questions': 'banco-questoes',
-        'relatorios-monitoramento': 'relatorios-monitoramento',
-        'ai-playground': 'relatorios-monitoramento',
+        'relatorios-monitoramento': 'gestao-pedagogica',
+        'ai-playground': 'gestao-pedagogica',
         'gestao-pedagogica': 'gestao-pedagogica',
         'biblioteca-recursos': 'biblioteca-recursos',
         'doc-tecnica': 'doc-tecnica',
@@ -175,11 +175,15 @@
             } else if (resolvedId === 'banco-questoes') {
                 if (typeof global.renderQuestions === 'function') global.renderQuestions();
                 if (typeof global.initQuestionsListModule === 'function') global.initQuestionsListModule();
-            } else if (resolvedId === 'relatorios-monitoramento') {
-                if (typeof global.runDiagnosticoCalculation === 'function') global.runDiagnosticoCalculation();
-                if (typeof global.renderAiGenDescriptors === 'function') global.renderAiGenDescriptors();
-            } else if (resolvedId === 'gestao-pedagogica') {
+            } else if (resolvedId === 'gestao-pedagogica' || resolvedId === 'relatorios-monitoramento') {
+                if (safeTarget === 'relatorios-monitoramento' || safeTarget === 'ai-playground') {
+                    if (typeof global.switchPedagogicSubtab === 'function') {
+                        global.switchPedagogicSubtab('laudo-diagnostico-sub');
+                    }
+                }
                 if (typeof global.renderPedagogicInterventions === 'function') global.renderPedagogicInterventions();
+                if (typeof global.initDiagnosticoSelectors === 'function') global.initDiagnosticoSelectors();
+                if (typeof global.runDiagnosticoCalculation === 'function') global.runDiagnosticoCalculation();
             } else if (resolvedId === 'biblioteca-recursos') {
                 if (typeof global.renderPedagogicLibrary === 'function') global.renderPedagogicLibrary();
             } else if (resolvedId === 'admin-panel') {
@@ -275,12 +279,7 @@
                     <span>Banco de Questões</span>
                     <span class="badge badge-counter" id="badge-count-questions">12</span>
                 </a>
-                <a href="#relatorios-monitoramento" onclick="switchTab('relatorios-monitoramento'); return false;" class="menu-item ${currentTab === 'relatorios-monitoramento' ? 'active' : ''}" data-target="relatorios-monitoramento" data-tooltip="Relatórios &amp; Monitoramento">
-                    <div class="menu-active-indicator"></div>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
-                    <span>Relatórios &amp; Monitoramento</span>
-                </a>
-                <a href="#gestao-pedagogica" onclick="switchTab('gestao-pedagogica'); return false;" class="menu-item ${currentTab === 'gestao-pedagogica' ? 'active' : ''}" data-target="gestao-pedagogica" data-tooltip="Gestão Pedagógica">
+                <a href="#gestao-pedagogica" onclick="switchTab('gestao-pedagogica'); return false;" class="menu-item ${currentTab === 'gestao-pedagogica' || currentTab === 'relatorios-monitoramento' ? 'active' : ''}" data-target="gestao-pedagogica" data-tooltip="Gestão Pedagógica">
                     <div class="menu-active-indicator"></div>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M12 18v4"/><path d="M8 22h8"/></svg>
                     <span>Gestão Pedagógica</span>
@@ -383,9 +382,9 @@
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 8-4 8 4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="M18 5v17"/><path d="M6 5v17"/></svg>
                             <span>Desempenho por Turma</span>
                         </a>
-                        <a href="#relatorios-monitoramento" onclick="switchTab('relatorios-monitoramento'); return false;" class="menu-item ${currentTab === 'relatorios-monitoramento' ? 'active' : ''}" data-target="relatorios-monitoramento">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
-                            <span>Evolução dos Simulados</span>
+                        <a href="#gestao-pedagogica" onclick="switchTab('gestao-pedagogica'); return false;" class="menu-item ${currentTab === 'gestao-pedagogica' || currentTab === 'relatorios-monitoramento' ? 'active' : ''}" data-target="gestao-pedagogica">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M12 18v4"/><path d="M8 22h8"/></svg>
+                            <span>Evolução &amp; Laudos Pedagógicos</span>
                         </a>
                         <a href="#matriz-descritores" onclick="switchTab('matriz-descritores'); return false;" class="menu-item ${currentTab === 'matriz-descritores' ? 'active' : ''}" data-target="matriz-descritores">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>

@@ -799,11 +799,6 @@
                         <span>Banco de Questões</span>
                         <span class="badge badge-counter" id="badge-count-questions">12</span>
                     </a>
-                    <a href="#relatorios-monitoramento" onclick="switchTab('relatorios-monitoramento'); return false;" class="menu-item" data-target="relatorios-monitoramento" data-tooltip="Relatórios &amp; Monitoramento">
-                        <div class="menu-active-indicator"></div>
-                        <img src="assets/icons/relatorios.svg" class="menu-icon-svg" alt="" aria-hidden="true">
-                        <span>Relatórios &amp; Monitoramento</span>
-                    </a>
                     <a href="#gestao-pedagogica" onclick="switchTab('gestao-pedagogica'); return false;" class="menu-item" data-target="gestao-pedagogica" data-tooltip="Gestão Pedagógica">
                         <div class="menu-active-indicator"></div>
                         <img src="assets/icons/professores.svg" class="menu-icon-svg" alt="" aria-hidden="true">
@@ -3482,6 +3477,7 @@
                     <div class="card card-full margin-bottom-md" style="padding: 0; background-color: var(--bg-secondary);">
                         <div style="display: flex; gap: 20px; padding: 16px 24px; border-bottom: 1px solid var(--border-color); overflow-x: auto;">
                             <button class="pedagogic-subtab-btn active" data-subtab="niveis-saeb-sub" style="background:none; border:none; color:var(--purple-light); font-weight:600; cursor:pointer; padding-bottom:8px; border-bottom: 2px solid var(--purple); font-size:0.95rem; white-space:nowrap; transition: var(--transition);">Níveis de Proficiência SAEB (0 a 5)</button>
+                            <button class="pedagogic-subtab-btn" data-subtab="laudo-diagnostico-sub" style="background:none; border:none; color:var(--text-secondary); font-weight:500; cursor:pointer; padding-bottom:8px; font-size:0.95rem; white-space:nowrap; transition: var(--transition);">Laudo Técnico &amp; Diagnóstico</button>
                             <button class="pedagogic-subtab-btn" data-subtab="planos-intervencao-sub" style="background:none; border:none; color:var(--text-secondary); font-weight:500; cursor:pointer; padding-bottom:8px; font-size:0.95rem; white-space:nowrap; transition: var(--transition);">Modelos de Intervenção Pedagógica</button>
                             <button class="pedagogic-subtab-btn" data-subtab="comparativo-saeb-sub" style="background:none; border:none; color:var(--text-secondary); font-weight:500; cursor:pointer; padding-bottom:8px; font-size:0.95rem; white-space:nowrap; transition: var(--transition);">Comparativo Oficial SAEB 2025 x Simulados</button>
                         </div>
@@ -3640,7 +3636,91 @@
                         </div>
                     </div>
 
-                    <!-- SUBTAB 1: Planos de Intervenção -->
+                    <!-- SUBTAB 1: Laudo Técnico & Diagnóstico Pedagógico (4 Níveis) -->
+                    <div class="pedagogic-subtab-content hidden" id="laudo-diagnostico-sub">
+                        <div class="card margin-bottom-md" style="background: linear-gradient(135deg, rgba(74, 127, 167, 0.08) 0%, rgba(16, 185, 129, 0.05) 100%); border-left: 4px solid #4A7FA7;">
+                            <div class="flex-between" style="flex-wrap: wrap; gap: 14px;">
+                                <div>
+                                    <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                                        <i data-lucide="file-bar-chart" style="color: #4A7FA7;"></i>
+                                        Laudo Técnico e Diagnóstico Pedagógico
+                                    </h3>
+                                    <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;">
+                                        Motor diagnóstico de 4 níveis (Rede → Escola → Turma → Aluno) com cálculo de proficiência por descritores e evolução temporal entre simulados.
+                                    </p>
+                                </div>
+                                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                    <button type="button" onclick="handlePrintDiagnosticoReport();" class="btn btn-outline btn-sm" style="display: flex; align-items: center; gap: 6px; font-weight: 700;">
+                                        <i data-lucide="printer" style="width: 15px; height: 15px;"></i> Imprimir Laudo Completo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filtros de Escopo do Laudo Técnico -->
+                        <div class="card margin-bottom-md" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px 24px;">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; align-items: flex-end;">
+                                <!-- Filtro 1: Unidade Escolar -->
+                                <div>
+                                    <label style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">UNIDADE ESCOLAR</label>
+                                    <select id="diag-filter-school" onchange="runDiagnosticoCalculation();" class="form-select" style="height: 38px; font-size: 0.82rem; font-weight: 600; width: 100%;">
+                                        <option value="all" selected>Toda a Rede Geral (Gonçalves Dias)</option>
+                                        <option value="UNIDADE INTEGRADA JOSE GONCALVES DIAS">UNIDADE INTEGRADA JOSE GONCALVES DIAS</option>
+                                        <option value="U I BASILIO ALVES">U I BASILIO ALVES</option>
+                                        <option value="UI JOSE CORREA LIMA">UI JOSE CORREA LIMA</option>
+                                        <option value="UE ANITA FURTADO">UE ANITA FURTADO</option>
+                                        <option value="UI EMILIO MURAD">UI EMILIO MURAD</option>
+                                    </select>
+                                </div>
+
+                                <!-- Filtro 2: Ano / Turma -->
+                                <div>
+                                    <label style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">ANO / TURMA</label>
+                                    <select id="diag-filter-turma" onchange="runDiagnosticoCalculation();" class="form-select" style="height: 38px; font-size: 0.82rem; font-weight: 600; width: 100%;">
+                                        <option value="all" selected>Todas as Turmas (Rede Completa)</option>
+                                        <option value="5º Ano A">5º Ano A (Matutino)</option>
+                                        <option value="5º Ano B">5º Ano B (Vespertino)</option>
+                                        <option value="9º Ano A">9º Ano A (Matutino)</option>
+                                    </select>
+                                </div>
+
+                                <!-- Filtro 3: Componente Curricular -->
+                                <div>
+                                    <label style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">COMPONENTE CURRICULAR</label>
+                                    <select id="diag-filter-subject" onchange="runDiagnosticoCalculation();" class="form-select" style="height: 38px; font-size: 0.82rem; font-weight: 600; width: 100%;">
+                                        <option value="all" selected>Todos os Componentes</option>
+                                        <option value="Língua Portuguesa">Língua Portuguesa</option>
+                                        <option value="Matemática">Matemática</option>
+                                    </select>
+                                </div>
+
+                                <!-- Filtro 4: Seletor de Simulado / Comparativo Temporal -->
+                                <div>
+                                    <label style="font-size: 0.72rem; font-weight: 700; color: #4A7FA7; display: block; margin-bottom: 4px;">SIMULADO / CICLO TEMPORAL</label>
+                                    <select id="diag-filter-simulado" onchange="runDiagnosticoCalculation();" class="form-select" style="height: 38px; font-size: 0.82rem; font-weight: 700; width: 100%; border: 1.5px solid #4A7FA7; color: var(--text-primary);">
+                                        <option value="sim_2026_02" selected>2º Simulado Bimestral (Maio/2026 - Recente)</option>
+                                        <option value="sim_2026_01">1º Simulado Diagnóstico (Março/2026)</option>
+                                        <option value="all">Comparar com Simulado Anterior (Evolução Temporal)</option>
+                                    </select>
+                                </div>
+
+                                <!-- Botão de Ação -->
+                                <div>
+                                    <button type="button" id="btn-generate-school-report" onclick="runDiagnosticoCalculation();" class="btn btn-primary btn-full" style="height: 38px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                                        <i data-lucide="sparkles" style="width: 15px; height: 15px;"></i>
+                                        <span>Gerar Laudo Atualizado</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CONTAINER DINÂMICO DO LAUDO PEDAGÓGICO (5 SEÇÕES) -->
+                        <div id="diagnostico-results-container" style="display: flex; flex-direction: column; gap: 20px;">
+                            <!-- Injetado dinamicamente via renderDiagnosticoReportView() -->
+                        </div>
+                    </div>
+
+                    <!-- SUBTAB 2: Planos de Intervenção -->
                     <div class="pedagogic-subtab-content hidden" id="planos-intervencao-sub">
                         <div class="card card-full" style="background-color: var(--bg-secondary); margin-bottom: 20px;">
                             <div class="card-header flex-between flex-wrap gap-md">
@@ -3719,8 +3799,7 @@
                         </div>
                     </div>
 
-                
-                    <!-- SUBTAB 2: Comparativo Oficial SAEB 2025 x Simulados Internos -->
+                    <!-- SUBTAB 3: Comparativo Oficial SAEB 2025 x Simulados Internos -->
                     <div class="pedagogic-subtab-content hidden" id="comparativo-saeb-sub">
                         <div class="card card-full margin-bottom-lg" style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px;">
                             <div class="card-header flex-between flex-wrap gap-md" style="margin-bottom: 20px;">
@@ -3758,90 +3837,6 @@
                                 </table>
                             </div>
                         </div>
-                    </div>
-                </section>
-
-                <!-- ==================== PLAYGROUND IA TAB ==================== -->
-                <section id="relatorios-monitoramento" class="tab-content">
-                    <div class="card margin-bottom-md" style="background: linear-gradient(135deg, rgba(74, 127, 167,  0.08) 0%, rgba(16, 185, 129, 0.05) 100%); border-left: 4px solid #4A7FA7;">
-                        <div class="flex-between" style="flex-wrap: wrap; gap: 14px;">
-                            <div>
-                                <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
-                                    <i data-lucide="file-bar-chart" style="color: #4A7FA7;"></i>
-                                    Laudo Técnico e Diagnóstico Pedagógico
-                                </h3>
-                                <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;">
-                                    Motor diagnóstico de 4 níveis (Rede → Escola → Turma → Aluno) com cálculo de proficiência por descritores e evolução temporal entre simulados.
-                                </p>
-                            </div>
-                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                <button type="button" onclick="handlePrintDiagnosticoReport();" class="btn btn-outline btn-sm" style="display: flex; align-items: center; gap: 6px; font-weight: 700;">
-                                    <i data-lucide="printer" style="width: 15px; height: 15px;"></i> Imprimir Laudo Completo
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Filtros de Escopo do Laudo Técnico -->
-                    <div class="card margin-bottom-md" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px 24px;">
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; align-items: flex-end;">
-                            <!-- Filtro 1: Unidade Escolar -->
-                            <div>
-                                <label style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">UNIDADE ESCOLAR</label>
-                                <select id="diag-filter-school" onchange="runDiagnosticoCalculation();" class="form-select" style="height: 38px; font-size: 0.82rem; font-weight: 600; width: 100%;">
-                                    <option value="all" selected>Toda a Rede Geral (Gonçalves Dias)</option>
-                                    <option value="UNIDADE INTEGRADA JOSE GONCALVES DIAS">UNIDADE INTEGRADA JOSE GONCALVES DIAS</option>
-                                    <option value="U I BASILIO ALVES">U I BASILIO ALVES</option>
-                                    <option value="UI JOSE CORREA LIMA">UI JOSE CORREA LIMA</option>
-                                    <option value="UE ANITA FURTADO">UE ANITA FURTADO</option>
-                                    <option value="UI EMILIO MURAD">UI EMILIO MURAD</option>
-                                </select>
-                            </div>
-
-                            <!-- Filtro 2: Ano / Turma -->
-                            <div>
-                                <label style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">ANO / TURMA</label>
-                                <select id="diag-filter-turma" onchange="runDiagnosticoCalculation();" class="form-select" style="height: 38px; font-size: 0.82rem; font-weight: 600; width: 100%;">
-                                    <option value="all" selected>Todas as Turmas (Rede Completa)</option>
-                                    <option value="5º Ano A">5º Ano A (Matutino)</option>
-                                    <option value="5º Ano B">5º Ano B (Vespertino)</option>
-                                    <option value="9º Ano A">9º Ano A (Matutino)</option>
-                                </select>
-                            </div>
-
-                            <!-- Filtro 3: Componente Curricular -->
-                            <div>
-                                <label style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">COMPONENTE CURRICULAR</label>
-                                <select id="diag-filter-subject" onchange="runDiagnosticoCalculation();" class="form-select" style="height: 38px; font-size: 0.82rem; font-weight: 600; width: 100%;">
-                                    <option value="all" selected>Todos os Componentes</option>
-                                    <option value="Língua Portuguesa">Língua Portuguesa</option>
-                                    <option value="Matemática">Matemática</option>
-                                </select>
-                            </div>
-
-                            <!-- Filtro 4: Seletor de Simulado / Comparativo Temporal -->
-                            <div>
-                                <label style="font-size: 0.72rem; font-weight: 700; color: #4A7FA7; display: block; margin-bottom: 4px;">SIMULADO / CICLO TEMPORAL</label>
-                                <select id="diag-filter-simulado" onchange="runDiagnosticoCalculation();" class="form-select" style="height: 38px; font-size: 0.82rem; font-weight: 700; width: 100%; border: 1.5px solid #4A7FA7; color: var(--text-primary);">
-                                    <option value="sim_2026_02" selected>2º Simulado Bimestral (Maio/2026 - Recente)</option>
-                                    <option value="sim_2026_01">1º Simulado Diagnóstico (Março/2026)</option>
-                                    <option value="all">Comparar com Simulado Anterior (Evolução Temporal)</option>
-                                </select>
-                            </div>
-
-                            <!-- Botão de Ação -->
-                            <div>
-                                <button type="button" id="btn-generate-school-report" onclick="runDiagnosticoCalculation();" class="btn btn-primary btn-full" style="height: 38px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                                    <i data-lucide="sparkles" style="width: 15px; height: 15px;"></i>
-                                    <span>Gerar Laudo Atualizado</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CONTAINER DINÂMICO DO LAUDO PEDAGÓGICO (5 SEÇÕES) -->
-                    <div id="diagnostico-results-container" style="display: flex; flex-direction: column; gap: 20px;">
-                        <!-- Injetado dinamicamente via renderDiagnosticoReportView() -->
                     </div>
                 </section>
 
