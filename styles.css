@@ -3043,20 +3043,33 @@ h4 svg, h4 i,
     max-width: 540px;
 }
 
+.hero-top-brand-logo {
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+}
+
+.hero-logo-inverted-img {
+    height: 38px;
+    width: auto;
+    max-width: 220px;
+    object-fit: contain;
+}
+
 .hero-brand-tag {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     background: rgba(255, 255, 255, 0.14);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.24);
-    padding: 7px 16px;
+    padding: 6px 14px;
     border-radius: 9999px;
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 600;
     color: #FFFFFF;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
 }
 
@@ -3158,6 +3171,19 @@ h4 svg, h4 i,
 
 .login-title-header {
     margin-bottom: 22px;
+}
+
+.login-form-brand-logo {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.login-form-logo-color-img {
+    height: 36px;
+    width: auto;
+    max-width: 210px;
+    object-fit: contain;
 }
 
 .welcome-title-bold {

@@ -47,9 +47,11 @@ const indexHtml = fs.readFileSync(indexHtmlPath, 'utf8');
 
 assert.ok(indexHtml.includes('assets/brand/ideb_symbol_favicon_24x24.svg'), 'index.html deve conter favicon ideb_symbol_favicon_24x24.svg');
 assert.ok(indexHtml.includes('assets/brand/ideb_symbol_app_icon.svg'), 'index.html deve conter apple-touch-icon ideb_symbol_app_icon.svg');
-assert.ok(indexHtml.includes('assets/brand/ideb_symbol_sidebar.svg'), 'index.html deve conter ideb_symbol_sidebar.svg na sidebar / login');
+assert.ok(indexHtml.includes('assets/brand/ideb_symbol_sidebar.svg'), 'index.html deve conter ideb_symbol_sidebar.svg na sidebar');
+assert.ok(indexHtml.includes('assets/brand/ideb_symbol_white.svg'), 'index.html deve conter ideb_symbol_white.svg na tag da hero section');
 assert.ok(indexHtml.includes('assets/brand/ideb_logo_horizontal_inverted.svg'), 'index.html deve conter ideb_logo_horizontal_inverted.svg');
 assert.ok(indexHtml.includes('assets/brand/ideb_logo_horizontal_color.svg'), 'index.html deve conter ideb_logo_horizontal_color.svg');
+assert.ok(indexHtml.includes('login-form-brand-logo'), 'index.html deve conter o bloco login-form-brand-logo acima do formulário');
 console.log('  ✓ index.html referências de marca e favicon validadas com sucesso!');
 
 // 3. Validar manifest.json
