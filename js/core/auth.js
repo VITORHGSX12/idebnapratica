@@ -110,8 +110,30 @@
             console.warn('[Auth Notice] Servidor API offline/estático. Verificando diretório institucional...', err);
             
             // Fallback para ambiente de desenvolvimento/estático
-            var localUsers = global.OFFICIAL_REGISTERED_USERS || [];
-            var found = localUsers.find(function(u) { return u.email.toLowerCase() === emailInput; });
+            var localUsers = (global.OFFICIAL_REGISTERED_USERS && global.OFFICIAL_REGISTERED_USERS.slice()) || [];
+            try {
+                var storedAdmin = localStorage.getItem('saas_admin_users_db');
+                if (storedAdmin) {
+                    var parsed = JSON.parse(storedAdmin);
+                    if (Array.isArray(parsed)) {
+                        parsed.forEach(function(p) {
+                            if (!localUsers.some(function(lu) { return lu.email.toLowerCase() === (p.email || '').toLowerCase(); })) {
+                                localUsers.push({
+                                    nome: p.nome,
+                                    email: p.email,
+                                    role: p.role || p.tipo || 'Professor',
+                                    subRole: (p.tipo || p.role) + ' • ' + (p.escola || 'Rede Municipal'),
+                                    escola: p.escola || 'Rede Municipal Oficial',
+                                    turma: p.turma || 'Todas as Turmas',
+                                    avatar: (p.role || '').includes('Professor') ? '👨‍🏫' : '🧑‍💼'
+                                });
+                            }
+                        });
+                    }
+                }
+            } catch(e) {}
+
+            var found = localUsers.find(function(u) { return u.email && u.email.toLowerCase() === emailInput; });
             if (found) {
                 authenticatedUser = {
                     nome: found.nome,

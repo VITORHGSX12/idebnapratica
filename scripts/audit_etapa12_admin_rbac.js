@@ -195,19 +195,24 @@ const createModal = createMockElement('div', 'create-user-modal', 'modal-overlay
 const createForm = createMockElement('form', 'create-user-form');
 const inputName = createMockElement('input', 'new-user-name');
 const inputCpf = createMockElement('input', 'new-user-cpf');
+const inputBirth = createMockElement('input', 'new-user-birth');
 const inputPhone = createMockElement('input', 'new-user-phone');
 const selectRole = createMockElement('select', 'new-user-role');
 selectRole.value = 'Professor(a)';
 const selectSchool = createMockElement('select', 'new-user-school');
 selectSchool.value = 'UI JOSE CORREA LIMA';
+const selectTurma = createMockElement('select', 'new-user-turma');
+selectTurma.value = '5º Ano A';
 const inputEmail = createMockElement('input', 'new-user-email');
 const inputPassword = createMockElement('input', 'new-user-password');
 
 createForm.appendChild(inputName);
 createForm.appendChild(inputCpf);
+createForm.appendChild(inputBirth);
 createForm.appendChild(inputPhone);
 createForm.appendChild(selectRole);
 createForm.appendChild(selectSchool);
+createForm.appendChild(selectTurma);
 createForm.appendChild(inputEmail);
 createForm.appendChild(inputPassword);
 createModal.appendChild(createForm);
@@ -218,7 +223,7 @@ const mockDocument = {
     getElementById: (id) => domElements[id] || null,
     querySelector: (sel) => findInTree(adminSection, sel) || findInTree(createModal, sel),
     querySelectorAll: (sel) => {
-        if (sel === 'input') return [inputName, inputCpf, inputPhone, inputEmail, inputPassword, filterSearch];
+        if (sel === 'input') return [inputName, inputCpf, inputBirth, inputPhone, inputEmail, inputPassword, filterSearch];
         return findAllInTree(adminSection, sel);
     },
     createElement: (tag) => createMockElement(tag),
@@ -405,15 +410,17 @@ async function runAudit() {
     // Item 6: Salvamento e Persistência de Novos Usuários (handleSaveNewUser)
     try {
         inputName.value = 'Prof. Teste Automatizado';
-        inputCpf.value = '111.222.333-44';
+        inputCpf.value = '529.982.247-25';
+        inputBirth.value = '15/05/1988';
         inputPhone.value = '(99) 99999-0000';
         selectRole.value = 'Professor(a)';
         selectSchool.value = 'UI JOSE CORREA LIMA';
+        selectTurma.value = '5º Ano A';
         inputEmail.value = 'prof.teste@goncalvesdias.ma.gov.br';
         inputPassword.value = 'Gondias@2026';
 
         const initialCount = mockWindow.getStoredUsers().length;
-        mockWindow.handleSaveNewUser({ preventDefault: () => {} });
+        await mockWindow.handleSaveNewUser({ preventDefault: () => {} });
 
         const updatedUsers = mockWindow.getStoredUsers();
         const createdUser = updatedUsers.find(u => u.email === 'prof.teste@goncalvesdias.ma.gov.br');

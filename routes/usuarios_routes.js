@@ -120,10 +120,53 @@ router.get('/users', authMiddleware, async (req, res) => {
     }
 });
 
+function isValidCPFServer(cpf) {
+    if (!cpf) return false;
+    const clean = String(cpf).replace(/\D/g, '');
+    if (clean.length !== 11) return false;
+    if (/^(\d)\1{10}$/.test(clean)) return false;
+    let soma = 0;
+    for (let i = 0; i < 9; i++) soma += parseInt(clean.charAt(i), 10) * (10 - i);
+    let resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(clean.charAt(9), 10)) return false;
+    soma = 0;
+    for (let j = 0; j < 10; j++) soma += parseInt(clean.charAt(j), 10) * (11 - j);
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(clean.charAt(10), 10)) return false;
+    return true;
+}
+
+function validateBirthDateServer(dateStr) {
+    if (!dateStr || !dateStr.trim()) return { valid: false, error: 'A data de nascimento é obrigatória.' };
+    let parts = dateStr.trim().split('/');
+    if (parts.length !== 3) {
+        parts = dateStr.trim().split('-');
+        if (parts.length === 3 && parts[0].length === 4) parts = [parts[2], parts[1], parts[0]];
+        else return { valid: false, error: 'Data de nascimento deve estar no formato DD/MM/AAAA.' };
+    }
+    const dia = parseInt(parts[0], 10);
+    const mes = parseInt(parts[1], 10);
+    const ano = parseInt(parts[2], 10);
+    if (isNaN(dia) || isNaN(mes) || isNaN(ano) || mes < 1 || mes > 12 || dia < 1 || dia > 31 || ano < 1920) {
+        return { valid: false, error: 'Data de nascimento informada é inválida.' };
+    }
+    const dateObj = new Date(ano, mes - 1, dia);
+    const hoje = new Date();
+    if (dateObj > hoje) return { valid: false, error: 'Data de nascimento inválida (data futura não permitida).' };
+    let idade = hoje.getFullYear() - ano;
+    const m = hoje.getMonth() - (mes - 1);
+    if (m < 0 || (m === 0 && hoje.getDate() < dia)) idade--;
+    if (idade < 18) return { valid: false, error: `O profissional deve ter idade mínima de 18 anos (idade calculada: ${idade} anos).` };
+    if (idade >= 90 || idade > 85) return { valid: false, error: `Data de nascimento irregular: idade informada (${idade} anos) é incompatível com o cadastro de profissionais ativos.` };
+    return { valid: true, idade, formatted: `${String(dia).padStart(2, '0')}/${String(mes).padStart(2, '0')}/${ano}` };
+}
+
 // POST /api/users - Cadastrar novo usuário (exclusivo para grupo CONFIGURAÇÃO)
 router.post('/users', authMiddleware, authorize('Master Admin', 'Gestor da Rede', 'admin', 'gestor'), async (req, res) => {
     try {
-        const { nome, email, password, role, escola, turma, telefone, cpf } = req.body || {};
+        const { nome, email, password, role, escola, turma, telefone, cpf, dataNascimento } = req.body || {};
         if (!nome || !email || !role) {
             return res.status(400).json({ error: 'Nome, e-mail e perfil/cargo são obrigatórios.' });
         }
@@ -131,6 +174,19 @@ router.post('/users', authMiddleware, authorize('Master Admin', 'Gestor da Rede'
         const roleNorm = role.toLowerCase();
         if (roleNorm.includes('aluno')) {
             return res.status(400).json({ error: 'O cadastro de Usuários é exclusivo para a equipe escolar (Gestores, Diretores e Professores). Para cadastrar alunos, utilize a tela de Alunos.' });
+        }
+
+        // Validação de CPF
+        if (cpf && cpf !== '-' && !isValidCPFServer(cpf)) {
+            return res.status(400).json({ error: 'CPF inválido! Verifique os dígitos verificadores informados.' });
+        }
+
+        // Validação de Data de Nascimento se informada
+        if (dataNascimento) {
+            const birthVal = validateBirthDateServer(dataNascimento);
+            if (!birthVal.valid) {
+                return res.status(400).json({ error: birthVal.error });
+            }
         }
 
         const existing = await findUserByEmail(email.trim().toLowerCase());
@@ -149,6 +205,7 @@ router.post('/users', authMiddleware, authorize('Master Admin', 'Gestor da Rede'
             tipo: role.trim(),
             cpf: cpf || '-',
             telefone: telefone || '-',
+            dataNascimento: dataNascimento || null,
             escola: escola || 'Todas as Escolas (SEMED)',
             turma: turma || null,
             status: 'Ativo',
