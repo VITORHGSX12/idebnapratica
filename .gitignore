@@ -14,11 +14,4 @@ local_db_state_backup.json
 backups/
 
 
-.temp_edge_login_test/
-
-
-.temp_edge_verify/
-
-
-.temp_edge_sidebar_test/
-
+.temp_edge_*/

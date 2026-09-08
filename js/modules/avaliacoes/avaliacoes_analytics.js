@@ -30,7 +30,7 @@
         } else {
             dashEvalSelect.innerHTML = eventos.map(function(ev) {
                 var isAberto = (ev.status || '').toUpperCase() === 'ABERTO';
-                var prefix = isAberto ? '🟢 ' : '🔒 ';
+                var prefix = isAberto ? '[ABERTO] ' : '[' + (ev.status || 'RASCUNHO') + '] ';
                 return `<option value="${ev.id}">${prefix}${ev.titulo}</option>`;
             }).join('');
         }
@@ -214,7 +214,7 @@
             if (grid) {
                 grid.innerHTML = `
                     <div style="grid-column: 1 / -1; background: var(--bg-primary); border: 1px dashed var(--border-color); border-radius: var(--radius-md); padding: 36px 20px; text-align: center;">
-                        <div style="font-size: 2rem; margin-bottom: 8px;">📊</div>
+                        <div style="margin-bottom: 8px; color: var(--color-brand-primary); display: flex; justify-content: center;"><i data-lucide="bar-chart-2" style="width: 32px; height: 32px;"></i></div>
                         <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 0 0 6px 0;">Nenhum resultado disponível ainda</h4>
                         <p style="font-size: 0.85rem; color: var(--text-secondary); max-width: 520px; margin: 0 auto 16px auto;">Lance as notas na aba <strong>"Lançar Notas (Simulado)"</strong> para ver os resultados e o mapa de calor aqui.</p>
                         <button type="button" onclick="if(typeof switchAvaliacoesSubtab==='function') switchAvaliacoesSubtab('lancar-notas-sub');" class="btn btn-primary btn-sm" style="font-weight: 700;">
@@ -222,6 +222,7 @@
                         </button>
                     </div>
                 `;
+                if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
             }
             return;
         }

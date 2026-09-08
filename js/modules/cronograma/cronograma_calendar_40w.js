@@ -197,7 +197,7 @@
             });
             render7ColCalendar();
             if (typeof window.showToast === 'function') {
-                window.showToast(`Todas as habilidades de ${MONTH_LABELS[calMonth]} foram marcadas como TRABALHADAS 🟢!`, 'check');
+                window.showToast(`Todas as habilidades de ${MONTH_LABELS[calMonth]} foram marcadas como TRABALHADAS!`, 'check');
             }
         });
 
@@ -235,7 +235,7 @@
 
         const isWorked = skill.status === 'trabalhada';
         if (statusLabel) {
-            statusLabel.innerHTML = isWorked ? '<strong style="color:#22c55e;">🟢 Trabalhada em Aula</strong>' : '<strong style="color:#ef4444;">🔴 Pendente / A Trabalhar</strong>';
+            statusLabel.innerHTML = isWorked ? '<span class="badge badge-success">Trabalhada em Aula</span>' : '<span class="badge badge-danger">Pendente / A Trabalhar</span>';
         }
         if (toggleBtn) {
             toggleBtn.textContent = isWorked ? 'Desmarcar (Voltar para Pendente)' : 'Marcar como Trabalhada';
@@ -378,13 +378,13 @@
 
         filtered.forEach(item => {
             let statusPillClass = 'status-pendente';
-            let statusLabel = 'Pendente / Não Cumprido 🔴';
+            let statusLabel = 'Pendente / Não Cumprido';
             if (item.status === 'cumprido') {
                 statusPillClass = 'status-cumprido';
-                statusLabel = 'Cumprido 🟢';
+                statusLabel = 'Cumprido';
             } else if (item.status === 'andamento') {
                 statusPillClass = 'status-andamento';
-                statusLabel = 'Em Andamento 🟡';
+                statusLabel = 'Em Andamento';
             }
 
             const isMilestone = item.descritor.includes('SIMULADO');
@@ -506,7 +506,7 @@
                 titulo: `Sondagem Prévia • ${weekItem.descritor}`,
                 acao: 'Apresentação do descritor com 2 situações rápidas no quadro. Diagnóstico oral com a turma.',
                 material: 'Quadro branco e fichas de sondagem rápida.',
-                tag: 'Diagnóstico 🟢'
+                tag: 'Diagnóstico'
             },
             {
                 dia: 'Terça-feira',
@@ -514,7 +514,7 @@
                 titulo: 'Exploração com Material Concreto',
                 acao: 'Trabalho em duplas com material estruturado (material dourado ou texto impresso guiado).',
                 material: 'Caderno pedagógico e material manipulável.',
-                tag: 'Prática Ativa 🔵'
+                tag: 'Prática Ativa'
             },
             {
                 dia: 'Quarta-feira',
@@ -522,7 +522,7 @@
                 titulo: 'Situações-Problema do Cotidiano',
                 acao: 'Resolução de problemas contextualizados com dados e histórias da realidade local de Gonçalves Dias.',
                 material: 'Caderno do estudante SEMED.',
-                tag: 'Aplicação 🟣'
+                tag: 'Aplicação'
             },
             {
                 dia: 'Quinta-feira',
@@ -530,7 +530,7 @@
                 titulo: 'Desafio Rápido & Fixação',
                 acao: 'Oficina de cálculo mental ou leitura dinâmica com correção dialogada entre os estudantes.',
                 material: 'Folhas pautadas e cartões de resposta.',
-                tag: 'Oficina 🟠'
+                tag: 'Oficina'
             },
             {
                 dia: 'Sexta-feira',
@@ -538,7 +538,7 @@
                 titulo: 'Mini-Simulado Formativo (3 Itens)',
                 acao: 'Aplicação individual de 3 itens padrão SAEB/SEAMA e registro do índice de acerto no sistema.',
                 material: 'Folha de checagem formativa semanal.',
-                tag: 'Checagem 🔴'
+                tag: 'Checagem'
             }
         ];
 
@@ -578,21 +578,21 @@
         tbody.innerHTML = '';
 
         const schoolsMonitoring = [
-            { nome: 'UI JOSE CORREA LIMA', diretor: 'Profª Maria da Conceição Lima', taxa: 94, s2: 'cumprido', s5: 'cumprido', s9: 'cumprido', obs: 'Rotina pedagógica executada conforme o cronograma oficial.', status: 'Regular 🟢' },
-            { nome: 'UI EMILIO MURAD', diretor: 'Prof. Francisco Carlos Silva', taxa: 88, s2: 'cumprido', s5: 'andamento', s9: 'cumprido', obs: 'Acompanhamento do reforço de leitura no 5º ano.', status: 'Regular 🟢' },
-            { nome: 'UE VEREADOR LEONARDO FERREIRA LIMA', diretor: 'Profª Antonia Ferreira Lima', taxa: 98, s2: 'cumprido', s5: 'cumprido', s9: 'cumprido', obs: 'Destaque no cumprimento das oficinas de cálculo mental.', status: 'Destaque ⭐' },
-            { nome: 'U I BASILIO ALVES', diretor: 'Prof. José Basílio Alves', taxa: 82, s2: 'andamento', s5: 'andamento', s9: 'pendente', obs: 'Supervisão técnica SEMED agendada para apoio pedagógico.', status: 'Atenção 🟡' },
-            { nome: 'UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ', diretor: 'Profª Aldenora Araújo Cruz', taxa: 96, s2: 'cumprido', s5: 'cumprido', s9: 'cumprido', obs: 'Turmas do 9º ano com 100% de adesão aos simulados.', status: 'Regular 🟢' },
-            { nome: 'UE RAIMUNDO DOS REIS DA SILVA', diretor: 'Prof. Raimundo Nonato Reis', taxa: 86, s2: 'cumprido', s5: 'andamento', s9: 'cumprido', obs: 'Reforço no descritor SAEB D13 em execução.', status: 'Regular 🟢' },
-            { nome: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS', diretor: 'Prof. Raimundo José Dias', taxa: 92, s2: 'cumprido', s5: 'cumprido', s9: 'cumprido', obs: 'Frequência regular e checagem formativa registrada.', status: 'Regular 🟢' },
-            { nome: 'UNIDADE ESCOLAR ANISIO GOMES', diretor: 'Profª Francisca Anísio Gomes', taxa: 90, s2: 'cumprido', s5: 'cumprido', s9: 'andamento', obs: 'Orientação concluída sobre o registro docente no sistema.', status: 'Regular 🟢' },
-            { nome: 'UE ANITA FURTADO', diretor: 'Profª Ana Rita Anita Furtado', taxa: 97, s2: 'cumprido', s5: 'cumprido', s9: 'cumprido', obs: 'Oficinas de fluência leitora e matemática com alto engajamento.', status: 'Destaque ⭐' }
+            { nome: 'UI JOSE CORREA LIMA', diretor: 'Profª Maria da Conceição Lima', taxa: 94, s2: 'cumprido', s5: 'cumprido', s9: 'cumprido', obs: 'Rotina pedagógica executada conforme o cronograma oficial.', status: '<span class="badge badge-success">Regular</span>' },
+            { nome: 'UI EMILIO MURAD', diretor: 'Prof. Francisco Carlos Silva', taxa: 88, s2: 'cumprido', s5: 'andamento', s9: 'cumprido', obs: 'Acompanhamento do reforço de leitura no 5º ano.', status: '<span class="badge badge-success">Regular</span>' },
+            { nome: 'UE VEREADOR LEONARDO FERREIRA LIMA', diretor: 'Profª Antonia Ferreira Lima', taxa: 98, s2: 'cumprido', s5: 'cumprido', s9: 'cumprido', obs: 'Destaque no cumprimento das oficinas de cálculo mental.', status: '<span class="badge badge-purple">Destaque</span>' },
+            { nome: 'U I BASILIO ALVES', diretor: 'Prof. José Basílio Alves', taxa: 82, s2: 'andamento', s5: 'andamento', s9: 'pendente', obs: 'Supervisão técnica SEMED agendada para apoio pedagógico.', status: '<span class="badge badge-warning">Atenção</span>' },
+            { nome: 'UNIDADE INTEGRADA ALDENORA DE ARAÚJO CRUZ', diretor: 'Profª Aldenora Araújo Cruz', taxa: 96, s2: 'cumprido', s5: 'cumprido', s9: 'cumprido', obs: 'Turmas do 9º ano com 100% de adesão aos simulados.', status: '<span class="badge badge-success">Regular</span>' },
+            { nome: 'UE RAIMUNDO DOS REIS DA SILVA', diretor: 'Prof. Raimundo Nonato Reis', taxa: 86, s2: 'cumprido', s5: 'andamento', s9: 'cumprido', obs: 'Reforço no descritor SAEB D13 em execução.', status: '<span class="badge badge-success">Regular</span>' },
+            { nome: 'UNIDADE INTEGRADA JOSE GONCALVES DIAS', diretor: 'Prof. Raimundo José Dias', taxa: 92, s2: 'cumprido', s5: 'cumprido', s9: 'cumprido', obs: 'Frequência regular e checagem formativa registrada.', status: '<span class="badge badge-success">Regular</span>' },
+            { nome: 'UNIDADE ESCOLAR ANISIO GOMES', diretor: 'Profª Francisca Anísio Gomes', taxa: 90, s2: 'cumprido', s5: 'cumprido', s9: 'andamento', obs: 'Orientação concluída sobre o registro docente no sistema.', status: '<span class="badge badge-success">Regular</span>' },
+            { nome: 'UE ANITA FURTADO', diretor: 'Profª Ana Rita Anita Furtado', taxa: 97, s2: 'cumprido', s5: 'cumprido', s9: 'cumprido', obs: 'Oficinas de fluência leitora e matemática com alto engajamento.', status: '<span class="badge badge-purple">Destaque</span>' }
         ];
 
         schoolsMonitoring.forEach(sch => {
-            const badge2 = sch.s2 === 'cumprido' ? '<span class="badge badge-success">OK 🟢</span>' : '<span class="badge badge-warning">Em Andamento 🟡</span>';
-            const badge5 = sch.s5 === 'cumprido' ? '<span class="badge badge-success">OK 🟢</span>' : (sch.s5 === 'andamento' ? '<span class="badge badge-warning">Em Andamento 🟡</span>' : '<span class="badge badge-danger">Pendente 🔴</span>');
-            const badge9 = sch.s9 === 'cumprido' ? '<span class="badge badge-success">OK 🟢</span>' : (sch.s9 === 'andamento' ? '<span class="badge badge-warning">Em Andamento 🟡</span>' : '<span class="badge badge-danger">Pendente 🔴</span>');
+            const badge2 = sch.s2 === 'cumprido' ? '<span class="badge badge-success">OK</span>' : '<span class="badge badge-warning">Em Andamento</span>';
+            const badge5 = sch.s5 === 'cumprido' ? '<span class="badge badge-success">OK</span>' : (sch.s5 === 'andamento' ? '<span class="badge badge-warning">Em Andamento</span>' : '<span class="badge badge-danger">Pendente</span>');
+            const badge9 = sch.s9 === 'cumprido' ? '<span class="badge badge-success">OK</span>' : (sch.s9 === 'andamento' ? '<span class="badge badge-warning">Em Andamento</span>' : '<span class="badge badge-danger">Pendente</span>');
 
             const tr = document.createElement('tr');
             tr.style.borderBottom = '1px solid var(--border-color)';

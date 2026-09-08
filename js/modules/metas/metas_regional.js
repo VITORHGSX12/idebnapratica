@@ -264,7 +264,7 @@
 
                     return [
                         '<button onclick="selectCityFromUre(\'' + c.name.replace(/'/g, "\\'") + '\')" style="display:inline-flex; align-items:center; gap:6px; padding:5px 10px; border-radius:16px; border:1px solid ' + (c.isGD ? '#10b981' : 'var(--color-border-subtle)') + '; background:' + (c.isGD ? 'rgba(16,185,129,0.1)' : 'var(--color-surface-card)') + '; font-size:var(--text-xs); font-weight:' + (c.isGD ? '800' : '600') + '; color:var(--color-brand-primary); cursor:pointer; transition:all 0.15s ease;" title="Ver ' + c.name + ' no Painel Geral (' + activeYear + ')">',
-                        '    <span>' + c.name + ' ' + (c.isGD ? '⭐ (Sua Rede)' : '') + '</span>',
+                        '    <span>' + c.name + (c.isGD ? ' <span class="badge badge-success" style="font-size:0.62rem; padding:1px 5px;">Sua Rede</span>' : '') + '</span>',
                         '    <span style="font-weight:800; font-size:0.7rem; padding:1px 6px; border-radius:10px; background:' + scoreBg + '; color:' + scoreColor + ';">' + c.displayScore + '</span>',
                         '</button>'
                     ].join('\n');
@@ -274,7 +274,7 @@
                     '<div class="card" style="background:var(--color-surface-card); border:1px solid var(--color-border-subtle); padding:16px; border-radius:var(--radius-md);">',
                     '    <div class="flex-between flex-wrap gap-md" style="margin-bottom: 12px; border-bottom: 1px solid var(--color-border-subtle); padding-bottom: 10px;">',
                     '        <div style="display: flex; align-items: center; gap: 10px;">',
-                    '            <div style="width:32px;height:32px;border-radius:var(--radius-sm);background:rgba(99,102,241,0.1);display:flex;align-items:center;justify-content:center;color:#6366f1;font-weight:800;font-size:0.8rem;">🏛️</div>',
+                    '            <div style="width:32px;height:32px;border-radius:var(--radius-sm);background:rgba(99,102,241,0.1);display:flex;align-items:center;justify-content:center;color:#6366f1;"><i data-lucide="landmark" style="width:16px;height:16px;"></i></div>',
                     '            <div>',
                     '                <h4 style="margin: 0; font-size: var(--text-title-sm); font-weight: 700; color: var(--color-brand-primary);">' + ure.name + '</h4>',
                     '                <span style="font-size: var(--text-xs); color: var(--color-text-secondary);">Sede: ' + (ure.sede || 'Maranhão') + '</span>',
@@ -458,9 +458,8 @@
 
             var rankMarkup = '';
             if (c.stateRank !== null) {
-                var badgeIcon = c.stateRank === 1 ? ' 👑' : (c.stateRank === 2 ? ' 🥈' : (c.stateRank === 3 ? ' 🥉' : ''));
-                var rankColor = c.stateRank <= 3 ? '#f59e0b' : 'var(--color-text-secondary)';
-                rankMarkup = '<span style="font-weight:800; color:' + rankColor + '; font-family:var(--font-display); font-size:0.95rem;">#' + c.stateRank + badgeIcon + '</span>';
+                var rankColor = c.stateRank === 1 ? '#10b981' : (c.stateRank <= 3 ? '#6366f1' : 'var(--color-text-secondary)');
+                rankMarkup = '<span style="font-weight:800; color:' + rankColor + '; font-family:var(--font-display); font-size:0.95rem;">#' + c.stateRank + '</span>';
                 if (ureFilter !== 'all' && c.ureRank !== null) {
                     rankMarkup += '<div style="font-size:0.68rem; color:#6366f1; font-weight:700; margin-top:1px;">#' + c.ureRank + ' na URE</div>';
                 }
@@ -472,11 +471,11 @@
             if (rawCurr === null) {
                 situacaoBadge = '<span class="badge badge-neutral" style="font-size: 0.68rem;">Sem Nota</span>';
             } else if (rawCurr >= 5.0) {
-                situacaoBadge = '<span class="badge badge-success" style="font-size: 0.68rem;">Alto Desempenho 🟢</span>';
+                situacaoBadge = '<span class="badge badge-success" style="font-size: 0.68rem;">Alto Desempenho</span>';
             } else if (rawCurr >= 4.0) {
-                situacaoBadge = '<span class="badge badge-info" style="font-size: 0.68rem;">Médio Desempenho 🔵</span>';
+                situacaoBadge = '<span class="badge badge-info" style="font-size: 0.68rem;">Médio Desempenho</span>';
             } else {
-                situacaoBadge = '<span class="badge badge-warning" style="font-size: 0.68rem;">Em Desenvolvimento 🟡</span>';
+                situacaoBadge = '<span class="badge badge-warning" style="font-size: 0.68rem;">Em Desenvolvimento</span>';
             }
 
             return [
@@ -484,7 +483,7 @@
                 '    <td style="padding: 10px 14px; font-variant-numeric: tabular-nums;">' + rankMarkup + '</td>',
                 '    <td style="padding: 10px 14px; font-weight: 700; color: ' + (isGD ? '#10b981' : 'var(--color-brand-primary)') + ';">',
                 '        <a href="#" onclick="selectCityFromUre(\'' + (c.municipio||'').replace(/'/g, "\\'") + '\'); return false;" style="color:inherit; text-decoration:none;">',
-                '            ' + c.municipio + ' ' + (isGD ? '⭐ (Sua Rede)' : '') + '',
+                '            ' + c.municipio + (isGD ? ' <span class="badge badge-success" style="font-size:0.62rem; padding:1px 5px; margin-left:4px;">Sua Rede</span>' : '') + '',
                 '        </a>',
                 '    </td>',
                 '    <td style="padding: 10px 14px; font-size: 0.8rem; color: var(--color-text-secondary);">' + ureName + '</td>',

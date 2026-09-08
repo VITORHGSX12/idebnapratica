@@ -57,15 +57,16 @@
         var labelsHtml = '';
 
         var t = (global.ChartTheme && global.ChartTheme.getTheme) ? global.ChartTheme.getTheme() : {
-            isDark: false, textPrimary: '#0A1931', textSecondary: '#1A3D63', textMuted: '#4A7FA7', grid: 'rgba(10, 25, 49, 0.09)',
-            iniciais: '#2563EB', finais: '#0D9488', meta: '#D97706'
+            isDark: false, textPrimary: '#0A1931', textSecondary: '#1A3D63', textMuted: '#6B7A90', grid: 'rgba(15, 26, 43, 0.08)',
+            primary: '#2F6FED', primaryMuted: '#7FB3E0', warning: '#D97706',
+            iniciais: '#2F6FED', finais: '#7FB3E0', meta: '#D97706'
         };
 
-        var colorObs = t.iniciais;
-        var colorSim = t.finais;
-        var colorMeta = t.meta;
-        var gridStroke = t.grid;
-        var textMuted = t.isDark ? '#B3CFE5' : '#64748B';
+        var colorObs = t.primary || t.iniciais || '#2F6FED';
+        var colorSim = t.primaryMuted || t.finais || '#7FB3E0';
+        var colorMeta = t.warning || t.meta || '#D97706';
+        var gridStroke = t.grid || 'rgba(15, 26, 43, 0.08)';
+        var textMuted = t.isDark ? '#B3CFE5' : '#6B7A90';
 
         historyPoints.forEach(function(pt, idx) {
             var x = getX(idx, historyPoints.length);

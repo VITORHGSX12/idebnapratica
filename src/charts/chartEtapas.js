@@ -3,12 +3,11 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 Chart.register(ChartDataLabels);
 
-const purple = '#5B4FE9';
-const purpleSoft = 'rgba(91,79,233,0.14)';
-const teal = '#0EA5A5';
-const tealSoft = 'rgba(14,165,165,0.14)';
-const barBlue = '#3B9BF6';
-const green = '#17B26A';
+const chartPrimary = '#2F6FED';
+const chartPrimarySoft = 'rgba(47, 111, 237, 0.12)';
+const chartPrimaryMuted = '#7FB3E0';
+const chartPrimaryMutedSoft = 'rgba(127, 179, 224, 0.14)';
+const chartWarning = '#D97706';
 const gridColor = '#EEF0F7';
 
 function badgeLabel(color) {
@@ -37,7 +36,7 @@ export function renderComboChart(canvasId, anos, dataset, barColor) {
           type: 'bar',
           label: 'Maranhão',
           data: dataset.maranhao,
-          backgroundColor: barColor,
+          backgroundColor: barColor || chartPrimary,
           borderRadius: 4,
           barPercentage: 0.62,
           datalabels: { display: false }
@@ -46,13 +45,15 @@ export function renderComboChart(canvasId, anos, dataset, barColor) {
           type: 'line',
           label: 'Projetado',
           data: dataset.projetado,
-          borderColor: green,
-          backgroundColor: green,
-          pointBackgroundColor: green,
+          borderColor: chartWarning,
+          backgroundColor: chartWarning,
+          pointBackgroundColor: chartWarning,
           pointRadius: 4,
+          pointStyle: 'rectRot',
+          borderDash: [5, 4],
           borderWidth: 2,
           tension: 0.3,
-          datalabels: badgeLabel(green)
+          datalabels: badgeLabel(chartWarning)
         }
       ]
     },
@@ -83,26 +84,28 @@ export function renderComparativoChart(canvasId, anos, iniciaisData, finaisData)
         {
           label: 'Anos Iniciais',
           data: iniciaisData.maranhao,
-          borderColor: purple,
-          backgroundColor: purpleSoft,
-          pointBackgroundColor: purple,
+          borderColor: chartPrimary,
+          backgroundColor: chartPrimarySoft,
+          pointBackgroundColor: chartPrimary,
           pointRadius: 4,
+          pointStyle: 'circle',
           borderWidth: 2.5,
           fill: false,
           tension: 0.3,
-          datalabels: badgeLabel(purple)
+          datalabels: badgeLabel(chartPrimary)
         },
         {
           label: 'Anos Finais',
           data: finaisData.maranhao,
-          borderColor: teal,
-          backgroundColor: tealSoft,
-          pointBackgroundColor: teal,
+          borderColor: chartPrimaryMuted,
+          backgroundColor: chartPrimaryMutedSoft,
+          pointBackgroundColor: chartPrimaryMuted,
           pointRadius: 4,
+          pointStyle: 'rect',
           borderWidth: 2.5,
           fill: false,
           tension: 0.3,
-          datalabels: badgeLabel(teal)
+          datalabels: badgeLabel(chartPrimaryMuted)
         }
       ]
     },

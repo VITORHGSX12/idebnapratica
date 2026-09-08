@@ -259,7 +259,7 @@
             }
 
             if (typeof global.showToast === 'function') {
-                global.showToast('✅ Novo profissional cadastrado com sucesso!', 'success');
+                global.showToast('Novo profissional cadastrado com sucesso!', 'success');
             }
         }
 
@@ -329,16 +329,16 @@
             if (canConfigure) {
                 actionsHtml = [
                     '<div style="display: flex; align-items: center; justify-content: center; gap: 6px;">',
-                    '    <button onclick="handleViewUserProfile(\'' + u.id + '\')" class="btn btn-sm btn-outline" style="font-size: 0.72rem; padding: 4px 8px;" title="Ver Detalhes do Perfil">👤 Ver</button>',
-                    '    <button onclick="handleCopyUserCredentials(\'' + u.email + '\', \'' + (u.senha || 'Gondias@2026') + '\')" class="btn btn-outline btn-sm" style="font-size: 0.72rem; padding: 4px 8px; color: #6366f1;" title="Copiar Login e Senha">🔑</button>',
-                    '    <button onclick="openCreateUserModal(\'' + u.id + '\')" class="btn btn-outline btn-sm" style="font-size: 0.72rem; padding: 4px 8px; color: #f59e0b;" title="Editar Usuário">✏️</button>',
-                    '    <button onclick="handleDeleteUser(\'' + u.id + '\')" class="btn btn-icon btn-sm" style="color: #ef4444; border: 1px solid var(--border-color);" title="Excluir Usuário">🗑️</button>',
+                    '    <button onclick="handleViewUserProfile(\'' + u.id + '\')" class="btn btn-sm btn-outline" style="font-size: 0.72rem; padding: 4px 8px; display:inline-flex; align-items:center; gap:3px;" title="Ver Detalhes do Perfil"><i data-lucide="user" style="width:12px;height:12px;"></i> Ver</button>',
+                    '    <button onclick="handleCopyUserCredentials(\'' + u.email + '\', \'' + (u.senha || 'Gondias@2026') + '\')" class="btn btn-outline btn-sm" style="font-size: 0.72rem; padding: 4px 8px; color: #6366f1; display:inline-flex; align-items:center;" title="Copiar Login e Senha"><i data-lucide="key" style="width:12px;height:12px;"></i></button>',
+                    '    <button onclick="openCreateUserModal(\'' + u.id + '\')" class="btn btn-outline btn-sm" style="font-size: 0.72rem; padding: 4px 8px; color: #f59e0b; display:inline-flex; align-items:center;" title="Editar Usuário"><i data-lucide="edit-3" style="width:12px;height:12px;"></i></button>',
+                    '    <button onclick="handleDeleteUser(\'' + u.id + '\')" class="btn btn-icon btn-sm" style="color: #ef4444; border: 1px solid var(--border-color); display:inline-flex; align-items:center; justify-content:center;" title="Excluir Usuário"><i data-lucide="trash-2" style="width:12px;height:12px;"></i></button>',
                     '</div>'
                 ].join('\n');
             } else {
                 actionsHtml = [
                     '<div style="display: flex; align-items: center; justify-content: center; gap: 6px;">',
-                    '    <button onclick="handleViewUserProfile(\'' + u.id + '\')" class="btn btn-sm btn-outline" style="font-size: 0.72rem; padding: 4px 8px;" title="Ver Detalhes do Perfil">👁️ Ver</button>',
+                    '    <button onclick="handleViewUserProfile(\'' + u.id + '\')" class="btn btn-sm btn-outline" style="font-size: 0.72rem; padding: 4px 8px; display:inline-flex; align-items:center; gap:3px;" title="Ver Detalhes do Perfil"><i data-lucide="eye" style="width:12px;height:12px;"></i> Ver</button>',
                     '</div>'
                 ].join('\n');
             }
@@ -355,7 +355,7 @@
                 '    <td style="padding: 10px 14px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary);">' + (u.cpf || '-') + '</td>',
                 '    <td style="padding: 10px 14px;">',
                 '        <div style="font-weight: 700; color: var(--text-primary); font-size: 0.88rem;">' + u.nome + '</div>',
-                '        <div style="font-size: 0.74rem; color: #6366f1; margin-top: 2px;">✉️ ' + u.email + '</div>',
+                '        <div style="font-size: 0.74rem; color: #6366f1; margin-top: 2px; display:flex; align-items:center; gap:4px;"><i data-lucide="mail" style="width:11px;height:11px;"></i> ' + u.email + '</div>',
                 '    </td>',
                 '    <td style="padding: 10px 14px; font-size: 0.8rem; color: var(--text-secondary);">',
                 '        <strong style="color: var(--text-primary);">' + (u.escola || 'Rede Municipal') + '</strong>',

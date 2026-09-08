@@ -69,7 +69,7 @@
             const allLessons = typeof window.getScheduleLessonsDb === 'function' ? window.getScheduleLessonsDb() : [];
             const existing = allLessons.find(l => l.id === existingPlanId);
             if (existing) {
-                if (titleEl) titleEl.textContent = '✏️ Editar Planejamento de Habilidades';
+                if (titleEl) titleEl.textContent = 'Editar Planejamento de Habilidades';
                 if (planIdInput) planIdInput.value = existing.id;
                 if (turmaSelect) turmaSelect.value = existing.turmaContext || currentTurma;
                 if (subjectSelect) subjectSelect.value = existing.disciplina || 'Língua Portuguesa';
@@ -377,7 +377,7 @@
         if (warnings.length > 0) {
             warningBox.innerHTML = `
                 <div style="display: flex; gap: 8px; align-items: flex-start;">
-                    <span style="font-size: 1rem;">⚠️</span>
+                    <i data-lucide="alert-triangle" style="width:16px;height:16px;color:#d97706;flex-shrink:0;margin-top:2px;"></i>
                     <div>
                         <strong style="display: block; margin-bottom: 2px;">Aviso de Repetição Pedagógica (Últimos 30 dias):</strong>
                         ${warnings.map(w => `<div style="font-size: 0.76rem;">• ${w}</div>`).join('')}
@@ -450,9 +450,9 @@
 
         if (plannerSelectedItems.length === 0) {
             if (typeof window.showToast === 'function') {
-                window.showToast('⚠️ Selecione ao menos um Descritor SAEB/SEAMA ou Habilidade BNCC no campo principal.', 'warning');
+                window.showToast('Selecione ao menos um Descritor SAEB/SEAMA ou Habilidade BNCC no campo principal.', 'warning');
             } else {
-                alert('⚠️ Selecione ao menos um Descritor SAEB/SEAMA ou Habilidade BNCC no campo principal.');
+                alert('Selecione ao menos um Descritor SAEB/SEAMA ou Habilidade BNCC no campo principal.');
             }
             return;
         }
@@ -562,7 +562,7 @@
         }
 
         if (typeof window.showToast === 'function') {
-            window.showToast(`✅ Planejamento (${primaryCode}) salvo no cronograma com sucesso!`, 'success');
+            window.showToast(`Planejamento (${primaryCode}) salvo no cronograma com sucesso!`, 'success');
         }
     }
 

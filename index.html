@@ -16,7 +16,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="design-tokens.css?v=20260830_v2">
-    <link rel="stylesheet" href="styles.css?v=9c6ee9451f_mtqymqeo">
+    <link rel="stylesheet" href="styles.css?v=a65da411bf_mts1qhp1">
     <link rel="stylesheet" href="login-premium.css?v=20260830_v2">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -925,7 +925,7 @@
 
                     <!-- Botão Rápido: Tour da Tela -->
                     <button type="button" class="btn btn-outline" id="btn-quick-tab-tour" onclick="if(typeof startTabContextTour==='function') startTabContextTour();" title="Guia Passo a Passo Desta Tela" style="height: 38px; padding: 0 13px; border-radius: var(--radius-btn, 10px); background: var(--color-surface-card, #FFFFFF); border: 1px solid var(--color-border-subtle, #E5E9F0); color: var(--color-brand-primary, #2F6FED); cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.78rem; font-weight: 700; box-shadow: var(--shadow-subtle);">
-                        <span style="font-size: 0.95rem;">💡</span>
+                        <i data-lucide="lightbulb" style="width: 15px; height: 15px;"></i>
                         <span>Tour da Tela</span>
                     </button>
 
@@ -1286,7 +1286,7 @@
                                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
                                             <div>
                                                 <span style="font-size: 12px; font-weight: 700; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.5px; display: block;">
-                                                    🎯 Descritores Críticos da Rede Municipal (Plano de Intervenção Pedagógica)
+                                                    Descritores Críticos da Rede Municipal (Plano de Intervenção Pedagógica)
                                                 </span>
                                                 <span style="font-size: 11px; color: var(--text-secondary);">Habilidades BNCC/SAEB que demandam reforço imediato na etapa selecionada.</span>
                                             </div>
@@ -1589,7 +1589,7 @@
                                             <select id="pde-filter-status" onchange="populateIdebGoalsTable()" class="form-select" style="height: 36px; font-size: 0.82rem; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0 10px;">
                                                 <option value="all">Todas as Escolas da Rede (Gonçalves Dias)</option>
                                                 <option value="risk">Escolas com Risco (Alto / Médio)</option>
-                                                <option value="ok">Escolas com Meta Atingida 🟢</option>
+                                                <option value="ok">Escolas com Meta Atingida</option>
                                             </select>
                                         </div>
 
@@ -1966,7 +1966,7 @@
                                         </span>
                                         <select id="ranking-escolas-city-select" onchange="filterSchoolRankingTable()" class="form-select" style="height: 38px; min-width: 240px; max-width: 380px; font-size: 0.85rem; font-weight: 700; color: #4A7FA7; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
                                             <option value="all">Todos os Municípios do Maranhão</option>
-                                            <option value="Gonçalves Dias" selected>Gonçalves Dias ⭐ (Sua Rede)</option>
+                                            <option value="Gonçalves Dias" selected>Gonçalves Dias (Sua Rede)</option>
                                         </select>
                                     </div>
                                     <div style="display: flex; gap: 8px;">
@@ -2023,7 +2023,7 @@
                                     <span>Notas Técnicas INEP/MEC: NT Conjunta 23/2023 • NT 7/2024 • Errata 12/2024 • Fernandes (2007)</span>
                                 </div>
                                 <h2 style="font-size: 1.6rem; font-weight: 800; margin: 0 0 6px 0; color: #ffffff;">
-                                    📐 Como se Calcula o IDEB & os Indicadores do VAAR / FUNDEB
+                                    Como se Calcula o IDEB & os Indicadores do VAAR / FUNDEB
                                 </h2>
                                 <p style="font-size: 0.88rem; color: rgba(255,255,255,0.85); margin: 0; line-height: 1.5; max-width: 900px;">
                                     Guia metodológico oficial de cálculo do IDEB clássico e dos novos indicadores de aprendizagem, fluxo e equidade para fins do FUNDEB (Lei nº 14.113/2020), com simulador interativo em tempo real para a rede municipal.
@@ -2096,8 +2096,8 @@
 
                                     <!-- Passo 3: Exemplo Numérico Didático -->
                                     <div style="background: rgba(16, 185, 129, 0.08); border: 1px dashed #10b981; border-radius: var(--radius-md); padding: 12px 14px;">
-                                        <div style="font-size: 0.78rem; font-weight: 800; color: #047857; margin-bottom: 4px;">
-                                            💡 Exemplo Prático Completo (5º Ano):
+                                        <div style="font-size: 0.78rem; font-weight: 800; color: #047857; margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
+                                            <i data-lucide="info" style="width: 14px; height: 14px;"></i> Exemplo Prático Completo (5º Ano):
                                         </div>
                                         <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0; line-height: 1.45;">
                                             Rede com Proficiência SAEB LP = <strong>205,0</strong> ($N_{LP} = 4,20$) e MAT = <strong>215,0</strong> ($N_{MAT} = 4,60$) ➔ $N = 4,40$. Com aprovação média de 96% ($P = 0,96$), o IDEB final é: <strong>4,40 × 0,96 = 4,22</strong>.
@@ -2156,8 +2156,8 @@
 
                                     <!-- Regra da Presença Mínima -->
                                     <div style="background: rgba(245, 158, 11, 0.08); border: 1px dashed #f59e0b; border-radius: var(--radius-md); padding: 12px 14px;">
-                                        <div style="font-size: 0.78rem; font-weight: 800; color: #b45309; margin-bottom: 4px;">
-                                            ⚠️ Regra de Ouro: Piso de 80% de Presença no SAEB (Art. 14)
+                                        <div style="font-size: 0.78rem; font-weight: 800; color: #b45309; margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
+                                            <i data-lucide="alert-triangle" style="width: 14px; height: 14px;"></i> Regra de Ouro: Piso de 80% de Presença no SAEB (Art. 14)
                                         </div>
                                         <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0; line-height: 1.45;">
                                             A rede municipal deve garantir no mínimo <strong>80% de participação</strong> dos matriculados no dia da prova. Presença abaixo de 80% desabilita a rede da complementação financeira.
@@ -2170,7 +2170,7 @@
                         <!-- Tabela de Pontos de Corte da Escala SAEB -->
                         <div class="card margin-bottom-lg" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-card); padding: 22px;">
                             <h3 style="margin: 0 0 6px 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">
-                                🎯 Pontos de Corte Oficiais do Nível Adequado (Tabela 1 - INEP)
+                                Pontos de Corte Oficiais do Nível Adequado (Tabela 1 - INEP)
                             </h3>
                             <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 16px;">
                                 Definição pedagógica estabelecida na Nota Técnica nº 7/2024 e NT Conjunta nº 23/2023 do INEP para a escala SAEB (0 a 500 pontos):
@@ -2224,8 +2224,9 @@
                         <div id="ideb-vaar-simulator-card" class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-card); padding: 24px;">
                             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; border-bottom: 1px solid var(--border-color); padding-bottom: 14px;">
                                 <div>
-                                    <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: var(--text-primary);">
-                                        🎛️ Simulador Oficial Interativo (IDEB & VAAR em Tempo Real)
+                                    <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                                        <i data-lucide="sliders" style="width: 20px; height: 20px; color: var(--color-brand-primary);"></i>
+                                        Simulador Oficial Interativo (IDEB & VAAR em Tempo Real)
                                     </h3>
                                     <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 4px 0 0 0;">
                                         Ajuste os indicadores da sua rede para simular o resultado do IDEB e verificar a aptidão aos recursos da Complementação VAAR do FUNDEB.
@@ -2247,16 +2248,16 @@
                                     <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i> Cenários Rápidos:
                                 </span>
                                 <button type="button" class="ideb-preset-btn active" data-preset="atual-5ano" onclick="applyIdebPreset('atual-5ano')" style="padding: 5px 12px; border-radius: 16px; font-size: 0.78rem; font-weight: 700; background: #1A2D42; color: #ffffff; border: 1px solid #1A2D42; cursor: pointer; transition: all 0.2s;">
-                                    📊 Rede Atual (5º Ano)
+                                    Rede Atual (5º Ano)
                                 </button>
                                 <button type="button" class="ideb-preset-btn" data-preset="meta-pde-2025" onclick="applyIdebPreset('meta-pde-2025')" style="padding: 5px 12px; border-radius: 16px; font-size: 0.78rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color); cursor: pointer; transition: all 0.2s;">
-                                    🎯 Meta PDE 2025
+                                    Meta PDE 2025
                                 </button>
                                 <button type="button" class="ideb-preset-btn" data-preset="anos-finais-9ano" onclick="applyIdebPreset('anos-finais-9ano')" style="padding: 5px 12px; border-radius: 16px; font-size: 0.78rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color); cursor: pointer; transition: all 0.2s;">
-                                    🏫 9º Ano Finais
+                                    9º Ano Finais
                                 </button>
                                 <button type="button" class="ideb-preset-btn" data-preset="alerta-presenca" onclick="applyIdebPreset('alerta-presenca')" style="padding: 5px 12px; border-radius: 16px; font-size: 0.78rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color); cursor: pointer; transition: all 0.2s;">
-                                    ⚠️ Alerta Presença &lt; 80%
+                                    Alerta Presença &lt; 80%
                                 </button>
                             </div>
 
@@ -2348,7 +2349,7 @@
                                     <!-- Memória de Cálculo Aritmética Passo a Passo (Didática) -->
                                     <div style="background: var(--bg-primary); border: 1px dashed var(--border-color); border-radius: var(--radius-md); padding: 12px 14px; font-size: 0.75rem;">
                                         <div style="font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 4px;">
-                                            <span>🧮 Memória de Cálculo Passo a Passo:</span>
+                                            <span>Memória de Cálculo Passo a Passo:</span>
                                         </div>
                                         <div style="display: flex; flex-wrap: wrap; gap: 8px; font-family: var(--font-mono); color: var(--text-primary);">
                                             <span>N_lp: <strong id="sim-step-nlp">4.20</strong></span>
@@ -2399,8 +2400,8 @@
                                         <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px;">
                                             STATUS OFICIAL PARA RECURSOS DO FUNDEB
                                         </div>
-                                        <div id="sim-out-status-vaar" class="badge badge-success" style="font-size: 0.85rem; padding: 6px 14px; font-weight: 800; display: inline-block;">
-                                            🟢 HABILITADO À COMPLEMENTAÇÃO VAAR
+                                        <div id="sim-out-status-vaar" class="badge badge-success" style="font-size: 0.85rem; padding: 6px 14px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px;">
+                                            <i data-lucide="check-circle" style="width: 14px; height: 14px;"></i> HABILITADO À COMPLEMENTAÇÃO VAAR
                                         </div>
                                         <p style="font-size: 0.76rem; color: var(--text-secondary); margin: 8px 0 0 0; line-height: 1.4;">
                                             A rede atende aos critérios do Art. 14 da Lei 14.113/2020: taxa de presença no SAEB ≥ 80% e evolução positiva de desempenho no ciclo.
@@ -2430,10 +2431,10 @@
                         <!-- Sub-Navegação: 1. Matrizes SAEB/SEAMA • 2. Explorador da BNCC -->
                         <div style="display: flex; gap: 8px; padding: 12px 20px; border-bottom: 1px solid var(--border-color); background: var(--bg-tertiary); overflow-x: auto;">
                             <button class="matriz-main-tab-btn active" id="btn-matriz-tab-saeb" onclick="switchMatrizMainTab('saeb'); return false;" style="padding: 8px 16px; border-radius: 20px; font-size: 0.82rem; font-weight: 700; background: #4A7FA7; color: #ffffff; border: none; cursor: pointer;">
-                                📊 Matrizes de Referência SAEB / SEAMA
+                                Matrizes de Referência SAEB / SEAMA
                             </button>
                             <button class="matriz-main-tab-btn" id="btn-matriz-tab-bncc" onclick="switchMatrizMainTab('bncc'); return false;" style="padding: 8px 16px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color); cursor: pointer;">
-                                📖 Explorador de Habilidades da BNCC (Por Disciplina)
+                                Explorador de Habilidades da BNCC (Por Disciplina)
                             </button>
                         </div>
 
@@ -2687,7 +2688,7 @@
                                         <strong id="delete-modal-event-title" style="color: var(--color-brand-primary); font-size: 0.95rem;">-</strong>
                                     </div>
                                     <div id="delete-modal-event-alert" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 12px 14px; font-size: 0.82rem; color: #b45309; margin-bottom: 20px;">
-                                        ⚠️ Atenção: Esta ação é irreversível. Todas as notas, gabaritos e respostas de teste vinculadas a esta avaliação serão eliminadas.
+                                        Atenção: Esta ação é irreversível. Todas as notas, gabaritos e respostas de teste vinculadas a esta avaliação serão eliminadas.
                                     </div>
                                     <div style="display: flex; justify-content: flex-end; gap: 10px;">
                                         <button type="button" onclick="fecharModalExcluirEvento()" class="btn btn-outline" style="font-size: 0.85rem; padding: 8px 16px;">Cancelar</button>
@@ -3361,12 +3362,12 @@
                         <!-- ==================== SUB-VIEW 2: VISÃO SEMANAL (GRADE COM DRAG & DROP) ==================== -->
                         <div id="schedule-view-weekly" class="schedule-view-container" style="padding: 16px; display: none;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
-                                <div style="font-size: 0.85rem; color: var(--text-secondary);">
-                                    🖐️ <strong>Reagendamento Rápido:</strong> Arraste e solte os cards de aula para reorganizar horários e dias da semana da turma ativa.
+                                <div style="font-size: 0.85rem; color: var(--text-secondary); display: flex; align-items: center; gap: 6px;">
+                                    <i data-lucide="move" style="width: 14px; height: 14px;"></i> <span><strong>Reagendamento Rápido:</strong> Arraste e solte os cards de aula para reorganizar horários e dias da semana da turma ativa.</span>
                                 </div>
                                 <div style="display: flex; gap: 8px;">
-                                    <button type="button" class="btn btn-outline btn-sm" onclick="handleAutoGenerateWeeklySchedule(); return false;" style="font-weight: 700; color: #4A7FA7; border-color: #4A7FA7;">
-                                        ✨ Sugerir Grade BNCC Automática
+                                    <button type="button" class="btn btn-outline btn-sm" onclick="handleAutoGenerateWeeklySchedule(); return false;" style="font-weight: 700; color: #4A7FA7; border-color: #4A7FA7; display: flex; align-items: center; gap: 4px;">
+                                        <i data-lucide="wand-2" style="width: 13px; height: 13px;"></i> Sugerir Grade BNCC Automática
                                     </button>
                                 </div>
                             </div>
@@ -3456,7 +3457,7 @@
                 <div id="modal-duplicate-lesson" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 20px;">
                     <div class="modal-container card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 480px; padding: 0; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
                         <div style="padding: 18px 24px; border-bottom: 1px solid var(--border-color); background: var(--bg-primary); display: flex; justify-content: space-between; align-items: center;">
-                            <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">📋 Duplicar Plano de Aula</h3>
+                            <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 6px;"><i data-lucide="copy" style="width: 18px; height: 18px;"></i> Duplicar Plano de Aula</h3>
                             <button type="button" onclick="closeDuplicateLessonModal();" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">✕</button>
                         </div>
                         <div style="padding: 24px; display: flex; flex-direction: column; gap: 14px;">
@@ -3486,7 +3487,7 @@
                     <div class="modal-container card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 620px; padding: 0; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-height: 85vh; display: flex; flex-direction: column;">
                         <div style="padding: 18px 24px; border-bottom: 1px solid var(--border-color); background: var(--bg-primary); display: flex; justify-content: space-between; align-items: center;">
                             <div>
-                                <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">🗑️ Lixeira de Rotinas Excluídas</h3>
+                                <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 6px;"><i data-lucide="trash-2" style="width: 18px; height: 18px;"></i> Lixeira de Rotinas Excluídas</h3>
                                 <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">Itens excluídos são preservados por até 30 dias para recuperação</p>
                             </div>
                             <button type="button" onclick="closeScheduleTrashModal();" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">✕</button>
@@ -3507,7 +3508,7 @@
                         <div style="display: flex; gap: 20px; padding: 16px 24px; border-bottom: 1px solid var(--border-color); overflow-x: auto;">
                             <button class="pedagogic-subtab-btn active" data-subtab="niveis-saeb-sub" style="background:none; border:none; color:var(--purple-light); font-weight:600; cursor:pointer; padding-bottom:8px; border-bottom: 2px solid var(--purple); font-size:0.95rem; white-space:nowrap; transition: var(--transition);">Níveis de Proficiência SAEB (0 a 5)</button>
                             <button class="pedagogic-subtab-btn" data-subtab="planos-intervencao-sub" style="background:none; border:none; color:var(--text-secondary); font-weight:500; cursor:pointer; padding-bottom:8px; font-size:0.95rem; white-space:nowrap; transition: var(--transition);">Modelos de Intervenção Pedagógica</button>
-                            <button class="pedagogic-subtab-btn" data-subtab="comparativo-saeb-sub" style="background:none; border:none; color:var(--text-secondary); font-weight:500; cursor:pointer; padding-bottom:8px; font-size:0.95rem; white-space:nowrap; transition: var(--transition);">📊 Comparativo Oficial SAEB 2025 x Simulados</button>
+                            <button class="pedagogic-subtab-btn" data-subtab="comparativo-saeb-sub" style="background:none; border:none; color:var(--text-secondary); font-weight:500; cursor:pointer; padding-bottom:8px; font-size:0.95rem; white-space:nowrap; transition: var(--transition);">Comparativo Oficial SAEB 2025 x Simulados</button>
                         </div>
                     </div>
 
@@ -4131,8 +4132,8 @@
                                 <label style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">COMPONENTE CURRICULAR</label>
                                 <select id="diag-filter-subject" onchange="runDiagnosticoCalculation();" class="form-select" style="height: 38px; font-size: 0.82rem; font-weight: 600; width: 100%;">
                                     <option value="all" selected>Todos os Componentes</option>
-                                    <option value="Língua Portuguesa">📖 Língua Portuguesa</option>
-                                    <option value="Matemática">📐 Matemática</option>
+                                    <option value="Língua Portuguesa">Língua Portuguesa</option>
+                                    <option value="Matemática">Matemática</option>
                                 </select>
                             </div>
 
@@ -4376,7 +4377,7 @@
                             <div id="modal-file-status-preview" style="margin-top:12px; font-size:0.8rem; display:none; padding:10px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-sm);"></div>
 
                             <div style="margin-top:16px; background:rgba(139, 92, 246, 0.05); border:1px solid rgba(139, 92, 246, 0.2); border-radius:var(--radius-sm); padding:12px 14px;">
-                                <strong style="font-size:0.8rem; color:var(--purple-light); display:block; margin-bottom:4px;">💡 Como formatar o arquivo para importação correta:</strong>
+                                <strong style="font-size:0.8rem; color:var(--purple-light); display:flex; align-items:center; gap:6px; margin-bottom:4px;"><i data-lucide="info" style="width:14px;height:14px;"></i> Como formatar o arquivo para importação correta:</strong>
                                 <p style="font-size:0.75rem; color:var(--text-secondary); margin:0 0 8px 0;">Cada questão deve conter o Enunciado, as alternativas iniciadas por A), B), C), D) e a linha de GABARITO.</p>
                                 <button class="btn btn-outline btn-sm" id="btn-modal-dl-word-sample" style="font-size:0.72rem; padding:3px 8px;">
                                     <i data-lucide="download" style="width:12px; height:12px;"></i> Baixar Modelo Word Formatado Padrão
@@ -4602,7 +4603,7 @@
                     <div id="bib-spotlight-container" class="margin-bottom-md" style="display: flex; flex-direction: column; gap: 10px;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
-                                <span>✨</span> Mais Acessados & Recentes da SEMED
+                                <i data-lucide="sparkles" style="width:14px;height:14px;color:var(--color-brand-primary);"></i> Mais Acessados & Recentes da SEMED
                             </span>
                             <span style="font-size: 0.72rem; color: var(--text-muted);">Atualização contínua Gonçalves Dias</span>
                         </div>
@@ -4615,15 +4616,15 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; padding: 8px 12px; background: var(--bg-secondary); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
                         <div style="display: flex; align-items: center; gap: 10px; font-size: 0.8rem; color: var(--text-secondary);">
                             <span id="bib-results-counter-text">Exibindo <strong>0 de 0</strong> materiais</span>
-                            <button type="button" id="btn-bib-clear-filters" onclick="clearLibraryFilters();" class="btn btn-outline btn-xs hidden" style="display: none; font-size: 0.7rem; padding: 2px 8px; border-color: #fca5a5; color: #ef4444;">
-                                ✕ Limpar filtros
+                            <button type="button" id="btn-bib-clear-filters" onclick="clearLibraryFilters();" class="btn btn-outline btn-xs hidden" style="display: none; font-size: 0.7rem; padding: 2px 8px; border-color: var(--color-status-critical-border); color: var(--color-status-critical);">
+                                <i data-lucide="x" style="width:12px;height:12px;margin-right:2px;"></i> Limpar filtros
                             </button>
                         </div>
                         <div style="display: flex; gap: 14px; font-size: 0.72rem; font-weight: 600; color: var(--text-muted); flex-wrap: wrap;">
-                            <span style="color: #3b82f6;">● Simulado Oficial</span>
-                            <span style="color: #f59e0b;">● Intervenção & Reforço</span>
-                            <span style="color: #4A7FA7;">● Matriz Curricular</span>
-                            <span style="color: #10b981;">● Guia do Professor</span>
+                            <span style="color: var(--color-brand-primary);">● Simulado Oficial</span>
+                            <span style="color: var(--color-status-warning);">● Intervenção & Reforço</span>
+                            <span style="color: var(--color-brand-secondary);">● Matriz Curricular</span>
+                            <span style="color: var(--color-status-success);">● Guia do Professor</span>
                         </div>
                     </div>
 
@@ -4634,14 +4635,14 @@
                 </section>
 
                 <!-- Modal Leitor Digital Integrado de PDF & Word (pdf.js + mammoth.js) -->
-                <div id="modal-biblioteca-reader" class="modal-overlay hidden" style="display:none; align-items:center; justify-content:center; z-index:99999; backdrop-filter:blur(6px); background:rgba(15,23,42,0.8);">
-                    <div class="modal-content" style="max-width: 1020px; width: 95%; height: 92vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; border-radius: var(--radius-lg); box-shadow: 0 25px 60px -15px rgba(0,0,0,0.6); background: var(--bg-primary);">
+                <div id="modal-biblioteca-reader" class="modal-overlay hidden" style="display:none; align-items:center; justify-content:center; z-index:99999; background: var(--color-surface-overlay);">
+                    <div class="modal-content" style="max-width: 1020px; width: 95%; height: 92vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; border-radius: var(--radius-lg); box-shadow: var(--shadow-modal); background: var(--bg-primary);">
                         
                         <!-- Header do Leitor -->
                         <div class="reader-header" style="background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-shrink: 0;">
                             <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
-                                <div id="reader-doc-icon" style="width: 38px; height: 38px; border-radius: 8px; background: #1A3D63; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">
-                                    📄
+                                <div id="reader-doc-icon" style="width: 38px; height: 38px; border-radius: var(--radius-sm); background: var(--color-brand-secondary); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    <i data-lucide="file-text" style="width:20px;height:20px;"></i>
                                 </div>
                                 <div style="min-width: 0;">
                                     <div style="display: flex; align-items: center; gap: 8px;">
@@ -4662,8 +4663,8 @@
                                     <i data-lucide="download" style="width: 14px; height: 14px;"></i>
                                     <span>Baixar Arquivo</span>
                                 </button>
-                                <button type="button" id="btn-close-biblioteca-reader" onclick="closeBibliotecaReader();" class="btn btn-icon btn-sm" style="cursor: pointer; width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border-color); display:flex; align-items:center; justify-content:center;" title="Fechar leitor (Esc)">
-                                    ✕
+                                <button type="button" id="btn-close-biblioteca-reader" onclick="closeBibliotecaReader();" class="btn btn-icon btn-sm" style="cursor: pointer; width: 34px; height: 34px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); display:flex; align-items:center; justify-content:center;" title="Fechar leitor (Esc)">
+                                    <i data-lucide="x" style="width:16px; height:16px;"></i>
                                 </button>
                             </div>
                         </div>
@@ -4673,24 +4674,24 @@
                             <!-- Controles de Paginação -->
                             <div id="reader-pdf-pagination" style="display: flex; align-items: center; gap: 6px;">
                                 <button type="button" id="btn-pdf-prev-page" class="btn btn-outline btn-xs" style="padding: 4px 10px; font-weight: 600;" title="Página Anterior (Seta Esquerda)">
-                                    ◀ Anterior
+                                    <i data-lucide="chevron-left" style="width:12px;height:12px;margin-right:2px;"></i> Anterior
                                 </button>
                                 <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); margin: 0 4px;">
                                     Página <strong id="pdf-current-page" style="color: var(--text-primary);">1</strong> de <strong id="pdf-total-pages" style="color: var(--text-primary);">1</strong>
                                 </span>
                                 <button type="button" id="btn-pdf-next-page" class="btn btn-outline btn-xs" style="padding: 4px 10px; font-weight: 600;" title="Próxima Página (Seta Direita)">
-                                    Próxima ▶
+                                    Próxima <i data-lucide="chevron-right" style="width:12px;height:12px;margin-left:2px;"></i>
                                 </button>
                             </div>
 
                             <!-- Controles de Zoom -->
                             <div id="reader-pdf-zoom" style="display: flex; align-items: center; gap: 6px;">
                                 <button type="button" id="btn-pdf-zoom-out" class="btn btn-outline btn-xs" style="padding: 4px 8px;" title="Reduzir Zoom (-)">
-                                    🔍 -
+                                    <i data-lucide="zoom-out" style="width:12px;height:12px;"></i> -
                                 </button>
                                 <span id="pdf-zoom-level" style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); min-width: 44px; text-align: center;">100%</span>
                                 <button type="button" id="btn-pdf-zoom-in" class="btn btn-outline btn-xs" style="padding: 4px 8px;" title="Aumentar Zoom (+)">
-                                    🔍 +
+                                    <i data-lucide="zoom-in" style="width:12px;height:12px;"></i> +
                                 </button>
                                 <button type="button" id="btn-pdf-zoom-reset" class="btn btn-outline btn-xs" style="padding: 4px 8px;" title="Ajustar">
                                     Ajustar
@@ -4703,25 +4704,25 @@
                             
                             <!-- Estado de Carregamento -->
                             <div id="reader-loading-spinner" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 12px; color: #fff; z-index: 10;">
-                                <div style="width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.2); border-top-color: #4A7FA7; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+                                <div style="width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.2); border-top-color: var(--color-brand-primary); border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
                                 <span id="reader-loading-text" style="font-size: 0.85rem; font-weight: 600;">Carregando documento seguro...</span>
                             </div>
 
                             <!-- Banner de Erro -->
-                            <div id="reader-error-banner" class="hidden" style="display: none; max-width: 500px; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; border-radius: 10px; padding: 20px; color: #fecaca; text-align: center; margin: auto;">
-                                <div style="font-size: 2rem; margin-bottom: 8px;">⚠️</div>
-                                <strong id="reader-error-title" style="display: block; font-size: 1rem; color: #fff; margin-bottom: 6px;">Não foi possível carregar o arquivo</strong>
-                                <p id="reader-error-desc" style="font-size: 0.8rem; margin: 0 0 14px 0; color: #fca5a5;">O arquivo pode estar indisponível ou você não possui permissão de visualização.</p>
-                                <button type="button" id="btn-reader-error-retry" class="btn btn-outline btn-sm" style="border-color: #fca5a5; color: #fff;">Tentar Novamente</button>
+                            <div id="reader-error-banner" class="hidden" style="display: none; max-width: 500px; background: var(--color-status-critical-bg); border: 1px solid var(--color-status-critical-border); border-radius: var(--radius-md); padding: 20px; color: var(--color-status-critical-text); text-align: center; margin: auto;">
+                                <div style="margin-bottom: 8px;"><i data-lucide="alert-triangle" style="width:28px;height:28px;color:var(--color-status-critical);"></i></div>
+                                <strong id="reader-error-title" style="display: block; font-size: 1rem; color: var(--color-status-critical-text); margin-bottom: 6px;">Não foi possível carregar o arquivo</strong>
+                                <p id="reader-error-desc" style="font-size: 0.8rem; margin: 0 0 14px 0; color: var(--color-text-secondary);">O arquivo pode estar indisponível ou você não possui permissão de visualização.</p>
+                                <button type="button" id="btn-reader-error-retry" class="btn btn-outline btn-sm" style="border-color: var(--color-status-critical-border); color: var(--color-status-critical-text);">Tentar Novamente</button>
                             </div>
 
                             <!-- Canvas Container para PDF (pdf.js) -->
-                            <div id="reader-pdf-canvas-wrapper" style="display: none; box-shadow: 0 10px 40px rgba(0,0,0,0.6); background: #ffffff; border-radius: 4px; line-height: 0; max-width: 100%;">
+                            <div id="reader-pdf-canvas-wrapper" style="display: none; box-shadow: var(--shadow-modal); background: #ffffff; border-radius: 4px; line-height: 0; max-width: 100%;">
                                 <canvas id="reader-pdf-canvas" style="display: block; width: 100%; height: auto;"></canvas>
                             </div>
 
                             <!-- Container de Leitura para Word / DOCX (mammoth.js HTML) -->
-                            <div id="reader-word-html-container" class="hidden" style="display: none; width: 100%; max-width: 820px; background: #ffffff; color: #1e293b; padding: 48px 56px; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 0.95rem; line-height: 1.7;">
+                            <div id="reader-word-html-container" class="hidden" style="display: none; width: 100%; max-width: 820px; background: #ffffff; color: #1e293b; padding: 48px 56px; border-radius: var(--radius-md); box-shadow: var(--shadow-modal); font-family: var(--font-body); font-size: 0.95rem; line-height: 1.7;">
                                 <!-- Conteúdo HTML convertido do Word -->
                             </div>
 
@@ -5730,11 +5731,11 @@
 
 
     <!-- Upload Pedagogic File Modal (PDF / Word / Capas) -->
-    <div id="upload-pedagogic-modal" class="modal-overlay hidden" style="display:none; align-items:center; justify-content:center;">
-        <div class="modal-content" style="max-width: 640px; width: 95%; max-height: 90vh; overflow-y: auto; padding: 24px; border-radius: var(--radius-lg);">
+    <div id="upload-pedagogic-modal" class="modal-overlay hidden" style="display:none; align-items:center; justify-content:center; background: var(--color-surface-overlay);">
+        <div class="modal-content" style="max-width: 640px; width: 95%; max-height: 90vh; overflow-y: auto; padding: 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow-modal);">
             <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 14px; margin-bottom: 18px;">
                 <div style="display:flex; align-items:center; gap:12px;">
-                    <div style="width:40px; height:40px; border-radius:10px; background:linear-gradient(135deg, #1A3D63, #3b82f6); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(26, 61, 99, 0.3);">
+                    <div style="width:40px; height:40px; border-radius:var(--radius-sm); background: var(--color-brand-primary); color:#fff; display:flex; align-items:center; justify-content:center;">
                         <i data-lucide="upload-cloud" style="width:20px; height:20px;"></i>
                     </div>
                     <div>
@@ -5751,13 +5752,15 @@
                     <!-- Área de Arquivo Principal do Computador (PDF / Word) -->
                     <div class="form-group">
                         <label style="font-size:0.8rem; font-weight:700; color:var(--text-primary); display:flex; justify-content:space-between; margin-bottom:6px;">
-                            <span>📁 Arquivo do Computador (PDF ou Word) *</span>
-                            <span style="font-size:0.7rem; color:#1A3D63; font-weight:700;">Formatos: .pdf, .docx, .doc • Máx: 100MB</span>
+                            <span>Arquivo do Computador (PDF ou Word) *</span>
+                            <span style="font-size:0.7rem; color:var(--color-brand-primary); font-weight:700;">Formatos: .pdf, .docx, .doc • Máx: 100MB</span>
                         </label>
-                        <div class="file-upload-dropzone" onclick="document.getElementById('new-material-file-input').click();" style="border: 2px dashed #4A7FA7; background: rgba(74, 127, 167, 0.04); border-radius: 12px; padding: 18px; text-align: center; cursor: pointer; transition: all 0.2s ease;">
+                        <div class="file-upload-dropzone" onclick="document.getElementById('new-material-file-input').click();" style="border: 2px dashed var(--color-brand-primary); background: var(--color-status-advanced-bg); border-radius: var(--radius-md); padding: 18px; text-align: center; cursor: pointer; transition: all 0.2s ease;">
                             <input type="file" id="new-material-file-input" accept=".pdf,.docx,.doc" style="display:none;">
-                            <div style="font-size: 1.8rem; margin-bottom: 4px;">📥</div>
-                            <strong style="font-size: 0.85rem; color: #1A3D63; display: block;">Clique para selecionar arquivo do computador</strong>
+                            <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: var(--color-surface-card); color: var(--color-brand-primary); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 6px; box-shadow: var(--shadow-subtle);">
+                                <i data-lucide="upload-cloud" style="width: 22px; height: 22px;"></i>
+                            </div>
+                            <strong style="font-size: 0.85rem; color: var(--color-brand-secondary); display: block;">Clique para selecionar arquivo do computador</strong>
                             <span style="font-size: 0.72rem; color: var(--text-muted);">PDF ou Word até 100MB com upload atômico e seguro</span>
                         </div>
                         <div id="file-upload-preview" style="margin-top: 8px;"></div>
@@ -5808,12 +5811,12 @@
                         <div class="form-group">
                             <label for="new-material-color" style="font-size:0.75rem; font-weight:600; color:var(--text-secondary); margin-bottom:4px; display:block;">Tema Visual da Capa</label>
                             <select id="new-material-color" class="form-select" style="height:38px; font-size:0.82rem;">
-                                <option value="#1A3D63">Indigo Institucional (#1A3D63)</option>
-                                <option value="#2563eb">Azul Escolar (#2563EB)</option>
-                                <option value="#0d9488">Teal / Verde Água (#0D9488)</option>
-                                <option value="#f59e0b">Âmbar / Fluência (#F59E0B)</option>
-                                <option value="#4A7FA7">Roxo Matrizes (#4A7FA7)</option>
-                                <option value="#dc2626">Vermelho Destaque (#DC2626)</option>
+                                <option value="#0B2545">Azul Marinho Institucional</option>
+                                <option value="#2F6FED" selected>Azul Royal Primário</option>
+                                <option value="#22C55E">Verde Sucesso / Fluência</option>
+                                <option value="#D97706">Âmbar Atenção</option>
+                                <option value="#8B5CF6">Roxo Categoria</option>
+                                <option value="#DC2626">Vermelho Destaque</option>
                             </select>
                         </div>
                     </div>
@@ -5821,7 +5824,7 @@
                     <!-- Upload Opcional de Imagem de Capa (Thumbnail Personalizada) -->
                     <div class="form-group" style="background: var(--bg-tertiary); padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
                         <label style="font-size:0.78rem; font-weight:700; color:var(--text-primary); display:flex; justify-content:space-between; margin-bottom:4px;">
-                            <span>🖼️ Capa Personalizada / Thumbnail (Opcional)</span>
+                            <span>Capa Personalizada / Thumbnail (Opcional)</span>
                             <span style="font-size:0.7rem; color:var(--text-muted);">PNG, JPG ou JPEG</span>
                         </label>
                         <div style="display:flex; gap:10px; align-items:center; margin-top:6px;">
@@ -6379,14 +6382,14 @@
 
                 <!-- Abas de Modo: Manual, IA Automatizada, Base PDF -->
                 <div style="display: flex; gap: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
-                    <button type="button" class="btn btn-outline btn-sm active" id="btn-pde-mode-manual" onclick="switchPdeModalMode('manual')" style="font-weight: 700;">
-                        ✍️ Preenchimento Manual
+                    <button type="button" class="btn btn-outline btn-sm active" id="btn-pde-mode-manual" onclick="switchPdeModalMode('manual')" style="font-weight: 700; display: flex; align-items: center; gap: 4px;">
+                        <i data-lucide="edit-3" style="width: 13px; height: 13px;"></i> Preenchimento Manual
                     </button>
-                    <button type="button" class="btn btn-outline btn-sm" id="btn-pde-mode-ai" onclick="switchPdeModalMode('ai')" style="font-weight: 700;">
-                        🤖 Sugestão Inteligente (IA)
+                    <button type="button" class="btn btn-outline btn-sm" id="btn-pde-mode-ai" onclick="switchPdeModalMode('ai')" style="font-weight: 700; display: flex; align-items: center; gap: 4px;">
+                        <i data-lucide="sparkles" style="width: 13px; height: 13px;"></i> Sugestão Inteligente (IA)
                     </button>
-                    <button type="button" class="btn btn-outline btn-sm" id="btn-pde-mode-pdf" onclick="switchPdeModalMode('pdf')" style="font-weight: 700;">
-                        📄 Base / Arquivo PDF
+                    <button type="button" class="btn btn-outline btn-sm" id="btn-pde-mode-pdf" onclick="switchPdeModalMode('pdf')" style="font-weight: 700; display: flex; align-items: center; gap: 4px;">
+                        <i data-lucide="file-text" style="width: 13px; height: 13px;"></i> Base / Arquivo PDF
                     </button>
                 </div>
 
@@ -6440,7 +6443,7 @@
                 <!-- Painel de Diagnóstico por Descritores da Escola (Camada 4) -->
                 <div id="pde-school-diagnostic-container" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 16px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                        <strong style="font-size: 0.8rem; color: #4A7FA7;">📊 Diagnóstico de Descritores da Unidade (Camada 4 - PDE)</strong>
+                        <strong style="font-size: 0.8rem; color: #4A7FA7;">Diagnóstico de Descritores da Unidade (Camada 4 - PDE)</strong>
                         <span id="pde-school-diag-status" style="font-size: 0.7rem; color: var(--text-muted);">Carregando...</span>
                     </div>
                     <div id="pde-school-diagnostic-content" style="font-size: 0.78rem; color: var(--text-secondary);">
@@ -6462,9 +6465,9 @@
                         Status do Plano de Desenvolvimento
                     </label>
                     <select id="pde-manager-status" class="form-select" style="width: 100%; height: 40px; font-size: 0.85rem; padding: 0 10px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
-                        <option value="Em Execução" selected>🟡 Em Execução (Ações em Andamento)</option>
-                        <option value="Em Planejamento">🔵 Em Planejamento (Aguardando Aprovação)</option>
-                        <option value="Concluído com Sucesso">🟢 Concluído com Sucesso (Meta Alcançada)</option>
+                        <option value="Em Execução" selected>Em Execução (Ações em Andamento)</option>
+                        <option value="Em Planejamento">Em Planejamento (Aguardando Aprovação)</option>
+                        <option value="Concluído com Sucesso">Concluído com Sucesso (Meta Alcançada)</option>
                     </select>
                 </div>
 
@@ -6747,7 +6750,7 @@
                         </div>
                         <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
                             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
-                                <h5 style="margin: 0; font-size: 0.78rem; font-weight: 800; color: #ef4444;">⚠ Habilidades Críticas / Defasagem (&lt; 60%)</h5>
+                                <h5 style="margin: 0; font-size: 0.78rem; font-weight: 800; color: #ef4444; display: flex; align-items: center; gap: 4px;"><i data-lucide="alert-triangle" style="width: 13px; height: 13px;"></i> Habilidades Críticas / Defasagem (&lt; 60%)</h5>
                                 <span id="student-focus-count-badge" class="badge badge-danger" style="font-size: 0.65rem; padding: 2px 6px;">0</span>
                             </div>
                             <ul id="student-focus-skills-list" style="margin: 0; padding-left: 18px; font-size: 0.78rem; line-height: 1.5;"></ul>
@@ -6756,7 +6759,7 @@
 
                     <!-- Recomendações de Intervenção Pedagógica (Camada 3) -->
                     <div id="student-recommendations-container" style="margin-top: 14px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px; display: none;">
-                        <h5 style="margin: 0 0 8px 0; font-size: 0.8rem; font-weight: 800; color: #f59e0b;">🎯 Recomendações para Intervenção Pedagógica</h5>
+                        <h5 style="margin: 0 0 8px 0; font-size: 0.8rem; font-weight: 800; color: #f59e0b; display: flex; align-items: center; gap: 4px;"><i data-lucide="target" style="width: 14px; height: 14px;"></i> Recomendações para Intervenção Pedagógica</h5>
                         <div id="student-recommendations-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
                     </div>
                 </div>
@@ -6883,23 +6886,23 @@
 
 
                 <!-- ==================== MODAL: GERAR CADERNO A4 COMBINADO ==================== -->
-                <div id="modal-combine-caderno-a4" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 20px;">
-                    <div class="modal-container card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 740px; padding: 0; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-height: 88vh; display: flex; flex-direction: column;">
+                <div id="modal-combine-caderno-a4" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; z-index: 10000; background: var(--color-surface-overlay); align-items: center; justify-content: center; padding: 20px;">
+                    <div class="modal-container card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 740px; padding: 0; overflow: hidden; box-shadow: var(--shadow-modal); max-height: 88vh; display: flex; flex-direction: column;">
                         <div style="padding: 18px 24px; border-bottom: 1px solid var(--border-color); background: var(--bg-primary); display: flex; justify-content: space-between; align-items: center;">
                             <div>
                                 <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">Montar Caderno A4 Combinado</h3>
                                 <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">Selecione os simulados filtrados para gerar um caderno único de aplicação com gabarito ao final</p>
                             </div>
-                            <button type="button" onclick="closeCombinedCadernoModal();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);">✕</button>
+                            <button type="button" onclick="closeCombinedCadernoModal();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);"><i data-lucide="x" style="width: 20px; height: 20px;"></i></button>
                         </div>
                         <div id="modal-combine-simulados-list" style="padding: 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 10px;">
                             <!-- Injetado dinamicamente -->
                         </div>
                         <div style="padding: 14px 24px; border-top: 1px solid var(--border-color); background: var(--bg-primary); display: flex; justify-content: space-between; align-items: center;">
-                            <span id="modal-combine-selected-count" style="font-size: 0.8rem; font-weight: 700; color: #4A7FA7;">0 simulados selecionados</span>
+                            <span id="modal-combine-selected-count" style="font-size: 0.8rem; font-weight: 700; color: var(--color-brand-primary);">0 simulados selecionados</span>
                             <div style="display: flex; gap: 8px;">
                                 <button type="button" onclick="closeCombinedCadernoModal();" class="btn btn-outline btn-sm">Cancelar</button>
-                                <button type="button" onclick="executeGenerateCombinedA4Booklet();" class="btn btn-primary btn-sm" style="font-weight: 700; background: #4A7FA7; border-color: #4A7FA7; display: flex; align-items: center; gap: 6px;">
+                                <button type="button" onclick="executeGenerateCombinedA4Booklet();" class="btn btn-primary btn-sm" style="font-weight: 700; background: var(--color-brand-primary); border-color: var(--color-brand-primary); display: flex; align-items: center; gap: 6px;">
                                     <i data-lucide="printer" style="width: 14px; height: 14px;"></i>
                                     <span>Gerar PDF Combinado</span>
                                 </button>
@@ -6952,8 +6955,8 @@
                                         Zona de Localização <span style="color: #ef4444;">*</span>
                                     </label>
                                     <select id="edit-school-zone" required class="form-select" style="width: 100%; height: 38px; font-size: 0.84rem;">
-                                        <option value="Zona Rural">🌾 Zona Rural</option>
-                                        <option value="Sede Urbana">🏫 Sede Urbana</option>
+                                        <option value="Zona Rural">Zona Rural</option>
+                                        <option value="Sede Urbana">Sede Urbana</option>
                                     </select>
                                     <span id="err-school-zone" class="inline-err-msg" style="display: none; color: #ef4444; font-size: 0.7rem; margin-top: 2px;">Selecione a zona.</span>
                                 </div>
@@ -7069,14 +7072,14 @@
                 <div style="background: var(--bg-primary); border: 1.5px solid #4A7FA7; border-radius: var(--radius-md); padding: 16px; box-shadow: 0 2px 8px rgba(74, 127, 167,  0.08);">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                         <label style="font-size: 0.82rem; font-weight: 800; color: #4A7FA7; display: flex; align-items: center; gap: 6px;">
-                            🎯 DESCRITOR SAEB / SEAMA E/OU HABILIDADE BNCC <span style="color: #ef4444;">*</span>
+                            DESCRITOR SAEB / SEAMA E/OU HABILIDADE BNCC <span style="color: #ef4444;">*</span>
                         </label>
                         <span style="font-size: 0.72rem; color: var(--text-muted);">Objeto central do planejamento</span>
                     </div>
 
                     <!-- Input com Autocomplete Dual -->
                     <div style="position: relative;">
-                        <input type="text" id="planner-skill-search-input" oninput="handlePlannerSkillSearchInput(this.value);" onfocus="handlePlannerSkillSearchInput(this.value);" placeholder="🔍 Digite código ou palavra-chave (ex: D01, EF02LP01, inferir, fração, leitura...)" class="form-input-text" style="width: 100%; height: 42px; font-size: 0.86rem; padding: 0 12px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);" autocomplete="off">
+                        <input type="text" id="planner-skill-search-input" oninput="handlePlannerSkillSearchInput(this.value);" onfocus="handlePlannerSkillSearchInput(this.value);" placeholder="Digite código ou palavra-chave (ex: D01, EF02LP01, inferir, fração, leitura...)" class="form-input-text" style="width: 100%; height: 42px; font-size: 0.86rem; padding: 0 12px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);" autocomplete="off">
                         
                         <!-- Dropdown de Resultados com Badges SAEB / BNCC -->
                         <div id="planner-skill-search-results" style="display: none; position: absolute; top: 46px; left: 0; right: 0; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: 0 10px 28px rgba(0,0,0,0.25); z-index: 1000; max-height: 250px; overflow-y: auto;">
@@ -7116,11 +7119,11 @@
                             Componente Curricular / Disciplina <span style="color: #ef4444;">*</span>
                         </label>
                         <select id="planner-modal-subject" onchange="handlePlannerSubjectChange();" class="form-select" style="width: 100%; height: 38px; font-size: 0.82rem; font-weight: 600; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
-                            <option value="Língua Portuguesa" selected>📖 Língua Portuguesa</option>
-                            <option value="Matemática">📐 Matemática</option>
-                            <option value="Ciências da Natureza">🌱 Ciências da Natureza</option>
-                            <option value="História">🏛️ História</option>
-                            <option value="Geografia">🌍 Geografia</option>
+                            <option value="Língua Portuguesa" selected>Língua Portuguesa</option>
+                            <option value="Matemática">Matemática</option>
+                            <option value="Ciências da Natureza">Ciências da Natureza</option>
+                            <option value="História">História</option>
+                            <option value="Geografia">Geografia</option>
                         </select>
                     </div>
                 </div>
@@ -7161,7 +7164,7 @@
                 <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 16px;">
                     <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.82rem; font-weight: 700; color: var(--text-primary);">
                         <input type="checkbox" id="planner-modal-recurrence-toggle" onchange="handlePlannerRecurrenceToggle(this.checked);" style="accent-color: #4A7FA7; width: 16px; height: 16px;">
-                        <span>🔁 Repetir semanalmente no mesmo dia da semana</span>
+                        <span>Repetir semanalmente no mesmo dia da semana</span>
                     </label>
 
                     <div id="planner-modal-recurrence-container" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border-color);">
@@ -7191,8 +7194,8 @@
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">Status inicial:</label>
                         <select id="planner-modal-status" class="form-select" style="height: 34px; font-size: 0.78rem; font-weight: 700; padding: 0 8px; border-radius: var(--radius-sm);">
-                            <option value="planejada" selected>🟡 Planejada (Laranja)</option>
-                            <option value="trabalhada">🟢 Trabalhada (Verde)</option>
+                            <option value="planejada" selected>Planejada</option>
+                            <option value="trabalhada">Trabalhada</option>
                         </select>
                     </div>
 
@@ -7588,88 +7591,88 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=341bc2b5e3_mtqymqeo"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=daec643646_mtqymqeo"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mtqymqeo"></script>
-    <script src="bncc_habilidades_oficial.js?v=2f802bf604_mtqymqeo"></script>
-    <script src="ideb_publico_db.js?v=fa7edb185f_mtqymqeo"></script>
-    <script src="alunos_db.js?v=e23fe3179f_mtqymqeo"></script>
-    <script src="js/data/official_students_seed.js?v=876be25c9a_mtqymqeo"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=341bc2b5e3_mts1qhp1"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=daec643646_mts1qhp1"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mts1qhp1"></script>
+    <script src="bncc_habilidades_oficial.js?v=2f802bf604_mts1qhp1"></script>
+    <script src="ideb_publico_db.js?v=fa7edb185f_mts1qhp1"></script>
+    <script src="alunos_db.js?v=e23fe3179f_mts1qhp1"></script>
+    <script src="js/data/official_students_seed.js?v=876be25c9a_mts1qhp1"></script>
 
     <!-- Módulos do Core -->
-    <script src="js/core/security.js?v=9d4fc4a791_mtqymqeo"></script>
-    <script src="js/core/helpers.js?v=7656a2a6bb_mtqymqeo"></script>
-    <script src="js/core/theme-toast.js?v=c181c006e0_mtqymqeo"></script>
-    <script src="js/core/chart-theme.js?v=427aa86547_mtqymqeo"></script>
-    <script src="js/core/user-profile.js?v=1049f256c6_mtqymqeo"></script>
-    <script src="js/data/official_users_directory.js?v=24a756e04c_mtqymqeo"></script>
-    <script src="js/core/login-animation.js?v=414e14bbcd_mtqymqeo"></script>
-    <script src="js/core/auth.js?v=fc3f5dd497_mtqymqeo"></script>
-    <script src="js/core/navigation/navigation_meta.js?v=8c84252ce2_mtqymqeo"></script>
-    <script src="js/core/navigation/navigation_history.js?v=a09c33f4ae_mtqymqeo"></script>
-    <script src="js/core/navigation/navigation_events.js?v=7e416c2fa3_mtqymqeo"></script>
-    <script src="js/core/navigation.js?v=5b61fc7023_mtqymqeo"></script>
-    <script src="js/core/sync.js?v=73ebd2560a_mtqymqeo"></script>
+    <script src="js/core/security.js?v=9d4fc4a791_mts1qhp1"></script>
+    <script src="js/core/helpers.js?v=7656a2a6bb_mts1qhp1"></script>
+    <script src="js/core/theme-toast.js?v=c181c006e0_mts1qhp1"></script>
+    <script src="js/core/chart-theme.js?v=c8e29467a8_mts1qhp1"></script>
+    <script src="js/core/user-profile.js?v=c1db21eb55_mts1qhp1"></script>
+    <script src="js/data/official_users_directory.js?v=24a756e04c_mts1qhp1"></script>
+    <script src="js/core/login-animation.js?v=414e14bbcd_mts1qhp1"></script>
+    <script src="js/core/auth.js?v=fc3f5dd497_mts1qhp1"></script>
+    <script src="js/core/navigation/navigation_meta.js?v=8c84252ce2_mts1qhp1"></script>
+    <script src="js/core/navigation/navigation_history.js?v=a09c33f4ae_mts1qhp1"></script>
+    <script src="js/core/navigation/navigation_events.js?v=7e416c2fa3_mts1qhp1"></script>
+    <script src="js/core/navigation.js?v=b876bba488_mts1qhp1"></script>
+    <script src="js/core/sync.js?v=73ebd2560a_mts1qhp1"></script>
 
     <!-- Módulos de Domínio -->
-    <script src="js/modules/dashboard/dashboard_kpis.js?v=661c48df5d_mtqymqeo"></script>
-    <script src="js/modules/dashboard/dashboard_charts.js?v=f817fe2edd_mtqymqeo"></script>
-    <script src="js/modules/dashboard/dashboard_analytics.js?v=156257a0b0_mtqymqeo"></script>
-    <script src="js/modules/dashboard/dashboard_scales.js?v=8b105db83a_mtqymqeo"></script>
-    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=047c7904b7_mtqymqeo"></script>
-    <script src="js/modules/dashboard/dashboard_scroll_reveal.js?v=765a5ac049_mtqymqeo"></script>
-    <script src="js/modules/alunos/alunos_progression_modal.js?v=cf365ce8cf_mtqymqeo"></script>
-    <script src="js/modules/alunos/alunos_list.js?v=1680ba1e32_mtqymqeo"></script>
-    <script src="js/modules/alunos/alunos_forms.js?v=d65581afbc_mtqymqeo"></script>
-    <script src="js/modules/turmas/turmas_crud.js?v=e246099ccf_mtqymqeo"></script>
-    <script src="js/modules/turmas/turmas_diario.js?v=a785ddd9e6_mtqymqeo"></script>
-    <script src="js/modules/metas/metas_regional.js?v=2237174a37_mtqymqeo"></script>
-    <script src="js/modules/metas/metas_pactuacao.js?v=4706caf85f_mtqymqeo"></script>
-    <script src="js/modules/metas/metas_escolas_ranking.js?v=764501fe71_mtqymqeo"></script>
-    <script src="js/modules/metas/metas_calculo_manual.js?v=42d907079e_mtqymqeo"></script>
-    <script src="js/modules/metas/metas_ideb.js?v=505cc6d09c_mtqymqeo"></script>
-    <script src="js/modules/escolas/escolas.js?v=6156cfb8f2_mtqymqeo"></script>
-    <script src="js/modules/escolas/escolas_workspace.js?v=cbd14d4cc2_mtqymqeo"></script>
-    <script src="js/modules/escolas/escolas_modals.js?v=d32d052d1d_mtqymqeo"></script>
-    <script src="js/modules/matrizes/matrizes.js?v=d2df1a4b54_mtqymqeo"></script>
-    <script src="js/modules/cronograma/cronograma_state.js?v=291ef65907_mtqymqeo"></script>
-    <script src="js/modules/cronograma/cronograma_views_monthly.js?v=9bbac5a230_mtqymqeo"></script>
-    <script src="js/modules/cronograma/cronograma_views_weekly.js?v=37e3b04d03_mtqymqeo"></script>
-    <script src="js/modules/cronograma/cronograma_views_comparison.js?v=9875be98c6_mtqymqeo"></script>
-    <script src="js/modules/cronograma/cronograma_progress_modal.js?v=f327132831_mtqymqeo"></script>
-    <script src="js/modules/cronograma/cronograma_views.js?v=3254fb7223_mtqymqeo"></script>
-    <script src="js/modules/cronograma/cronograma_planner.js?v=217cb644d9_mtqymqeo"></script>
-    <script src="js/modules/cronograma/cronograma_trash.js?v=a01d97e91e_mtqymqeo"></script>
-    <script src="js/modules/cronograma/cronograma_calendar_40w.js?v=951800db84_mtqymqeo"></script>
-    <script src="js/modules/cronograma/cronograma.js?v=69486dcbc3_mtqymqeo"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_state.js?v=926f0714e3_mtqymqeo"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_wizard.js?v=23d3745407_mtqymqeo"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_events.js?v=6af1a89e95_mtqymqeo"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_espelho.js?v=11acd9efc8_mtqymqeo"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_analytics.js?v=d8988743ae_mtqymqeo"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_print.js?v=b5eb11e2a6_mtqymqeo"></script>
-    <script src="js/modules/questoes/questoes_generator.js?v=8e44d7592b_mtqymqeo"></script>
-    <script src="js/modules/questoes/questoes_list.js?v=5543a2c1d7_mtqymqeo"></script>
-    <script src="js/modules/questoes/questoes_import_export.js?v=c7d3bb36d0_mtqymqeo"></script>
-    <script src="js/modules/diagnostico/diagnostico.js?v=e4becf6279_mtqymqeo"></script>
-    <script src="js/modules/saeb/saeb_state.js?v=178da7f734_mtqymqeo"></script>
-    <script src="js/modules/saeb/saeb_distribution_view.js?v=7bee5af18a_mtqymqeo"></script>
-    <script src="js/modules/saeb/saeb_comparativo_turmas.js?v=22f1b3636c_mtqymqeo"></script>
-    <script src="js/modules/saeb/saeb_ficha_individual.js?v=17642111a3_mtqymqeo"></script>
-    <script src="js/modules/saeb/saeb_boletim.js?v=f2fbc9e7e7_mtqymqeo"></script>
-    <script src="js/modules/saeb/saeb_intervencoes_comparativo.js?v=ada1202837_mtqymqeo"></script>
-    <script src="js/modules/saeb/saeb.js?v=6f18f413e8_mtqymqeo"></script>
-    <script src="js/modules/biblioteca/biblioteca_reader.js?v=a526e81258_mtqymqeo"></script>
-    <script src="js/modules/biblioteca/biblioteca_upload.js?v=a0fcce08d5_mtqymqeo"></script>
-    <script src="js/modules/biblioteca/biblioteca.js?v=9933182f10_mtqymqeo"></script>
-    <script src="js/modules/admin/admin_data.js?v=4146d4760b_mtqymqeo"></script>
-    <script src="js/modules/admin/admin_users.js?v=9efdb86dbd_mtqymqeo"></script>
-    <script src="js/modules/admin/admin_tenants.js?v=ae5a501f46_mtqymqeo"></script>
-    <script src="js/modules/doc_tecnica/doc_tecnica.js?v=014b44adfa_mtqymqeo"></script>
-    <script src="js/modules/onboarding/onboarding_tour.js?v=cffc5cac55_mtqymqeo"></script>
-    <script src="js/modules/onboarding/tab_context_tours.js?v=99633ec3f4_mtqymqeo"></script>
+    <script src="js/modules/dashboard/dashboard_kpis.js?v=661c48df5d_mts1qhp1"></script>
+    <script src="js/modules/dashboard/dashboard_charts.js?v=de1a05b8a6_mts1qhp1"></script>
+    <script src="js/modules/dashboard/dashboard_analytics.js?v=a7db1260ed_mts1qhp1"></script>
+    <script src="js/modules/dashboard/dashboard_scales.js?v=38ef0c5f91_mts1qhp1"></script>
+    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=89dad60f6a_mts1qhp1"></script>
+    <script src="js/modules/dashboard/dashboard_scroll_reveal.js?v=765a5ac049_mts1qhp1"></script>
+    <script src="js/modules/alunos/alunos_progression_modal.js?v=9b35c9ce79_mts1qhp1"></script>
+    <script src="js/modules/alunos/alunos_list.js?v=1680ba1e32_mts1qhp1"></script>
+    <script src="js/modules/alunos/alunos_forms.js?v=d65581afbc_mts1qhp1"></script>
+    <script src="js/modules/turmas/turmas_crud.js?v=7b6d46585b_mts1qhp1"></script>
+    <script src="js/modules/turmas/turmas_diario.js?v=edae66f43a_mts1qhp1"></script>
+    <script src="js/modules/metas/metas_regional.js?v=7556fbb4b6_mts1qhp1"></script>
+    <script src="js/modules/metas/metas_pactuacao.js?v=55531875c5_mts1qhp1"></script>
+    <script src="js/modules/metas/metas_escolas_ranking.js?v=d2cab5c654_mts1qhp1"></script>
+    <script src="js/modules/metas/metas_calculo_manual.js?v=db8734a78d_mts1qhp1"></script>
+    <script src="js/modules/metas/metas_ideb.js?v=17b2b704aa_mts1qhp1"></script>
+    <script src="js/modules/escolas/escolas.js?v=6156cfb8f2_mts1qhp1"></script>
+    <script src="js/modules/escolas/escolas_workspace.js?v=cbd14d4cc2_mts1qhp1"></script>
+    <script src="js/modules/escolas/escolas_modals.js?v=d32d052d1d_mts1qhp1"></script>
+    <script src="js/modules/matrizes/matrizes.js?v=d2df1a4b54_mts1qhp1"></script>
+    <script src="js/modules/cronograma/cronograma_state.js?v=291ef65907_mts1qhp1"></script>
+    <script src="js/modules/cronograma/cronograma_views_monthly.js?v=8d7fe9a8d7_mts1qhp1"></script>
+    <script src="js/modules/cronograma/cronograma_views_weekly.js?v=17318533ba_mts1qhp1"></script>
+    <script src="js/modules/cronograma/cronograma_views_comparison.js?v=9875be98c6_mts1qhp1"></script>
+    <script src="js/modules/cronograma/cronograma_progress_modal.js?v=f327132831_mts1qhp1"></script>
+    <script src="js/modules/cronograma/cronograma_views.js?v=3254fb7223_mts1qhp1"></script>
+    <script src="js/modules/cronograma/cronograma_planner.js?v=5e9c900526_mts1qhp1"></script>
+    <script src="js/modules/cronograma/cronograma_trash.js?v=b1408ecbe3_mts1qhp1"></script>
+    <script src="js/modules/cronograma/cronograma_calendar_40w.js?v=310bf5af0c_mts1qhp1"></script>
+    <script src="js/modules/cronograma/cronograma.js?v=69486dcbc3_mts1qhp1"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_state.js?v=9246c014a5_mts1qhp1"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_wizard.js?v=23d3745407_mts1qhp1"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_events.js?v=291641d46e_mts1qhp1"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_espelho.js?v=5aab2a44bf_mts1qhp1"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_analytics.js?v=c02f843b04_mts1qhp1"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_print.js?v=947e5a0916_mts1qhp1"></script>
+    <script src="js/modules/questoes/questoes_generator.js?v=8e44d7592b_mts1qhp1"></script>
+    <script src="js/modules/questoes/questoes_list.js?v=5543a2c1d7_mts1qhp1"></script>
+    <script src="js/modules/questoes/questoes_import_export.js?v=c7d3bb36d0_mts1qhp1"></script>
+    <script src="js/modules/diagnostico/diagnostico.js?v=ec60d9c822_mts1qhp1"></script>
+    <script src="js/modules/saeb/saeb_state.js?v=178da7f734_mts1qhp1"></script>
+    <script src="js/modules/saeb/saeb_distribution_view.js?v=f34fc319b7_mts1qhp1"></script>
+    <script src="js/modules/saeb/saeb_comparativo_turmas.js?v=22f1b3636c_mts1qhp1"></script>
+    <script src="js/modules/saeb/saeb_ficha_individual.js?v=ed681a95a5_mts1qhp1"></script>
+    <script src="js/modules/saeb/saeb_boletim.js?v=f2fbc9e7e7_mts1qhp1"></script>
+    <script src="js/modules/saeb/saeb_intervencoes_comparativo.js?v=2921169748_mts1qhp1"></script>
+    <script src="js/modules/saeb/saeb.js?v=6f18f413e8_mts1qhp1"></script>
+    <script src="js/modules/biblioteca/biblioteca_reader.js?v=743943d3d7_mts1qhp1"></script>
+    <script src="js/modules/biblioteca/biblioteca_upload.js?v=98b16c4eda_mts1qhp1"></script>
+    <script src="js/modules/biblioteca/biblioteca.js?v=d101f88443_mts1qhp1"></script>
+    <script src="js/modules/admin/admin_data.js?v=4146d4760b_mts1qhp1"></script>
+    <script src="js/modules/admin/admin_users.js?v=29d8ce4771_mts1qhp1"></script>
+    <script src="js/modules/admin/admin_tenants.js?v=ae5a501f46_mts1qhp1"></script>
+    <script src="js/modules/doc_tecnica/doc_tecnica.js?v=72dc8618e4_mts1qhp1"></script>
+    <script src="js/modules/onboarding/onboarding_tour.js?v=e8a0416e78_mts1qhp1"></script>
+    <script src="js/modules/onboarding/tab_context_tours.js?v=a697f7596f_mts1qhp1"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=826c28719e_mtqymqeo"></script>
+    <script src="app.js?v=826c28719e_mts1qhp1"></script>
 </body>
 </html>

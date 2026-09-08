@@ -193,34 +193,36 @@
         modal.id = 'onboarding-welcome-modal';
         modal.className = 'onboarding-welcome-modal-wrapper';
         modal.innerHTML = `
-            <div class="onboarding-welcome-card" style="background: var(--bg-secondary, #ffffff); color: var(--text-primary, #0f172a); border: 1px solid var(--border-color, #e2e8f0); border-radius: 16px; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.3); max-width: 440px; width: 90%; padding: 26px 28px; position: relative; animation: tourFadeIn 0.3s ease-out;">
-                <button type="button" onclick="window.closeWelcomeOnboardingCard(true)" style="position: absolute; top: 16px; right: 16px; background: transparent; border: none; font-size: 1.25rem; line-height: 1; color: var(--text-muted, #94a3b8); cursor: pointer; padding: 4px;" title="Pular Tour">
-                    ✕
+            <div class="onboarding-welcome-card" style="background: var(--color-surface-card); color: var(--color-text-primary); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); box-shadow: var(--shadow-modal); max-width: 440px; width: 90%; padding: 26px 28px; position: relative; animation: tourFadeIn 0.3s ease-out;">
+                <button type="button" onclick="window.closeWelcomeOnboardingCard(true)" style="position: absolute; top: 16px; right: 16px; background: transparent; border: none; font-size: 1.25rem; line-height: 1; color: var(--color-text-muted); cursor: pointer; padding: 4px;" title="Pular Tour">
+                    <i data-lucide="x" style="width:16px; height:16px;"></i>
                 </button>
                 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
-                    <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #1A2D42 0%, #4A7FA7 100%); display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 1.3rem;">
-                        ✨
+                    <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: var(--color-brand-primary); display: flex; align-items: center; justify-content: center; color: #ffffff;">
+                        <i data-lucide="sparkles" style="width: 22px; height: 22px;"></i>
                     </div>
                     <div>
-                        <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary, #0f172a);">Bem-vindo ao IDEB na Prática!</h3>
-                        <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-muted, #64748b);">Plataforma de Gestão Educacional e Metas</p>
+                        <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--color-text-primary);">Bem-vindo ao IDEB na Prática!</h3>
+                        <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--color-text-muted);">Plataforma de Gestão Educacional e Metas</p>
                     </div>
                 </div>
-                <p style="font-size: 0.86rem; color: var(--text-secondary, #334155); margin: 0 0 20px 0; line-height: 1.5;">
+                <p style="font-size: 0.86rem; color: var(--color-text-secondary); margin: 0 0 20px 0; line-height: 1.5;">
                     Gostaria de fazer um tour rápido de 12 etapas para conhecer as principais ferramentas e recursos do sistema?
                 </p>
                 <div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px;">
-                    <button type="button" onclick="window.closeWelcomeOnboardingCard(true)" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.82rem; font-weight: 600; border-radius: 8px; cursor: pointer; border: 1px solid var(--border-color, #cbd5e1); background: transparent; color: var(--text-secondary, #475569);">
+                    <button type="button" onclick="window.closeWelcomeOnboardingCard(true)" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.82rem; font-weight: 600; border-radius: var(--radius-btn); cursor: pointer; border: 1px solid var(--color-border-subtle); background: transparent; color: var(--color-text-secondary);">
                         Pular Tour
                     </button>
-                    <button type="button" onclick="window.startOnboardingFromWelcome()" class="btn btn-primary" style="padding: 8px 18px; font-size: 0.82rem; font-weight: 700; border-radius: 8px; cursor: pointer; background: #1A2D42; color: #ffffff; border: none; box-shadow: 0 2px 6px rgba(26,45,66,0.25);">
-                        Iniciar Tour ➔
+                    <button type="button" onclick="window.startOnboardingFromWelcome()" class="btn btn-primary" style="padding: 8px 18px; font-size: 0.82rem; font-weight: 700; border-radius: var(--radius-btn); cursor: pointer; background: var(--color-brand-primary); color: #ffffff; border: none; display: inline-flex; align-items: center; gap: 6px;">
+                        <span>Iniciar Tour</span>
+                        <i data-lucide="arrow-right" style="width:14px; height:14px;"></i>
                     </button>
                 </div>
             </div>
         `;
 
         document.body.appendChild(modal);
+        if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
     }
 
     function closeWelcomeOnboardingCard(markCompleted) {
@@ -297,41 +299,44 @@
                 dom.card.classList.remove('hidden');
                 dom.card.innerHTML = `
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <span style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: var(--color-brand-primary, #4A7FA7); letter-spacing: 0.5px;">
+                        <span style="font-size: var(--text-xs); font-weight: 800; text-transform: uppercase; color: var(--color-brand-primary); letter-spacing: 0.5px;">
                             Passo ${stepIndex + 1} de ${total}
                         </span>
-                        <button type="button" onclick="window.closeOnboardingTour(true)" style="background: transparent; border: none; font-size: 1rem; color: var(--text-muted, #94a3b8); cursor: pointer; padding: 2px;" title="Fechar Tour">
-                            ✕
+                        <button type="button" onclick="window.closeOnboardingTour(true)" style="background: transparent; border: none; font-size: 1rem; color: var(--text-muted); cursor: pointer; padding: 2px;" title="Fechar Tour">
+                            <i data-lucide="x" style="width:14px; height:14px;"></i>
                         </button>
                     </div>
 
                     <!-- Barra fina de progresso -->
-                    <div style="width: 100%; height: 3px; background: var(--border-color, #e2e8f0); border-radius: 2px; margin-bottom: 12px; overflow: hidden;">
-                        <div style="width: ${progressPct}%; height: 100%; background: #4A7FA7; transition: width 0.3s ease;"></div>
+                    <div style="width: 100%; height: 3px; background: var(--color-border-subtle); border-radius: 2px; margin-bottom: 12px; overflow: hidden;">
+                        <div style="width: ${progressPct}%; height: 100%; background: var(--color-brand-primary); transition: width 0.3s ease;"></div>
                     </div>
 
-                    <h4 style="margin: 0 0 6px 0; font-size: 0.98rem; font-weight: 800; color: var(--text-primary, #0f172a);">
+                    <h4 style="margin: 0 0 6px 0; font-size: 0.98rem; font-weight: 800; color: var(--color-text-primary);">
                         ${step.title}
                     </h4>
-                    <p style="margin: 0 0 16px 0; font-size: 0.82rem; color: var(--text-secondary, #475569); line-height: 1.45;">
+                    <p style="margin: 0 0 16px 0; font-size: 0.82rem; color: var(--color-text-secondary); line-height: 1.45;">
                         ${step.text}
                     </p>
 
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             ${!isFirst ? `
-                                <button type="button" onclick="window.prevOnboardingStep()" class="btn btn-outline" style="padding: 5px 12px; font-size: 0.76rem; font-weight: 600; border-radius: 6px; cursor: pointer; border: 1px solid var(--border-color, #cbd5e1); background: transparent; color: var(--text-secondary, #475569);">
-                                    ◀ Voltar
+                                <button type="button" onclick="window.prevOnboardingStep()" class="btn btn-outline" style="padding: 5px 12px; font-size: 0.76rem; font-weight: 600; border-radius: var(--radius-xs); cursor: pointer; border: 1px solid var(--color-border-subtle); background: transparent; color: var(--color-text-secondary); display: inline-flex; align-items: center; gap: 4px;">
+                                    <i data-lucide="chevron-left" style="width:12px; height:12px;"></i>
+                                    <span>Voltar</span>
                                 </button>
                             ` : ''}
                         </div>
                         <div style="display: flex; gap: 8px;">
-                            <button type="button" onclick="window.nextOnboardingStep()" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.78rem; font-weight: 700; border-radius: 6px; cursor: pointer; background: #1A2D42; color: #ffffff; border: none;">
-                                ${isLast ? 'Concluir ✓' : 'Próximo ➔'}
+                            <button type="button" onclick="window.nextOnboardingStep()" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.78rem; font-weight: 700; border-radius: var(--radius-xs); cursor: pointer; background: var(--color-brand-primary); color: #ffffff; border: none; display: inline-flex; align-items: center; gap: 4px;">
+                                <span>${isLast ? 'Concluir' : 'Próximo'}</span>
+                                <i data-lucide="${isLast ? 'check' : 'arrow-right'}" style="width:13px; height:13px;"></i>
                             </button>
                         </div>
                     </div>
                 `;
+                if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
 
                 // Posicionamento inteligente do Tooltip
                 var cardWidth = 340;

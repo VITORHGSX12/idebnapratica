@@ -54,7 +54,7 @@
             if (simulados.length === 0) {
                 histContainer.innerHTML = `
                     <div style="grid-column: 1 / -1; background: var(--bg-tertiary); border: 1px dashed var(--border-color); border-radius: var(--radius-md); padding: 36px 20px; text-align: center;">
-                        <div style="font-size: 2.2rem; margin-bottom: 10px;">📈</div>
+                        <div style="width: 48px; height: 48px; margin: 0 auto 10px auto; color: var(--color-brand-primary);"><i data-lucide="trending-up" style="width: 48px; height: 48px;"></i></div>
                         <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 0 0 6px 0;">Nenhum simulado realizado ainda</h4>
                         <p style="font-size: 0.85rem; color: var(--text-secondary); max-width: 520px; margin: 0 auto 12px auto; line-height: 1.5;">
                             Este(a) estudante ainda não possui respostas de simulados registradas no banco de dados.
@@ -114,11 +114,12 @@
                         <span>LP: <strong>${sim.lp ? sim.lp.acertos + '/' + sim.lp.total : '—'}</strong> | MT: <strong>${sim.mat ? sim.mat.acertos + '/' + sim.mat.total : '—'}</strong></span>
                         <span>Acerto: <strong>${sim.percentualAcerto}%</strong></span>
                     </div>
-                    <div style="width:100%; height:5px; background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden; margin-bottom:8px;">
-                        <div style="width:${Math.min(100, Math.round((sim.escoreSaebGeral / 400) * 100))}%; height:100%; background:#4A7FA7;"></div>
+                    <div style="width:100%; height:5px; background:var(--color-border-subtle); border-radius:3px; overflow:hidden; margin-bottom:8px;">
+                        <div style="width:${Math.min(100, Math.round((sim.escoreSaebGeral / 400) * 100))}%; height:100%; background:var(--color-brand-primary);"></div>
                     </div>
-                    <button type="button" class="btn btn-outline btn-xs" style="width:100%; font-size:0.72rem; padding:4px 8px; border-radius:4px; font-weight:600;">
-                        🔍 Ver Questões & Descritores (${sim.totalQuestoes || 0})
+                    <button type="button" class="btn btn-outline btn-xs" style="width:100%; font-size:0.72rem; padding:4px 8px; border-radius:var(--radius-xs); font-weight:600; display:inline-flex; align-items:center; justify-content:center; gap:4px;">
+                        <i data-lucide="search" style="width:12px; height:12px;"></i>
+                        <span>Ver Questões & Descritores (${sim.totalQuestoes || 0})</span>
                     </button>
                 `;
 
@@ -140,7 +141,7 @@
                     consolidatedList.innerHTML = `<li style="color: var(--text-muted); list-style: none;">Nenhuma habilidade consolidada identificada com taxa >= 75%.</li>`;
                 } else {
                     consolidatedList.innerHTML = consolidadas.map(function(h) {
-                        return `<li style="margin-bottom:6px;"><strong>${h.codigo}</strong> (${h.disciplina}): <span style="color:#10b981; font-weight:700;">${h.percentualConsolidado}%</span> de acerto (${h.totalAcertos}/${h.totalQuestoesAvaliadas} itens)<div style="font-size:0.72rem; color:var(--text-secondary); margin-top:2px;">${h.descricao}</div></li>`;
+                        return `<li style="margin-bottom:6px;"><strong>${h.codigo}</strong> (${h.disciplina}): <span style="color:var(--color-status-success); font-weight:700;">${h.percentualConsolidado}%</span> de acerto (${h.totalAcertos}/${h.totalQuestoesAvaliadas} itens)<div style="font-size:0.72rem; color:var(--text-secondary); margin-top:2px;">${h.descricao}</div></li>`;
                     }).join('');
                 }
             }
@@ -150,7 +151,7 @@
                     focusList.innerHTML = `<li style="color: var(--text-muted); list-style: none;">Nenhum descritor em defasagem severa (< 60%) identificado.</li>`;
                 } else {
                     focusList.innerHTML = emDefasagem.map(function(h) {
-                        return `<li style="margin-bottom:6px;"><strong>${h.codigo}</strong> (${h.disciplina}): <span style="color:#ef4444; font-weight:700;">${h.percentualConsolidado}%</span> (${h.totalAcertos}/${h.totalQuestoesAvaliadas} itens)<div style="font-size:0.72rem; color:var(--text-secondary); margin-top:2px;">${h.descricao}</div></li>`;
+                        return `<li style="margin-bottom:6px;"><strong>${h.codigo}</strong> (${h.disciplina}): <span style="color:var(--color-status-critical); font-weight:700;">${h.percentualConsolidado}%</span> (${h.totalAcertos}/${h.totalQuestoesAvaliadas} itens)<div style="font-size:0.72rem; color:var(--text-secondary); margin-top:2px;">${h.descricao}</div></li>`;
                     }).join('');
                 }
             }
@@ -161,9 +162,9 @@
                     recContainer.style.display = 'block';
                     recList.innerHTML = emDefasagem.map(function(d) {
                         return `
-                            <div style="background:var(--bg-primary); border:1px solid rgba(245,158,11,0.25); border-radius:6px; padding:8px 12px; font-size:0.78rem;">
+                            <div style="background:var(--bg-primary); border:1px solid var(--color-status-warning-border); border-radius:var(--radius-xs); padding:8px 12px; font-size:0.78rem;">
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                                    <strong style="color:#f59e0b;">Habilidade ${d.codigo} — ${d.topico || d.disciplina}</strong>
+                                    <strong style="color:var(--color-status-warning);">Habilidade ${d.codigo} — ${d.topico || d.disciplina}</strong>
                                     <span style="font-size:0.7rem; color:var(--text-muted); font-family:var(--font-mono);">${d.totalAcertos}/${d.totalQuestoesAvaliadas} acertos</span>
                                 </div>
                                 <p style="margin:0; color:var(--text-secondary); line-height:1.4;">${d.recomendacaoPedagogica || 'Reforçar conteúdos fundamentais.'}</p>
@@ -179,7 +180,7 @@
             console.warn('[Progression Load Fallback]', err);
             histContainer.innerHTML = `
                 <div style="grid-column: 1 / -1; background: var(--bg-tertiary); border: 1px dashed var(--border-color); border-radius: var(--radius-md); padding: 36px 20px; text-align: center;">
-                    <div style="font-size: 2.2rem; margin-bottom: 10px;">📈</div>
+                    <div style="width: 48px; height: 48px; margin: 0 auto 10px auto; color: var(--color-brand-primary);"><i data-lucide="trending-up" style="width: 48px; height: 48px;"></i></div>
                     <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 0 0 6px 0;">Nenhum simulado realizado ainda</h4>
                     <p style="font-size: 0.85rem; color: var(--text-secondary); max-width: 520px; margin: 0 auto;">Este(a) estudante ainda não possui avaliações cadastradas.</p>
                 </div>
@@ -188,6 +189,7 @@
             if (focusList) focusList.innerHTML = `<li style="color: var(--text-muted); list-style: none;">Nenhum descritor crítico registrado no momento.</li>`;
             if (recContainer) recContainer.style.display = 'none';
         }
+        if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
     }
 
     /**
@@ -217,11 +219,11 @@
             html += '<div style="margin-bottom:14px;"><strong style="font-size:0.78rem; color:var(--text-primary); display:block; margin-bottom:6px;">Desempenho por Descritor neste Simulado:</strong>';
             html += '<div style="display:flex; flex-wrap:wrap; gap:8px;">';
             descritores.forEach(function(d) {
-                var bg = d.percentualAcertos >= 75 ? 'rgba(16, 185, 129, 0.12)' : (d.percentualAcertos >= 60 ? 'rgba(245, 158, 11, 0.12)' : 'rgba(239, 68, 68, 0.12)');
-                var color = d.percentualAcertos >= 75 ? '#10b981' : (d.percentualAcertos >= 60 ? '#f59e0b' : '#ef4444');
-                var border = d.percentualAcertos >= 75 ? 'rgba(16, 185, 129, 0.3)' : (d.percentualAcertos >= 60 ? 'rgba(245, 158, 11, 0.3)' : 'rgba(239, 68, 68, 0.3)');
+                var bg = d.percentualAcertos >= 75 ? 'var(--color-status-success-bg)' : (d.percentualAcertos >= 60 ? 'var(--color-status-warning-bg)' : 'var(--color-status-critical-bg)');
+                var color = d.percentualAcertos >= 75 ? 'var(--color-status-success-text)' : (d.percentualAcertos >= 60 ? 'var(--color-status-warning-text)' : 'var(--color-status-critical-text)');
+                var border = d.percentualAcertos >= 75 ? 'var(--color-status-success-border)' : (d.percentualAcertos >= 60 ? 'var(--color-status-warning-border)' : 'var(--color-status-critical-border)');
                 html += `
-                    <div style="background:${bg}; border:1px solid ${border}; border-radius:6px; padding:6px 10px; font-size:0.74rem;">
+                    <div style="background:${bg}; border:1px solid ${border}; border-radius:var(--radius-xs); padding:6px 10px; font-size:0.74rem;">
                         <strong style="color:${color};">${d.codigo}</strong>: ${d.acertos}/${d.totalQuestoes} (${d.percentualAcertos}%)
                         <span style="display:block; font-size:0.68rem; color:var(--text-muted); max-width:240px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${d.descricao}</span>
                     </div>
@@ -232,7 +234,7 @@
 
         // 2. Tabela Questão a Questão
         if (questoes.length > 0) {
-            html += '<div style="border:1px solid var(--border-color); border-radius:6px; overflow:hidden;">';
+            html += '<div style="border:1px solid var(--border-color); border-radius:var(--radius-xs); overflow:hidden;">';
             html += '<table style="width:100%; border-collapse:collapse; font-size:0.78rem; text-align:left;">';
             html += '<thead style="background:var(--bg-primary); color:var(--text-secondary); font-size:0.72rem;">';
             html += '<tr><th style="padding:6px 10px;">Item</th><th style="padding:6px 10px;">Disciplina</th><th style="padding:6px 10px;">Descritor / Habilidade</th><th style="padding:6px 10px; text-align:center;">Resp. Aluno</th><th style="padding:6px 10px; text-align:center;">Gabarito</th><th style="padding:6px 10px; text-align:center;">Resultado</th></tr>';
@@ -240,14 +242,14 @@
 
             questoes.forEach(function(q) {
                 var icon = q.acertou 
-                    ? '<span style="color:#10b981; font-weight:800;">✓ Acertou</span>' 
-                    : '<span style="color:#ef4444; font-weight:800;">✗ Errou</span>';
+                    ? '<span class="ds-badge ds-badge-success" style="font-size:0.7rem;"><i data-lucide="check" style="width:11px;height:11px;"></i> Acertou</span>' 
+                    : '<span class="ds-badge ds-badge-critical" style="font-size:0.7rem;"><i data-lucide="x" style="width:11px;height:11px;"></i> Errou</span>';
                 html += `
                     <tr style="border-top:1px solid var(--border-color);">
                         <td style="padding:6px 10px; font-family:var(--font-mono); font-weight:700;">Questão ${q.numero}</td>
                         <td style="padding:6px 10px; color:var(--text-secondary); font-size:0.73rem;">${q.disciplina}</td>
                         <td style="padding:6px 10px;">
-                            <strong style="color:#4A7FA7;">${q.descritorCodigo}</strong>: <span style="color:var(--text-muted); font-size:0.72rem;">${q.descritorDescricao}</span>
+                            <strong style="color:var(--color-brand-primary);">${q.descritorCodigo}</strong>: <span style="color:var(--text-muted); font-size:0.72rem;">${q.descritorDescricao}</span>
                         </td>
                         <td style="padding:6px 10px; text-align:center; font-family:var(--font-mono); font-weight:700;">${q.respostaAluno}</td>
                         <td style="padding:6px 10px; text-align:center; font-family:var(--font-mono); color:var(--text-muted);">${q.gabaritoOficial}</td>
@@ -262,6 +264,7 @@
         }
 
         detailContent.innerHTML = html;
+        if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
         detailSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 

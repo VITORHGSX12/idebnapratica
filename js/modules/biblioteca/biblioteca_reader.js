@@ -346,7 +346,7 @@
         if (simulados.length === 0) {
             listContainer.innerHTML = [
                 '<div style="padding: 32px 16px; text-align: center; color: var(--text-muted); background: var(--bg-primary); border-radius: var(--radius-sm); border: 1px dashed var(--border-color);">',
-                '    <div style="font-size: 2rem; margin-bottom: 6px;">📂</div>',
+                '    <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: var(--color-surface-subtle); color: var(--color-text-muted); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 8px;"><i data-lucide="folder-open" style="width: 22px; height: 22px;"></i></div>',
                 '    <strong style="color: var(--text-primary); display: block; margin-bottom: 4px;">Nenhum simulado disponível no acervo</strong>',
                 '    <span style="font-size: 0.78rem;">Cadastre materiais na categoria "Simulados" para habilitar a combinação e impressão do Caderno A4.</span>',
                 '</div>'
@@ -358,6 +358,7 @@
             }
             modal.style.display = 'flex';
             modal.classList.remove('hidden');
+            if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
             return;
         }
 
@@ -370,7 +371,7 @@
         listContainer.innerHTML = simulados.map(function(sim) {
             return [
                 '<label style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); cursor: pointer; transition: all 0.15s ease;">',
-                '    <input type="checkbox" class="chk-combine-simulado" data-id="' + sim.id + '" onchange="updateCombinedSimuladoSelectionCount();" checked style="width: 18px; height: 18px; margin-top: 2px; accent-color: #6366f1;">',
+                '    <input type="checkbox" class="chk-combine-simulado" data-id="' + sim.id + '" onchange="updateCombinedSimuladoSelectionCount();" checked style="width: 18px; height: 18px; margin-top: 2px; accent-color: var(--color-brand-primary);">',
                 '    <div style="flex: 1;">',
                 '        <div style="display: flex; justify-content: space-between; align-items: center;">',
                 '            <strong style="font-size: 0.88rem; color: var(--text-primary);">' + sim.titulo + '</strong>',

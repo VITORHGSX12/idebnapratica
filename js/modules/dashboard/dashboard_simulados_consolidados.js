@@ -111,17 +111,21 @@
 
         var t = (global.ChartTheme && global.ChartTheme.getTheme) ? global.ChartTheme.getTheme() : {
             isDark: false, textPrimary: '#0A1931', textSecondary: '#1A3D63', grid: 'rgba(10, 25, 49, 0.08)',
-            simuladoAcimaMedia: '#0D9488', simuladoAcimaHover: '#0F766E',
-            simuladoAbaixoMedia: '#4A7FA7', simuladoAbaixoHover: '#1A3D63'
+            success: '#22C55E', primaryMuted: '#7FB3E0', primary: '#2F6FED'
         };
+
+        var colAcima = t.success || t.simuladoAcimaMedia || '#22C55E';
+        var colAcimaHover = t.isDark ? '#86EFAC' : '#16A34A';
+        var colAbaixo = t.primaryMuted || t.simuladoAbaixoMedia || '#7FB3E0';
+        var colAbaixoHover = t.primary || t.simuladoAbaixoHover || '#2F6FED';
 
         // Destacar barras acima/abaixo da média com a paleta dinâmica de alto contraste
         var backgroundColors = values.map(function(val) {
-            return val >= networkAverage ? t.simuladoAcimaMedia : t.simuladoAbaixoMedia;
+            return val >= networkAverage ? colAcima : colAbaixo;
         });
 
         var hoverColors = values.map(function(val) {
-            return val >= networkAverage ? t.simuladoAcimaHover : t.simuladoAbaixoHover;
+            return val >= networkAverage ? colAcimaHover : colAbaixoHover;
         });
 
         if (typeof Chart === 'undefined') {

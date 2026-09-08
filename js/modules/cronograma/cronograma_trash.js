@@ -175,7 +175,9 @@
         if (trash.length === 0) {
             list.innerHTML = `
                 <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
-                    <div style="font-size: 2.2rem; margin-bottom: 8px;">🗑️</div>
+                    <div style="width: 44px; height: 44px; border-radius: var(--radius-pill); background: var(--color-critical-subtle); color: var(--color-critical); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px auto;">
+                        <i data-lucide="trash-2" style="width: 22px; height: 22px;"></i>
+                    </div>
                     <p style="font-size: 0.85rem; margin: 0;">A lixeira está vazia.</p>
                 </div>
             `;

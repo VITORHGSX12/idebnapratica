@@ -168,7 +168,7 @@
 
         var optionsHtml = [
             '<option value="">Selecione um município...</option>',
-            '<option value="Gonçalves Dias" selected>Gonçalves Dias ⭐ (Sua Rede)</option>'
+            '<option value="Gonçalves Dias" selected>Gonçalves Dias (Sua Rede)</option>'
         ].concat(uniqueCities.filter(function(c) {
             return normalizeStr(c) !== 'goncalves dias';
         }).map(function(c) {
@@ -277,9 +277,9 @@
         if (elTarget) elTarget.textContent = targetVal;
         if (elStatusBadge) {
             if (valCurr !== "—" && parseFloat(valCurr) >= parseFloat(targetVal)) {
-                elStatusBadge.innerHTML = '<span class="badge badge-success" style="font-size:0.7rem; padding:3px 8px; font-weight:800; background:rgba(16,185,129,0.15); color:#10b981; border-radius:10px;">Meta Atingida 🟢</span>';
+                elStatusBadge.innerHTML = '<span class="badge badge-success" style="font-size:0.7rem; padding:3px 8px; font-weight:700; background:rgba(16,185,129,0.15); color:#10b981; border-radius:10px;">Meta Atingida</span>';
             } else {
-                elStatusBadge.innerHTML = '<span class="badge badge-warning" style="font-size:0.7rem; padding:3px 8px; font-weight:800; background:rgba(245,158,11,0.15); color:#f59e0b; border-radius:10px;">Em Desenvolvimento 🟡</span>';
+                elStatusBadge.innerHTML = '<span class="badge badge-warning" style="font-size:0.7rem; padding:3px 8px; font-weight:700; background:rgba(245,158,11,0.15); color:#f59e0b; border-radius:10px;">Em Desenvolvimento</span>';
             }
         }
 

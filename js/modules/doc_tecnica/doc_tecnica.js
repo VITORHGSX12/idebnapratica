@@ -402,7 +402,7 @@ CREATE INDEX IF NOT EXISTS idx_matriz_cod ON matriz_habilidades(codigo);`;
         var originalText = btn.innerHTML;
         btn.innerHTML = '<i data-lucide="check"></i> Copiado!';
         if (typeof global.showToast === 'function') {
-            global.showToast('✅ Script SQL DDL copiado para a área de transferência!', 'success');
+            global.showToast('Script SQL DDL copiado para a área de transferência!', 'success');
         }
         setTimeout(function () {
             btn.innerHTML = originalText;

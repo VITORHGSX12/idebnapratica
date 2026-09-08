@@ -484,7 +484,7 @@
                     tbody.innerHTML = `
                         <tr>
                             <td colspan="5" style="text-align:center; padding:32px 16px; background:var(--bg-tertiary);">
-                                <div style="font-size:1.6rem; margin-bottom:6px;">📊</div>
+                                <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: var(--color-surface-card); color: var(--color-brand-primary); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 8px;"><i data-lucide="bar-chart-3" style="width: 22px; height: 22px;"></i></div>
                                 <strong style="font-size:0.9rem; color:var(--text-primary); display:block; margin-bottom:4px;">Nenhum simulado realizado ainda</strong>
                                 <span style="font-size:0.78rem; color:var(--text-secondary);">Este(a) estudante ainda não realizou nenhum simulado avaliado no sistema.</span>
                             </td>
@@ -499,7 +499,7 @@
                 var ultimo = simulados[simulados.length - 1];
                 if (profBadge) {
                     profBadge.textContent = `${ultimo.situacao} (Escore SAEB: ${ultimo.escoreSaebGeral} pts)`;
-                    profBadge.style.color = ultimo.percentualAcerto >= 60 ? '#10b981' : (ultimo.percentualAcerto >= 40 ? '#f59e0b' : '#ef4444');
+                    profBadge.style.color = ultimo.percentualAcerto >= 60 ? 'var(--color-status-success)' : (ultimo.percentualAcerto >= 40 ? 'var(--color-status-warning)' : 'var(--color-status-critical)');
                 }
 
                 if (tbody) {
@@ -508,8 +508,8 @@
                         return [
                             '<tr style="border-bottom: 1px solid var(--border-color);">',
                             '    <td style="padding: 10px 14px; font-weight: 700; color: var(--text-primary);">' + s.titulo + '</td>',
-                            '    <td style="padding: 10px 14px; text-align: center; color: #6366f1; font-weight: 700;">' + (s.lp ? s.lp.percentual + '%' : '—') + '</td>',
-                            '    <td style="padding: 10px 14px; text-align: center; color: #3b82f6; font-weight: 700;">' + (s.mat ? s.mat.percentual + '%' : '—') + '</td>',
+                            '    <td style="padding: 10px 14px; text-align: center; color: var(--color-brand-primary); font-weight: 700;">' + (s.lp ? s.lp.percentual + '%' : '—') + '</td>',
+                            '    <td style="padding: 10px 14px; text-align: center; color: var(--color-brand-primary); font-weight: 700;">' + (s.mat ? s.mat.percentual + '%' : '—') + '</td>',
                             '    <td style="padding: 10px 14px; text-align: center; font-weight: 800; color: var(--text-primary);">' + s.percentualAcerto + '%</td>',
                             '    <td style="padding: 10px 14px; text-align: center;"><span class="badge ' + badgeClass + '" style="font-size: 0.68rem;">' + s.situacao + '</span></td>',
                             '</tr>'
@@ -520,10 +520,10 @@
                 if (descContainer) {
                     var badgesHtml = '';
                     consolidadas.forEach(function(c) {
-                        badgesHtml += '<span style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.74rem; font-weight: 700; padding: 4px 8px; border-radius: 6px;">✓ ' + c.codigo + ' (' + c.percentual + '%)</span> ';
+                        badgesHtml += '<span class="ds-badge ds-badge-success" style="font-size: 0.74rem; margin-right: 6px;"><i data-lucide="check" style="width:12px;height:12px;"></i> ' + c.codigo + ' (' + c.percentual + '%)</span>';
                     });
                     criticas.forEach(function(cr) {
-                        badgesHtml += '<span style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); font-size: 0.74rem; font-weight: 700; padding: 4px 8px; border-radius: 6px;">✕ ' + cr.codigo + ' (' + cr.percentual + '%)</span> ';
+                        badgesHtml += '<span class="ds-badge ds-badge-critical" style="font-size: 0.74rem; margin-right: 6px;"><i data-lucide="x" style="width:12px;height:12px;"></i> ' + cr.codigo + ' (' + cr.percentual + '%)</span>';
                     });
                     descContainer.innerHTML = badgesHtml || '<span style="color:var(--text-muted); font-size:0.78rem;">Descritores intermediários em evolução.</span>';
                 }
@@ -548,8 +548,8 @@
         var modal = document.getElementById('modal-student-proficiency-calc');
         var title = document.getElementById('modal-prof-calc-name');
         var meta = document.getElementById('modal-prof-calc-meta');
-        var body = document.getElementById('modal-prof-calc-body');
-        if (!modal || !body) return;
+        var bodyEl = document.getElementById('modal-prof-calc-body');
+        if (!modal || !bodyEl) return;
 
         var school = escolaNome || global.currentSelectedSchoolDetail || 'UI JOSE CORREA LIMA';
         var className = turmaNome || '5º Ano A';
@@ -562,7 +562,7 @@
             ? global.DIAG_SERVICE.calcularFichaAluno(alunoId, 'sim_2026_02')
             : { nivel_proficiencia: 'Adequado', media_simulado_atual: 80, variacao_geral: 20, respostas_detalhadas: [] };
 
-        var badgeColor = ficha.nivel_proficiencia === 'Avançado' ? '#10b981' : (ficha.nivel_proficiencia === 'Adequado' ? '#6366f1' : (ficha.nivel_proficiencia === 'Básico' ? '#f59e0b' : '#ef4444'));
+        var badgeColor = ficha.nivel_proficiencia === 'Avançado' ? 'var(--color-status-success)' : (ficha.nivel_proficiencia === 'Adequado' ? 'var(--color-brand-primary)' : (ficha.nivel_proficiencia === 'Básico' ? 'var(--color-status-warning)' : 'var(--color-status-critical)'));
 
         bodyEl.innerHTML = [
             '<div style="background: var(--bg-primary); border: 2px solid ' + badgeColor + '; border-radius: var(--radius-md); padding: 16px; display: flex; justify-content: space-between; align-items: center;">',
@@ -573,7 +573,7 @@
             '    </div>',
             '    <div style="text-align: right;">',
             '        <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted);">EVOLUÇÃO VS. DIAGNÓSTICA</span>',
-            '        <div style="font-size: 1.15rem; font-weight: 800; color: #10b981;">↑ +28.0%</div>',
+            '        <div style="font-size: 1.15rem; font-weight: 800; color: var(--color-status-success);">↑ +28.0%</div>',
             '    </div>',
             '</div>',
             '<div>',
@@ -596,27 +596,28 @@
                     '                    <td style="padding: 8px 10px; font-weight: 700; color: var(--text-primary);">' + r.codigo + '</td>',
                     '                    <td style="padding: 8px 10px; color: var(--text-secondary);">' + r.componente + '</td>',
                     '                    <td style="padding: 8px 10px; text-align: center; font-weight: 700;">' + r.alternativa_marcada + '</td>',
-                    '                    <td style="padding: 8px 10px; text-align: center; font-weight: 700; color: #10b981;">' + r.gabarito + '</td>',
-                    '                    <td style="padding: 8px 10px; text-align: center;"><span class="badge ' + (r.correta ? 'badge-success' : 'badge-danger') + '" style="font-size: 0.65rem;">' + (r.correta ? '✓ Acerto' : '✕ Erro') + '</span></td>',
+                    '                    <td style="padding: 8px 10px; text-align: center; font-weight: 700; color: var(--color-status-success);">' + r.gabarito + '</td>',
+                    '                    <td style="padding: 8px 10px; text-align: center;"><span class="badge ' + (r.correta ? 'badge-success' : 'badge-danger') + '" style="font-size: 0.65rem;">' + (r.correta ? 'Acerto' : 'Erro') + '</span></td>',
                     '                </tr>'
                 ].join('\n');
             }).join('\n') : [
-                '                <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 8px 10px; font-weight: 700;">D01</td><td>Língua Portuguesa</td><td style="text-align: center;">B</td><td style="text-align: center; color: #10b981;">B</td><td style="text-align: center;"><span class="badge badge-success" style="font-size:0.65rem;">✓ Acerto</span></td></tr>',
-                '                <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 8px 10px; font-weight: 700;">D03</td><td>Língua Portuguesa</td><td style="text-align: center;">A</td><td style="text-align: center; color: #10b981;">C</td><td style="text-align: center;"><span class="badge badge-danger" style="font-size:0.65rem;">✕ Erro</span></td></tr>',
-                '                <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 8px 10px; font-weight: 700;">D13</td><td>Matemática</td><td style="text-align: center;">D</td><td style="text-align: center; color: #10b981;">D</td><td style="text-align: center;"><span class="badge badge-success" style="font-size:0.65rem;">✓ Acerto</span></td></tr>',
-                '                <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 8px 10px; font-weight: 700;">D19</td><td>Matemática</td><td style="text-align: center;">C</td><td style="text-align: center; color: #10b981;">A</td><td style="text-align: center;"><span class="badge badge-danger" style="font-size:0.65rem;">✕ Erro</span></td></tr>'
+                '                <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 8px 10px; font-weight: 700;">D01</td><td>Língua Portuguesa</td><td style="text-align: center;">B</td><td style="text-align: center; color: var(--color-status-success);">B</td><td style="text-align: center;"><span class="badge badge-success" style="font-size:0.65rem;">Acerto</span></td></tr>',
+                '                <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 8px 10px; font-weight: 700;">D03</td><td>Língua Portuguesa</td><td style="text-align: center;">A</td><td style="text-align: center; color: var(--color-status-success);">C</td><td style="text-align: center;"><span class="badge badge-danger" style="font-size:0.65rem;">Erro</span></td></tr>',
+                '                <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 8px 10px; font-weight: 700;">D13</td><td>Matemática</td><td style="text-align: center;">D</td><td style="text-align: center; color: var(--color-status-success);">D</td><td style="text-align: center;"><span class="badge badge-success" style="font-size:0.65rem;">Acerto</span></td></tr>',
+                '                <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 8px 10px; font-weight: 700;">D19</td><td>Matemática</td><td style="text-align: center;">C</td><td style="text-align: center; color: var(--color-status-success);">A</td><td style="text-align: center;"><span class="badge badge-danger" style="font-size:0.65rem;">Erro</span></td></tr>'
             ].join('\n'),
             '            </tbody>',
             '        </table>',
             '    </div>',
             '</div>',
-            '<div style="padding: 12px 14px; background: rgba(99,102,241,0.06); border: 1px solid rgba(99,102,241,0.2); border-radius: var(--radius-sm); font-size: 0.78rem;">',
-            '    <strong style="color: #6366f1; display: block; margin-bottom: 2px;">💡 Recomendação Pedagógica de Intervenção:</strong>',
+            '<div style="padding: 12px 14px; background: var(--color-status-advanced-bg); border: 1px solid var(--color-status-advanced-border); border-radius: var(--radius-sm); font-size: 0.78rem;">',
+            '    <strong style="color: var(--color-brand-primary); display: flex; align-items: center; gap: 6px; margin-bottom: 2px;"><i data-lucide="lightbulb" style="width:14px; height:14px;"></i> Recomendação Pedagógica de Intervenção:</strong>',
             '    <p style="margin: 0; color: var(--text-secondary); line-height: 1.4;">',
             '        O estudante apresenta domínio consolidado em procedimentos de leitura direta (D01) e cálculo posicional (D13). Recomenda-se focar nas rotinas semanais nos descritores <strong>D03 (Inferência de Vocabulário)</strong> e <strong>D19 (Resolução de Problemas Matemáticos)</strong>.',
             '    </p>',
             '</div>'
         ].join('\n');
+        if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
 
         modal.style.display = 'flex';
         modal.classList.remove('hidden');

@@ -406,7 +406,7 @@
         } 
         // 3. MASTER ADMIN
         else if (userRole === 'Master Admin') {
-            if (activeNetworkLabel) activeNetworkLabel.textContent = '⚙️ Administração TI / DPO';
+            if (activeNetworkLabel) activeNetworkLabel.textContent = 'Administração TI / DPO';
             if (userProfileName) userProfileName.textContent = 'Administrador TI';
             if (userProfileRole) userProfileRole.textContent = 'DPO & Infraestrutura';
             if (userProfileAvatar) {
@@ -417,7 +417,7 @@
         } 
         // 4. SEMED (Gestor da Rede)
         else {
-            if (activeNetworkLabel) activeNetworkLabel.textContent = '🏛️ SEMED Gonçalves Dias - MA';
+            if (activeNetworkLabel) activeNetworkLabel.textContent = 'SEMED Gonçalves Dias - MA';
             if (userProfileName) userProfileName.textContent = 'Secretaria de Educação';
             if (userProfileRole) userProfileRole.textContent = 'Gestão Executiva SEMED';
             if (userProfileAvatar) {

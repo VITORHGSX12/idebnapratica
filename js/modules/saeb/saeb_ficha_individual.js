@@ -62,7 +62,7 @@
 
         reportContent.innerHTML = `
             <div style="text-align: center; padding: 24px; color: var(--text-muted); font-size: 0.82rem;">
-                👉 Selecione um estudante no seletor acima para carregar as habilidades dominadas e o plano individual.
+                Selecione um estudante no seletor acima para carregar as habilidades dominadas e o plano individual.
             </div>
         `;
     }
@@ -137,7 +137,7 @@
                 <!-- Gaps de Aprendizagem & Habilidades Dominadas -->
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-bottom: 14px;">
                     <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 12px;">
-                        <strong style="font-size: 0.8rem; color: #10b981; display: block; margin-bottom: 6px;">✓ Habilidades Consolidadas (${acertosLista.length})</strong>
+                        <strong style="font-size: 0.8rem; color: #10b981; display: flex; align-items: center; gap: 4px; margin-bottom: 6px;"><i data-lucide="check-circle" style="width:13px;height:13px;"></i> Habilidades Consolidadas (${acertosLista.length})</strong>
                         <div style="display: flex; flex-wrap: wrap; gap: 4px; max-height: 140px; overflow-y: auto;">
                             ${acertosLista.length > 0 ? acertosLista.map(function (a) {
                                 return `<span style="background: #dcfce7; color: #166534; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: 700;" title="Q${a.questao}: ${a.descTexto}">Q${a.questao} (${a.descCodigo})</span>`;
@@ -146,7 +146,7 @@
                     </div>
 
                     <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 12px;">
-                        <strong style="font-size: 0.8rem; color: #ef4444; display: block; margin-bottom: 6px;">⚠️ Lacunas Prioritárias (${errosLista.length})</strong>
+                        <strong style="font-size: 0.8rem; color: #ef4444; display: flex; align-items: center; gap: 4px; margin-bottom: 6px;"><i data-lucide="alert-triangle" style="width:13px;height:13px;"></i> Lacunas Prioritárias (${errosLista.length})</strong>
                         <div style="display: flex; flex-wrap: wrap; gap: 4px; max-height: 140px; overflow-y: auto;">
                             ${errosLista.length > 0 ? errosLista.map(function (e) {
                                 return `<span style="background: #fee2e2; color: #991b1b; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: 700;" title="Q${e.questao}: ${e.descTexto} (Marcou ${e.resposta}, Correto ${e.gabarito})">Q${e.questao} (${e.descCodigo})</span>`;

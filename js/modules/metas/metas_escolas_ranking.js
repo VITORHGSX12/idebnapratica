@@ -77,7 +77,7 @@
 
         var optionsHtml = [
             '<option value="all">Todos os Municípios do Maranhão</option>',
-            '<option value="Gonçalves Dias" selected>Gonçalves Dias ⭐ (Sua Rede)</option>'
+            '<option value="Gonçalves Dias" selected>Gonçalves Dias (Sua Rede)</option>'
         ].concat(sortedCities.filter(function(c) {
             return normalizeStr(c) !== 'goncalves dias';
         }).map(function(c) { return '<option value="' + c + '">' + c + '</option>'; })).join('');
@@ -230,7 +230,7 @@
                 '<tr style="border-bottom: 1px solid var(--color-border-subtle); height: 54px; ' + (isGD ? 'background: rgba(16, 185, 129, 0.05);' : '') + '">',
                 '    <td style="padding: 10px 14px; font-weight: 800; font-family: var(--font-display); font-variant-numeric: tabular-nums; color: #6366f1;">' + globalRankText + '</td>',
                 '    <td style="padding: 10px 14px; font-weight: 800; font-family: var(--font-display); font-variant-numeric: tabular-nums; color: #f59e0b;">' + localRankText + '</td>',
-                '    <td style="padding: 10px 14px; font-weight: 700; color: var(--color-brand-primary); font-size: 0.88rem;">' + sch.name + ' ' + (isGD ? '⭐' : '') + '</td>',
+                '    <td style="padding: 10px 14px; font-weight: 700; color: var(--color-brand-primary); font-size: 0.88rem;">' + sch.name + (isGD ? ' <span class="badge badge-success" style="font-size:0.62rem; padding:1px 5px; margin-left:4px;">Sua Rede</span>' : '') + '</td>',
                 '    <td style="padding: 10px 14px; font-size: 0.8rem; color: var(--color-text-secondary);">' + sch.city + ' • <span style="color:var(--color-text-secondary);">' + sch.ure + '</span></td>',
                 '    <td style="padding: 10px 14px;"><span class="badge ' + (sch.network === 'Municipal' ? 'badge-neutral' : 'badge-info') + '" style="font-size:0.68rem;">' + sch.network + '</span></td>',
                 '    <td style="padding: 10px 14px; text-align: center; font-size: 0.85rem; font-family: var(--font-display); font-variant-numeric: tabular-nums;">' + displayPrev + '</td>',
@@ -239,7 +239,7 @@
                 '        <div style="font-size: 0.7rem; margin-top: 1px;">' + diffMarkup + '</div>',
                 '    </td>',
                 '    <td style="padding: 10px 14px; text-align: center;">',
-                '        <button onclick="openSchoolIdebDetailModalById(\'' + sch.id + '\')" class="btn btn-outline btn-sm" style="font-size: 0.75rem; padding: 4px 8px; font-weight: 700; color: #6366f1;" title="Ver Detalhes e Comparativo">📊 Ver Detalhes</button>',
+                '        <button onclick="openSchoolIdebDetailModalById(\'' + sch.id + '\')" class="btn btn-outline btn-sm" style="font-size: 0.75rem; padding: 4px 8px; font-weight: 700; color: #6366f1; display:inline-flex; align-items:center; gap:4px;" title="Ver Detalhes e Comparativo"><i data-lucide="bar-chart-3" style="width:12px;height:12px;"></i> Ver Detalhes</button>',
                 '    </td>',
                 '</tr>'
             ].join('\n');
@@ -278,12 +278,12 @@
             '    <div style="font-size:0.68rem; color:var(--color-text-secondary); margin-top:2px;">Média simples das escolas</div>',
             '</div>',
             '<div style="background:rgba(16, 185, 129, 0.08); padding:10px 12px; border-radius:var(--radius-sm); border:1px solid #10b981; text-align:center;">',
-            '    <div style="font-size:0.7rem; font-weight:700; color:#10b981;">🥇 Melhor Escola (' + (year || 2025) + ')</div>',
+            '    <div style="font-size:0.7rem; font-weight:700; color:#10b981;">Melhor Escola (' + (year || 2025) + ')</div>',
             '    <div style="font-size:0.82rem; font-weight:800; color:var(--color-brand-primary); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="' + (best ? best.name : '') + '">' + (best ? best.name : '—') + '</div>',
             '    <div style="font-size:0.7rem; font-weight:800; color:#10b981;">' + (best && best.scoreCurr !== null ? (best.scoreCurr.toFixed(1) + ' IDEB') : '—') + '</div>',
             '</div>',
             '<div style="background:rgba(239, 68, 68, 0.08); padding:10px 12px; border-radius:var(--radius-sm); border:1px solid #ef4444; text-align:center;">',
-            '    <div style="font-size:0.7rem; font-weight:700; color:#ef4444;">⚠️ Escola Prioritária (' + (year || 2025) + ')</div>',
+            '    <div style="font-size:0.7rem; font-weight:700; color:#ef4444;">Escola Prioritária (' + (year || 2025) + ')</div>',
             '    <div style="font-size:0.82rem; font-weight:800; color:var(--color-brand-primary); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="' + (worst ? worst.name : '') + '">' + (worst ? worst.name : '—') + '</div>',
             '    <div style="font-size:0.7rem; font-weight:800; color:#ef4444;">' + (worst && worst.scoreCurr !== null ? (worst.scoreCurr.toFixed(1) + ' IDEB') : '—') + '</div>',
             '</div>'

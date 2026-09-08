@@ -40,7 +40,7 @@
         if (statsEl) {
             statsEl.innerHTML = `
                 <span>${progress.trabalhadas} de ${progress.total} aulas trabalhadas (${progress.pct}%)</span>
-                ${progress.atrasadas > 0 ? `<span style="color: #ef4444; margin-left: 10px;">• ⚠️ ${progress.atrasadas} em atraso</span>` : ''}
+                ${progress.atrasadas > 0 ? `<span style="color: #ef4444; margin-left: 10px; display:inline-flex; align-items:center; gap:3px;">• <i data-lucide="alert-circle" style="width:12px;height:12px;"></i> ${progress.atrasadas} em atraso</span>` : ''}
             `;
         }
 
@@ -59,13 +59,16 @@
             emptyContainer.style.border = '1px dashed var(--border-color)';
             emptyContainer.style.margin = '10px 0';
             emptyContainer.innerHTML = `
-                <div style="font-size: 2.2rem; margin-bottom: 8px;">🗓️</div>
+                <div style="width: 48px; height: 48px; border-radius: var(--radius-pill); background: var(--color-primary-subtle); color: var(--color-brand-primary); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto;">
+                    <i data-lucide="calendar" style="width: 24px; height: 24px;"></i>
+                </div>
                 <h4 style="margin: 0 0 6px 0; color: var(--text-primary); font-weight: 700;">Nenhum planejamento cadastrado neste período</h4>
                 <p style="font-size: 0.82rem; color: var(--text-muted); margin: 0 0 16px 0; max-width: 450px; margin-left: auto; margin-right: auto;">
                     Comece a estruturar a rotina pedagógica desta turma selecionando habilidades BNCC e descritores SAEB.
                 </p>
                 <button type="button" class="btn btn-primary btn-sm" onclick="if(window.openNewSchedulePlanModal) window.openNewSchedulePlanModal();" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-weight: 700;">
-                    <span>+ Novo Planejamento</span>
+                    <i data-lucide="plus" style="width: 14px; height: 14px;"></i>
+                    <span>Novo Planejamento</span>
                 </button>
             `;
             grid.appendChild(emptyContainer);
@@ -132,7 +135,7 @@
                 expandBtn.style.borderRadius = '4px';
                 expandBtn.style.padding = '1px 5px';
                 expandBtn.style.cursor = 'pointer';
-                expandBtn.textContent = `${dayLessons.length} aulas 👁️`;
+                expandBtn.textContent = `${dayLessons.length} aulas`;
                 expandBtn.onclick = (e) => { e.stopPropagation(); openDayExpandedDrawer(dateIso); };
                 headerDiv.appendChild(expandBtn);
             }
@@ -160,13 +163,17 @@
                 tag.style.alignItems = 'center';
                 tag.onclick = () => openDayExpandedDrawer(dateIso);
 
+                const statusIcon = isAtrasada ? 'alert-triangle' : (computedStatus === 'trabalhada' ? 'check-circle' : 'clock');
+                const dotColor = computedStatus === 'trabalhada' ? '#10b981' : (isAtrasada ? '#ef4444' : '#f59e0b');
+
                 tag.innerHTML = `
-                    <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; flex: 1;">
-                        ${isAtrasada ? '⚠️ ' : (computedStatus === 'trabalhada' ? '✓ ' : '⏳ ')}${les.habilidadeCode || les.disciplina}
+                    <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; flex: 1; display:flex; align-items:center; gap:4px;">
+                        <i data-lucide="${statusIcon}" style="width:11px;height:11px;flex-shrink:0;"></i>
+                        <span>${les.habilidadeCode || les.disciplina}</span>
                     </div>
                     <button type="button" onclick="event.stopPropagation(); toggleLessonWorkStatus('${les.id}');" 
-                            style="background: none; border: none; cursor: pointer; font-size: 10px; padding: 0 2px; line-height: 1;" title="Alternar Trabalhada/Planejada">
-                        ${computedStatus === 'trabalhada' ? '🟢' : '🟡'}
+                            style="background: none; border: none; cursor: pointer; padding: 0 2px; display:inline-flex; align-items:center;" title="Alternar Trabalhada/Planejada">
+                        <span style="width:8px; height:8px; border-radius:50%; background:${dotColor}; display:inline-block;"></span>
                     </button>
                 `;
                 cell.appendChild(tag);
@@ -213,7 +220,9 @@
         if (dayLessons.length === 0) {
             list.innerHTML = `
                 <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
-                    <div style="font-size: 2rem; margin-bottom: 10px;">📅</div>
+                    <div style="width: 44px; height: 44px; border-radius: var(--radius-pill); background: var(--bg-tertiary); color: var(--text-muted); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px auto;">
+                        <i data-lucide="calendar" style="width: 22px; height: 22px;"></i>
+                    </div>
                     <p style="font-size: 0.85rem; margin: 0;">Nenhuma aula agendada para esta turma neste dia.</p>
                 </div>
             `;
@@ -244,7 +253,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span style="font-weight: 800; font-size: 0.88rem; color: #6366f1;">${safeCode}</span>
                         <span class="badge ${computedStatus === 'trabalhada' ? 'badge-success' : (isAtrasada ? 'badge-danger' : 'badge-warning')}">
-                            ${isAtrasada ? '⚠️ Atrasada / Pendente' : (computedStatus === 'trabalhada' ? 'Trabalhada' : 'Planejada')}
+                            ${isAtrasada ? 'Atrasada / Pendente' : (computedStatus === 'trabalhada' ? 'Trabalhada' : 'Planejada')}
                         </span>
                     </div>
                     <div style="font-weight: 700; font-size: 0.85rem; color: var(--text-primary);">${safeDisc} • ${safeTime}</div>

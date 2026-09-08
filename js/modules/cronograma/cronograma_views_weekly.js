@@ -31,7 +31,7 @@
             <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color);">
                 <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);">Semana Vigente: 17 a 21 de Agosto</span>
                 <button type="button" class="btn btn-outline btn-sm" onclick="if(window.handleDuplicateCurrentWeekToNext) window.handleDuplicateCurrentWeekToNext();" style="font-size: 0.74rem; font-weight: 700; color: #6366f1; border-color: #6366f1; display: inline-flex; align-items: center; gap: 4px;">
-                    <span>📋 Replicar grade para próxima semana</span>
+                    <i data-lucide="copy" style="width:13px;height:13px;"></i> <span>Replicar grade para próxima semana</span>
                 </button>
             </div>
             <div style="display: grid; grid-template-columns: 100px repeat(5, 1fr); border-bottom: 1px solid var(--border-color); background: var(--bg-secondary); font-weight: 700; font-size: 0.8rem; text-align: center;">
@@ -142,7 +142,7 @@
         }
 
         if (typeof window.showToast === 'function') {
-            window.showToast(`✅ ${duplicatedCount} aulas replicadas com sucesso para a semana seguinte!`, 'success');
+            window.showToast(`${duplicatedCount} aulas replicadas com sucesso para a semana seguinte!`, 'success');
         }
     }
 

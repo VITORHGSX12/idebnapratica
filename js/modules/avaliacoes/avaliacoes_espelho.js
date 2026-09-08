@@ -39,7 +39,9 @@
                 banner.id = 'espelho-empty-aberto-banner';
                 banner.style.cssText = 'background: var(--bg-primary); border: 1px dashed var(--border-color); border-radius: var(--radius-md); padding: 32px 20px; text-align: center; margin-bottom: 20px;';
                 banner.innerHTML = `
-                    <div style="font-size: 2.2rem; margin-bottom: 8px;">📋</div>
+                    <div style="width: 48px; height: 48px; border-radius: var(--radius-pill); background: var(--color-primary-subtle); color: var(--color-brand-primary); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto;">
+                        <i data-lucide="clipboard-list" style="width: 24px; height: 24px;"></i>
+                    </div>
                     <h4 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0 0 6px 0;">Nenhuma avaliação aberta para lançamento no momento</h4>
                     <p style="font-size: 0.85rem; color: var(--text-secondary); max-width: 520px; margin: 0 auto 16px auto;">Não existem avaliações com status <strong>ABERTO</strong> para digitação de notas. Publique um evento existente ou crie uma nova avaliação para iniciar o lançamento.</p>
                     <button type="button" onclick="switchTab('sec-criar-avaliacoes'); if(typeof switchAvaliacoesSubtab==='function') switchAvaliacoesSubtab('criar-evento-sub'); if(typeof window.showNewEventWizard==='function') window.showNewEventWizard();" class="btn btn-primary btn-sm" style="font-weight: 700;">
@@ -52,7 +54,7 @@
 
         evalSelect.innerHTML = eventos.map(function(ev) {
             var isAberto = (ev.status || '').toUpperCase() === 'ABERTO';
-            var prefix = isAberto ? '🟢 [ABERTO] ' : '🔒 [' + (ev.status || 'RASCUNHO') + '] ';
+            var prefix = isAberto ? '[ABERTO] ' : '[' + (ev.status || 'RASCUNHO') + '] ';
             return `<option value="${ev.id}">${prefix}${ev.titulo}</option>`;
         }).join('');
 
@@ -325,7 +327,7 @@
                     </td>
                     <td style="padding: 10px 14px; text-align: center; width: 140px;">
                         <button type="button" onclick="alternarPresencaAluno('${aluno.id}', '${presenca}')" class="btn btn-outline btn-sm" style="font-size: 11px; padding: 2px 8px; height: 26px; border-radius: var(--radius-pill); font-weight: 700;">
-                            ${presenca === 'PRESENTE' ? '🟢 Presente' : '🔴 Ausente'}
+                            ${presenca === 'PRESENTE' ? '<span style="color:#10b981;font-weight:700;">Presente</span>' : '<span style="color:#ef4444;font-weight:700;">Ausente</span>'}
                         </button>
                     </td>
                     <td style="padding: 8px 10px; text-align: center; white-space: nowrap;">
@@ -338,7 +340,7 @@
                             ${isAusente ? '—' : resultado.acertos + ' / ' + numQuestoes + ' (' + resultado.percentual + '%)'}
                         </div>
                         <div style="font-size: 10px; font-weight: 700; color: ${resultado.corClass}; margin-top: 1px;">
-                            ${resultado.emoji} ${resultado.situacao}
+                            ${resultado.situacao}
                         </div>
                     </td>
                 </tr>
@@ -441,7 +443,7 @@
                 ${resultado.acertos} / ${inputs.length} (${resultado.percentual}%)
             </div>
             <div style="font-size: 10px; font-weight: 700; color: ${resultado.corClass}; margin-top: 1px;">
-                ${resultado.emoji} ${resultado.situacao}
+                ${resultado.situacao}
             </div>
         `;
     }

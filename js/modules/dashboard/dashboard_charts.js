@@ -182,10 +182,21 @@
 
         var t = (global.ChartTheme && global.ChartTheme.getTheme) ? global.ChartTheme.getTheme() : {
             isDark: false, textPrimary: '#0A1931', textSecondary: '#1A3D63', grid: 'rgba(10, 25, 49, 0.09)',
-            iniciais: '#2563EB', iniciaisBg: 'rgba(37, 99, 235, 0.12)',
-            finais: '#0D9488', finaisBg: 'rgba(13, 148, 136, 0.12)',
-            meta: '#D97706', datalabelIniciais: '#1D4ED8', datalabelFinais: '#0F766E', datalabelMeta: '#B45309'
+            primary: '#2F6FED', primaryMuted: '#7FB3E0', warning: '#D97706',
+            primaryBg: 'rgba(47, 111, 237, 0.12)', primaryMutedBg: 'rgba(127, 179, 224, 0.14)', warningBg: 'rgba(217, 119, 6, 0.15)',
+            iniciais: '#2F6FED', finais: '#7FB3E0', meta: '#D97706',
+            datalabelIniciais: '#2F6FED', datalabelFinais: '#1B4B8F', datalabelMeta: '#B45309'
         };
+
+        var colIniciais = t.primary || t.iniciais || '#2F6FED';
+        var colIniciaisBg = t.primaryBg || t.iniciaisBg || 'rgba(47, 111, 237, 0.12)';
+        var colFinais = t.primaryMuted || t.finais || '#7FB3E0';
+        var colFinaisBg = t.primaryMutedBg || t.finaisBg || 'rgba(127, 179, 224, 0.14)';
+        var colMeta = t.warning || t.meta || '#D97706';
+        var markerIniciais = (t.markers && t.markers.real) ? t.markers.real : 'circle';
+        var markerFinais = (t.markers && t.markers.comparison) ? t.markers.comparison : 'rect';
+        var markerMeta = (t.markers && t.markers.target) ? t.markers.target : 'rectRot';
+        var dashMeta = (t.dashArray && t.dashArray.target) ? t.dashArray.target : [5, 4];
 
         var anos = ['2015', '2017', '2019', '2021', '2023', '2025'];
         var iniciaisGd = [4.1, 4.3, 4.7, 4.5, 4.9, 5.0];
@@ -194,9 +205,9 @@
 
         if (typeof Chart === 'undefined') {
             drawCanvasFallbackChart(ctxGd, anos, [
-                { type: 'line', label: 'Anos Iniciais', data: iniciaisGd, borderColor: t.iniciais },
-                { type: 'line', label: 'Anos Finais', data: finaisGd, borderColor: t.finais },
-                { type: 'line', label: 'Meta INEP', data: metaInep, borderColor: t.meta }
+                { type: 'line', label: 'Anos Iniciais', data: iniciaisGd, borderColor: colIniciais },
+                { type: 'line', label: 'Anos Finais', data: finaisGd, borderColor: colFinais },
+                { type: 'line', label: 'Meta INEP', data: metaInep, borderColor: colMeta }
             ], 2, 6);
             return;
         }
@@ -213,19 +224,21 @@
                             type: 'line',
                             label: 'Anos Iniciais (Gonçalves Dias)',
                             data: iniciaisGd,
-                            borderColor: t.iniciais,
-                            backgroundColor: t.iniciaisBg,
+                            borderColor: colIniciais,
+                            backgroundColor: colIniciaisBg,
                             pointBackgroundColor: t.isDark ? '#0A1931' : '#FFFFFF',
-                            pointBorderColor: t.iniciais,
+                            pointBorderColor: colIniciais,
                             pointBorderWidth: 2.5,
                             pointRadius: 4.5,
+                            pointHoverRadius: 7,
+                            pointStyle: markerIniciais,
                             borderWidth: 2.5,
                             tension: 0.35,
                             fill: true,
                             datalabels: {
                                 display: true,
                                 align: 'top',
-                                color: t.datalabelIniciais,
+                                color: t.datalabelIniciais || colIniciais,
                                 font: { weight: '800', size: 10.5 },
                                 formatter: function(v) { return v ? v.toFixed(1) : ''; }
                             }
@@ -234,19 +247,21 @@
                             type: 'line',
                             label: 'Anos Finais (Gonçalves Dias)',
                             data: finaisGd,
-                            borderColor: t.finais,
-                            backgroundColor: t.finaisBg,
+                            borderColor: colFinais,
+                            backgroundColor: colFinaisBg,
                             pointBackgroundColor: t.isDark ? '#0A1931' : '#FFFFFF',
-                            pointBorderColor: t.finais,
+                            pointBorderColor: colFinais,
                             pointBorderWidth: 2.5,
                             pointRadius: 4.5,
+                            pointHoverRadius: 7,
+                            pointStyle: markerFinais,
                             borderWidth: 2.5,
                             tension: 0.35,
                             fill: true,
                             datalabels: {
                                 display: true,
                                 align: 'bottom',
-                                color: t.datalabelFinais,
+                                color: t.datalabelFinais || colFinais,
                                 font: { weight: '800', size: 10.5 },
                                 formatter: function(v) { return v ? v.toFixed(1) : ''; }
                             }
@@ -255,20 +270,22 @@
                             type: 'line',
                             label: 'Meta Projetada INEP (Municipal)',
                             data: metaInep,
-                            borderColor: t.meta,
-                            backgroundColor: t.meta,
+                            borderColor: colMeta,
+                            backgroundColor: colMeta,
                             pointBackgroundColor: t.isDark ? '#0A1931' : '#FFFFFF',
-                            pointBorderColor: t.meta,
+                            pointBorderColor: colMeta,
                             pointBorderWidth: 2,
                             pointRadius: 4,
+                            pointHoverRadius: 6,
+                            pointStyle: markerMeta,
                             borderWidth: 2,
-                            borderDash: [5, 4],
+                            borderDash: dashMeta,
                             tension: 0.35,
                             fill: false,
                             datalabels: {
                                 display: true,
                                 align: 'top',
-                                color: t.datalabelMeta,
+                                color: t.datalabelMeta || colMeta,
                                 font: { weight: '800', size: 10 },
                                 formatter: function(v) { return v ? v.toFixed(1) : ''; }
                             }
@@ -308,9 +325,9 @@
         } catch(err) {
             console.error('[dashChartGoncalvesDias Error]', err);
             drawCanvasFallbackChart(ctxGd, anos, [
-                { type: 'line', label: 'Anos Iniciais', data: iniciaisGd, borderColor: t.iniciais },
-                { type: 'line', label: 'Anos Finais', data: finaisGd, borderColor: t.finais },
-                { type: 'line', label: 'Meta INEP', data: metaInep, borderColor: t.meta }
+                { type: 'line', label: 'Anos Iniciais', data: iniciaisGd, borderColor: colIniciais },
+                { type: 'line', label: 'Anos Finais', data: finaisGd, borderColor: colFinais },
+                { type: 'line', label: 'Meta INEP', data: metaInep, borderColor: colMeta }
             ], 2, 6);
         }
     }
@@ -325,9 +342,16 @@
 
         var t = (global.ChartTheme && global.ChartTheme.getTheme) ? global.ChartTheme.getTheme() : {
             isDark: false, textPrimary: '#0A1931', textSecondary: '#1A3D63', grid: 'rgba(10, 25, 49, 0.09)',
-            iniciais: '#2563EB', finais: '#0D9488', meta: '#D97706',
-            datalabelIniciais: '#1D4ED8', datalabelFinais: '#0F766E'
+            primary: '#2F6FED', primaryMuted: '#7FB3E0', warning: '#D97706',
+            iniciais: '#2F6FED', finais: '#7FB3E0', meta: '#D97706',
+            datalabelIniciais: '#2F6FED', datalabelFinais: '#1B4B8F'
         };
+
+        var colIniciais = t.primary || t.iniciais || '#2F6FED';
+        var colFinais = t.primaryMuted || t.finais || '#7FB3E0';
+        var colMeta = t.warning || t.meta || '#D97706';
+        var markerMeta = (t.markers && t.markers.target) ? t.markers.target : 'rectRot';
+        var dashMeta = (t.dashArray && t.dashArray.target) ? t.dashArray.target : [5, 4];
 
         var anos = ['2007','2009','2011','2013','2015','2017','2019','2021','2023','2025'];
         var iniciaisData = {
@@ -341,13 +365,13 @@
 
         if (typeof Chart === 'undefined') {
             drawCanvasFallbackChart(ctxInc, anos, [
-                { type: 'bar', label: 'Maranhão (Observado)', data: iniciaisData.observado, backgroundColor: t.iniciais },
-                { type: 'line', label: 'Meta Projetada (INEP)', data: iniciaisData.projetado, borderColor: t.meta }
+                { type: 'bar', label: 'Maranhão (Observado)', data: iniciaisData.observado, backgroundColor: colIniciais },
+                { type: 'line', label: 'Meta Projetada (INEP)', data: iniciaisData.projetado, borderColor: colMeta }
             ], 0, 10);
 
             drawCanvasFallbackChart(ctxFin, anos, [
-                { type: 'bar', label: 'Maranhão (Observado)', data: finaisData.observado, backgroundColor: t.finais },
-                { type: 'line', label: 'Meta Projetada (INEP)', data: finaisData.projetado, borderColor: t.meta }
+                { type: 'bar', label: 'Maranhão (Observado)', data: finaisData.observado, backgroundColor: colFinais },
+                { type: 'line', label: 'Meta Projetada (INEP)', data: finaisData.projetado, borderColor: colMeta }
             ], 0, 10);
             return;
         }
@@ -357,15 +381,15 @@
             if (dashFinaisChartInstance) dashFinaisChartInstance.destroy();
 
             // Canvas 1 (Anos Iniciais) Gradient
-            var bgGradInc = t.iniciais;
+            var bgGradInc = colIniciais;
             try {
                 var g = ctxInc.getContext('2d').createLinearGradient(0, 0, 0, 260);
                 if (t.isDark) {
                     g.addColorStop(0, '#7FB3E0');
-                    g.addColorStop(1, '#3B82F6');
+                    g.addColorStop(1, '#2F6FED');
                 } else {
-                    g.addColorStop(0, '#3B82F6');
-                    g.addColorStop(1, '#1D4ED8');
+                    g.addColorStop(0, '#2F6FED');
+                    g.addColorStop(1, '#1B4B8F');
                 }
                 bgGradInc = g;
             } catch(e) {}
@@ -388,7 +412,7 @@
                                 display: true,
                                 anchor: 'end',
                                 align: 'top',
-                                color: t.datalabelIniciais,
+                                color: t.datalabelIniciais || colIniciais,
                                 font: { weight: '800', size: 11 },
                                 formatter: function(v) { return v ? v.toFixed(1) : ''; }
                             }
@@ -397,22 +421,23 @@
                             type: 'line',
                             label: 'Meta Projetada (INEP)',
                             data: iniciaisData.projetado,
-                            borderColor: t.meta,
-                            backgroundColor: t.meta,
+                            borderColor: colMeta,
+                            backgroundColor: colMeta,
                             pointBackgroundColor: t.isDark ? '#0A1931' : '#FFFFFF',
-                            pointBorderColor: t.meta,
+                            pointBorderColor: colMeta,
                             pointBorderWidth: 2.5,
                             pointRadius: 5,
                             pointHoverRadius: 7,
+                            pointStyle: markerMeta,
                             borderWidth: 2.5,
-                            borderDash: [5, 4],
+                            borderDash: dashMeta,
                             tension: 0.3,
                             datalabels: {
                                 display: true,
                                 align: 'center',
                                 anchor: 'center',
                                 color: t.isDark ? '#0A1931' : '#FFFFFF',
-                                backgroundColor: t.meta,
+                                backgroundColor: colMeta,
                                 borderRadius: 6,
                                 font: { weight: '800', size: 10, family: 'var(--font-mono)' },
                                 padding: { top: 3, bottom: 3, left: 6, right: 6 },
@@ -453,15 +478,15 @@
             });
 
             // Canvas 2 (Anos Finais) Gradient
-            var bgGradFin = t.finais;
+            var bgGradFin = colFinais;
             try {
                 var g2 = ctxFin.getContext('2d').createLinearGradient(0, 0, 0, 260);
                 if (t.isDark) {
-                    g2.addColorStop(0, '#5FD3C4');
-                    g2.addColorStop(1, '#0D9488');
+                    g2.addColorStop(0, '#93C5FD');
+                    g2.addColorStop(1, '#7FB3E0');
                 } else {
-                    g2.addColorStop(0, '#0D9488');
-                    g2.addColorStop(1, '#047857');
+                    g2.addColorStop(0, '#7FB3E0');
+                    g2.addColorStop(1, '#4A7FA7');
                 }
                 bgGradFin = g2;
             } catch(e) {}
@@ -484,7 +509,7 @@
                                 display: true,
                                 anchor: 'end',
                                 align: 'top',
-                                color: t.datalabelFinais,
+                                color: t.datalabelFinais || colFinais,
                                 font: { weight: '800', size: 11 },
                                 formatter: function(v) { return v ? v.toFixed(1) : ''; }
                             }
@@ -493,22 +518,23 @@
                             type: 'line',
                             label: 'Meta Projetada (INEP)',
                             data: finaisData.projetado,
-                            borderColor: t.meta,
-                            backgroundColor: t.meta,
+                            borderColor: colMeta,
+                            backgroundColor: colMeta,
                             pointBackgroundColor: t.isDark ? '#0A1931' : '#FFFFFF',
-                            pointBorderColor: t.meta,
+                            pointBorderColor: colMeta,
                             pointBorderWidth: 2.5,
                             pointRadius: 5,
                             pointHoverRadius: 7,
+                            pointStyle: markerMeta,
                             borderWidth: 2.5,
-                            borderDash: [5, 4],
+                            borderDash: dashMeta,
                             tension: 0.3,
                             datalabels: {
                                 display: true,
                                 align: 'center',
                                 anchor: 'center',
                                 color: t.isDark ? '#0A1931' : '#FFFFFF',
-                                backgroundColor: t.meta,
+                                backgroundColor: colMeta,
                                 borderRadius: 6,
                                 font: { weight: '800', size: 10, family: 'var(--font-mono)' },
                                 padding: { top: 3, bottom: 3, left: 6, right: 6 },
@@ -550,13 +576,13 @@
         } catch(err) {
             console.error('[renderDashboardEtapasCharts Error]', err);
             drawCanvasFallbackChart(ctxInc, anos, [
-                { type: 'bar', label: 'Maranhão (Observado)', data: iniciaisData.observado, backgroundColor: t.iniciais },
-                { type: 'line', label: 'Meta Projetada (INEP)', data: iniciaisData.projetado, borderColor: t.meta }
+                { type: 'bar', label: 'Maranhão (Observado)', data: iniciaisData.observado, backgroundColor: colIniciais },
+                { type: 'line', label: 'Meta Projetada (INEP)', data: iniciaisData.projetado, borderColor: colMeta }
             ], 0, 10);
 
             drawCanvasFallbackChart(ctxFin, anos, [
-                { type: 'bar', label: 'Maranhão (Observado)', data: finaisData.observado, backgroundColor: t.finais },
-                { type: 'line', label: 'Meta Projetada (INEP)', data: finaisData.projetado, borderColor: t.meta }
+                { type: 'bar', label: 'Maranhão (Observado)', data: finaisData.observado, backgroundColor: colFinais },
+                { type: 'line', label: 'Meta Projetada (INEP)', data: finaisData.projetado, borderColor: colMeta }
             ], 0, 10);
         }
     }
@@ -570,10 +596,17 @@
 
         var t = (global.ChartTheme && global.ChartTheme.getTheme) ? global.ChartTheme.getTheme() : {
             isDark: false, textPrimary: '#0A1931', textSecondary: '#1A3D63', grid: 'rgba(10, 25, 49, 0.09)',
-            iniciais: '#2563EB', iniciaisBg: 'rgba(37, 99, 235, 0.12)',
-            finais: '#0D9488', finaisBg: 'rgba(13, 148, 136, 0.12)',
-            datalabelIniciais: '#1D4ED8', datalabelFinais: '#0F766E'
+            primary: '#2F6FED', primaryMuted: '#7FB3E0', primaryBg: 'rgba(47, 111, 237, 0.12)', primaryMutedBg: 'rgba(127, 179, 224, 0.14)',
+            iniciais: '#2F6FED', iniciaisBg: 'rgba(47, 111, 237, 0.12)',
+            finais: '#7FB3E0', finaisBg: 'rgba(127, 179, 224, 0.14)'
         };
+
+        var colIniciais = t.primary || t.iniciais || '#2F6FED';
+        var colIniciaisBg = t.primaryBg || t.iniciaisBg || 'rgba(47, 111, 237, 0.12)';
+        var colFinais = t.primaryMuted || t.finais || '#7FB3E0';
+        var colFinaisBg = t.primaryMutedBg || t.finaisBg || 'rgba(127, 179, 224, 0.14)';
+        var markerIniciais = (t.markers && t.markers.real) ? t.markers.real : 'circle';
+        var markerFinais = (t.markers && t.markers.comparison) ? t.markers.comparison : 'rect';
 
         var anos = ['2007','2009','2011','2013','2015','2017','2019','2021','2023','2025'];
         var iniciaisData = [3.4, 3.7, 3.9, 3.9, 4.1, 4.1, 4.6, 4.6, 5.0, 5.5];
@@ -581,97 +614,52 @@
 
         if (typeof Chart === 'undefined') {
             drawCanvasFallbackChart(ctxComp, anos, [
-                { type: 'line', label: 'Anos Iniciais', data: iniciaisData, borderColor: t.iniciais },
-                { type: 'line', label: 'Anos Finais', data: finaisData, borderColor: t.finais }
+                { type: 'line', label: 'Anos Iniciais', data: iniciaisData, borderColor: colIniciais },
+                { type: 'line', label: 'Anos Finais', data: finaisData, borderColor: colFinais }
             ], 2, 6);
             return;
         }
 
         try {
             if (dashComparativoChartInstance) dashComparativoChartInstance.destroy();
-
             dashComparativoChartInstance = new Chart(ctxComp, {
                 type: 'line',
                 data: {
                     labels: anos,
                     datasets: [
                         {
-                            label: 'Anos Iniciais',
-                            data: iniciaisData,
-                            borderColor: t.iniciais,
-                            backgroundColor: t.iniciaisBg,
-                            pointBackgroundColor: t.isDark ? '#0A1931' : '#FFFFFF',
-                            pointBorderColor: t.iniciais,
-                            pointBorderWidth: 2.5,
-                            pointRadius: 4.5,
-                            borderWidth: 2.5,
-                            tension: 0.3,
-                            fill: true,
-                            datalabels: {
-                                display: true,
-                                align: 'top',
-                                color: t.datalabelIniciais,
-                                font: { weight: '800', size: 10 },
-                                formatter: function(v) { return v ? v.toFixed(1) : ''; }
-                            }
+                            label: 'Anos Iniciais', data: iniciaisData, borderColor: colIniciais, backgroundColor: colIniciaisBg,
+                            pointBackgroundColor: t.isDark ? '#0A1931' : '#FFFFFF', pointBorderColor: colIniciais,
+                            pointBorderWidth: 2.5, pointRadius: 4.5, pointHoverRadius: 7, pointStyle: markerIniciais,
+                            borderWidth: 2.5, tension: 0.3, fill: true,
+                            datalabels: { display: true, align: 'top', color: t.datalabelIniciais || colIniciais, font: { weight: '800', size: 10 }, formatter: function(v) { return v ? v.toFixed(1) : ''; } }
                         },
                         {
-                            label: 'Anos Finais',
-                            data: finaisData,
-                            borderColor: t.finais,
-                            backgroundColor: t.finaisBg,
-                            pointBackgroundColor: t.isDark ? '#0A1931' : '#FFFFFF',
-                            pointBorderColor: t.finais,
-                            pointBorderWidth: 2.5,
-                            pointRadius: 4.5,
-                            borderWidth: 2.5,
-                            tension: 0.3,
-                            fill: true,
-                            datalabels: {
-                                display: true,
-                                align: 'bottom',
-                                color: t.datalabelFinais,
-                                font: { weight: '800', size: 10 },
-                                formatter: function(v) { return v ? v.toFixed(1) : ''; }
-                            }
+                            label: 'Anos Finais', data: finaisData, borderColor: colFinais, backgroundColor: colFinaisBg,
+                            pointBackgroundColor: t.isDark ? '#0A1931' : '#FFFFFF', pointBorderColor: colFinais,
+                            pointBorderWidth: 2.5, pointRadius: 4.5, pointHoverRadius: 7, pointStyle: markerFinais,
+                            borderWidth: 2.5, tension: 0.3, fill: true,
+                            datalabels: { display: true, align: 'bottom', color: t.datalabelFinais || colFinais, font: { weight: '800', size: 10 }, formatter: function(v) { return v ? v.toFixed(1) : ''; } }
                         }
                     ]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    responsive: true, maintainAspectRatio: false,
                     layout: { padding: { top: 26, bottom: 8, left: 4, right: 4 } },
                     plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                boxWidth: 10,
-                                boxHeight: 10,
-                                usePointStyle: true,
-                                color: t.textPrimary,
-                                font: { size: 11.5, weight: '600' }
-                            }
-                        }
+                        legend: { position: 'bottom', labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, color: t.textPrimary, font: { size: 11.5, weight: '600' } } }
                     },
                     scales: {
-                        y: {
-                            min: 2,
-                            max: 6,
-                            grid: { color: t.grid },
-                            ticks: { stepSize: 1, font: { size: 11, weight: '600' }, color: t.textSecondary }
-                        },
-                        x: {
-                            grid: { display: false },
-                            ticks: { font: { size: 11, weight: '700' }, color: t.textPrimary }
-                        }
+                        y: { min: 2, max: 6, grid: { color: t.grid }, ticks: { stepSize: 1, font: { size: 11, weight: '600' }, color: t.textSecondary } },
+                        x: { grid: { display: false }, ticks: { font: { size: 11, weight: '700' }, color: t.textPrimary } }
                     }
                 }
             });
         } catch(err) {
             console.error('[dashChartComparativo Error]', err);
             drawCanvasFallbackChart(ctxComp, anos, [
-                { type: 'line', label: 'Anos Iniciais', data: iniciaisData, borderColor: t.iniciais },
-                { type: 'line', label: 'Anos Finais', data: finaisData, borderColor: t.finais }
+                { type: 'line', label: 'Anos Iniciais', data: iniciaisData, borderColor: colIniciais },
+                { type: 'line', label: 'Anos Finais', data: finaisData, borderColor: colFinais }
             ], 2, 6);
         }
     }

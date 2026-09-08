@@ -39,7 +39,11 @@
         if (!global.SCHOOL_ASSESSMENTS_STATE) global.SCHOOL_ASSESSMENTS_STATE = {};
         if (!global.SCHOOL_ASSESSMENTS_STATE[year]) global.SCHOOL_ASSESSMENTS_STATE[year] = {};
         global.SCHOOL_ASSESSMENTS_STATE[year][schName] = true;
-        alert('✅ 1ª Avaliação Diagnóstica de ' + year + ' registrada com sucesso para ' + schName + '!\n\nOs dados de desempenho, desvio e metas de PDE para este ciclo foram liberados.');
+        if (typeof global.showToast === 'function') {
+            global.showToast('1ª Avaliação Diagnóstica de ' + year + ' registrada com sucesso para ' + schName + '!', 'check');
+        } else {
+            alert('1ª Avaliação Diagnóstica de ' + year + ' registrada com sucesso para ' + schName + '!\n\nOs dados de desempenho, desvio e metas de PDE para este ciclo foram liberados.');
+        }
         populateIdebGoalsTable();
     }
 
@@ -84,14 +88,14 @@
             var gap = Number((currentObserved - targetScore).toFixed(1));
 
             var riskLevel = 'Baixo (Meta Atingida)';
-            var riskBadge = '<span class="badge badge-success" style="font-size:0.7rem; font-weight:800;">🟢 Baixo (Meta OK)</span>';
+            var riskBadge = '<span class="badge badge-success" style="font-size:0.7rem; font-weight:700;">Baixo (Meta OK)</span>';
 
             if (gap < -0.3 || currentObserved < 4.6) {
                 riskLevel = 'Alto (Risco Crítico)';
-                riskBadge = '<span class="badge badge-danger" style="font-size:0.7rem; font-weight:800;">🔴 Alto (Risco Crítico)</span>';
+                riskBadge = '<span class="badge badge-danger" style="font-size:0.7rem; font-weight:700;">Alto (Risco Crítico)</span>';
             } else if (gap < 0) {
                 riskLevel = 'Médio (Atenção)';
-                riskBadge = '<span class="badge badge-warning" style="font-size:0.7rem; font-weight:800;">🟡 Médio (Atenção)</span>';
+                riskBadge = '<span class="badge badge-warning" style="font-size:0.7rem; font-weight:700;">Médio (Atenção)</span>';
             }
 
             if (filterStatus === 'risk' && riskLevel.includes('Baixo')) return null;
@@ -129,7 +133,7 @@
                 '    <td style="padding: 12px 16px; text-align: center;">' + riskBadge + '</td>',
                 '    <td style="padding: 12px 16px; text-align: center;">' + pdeCell + '</td>',
                 '    <td style="padding: 12px 16px; text-align: center;">',
-                '        <button onclick="openPdeManagerForSchool(\'' + sch.id + '\', \'' + sch.nome.replace(/'/g, "\\'") + '\', ' + targetScore + ')" class="btn btn-outline btn-sm" style="font-size: 0.74rem; font-weight: 700; color: #6366f1; border-color: #6366f1; padding: 4px 8px;" title="Gerenciar Plano de Ação">' + (pdePlan ? '✏️ Editar PDE' : '📋 Criar PDE') + '</button>',
+                '        <button onclick="openPdeManagerForSchool(\'' + sch.id + '\', \'' + sch.nome.replace(/'/g, "\\'") + '\', ' + targetScore + ')" class="btn btn-outline btn-sm" style="font-size: 0.74rem; font-weight: 700; color: #6366f1; border-color: #6366f1; padding: 4px 8px; display:inline-flex; align-items:center; gap:4px;" title="Gerenciar Plano de Ação">' + (pdePlan ? '<i data-lucide="edit-3" style="width:12px;height:12px;"></i> Editar PDE' : '<i data-lucide="plus-circle" style="width:12px;height:12px;"></i> Criar PDE') + '</button>',
                 '    </td>',
                 '</tr>'
             ].join('\n');
@@ -232,8 +236,9 @@
                 if (diagStatus) diagStatus.textContent = 'Sem simulados lançados';
                 if (diagContent) {
                     diagContent.innerHTML = `
-                        <div style="background:rgba(255,255,255,0.03); border:1px dashed var(--border-color); border-radius:6px; padding:10px 12px; font-style:italic; color:var(--text-muted);">
-                            📈 <strong>Aguardando dados de simulados:</strong> Nenhum simulado com respostas foi lançado para esta escola até o momento. O ranking de descritores críticos será calculado automaticamente após os lançamentos de notas.
+                        <div style="background:rgba(255,255,255,0.03); border:1px dashed var(--border-color); border-radius:6px; padding:10px 12px; font-style:italic; color:var(--text-muted); display:flex; align-items:center; gap:8px;">
+                            <i data-lucide="info" style="width:16px;height:16px;flex-shrink:0;"></i>
+                            <span><strong>Aguardando dados de simulados:</strong> Nenhum simulado com respostas foi lançado para esta escola até o momento. O ranking de descritores críticos será calculado automaticamente após os lançamentos de notas.</span>
                         </div>
                     `;
                 }
@@ -307,7 +312,7 @@
             }
             if (pdfPanel) pdfPanel.style.display = 'none';
             if (actionsText) {
-                actionsText.value = '📋 PROPOSTA DE PLANO DE DESENVOLVIMENTO ESCOLAR (PDE):\n\n• Eixo 1: Recomposição nos descritores prioritários diagnosticados nos simulados municipais.\n• Eixo 2: Ciclo de simulados com devolutiva individualizada e oficinas de fluência e raciocínio.\n• Eixo 3: Formação continuada e alinhamento pedagógico com as matrizes SAEB / BNCC.\n• Eixo 4: Monitoramento quinzenal de frequência e plantões pedagógicos para os estudantes em defasagem.';
+                actionsText.value = 'PROPOSTA DE PLANO DE DESENVOLVIMENTO ESCOLAR (PDE):\n\n• Eixo 1: Recomposição nos descritores prioritários diagnosticados nos simulados municipais.\n• Eixo 2: Ciclo de simulados com devolutiva individualizada e oficinas de fluência e raciocínio.\n• Eixo 3: Formação continuada e alinhamento pedagógico com as matrizes SAEB / BNCC.\n• Eixo 4: Monitoramento quinzenal de frequência e plantões pedagógicos para os estudantes em defasagem.';
             }
         } else if (mode === 'pdf') {
             if (btnPdf) {
@@ -350,9 +355,9 @@
         closePdeManagerModal();
         populateIdebGoalsTable();
         if (typeof global.showToast === 'function') {
-            global.showToast('✅ Plano de Desenvolvimento Escolar (PDE) registrado com sucesso!', 'success');
+            global.showToast('Plano de Desenvolvimento Escolar (PDE) registrado com sucesso!', 'success');
         } else {
-            alert('✅ Plano de Desenvolvimento Escolar (PDE) registrado com sucesso!');
+            alert('Plano de Desenvolvimento Escolar (PDE) registrado com sucesso!');
         }
     }
 
@@ -379,9 +384,9 @@
 
         populateIdebGoalsTable();
         if (typeof global.showToast === 'function') {
-            global.showToast('✨ Planos de Desenvolvimento Escolar (PDE) gerados automaticamente!', 'sparkles');
+            global.showToast('Planos de Desenvolvimento Escolar (PDE) gerados automaticamente!', 'sparkles');
         } else {
-            alert('✨ Planos de Desenvolvimento Escolar (PDE) gerados automaticamente para todas as escolas da rede de Gonçalves Dias com gap ou risco!');
+            alert('Planos de Desenvolvimento Escolar (PDE) gerados automaticamente para todas as escolas da rede de Gonçalves Dias com gap ou risco!');
         }
     }
 

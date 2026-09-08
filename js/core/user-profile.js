@@ -155,8 +155,8 @@
         if (isTeacher && !hasEvaluations) {
             teacherAlertHtml = `
                 <div style="margin-top: 16px; padding: 14px 18px; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: var(--radius-md); display: flex; align-items: flex-start; gap: 12px; width: 100%; backdrop-filter: blur(6px);">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #FFFFFF; color: #1A3D63; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
-                        ⏳
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #FFFFFF; color: #1A3D63; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+                        <i data-lucide="clock" style="width: 16px; height: 16px;"></i>
                     </div>
                     <div style="flex: 1;">
                         <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 3px;">

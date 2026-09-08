@@ -21,7 +21,7 @@
             if (eventos.length > 0) {
                 evalSelect.innerHTML = eventos.map(function(ev) {
                     var isAberto = (ev.status || '').toUpperCase() === 'ABERTO';
-                    var prefix = isAberto ? '🟢 ' : '🔒 ';
+                    var prefix = isAberto ? '[ABERTO] ' : '[' + (ev.status || 'RASCUNHO') + '] ';
                     return `<option value="${ev.id}">${prefix}${ev.titulo}</option>`;
                 }).join('');
             } else {

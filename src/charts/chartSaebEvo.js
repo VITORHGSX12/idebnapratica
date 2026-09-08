@@ -3,8 +3,8 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 Chart.register(ChartDataLabels);
 
-const lpColor = '#4E9BE8';
-const matColor = '#3A4356';
+const chartPrimary = '#2F6FED';
+const chartPrimaryMuted = '#7FB3E0';
 const gridColor = '#EEF0F7';
 
 function fmt(v) {
@@ -23,10 +23,11 @@ export function renderSaebEvoChart(canvasId, saebYears, initialData) {
         {
           label: 'Língua Portuguesa',
           data: initialData.port_s,
-          borderColor: lpColor,
-          pointBackgroundColor: lpColor,
+          borderColor: chartPrimary,
+          pointBackgroundColor: chartPrimary,
           borderWidth: 2.5,
-          pointRadius: 4,
+          pointRadius: 4.5,
+          pointStyle: 'circle',
           tension: 0.3,
           datalabels: {
             display: true,
@@ -34,7 +35,7 @@ export function renderSaebEvoChart(canvasId, saebYears, initialData) {
             offset: 6,
             color: '#fff',
             font: { weight: '700', size: 10 },
-            backgroundColor: lpColor,
+            backgroundColor: chartPrimary,
             borderRadius: 20,
             padding: { top: 3, bottom: 3, left: 7, right: 7 },
             formatter: (v) => fmt(v)
@@ -43,10 +44,11 @@ export function renderSaebEvoChart(canvasId, saebYears, initialData) {
         {
           label: 'Matemática',
           data: initialData.mat_s,
-          borderColor: matColor,
-          pointBackgroundColor: matColor,
+          borderColor: chartPrimaryMuted,
+          pointBackgroundColor: chartPrimaryMuted,
           borderWidth: 2.5,
-          pointRadius: 4,
+          pointRadius: 4.5,
+          pointStyle: 'rect',
           tension: 0.3,
           datalabels: {
             display: true,
@@ -54,7 +56,7 @@ export function renderSaebEvoChart(canvasId, saebYears, initialData) {
             offset: 6,
             color: '#fff',
             font: { weight: '700', size: 10 },
-            backgroundColor: matColor,
+            backgroundColor: chartPrimaryMuted,
             borderRadius: 20,
             padding: { top: 3, bottom: 3, left: 7, right: 7 },
             formatter: (v) => fmt(v)

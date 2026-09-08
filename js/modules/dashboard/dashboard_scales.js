@@ -34,14 +34,19 @@
 
         var t = (global.ChartTheme && global.ChartTheme.getTheme) ? global.ChartTheme.getTheme() : {
             isDark: false, textPrimary: '#0A1931', textSecondary: '#1A3D63', textMuted: '#4A7FA7', grid: 'rgba(10, 25, 49, 0.09)',
-            portugues: '#2563EB', matematica: '#0D9488'
+            primary: '#2F6FED', primaryMuted: '#7FB3E0', port: '#2F6FED', mat: '#7FB3E0'
         };
+
+        var colPort = t.primary || t.portugues || '#2F6FED';
+        var colMat = t.primaryMuted || t.matematica || '#7FB3E0';
+        var markerPort = (t.markers && t.markers.real) ? t.markers.real : 'circle';
+        var markerMat = (t.markers && t.markers.comparison) ? t.markers.comparison : 'rect';
 
         if (typeof Chart === 'undefined') {
             if (typeof global.drawCanvasFallbackChart === 'function') {
                 global.drawCanvasFallbackChart(ctxSaeb, saebYears, [
-                    { type: 'line', label: 'Português', data: saebData.finais.port_s, borderColor: t.portugues },
-                    { type: 'line', label: 'Matemática', data: saebData.finais.mat_s, borderColor: t.matematica }
+                    { type: 'line', label: 'Português', data: saebData.finais.port_s, borderColor: colPort },
+                    { type: 'line', label: 'Matemática', data: saebData.finais.mat_s, borderColor: colMat }
                 ], 80, 300);
             }
             return;
@@ -58,13 +63,15 @@
                         {
                             label: 'Língua Portuguesa',
                             data: saebData.finais.port_s,
-                            borderColor: t.portugues,
-                            backgroundColor: t.portugues,
+                            borderColor: colPort,
+                            backgroundColor: colPort,
                             pointBackgroundColor: t.isDark ? '#0A1931' : '#FFFFFF',
-                            pointBorderColor: t.portugues,
+                            pointBorderColor: colPort,
                             pointBorderWidth: 2.5,
-                            borderWidth: 2.5,
                             pointRadius: 4.5,
+                            pointHoverRadius: 7,
+                            pointStyle: markerPort,
+                            borderWidth: 2.5,
                             tension: 0.3,
                             datalabels: {
                                 display: true,
@@ -72,7 +79,7 @@
                                 offset: 6,
                                 color: t.isDark ? '#0A1931' : '#FFFFFF',
                                 font: { weight: '800', size: 9.5, family: 'var(--font-mono)' },
-                                backgroundColor: t.portugues,
+                                backgroundColor: colPort,
                                 borderRadius: 6,
                                 padding: { top: 2, bottom: 2, left: 6, right: 6 },
                                 formatter: function(v) { return fmt(v); }
@@ -81,13 +88,15 @@
                         {
                             label: 'Matemática',
                             data: saebData.finais.mat_s,
-                            borderColor: t.matematica,
-                            backgroundColor: t.matematica,
+                            borderColor: colMat,
+                            backgroundColor: colMat,
                             pointBackgroundColor: t.isDark ? '#0A1931' : '#FFFFFF',
-                            pointBorderColor: t.matematica,
+                            pointBorderColor: colMat,
                             pointBorderWidth: 2.5,
-                            borderWidth: 2.5,
                             pointRadius: 4.5,
+                            pointHoverRadius: 7,
+                            pointStyle: markerMat,
+                            borderWidth: 2.5,
                             tension: 0.3,
                             datalabels: {
                                 display: true,
@@ -95,7 +104,7 @@
                                 offset: 6,
                                 color: t.isDark ? '#0A1931' : '#FFFFFF',
                                 font: { weight: '800', size: 9.5, family: 'var(--font-mono)' },
-                                backgroundColor: t.matematica,
+                                backgroundColor: colMat,
                                 borderRadius: 6,
                                 padding: { top: 2, bottom: 2, left: 6, right: 6 },
                                 formatter: function(v) { return fmt(v); }
@@ -486,8 +495,13 @@
         if (!ctx) return;
 
         var t = (global.ChartTheme && global.ChartTheme.getTheme) ? global.ChartTheme.getTheme() : {
-            isDark: false, textPrimary: '#0A1931', textSecondary: '#1A3D63', grid: 'rgba(10, 25, 49, 0.09)'
+            isDark: false, textPrimary: '#0A1931', textSecondary: '#1A3D63', grid: 'rgba(10, 25, 49, 0.09)',
+            primary: '#2F6FED', primaryMuted: '#7FB3E0', port: '#2F6FED', mat: '#7FB3E0'
         };
+
+        var colPort = t.primary || t.portugues || '#2F6FED';
+        var colMat = t.primaryMuted || t.matematica || '#7FB3E0';
+        var dash9 = (t.dashArray && t.dashArray.target) ? t.dashArray.target : [5, 4];
 
         var anos = ['2015', '2017', '2019', '2021', '2023', '2025'];
         var port5 = [201.4, 205.8, 216.3, 210.2, 224.5, 231.8];
@@ -496,11 +510,6 @@
         var mat9  = [238.5, 241.2, 252.7, 246.3, 258.9, 267.4];
 
         if (typeof Chart === 'undefined') return;
-
-        var colPort5 = t.isDark ? '#A78BFA' : '#8B5CF6';
-        var colMat5  = t.isDark ? '#7FB3E0' : '#2563EB';
-        var colPort9 = t.isDark ? '#5FD3C4' : '#0D9488';
-        var colMat9  = t.isDark ? '#FFC857' : '#D97706';
 
         try {
             if (global.dashSaebEvolucaoChartInstance) global.dashSaebEvolucaoChartInstance.destroy();
@@ -514,19 +523,21 @@
                             type: 'line',
                             label: '5º Ano — Língua Portuguesa',
                             data: port5,
-                            borderColor: colPort5,
-                            backgroundColor: 'rgba(167, 139, 250, 0.08)',
+                            borderColor: colPort,
+                            backgroundColor: colPort,
                             pointBackgroundColor: t.isDark ? '#0A1931' : '#FFFFFF',
-                            pointBorderColor: colPort5,
+                            pointBorderColor: colPort,
                             pointBorderWidth: 2.5,
                             pointRadius: 4.5,
+                            pointHoverRadius: 7,
+                            pointStyle: 'circle',
                             borderWidth: 2.5,
                             tension: 0.35,
                             fill: false,
                             datalabels: {
                                 display: true,
                                 align: 'top',
-                                color: colPort5,
+                                color: colPort,
                                 font: { weight: '800', size: 10 },
                                 formatter: function(v) { return v ? v.toFixed(1) : ''; }
                             }
@@ -535,19 +546,21 @@
                             type: 'line',
                             label: '5º Ano — Matemática',
                             data: mat5,
-                            borderColor: colMat5,
-                            backgroundColor: 'rgba(127, 179, 224, 0.08)',
+                            borderColor: colMat,
+                            backgroundColor: colMat,
                             pointBackgroundColor: t.isDark ? '#0A1931' : '#FFFFFF',
-                            pointBorderColor: colMat5,
+                            pointBorderColor: colMat,
                             pointBorderWidth: 2.5,
                             pointRadius: 4.5,
+                            pointHoverRadius: 7,
+                            pointStyle: 'rect',
                             borderWidth: 2.5,
                             tension: 0.35,
                             fill: false,
                             datalabels: {
                                 display: true,
                                 align: 'bottom',
-                                color: colMat5,
+                                color: colMat,
                                 font: { weight: '800', size: 10 },
                                 formatter: function(v) { return v ? v.toFixed(1) : ''; }
                             }
@@ -556,19 +569,22 @@
                             type: 'line',
                             label: '9º Ano — Língua Portuguesa',
                             data: port9,
-                            borderColor: colPort9,
-                            backgroundColor: 'rgba(95, 211, 196, 0.08)',
+                            borderColor: colPort,
+                            backgroundColor: colPort,
                             pointBackgroundColor: t.isDark ? '#0A1931' : '#FFFFFF',
-                            pointBorderColor: colPort9,
+                            pointBorderColor: colPort,
                             pointBorderWidth: 2.5,
                             pointRadius: 4.5,
-                            borderWidth: 2.5,
+                            pointHoverRadius: 7,
+                            pointStyle: 'rectRot',
+                            borderWidth: 2.2,
+                            borderDash: dash9,
                             tension: 0.35,
                             fill: false,
                             datalabels: {
                                 display: true,
                                 align: 'top',
-                                color: colPort9,
+                                color: colPort,
                                 font: { weight: '800', size: 10 },
                                 formatter: function(v) { return v ? v.toFixed(1) : ''; }
                             }
@@ -577,19 +593,22 @@
                             type: 'line',
                             label: '9º Ano — Matemática',
                             data: mat9,
-                            borderColor: colMat9,
-                            backgroundColor: 'rgba(255, 200, 87, 0.08)',
+                            borderColor: colMat,
+                            backgroundColor: colMat,
                             pointBackgroundColor: t.isDark ? '#0A1931' : '#FFFFFF',
-                            pointBorderColor: colMat9,
+                            pointBorderColor: colMat,
                             pointBorderWidth: 2.5,
                             pointRadius: 4.5,
-                            borderWidth: 2.5,
+                            pointHoverRadius: 7,
+                            pointStyle: 'triangle',
+                            borderWidth: 2.2,
+                            borderDash: dash9,
                             tension: 0.35,
                             fill: false,
                             datalabels: {
                                 display: true,
                                 align: 'bottom',
-                                color: colMat9,
+                                color: colMat,
                                 font: { weight: '800', size: 10 },
                                 formatter: function(v) { return v ? v.toFixed(1) : ''; }
                             }

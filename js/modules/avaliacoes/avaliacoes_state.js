@@ -238,23 +238,23 @@
         var situacao = 'ABAIXO DO BÁSICO';
         var corClass = '#ef4444';
         var corBadge = 'badge-danger';
-        var emoji = '🔴';
+        var emoji = '';
 
         if (percentual >= 80.0) {
             situacao = 'AVANÇADO';
             corClass = '#3b82f6';
             corBadge = 'badge-info';
-            emoji = '🔵';
+            emoji = '';
         } else if (percentual >= 60.0) {
             situacao = 'ADEQUADO';
             corClass = '#10b981';
             corBadge = 'badge-success';
-            emoji = '🟢';
+            emoji = '';
         } else if (percentual >= 40.0) {
             situacao = 'BÁSICO';
             corClass = '#f59e0b';
             corBadge = 'badge-warning';
-            emoji = '🟡';
+            emoji = '';
         }
 
         return {

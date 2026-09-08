@@ -6527,15 +6527,15 @@ html, body {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-card);
     transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
     position: relative;
 }
 
 .mec-book-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.12);
-    border-color: #1A3D63;
+    box-shadow: var(--shadow-dropdown);
+    border-color: var(--color-brand-primary);
 }
 
 .book-cover-wrapper {
@@ -6543,7 +6543,7 @@ html, body {
     height: 195px;
     position: relative;
     overflow: hidden;
-    background: #0f172a;
+    background: var(--color-brand-secondary);
     border-bottom: 1px solid var(--border-color);
 }
 
@@ -6578,21 +6578,20 @@ html, body {
     text-transform: uppercase;
     letter-spacing: 0.4px;
     padding: 3px 8px;
-    border-radius: 6px;
+    border-radius: var(--radius-xs);
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    backdrop-filter: blur(6px);
 }
 
 .cover-format-chip.badge-docx {
-    background: #185abd;
+    background: var(--color-brand-primary);
     color: #ffffff;
     border: 1px solid rgba(255, 255, 255, 0.35);
 }
 
 .cover-format-chip.badge-pdf {
-    background: #dc2626;
+    background: var(--color-status-critical);
     color: #ffffff;
     border: 1px solid rgba(255, 255, 255, 0.35);
 }

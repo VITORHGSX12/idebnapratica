@@ -288,10 +288,15 @@
         if (statusBadge) {
             if (resVaar.habilitado) {
                 statusBadge.className = 'badge badge-success';
-                statusBadge.innerHTML = '🟢 HABILITADO À COMPLEMENTAÇÃO VAAR';
+                statusBadge.innerHTML = '<i data-lucide="check-circle" style="width:13px;height:13px;display:inline-block;vertical-align:middle;margin-right:4px;"></i> HABILITADO À COMPLEMENTAÇÃO VAAR';
             } else {
                 statusBadge.className = 'badge badge-warning';
-                statusBadge.innerHTML = '🟡 EM ALERTA (' + (resVaar.motivoAlerta || 'Critérios não atingidos') + ')';
+                statusBadge.innerHTML = '<i data-lucide="alert-triangle" style="width:13px;height:13px;display:inline-block;vertical-align:middle;margin-right:4px;"></i> EM ALERTA (' + (resVaar.motivoAlerta || 'Critérios não atingidos') + ')';
+            }
+            if (typeof global.safeCreateIcons === 'function') {
+                global.safeCreateIcons(statusBadge);
+            } else if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
             }
         }
 

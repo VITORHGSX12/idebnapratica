@@ -22,7 +22,7 @@
             if (eventos.length > 0) {
                 simuladoSelect.innerHTML = eventos.map(function(ev) {
                     var isAberto = (ev.status || '').toUpperCase() === 'ABERTO';
-                    var prefix = isAberto ? '🟢 ' : '🔒 ';
+                    var prefix = isAberto ? '[ABERTO] ' : '[' + (ev.status || 'RASCUNHO') + '] ';
                     return `<option value="${ev.id}">${prefix}${ev.titulo}</option>`;
                 }).join('');
             } else {
@@ -141,14 +141,15 @@
         if (avaliacoesAlunos.length === 0) {
             container.innerHTML = `
                 <div style="background: var(--bg-primary); border: 1px dashed var(--border-color); border-radius: var(--radius-lg); padding: 48px 24px; text-align: center; margin: 12px 0;">
-                    <div style="font-size: 2.8rem; margin-bottom: 12px;">📊</div>
+                    <div style="color: var(--color-brand-primary); margin-bottom: 12px; display: flex; justify-content: center;"><i data-lucide="file-text" style="width: 40px; height: 40px;"></i></div>
                     <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin: 0 0 8px 0;">Nenhum dado disponível para o filtro selecionado</h3>
                     <p style="font-size: 0.88rem; color: var(--text-secondary); max-width: 580px; margin: 0 auto 20px auto; line-height: 1.5;">
                         Ainda não existem notas ou gabaritos lançados para este simulado e recorte escolar. O Laudo Técnico oficial só é processado mediante lançamentos reais de estudantes avaliados.
                     </p>
                     <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
                         <button type="button" onclick="if(typeof switchTab==='function') switchTab('sec-aplicacao-provas'); if(typeof switchAvaliacoesSubtab==='function') switchAvaliacoesSubtab('lancar-notas-sub');" class="btn btn-primary" style="font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
-                            <span>✍️ Ir para Lançar Notas do Simulado</span>
+                            <i data-lucide="edit" style="width:14px;height:14px;"></i>
+                            <span>Ir para Lançar Notas do Simulado</span>
                         </button>
                     </div>
                 </div>
@@ -228,8 +229,9 @@
 
         if (isAmostraInsuficiente) {
             html.push(`
-                <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; border-radius: var(--radius-md); padding: 12px 18px; margin-bottom: 16px; font-size: 0.82rem; color: #92400e;">
-                    <strong>⚠️ Amostra Preliminar em Consolidação:</strong> Apenas ${avaliacoesAlunos.length} estudantes lançados. O laudo com assinatura oficial requer amostragem consolidada.
+                <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; border-radius: var(--radius-md); padding: 12px 18px; margin-bottom: 16px; font-size: 0.82rem; color: #92400e; display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="alert-triangle" style="width:16px;height:16px;flex-shrink:0;"></i>
+                    <span><strong>Amostra Preliminar em Consolidação:</strong> Apenas ${avaliacoesAlunos.length} estudantes lançados. O laudo com assinatura oficial requer amostragem consolidada.</span>
                 </div>
             `);
         }

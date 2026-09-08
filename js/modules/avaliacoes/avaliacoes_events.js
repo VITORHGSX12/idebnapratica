@@ -111,12 +111,15 @@
             tbody.innerHTML = `
                 <tr>
                     <td colspan="6" style="padding: 36px 20px; text-align: center; color: var(--color-text-secondary);">
-                        <div style="font-size: 1.8rem; margin-bottom: 6px;">📋</div>
+                        <div style="width: 44px; height: 44px; border-radius: var(--radius-pill); background: var(--color-primary-subtle); color: var(--color-brand-primary); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px auto;">
+                            <i data-lucide="clipboard-list" style="width: 22px; height: 22px;"></i>
+                        </div>
                         <div style="font-weight: 700; color: var(--color-brand-primary); margin-bottom: 4px;">Nenhuma avaliação encontrada nesta categoria.</div>
                         <div style="font-size: 0.8rem; color: var(--color-text-muted);">Clique em "+ Novo Evento" para agendar uma nova avaliação.</div>
                     </td>
                 </tr>
             `;
+            if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
             return;
         }
 
@@ -273,7 +276,7 @@
         var modal = document.getElementById('modal-confirm-delete-evento');
         if (!modal) {
             var msg = `Deseja realmente excluir permanentemente a avaliação:\n\n"${nomeEvento}"?` +
-                (prog.alunosPreenchidos > 0 ? `\n\n⚠️ Há ${prog.alunosPreenchidos} respostas/notas vinculadas que serão excluídas.` : '');
+                (prog.alunosPreenchidos > 0 ? `\n\nHá ${prog.alunosPreenchidos} respostas/notas vinculadas que serão excluídas.` : '');
             if (confirm(msg)) executarExclusaoEventoConfirmada(eventoId);
             return;
         }
@@ -283,10 +286,11 @@
         if (elTitulo) elTitulo.textContent = nomeEvento;
         if (elAlert) {
             if (prog.alunosPreenchidos > 0) {
-                elAlert.innerHTML = `⚠️ <strong>Atenção:</strong> Há <strong>${prog.alunosPreenchidos} respostas/notas de teste</strong> que serão excluídas permanentemente.`;
+                elAlert.innerHTML = `<i data-lucide="alert-triangle" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px;"></i> <strong>Atenção:</strong> Há <strong>${prog.alunosPreenchidos} respostas/notas de teste</strong> que serão excluídas permanentemente.`;
             } else {
-                elAlert.innerHTML = `ℹ️ Este simulado será removido permanentemente do catálogo de avaliações.`;
+                elAlert.innerHTML = `<i data-lucide="info" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px;"></i> Este simulado será removido permanentemente do catálogo de avaliações.`;
             }
+            if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons(elAlert);
         }
         modal.classList.remove('hidden');
         modal.style.display = 'flex';

@@ -46,14 +46,14 @@
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 12px;">
                     <div style="background: var(--color-surface-subtle); padding: 14px; border-radius: var(--radius-card); border: 1px solid var(--color-border-subtle);">
-                        <strong style="font-size: var(--text-xs); color: var(--color-brand-primary); display:block; margin-bottom:4px;">📄 Cartão-Resposta do Estudante (A4)</strong>
+                        <strong style="font-size: var(--text-xs); color: var(--color-brand-primary); display:flex; align-items:center; gap:6px; margin-bottom:4px;"><i data-lucide="file-check" style="width:14px;height:14px;"></i> Cartão-Resposta do Estudante (A4)</strong>
                         <p style="font-size: 11px; color: var(--color-text-secondary); margin: 0 0 10px 0;">Folha óptica individual com ${numQuestoes} questões (bolhas A-E), cabeçalho institucional SEMED e código de barras.</p>
                         <button type="button" onclick="imprimirFolhaRespostaA4('${ev.id}')" class="btn btn-primary" style="font-size: 11px; padding: 6px 12px; border-radius: var(--radius-pill);">
                             <i data-lucide="printer" style="width:12px;height:12px;"></i> Imprimir Cartões-Resposta da Turma
                         </button>
                     </div>
                     <div style="background: var(--color-surface-subtle); padding: 14px; border-radius: var(--radius-card); border: 1px solid var(--color-border-subtle);">
-                        <strong style="font-size: var(--text-xs); color: var(--color-brand-primary); display:block; margin-bottom:4px;">📋 Ata de Aplicação & Lista de Presença</strong>
+                        <strong style="font-size: var(--text-xs); color: var(--color-brand-primary); display:flex; align-items:center; gap:6px; margin-bottom:4px;"><i data-lucide="clipboard-list" style="width:14px;height:14px;"></i> Ata de Aplicação & Lista de Presença</strong>
                         <p style="font-size: 11px; color: var(--color-text-secondary); margin: 0 0 10px 0;">Lista nominal com matrícula, campo para assinatura do estudante e ateste do fiscal aplicador.</p>
                         <button type="button" onclick="imprimirAtaPresencaA4('${ev.id}')" class="btn btn-outline" style="font-size: 11px; padding: 6px 12px; border-radius: var(--radius-pill);">
                             <i data-lucide="file-text" style="width:12px;height:12px;"></i> Imprimir Ata de Aplicação

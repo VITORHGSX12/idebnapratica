@@ -372,13 +372,13 @@
                         <span style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: var(--color-brand-primary, #2F6FED); letter-spacing: 0.5px;">
                             Guia da Aba · Passo ${index + 1} de ${total}
                         </span>
-                        <button type="button" onclick="window.closeTabContextTour()" style="background: transparent; border: none; font-size: 1rem; color: var(--text-muted, #94a3b8); cursor: pointer; padding: 2px;" title="Fechar Guia">
-                            ✕
+                        <button type="button" onclick="window.closeTabContextTour()" style="background: transparent; border: none; font-size: 1rem; color: var(--color-text-muted); cursor: pointer; padding: 2px;" title="Fechar Guia">
+                            <i data-lucide="x" style="width:14px; height:14px;"></i>
                         </button>
                     </div>
 
-                    <div style="width: 100%; height: 3px; background: var(--border-color, #e2e8f0); border-radius: 2px; margin-bottom: 12px; overflow: hidden;">
-                        <div style="width: ${progressPct}%; height: 100%; background: var(--color-brand-primary, #2F6FED); transition: width 0.3s ease;"></div>
+                    <div style="width: 100%; height: 3px; background: var(--color-border-subtle); border-radius: 2px; margin-bottom: 12px; overflow: hidden;">
+                        <div style="width: ${progressPct}%; height: 100%; background: var(--color-brand-primary); transition: width 0.3s ease;"></div>
                     </div>
 
                     <h4 style="margin: 0 0 6px 0; font-size: 0.98rem; font-weight: 800; color: var(--text-primary, #0f172a);">
@@ -391,18 +391,21 @@
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             ${!isFirst ? `
-                                <button type="button" onclick="window.prevTabTourStep()" class="btn btn-outline" style="padding: 5px 12px; font-size: 0.76rem; font-weight: 600; border-radius: 8px; cursor: pointer; border: 1px solid var(--border-color, #cbd5e1); background: var(--color-surface-card, #ffffff); color: var(--text-secondary, #475569);">
-                                    ◀ Voltar
+                                <button type="button" onclick="window.prevTabTourStep()" class="btn btn-outline" style="padding: 5px 12px; font-size: 0.76rem; font-weight: 600; border-radius: var(--radius-xs); cursor: pointer; border: 1px solid var(--color-border-subtle); background: transparent; color: var(--color-text-secondary); display: inline-flex; align-items: center; gap: 4px;">
+                                    <i data-lucide="chevron-left" style="width:12px; height:12px;"></i>
+                                    <span>Voltar</span>
                                 </button>
                             ` : ''}
                         </div>
                         <div style="display: flex; gap: 8px;">
-                            <button type="button" onclick="window.nextTabTourStep()" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.78rem; font-weight: 700; border-radius: 8px; cursor: pointer; background: var(--color-brand-primary, #2F6FED); color: #ffffff; border: none; box-shadow: 0 2px 8px rgba(47, 111, 237, 0.25);">
-                                ${isLast ? 'Concluir Guia ✓' : 'Próximo ➔'}
+                            <button type="button" onclick="window.nextTabTourStep()" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.78rem; font-weight: 700; border-radius: var(--radius-xs); cursor: pointer; background: var(--color-brand-primary); color: #ffffff; border: none; display: inline-flex; align-items: center; gap: 4px;">
+                                <span>${isLast ? 'Concluir Guia' : 'Próximo'}</span>
+                                <i data-lucide="${isLast ? 'check' : 'arrow-right'}" style="width:13px; height:13px;"></i>
                             </button>
                         </div>
                     </div>
                 `;
+                if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
 
                 var cardWidth = 340;
                 var cardHeight = 180;
@@ -523,8 +526,8 @@
             width: 280px;
             background: var(--color-surface-card, #FFFFFF);
             border: 1px solid var(--color-border-subtle, #E5E9F0);
-            border-radius: 14px;
-            box-shadow: 0 10px 25px -5px rgba(15, 26, 43, 0.15);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-dropdown);
             padding: 8px;
             z-index: 150;
             display: flex;
@@ -534,35 +537,42 @@
         `;
 
         popover.innerHTML = `
-            <div style="padding: 6px 10px 4px 10px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--color-text-muted, #8A99AD); letter-spacing: 0.05em;">
+            <div style="padding: 6px 10px 4px 10px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--color-text-muted); letter-spacing: 0.05em;">
                 Central de Ajuda & Tours
             </div>
-            <button type="button" onclick="window.startTabContextTour('${activeTab}'); window.toggleHelpTourMenu();" style="display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: transparent; border: none; border-radius: 10px; text-align: left; cursor: pointer; color: var(--color-text-primary, #0F1A2B); font-size: 0.82rem; font-weight: 600; transition: background 0.15s ease;" onmouseover="this.style.background='var(--color-surface-subtle, #EEF2F6)'" onmouseout="this.style.background='transparent'">
-                <span style="font-size: 1.1rem;">🎯</span>
+            <button type="button" onclick="window.startTabContextTour('${activeTab}'); window.toggleHelpTourMenu();" style="display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: transparent; border: none; border-radius: var(--radius-sm); text-align: left; cursor: pointer; color: var(--color-text-primary); font-size: 0.82rem; font-weight: 600; transition: background 0.15s ease;" onmouseover="this.style.background='var(--color-surface-subtle)'" onmouseout="this.style.background='transparent'">
+                <div style="width: 28px; height: 28px; border-radius: var(--radius-xs); background: var(--color-status-advanced-bg); color: var(--color-brand-primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <i data-lucide="target" style="width: 16px; height: 16px;"></i>
+                </div>
                 <div>
                     <div style="font-weight: 700;">Tour Desta Tela</div>
-                    <div style="font-size: 0.72rem; color: var(--color-text-secondary, #6B7A90); font-weight: 500;">Guia de ${currentName}</div>
+                    <div style="font-size: 0.72rem; color: var(--color-text-secondary); font-weight: 500;">Guia de ${currentName}</div>
                 </div>
             </button>
-            <button type="button" onclick="if(typeof window.startOnboardingTour==='function') window.startOnboardingTour(); window.toggleHelpTourMenu();" style="display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: transparent; border: none; border-radius: 10px; text-align: left; cursor: pointer; color: var(--color-text-primary, #0F1A2B); font-size: 0.82rem; font-weight: 600; transition: background 0.15s ease;" onmouseover="this.style.background='var(--color-surface-subtle, #EEF2F6)'" onmouseout="this.style.background='transparent'">
-                <span style="font-size: 1.1rem;">🌐</span>
+            <button type="button" onclick="if(typeof window.startOnboardingTour==='function') window.startOnboardingTour(); window.toggleHelpTourMenu();" style="display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: transparent; border: none; border-radius: var(--radius-sm); text-align: left; cursor: pointer; color: var(--color-text-primary); font-size: 0.82rem; font-weight: 600; transition: background 0.15s ease;" onmouseover="this.style.background='var(--color-surface-subtle)'" onmouseout="this.style.background='transparent'">
+                <div style="width: 28px; height: 28px; border-radius: var(--radius-xs); background: var(--color-status-advanced-bg); color: var(--color-brand-primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <i data-lucide="compass" style="width: 16px; height: 16px;"></i>
+                </div>
                 <div>
                     <div style="font-weight: 700;">Tour Geral do Sistema</div>
-                    <div style="font-size: 0.72rem; color: var(--color-text-secondary, #6B7A90); font-weight: 500;">Visão das 12 abas principais</div>
+                    <div style="font-size: 0.72rem; color: var(--color-text-secondary); font-weight: 500;">Visão das 12 abas principais</div>
                 </div>
             </button>
-            <div style="height: 1px; background: var(--color-border-subtle, #E5E9F0); margin: 2px 0;"></div>
-            <button type="button" onclick="if(typeof window.switchTab==='function') window.switchTab('doc-tecnica'); window.toggleHelpTourMenu();" style="display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: transparent; border: none; border-radius: 10px; text-align: left; cursor: pointer; color: var(--color-text-primary, #0F1A2B); font-size: 0.82rem; font-weight: 600; transition: background 0.15s ease;" onmouseover="this.style.background='var(--color-surface-subtle, #EEF2F6)'" onmouseout="this.style.background='transparent'">
-                <span style="font-size: 1.1rem;">📖</span>
+            <div style="height: 1px; background: var(--color-border-subtle); margin: 2px 0;"></div>
+            <button type="button" onclick="if(typeof window.switchTab==='function') window.switchTab('doc-tecnica'); window.toggleHelpTourMenu();" style="display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: transparent; border: none; border-radius: var(--radius-sm); text-align: left; cursor: pointer; color: var(--color-text-primary); font-size: 0.82rem; font-weight: 600; transition: background 0.15s ease;" onmouseover="this.style.background='var(--color-surface-subtle)'" onmouseout="this.style.background='transparent'">
+                <div style="width: 28px; height: 28px; border-radius: var(--radius-xs); background: var(--color-surface-subtle); color: var(--color-text-secondary); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <i data-lucide="book-open" style="width: 16px; height: 16px;"></i>
+                </div>
                 <div>
                     <div style="font-weight: 700;">Manuais &amp; Documentação</div>
-                    <div style="font-size: 0.72rem; color: var(--color-text-secondary, #6B7A90); font-weight: 500;">Notas Técnicas INEP / MEC</div>
+                    <div style="font-size: 0.72rem; color: var(--color-text-secondary); font-weight: 500;">Notas Técnicas INEP / MEC</div>
                 </div>
             </button>
         `;
 
         btn.parentElement.style.position = 'relative';
         btn.parentElement.appendChild(popover);
+        if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
 
         // Fechar ao clicar fora
         setTimeout(function() {

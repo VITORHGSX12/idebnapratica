@@ -67,7 +67,7 @@
         var MAX_SIZE = 100 * 1024 * 1024; // 100MB
         if (file.size > MAX_SIZE) {
             var sizeMb = (file.size / (1024 * 1024)).toFixed(1);
-            alert('⚠️ O arquivo selecionado possui ' + sizeMb + ' MB e excede o limite máximo permitido de 100 MB.');
+            alert('O arquivo selecionado possui ' + sizeMb + ' MB e excede o limite máximo permitido de 100 MB.');
             e.target.value = '';
             return;
         }
@@ -75,7 +75,7 @@
         var ext = file.name.split('.').pop().toLowerCase();
         var allowed = ['pdf', 'doc', 'docx'];
         if (!allowed.includes(ext)) {
-            alert('⚠️ Formato não permitido (. ' + ext + '). Selecione um arquivo em formato PDF (.pdf) ou Word (.doc, .docx).');
+            alert('Formato não permitido (. ' + ext + '). Selecione um arquivo em formato PDF (.pdf) ou Word (.doc, .docx).');
             e.target.value = '';
             return;
         }
@@ -98,7 +98,7 @@
                     '<strong style="font-size:var(--text-sm); color:var(--color-brand-primary); display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + file.name + '</strong>' +
                     '<span style="font-size:var(--text-xs); color:var(--color-accent-primary); font-weight:600;">' + fileSizeMb + ' • Formato ' + ext.toUpperCase() + ' pronto para upload</span>' +
                 '</div>' +
-                '<button type="button" class="btn btn-icon btn-xs" onclick="clearAttachedFile();" title="Remover arquivo" style="color:var(--color-status-critical-text);">✕</button>' +
+                '<button type="button" class="btn btn-icon btn-xs" onclick="clearAttachedFile();" title="Remover arquivo" style="color:var(--color-status-critical-text);"><i data-lucide="x" style="width:14px;height:14px;"></i></button>' +
             '</div>';
             if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
         }
@@ -235,12 +235,12 @@
                 var errObj = JSON.parse(xhr.responseText);
                 if (errObj.error) errMessage = errObj.error;
             } catch(e) {}
-            alert('❌ ' + errMessage);
+            alert(errMessage);
         };
 
         xhr.onerror = function() {
             if (btnSubmit) btnSubmit.disabled = false;
-            alert('❌ Erro de conexão durante o upload do arquivo.');
+            alert('Erro de conexão durante o upload do arquivo.');
         };
 
         xhr.send(formData);

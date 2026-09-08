@@ -269,7 +269,7 @@
 
     function handleDownloadPedagogicPlan(planId, title) {
         if (typeof global.showToast === 'function') {
-            global.showToast(`📄 Gerando PDF do ${title}...`, 'info');
+            global.showToast(`Gerando PDF do ${title}...`, 'info');
         }
         if (typeof global.print === 'function') {
             global.print();

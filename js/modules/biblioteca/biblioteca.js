@@ -116,7 +116,7 @@
 
         if (btn) {
             btn.classList.add('active');
-            btn.style.background = '#4f46e5';
+            btn.style.background = 'var(--color-brand-primary)';
             btn.style.color = '#ffffff';
             btn.style.border = 'none';
             btn.style.fontWeight = '700';
@@ -207,7 +207,7 @@
             var isAll = b.getAttribute('data-cat') === 'all';
             if (isAll) {
                 b.classList.add('active');
-                b.style.background = '#4f46e5';
+                b.style.background = 'var(--color-brand-primary)';
                 b.style.color = '#ffffff';
                 b.style.border = 'none';
                 b.style.fontWeight = '700';
@@ -231,14 +231,15 @@
         var isWord = (book.formatoArquivo === 'DOCX' || book.formatoArquivo === 'DOC') || (book.fileName && (book.fileName.toLowerCase().endsWith('.docx') || book.fileName.toLowerCase().endsWith('.doc'))) || (book.fileType && book.fileType.indexOf('word') !== -1);
         var hasCustomCover = !!(book.capaUrl && (book.capaUrl.startsWith('data:image') || book.capaUrl.startsWith('/api/')));
 
-        var corTema = book.corTema || (isWord ? '#2563eb' : (isPdf ? '#dc2626' : '#4f46e5'));
+        var corTema = book.corTema || (isWord ? 'var(--color-brand-primary)' : (isPdf ? 'var(--color-status-critical)' : 'var(--color-brand-secondary)'));
         var formatBadgeText = isWord ? 'DOCX / Word' : (isPdf ? 'PDF Digital' : (book.formatoArquivo || 'Documento'));
         var formatBadgeClass = isWord ? 'badge-docx' : (isPdf ? 'badge-pdf' : 'badge-general');
+        var formatIconName = isWord ? 'file-text' : (isPdf ? 'file' : 'book-open');
 
         if (hasCustomCover) {
             return '<div class="mec-book-cover is-custom" style="background-image: url(' + book.capaUrl + ');">' +
                 '<div class="cover-format-chip ' + formatBadgeClass + '">' +
-                    (isWord ? '📝 ' : (isPdf ? '📄 ' : '📚 ')) + formatBadgeText +
+                    '<i data-lucide="' + formatIconName + '" style="width:12px; height:12px; margin-right:4px;"></i>' + formatBadgeText +
                 '</div>' +
                 '<div class="cover-overlay-bottom">' +
                     '<span class="cover-badge-tag">' + (book.capaBadge || book.etapa || 'SEMED') + '</span>' +
@@ -247,9 +248,9 @@
         }
 
         if (isWord) {
-            return '<div class="mec-book-cover is-word-doc" style="background: linear-gradient(145deg, #185abd 0%, #103f84 100%);">' +
+            return '<div class="mec-book-cover is-word-doc" style="background: linear-gradient(145deg, var(--color-brand-primary) 0%, var(--color-brand-secondary) 100%);">' +
                 '<div class="cover-top-bar">' +
-                    '<span class="cover-format-chip badge-docx">📝 ' + formatBadgeText + '</span>' +
+                    '<span class="cover-format-chip badge-docx"><i data-lucide="file-text" style="width:12px; height:12px; margin-right:4px;"></i>' + formatBadgeText + '</span>' +
                     '<span class="cover-pages-count">' + (book.paginas ? book.paginas + ' pág.' : (book.fileSize || 'DOCX')) + '</span>' +
                 '</div>' +
                 '<div class="cover-word-sheet">' +
@@ -270,9 +271,9 @@
         }
 
         if (isPdf) {
-            return '<div class="mec-book-cover is-pdf-doc" style="background: linear-gradient(145deg, #b91c1c 0%, #7f1d1d 100%);">' +
+            return '<div class="mec-book-cover is-pdf-doc" style="background: linear-gradient(145deg, var(--color-brand-secondary) 0%, #10376B 100%);">' +
                 '<div class="cover-top-bar">' +
-                    '<span class="cover-format-chip badge-pdf">📄 ' + formatBadgeText + '</span>' +
+                    '<span class="cover-format-chip badge-pdf"><i data-lucide="file" style="width:12px; height:12px; margin-right:4px;"></i>' + formatBadgeText + '</span>' +
                     '<span class="cover-pages-count">' + (book.paginas ? book.paginas + ' pág.' : (book.fileSize || 'PDF')) + '</span>' +
                 '</div>' +
                 '<div class="cover-pdf-sheet">' +
@@ -288,14 +289,16 @@
             '</div>';
         }
 
-        return '<div class="mec-book-cover is-editorial" style="background: linear-gradient(145deg, ' + corTema + ' 0%, #1e1b4b 100%);">' +
+        var editorialIcon = book.tipo === 'Simulado' ? 'file-check-2' : (book.tipo === 'Reforco' ? 'target' : (book.tipo === 'Matriz' ? 'layers' : 'book-open'));
+
+        return '<div class="mec-book-cover is-editorial" style="background: linear-gradient(145deg, ' + corTema + ' 0%, var(--color-brand-secondary) 100%);">' +
             '<div class="cover-top-bar">' +
-                '<span class="cover-format-chip badge-general">📚 ' + formatBadgeText + '</span>' +
+                '<span class="cover-format-chip badge-general"><i data-lucide="book-open" style="width:12px; height:12px; margin-right:4px;"></i>' + formatBadgeText + '</span>' +
                 '<span class="cover-pages-count">' + (book.paginas ? book.paginas + ' pág.' : 'Material') + '</span>' +
             '</div>' +
             '<div class="cover-editorial-center">' +
                 '<div class="editorial-icon-badge">' +
-                    (book.tipo === 'Simulado' ? '📝' : (book.tipo === 'Reforco' ? '🎯' : (book.tipo === 'Matriz' ? '📊' : '📖'))) +
+                    '<i data-lucide="' + editorialIcon + '" style="width:24px; height:24px;"></i>' +
                 '</div>' +
                 '<h4 class="editorial-title">' + (book.titulo || '') + '</h4>' +
                 '<p class="editorial-sub">' + (book.subtitulo || '') + '</p>' +
@@ -349,23 +352,25 @@
 
         if (libraryItems.length === 0) {
             grid.innerHTML = '<div style="grid-column: 1 / -1; padding: 56px 24px; text-align: center; background: var(--bg-primary); border-radius: var(--radius-lg); border: 1px dashed var(--border-color); margin: 12px 0;">' +
-                '<div style="font-size: 3.2rem; margin-bottom: 12px;">📚</div>' +
+                '<div style="width: 54px; height: 54px; border-radius: var(--radius-md); background: var(--color-status-advanced-bg); color: var(--color-brand-primary); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 14px;"><i data-lucide="book-open" style="width: 28px; height: 28px;"></i></div>' +
                 '<h3 style="color: var(--text-primary); margin: 0 0 8px 0; font-size: 1.25rem; font-weight: 800;">Nenhum material cadastrado ainda</h3>' +
                 '<p style="color: var(--text-muted); font-size: 0.88rem; max-width: 500px; margin: 0 auto 20px auto; line-height: 1.5;">Clique em <strong>"Adicionar Material ao Acervo"</strong> para começar a montar a biblioteca pedagógica da rede municipal.</p>' +
                 '<button type="button" class="btn btn-primary" onclick="openUploadPedagogicModal();" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; padding: 10px 20px;">' +
-                    '<span>➕ Adicionar Primeiro Material</span>' +
+                    '<i data-lucide="plus" style="width: 16px; height: 16px;"></i><span>Adicionar Primeiro Material</span>' +
                 '</button>' +
             '</div>';
+            if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
             return;
         }
 
         if (filtered.length === 0) {
             grid.innerHTML = '<div style="grid-column: 1 / -1; padding: 48px 24px; text-align: center; background: var(--bg-secondary); border-radius: var(--radius-md); border: 1px dashed var(--border-color);">' +
-                '<div style="font-size: 2.4rem; margin-bottom: 8px;">🔍</div>' +
+                '<div style="width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--color-surface-subtle); color: var(--color-text-muted); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px;"><i data-lucide="search" style="width: 24px; height: 24px;"></i></div>' +
                 '<h4 style="color: var(--text-primary); margin: 0 0 6px 0;">Nenhum material encontrado com os filtros ativos</h4>' +
                 '<p style="color: var(--text-muted); font-size: 0.82rem; margin: 0 0 16px 0;">Tente ajustar os filtros de busca ou selecione outra categoria.</p>' +
                 '<button type="button" class="btn btn-outline btn-sm" onclick="clearLibraryFilters();">Limpar Filtros</button>' +
             '</div>';
+            if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
             return;
         }
 
@@ -387,7 +392,7 @@
                     coverHtml +
                     '<div class="cover-hover-actions">' +
                         '<button type="button" class="btn-hover-read" onclick="event.stopPropagation(); trackAndViewBook(\'' + book.id + '\');">' +
-                            '<span>📖 Ler no Sistema</span>' +
+                            '<i data-lucide="book-open" style="width: 15px; height: 15px; margin-right: 6px;"></i><span>Ler no Sistema</span>' +
                         '</button>' +
                     '</div>' +
                 '</div>' +
@@ -403,19 +408,19 @@
                     '</h3>' +
                     '<p class="book-card-sub">' + safeSub + '</p>' +
                     '<div class="book-card-info-chips">' +
-                        '<span class="info-chip">📄 ' + safePaginas + '</span>' +
-                        '<span class="info-chip">💾 ' + safeFileSize + '</span>' +
-                        '<span class="info-chip">👁️ ' + (book.viewsCount || 0) + ' acessos</span>' +
+                        '<span class="info-chip"><i data-lucide="file-text" style="width:12px;height:12px;margin-right:4px;"></i>' + safePaginas + '</span>' +
+                        '<span class="info-chip"><i data-lucide="hard-drive" style="width:12px;height:12px;margin-right:4px;"></i>' + safeFileSize + '</span>' +
+                        '<span class="info-chip"><i data-lucide="eye" style="width:12px;height:12px;margin-right:4px;"></i>' + (book.viewsCount || 0) + ' acessos</span>' +
                     '</div>' +
                     '<div class="book-card-actions">' +
                         '<button type="button" onclick="trackAndViewBook(\'' + book.id + '\');" class="btn btn-primary btn-sm btn-read-book">' +
-                            '📖 Ler Agora' +
+                            '<i data-lucide="book-open" style="width: 14px; height: 14px; margin-right: 6px;"></i>Ler Agora' +
                         '</button>' +
                         '<button type="button" onclick="trackAndDownloadBookPdf(\'' + book.id + '\');" class="btn btn-outline btn-sm btn-download-book" title="Baixar Arquivo">' +
-                            '📥' +
+                            '<i data-lucide="download" style="width: 14px; height: 14px;"></i>' +
                         '</button>' +
                         '<button type="button" onclick="handleDeleteLibraryMaterial(\'' + book.id + '\');" class="btn btn-icon btn-sm btn-delete-book" title="Excluir Material">' +
-                            '🗑️' +
+                            '<i data-lucide="trash-2" style="width: 14px; height: 14px; color: var(--color-status-critical);"></i>' +
                         '</button>' +
                     '</div>' +
                 '</div>' +
@@ -449,12 +454,12 @@
             var safeFormato = typeof escapeHtml === 'function' ? escapeHtml(item.formatoArquivo || 'PDF') : (item.formatoArquivo || 'PDF');
 
             return '<div class="bib-spotlight-card" onclick="trackAndViewBook(\'' + item.id + '\');">' +
-                '<div style="width: 36px; height: 36px; border-radius: 8px; background: ' + (item.corTema || '#4f46e5') + '; color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">' +
+                '<div style="width: 36px; height: 36px; border-radius: 8px; background: ' + (item.corTema || 'var(--color-brand-primary)') + '; color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">' +
                     '<i data-lucide="' + icon + '" style="width: 18px; height: 18px;"></i>' +
                 '</div>' +
                 '<div style="flex: 1; min-width: 0;">' +
                     '<strong style="font-size: 0.78rem; color: var(--text-primary); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">' + safeTitulo + '</strong>' +
-                    '<span style="font-size: 0.68rem; color: var(--text-muted); display: block;">' + safeEtapa + ' • 👁️ ' + (item.viewsCount || 0) + ' acessos • ' + safeFormato + '</span>' +
+                    '<span style="font-size: 0.68rem; color: var(--text-muted); display: block;">' + safeEtapa + ' • <i data-lucide="eye" style="width:11px;height:11px;display:inline-block;vertical-align:middle;"></i> ' + (item.viewsCount || 0) + ' acessos • ' + safeFormato + '</span>' +
                 '</div>' +
             '</div>';
         }).join('');

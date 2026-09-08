@@ -3,8 +3,8 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 Chart.register(ChartDataLabels);
 
-const purple = '#5B4FE9';
-const green = '#17B26A';
+const chartPrimary = '#2F6FED';
+const chartWarning = '#D97706';
 const gridColor = '#EEF0F7';
 
 export function renderTimelineChart(canvasId, timelineData) {
@@ -19,10 +19,11 @@ export function renderTimelineChart(canvasId, timelineData) {
         {
           label: 'IDEB Oficial / Simulados',
           data: timelineData.idebOficial,
-          borderColor: purple,
-          backgroundColor: purple,
-          pointBackgroundColor: purple,
+          borderColor: chartPrimary,
+          backgroundColor: chartPrimary,
+          pointBackgroundColor: chartPrimary,
           pointRadius: 4,
+          pointStyle: 'circle',
           tension: 0.35,
           borderWidth: 2.5,
           datalabels: { display: false }
@@ -30,10 +31,13 @@ export function renderTimelineChart(canvasId, timelineData) {
         {
           label: 'Meta Projetada INEP',
           data: timelineData.metaProjetada,
-          borderColor: green,
+          borderColor: chartWarning,
+          backgroundColor: chartWarning,
+          pointBackgroundColor: chartWarning,
           borderDash: [5, 4],
           borderWidth: 2,
-          pointRadius: 0,
+          pointRadius: 4,
+          pointStyle: 'rectRot',
           tension: 0.35,
           datalabels: { display: false }
         }

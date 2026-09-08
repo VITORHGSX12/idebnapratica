@@ -140,7 +140,7 @@
 
         if (!modal) return;
 
-        if (title) title.textContent = '✏️ Editar Turma — ' + turma.nome;
+        if (title) title.textContent = 'Editar Turma — ' + turma.nome;
         if (formId) formId.value = turma.id;
         if (formSchool) formSchool.value = turma.escola;
         if (formName) formName.value = turma.nome;
@@ -210,7 +210,7 @@
         }
 
         if (typeof global.showToast === 'function') {
-            global.showToast('✅ Turma "' + formName + '" salva com sucesso em ' + formSchool + '!', 'success');
+            global.showToast('Turma "' + formName + '" salva com sucesso em ' + formSchool + '!', 'success');
         }
     }
 
@@ -285,7 +285,7 @@
 
         if (!modal) return;
 
-        if (title) title.textContent = '✏️ Editar Dados do Professor — ' + teacher.nome;
+        if (title) title.textContent = 'Editar Dados do Professor — ' + teacher.nome;
         if (formId) formId.value = teacher.id;
         if (formSchool) formSchool.value = teacher.escola;
         if (formName) formName.value = teacher.nome;
@@ -358,7 +358,7 @@
         }
 
         if (typeof global.showToast === 'function') {
-            global.showToast('✅ Professor(a) "' + formName + '" salvo(a) com sucesso!', 'success');
+            global.showToast('Professor(a) "' + formName + '" salvo(a) com sucesso!', 'success');
         }
     }
 
