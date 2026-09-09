@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" href="assets/brand/ideb_symbol_app_icon.svg">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="design-tokens.css?v=20260830_v2">
-    <link rel="stylesheet" href="styles.css?v=401e2b9ee4_mttbnx4g">
+    <link rel="stylesheet" href="styles.css?v=401e2b9ee4_mttc3v4s">
     <link rel="stylesheet" href="login-premium.css?v=20260830_v2">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -6568,6 +6568,64 @@
     </div>
 
 
+                <!-- ==================== MODAL: CRIAR / EDITAR PLANEJAMENTO PEDAGÓGICO ==================== -->
+                <div id="modal-create-planejamento" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 20px;">
+                    <div class="modal-container card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 580px; padding: 0; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-height: 90vh; display: flex; flex-direction: column;">
+                        <div style="padding: 18px 24px; border-bottom: 1px solid var(--border-color); background: var(--bg-primary); display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary);"><i data-lucide="calendar" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 6px; color: var(--color-brand-primary);"></i> Registrar Planejamento Pedagógico</h3>
+                                <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">Ação docente para a turma toda ou intervenção individual de aluno</p>
+                            </div>
+                            <button type="button" onclick="TurmasPlanejamento.closeCreatePlanModal();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);">✕</button>
+                        </div>
+                        <form id="form-create-planejamento" onsubmit="TurmasPlanejamento.handlePlanFormSubmit(event);" style="padding: 20px 24px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 14px;">
+                            <input type="hidden" id="plan-form-turma-id">
+                            
+                            <div class="form-group">
+                                <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Público-Alvo / Abrangência *</label>
+                                <select id="plan-form-aluno-id" class="form-select" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 12px; width: 100%; font-size: 0.84rem;">
+                                    <option value="">-- Toda a Turma (Geral) --</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Título da Ação Pedagógica *</label>
+                                <input type="text" id="plan-form-titulo" class="form-input-text" required placeholder="Ex: Recomposição de Habilidades em Resolução de Problemas (SAEB D19)" style="width: 100%; height: 38px; font-size: 0.85rem;">
+                            </div>
+
+                            <div class="form-group">
+                                <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Descrição & Estratégias Pedagógicas</label>
+                                <textarea id="plan-form-descricao" class="form-input-text" rows="3" placeholder="Descreva os materiais didáticos, rotina de exercícios, agrupamentos produtivos ou objetivos esperados..." style="width: 100%; padding: 8px 12px; font-size: 0.84rem; resize: vertical;"></textarea>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                <div class="form-group">
+                                    <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Data Início</label>
+                                    <input type="date" id="plan-form-data-inicio" class="form-input-text" style="width: 100%; height: 36px; background: var(--bg-tertiary); font-size: 0.84rem;">
+                                </div>
+                                <div class="form-group">
+                                    <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Data Conclusão (Prevista)</label>
+                                    <input type="date" id="plan-form-data-fim" class="form-input-text" style="width: 100%; height: 36px; background: var(--bg-tertiary); font-size: 0.84rem;">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Status Inicial *</label>
+                                <select id="plan-form-status" class="form-select" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 12px; width: 100%; font-size: 0.84rem;">
+                                    <option value="planejado" selected>Planejado</option>
+                                    <option value="em andamento">Em Andamento</option>
+                                    <option value="concluido">Concluído</option>
+                                </select>
+                            </div>
+
+                            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 14px;">
+                                <button type="button" onclick="TurmasPlanejamento.closeCreatePlanModal();" class="btn btn-outline btn-sm" style="padding: 0 16px;">Cancelar</button>
+                                <button type="submit" class="btn btn-primary btn-sm" style="font-weight: 700; padding: 0 20px;">Salvar Planejamento</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
                 <!-- ==================== MODAL: DIÁRIO DA TURMA ==================== -->
                 <div id="modal-turma-journal" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 20px;">
                     <div class="modal-container card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 820px; padding: 0; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-height: 90vh; display: flex; flex-direction: column;">
@@ -7314,94 +7372,97 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=341bc2b5e3_mttbnx4g"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=daec643646_mttbnx4g"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mttbnx4g"></script>
-    <script src="bncc_habilidades_oficial.js?v=2f802bf604_mttbnx4g"></script>
-    <script src="ideb_publico_db.js?v=fa7edb185f_mttbnx4g"></script>
-    <script src="alunos_db.js?v=e23fe3179f_mttbnx4g"></script>
-    <script src="js/data/official_students_seed.js?v=876be25c9a_mttbnx4g"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=341bc2b5e3_mttc3v4s"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=daec643646_mttc3v4s"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mttc3v4s"></script>
+    <script src="bncc_habilidades_oficial.js?v=2f802bf604_mttc3v4s"></script>
+    <script src="ideb_publico_db.js?v=fa7edb185f_mttc3v4s"></script>
+    <script src="alunos_db.js?v=e23fe3179f_mttc3v4s"></script>
+    <script src="js/data/official_students_seed.js?v=876be25c9a_mttc3v4s"></script>
 
     <!-- Módulos do Core -->
-    <script src="js/core/security.js?v=9d4fc4a791_mttbnx4g"></script>
-    <script src="js/core/helpers.js?v=7656a2a6bb_mttbnx4g"></script>
-    <script src="js/core/theme-toast.js?v=c181c006e0_mttbnx4g"></script>
-    <script src="js/core/chart-theme.js?v=c8e29467a8_mttbnx4g"></script>
-    <script src="js/core/user-profile.js?v=7047b260a3_mttbnx4g"></script>
-    <script src="js/data/official_users_directory.js?v=24a756e04c_mttbnx4g"></script>
-    <script src="js/core/login-animation.js?v=414e14bbcd_mttbnx4g"></script>
-    <script src="js/core/auth/auth_password.js?v=53356702d7_mttbnx4g"></script>
-    <script src="js/core/auth/auth_login.js?v=b5f6be2503_mttbnx4g"></script>
-    <script src="js/core/auth.js?v=46bed59cde_mttbnx4g"></script>
-    <script src="js/core/navigation/navigation_meta.js?v=256a33a6c1_mttbnx4g"></script>
-    <script src="js/core/navigation/navigation_history.js?v=a09c33f4ae_mttbnx4g"></script>
-    <script src="js/core/navigation/navigation_events.js?v=7e416c2fa3_mttbnx4g"></script>
-    <script src="js/core/navigation.js?v=0ee55dd7e3_mttbnx4g"></script>
-    <script src="js/core/sync.js?v=73ebd2560a_mttbnx4g"></script>
+    <script src="js/core/security.js?v=9d4fc4a791_mttc3v4s"></script>
+    <script src="js/core/helpers.js?v=7656a2a6bb_mttc3v4s"></script>
+    <script src="js/core/theme-toast.js?v=c181c006e0_mttc3v4s"></script>
+    <script src="js/core/chart-theme.js?v=c8e29467a8_mttc3v4s"></script>
+    <script src="js/core/user-profile.js?v=7047b260a3_mttc3v4s"></script>
+    <script src="js/data/official_users_directory.js?v=24a756e04c_mttc3v4s"></script>
+    <script src="js/core/login-animation.js?v=414e14bbcd_mttc3v4s"></script>
+    <script src="js/core/auth/auth_password.js?v=53356702d7_mttc3v4s"></script>
+    <script src="js/core/auth/auth_login.js?v=b5f6be2503_mttc3v4s"></script>
+    <script src="js/core/auth.js?v=46bed59cde_mttc3v4s"></script>
+    <script src="js/core/navigation/navigation_meta.js?v=256a33a6c1_mttc3v4s"></script>
+    <script src="js/core/navigation/navigation_history.js?v=a09c33f4ae_mttc3v4s"></script>
+    <script src="js/core/navigation/navigation_events.js?v=7e416c2fa3_mttc3v4s"></script>
+    <script src="js/core/navigation.js?v=0ee55dd7e3_mttc3v4s"></script>
+    <script src="js/core/sync.js?v=73ebd2560a_mttc3v4s"></script>
 
     <!-- Módulos de Domínio -->
-    <script src="js/modules/dashboard/dashboard_kpis.js?v=1ed1f8c921_mttbnx4g"></script>
-    <script src="js/modules/dashboard/dashboard_charts.js?v=de1a05b8a6_mttbnx4g"></script>
-    <script src="js/modules/dashboard/dashboard_analytics.js?v=a7db1260ed_mttbnx4g"></script>
-    <script src="js/modules/dashboard/dashboard_scales.js?v=38ef0c5f91_mttbnx4g"></script>
-    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=8a942cafe9_mttbnx4g"></script>
-    <script src="js/modules/dashboard/dashboard_scroll_reveal.js?v=765a5ac049_mttbnx4g"></script>
-    <script src="js/modules/alunos/alunos_progression_modal.js?v=9b35c9ce79_mttbnx4g"></script>
-    <script src="js/modules/alunos/alunos_list.js?v=1680ba1e32_mttbnx4g"></script>
-    <script src="js/modules/alunos/alunos_forms.js?v=d65581afbc_mttbnx4g"></script>
-    <script src="js/modules/turmas/turmas_crud.js?v=7b6d46585b_mttbnx4g"></script>
-    <script src="js/modules/turmas/turmas_diario.js?v=edae66f43a_mttbnx4g"></script>
-    <script src="js/modules/metas/metas_regional.js?v=7556fbb4b6_mttbnx4g"></script>
-    <script src="js/modules/metas/metas_pactuacao.js?v=55531875c5_mttbnx4g"></script>
-    <script src="js/modules/metas/metas_escolas_ranking.js?v=d2cab5c654_mttbnx4g"></script>
-    <script src="js/modules/metas/metas_calculo_manual.js?v=db8734a78d_mttbnx4g"></script>
-    <script src="js/modules/metas/metas_ideb.js?v=17b2b704aa_mttbnx4g"></script>
-    <script src="js/modules/escolas/escolas.js?v=6156cfb8f2_mttbnx4g"></script>
-    <script src="js/modules/escolas/escolas_workspace.js?v=cbd14d4cc2_mttbnx4g"></script>
-    <script src="js/modules/escolas/escolas_modals.js?v=d32d052d1d_mttbnx4g"></script>
-    <script src="js/modules/matrizes/matrizes.js?v=d2df1a4b54_mttbnx4g"></script>
-    <script src="js/modules/cronograma/cronograma_state.js?v=291ef65907_mttbnx4g"></script>
-    <script src="js/modules/cronograma/cronograma_views_monthly.js?v=8d7fe9a8d7_mttbnx4g"></script>
-    <script src="js/modules/cronograma/cronograma_views_weekly.js?v=17318533ba_mttbnx4g"></script>
-    <script src="js/modules/cronograma/cronograma_views_comparison.js?v=9875be98c6_mttbnx4g"></script>
-    <script src="js/modules/cronograma/cronograma_progress_modal.js?v=f327132831_mttbnx4g"></script>
-    <script src="js/modules/cronograma/cronograma_views.js?v=736673a1aa_mttbnx4g"></script>
-    <script src="js/modules/cronograma/cronograma_planner.js?v=5e9c900526_mttbnx4g"></script>
-    <script src="js/modules/cronograma/cronograma_trash.js?v=b1408ecbe3_mttbnx4g"></script>
-    <script src="js/modules/cronograma/cronograma_calendar_40w.js?v=310bf5af0c_mttbnx4g"></script>
-    <script src="js/modules/cronograma/cronograma.js?v=fa42f11d98_mttbnx4g"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_state.js?v=9246c014a5_mttbnx4g"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_wizard.js?v=23d3745407_mttbnx4g"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_events.js?v=291641d46e_mttbnx4g"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_espelho.js?v=be2165b923_mttbnx4g"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_analytics.js?v=c02f843b04_mttbnx4g"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_print.js?v=4bbcca0d65_mttbnx4g"></script>
-    <script src="js/modules/questoes/questoes_generator.js?v=8e44d7592b_mttbnx4g"></script>
-    <script src="js/modules/questoes/questoes_list.js?v=5543a2c1d7_mttbnx4g"></script>
-    <script src="js/modules/questoes/questoes_import_export.js?v=c7d3bb36d0_mttbnx4g"></script>
-    <script src="js/modules/diagnostico/diagnostico.js?v=e5116c8aaa_mttbnx4g"></script>
-    <script src="js/modules/saeb/saeb_state.js?v=178da7f734_mttbnx4g"></script>
-    <script src="js/modules/saeb/saeb_distribution_view.js?v=ae0be00c12_mttbnx4g"></script>
-    <script src="js/modules/saeb/saeb_comparativo_turmas.js?v=22f1b3636c_mttbnx4g"></script>
-    <script src="js/modules/saeb/saeb_ficha_individual.js?v=a41dbdf173_mttbnx4g"></script>
-    <script src="js/modules/saeb/saeb_boletim.js?v=f2fbc9e7e7_mttbnx4g"></script>
-    <script src="js/modules/saeb/saeb_intervencoes_comparativo.js?v=3002c919ef_mttbnx4g"></script>
-    <script src="js/modules/saeb/saeb.js?v=b4e224328a_mttbnx4g"></script>
-    <script src="js/modules/biblioteca/biblioteca_reader.js?v=743943d3d7_mttbnx4g"></script>
-    <script src="js/modules/biblioteca/biblioteca_upload.js?v=98b16c4eda_mttbnx4g"></script>
-    <script src="js/modules/biblioteca/biblioteca.js?v=d101f88443_mttbnx4g"></script>
-    <script src="js/modules/admin/admin_data.js?v=4146d4760b_mttbnx4g"></script>
-    <script src="js/modules/admin/users/admin_users_validation.js?v=b5f30bc4f4_mttbnx4g"></script>
-    <script src="js/modules/admin/users/admin_users_form.js?v=52c7745115_mttbnx4g"></script>
-    <script src="js/modules/admin/users/admin_users_table.js?v=c09d93f302_mttbnx4g"></script>
-    <script src="js/modules/admin/admin_users.js?v=fad2e74306_mttbnx4g"></script>
-    <script src="js/modules/admin/admin_tenants.js?v=ae5a501f46_mttbnx4g"></script>
-    <script src="js/modules/onboarding/onboarding_tour.js?v=e8a0416e78_mttbnx4g"></script>
-    <script src="js/modules/onboarding/tab_context_tours.js?v=a447973a01_mttbnx4g"></script>
+    <script src="js/modules/dashboard/dashboard_kpis.js?v=1ed1f8c921_mttc3v4s"></script>
+    <script src="js/modules/dashboard/dashboard_charts.js?v=de1a05b8a6_mttc3v4s"></script>
+    <script src="js/modules/dashboard/dashboard_analytics.js?v=a7db1260ed_mttc3v4s"></script>
+    <script src="js/modules/dashboard/dashboard_scales.js?v=38ef0c5f91_mttc3v4s"></script>
+    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=8a942cafe9_mttc3v4s"></script>
+    <script src="js/modules/dashboard/dashboard_scroll_reveal.js?v=765a5ac049_mttc3v4s"></script>
+    <script src="js/modules/alunos/alunos_progression_modal.js?v=9b35c9ce79_mttc3v4s"></script>
+    <script src="js/modules/alunos/alunos_list.js?v=1680ba1e32_mttc3v4s"></script>
+    <script src="js/modules/alunos/alunos_forms.js?v=d65581afbc_mttc3v4s"></script>
+    <script src="js/modules/turmas/turmas_crud.js?v=7b6d46585b_mttc3v4s"></script>
+    <script src="js/modules/turmas/turmas_diario.js?v=afcf4bc505_mttc3v4s"></script>
+    <script src="js/modules/turmas/turmas_professores.js?v=8081cfd558_mttc3v4s"></script>
+    <script src="js/modules/turmas/turmas_planejamento.js?v=4b97ea64d3_mttc3v4s"></script>
+    <script src="js/modules/turmas/turmas_diagnostico_modal.js?v=a6f688ec72_mttc3v4s"></script>
+    <script src="js/modules/metas/metas_regional.js?v=7556fbb4b6_mttc3v4s"></script>
+    <script src="js/modules/metas/metas_pactuacao.js?v=55531875c5_mttc3v4s"></script>
+    <script src="js/modules/metas/metas_escolas_ranking.js?v=d2cab5c654_mttc3v4s"></script>
+    <script src="js/modules/metas/metas_calculo_manual.js?v=db8734a78d_mttc3v4s"></script>
+    <script src="js/modules/metas/metas_ideb.js?v=17b2b704aa_mttc3v4s"></script>
+    <script src="js/modules/escolas/escolas.js?v=6156cfb8f2_mttc3v4s"></script>
+    <script src="js/modules/escolas/escolas_workspace.js?v=cbd14d4cc2_mttc3v4s"></script>
+    <script src="js/modules/escolas/escolas_modals.js?v=d32d052d1d_mttc3v4s"></script>
+    <script src="js/modules/matrizes/matrizes.js?v=d2df1a4b54_mttc3v4s"></script>
+    <script src="js/modules/cronograma/cronograma_state.js?v=291ef65907_mttc3v4s"></script>
+    <script src="js/modules/cronograma/cronograma_views_monthly.js?v=8d7fe9a8d7_mttc3v4s"></script>
+    <script src="js/modules/cronograma/cronograma_views_weekly.js?v=17318533ba_mttc3v4s"></script>
+    <script src="js/modules/cronograma/cronograma_views_comparison.js?v=9875be98c6_mttc3v4s"></script>
+    <script src="js/modules/cronograma/cronograma_progress_modal.js?v=f327132831_mttc3v4s"></script>
+    <script src="js/modules/cronograma/cronograma_views.js?v=736673a1aa_mttc3v4s"></script>
+    <script src="js/modules/cronograma/cronograma_planner.js?v=5e9c900526_mttc3v4s"></script>
+    <script src="js/modules/cronograma/cronograma_trash.js?v=b1408ecbe3_mttc3v4s"></script>
+    <script src="js/modules/cronograma/cronograma_calendar_40w.js?v=310bf5af0c_mttc3v4s"></script>
+    <script src="js/modules/cronograma/cronograma.js?v=fa42f11d98_mttc3v4s"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_state.js?v=9246c014a5_mttc3v4s"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_wizard.js?v=23d3745407_mttc3v4s"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_events.js?v=291641d46e_mttc3v4s"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_espelho.js?v=be2165b923_mttc3v4s"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_analytics.js?v=c02f843b04_mttc3v4s"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_print.js?v=4bbcca0d65_mttc3v4s"></script>
+    <script src="js/modules/questoes/questoes_generator.js?v=8e44d7592b_mttc3v4s"></script>
+    <script src="js/modules/questoes/questoes_list.js?v=5543a2c1d7_mttc3v4s"></script>
+    <script src="js/modules/questoes/questoes_import_export.js?v=c7d3bb36d0_mttc3v4s"></script>
+    <script src="js/modules/diagnostico/diagnostico.js?v=e5116c8aaa_mttc3v4s"></script>
+    <script src="js/modules/saeb/saeb_state.js?v=178da7f734_mttc3v4s"></script>
+    <script src="js/modules/saeb/saeb_distribution_view.js?v=ae0be00c12_mttc3v4s"></script>
+    <script src="js/modules/saeb/saeb_comparativo_turmas.js?v=22f1b3636c_mttc3v4s"></script>
+    <script src="js/modules/saeb/saeb_ficha_individual.js?v=a41dbdf173_mttc3v4s"></script>
+    <script src="js/modules/saeb/saeb_boletim.js?v=f2fbc9e7e7_mttc3v4s"></script>
+    <script src="js/modules/saeb/saeb_intervencoes_comparativo.js?v=3002c919ef_mttc3v4s"></script>
+    <script src="js/modules/saeb/saeb.js?v=b4e224328a_mttc3v4s"></script>
+    <script src="js/modules/biblioteca/biblioteca_reader.js?v=743943d3d7_mttc3v4s"></script>
+    <script src="js/modules/biblioteca/biblioteca_upload.js?v=98b16c4eda_mttc3v4s"></script>
+    <script src="js/modules/biblioteca/biblioteca.js?v=d101f88443_mttc3v4s"></script>
+    <script src="js/modules/admin/admin_data.js?v=4146d4760b_mttc3v4s"></script>
+    <script src="js/modules/admin/users/admin_users_validation.js?v=b5f30bc4f4_mttc3v4s"></script>
+    <script src="js/modules/admin/users/admin_users_form.js?v=52c7745115_mttc3v4s"></script>
+    <script src="js/modules/admin/users/admin_users_table.js?v=c09d93f302_mttc3v4s"></script>
+    <script src="js/modules/admin/admin_users.js?v=fad2e74306_mttc3v4s"></script>
+    <script src="js/modules/admin/admin_tenants.js?v=ae5a501f46_mttc3v4s"></script>
+    <script src="js/modules/onboarding/onboarding_tour.js?v=e8a0416e78_mttc3v4s"></script>
+    <script src="js/modules/onboarding/tab_context_tours.js?v=a447973a01_mttc3v4s"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=82382debd8_mttbnx4g"></script>
-    <script src="js/core/global_cards_animation.js?v=e748bd59fe_mttbnx4g"></script>
-    <script src="js/core/global_button_handlers.js?v=38a379ca14_mttbnx4g"></script>
+    <script src="app.js?v=82382debd8_mttc3v4s"></script>
+    <script src="js/core/global_cards_animation.js?v=e748bd59fe_mttc3v4s"></script>
+    <script src="js/core/global_button_handlers.js?v=38a379ca14_mttc3v4s"></script>
 </body>
 </html>
