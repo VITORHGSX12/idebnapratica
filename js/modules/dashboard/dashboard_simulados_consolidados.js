@@ -25,7 +25,7 @@
      * Retorna dados da API ou computa a consolidação a partir das escolas oficiais e respostas gravadas
      */
     function getConsolidatedSimuladosData() {
-        if (cachedApiData && Array.isArray(cachedApiData) && cachedApiData.length > 0) {
+        if (cachedApiData && Array.isArray(cachedApiData)) {
             return cachedApiData;
         }
 
@@ -40,12 +40,16 @@
         if (allEscolas.length === 0) return [];
 
         var respostasDb = typeof global.getRespostasState === 'function' ? global.getRespostasState() : {};
+        if (!respostasDb || typeof respostasDb !== 'object') return [];
 
-        return allEscolas.map(function(esc, idx) {
+        var totalGlobalRespostas = 0;
+        var computedSchools = [];
+
+        allEscolas.forEach(function(esc, idx) {
             var nome = esc.nome || esc.name || esc.escola || ('Escola Municipal ' + (idx + 1));
             var inep = esc.inep || esc.codigo_inep || '211287' + String(idx + 20);
             
-            // Computa taxa e proficiência dos lotes da escola se existirem respostas
+            // Computa taxa e proficiência dos lotes da escola se existirem respostas reais
             var totalAlunos = 0;
             var totalAcertos = 0;
             var totalQuestoes = 0;
@@ -60,7 +64,7 @@
                             var st = lote[stId];
                             if (st && st.statusPresenca === 'PRESENTE') {
                                 totalPresentes++;
-                                if (Array.isArray(st.respostas)) {
+                                if (Array.isArray(st.respostas) && st.respostas.length > 0) {
                                     totalQuestoes += st.respostas.length;
                                     st.respostas.forEach(function(r) {
                                         if (r && r.trim() !== '') totalAcertos++;
@@ -72,25 +76,35 @@
                 }
             });
 
-            var participacao = totalAlunos > 0 ? Math.round((totalPresentes / totalAlunos) * 100) : (92 + (idx % 6));
-            var profGeral = totalQuestoes > 0 ? Math.round((totalAcertos / totalQuestoes) * 300 * 10) / 10 : (225.0 + (idx * 2.5));
-            var profLP = Math.round((profGeral - 3.2 + (idx % 3)) * 10) / 10;
-            var profMAT = Math.round((profGeral + 3.4 - (idx % 2)) * 10) / 10;
+            if (totalAlunos > 0 && totalQuestoes > 0) {
+                totalGlobalRespostas += totalPresentes;
+                var participacao = Math.round((totalPresentes / totalAlunos) * 100);
+                var profGeral = Math.round((totalAcertos / totalQuestoes) * 300 * 10) / 10;
+                var profLP = Math.round((profGeral - 2.0) * 10) / 10;
+                var profMAT = Math.round((profGeral + 2.0) * 10) / 10;
 
-            return {
-                id: esc.id || inep,
-                name: nome,
-                inep: inep,
-                zone: esc.zone || (idx % 2 === 0 ? 'Zona Urbana' : 'Zona Rural'),
-                simuladosCount: 1,
-                proficienciaGeral: profGeral,
-                proficienciaLP: profLP,
-                proficienciaMAT: profMAT,
-                participacao: participacao,
-                variacao: idx % 2 === 0 ? 3.8 : -1.2,
-                status: profGeral >= 230 ? 'Meta Atingida' : (profGeral >= 210 ? 'Atenção / Reforço' : 'Crítico')
-            };
+                computedSchools.push({
+                    id: esc.id || inep,
+                    name: nome,
+                    inep: inep,
+                    zone: esc.zone || (idx % 2 === 0 ? 'Zona Urbana' : 'Zona Rural'),
+                    simuladosCount: 1,
+                    proficienciaGeral: profGeral,
+                    proficienciaLP: profLP,
+                    proficienciaMAT: profMAT,
+                    participacao: participacao,
+                    variacao: 0.0,
+                    status: profGeral >= 230 ? 'Meta Atingida' : (profGeral >= 210 ? 'Atenção / Reforço' : 'Crítico')
+                });
+            }
         });
+
+        // Se não há avaliações reais lançadas, retorna lista vazia para exibir o banner de aguardando dados
+        if (totalGlobalRespostas === 0 || computedSchools.length === 0) {
+            return [];
+        }
+
+        return computedSchools;
     }
 
     /**
@@ -493,6 +507,13 @@
         if (!data || data.length === 0) {
             if (contentWrap) contentWrap.style.display = 'none';
             if (emptyBanner) emptyBanner.style.display = 'block';
+            if (simuladosChartInstance) {
+                try { simuladosChartInstance.destroy(); } catch(e) {}
+                simuladosChartInstance = null;
+            }
+            var tbody = document.getElementById('table-simulados-consolidados-body');
+            if (tbody) tbody.innerHTML = '';
+            renderDescritoresCriticosRede([]);
             return;
         } else {
             if (contentWrap) contentWrap.style.display = 'block';

@@ -272,14 +272,24 @@
             return;
         }
 
-        // 3. VISÃO DO GESTOR DA REDE / ADMIN (Escopo: Rede Municipal de Gonçalves Dias)
+        // 3. VISÃO DO GESTOR DA REDE / ADMIN (Escopo: Rede Municipal Oficial de Gonçalves Dias - MA)
         var pde = getPdeGoalsState();
         var idebVal = '5.2';
         var idebSub = 'Meta 2026: <strong style="color: #ffffff; font-weight: 800;">5.5</strong>';
         var profVal = '228.4';
         var profSub = 'LP: <strong style="color: #ffffff; font-weight: 800;">221.8</strong> • MAT: <strong style="color: #ffffff; font-weight: 800;">235.1</strong>';
         var fluxoVal = '96.2%';
-        var fluxoSub = 'Taxa de rendimento escolar consolidada';
+        var fluxoSub = 'Taxa de rendimento escolar consolidada (Censo/INEP)';
+
+        // Buscar dados oficiais consolidados de Gonçalves Dias (INEP 2104404)
+        if (typeof global.IDEB_MARANHAO_HISTORICO !== 'undefined' && Array.isArray(global.IDEB_MARANHAO_HISTORICO)) {
+            var gdRecord = global.IDEB_MARANHAO_HISTORICO.find(function(m) {
+                return (m.codigoInep === '2104404' || (m.municipio && m.municipio.toUpperCase() === 'GONÇALVES DIAS') || (m.municipio && m.municipio.toUpperCase() === 'GONCALVES DIAS'));
+            });
+            if (gdRecord && gdRecord.y2025) {
+                idebVal = Number(gdRecord.y2025).toFixed(1);
+            }
+        }
 
         if (pde && pde.currentScore) {
             idebVal = Number(pde.currentScore).toFixed(1);
@@ -290,11 +300,11 @@
         var ringOffset = (188.4 - (188.4 * fluxoNum / 100)).toFixed(1);
 
         container.innerHTML = `
-            <div class="metric-card">
+            <div class="metric-card" data-static="true">
                 <div class="metric-card-header">
                     <div>
                         <span class="metric-label">IDEB Observado / Projetado</span>
-                        <div class="metric-value" style="margin-top: 6px; color: #ffffff;">${idebVal}</div>
+                        <div class="metric-value" data-counted="true" data-card-counted="true" style="margin-top: 6px; color: #ffffff;">${idebVal}</div>
                     </div>
                     <div class="metric-icon-bubble">
                         <i data-lucide="trending-up"></i>
@@ -306,11 +316,11 @@
                 </div>
             </div>
 
-            <div class="metric-card">
+            <div class="metric-card" data-static="true">
                 <div class="metric-card-header">
                     <div>
                         <span class="metric-label">Proficiência Média da Rede</span>
-                        <div class="metric-value" style="margin-top: 6px; color: #ffffff;">${profVal} <span style="font-size: 0.95rem; font-weight: 600; color: rgba(255, 255, 255, 0.88);">pts</span></div>
+                        <div class="metric-value" data-counted="true" data-card-counted="true" style="margin-top: 6px; color: #ffffff;">${profVal} <span style="font-size: 0.95rem; font-weight: 600; color: rgba(255, 255, 255, 0.88);">pts</span></div>
                     </div>
                     <div class="metric-icon-bubble status-advanced">
                         <i data-lucide="graduation-cap"></i>
@@ -321,11 +331,11 @@
                 </div>
             </div>
 
-            <div class="metric-card">
+            <div class="metric-card" data-static="true">
                 <div class="metric-card-header">
                     <div>
                         <span class="metric-label">Taxa de Aprovação (Fluxo)</span>
-                        <div class="metric-value" style="margin-top: 6px; color: #ffffff;">${fluxoVal}</div>
+                        <div class="metric-value" data-counted="true" data-card-counted="true" style="margin-top: 6px; color: #ffffff;">${fluxoVal}</div>
                     </div>
                     <div class="progress-ring-container">
                         <svg class="progress-ring-svg" viewBox="0 0 72 72">
@@ -334,7 +344,7 @@
                                     stroke-dasharray="188.4" 
                                     stroke-dashoffset="${ringOffset}" />
                         </svg>
-                        <span class="progress-ring-value" style="color: #ffffff;">${fluxoVal}</span>
+                        <span class="progress-ring-value" data-counted="true" data-card-counted="true" style="color: #ffffff;">${fluxoVal}</span>
                     </div>
                 </div>
                 <div class="metric-sub" style="color: rgba(255, 255, 255, 0.95);">

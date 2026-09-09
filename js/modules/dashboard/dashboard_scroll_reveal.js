@@ -91,7 +91,7 @@
      */
     function animateCountUp(element, duration) {
         if (!element || isReducedMotion()) return;
-        if (element.getAttribute('data-counted') === 'true') return;
+        if (element.getAttribute('data-counted') === 'true' || element.getAttribute('data-static') === 'true' || (element.closest && element.closest('[data-static="true"]'))) return;
 
         var originalHtml = element.innerHTML.trim();
         var rawText = element.textContent.trim();
