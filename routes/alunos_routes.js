@@ -9,6 +9,7 @@ const crypto = require('crypto');
 const db = require('../db');
 const { authMiddleware, authorize, ownershipCheck } = require('../middleware/auth');
 const { validateTenantAccessDB } = require('../middleware_tenant_subdominio');
+const { normalizeUppercaseEntity } = require('../services/normalization_service');
 
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || 'edu_saas_default_secure_enc_key_32b_2026';
 const keyBuffer = Buffer.isBuffer(ENCRYPTION_KEY) 
@@ -195,17 +196,18 @@ router.get('/students/:id', authMiddleware, async (req, res) => {
 // POST /api/students - Cadastrar estudante
 router.post('/students', authMiddleware, async (req, res) => {
     try {
-        const studentData = req.body || {};
-        if (!studentData.nome || (!studentData.matricula && !studentData.nome)) {
+        const rawData = req.body || {};
+        if (!rawData.nome || (!rawData.matricula && !rawData.nome)) {
             return res.status(400).json({ error: 'Nome do aluno é obrigatório.' });
         }
 
+        const studentData = normalizeUppercaseEntity(rawData, 'aluno');
         const activeTenant = req.tenant?.slug || 'gd';
         const tenantDbId = req.tenant?.id || activeTenant;
 
         const newStudent = {
             ...studentData,
-            id: `aln_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+            id: studentData.id || `aln_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
             matricula: studentData.matricula || String(Math.floor(100000 + Math.random() * 900000)),
             created_at: new Date().toISOString()
         };
@@ -223,6 +225,9 @@ router.post('/students', authMiddleware, async (req, res) => {
             await db.queryWithTenant(tenantDbId, `
                 INSERT INTO alunos (tenant_id, nome, matricula, turma_id, cpf, nascimento)
                 VALUES ($1, $2, $3, $4, $5, $6)
+                ON CONFLICT (matricula) DO UPDATE SET 
+                    nome = EXCLUDED.nome,
+                    turma_id = COALESCE(EXCLUDED.turma_id, alunos.turma_id)
             `, [tenantDbId, newStudent.nome, newStudent.matricula, newStudent.turma_id || null, encryptText(newStudent.cpf), newStudent.nascimento || null]);
         }
 
@@ -318,6 +323,7 @@ router.put('/students/:id', authMiddleware, authorize('Master Admin', 'Gestor da
         const user = req.user;
         const orgId = user.org_id || req.tenant?.slug || 'semed_goncalves_dias';
         const { id } = req.params;
+        const normalizedBody = normalizeUppercaseEntity(req.body || {}, 'aluno');
 
         if (db.useLocalFallback) {
             const raw = fs.readFileSync(db.LOCAL_DB_FILE, 'utf8');
@@ -327,18 +333,37 @@ router.put('/students/:id', authMiddleware, authorize('Master Admin', 'Gestor da
             if (index === -1) {
                 return res.status(404).json({ error: 'Registro não encontrado' });
             }
-            state.dbAlunos[index] = { ...state.dbAlunos[index], ...req.body };
+            state.dbAlunos[index] = { ...state.dbAlunos[index], ...normalizedBody };
             fileState[orgId] = state;
             fs.writeFileSync(db.LOCAL_DB_FILE, JSON.stringify(fileState, null, 2));
             return res.json({ success: true, student: state.dbAlunos[index] });
         }
 
-        const isOwned = await ownershipCheck('alunos', id, orgId);
+        let isOwned = false;
+        let studentDbId = id;
+        try {
+            isOwned = await ownershipCheck('alunos', id, orgId);
+        } catch(e) {}
+
+        if (!isOwned) {
+            try {
+                const matQuery = await db.query('SELECT id FROM alunos WHERE matricula = $1', [id]);
+                if (matQuery.rows && matQuery.rows.length > 0) {
+                    studentDbId = matQuery.rows[0].id;
+                    isOwned = true;
+                }
+            } catch(e) {}
+        }
+
         if (!isOwned) {
             return res.status(404).json({ error: 'Registro não encontrado' });
         }
 
-        res.json({ success: true });
+        if (normalizedBody.nome) {
+            await db.query('UPDATE alunos SET nome = $1 WHERE id = $2', [normalizedBody.nome, studentDbId]);
+        }
+
+        res.json({ success: true, student: { id: studentDbId, ...normalizedBody } });
     } catch (err) {
         console.error('Error in PUT /api/students/:id:', err);
         res.status(500).json({ error: 'Erro ao atualizar aluno.' });

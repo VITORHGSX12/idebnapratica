@@ -22,6 +22,7 @@ const { alunosRouter, maskCPF, maskName, maskAddress, maskNee, applyMaskingToSta
 const simuladosRouter = require('./routes/simulados_routes');
 const { bibliotecaRouter } = require('./routes/biblioteca_routes');
 const { usuariosRouter, isConfigurationGroup, isVisualizationGroup, fetchAllUsersFromDb, insertUserInDb } = require('./routes/usuarios_routes');
+const { avatarRouter } = require('./routes/usuarios_avatar_routes');
 const iaQuestoesRouter = require('./routes/ia_questoes_routes');
 
 const app = express();
@@ -37,6 +38,7 @@ app.use((req, res, next) => {
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(resolveTenant);
 app.use('/api', authRouter);
 app.use('/api', escolasTurmasRouter);
@@ -44,6 +46,7 @@ app.use('/api', alunosRouter);
 app.use('/api', simuladosRouter);
 app.use('/api', bibliotecaRouter);
 app.use('/api', usuariosRouter);
+app.use('/api', avatarRouter);
 app.use('/api', iaQuestoesRouter);
 
 // Health Check

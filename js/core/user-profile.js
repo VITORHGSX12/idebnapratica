@@ -302,91 +302,7 @@
             `;
         }
 
-        var illustrationSvg = `
-            <div class="welcome-banner-illustration" aria-hidden="true">
-                <svg width="190" height="100" viewBox="0 0 190 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="ill-board" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95" />
-                            <stop offset="100%" stop-color="#E2EEF7" stop-opacity="0.88" />
-                        </linearGradient>
-                        <linearGradient id="ill-bar1" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#4A7FA7" />
-                            <stop offset="100%" stop-color="#1A3D63" />
-                        </linearGradient>
-                        <linearGradient id="ill-bar2" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#5DE4BD" />
-                            <stop offset="100%" stop-color="#059669" />
-                        </linearGradient>
-                        <linearGradient id="ill-bar3" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#B3CFE5" />
-                            <stop offset="100%" stop-color="#4A7FA7" />
-                        </linearGradient>
-                        <linearGradient id="ill-cap" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#0A1931" />
-                            <stop offset="100%" stop-color="#1A3D63" />
-                        </linearGradient>
-                        <filter id="ill-shadow" x="20" y="2" width="130" height="100" filterUnits="userSpaceOnUse">
-                            <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#0A1931" flood-opacity="0.22" />
-                        </filter>
-                    </defs>
-                    
-                    <!-- Prancheta / Painel de Análise de Dados -->
-                    <g filter="url(#ill-shadow)">
-                        <rect x="35" y="12" width="100" height="80" rx="8" fill="url(#ill-board)" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" />
-                        <!-- Clipe superior -->
-                        <rect x="68" y="7" width="34" height="10" rx="3" fill="#1A3D63" />
-                        <circle cx="85" cy="12" r="2" fill="#FFFFFF" />
-                        <!-- Linhas de cabeçalho da prancheta -->
-                        <rect x="46" y="24" width="40" height="4" rx="2" fill="#1A3D63" fill-opacity="0.8" />
-                        <rect x="46" y="31" width="24" height="3" rx="1.5" fill="#4A7FA7" fill-opacity="0.6" />
-                        <!-- Linhas de grade -->
-                        <line x1="46" y1="72" x2="124" y2="72" stroke="#B3CFE5" stroke-width="1" stroke-dasharray="2 2" />
-                        <line x1="46" y1="56" x2="124" y2="56" stroke="#B3CFE5" stroke-width="1" stroke-dasharray="2 2" />
-                        <!-- Colunas do Gráfico de Barras -->
-                        <rect x="50" y="52" width="11" height="20" rx="2" fill="url(#ill-bar3)" />
-                        <rect x="67" y="40" width="11" height="32" rx="2" fill="url(#ill-bar1)" />
-                        <rect x="84" y="46" width="11" height="26" rx="2" fill="url(#ill-bar3)" />
-                        <rect x="101" y="32" width="11" height="40" rx="2" fill="url(#ill-bar2)" />
-                        <!-- Linha de tendência SAEB -->
-                        <path d="M 55 48 Q 72 32 90 42 T 107 26" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" />
-                        <circle cx="107" cy="26" r="3" fill="#FFFFFF" stroke="#059669" stroke-width="2" />
-                    </g>
-                    
-                    <!-- Capelo / Chapéu de Formatura Flutuante -->
-                    <g transform="translate(132, 8)">
-                        <polygon points="24,4 44,13 24,22 4,13" fill="url(#ill-cap)" />
-                        <polygon points="24,18 40,12 40,18 24,24 8,18 8,12" fill="#0A1931" opacity="0.85" />
-                        <circle cx="24" cy="13" r="1.8" fill="#B3CFE5" />
-                        <path d="M 24 13 Q 34 16 38 27" fill="none" stroke="#F6FAFD" stroke-width="1.3" />
-                        <circle cx="38" cy="28" r="1.8" fill="#5DE4BD" />
-                    </g>
-                    
-                    <!-- Livro Didático Flutuante -->
-                    <g transform="translate(8, 48)">
-                        <path d="M 4 18 C 12 15 18 18 18 18 L 18 32 C 18 32 12 29 4 32 Z" fill="#1A3D63" />
-                        <path d="M 32 18 C 24 15 18 18 18 18 L 18 32 C 18 32 24 29 32 32 Z" fill="#4A7FA7" />
-                        <path d="M 5 16 C 12 13 17 16 17 16 L 17 30 C 17 30 12 27 5 30 Z" fill="#FFFFFF" />
-                        <path d="M 31 16 C 24 13 19 16 19 16 L 19 30 C 19 30 24 27 31 30 Z" fill="#F6FAFD" />
-                        <path d="M 18 16 L 18 34 L 20 32 L 22 34 L 22 16 Z" fill="#5DE4BD" />
-                    </g>
-                    
-                    <!-- Selo Circular de Aprovação / Meta Batida -->
-                    <g transform="translate(138, 52)">
-                        <circle cx="16" cy="16" r="14" fill="#FFFFFF" fill-opacity="0.95" stroke="#4A7FA7" stroke-width="1.5" />
-                        <circle cx="16" cy="16" r="11" fill="url(#ill-bar2)" />
-                        <path d="M 11 16 L 14 19 L 21 12" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
-                    </g>
-                    
-                    <!-- Elementos de Brilho e Indicadores de Dados -->
-                    <g fill="#FFFFFF" opacity="0.85">
-                        <polygon points="22,14 23.5,9 25,14 30,15.5 25,17 23.5,22 22,17 17,15.5" />
-                        <polygon points="124,5 125,2 126,5 129,6 126,7 125,10 124,7 121,6" />
-                        <polygon points="174,45 175,42 176,45 179,46 176,47 175,50 174,47 171,46" />
-                    </g>
-                </svg>
-            </div>
-        `;
+        var illustrationSvg = '<div class="welcome-banner-illustration" aria-hidden="true"><svg width="190" height="100" viewBox="0 0 190 100" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ill-board" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95" /><stop offset="100%" stop-color="#E2EEF7" stop-opacity="0.88" /></linearGradient><linearGradient id="ill-bar1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4A7FA7" /><stop offset="100%" stop-color="#1A3D63" /></linearGradient><linearGradient id="ill-bar2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5DE4BD" /><stop offset="100%" stop-color="#059669" /></linearGradient><linearGradient id="ill-bar3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#B3CFE5" /><stop offset="100%" stop-color="#4A7FA7" /></linearGradient><linearGradient id="ill-cap" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0A1931" /><stop offset="100%" stop-color="#1A3D63" /></linearGradient><filter id="ill-shadow" x="20" y="2" width="130" height="100" filterUnits="userSpaceOnUse"><feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#0A1931" flood-opacity="0.22" /></filter></defs><g filter="url(#ill-shadow)"><rect x="35" y="12" width="100" height="80" rx="8" fill="url(#ill-board)" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" /><rect x="68" y="7" width="34" height="10" rx="3" fill="#1A3D63" /><circle cx="85" cy="12" r="2" fill="#FFFFFF" /><rect x="46" y="24" width="40" height="4" rx="2" fill="#1A3D63" fill-opacity="0.8" /><rect x="46" y="31" width="24" height="3" rx="1.5" fill="#4A7FA7" fill-opacity="0.6" /><line x1="46" y1="72" x2="124" y2="72" stroke="#B3CFE5" stroke-width="1" stroke-dasharray="2 2" /><line x1="46" y1="56" x2="124" y2="56" stroke="#B3CFE5" stroke-width="1" stroke-dasharray="2 2" /><rect x="50" y="52" width="11" height="20" rx="2" fill="url(#ill-bar3)" /><rect x="67" y="40" width="11" height="32" rx="2" fill="url(#ill-bar1)" /><rect x="84" y="46" width="11" height="26" rx="2" fill="url(#ill-bar3)" /><rect x="101" y="32" width="11" height="40" rx="2" fill="url(#ill-bar2)" /><path d="M 55 48 Q 72 32 90 42 T 107 26" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" /><circle cx="107" cy="26" r="3" fill="#FFFFFF" stroke="#059669" stroke-width="2" /></g><g transform="translate(132, 8)"><polygon points="24,4 44,13 24,22 4,13" fill="url(#ill-cap)" /><polygon points="24,18 40,12 40,18 24,24 8,18 8,12" fill="#0A1931" opacity="0.85" /><circle cx="24" cy="13" r="1.8" fill="#B3CFE5" /><path d="M 24 13 Q 34 16 38 27" fill="none" stroke="#F6FAFD" stroke-width="1.3" /><circle cx="38" cy="28" r="1.8" fill="#5DE4BD" /></g><g transform="translate(8, 48)"><path d="M 4 18 C 12 15 18 18 18 18 L 18 32 C 18 32 12 29 4 32 Z" fill="#1A3D63" /><path d="M 32 18 C 24 15 18 18 18 18 L 18 32 C 18 32 24 29 32 32 Z" fill="#4A7FA7" /><path d="M 5 16 C 12 13 17 16 17 16 L 17 30 C 17 30 12 27 5 30 Z" fill="#FFFFFF" /><path d="M 31 16 C 24 13 19 16 19 16 L 19 30 C 19 30 24 27 31 30 Z" fill="#F6FAFD" /><path d="M 18 16 L 18 34 L 20 32 L 22 34 L 22 16 Z" fill="#5DE4BD" /></g><g transform="translate(138, 52)"><circle cx="16" cy="16" r="14" fill="#FFFFFF" fill-opacity="0.95" stroke="#4A7FA7" stroke-width="1.5" /><circle cx="16" cy="16" r="11" fill="url(#ill-bar2)" /><path d="M 11 16 L 14 19 L 21 12" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></g><g fill="#FFFFFF" opacity="0.85"><polygon points="22,14 23.5,9 25,14 30,15.5 25,17 23.5,22 22,17 17,15.5" /><polygon points="124,5 125,2 126,5 129,6 126,7 125,10 124,7 121,6" /><polygon points="174,45 175,42 176,45 179,46 176,47 175,50 174,47 171,46" /></g></svg></div>';
 
         banner.innerHTML = `
             <div style="display: flex; flex-direction: column; width: 100%;">
@@ -441,49 +357,114 @@
     }
 
     /**
-     * Abre o Modal de Edição do Perfil do Usuário
+     * Abre o Modal "Meu Perfil" (Somente Leitura de Vínculos + Troca de Foto de Perfil)
      */
-    function openUserProfileModal() {
+    async function openUserProfileModal() {
         var modal = document.getElementById('modal-user-profile');
         if (!modal) return;
 
         var profile = getCurrentUserProfile();
-        selectedProfileIcon = profile.avatarIcon || '🧑‍💼';
 
-        var elName = document.getElementById('profile-input-name');
-        var elEmail = document.getElementById('profile-input-email');
-        var elRole = document.getElementById('profile-input-role');
-        var elPhoto = document.getElementById('profile-input-photo-url');
+        var elName = document.getElementById('profile-view-name') || document.getElementById('profile-input-name');
+        var elEmail = document.getElementById('profile-view-email') || document.getElementById('profile-input-email');
+        var elRole = document.getElementById('profile-view-role') || document.getElementById('profile-input-role');
+        var badgesContainer = document.getElementById('profile-view-perfis-badges');
         var preview = document.getElementById('profile-avatar-preview');
+        var btnRemovePhoto = document.getElementById('btn-remove-avatar-photo');
 
-        if (elName) elName.value = profile.name || '';
-        if (elEmail) elEmail.value = profile.email || '';
-        if (elRole) elRole.value = profile.role || 'Gestor(a) da Rede';
-        if (elPhoto) elPhoto.value = profile.avatarPhoto || '';
-
-        if (preview) {
-            if (profile.avatarPhoto) {
-                preview.innerHTML = '<img src="' + profile.avatarPhoto + '" alt="' + profile.name + '" style="width:100%; height:100%; object-fit:cover;">';
-            } else {
-                preview.innerHTML = '<img src="assets/icons/profile.svg" alt="Avatar" style="width:100%; height:100%; object-fit:cover;">';
-            }
+        if (elName) {
+            if (elName.tagName === 'INPUT') elName.value = profile.name || '';
+            else elName.textContent = profile.name || 'Gestor da Rede';
+        }
+        if (elEmail) {
+            if (elEmail.tagName === 'INPUT') elEmail.value = profile.email || '';
+            else elEmail.textContent = profile.email || 'semed@goncalvesdias.ma.gov.br';
+        }
+        if (elRole && elRole.tagName !== 'INPUT') {
+            elRole.textContent = profile.role || 'Gestor(a) da Rede';
         }
 
-        // Marcar botão de emoji ativo
-        document.querySelectorAll('.avatar-option-btn').forEach(function(btn) {
-            if (btn.getAttribute('data-icon') === selectedProfileIcon) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
-        });
+        // Renderiza lista informativa de perfis vinculados (somente leitura)
+        if (badgesContainer) {
+            var perfis = getUserPerfis();
+            var activeRole = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('userRole')) ||
+                             (typeof localStorage !== 'undefined' && localStorage.getItem('userRole')) || profile.role;
+
+            badgesContainer.innerHTML = perfis.map(function(r) {
+                var isActive = (r.toLowerCase() === (activeRole || '').toLowerCase());
+                if (isActive) {
+                    return '<span class="badge badge-primary" style="display:inline-flex; align-items:center; gap:5px; padding:6px 12px; font-size:0.8rem; font-weight:700; border-radius:20px; background:#1A3D63; color:#FFFFFF; border:1px solid #4A7FA7;"><i data-lucide="check-circle-2" style="width:13px; height:13px;"></i> ' + r + ' <span style="font-size:0.65rem; background:#5DE4BD; color:#0A1931; padding:1px 6px; border-radius:10px; font-weight:800; margin-left:2px;">ATIVO</span></span>';
+                } else {
+                    return '<span class="badge badge-neutral" style="display:inline-flex; align-items:center; gap:5px; padding:6px 12px; font-size:0.8rem; font-weight:600; border-radius:20px; background:rgba(255,255,255,0.08); color:var(--text-secondary); border:1px solid var(--border-color);"><i data-lucide="shield" style="width:13px; height:13px;"></i> ' + r + '</span>';
+                }
+            }).join('');
+        }
+
+        // Renderiza preview do avatar
+        renderModalAvatarPreview(profile.avatarPhoto, profile.name);
+
+        if (btnRemovePhoto) {
+            btnRemovePhoto.style.display = profile.avatarPhoto ? 'inline-flex' : 'none';
+        }
 
         modal.style.display = 'flex';
         modal.classList.remove('hidden');
+
+        if (window.lucide && typeof lucide.createIcons === 'function') {
+            try { lucide.createIcons(); } catch(e) {}
+        }
+
+        // Tenta sincronizar com o backend em segundo plano para refletir dados mais recentes
+        try {
+            var token = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('authToken')) ||
+                        (typeof localStorage !== 'undefined' && localStorage.getItem('authToken'));
+            if (token && typeof fetch === 'function') {
+                var res = await fetch('/api/usuarios/me', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                if (res.ok) {
+                    var userData = await res.json();
+                    if (userData && userData.user) {
+                        var u = userData.user;
+                        if (u.nome && elName) {
+                            if (elName.tagName === 'INPUT') elName.value = u.nome;
+                            else elName.textContent = u.nome;
+                        }
+                        if (u.email && elEmail) {
+                            if (elEmail.tagName === 'INPUT') elEmail.value = u.email;
+                            else elEmail.textContent = u.email;
+                        }
+                        if (u.avatar_url !== undefined && u.avatar_url !== profile.avatarPhoto) {
+                            profile.avatarPhoto = u.avatar_url || '';
+                            saveCurrentUserProfile(profile);
+                            renderModalAvatarPreview(profile.avatarPhoto, u.nome || profile.name);
+                            if (btnRemovePhoto) {
+                                btnRemovePhoto.style.display = profile.avatarPhoto ? 'inline-flex' : 'none';
+                            }
+                        }
+                    }
+                }
+            }
+        } catch(syncErr) {
+            console.warn('[openUserProfileModal] Sync offline:', syncErr);
+        }
     }
 
     /**
-     * Fecha o Modal de Edição de Perfil
+     * Renderiza o container de preview do avatar no modal
+     */
+    function renderModalAvatarPreview(avatarPhoto, name) {
+        var preview = document.getElementById('profile-avatar-preview');
+        if (!preview) return;
+        if (avatarPhoto) {
+            preview.innerHTML = '<img src="' + avatarPhoto + '" alt="' + (name || 'Avatar') + '" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">';
+        } else {
+            preview.innerHTML = '<img src="assets/icons/profile.svg" alt="Avatar" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">';
+        }
+    }
+
+    /**
+     * Fecha o Modal de Perfil
      */
     function closeUserProfileModal() {
         var modal = document.getElementById('modal-user-profile');
@@ -491,78 +472,152 @@
             modal.style.display = 'none';
             modal.classList.add('hidden');
         }
+        var fileInput = document.getElementById('profile-avatar-file-input');
+        if (fileInput) fileInput.value = '';
     }
 
     /**
-     * Seleciona um ícone/emoji para o avatar do usuário
-     * @param {string} icon 
-     * @param {HTMLElement} btnEl 
+     * Dispara o seletor de arquivos de imagem do dispositivo
      */
-    function selectProfileAvatar(icon, btnEl) {
-        selectedProfileIcon = icon;
-        document.querySelectorAll('.avatar-option-btn').forEach(function(btn) {
-            btn.classList.remove('active');
-        });
-        if (btnEl) btnEl.classList.add('active');
-
-        var elPhoto = document.getElementById('profile-input-photo-url');
-        if (elPhoto) elPhoto.value = '';
-
-        var preview = document.getElementById('profile-avatar-preview');
-        if (preview) preview.innerHTML = icon;
+    function triggerProfileAvatarFileInput() {
+        var input = document.getElementById('profile-avatar-file-input');
+        if (input) input.click();
     }
 
     /**
-     * Pré-visualiza uma foto a partir de URL informada
-     * @param {string} url 
+     * Trata a seleção de arquivo de imagem do usuário (validação tipo + tamanho máximo 5MB)
+     * @param {HTMLInputElement} input 
      */
-    function previewProfilePhotoUrl(url) {
-        var preview = document.getElementById('profile-avatar-preview');
-        if (!preview) return;
-        var trimmed = (url || '').trim();
-        if (trimmed) {
-            preview.innerHTML = '<img src="' + trimmed + '" alt="Preview" style="width:100%; height:100%; object-fit:cover;" onerror="this.onerror=null; this.parentElement.innerHTML=\'' + selectedProfileIcon + '\';">';
-        } else {
-            preview.innerHTML = selectedProfileIcon;
-        }
-    }
+    async function handleProfileAvatarFileSelect(input) {
+        if (!input || !input.files || input.files.length === 0) return;
+        var file = input.files[0];
 
-    /**
-     * Trata o submit do formulário de perfil do usuário
-     * @param {Event} event 
-     */
-    function handleSaveUserProfile(event) {
-        if (event) event.preventDefault();
-
-        var elName = document.getElementById('profile-input-name');
-        var elEmail = document.getElementById('profile-input-email');
-        var elRole = document.getElementById('profile-input-role');
-        var elPhoto = document.getElementById('profile-input-photo-url');
-
-        var nameVal = elName ? elName.value.trim() : '';
-        var emailVal = elEmail ? elEmail.value.trim() : '';
-        var roleVal = elRole ? elRole.value : '';
-        var photoVal = elPhoto ? elPhoto.value.trim() : '';
-
-        if (!nameVal) {
-            var err = document.getElementById('err-profile-name');
-            if (err) err.style.display = 'block';
+        // 1. Validação de Tipo de Arquivo
+        var allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+        if (!allowedTypes.includes(file.type.toLowerCase())) {
+            if (typeof global.showToast === 'function') {
+                global.showToast('Formato inválido! Envie uma imagem JPG, PNG ou WEBP.', 'alert-triangle');
+            } else {
+                alert('Formato de arquivo inválido. Por favor, selecione uma imagem JPG, PNG ou WEBP.');
+            }
+            input.value = '';
             return;
         }
 
-        var profileData = {
-            name: nameVal,
-            email: emailVal || 'semed@goncalvesdias.ma.gov.br',
-            role: roleVal || 'Gestor(a) da Rede',
-            avatarIcon: selectedProfileIcon || '🧑‍💼',
-            avatarPhoto: photoVal || ''
+        // 2. Validação de Tamanho Máximo (5MB = 5 * 1024 * 1024 bytes)
+        var maxSizeBytes = 5 * 1024 * 1024;
+        if (file.size > maxSizeBytes) {
+            if (typeof global.showToast === 'function') {
+                global.showToast('Tamanho excedido! A imagem deve ter no máximo 5MB.', 'alert-triangle');
+            } else {
+                alert('A imagem selecionada é muito grande. O tamanho máximo permitido é 5MB.');
+            }
+            input.value = '';
+            return;
+        }
+
+        // 3. Preview imediato no modal
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            renderModalAvatarPreview(e.target.result, 'Preview');
         };
+        reader.readAsDataURL(file);
 
-        saveCurrentUserProfile(profileData);
-        closeUserProfileModal();
+        // 4. Upload para o backend
+        await uploadAvatarFile(file);
+    }
 
-        if (typeof global.showToast === 'function') {
-            global.showToast('Perfil de "' + nameVal + '" salvo com sucesso!', 'check');
+    /**
+     * Envia a imagem para o backend via endpoint POST /usuarios/:id/avatar
+     * @param {File} file 
+     */
+    async function uploadAvatarFile(file) {
+        var token = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('authToken')) ||
+                    (typeof localStorage !== 'undefined' && localStorage.getItem('authToken'));
+
+        var formData = new FormData();
+        formData.append('avatar', file);
+
+        try {
+            if (typeof global.showToast === 'function') {
+                global.showToast('Enviando nova foto de perfil...', 'info');
+            }
+
+            var res = await fetch('/api/usuarios/me/avatar', {
+                method: 'POST',
+                headers: token ? { 'Authorization': 'Bearer ' + token } : {},
+                body: formData
+            });
+
+            if (!res.ok) {
+                var errData = await res.json().catch(function() { return {}; });
+                throw new Error(errData.error || 'Falha no upload do avatar');
+            }
+
+            var data = await res.json();
+            var newAvatarUrl = data.avatar_url || '';
+
+            // Atualiza perfil localmente
+            var profile = getCurrentUserProfile();
+            profile.avatarPhoto = newAvatarUrl;
+            saveCurrentUserProfile(profile);
+
+            // Atualiza UI em tempo real
+            updateUserHeaderUI();
+            renderModalAvatarPreview(newAvatarUrl, profile.name);
+
+            var btnRemovePhoto = document.getElementById('btn-remove-avatar-photo');
+            if (btnRemovePhoto) btnRemovePhoto.style.display = 'inline-flex';
+
+            if (typeof global.showToast === 'function') {
+                global.showToast('Foto de perfil atualizada com sucesso!', 'check-circle');
+            }
+        } catch(err) {
+            console.error('[uploadAvatarFile Error]:', err);
+            // Reverte preview para o avatar persistido
+            var current = getCurrentUserProfile();
+            renderModalAvatarPreview(current.avatarPhoto, current.name);
+
+            if (typeof global.showToast === 'function') {
+                global.showToast('Erro ao atualizar foto: ' + (err.message || 'Tente novamente'), 'alert-triangle');
+            }
+        }
+    }
+
+    /**
+     * Remove a foto de perfil atual voltando ao avatar padrão
+     */
+    async function removeProfileAvatar() {
+        var token = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('authToken')) ||
+                    (typeof localStorage !== 'undefined' && localStorage.getItem('authToken'));
+
+        try {
+            var res = await fetch('/api/usuarios/me/avatar', {
+                method: 'DELETE',
+                headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+            });
+
+            var profile = getCurrentUserProfile();
+            profile.avatarPhoto = '';
+            saveCurrentUserProfile(profile);
+
+            updateUserHeaderUI();
+            renderModalAvatarPreview('', profile.name);
+
+            var btnRemovePhoto = document.getElementById('btn-remove-avatar-photo');
+            if (btnRemovePhoto) btnRemovePhoto.style.display = 'none';
+
+            var fileInput = document.getElementById('profile-avatar-file-input');
+            if (fileInput) fileInput.value = '';
+
+            if (typeof global.showToast === 'function') {
+                global.showToast('Foto de perfil removida com sucesso.', 'check');
+            }
+        } catch(err) {
+            console.error('[removeProfileAvatar Error]:', err);
+            if (typeof global.showToast === 'function') {
+                global.showToast('Erro ao remover foto de perfil.', 'alert-triangle');
+            }
         }
     }
 
@@ -574,9 +629,10 @@
     global.renderDashboardWelcomeBanner = renderDashboardWelcomeBanner;
     global.openUserProfileModal = openUserProfileModal;
     global.closeUserProfileModal = closeUserProfileModal;
-    global.selectProfileAvatar = selectProfileAvatar;
-    global.previewProfilePhotoUrl = previewProfilePhotoUrl;
-    global.handleSaveUserProfile = handleSaveUserProfile;
+    global.triggerProfileAvatarFileInput = triggerProfileAvatarFileInput;
+    global.handleProfileAvatarFileSelect = handleProfileAvatarFileSelect;
+    global.uploadAvatarFile = uploadAvatarFile;
+    global.removeProfileAvatar = removeProfileAvatar;
     global.getUserPerfis = getUserPerfis;
     global.renderSidebarProfileSwitcher = renderSidebarProfileSwitcher;
     global.switchActiveSessionProfile = switchActiveSessionProfile;

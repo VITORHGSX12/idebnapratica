@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" href="assets/brand/ideb_symbol_app_icon.svg">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="design-tokens.css?v=20260830_v2">
-    <link rel="stylesheet" href="styles.css?v=401e2b9ee4_mttc3v4s">
+    <link rel="stylesheet" href="styles.css?v=855803dda1_mttcr30l">
     <link rel="stylesheet" href="login-premium.css?v=20260830_v2">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -6995,7 +6995,7 @@
     </div>
 
     <!-- =========================================================================
-         MODAL DE GERENCIAMENTO E EDIÇÃO DE PERFIL DO USUÁRIO
+         MODAL "MEU PERFIL" (VISUALIZAÇÃO DE VÍNCULOS + UPLOAD DE FOTO DE PERFIL)
          ========================================================================= -->
     <div id="modal-user-profile" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(6px); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
         <div class="modal-card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 520px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35); overflow: hidden; animation: modalFadeIn 0.2s ease-out;">
@@ -7006,8 +7006,8 @@
                         👤
                     </div>
                     <div>
-                        <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">Meu Perfil de Usuário</h3>
-                        <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">Personalize seu nome, cargo e foto de exibição no sistema.</p>
+                        <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">Meu Perfil</h3>
+                        <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">Informações cadastrais e vínculos de acesso no sistema.</p>
                     </div>
                 </div>
                 <button type="button" onclick="closeUserProfileModal();" class="btn-icon" style="background: none; border: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer; padding: 4px;" title="Fechar">
@@ -7015,74 +7015,75 @@
                 </button>
             </div>
 
-            <!-- Corpo do Modal / Formulário -->
-            <form id="form-user-profile" onsubmit="handleSaveUserProfile(event);" style="padding: 24px; display: flex; flex-direction: column; gap: 18px;">
-                <!-- Seção 1: Escolha do Avatar / Foto -->
-                <div>
-                    <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
-                        Avatar / Foto de Perfil
-                    </label>
-                    <div style="display: flex; align-items: center; gap: 16px;">
-                        <div id="profile-avatar-preview" style="width: 60px; height: 60px; border-radius: var(--radius-sm); background: var(--color-brand-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: 700; border: 1px solid var(--color-border-strong); flex-shrink: 0; overflow: hidden;">
-                            <img src="assets/icons/profile.svg" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
-                        </div>
-                        <div style="flex: 1;">
-                            <div style="font-size: var(--text-xs); color: var(--color-text-secondary); margin-bottom: 6px;">Ou informe a URL de uma foto institucional:</div>
-                            <input type="url" id="profile-input-photo-url" class="form-input-text" placeholder="https://exemplo.com/sua-foto.jpg" style="width: 100%; font-size: var(--text-sm); padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--color-border-strong); background: var(--color-surface-card); color: var(--color-text-primary);" oninput="previewProfilePhotoUrl(this.value)">
+            <!-- Corpo do Modal -->
+            <div style="padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+                <!-- Seção 1: Foto de Perfil + Upload -->
+                <div style="display: flex; align-items: center; gap: 18px; padding: 14px 16px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                    <div id="profile-avatar-preview" style="width: 72px; height: 72px; border-radius: 50%; background: #1A3D63; color: white; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; border: 2px solid #4A7FA7; flex-shrink: 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                        <img src="assets/icons/profile.svg" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin-bottom: 3px;">Foto de Perfil</div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 10px;">Formatos: JPG, PNG ou WEBP (máx. 5MB)</div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <input type="file" id="profile-avatar-file-input" accept="image/jpeg, image/png, image/webp" style="display: none;" onchange="handleProfileAvatarFileSelect(this);">
+                            <button type="button" onclick="triggerProfileAvatarFileInput();" class="btn btn-primary" style="height: 32px; font-size: 0.78rem; padding: 0 12px; display: inline-flex; align-items: center; gap: 6px;">
+                                <i data-lucide="camera" style="width: 14px; height: 14px;"></i>
+                                <span>Alterar Foto</span>
+                            </button>
+                            <button type="button" id="btn-remove-avatar-photo" onclick="removeProfileAvatar();" class="btn btn-outline" style="height: 32px; font-size: 0.78rem; padding: 0 12px; display: none; align-items: center; gap: 6px; color: var(--color-status-critical-text);">
+                                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                                <span>Remover</span>
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Campo: Nome Completo -->
-                <div>
-                    <label style="display: block; font-size: var(--text-sm); font-weight: 700; color: var(--color-brand-primary); margin-bottom: 4px;">
-                        Nome de Exibição / Usuário <span style="color: var(--color-status-critical);">*</span>
-                    </label>
-                    <input type="text" id="profile-input-name" class="form-input-text" required placeholder="Ex: Maria Eduarda Silva" style="width: 100%; font-size: var(--text-body); font-weight: 600; padding: 9px 12px; border-radius: var(--radius-sm); border: 1px solid var(--color-border-strong); background: var(--color-surface-card); color: var(--color-text-primary);">
-                    <span id="err-profile-name" style="display: none; color: var(--color-status-critical); font-size: var(--text-xs); margin-top: 3px;">Informe seu nome de usuário.</span>
+                <!-- Seção 2: Dados Pessoais (Somente Leitura) -->
+                <div style="display: flex; flex-direction: column; gap: 14px;">
+                    <div>
+                        <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">
+                            Nome Completo (Somente Leitura)
+                        </label>
+                        <input type="text" id="profile-view-name" class="form-input-text" readonly value="Gestor da Rede" style="width: 100%; font-size: 0.9rem; font-weight: 600; padding: 9px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: rgba(255, 255, 255, 0.04); color: var(--text-primary); cursor: not-allowed;">
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">
+                            E-mail Institucional (Somente Leitura)
+                        </label>
+                        <input type="email" id="profile-view-email" class="form-input-text" readonly value="semed@goncalvesdias.ma.gov.br" style="width: 100%; font-size: 0.9rem; padding: 9px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: rgba(255, 255, 255, 0.04); color: var(--text-primary); cursor: not-allowed;">
+                    </div>
                 </div>
 
-                <!-- Campo: Cargo / Função -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                    <div>
-                        <label style="display: block; font-size: var(--text-sm); font-weight: 700; color: var(--color-brand-primary); margin-bottom: 4px;">
-                            Cargo / Função
+                <!-- Seção 3: Perfis e Vínculos de Acesso (Badges Somente Leitura) -->
+                <div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                        <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">
+                            Perfis e Grupos de Acesso Vinculados
                         </label>
-                        <select id="profile-input-role" class="form-select" style="width: 100%; font-size: var(--text-body); padding: 8px 10px; border-radius: var(--radius-sm); border: 1px solid var(--color-border-strong); background: var(--color-surface-card); color: var(--color-text-primary); font-weight: 600;">
-                            <option value="Gestor(a) da Rede">Gestor(a) da Rede</option>
-                            <option value="Secretário(a) de Educação">Secretário(a) de Educação</option>
-                            <option value="Diretor(a) Escolar">Diretor(a) Escolar</option>
-                            <option value="Coordenador(a) Pedagógico(a)">Coordenador(a) Pedagógico(a)</option>
-                            <option value="Professor(a)">Professor(a)</option>
-                            <option value="Administrador(a) do Sistema">Administrador(a) do Sistema</option>
-                        </select>
+                        <span style="font-size: 0.7rem; color: var(--text-muted); font-style: italic;">Somente Leitura</span>
                     </div>
-
-                    <div>
-                        <label style="display: block; font-size: var(--text-sm); font-weight: 700; color: var(--color-brand-primary); margin-bottom: 4px;">
-                            E-mail Institucional
-                        </label>
-                        <input type="email" id="profile-input-email" class="form-input-text" placeholder="semed@goncalvesdias.ma.gov.br" style="width: 100%; font-size: var(--text-body); padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--color-border-strong); background: var(--color-surface-card); color: var(--color-text-primary);">
+                    <div id="profile-view-perfis-badges" style="display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; background: rgba(255, 255, 255, 0.02); border: 1px dashed var(--border-color); border-radius: var(--radius-md); min-height: 48px; align-items: center;">
+                        <!-- Inserido dinamicamente via JS com tags informativas -->
                     </div>
+                    <p style="margin: 6px 0 0 0; font-size: 0.72rem; color: var(--text-muted);">
+                        * A alteração de vínculos e papéis de acesso é restrita aos administradores e realizada exclusivamente na Gestão de Usuários.
+                    </p>
                 </div>
 
                 <!-- Footer do Modal -->
-                <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 10px; padding-top: 16px; border-top: 1px solid var(--color-border-subtle);">
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 6px; padding-top: 16px; border-top: 1px solid var(--border-color);">
                     <button type="button" onclick="handleSystemLogout();" class="btn btn-outline" style="color: var(--color-status-critical-text); border-color: var(--color-status-critical-border); background: var(--color-status-critical-bg); font-size: var(--text-xs); font-weight: 700; padding: 0 14px; height: 38px; display: inline-flex; align-items: center; gap: 6px;">
                         <img src="assets/icons/sair.svg" alt="" aria-hidden="true" style="width: 14px; height: 14px; filter: brightness(0) saturate(100%) invert(32%) sepia(85%) saturate(2250%) hue-rotate(341deg) brightness(98%) contrast(92%);">
                         <span>Encerrar Sessão</span>
                     </button>
 
-                    <div style="display: flex; gap: 8px;">
-                        <button type="button" onclick="closeUserProfileModal();" class="btn btn-outline" style="padding: 0 16px; height: 38px; font-weight: 600; font-size: var(--text-sm);">
-                            Cancelar
-                        </button>
-                        <button type="submit" id="btn-save-user-profile" class="btn btn-primary" style="padding: 0 20px; height: 38px;">
-                            <span>Salvar Alterações</span>
-                        </button>
-                    </div>
+                    <button type="button" onclick="closeUserProfileModal();" class="btn btn-primary" style="padding: 0 24px; height: 38px; font-weight: 700; font-size: var(--text-sm);">
+                        <span>Fechar</span>
+                    </button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
@@ -7372,97 +7373,98 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 
     <!-- Bases de Dados Oficiais da Plataforma -->
-    <script src="ideb_maranhao_oficial_2015_2025.js?v=341bc2b5e3_mttc3v4s"></script>
-    <script src="escolas_maranhao_oficial_2015_2025.js?v=daec643646_mttc3v4s"></script>
-    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mttc3v4s"></script>
-    <script src="bncc_habilidades_oficial.js?v=2f802bf604_mttc3v4s"></script>
-    <script src="ideb_publico_db.js?v=fa7edb185f_mttc3v4s"></script>
-    <script src="alunos_db.js?v=e23fe3179f_mttc3v4s"></script>
-    <script src="js/data/official_students_seed.js?v=876be25c9a_mttc3v4s"></script>
+    <script src="ideb_maranhao_oficial_2015_2025.js?v=341bc2b5e3_mttcr30l"></script>
+    <script src="escolas_maranhao_oficial_2015_2025.js?v=daec643646_mttcr30l"></script>
+    <script src="matriz_descritores_excel_oficial.js?v=8fa68c04e7_mttcr30l"></script>
+    <script src="bncc_habilidades_oficial.js?v=2f802bf604_mttcr30l"></script>
+    <script src="ideb_publico_db.js?v=fa7edb185f_mttcr30l"></script>
+    <script src="alunos_db.js?v=e23fe3179f_mttcr30l"></script>
+    <script src="js/data/official_students_seed.js?v=876be25c9a_mttcr30l"></script>
 
     <!-- Módulos do Core -->
-    <script src="js/core/security.js?v=9d4fc4a791_mttc3v4s"></script>
-    <script src="js/core/helpers.js?v=7656a2a6bb_mttc3v4s"></script>
-    <script src="js/core/theme-toast.js?v=c181c006e0_mttc3v4s"></script>
-    <script src="js/core/chart-theme.js?v=c8e29467a8_mttc3v4s"></script>
-    <script src="js/core/user-profile.js?v=7047b260a3_mttc3v4s"></script>
-    <script src="js/data/official_users_directory.js?v=24a756e04c_mttc3v4s"></script>
-    <script src="js/core/login-animation.js?v=414e14bbcd_mttc3v4s"></script>
-    <script src="js/core/auth/auth_password.js?v=53356702d7_mttc3v4s"></script>
-    <script src="js/core/auth/auth_login.js?v=b5f6be2503_mttc3v4s"></script>
-    <script src="js/core/auth.js?v=46bed59cde_mttc3v4s"></script>
-    <script src="js/core/navigation/navigation_meta.js?v=256a33a6c1_mttc3v4s"></script>
-    <script src="js/core/navigation/navigation_history.js?v=a09c33f4ae_mttc3v4s"></script>
-    <script src="js/core/navigation/navigation_events.js?v=7e416c2fa3_mttc3v4s"></script>
-    <script src="js/core/navigation.js?v=0ee55dd7e3_mttc3v4s"></script>
-    <script src="js/core/sync.js?v=73ebd2560a_mttc3v4s"></script>
+    <script src="js/core/security.js?v=9d4fc4a791_mttcr30l"></script>
+    <script src="js/core/helpers.js?v=7656a2a6bb_mttcr30l"></script>
+    <script src="js/core/uppercase_lock.js?v=ab1a21e667_mttcr30l"></script>
+    <script src="js/core/theme-toast.js?v=c181c006e0_mttcr30l"></script>
+    <script src="js/core/chart-theme.js?v=c8e29467a8_mttcr30l"></script>
+    <script src="js/core/user-profile.js?v=f7991d5c6a_mttcr30l"></script>
+    <script src="js/data/official_users_directory.js?v=24a756e04c_mttcr30l"></script>
+    <script src="js/core/login-animation.js?v=414e14bbcd_mttcr30l"></script>
+    <script src="js/core/auth/auth_password.js?v=53356702d7_mttcr30l"></script>
+    <script src="js/core/auth/auth_login.js?v=b5f6be2503_mttcr30l"></script>
+    <script src="js/core/auth.js?v=46bed59cde_mttcr30l"></script>
+    <script src="js/core/navigation/navigation_meta.js?v=256a33a6c1_mttcr30l"></script>
+    <script src="js/core/navigation/navigation_history.js?v=a09c33f4ae_mttcr30l"></script>
+    <script src="js/core/navigation/navigation_events.js?v=7e416c2fa3_mttcr30l"></script>
+    <script src="js/core/navigation.js?v=0ee55dd7e3_mttcr30l"></script>
+    <script src="js/core/sync.js?v=73ebd2560a_mttcr30l"></script>
 
     <!-- Módulos de Domínio -->
-    <script src="js/modules/dashboard/dashboard_kpis.js?v=1ed1f8c921_mttc3v4s"></script>
-    <script src="js/modules/dashboard/dashboard_charts.js?v=de1a05b8a6_mttc3v4s"></script>
-    <script src="js/modules/dashboard/dashboard_analytics.js?v=a7db1260ed_mttc3v4s"></script>
-    <script src="js/modules/dashboard/dashboard_scales.js?v=38ef0c5f91_mttc3v4s"></script>
-    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=8a942cafe9_mttc3v4s"></script>
-    <script src="js/modules/dashboard/dashboard_scroll_reveal.js?v=765a5ac049_mttc3v4s"></script>
-    <script src="js/modules/alunos/alunos_progression_modal.js?v=9b35c9ce79_mttc3v4s"></script>
-    <script src="js/modules/alunos/alunos_list.js?v=1680ba1e32_mttc3v4s"></script>
-    <script src="js/modules/alunos/alunos_forms.js?v=d65581afbc_mttc3v4s"></script>
-    <script src="js/modules/turmas/turmas_crud.js?v=7b6d46585b_mttc3v4s"></script>
-    <script src="js/modules/turmas/turmas_diario.js?v=afcf4bc505_mttc3v4s"></script>
-    <script src="js/modules/turmas/turmas_professores.js?v=8081cfd558_mttc3v4s"></script>
-    <script src="js/modules/turmas/turmas_planejamento.js?v=4b97ea64d3_mttc3v4s"></script>
-    <script src="js/modules/turmas/turmas_diagnostico_modal.js?v=a6f688ec72_mttc3v4s"></script>
-    <script src="js/modules/metas/metas_regional.js?v=7556fbb4b6_mttc3v4s"></script>
-    <script src="js/modules/metas/metas_pactuacao.js?v=55531875c5_mttc3v4s"></script>
-    <script src="js/modules/metas/metas_escolas_ranking.js?v=d2cab5c654_mttc3v4s"></script>
-    <script src="js/modules/metas/metas_calculo_manual.js?v=db8734a78d_mttc3v4s"></script>
-    <script src="js/modules/metas/metas_ideb.js?v=17b2b704aa_mttc3v4s"></script>
-    <script src="js/modules/escolas/escolas.js?v=6156cfb8f2_mttc3v4s"></script>
-    <script src="js/modules/escolas/escolas_workspace.js?v=cbd14d4cc2_mttc3v4s"></script>
-    <script src="js/modules/escolas/escolas_modals.js?v=d32d052d1d_mttc3v4s"></script>
-    <script src="js/modules/matrizes/matrizes.js?v=d2df1a4b54_mttc3v4s"></script>
-    <script src="js/modules/cronograma/cronograma_state.js?v=291ef65907_mttc3v4s"></script>
-    <script src="js/modules/cronograma/cronograma_views_monthly.js?v=8d7fe9a8d7_mttc3v4s"></script>
-    <script src="js/modules/cronograma/cronograma_views_weekly.js?v=17318533ba_mttc3v4s"></script>
-    <script src="js/modules/cronograma/cronograma_views_comparison.js?v=9875be98c6_mttc3v4s"></script>
-    <script src="js/modules/cronograma/cronograma_progress_modal.js?v=f327132831_mttc3v4s"></script>
-    <script src="js/modules/cronograma/cronograma_views.js?v=736673a1aa_mttc3v4s"></script>
-    <script src="js/modules/cronograma/cronograma_planner.js?v=5e9c900526_mttc3v4s"></script>
-    <script src="js/modules/cronograma/cronograma_trash.js?v=b1408ecbe3_mttc3v4s"></script>
-    <script src="js/modules/cronograma/cronograma_calendar_40w.js?v=310bf5af0c_mttc3v4s"></script>
-    <script src="js/modules/cronograma/cronograma.js?v=fa42f11d98_mttc3v4s"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_state.js?v=9246c014a5_mttc3v4s"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_wizard.js?v=23d3745407_mttc3v4s"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_events.js?v=291641d46e_mttc3v4s"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_espelho.js?v=be2165b923_mttc3v4s"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_analytics.js?v=c02f843b04_mttc3v4s"></script>
-    <script src="js/modules/avaliacoes/avaliacoes_print.js?v=4bbcca0d65_mttc3v4s"></script>
-    <script src="js/modules/questoes/questoes_generator.js?v=8e44d7592b_mttc3v4s"></script>
-    <script src="js/modules/questoes/questoes_list.js?v=5543a2c1d7_mttc3v4s"></script>
-    <script src="js/modules/questoes/questoes_import_export.js?v=c7d3bb36d0_mttc3v4s"></script>
-    <script src="js/modules/diagnostico/diagnostico.js?v=e5116c8aaa_mttc3v4s"></script>
-    <script src="js/modules/saeb/saeb_state.js?v=178da7f734_mttc3v4s"></script>
-    <script src="js/modules/saeb/saeb_distribution_view.js?v=ae0be00c12_mttc3v4s"></script>
-    <script src="js/modules/saeb/saeb_comparativo_turmas.js?v=22f1b3636c_mttc3v4s"></script>
-    <script src="js/modules/saeb/saeb_ficha_individual.js?v=a41dbdf173_mttc3v4s"></script>
-    <script src="js/modules/saeb/saeb_boletim.js?v=f2fbc9e7e7_mttc3v4s"></script>
-    <script src="js/modules/saeb/saeb_intervencoes_comparativo.js?v=3002c919ef_mttc3v4s"></script>
-    <script src="js/modules/saeb/saeb.js?v=b4e224328a_mttc3v4s"></script>
-    <script src="js/modules/biblioteca/biblioteca_reader.js?v=743943d3d7_mttc3v4s"></script>
-    <script src="js/modules/biblioteca/biblioteca_upload.js?v=98b16c4eda_mttc3v4s"></script>
-    <script src="js/modules/biblioteca/biblioteca.js?v=d101f88443_mttc3v4s"></script>
-    <script src="js/modules/admin/admin_data.js?v=4146d4760b_mttc3v4s"></script>
-    <script src="js/modules/admin/users/admin_users_validation.js?v=b5f30bc4f4_mttc3v4s"></script>
-    <script src="js/modules/admin/users/admin_users_form.js?v=52c7745115_mttc3v4s"></script>
-    <script src="js/modules/admin/users/admin_users_table.js?v=c09d93f302_mttc3v4s"></script>
-    <script src="js/modules/admin/admin_users.js?v=fad2e74306_mttc3v4s"></script>
-    <script src="js/modules/admin/admin_tenants.js?v=ae5a501f46_mttc3v4s"></script>
-    <script src="js/modules/onboarding/onboarding_tour.js?v=e8a0416e78_mttc3v4s"></script>
-    <script src="js/modules/onboarding/tab_context_tours.js?v=a447973a01_mttc3v4s"></script>
+    <script src="js/modules/dashboard/dashboard_kpis.js?v=1ed1f8c921_mttcr30l"></script>
+    <script src="js/modules/dashboard/dashboard_charts.js?v=de1a05b8a6_mttcr30l"></script>
+    <script src="js/modules/dashboard/dashboard_analytics.js?v=a7db1260ed_mttcr30l"></script>
+    <script src="js/modules/dashboard/dashboard_scales.js?v=38ef0c5f91_mttcr30l"></script>
+    <script src="js/modules/dashboard/dashboard_simulados_consolidados.js?v=8a942cafe9_mttcr30l"></script>
+    <script src="js/modules/dashboard/dashboard_scroll_reveal.js?v=765a5ac049_mttcr30l"></script>
+    <script src="js/modules/alunos/alunos_progression_modal.js?v=9b35c9ce79_mttcr30l"></script>
+    <script src="js/modules/alunos/alunos_list.js?v=1680ba1e32_mttcr30l"></script>
+    <script src="js/modules/alunos/alunos_forms.js?v=d65581afbc_mttcr30l"></script>
+    <script src="js/modules/turmas/turmas_crud.js?v=7b6d46585b_mttcr30l"></script>
+    <script src="js/modules/turmas/turmas_diario.js?v=afcf4bc505_mttcr30l"></script>
+    <script src="js/modules/turmas/turmas_professores.js?v=8081cfd558_mttcr30l"></script>
+    <script src="js/modules/turmas/turmas_planejamento.js?v=4b97ea64d3_mttcr30l"></script>
+    <script src="js/modules/turmas/turmas_diagnostico_modal.js?v=a6f688ec72_mttcr30l"></script>
+    <script src="js/modules/metas/metas_regional.js?v=7556fbb4b6_mttcr30l"></script>
+    <script src="js/modules/metas/metas_pactuacao.js?v=55531875c5_mttcr30l"></script>
+    <script src="js/modules/metas/metas_escolas_ranking.js?v=d2cab5c654_mttcr30l"></script>
+    <script src="js/modules/metas/metas_calculo_manual.js?v=db8734a78d_mttcr30l"></script>
+    <script src="js/modules/metas/metas_ideb.js?v=17b2b704aa_mttcr30l"></script>
+    <script src="js/modules/escolas/escolas.js?v=6156cfb8f2_mttcr30l"></script>
+    <script src="js/modules/escolas/escolas_workspace.js?v=cbd14d4cc2_mttcr30l"></script>
+    <script src="js/modules/escolas/escolas_modals.js?v=d32d052d1d_mttcr30l"></script>
+    <script src="js/modules/matrizes/matrizes.js?v=d2df1a4b54_mttcr30l"></script>
+    <script src="js/modules/cronograma/cronograma_state.js?v=291ef65907_mttcr30l"></script>
+    <script src="js/modules/cronograma/cronograma_views_monthly.js?v=8d7fe9a8d7_mttcr30l"></script>
+    <script src="js/modules/cronograma/cronograma_views_weekly.js?v=17318533ba_mttcr30l"></script>
+    <script src="js/modules/cronograma/cronograma_views_comparison.js?v=9875be98c6_mttcr30l"></script>
+    <script src="js/modules/cronograma/cronograma_progress_modal.js?v=f327132831_mttcr30l"></script>
+    <script src="js/modules/cronograma/cronograma_views.js?v=736673a1aa_mttcr30l"></script>
+    <script src="js/modules/cronograma/cronograma_planner.js?v=5e9c900526_mttcr30l"></script>
+    <script src="js/modules/cronograma/cronograma_trash.js?v=b1408ecbe3_mttcr30l"></script>
+    <script src="js/modules/cronograma/cronograma_calendar_40w.js?v=310bf5af0c_mttcr30l"></script>
+    <script src="js/modules/cronograma/cronograma.js?v=fa42f11d98_mttcr30l"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_state.js?v=9246c014a5_mttcr30l"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_wizard.js?v=23d3745407_mttcr30l"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_events.js?v=291641d46e_mttcr30l"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_espelho.js?v=be2165b923_mttcr30l"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_analytics.js?v=c02f843b04_mttcr30l"></script>
+    <script src="js/modules/avaliacoes/avaliacoes_print.js?v=4bbcca0d65_mttcr30l"></script>
+    <script src="js/modules/questoes/questoes_generator.js?v=8e44d7592b_mttcr30l"></script>
+    <script src="js/modules/questoes/questoes_list.js?v=5543a2c1d7_mttcr30l"></script>
+    <script src="js/modules/questoes/questoes_import_export.js?v=c7d3bb36d0_mttcr30l"></script>
+    <script src="js/modules/diagnostico/diagnostico.js?v=e5116c8aaa_mttcr30l"></script>
+    <script src="js/modules/saeb/saeb_state.js?v=178da7f734_mttcr30l"></script>
+    <script src="js/modules/saeb/saeb_distribution_view.js?v=ae0be00c12_mttcr30l"></script>
+    <script src="js/modules/saeb/saeb_comparativo_turmas.js?v=22f1b3636c_mttcr30l"></script>
+    <script src="js/modules/saeb/saeb_ficha_individual.js?v=a41dbdf173_mttcr30l"></script>
+    <script src="js/modules/saeb/saeb_boletim.js?v=f2fbc9e7e7_mttcr30l"></script>
+    <script src="js/modules/saeb/saeb_intervencoes_comparativo.js?v=3002c919ef_mttcr30l"></script>
+    <script src="js/modules/saeb/saeb.js?v=b4e224328a_mttcr30l"></script>
+    <script src="js/modules/biblioteca/biblioteca_reader.js?v=743943d3d7_mttcr30l"></script>
+    <script src="js/modules/biblioteca/biblioteca_upload.js?v=98b16c4eda_mttcr30l"></script>
+    <script src="js/modules/biblioteca/biblioteca.js?v=d101f88443_mttcr30l"></script>
+    <script src="js/modules/admin/admin_data.js?v=4146d4760b_mttcr30l"></script>
+    <script src="js/modules/admin/users/admin_users_validation.js?v=b5f30bc4f4_mttcr30l"></script>
+    <script src="js/modules/admin/users/admin_users_form.js?v=52c7745115_mttcr30l"></script>
+    <script src="js/modules/admin/users/admin_users_table.js?v=c09d93f302_mttcr30l"></script>
+    <script src="js/modules/admin/admin_users.js?v=fad2e74306_mttcr30l"></script>
+    <script src="js/modules/admin/admin_tenants.js?v=ae5a501f46_mttcr30l"></script>
+    <script src="js/modules/onboarding/onboarding_tour.js?v=e8a0416e78_mttcr30l"></script>
+    <script src="js/modules/onboarding/tab_context_tours.js?v=a447973a01_mttcr30l"></script>
 
     <!-- Aplicação Principal -->
-    <script src="app.js?v=82382debd8_mttc3v4s"></script>
-    <script src="js/core/global_cards_animation.js?v=e748bd59fe_mttc3v4s"></script>
-    <script src="js/core/global_button_handlers.js?v=38a379ca14_mttc3v4s"></script>
+    <script src="app.js?v=82382debd8_mttcr30l"></script>
+    <script src="js/core/global_cards_animation.js?v=e748bd59fe_mttcr30l"></script>
+    <script src="js/core/global_button_handlers.js?v=38a379ca14_mttcr30l"></script>
 </body>
 </html>

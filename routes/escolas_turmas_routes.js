@@ -18,6 +18,7 @@ const {
     updatePlanejamento,
     deletePlanejamento
 } = require('../services/planejamento_turmas_service');
+const { normalizeUppercaseEntity, normalizeEmail } = require('../services/normalization_service');
 
 // Helper para checar se o perfil ativo é estritamente de professor
 function isTeacherRole(user) {
@@ -180,11 +181,13 @@ router.get('/classes/:id/students', authMiddleware, async (req, res) => {
 // POST /api/classes - Criar nova turma
 router.post('/classes', authMiddleware, async (req, res) => {
     try {
-        const { nome, serie, etapa, turno, escola, escola_id } = req.body || {};
+        const rawBody = req.body || {};
+        const normalized = normalizeUppercaseEntity(rawBody, 'turma');
+        const { nome, serie, etapa, turno, escola, escola_id } = normalized;
         if (!nome) return res.status(400).json({ error: 'Nome da turma é obrigatório.' });
 
         let targetEscolaId = escola_id;
-        let escolaNome = escola || 'Rede Municipal';
+        let escolaNome = escola || 'REDE MUNICIPAL';
         let tenantDbId = req.tenant?.id || req.user?.tenant_id;
 
         if (targetEscolaId) {
@@ -210,7 +213,7 @@ router.post('/classes', authMiddleware, async (req, res) => {
         if (!targetEscolaId) {
             const firstEsc = await db.query('SELECT id, nome, tenant_id FROM escolas LIMIT 1');
             targetEscolaId = firstEsc.rows[0]?.id;
-            escolaNome = firstEsc.rows[0]?.nome || 'Rede Municipal';
+            escolaNome = firstEsc.rows[0]?.nome || 'REDE MUNICIPAL';
             tenantDbId = firstEsc.rows[0]?.tenant_id;
         }
 
@@ -219,8 +222,8 @@ router.post('/classes', authMiddleware, async (req, res) => {
             tenantDbId = tRes.rows[0]?.id;
         }
 
-        const cleanSerie = serie || etapa || '5º Ano';
-        const cleanTurno = turno || 'Matutino';
+        const cleanSerie = serie || etapa || '5º ANO';
+        const cleanTurno = turno || 'MATUTINO';
 
         const insertRes = await db.query(`
             INSERT INTO turmas (tenant_id, escola_id, nome, serie, turno, ano_letivo)
@@ -419,7 +422,10 @@ router.get('/teachers', authMiddleware, async (req, res) => {
 
 router.post('/teachers', authMiddleware, async (req, res) => {
     try {
-        const { nome, email, disciplina, escola, turmas } = req.body || {};
+        const rawBody = req.body || {};
+        const normalized = normalizeUppercaseEntity(rawBody, 'usuario');
+        const { nome, disciplina, escola, turmas } = normalized;
+        const email = normalizeEmail(rawBody.email);
         if (!nome || !email) return res.status(400).json({ error: 'Nome e e-mail são obrigatórios.' });
 
         const activeTenant = req.tenant?.slug || 'gd';
@@ -429,8 +435,8 @@ router.post('/teachers', authMiddleware, async (req, res) => {
             id: `prof_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
             nome,
             email,
-            disciplina: disciplina || 'Polivalente',
-            escola: escola || 'Rede Municipal',
+            disciplina: disciplina || 'POLIVALENTE',
+            escola: escola || 'REDE MUNICIPAL',
             turmas: turmas || [],
             created_at: new Date().toISOString()
         };

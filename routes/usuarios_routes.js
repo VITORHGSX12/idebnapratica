@@ -8,6 +8,7 @@ const bcrypt = require('bcryptjs');
 const db = require('../db');
 const { authMiddleware, authorize } = require('../middleware/auth');
 const { getUsers, saveUsers, findUserByEmail } = require('./auth_routes');
+const { normalizeUppercaseEntity } = require('../services/normalization_service');
 const {
     DEFAULT_GRUPOS_ACESSO,
     normalizeRoleName,
@@ -37,7 +38,7 @@ async function fetchAllUsersFromDb() {
     if (!db.useLocalFallback) {
         try {
             const res = await db.query(`
-                SELECT id, nome, email, role, tipo, escola, turma, telefone, cpf, status, must_change_password, created_at, updated_at 
+                SELECT id, nome, email, role, tipo, escola, turma, telefone, cpf, status, avatar_url, must_change_password 
                 FROM public.usuarios 
                 ORDER BY nome ASC
             `);
@@ -53,9 +54,9 @@ async function fetchAllUsersFromDb() {
                     telefone: r.telefone,
                     cpf: r.cpf,
                     status: r.status || 'Ativo',
-                    mustChangePassword: r.must_change_password,
-                    created_at: r.created_at,
-                    updated_at: r.updated_at
+                    avatar_url: r.avatar_url || null,
+                    avatarPhoto: r.avatar_url || null,
+                    mustChangePassword: r.must_change_password
                 }));
             }
         } catch(e) {
@@ -76,47 +77,38 @@ async function fetchAllUsersFromDb() {
 }
 
 async function insertUserInDb(newUser) {
-    const rawPerfis = newUser.perfis || [newUser.role || newUser.tipo || 'Professor(a)'];
+    const normalizedUser = normalizeUppercaseEntity(newUser, 'usuario');
+    const rawPerfis = normalizedUser.perfis || [normalizedUser.role || normalizedUser.tipo || 'Professor(a)'];
     const normalizedPerfis = rawPerfis.map(normalizeRoleName);
-    const primaryRole = normalizedPerfis[0] || normalizeRoleName(newUser.role);
+    const primaryRole = normalizedPerfis[0] || normalizeRoleName(normalizedUser.role);
 
-    newUser.role = primaryRole;
-    newUser.tipo = primaryRole;
-    newUser.perfis = normalizedPerfis;
+    normalizedUser.role = primaryRole;
+    normalizedUser.tipo = primaryRole;
+    normalizedUser.perfis = normalizedPerfis;
 
     if (!db.useLocalFallback) {
         try {
+            let dbRole = 'Professor';
+            if (primaryRole.includes('Admin') || primaryRole.includes('Master')) dbRole = 'Master Admin';
+            else if (primaryRole.includes('Gestor')) dbRole = 'Gestor da Rede';
+            else if (primaryRole.includes('Diretor')) dbRole = 'Diretor Escola';
+            else if (primaryRole.includes('Aluno')) dbRole = 'Aluno';
+            else if (primaryRole.includes('Respons')) dbRole = 'Responsavel';
+
             await db.query(`
                 INSERT INTO public.usuarios (
-                    id, tenant_id, nome, email, password, role, tipo, escola, turma, telefone, cpf, status, must_change_password
-                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-                ON CONFLICT (id) DO UPDATE SET
+                    id, tenant_id, nome, email, senha_hash, role
+                ) VALUES ($1, $2, $3, $4, $5, $6)
+                ON CONFLICT (email) DO UPDATE SET
                     nome = EXCLUDED.nome,
-                    email = EXCLUDED.email,
-                    password = EXCLUDED.password,
-                    role = EXCLUDED.role,
-                    tipo = EXCLUDED.tipo,
-                    escola = EXCLUDED.escola,
-                    turma = EXCLUDED.turma,
-                    telefone = EXCLUDED.telefone,
-                    cpf = EXCLUDED.cpf,
-                    status = EXCLUDED.status,
-                    must_change_password = EXCLUDED.must_change_password,
-                    updated_at = CURRENT_TIMESTAMP
+                    role = EXCLUDED.role;
             `, [
-                newUser.id,
-                newUser.tenant_id || null,
-                newUser.nome,
-                newUser.email,
-                newUser.password,
-                newUser.role,
-                newUser.tipo,
-                newUser.escola || null,
-                newUser.turma || null,
-                newUser.telefone || null,
-                newUser.cpf || null,
-                newUser.status || 'Ativo',
-                newUser.mustChangePassword !== undefined ? newUser.mustChangePassword : false
+                normalizedUser.id,
+                normalizedUser.tenant_id || null,
+                normalizedUser.nome,
+                normalizedUser.email,
+                normalizedUser.password || 'hash_default',
+                dbRole
             ]);
         } catch(e) {
             console.error('[DB insertUserInDb Error]:', e.message);
@@ -124,17 +116,17 @@ async function insertUserInDb(newUser) {
     }
 
     // Sincroniza tabela associativa N:N (usuario_grupo_acesso) e users.json
-    await syncUserProfiles(newUser.id, normalizedPerfis, newUser.email);
+    await syncUserProfiles(normalizedUser.id, normalizedPerfis, normalizedUser.email);
 
     const users = getUsers();
-    const existingIdx = users.findIndex(u => u.id === newUser.id || (u.email && u.email.toLowerCase() === (newUser.email || '').toLowerCase()));
+    const existingIdx = users.findIndex(u => u.id === normalizedUser.id || (u.email && u.email.toLowerCase() === (normalizedUser.email || '').toLowerCase()));
     if (existingIdx >= 0) {
-        users[existingIdx] = Object.assign(users[existingIdx], newUser);
+        users[existingIdx] = Object.assign(users[existingIdx], normalizedUser);
     } else {
-        users.push(newUser);
+        users.push(normalizedUser);
     }
     saveUsers(users);
-    return true;
+    return normalizedUser;
 }
 
 // =============================================================================
@@ -251,8 +243,8 @@ router.get(['/sessao/perfil-ativo', '/auth/perfil-ativo'], authMiddleware, async
 // ENDPOINTS REST PADRÃO DE USUÁRIOS
 // =============================================================================
 
-// GET /api/users - Listar usuários cadastrados (escopado por RBAC com perfis N:N)
-router.get('/users', authMiddleware, async (req, res) => {
+// GET /api/users e /api/usuarios - Listagem de usuários
+router.get(['/users', '/usuarios'], authMiddleware, async (req, res) => {
     try {
         const user = req.user;
         const rawUsers = await fetchAllUsersFromDb();
@@ -313,10 +305,10 @@ function validateBirthDateServer(dateStr) {
     return { valid: true, idade, formatted: `${String(dia).padStart(2, '0')}/${String(mes).padStart(2, '0')}/${ano}` };
 }
 
-// POST /api/users - Cadastrar novo usuário com múltiplos perfis
-router.post('/users', authMiddleware, authorize('Master Admin', 'Gestor da Rede', 'admin', 'gestor', 'semed'), async (req, res) => {
+// POST /api/users e /api/usuarios - Cadastrar novo usuário com múltiplos perfis
+router.post(['/users', '/usuarios'], authMiddleware, authorize('Master Admin', 'Gestor da Rede', 'admin', 'gestor', 'semed'), async (req, res) => {
     try {
-        const { nome, email, password, senha, role, tipo, perfis, escola, turma, telefone, cpf, dataNascimento, nascimento, mustChangePassword } = req.body || {};
+        const { nome, email, password, senha, role, tipo, cargo, perfis, escola, turma, telefone, cpf, dataNascimento, nascimento, mustChangePassword } = req.body || {};
         
         const rawPerfis = Array.isArray(perfis) && perfis.length > 0 ? perfis : [role || tipo];
         const validPerfis = rawPerfis.filter(Boolean);
@@ -371,6 +363,7 @@ router.post('/users', authMiddleware, authorize('Master Admin', 'Gestor da Rede'
             password: hashedPassword,
             role: primaryRole,
             tipo: primaryRole,
+            cargo: cargo || tipo || primaryRole,
             perfis: normalizedPerfis,
             cpf: formattedCpf,
             telefone: telefone || '-',
@@ -382,9 +375,9 @@ router.post('/users', authMiddleware, authorize('Master Admin', 'Gestor da Rede'
             created_at: new Date().toISOString()
         };
 
-        await insertUserInDb(newUser);
+        const inserted = await insertUserInDb(newUser);
 
-        const { password: _, ...clean } = newUser;
+        const { password: _, ...clean } = inserted;
         res.json({ success: true, user: clean, message: 'Usuário cadastrado com sucesso.' });
     } catch (err) {
         console.error('Error in POST /api/users:', err);
@@ -392,8 +385,8 @@ router.post('/users', authMiddleware, authorize('Master Admin', 'Gestor da Rede'
     }
 });
 
-// PUT /api/users/:id - Atualizar dados e perfis do usuário
-router.put('/users/:id', authMiddleware, authorize('Master Admin', 'Gestor da Rede', 'admin', 'gestor'), async (req, res) => {
+// PUT /api/users/:id e /api/usuarios/:id - Atualizar usuário e seus perfis de acesso
+router.put(['/users/:id', '/usuarios/:id'], authMiddleware, authorize('Master Admin', 'Gestor da Rede', 'admin', 'gestor'), async (req, res) => {
     try {
         const { id } = req.params;
         const { nome, email, password, role, tipo, perfis, escola, turma, telefone, cpf, status } = req.body || {};
@@ -496,8 +489,8 @@ router.put('/users/:id', authMiddleware, authorize('Master Admin', 'Gestor da Re
     }
 });
 
-// DELETE /api/users/:id - Excluir usuário
-router.delete('/users/:id', authMiddleware, authorize('Master Admin', 'admin'), async (req, res) => {
+// DELETE /api/users/:id e /api/usuarios/:id - Excluir usuário
+router.delete(['/users/:id', '/usuarios/:id'], authMiddleware, authorize('Master Admin', 'admin'), async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -526,6 +519,40 @@ router.delete('/users/:id', authMiddleware, authorize('Master Admin', 'admin'), 
     } catch (err) {
         console.error('Error in DELETE /api/users/:id:', err);
         res.status(500).json({ error: 'Erro ao excluir usuário.' });
+    }
+});
+
+// GET /api/usuarios/me e GET /api/users/me - Dados do usuário logado
+router.get(['/usuarios/me', '/users/me'], authMiddleware, async (req, res) => {
+    try {
+        const userId = req.user && (req.user.id || req.user.email);
+        const users = await fetchAllUsersFromDb();
+        const user = users.find(u => u.id === userId || (u.email && u.email.toLowerCase() === (req.user.email || '').toLowerCase()));
+
+        if (!user) {
+            return res.json({
+                success: true,
+                user: {
+                    id: userId,
+                    nome: req.user.nome || 'USUÁRIO',
+                    email: req.user.email,
+                    role: req.user.role || 'Professor(a)',
+                    perfis: [req.user.role || 'Professor(a)'],
+                    avatar_url: null
+                }
+            });
+        }
+
+        const perfis = await getUserLinkedProfiles(user.id, user.role);
+        res.json({
+            success: true,
+            user: {
+                ...user,
+                perfis
+            }
+        });
+    } catch(err) {
+        res.status(500).json({ error: 'Erro ao carregar dados do perfil.' });
     }
 });
 
