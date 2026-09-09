@@ -6,33 +6,7 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET || 'edu_saas_jwt_default_secret_key_2026';
 
 // Fallback em memória / local caso o banco esteja inacessível
-let memoryEventosSimulados = [
-    {
-        id: 'evt_2026_01',
-        titulo: '1º Simulado Municipal SAEB 2026 — 5º e 9º Anos',
-        dataRealizacao: '2026-09-15',
-        disciplina: 'ambas',
-        portuguesInicio: 1,
-        portuguesFim: 10,
-        matematicaInicio: 11,
-        matematicaFim: 20,
-        status: 'ABERTO',
-        passoAtivo: 4,
-        qtdQuestoes: 20,
-        etapasAlvo: ['5º Ano', '9º Ano'],
-        gabaritoGeralJson: JSON.stringify([
-            {
-                etapaNome: '5º Ano',
-                qtdQuestoes: 20,
-                gabarito: ['A','B','C','D','A','C','B','D','A','B','C','D','A','B','C','D','A','B','C','D'],
-                habilidades: ['LP01','LP02','LP03','LP05','LP07','LP12','LP17','LP21','LP23','LP31','MT01','MT02','MT03','MT05','MT06','MT15','MT16','MT22','MT27','MT28']
-            }
-        ]),
-        turmas: [],
-        criadoEm: '2026-08-20T08:00:00.000Z'
-    }
-];
-
+let memoryEventosSimulados = [];
 let memoryRespostasSimulados = {};
 
 /**

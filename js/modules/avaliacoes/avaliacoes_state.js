@@ -78,62 +78,7 @@
     // -------------------------------------------------------------------------
 
     function getInitialEventosSeed() {
-        return [
-            {
-                id: 'evt_2026_01',
-                titulo: '1º Simulado Municipal SAEB 2026 — 5º e 9º Anos',
-                dataRealizacao: '2026-09-15',
-                disciplina: 'ambas',
-                portuguesInicio: 1,
-                portuguesFim: 10,
-                matematicaInicio: 11,
-                matematicaFim: 20,
-                status: 'ABERTO',
-                passoAtivo: 4,
-                qtdQuestoes: 20,
-                etapasAlvo: ['5º Ano', '9º Ano'],
-                gabaritoGeralJson: JSON.stringify([
-                    {
-                        etapaNome: '5º Ano',
-                        qtdQuestoes: 20,
-                        gabarito: ['A','B','C','D','A','C','B','D','A','B','C','D','A','B','C','D','A','B','C','D'],
-                        habilidades: ['LP01','LP02','LP03','LP05','LP07','LP12','LP17','LP21','LP23','LP31','MT01','MT02','MT03','MT05','MT06','MT15','MT16','MT22','MT27','MT28']
-                    },
-                    {
-                        etapaNome: '9º Ano',
-                        qtdQuestoes: 20,
-                        gabarito: ['B','C','A','D','B','A','D','C','B','D','A','B','C','D','B','C','A','D','B','C'],
-                        habilidades: ['LP01','LP02','LP04','LP06','LP08','LP12','LP17','LP21','LP23','LP31','MT01','MT02','MT03','MT07','MT13','MT15','MT16','MT22','MT24','MT28']
-                    }
-                ]),
-                turmas: [],
-                criadoEm: '2026-08-20T08:00:00.000Z'
-            },
-            {
-                id: 'evt_2026_02',
-                titulo: 'Avaliação Diagnóstica de Fluência Leitora & Recomposição 2026',
-                dataRealizacao: '2026-10-10',
-                disciplina: 'portugues',
-                portuguesInicio: 1,
-                portuguesFim: 15,
-                matematicaInicio: 0,
-                matematicaFim: 0,
-                status: 'RASCUNHO',
-                passoAtivo: 2,
-                qtdQuestoes: 15,
-                etapasAlvo: ['2º Ano', '5º Ano'],
-                gabaritoGeralJson: JSON.stringify([
-                    {
-                        etapaNome: '2º Ano',
-                        qtdQuestoes: 15,
-                        gabarito: ['A','B','A','C','D','B','A','C','D','A','B','C','A','D','B'],
-                        habilidades: ['LP01','LP02','LP03','LP04','LP05','LP06','LP07','LP08','LP12','LP17','LP21','LP23','LP31','LP01','LP02']
-                    }
-                ]),
-                turmas: [],
-                criadoEm: '2026-08-22T09:30:00.000Z'
-            }
-        ];
+        return [];
     }
 
     // -------------------------------------------------------------------------
@@ -147,7 +92,14 @@
             if (raw !== null) {
                 var parsed = JSON.parse(raw);
                 if (Array.isArray(parsed)) {
-                    return parsed.filter(function(e) { return e && e.id && !deletedIds.includes(e.id); });
+                    // Remove automaticamente simulados de teste antigos
+                    var filtered = parsed.filter(function(e) { 
+                        return e && e.id && e.id !== 'evt_2026_01' && e.id !== 'evt_2026_02' && !deletedIds.includes(e.id); 
+                    });
+                    if (filtered.length !== parsed.length) {
+                        saveEventosState(filtered);
+                    }
+                    return filtered;
                 }
             }
         } catch(e) {}
@@ -169,7 +121,21 @@
             var raw = localStorage.getItem(STORAGE_KEY_RESPOSTAS);
             if (raw) {
                 var parsed = JSON.parse(raw);
-                if (parsed && typeof parsed === 'object') return parsed;
+                if (parsed && typeof parsed === 'object') {
+                    var cleaned = {};
+                    var hadTest = false;
+                    Object.keys(parsed).forEach(function(k) {
+                        if (k.startsWith('evt_2026_01') || k.startsWith('evt_2026_02')) {
+                            hadTest = true;
+                        } else {
+                            cleaned[k] = parsed[k];
+                        }
+                    });
+                    if (hadTest) {
+                        saveRespostasState(cleaned);
+                    }
+                    return cleaned;
+                }
             }
         } catch(e) {}
         return {};
@@ -179,6 +145,7 @@
         try {
             var toSave = respostas || getRespostasState();
             localStorage.setItem(STORAGE_KEY_RESPOSTAS, JSON.stringify(toSave));
+            localStorage.removeItem('gd_simulado_respostas_db');
         } catch(e) {}
     }
 
