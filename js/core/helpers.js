@@ -223,6 +223,26 @@
         return turmas;
     }
 
+    // =========================================================================
+    // PERSISTÊNCIA DE ESTADO DE FILTROS DE SESSÃO
+    // =========================================================================
+    function saveActiveFilterState(key, val) {
+        try {
+            var state = safeJsonParse(safeStorage.getItem('gd_active_filters_state'), {});
+            state[key] = val;
+            safeStorage.setItem('gd_active_filters_state', JSON.stringify(state));
+        } catch(e) {}
+    }
+
+    function getActiveFilterState(key, defaultVal) {
+        try {
+            var state = safeJsonParse(safeStorage.getItem('gd_active_filters_state'), {});
+            return (state && state[key] !== undefined && state[key] !== null) ? state[key] : defaultVal;
+        } catch(e) {
+            return defaultVal;
+        }
+    }
+
     // Exposição global
     global._memoryStorage = _memoryStorage;
     global.safeStorage = safeStorage;
@@ -238,6 +258,8 @@
     global.normalizeStr = normalizeStr;
     global.getTurmasPorEscola = getTurmasPorEscola;
     global.populateTurmasSelect = populateTurmasSelect;
+    global.saveActiveFilterState = saveActiveFilterState;
+    global.getActiveFilterState = getActiveFilterState;
 
 })(typeof window !== 'undefined' ? window : this);
 

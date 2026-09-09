@@ -117,7 +117,20 @@
         if (formName) formName.value = '';
         if (formStage) formStage.value = '5º Ano';
         if (formShift) formShift.value = 'Matutino';
-        if (formTeacher) formTeacher.value = '';
+
+        // Carrega estritamente os professores já vinculados a esta unidade escolar
+        var schoolTeachers = getSchoolTeachers(activeSchool);
+        if (formTeacher) {
+            if (schoolTeachers && schoolTeachers.length > 0) {
+                formTeacher.innerHTML = '<option value="">-- Selecionar Professor Vinculado à Escola --</option>' +
+                    schoolTeachers.map(function(t) {
+                        return '<option value="' + t.nome + '">' + t.nome + ' (' + (t.componente || 'Docente') + ')</option>';
+                    }).join('');
+            } else {
+                formTeacher.innerHTML = '<option value="">(Nenhum professor vinculado nesta escola - Vincule primeiro)</option>';
+            }
+            formTeacher.value = '';
+        }
 
         modal.style.display = 'flex';
         modal.classList.remove('hidden');
@@ -140,13 +153,28 @@
 
         if (!modal) return;
 
+        var activeSchool = turma.escola || global.currentSelectedSchoolDetail || 'UI BASILIO ALVES';
+
         if (title) title.textContent = 'Editar Turma — ' + turma.nome;
         if (formId) formId.value = turma.id;
-        if (formSchool) formSchool.value = turma.escola;
+        if (formSchool) formSchool.value = activeSchool;
         if (formName) formName.value = turma.nome;
         if (formStage) formStage.value = turma.etapa || '5º Ano';
         if (formShift) formShift.value = turma.turno || 'Matutino';
-        if (formTeacher) formTeacher.value = turma.professor || '';
+
+        // Carrega os professores vinculados a esta escola
+        var schoolTeachers = getSchoolTeachers(activeSchool);
+        if (formTeacher) {
+            if (schoolTeachers && schoolTeachers.length > 0) {
+                formTeacher.innerHTML = '<option value="">-- Selecionar Professor Vinculado à Escola --</option>' +
+                    schoolTeachers.map(function(t) {
+                        var isSel = (turma.professor && turma.professor.includes(t.nome)) ? 'selected' : '';
+                        return '<option value="' + t.nome + '" ' + isSel + '>' + t.nome + ' (' + (t.componente || 'Docente') + ')</option>';
+                    }).join('');
+            } else {
+                formTeacher.innerHTML = '<option value="' + (turma.professor || '') + '">' + (turma.professor || '(Sem professor vinculado)') + '</option>';
+            }
+        }
 
         modal.style.display = 'flex';
         modal.classList.remove('hidden');
@@ -239,6 +267,24 @@
     // 3. MODAL & CRUD DE PROFESSORES
     // -------------------------------------------------------------------------
 
+    function handleSelectExistingTeacher(teacherId) {
+        if (!teacherId) return;
+        var all = getAllNetworkTeachersDb();
+        var teacher = all.find(function(t) { return t.id === teacherId || t.nome === teacherId; });
+        if (!teacher) return;
+        var formName = document.getElementById('teacher-form-name');
+        var formSubject = document.getElementById('teacher-form-subject');
+        var formStatus = document.getElementById('teacher-form-status');
+        var formClasses = document.getElementById('teacher-form-classes');
+        var formPhone = document.getElementById('teacher-form-phone');
+
+        if (formName) formName.value = teacher.nome;
+        if (formSubject && teacher.componente) formSubject.value = teacher.componente;
+        if (formStatus && teacher.status) formStatus.value = teacher.status;
+        if (formClasses && teacher.turmas) formClasses.value = teacher.turmas;
+        if (formPhone && teacher.telefone) formPhone.value = teacher.telefone;
+    }
+
     function openCreateTeacherModal(schoolName) {
         var modal = document.getElementById('modal-create-teacher');
         var title = document.getElementById('modal-teacher-title');
@@ -249,6 +295,7 @@
         var formStatus = document.getElementById('teacher-form-status');
         var formClasses = document.getElementById('teacher-form-classes');
         var formPhone = document.getElementById('teacher-form-phone');
+        var selectEl = document.getElementById('teacher-form-select');
 
         if (!modal) return;
 
@@ -262,6 +309,16 @@
         if (formStatus) formStatus.value = 'Ativo';
         if (formClasses) formClasses.value = '';
         if (formPhone) formPhone.value = '';
+
+        // Preenche com a lista de docentes já cadastrados na rede municipal
+        var allTeachers = getAllNetworkTeachersDb();
+        if (selectEl) {
+            selectEl.innerHTML = '<option value="">-- Selecione o Professor Cadastrado na Rede --</option>' +
+                allTeachers.map(function(t) {
+                    return '<option value="' + t.id + '">' + t.nome + ' (' + (t.componente || 'Geral') + ' - Atual: ' + (t.escola || 'SEMED') + ')</option>';
+                }).join('');
+            selectEl.value = '';
+        }
 
         modal.style.display = 'flex';
         modal.classList.remove('hidden');
@@ -282,10 +339,11 @@
         var formStatus = document.getElementById('teacher-form-status');
         var formClasses = document.getElementById('teacher-form-classes');
         var formPhone = document.getElementById('teacher-form-phone');
+        var selectEl = document.getElementById('teacher-form-select');
 
         if (!modal) return;
 
-        if (title) title.textContent = 'Editar Dados do Professor — ' + teacher.nome;
+        if (title) title.textContent = 'Editar Vínculo do Professor — ' + teacher.nome;
         if (formId) formId.value = teacher.id;
         if (formSchool) formSchool.value = teacher.escola;
         if (formName) formName.value = teacher.nome;
@@ -293,6 +351,14 @@
         if (formStatus) formStatus.value = teacher.status || 'Ativo';
         if (formClasses) formClasses.value = teacher.turmas || '';
         if (formPhone) formPhone.value = teacher.telefone || '';
+
+        if (selectEl) {
+            selectEl.innerHTML = all.map(function(t) {
+                var isSel = (t.id === teacher.id || t.nome === teacher.nome) ? 'selected' : '';
+                return '<option value="' + t.id + '" ' + isSel + '>' + t.nome + ' (' + (t.componente || 'Geral') + ')</option>';
+            }).join('');
+            selectEl.value = teacher.id;
+        }
 
         modal.style.display = 'flex';
         modal.classList.remove('hidden');
@@ -618,6 +684,7 @@
 
     global.openCreateTeacherModal = openCreateTeacherModal;
     global.openEditTeacherModal = openEditTeacherModal;
+    global.handleSelectExistingTeacher = handleSelectExistingTeacher;
     global.closeModalTeacher = closeModalTeacher;
     global.handleSaveTeacher = handleSaveTeacher;
     global.handleDeleteTeacher = handleDeleteTeacher;

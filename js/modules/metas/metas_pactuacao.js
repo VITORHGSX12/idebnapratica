@@ -133,7 +133,14 @@
                 '    <td style="padding: 12px 16px; text-align: center;">' + riskBadge + '</td>',
                 '    <td style="padding: 12px 16px; text-align: center;">' + pdeCell + '</td>',
                 '    <td style="padding: 12px 16px; text-align: center;">',
-                '        <button onclick="openPdeManagerForSchool(\'' + sch.id + '\', \'' + sch.nome.replace(/'/g, "\\'") + '\', ' + targetScore + ')" class="btn btn-outline btn-sm" style="font-size: 0.74rem; font-weight: 700; color: #6366f1; border-color: #6366f1; padding: 4px 8px; display:inline-flex; align-items:center; gap:4px;" title="Gerenciar Plano de Ação">' + (pdePlan ? '<i data-lucide="edit-3" style="width:12px;height:12px;"></i> Editar PDE' : '<i data-lucide="plus-circle" style="width:12px;height:12px;"></i> Criar PDE') + '</button>',
+                '        <div style="display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:wrap;">' +
+                (pdePlan ?
+                    '            <button type="button" onclick="openViewSchoolPdeModal(\'' + sch.id + '\', \'' + sch.nome.replace(/'/g, "\\'") + '\', ' + targetScore + ', ' + currentObserved + ', ' + gap + ', \'' + riskLevel + '\')" class="btn btn-outline btn-sm" style="font-size: 0.74rem; font-weight: 700; color: #10b981; border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.06); padding: 4px 8px; display:inline-flex; align-items:center; gap:4px;" title="Visualizar Plano PDE da Escola"><i data-lucide="eye" style="width:13px;height:13px;"></i> Visualizar PDE</button>' +
+                    '            <button type="button" onclick="openPdeManagerForSchool(\'' + sch.id + '\', \'' + sch.nome.replace(/'/g, "\\'") + '\', ' + targetScore + ')" class="btn btn-outline btn-sm" style="font-size: 0.74rem; font-weight: 600; color: #6366f1; border-color: rgba(99,102,241,0.4); padding: 4px 8px; display:inline-flex; align-items:center; gap:4px;" title="Editar Plano PDE"><i data-lucide="edit-3" style="width:12px;height:12px;"></i> Editar</button>'
+                :
+                    '            <button type="button" onclick="openPdeManagerForSchool(\'' + sch.id + '\', \'' + sch.nome.replace(/'/g, "\\'") + '\', ' + targetScore + ')" class="btn btn-primary btn-sm" style="font-size: 0.74rem; font-weight: 700; padding: 4px 10px; display:inline-flex; align-items:center; gap:4px;" title="Criar Novo Plano de Ação PDE"><i data-lucide="plus-circle" style="width:13px;height:13px;"></i> Criar PDE</button>'
+                ) +
+                '        </div>',
                 '    </td>',
                 '</tr>'
             ].join('\n');
@@ -390,6 +397,171 @@
         }
     }
 
+    function openViewSchoolPdeModal(schId, schName, targetScore, currentObserved, gap, riskLevel) {
+        var modal = document.getElementById('modal-school-pde-plan');
+        if (!modal) return;
+
+        var nameEl = document.getElementById('modal-pde-school-name');
+        var riskBadgeEl = document.getElementById('modal-pde-risk-badge');
+        var metaEl = document.getElementById('modal-pde-school-meta');
+        var bodyEl = document.getElementById('modal-pde-content-body');
+
+        if (nameEl) nameEl.textContent = schName;
+
+        var numGap = Number(gap || 0);
+        var numObs = Number(currentObserved || 5.0);
+        var numTarget = Number(targetScore || 5.5);
+
+        if (riskBadgeEl) {
+            if (numGap < -0.3 || numObs < 4.6) {
+                riskBadgeEl.className = 'badge badge-danger';
+                riskBadgeEl.textContent = 'Alto Risco (GAP: ' + numGap.toFixed(1) + ')';
+            } else if (numGap < 0) {
+                riskBadgeEl.className = 'badge badge-warning';
+                riskBadgeEl.textContent = 'Médio Risco (GAP: ' + numGap.toFixed(1) + ')';
+            } else {
+                riskBadgeEl.className = 'badge badge-success';
+                riskBadgeEl.textContent = 'Meta Atingida (+ ' + Math.abs(numGap).toFixed(1) + ')';
+            }
+        }
+
+        if (metaEl) {
+            metaEl.textContent = 'INEP: ' + schId + ' • Observado: ' + numObs.toFixed(1) + ' | Meta Pactuada: ' + numTarget.toFixed(1) + ' (Gap: ' + (numGap >= 0 ? '+' : '') + numGap.toFixed(1) + ')';
+        }
+
+        var pdePlan = gdSchoolPdePlansMap[schId] || {
+            indicator: 'Recomposição SAEB & BNCC (D1 a D16)',
+            targetScore: numTarget,
+            responsible: 'Coordenação Pedagógica & Direção Escolar',
+            deadline: '2026-11-30',
+            actions: '1. Monitoramento quinzenal de frequência e plantões pedagógicos;\n2. Aulões focados nos descritores prioritários com defasagem;\n3. Simulados com devolutiva imediata e plano de recomposição.',
+            status: 'Em Execução'
+        };
+
+        if (bodyEl) {
+            var rawActions = pdePlan.actions || '';
+            var actionsList = rawActions
+                .split('\n')
+                .filter(function(a) { return a.trim().length > 0; })
+                .map(function(a) {
+                    return '<li style="margin-bottom:6px; color:var(--text-primary); font-size:0.85rem;">' + a.trim() + '</li>';
+                }).join('');
+
+            if (!actionsList) {
+                actionsList = '<li style="color:var(--text-secondary);">Ações pedagógicas em fase de consolidação pela equipe escolar.</li>';
+            }
+
+            var formattedDate = pdePlan.deadline ? (pdePlan.deadline.includes('-') ? pdePlan.deadline.split('-').reverse().join('/') : pdePlan.deadline) : '30/11/2026';
+
+            bodyEl.innerHTML = [
+                '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-bottom:18px;">',
+                '    <div class="card" style="background:var(--bg-tertiary); border:1px solid var(--border-color); padding:12px 16px; border-radius:var(--radius-md);">',
+                '        <span style="font-size:0.72rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Meta Pactuada IDEB</span>',
+                '        <strong style="font-size:1.6rem; color:#6366f1; font-weight:800; display:block;">' + numTarget.toFixed(1) + '</strong>',
+                '    </div>',
+                '    <div class="card" style="background:var(--bg-tertiary); border:1px solid var(--border-color); padding:12px 16px; border-radius:var(--radius-md);">',
+                '        <span style="font-size:0.72rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Responsável pela Execução</span>',
+                '        <strong style="font-size:0.95rem; color:var(--text-primary); font-weight:700; display:block; margin-top:4px;">' + (pdePlan.responsible || 'Coordenação') + '</strong>',
+                '    </div>',
+                '    <div class="card" style="background:var(--bg-tertiary); border:1px solid var(--border-color); padding:12px 16px; border-radius:var(--radius-md);">',
+                '        <span style="font-size:0.72rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Prazo Limite / Conclusão</span>',
+                '        <strong style="font-size:1.1rem; color:var(--text-primary); font-weight:700; display:block; margin-top:2px;">' + formattedDate + '</strong>',
+                '    </div>',
+                '    <div class="card" style="background:var(--bg-tertiary); border:1px solid var(--border-color); padding:12px 16px; border-radius:var(--radius-md);">',
+                '        <span style="font-size:0.72rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Status de Execução</span>',
+                '        <div style="margin-top:4px;"><span class="badge badge-success" style="font-size:0.75rem;">' + (pdePlan.status || 'Em Execução') + '</span></div>',
+                '    </div>',
+                '</div>',
+                '<div style="background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:16px; margin-bottom:14px;">',
+                '    <h4 style="margin:0 0 6px 0; font-size:0.9rem; font-weight:800; color:#4A7FA7; display:flex; align-items:center; gap:6px;">',
+                '        <i data-lucide="target" style="width:16px;height:16px;"></i> Indicador & Eixo Prioritário do PDE',
+                '    </h4>',
+                '    <div style="font-size:0.85rem; font-weight:700; color:var(--text-primary);">' + (pdePlan.indicator || 'Recomposição das Aprendizagens') + '</div>',
+                '</div>',
+                '<div style="background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:16px;">',
+                '    <h4 style="margin:0 0 10px 0; font-size:0.9rem; font-weight:800; color:var(--text-primary); display:flex; align-items:center; gap:6px;">',
+                '        <i data-lucide="list-checks" style="width:16px;height:16px;"></i> Plano de Ações Estratégicas Cadastradas',
+                '    </h4>',
+                '    <ul style="margin:0; padding-left:20px; line-height:1.6;">' + actionsList + '</ul>',
+                '</div>'
+            ].join('\n');
+        }
+
+        var printBtn = document.getElementById('btn-print-pde-modal');
+        if (printBtn) {
+            printBtn.onclick = function() {
+                var printWin = window.open('', '_blank', 'width=880,height=960');
+                if (!printWin) {
+                    window.print();
+                    return;
+                }
+                var doc = [
+                    '<!DOCTYPE html><html><head><meta charset="utf-8"><title>PDE - ' + schName + '</title>',
+                    '<style>',
+                    '@page { size: A4 portrait; margin: 15mm; }',
+                    'body { font-family: "Segoe UI", Arial, sans-serif; color: #0f172a; margin: 0; padding: 20px; font-size: 13px; line-height: 1.5; }',
+                    '.header { border-bottom: 2px solid #6366f1; padding-bottom: 12px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; }',
+                    '.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px; }',
+                    '.kpi-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; text-align: center; }',
+                    '.kpi-val { font-size: 18px; font-weight: 800; color: #4338ca; }',
+                    '.box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px; margin-bottom: 14px; }',
+                    'ul { margin: 0; padding-left: 20px; }',
+                    'li { margin-bottom: 6px; }',
+                    '.signatures { margin-top: 40px; display: flex; justify-content: space-between; gap: 20px; }',
+                    '.sig-line { border-top: 1px solid #94a3b8; text-align: center; padding-top: 6px; font-size: 11px; width: 45%; color: #475569; }',
+                    '@media print { body { padding: 0; } }',
+                    '</style></head><body>',
+                    '<div class="header">',
+                    '    <div>',
+                    '        <h2 style="margin:0; font-size:16px; color:#0f172a;">PREFEITURA MUNICIPAL DE GONÇALVES DIAS - MA</h2>',
+                    '        <h3 style="margin:3px 0 0 0; font-size:13px; color:#4338ca;">SECRETARIA MUNICIPAL DE EDUCAÇÃO — SEMED</h3>',
+                    '        <p style="margin:2px 0 0 0; font-size:11px; color:#64748b;">Plano de Desenvolvimento Escolar (PDE) • Ano Letivo 2026</p>',
+                    '    </div>',
+                    '    <div style="text-align:right; font-size:11px; color:#64748b;">',
+                    '        <strong>Emissão:</strong> ' + new Date().toLocaleDateString('pt-BR') + '<br>',
+                    '        INEP: ' + schId,
+                    '    </div>',
+                    '</div>',
+                    '<div class="box" style="background:#eef2ff; border-color:#c7d2fe;">',
+                    '    <h3 style="margin:0 0 4px 0; color:#312e81; font-size:14px;">' + schName + '</h3>',
+                    '    <p style="margin:0; font-size:12px; color:#4338ca;">Status de Risco: <strong>' + (numGap < 0 ? 'Em Atenção / GAP Defasagem' : 'Meta Atingida') + '</strong></p>',
+                    '</div>',
+                    '<div class="kpi-grid">',
+                    '    <div class="kpi-card"><div style="font-size:10px; color:#64748b; font-weight:700;">IDEB BASE</div><div class="kpi-val">' + numObs.toFixed(1) + '</div></div>',
+                    '    <div class="kpi-card"><div style="font-size:10px; color:#64748b; font-weight:700;">META PACTUADA</div><div class="kpi-val" style="color:#10b981;">' + numTarget.toFixed(1) + '</div></div>',
+                    '    <div class="kpi-card"><div style="font-size:10px; color:#64748b; font-weight:700;">GAP A SUPERAR</div><div class="kpi-val" style="color:' + (numGap < 0 ? '#ef4444' : '#10b981') + ';">' + (numGap >= 0 ? '+' : '') + numGap.toFixed(1) + '</div></div>',
+                    '    <div class="kpi-card"><div style="font-size:10px; color:#64748b; font-weight:700;">STATUS PDE</div><div class="kpi-val" style="font-size:13px; color:#6366f1;">' + (pdePlan.status || 'Em Execução') + '</div></div>',
+                    '</div>',
+                    '<div class="box">',
+                    '    <h4 style="margin:0 0 6px 0; font-size:12px; text-transform:uppercase; color:#334155;">Eixo / Indicador Prioritário</h4>',
+                    '    <p style="margin:0; font-size:13px; font-weight:700; color:#0f172a;">' + (pdePlan.indicator || 'Recomposição das Aprendizagens') + '</p>',
+                    '    <p style="margin:4px 0 0 0; font-size:12px; color:#64748b;"><strong>Responsável:</strong> ' + (pdePlan.responsible || 'Coordenação') + ' • <strong>Prazo:</strong> ' + formattedDate + '</p>',
+                    '</div>',
+                    '<div class="box">',
+                    '    <h4 style="margin:0 0 8px 0; font-size:12px; text-transform:uppercase; color:#334155;">Ações Estratégicas Pactuadas</h4>',
+                    '    <ul>' + actionsList + '</ul>',
+                    '</div>',
+                    '<div class="signatures">',
+                    '    <div class="sig-line">Direção Escolar / Gestão da Unidade</div>',
+                    '    <div class="sig-line">Coordenação Pedagógica SEMED Gonçalves Dias</div>',
+                    '</div>',
+                    '<script>window.onload = function() { window.print(); };<\/script>',
+                    '</body></html>'
+                ].join('\n');
+                printWin.document.open();
+                printWin.document.write(doc);
+                printWin.document.close();
+            };
+        }
+
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+        if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
+        if (window.lucide && typeof lucide.createIcons === 'function') {
+            try { lucide.createIcons(); } catch(e) {}
+        }
+    }
+
     function handleExportPdeReportPdf() {
         if (typeof global.print === 'function') global.print();
     }
@@ -401,6 +573,7 @@
     global.populateIdebGoalsTable = populateIdebGoalsTable;
     global.handleUpdateSchoolTarget = handleUpdateSchoolTarget;
     global.openPdeManagerForSchool = openPdeManagerForSchool;
+    global.openViewSchoolPdeModal = openViewSchoolPdeModal;
     global.closePdeManagerModal = closePdeManagerModal;
     global.switchPdeModalMode = switchPdeModalMode;
     global.handleSavePdeManagerForm = handleSavePdeManagerForm;
@@ -408,3 +581,4 @@
     global.handleExportPdeReportPdf = handleExportPdeReportPdf;
 
 })(typeof window !== 'undefined' ? window : this);
+

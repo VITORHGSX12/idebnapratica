@@ -82,9 +82,11 @@
             if (searchVal) {
                 var matchName = (u.nome || '').toLowerCase().includes(searchVal);
                 var matchEmail = (u.email || '').toLowerCase().includes(searchVal);
-                var matchCpf = (u.cpf || '').replace(/\D/g, '').includes(searchVal.replace(/\D/g, ''));
+                var cleanQueryDigits = searchVal.replace(/\D/g, '');
+                var matchCpf = cleanQueryDigits.length >= 3 && (u.cpf || '').replace(/\D/g, '').includes(cleanQueryDigits);
                 var matchEscola = (u.escola || '').toLowerCase().includes(searchVal);
-                if (!matchName && !matchEmail && !matchCpf && !matchEscola) return false;
+                var matchId = (u.id || '').toLowerCase().includes(searchVal);
+                if (!matchName && !matchEmail && !matchCpf && !matchEscola && !matchId) return false;
             }
             return true;
         });
@@ -98,6 +100,7 @@
             var statusBadge = (u.status || 'Ativo') === 'Ativo' ? 'badge-success' : 'badge-warning';
             var safeSenha = (u.senha || 'Gondias@2026').replace(/'/g, "\\'");
             var safeEmail = (u.email || '').replace(/'/g, "\\'");
+            var safeNome = (u.nome || '').replace(/'/g, "\\'");
             var badgesHtml = renderUserRoleBadges(u);
 
             return [
@@ -116,7 +119,7 @@
                 '  <td><span class="text-xs text-gray-500">' + (u.ultimoAcesso || 'Hoje, 08:30') + '</span></td>',
                 '  <td class="text-right whitespace-nowrap">',
                 '    <button class="btn btn-sm btn-ghost" title="Visualizar Perfil" onclick="handleViewUserProfile(\'' + u.id + '\')"><i data-lucide="eye" class="w-4 h-4"></i></button>',
-                '    <button class="btn btn-sm btn-ghost" title="Copiar Credenciais" onclick="handleCopyUserCredentials(\'' + safeEmail + '\', \'' + safeSenha + '\')"><i data-lucide="copy" class="w-4 h-4"></i></button>',
+                '    <button class="btn btn-sm btn-ghost" title="Copiar Credenciais de Acesso" onclick="handleCopyUserCredentials(\'' + safeEmail + '\', \'' + safeSenha + '\', \'' + safeNome + '\')"><i data-lucide="copy" class="w-4 h-4"></i></button>',
                 '    <button class="btn btn-sm btn-ghost" title="Resetar Senha" onclick="handleResetUserPassword(\'' + u.id + '\')"><i data-lucide="key" class="w-4 h-4"></i></button>',
                 (canConfigure ? '    <button class="btn btn-sm btn-ghost text-red-600" title="Excluir Usuário" onclick="handleDeleteUser(\'' + u.id + '\')"><i data-lucide="trash-2" class="w-4 h-4"></i></button>' : ''),
                 '  </td>',
@@ -198,30 +201,40 @@
         if (cpfEl) cpfEl.textContent = user.cpf || '-';
         if (statusEl) statusEl.textContent = user.status || 'Ativo';
         if (phoneEl) phoneEl.textContent = user.telefone || '-';
-        if (emailEl) emailEl.textContent = user.email;
-        if (schoolEl) schoolEl.textContent = user.escola || 'Rede Municipal';
-        if (funcEscolaEl) funcEscolaEl.textContent = user.escola || 'Rede Municipal';
-        if (funcTurmaEl) funcTurmaEl.textContent = user.turma || 'Gestão da Unidade Escolar';
+        if (emailEl) emailEl.textContent = user.email || '-';
+        if (schoolEl) schoolEl.textContent = user.escola || 'Todas as Escolas (SEMED)';
+        if (funcEscolaEl) funcEscolaEl.textContent = user.escola || 'Todas as Escolas (SEMED)';
+        if (funcTurmaEl) funcTurmaEl.textContent = user.turma || 'Todas as Turmas / Não aplicável';
 
         if (rbacBadge) {
-            rbacBadge.textContent = isConfigRole ? 'CONFIGURAÇÃO' : 'VISUALIZAÇÃO';
+            rbacBadge.textContent = isConfigRole ? 'Acesso Total (SEMED / Master TI)' : 'Acesso Setorial (Escola / Turma)';
             rbacBadge.className = isConfigRole ? 'badge badge-purple' : 'badge badge-blue';
         }
         if (rbacDesc) {
-            rbacDesc.textContent = isConfigRole 
-                ? 'Grupo CONFIGURAÇÃO: Permissão para criar, editar, excluir usuários e gerenciar configurações municipais.'
-                : 'Grupo VISUALIZAÇÃO: Permissão somente-leitura escopada exclusivamente à sua escola/turma.';
+            if (isConfigRole) {
+                rbacDesc.textContent = 'Este usuário possui permissão plena para visualização global da rede, importação/exportação de dados do IDEB, cálculo de metas municipais e gerenciamento de permissões.';
+            } else {
+                rbacDesc.textContent = 'Este usuário possui acesso direcionado à sua unidade escolar (' + (user.escola || 'Escola Lotação') + ') e aos estudantes matriculados em suas respectivas turmas.';
+            }
         }
 
         if (typeof global.safeCreateIcons === 'function') global.safeCreateIcons();
     }
 
-    function handleCopyUserCredentials(email, senha) {
-        var text = 'Sistema IDEB na Prática (SEMED Gonçalves Dias)\nLogin: ' + email + '\nSenha: ' + senha;
+    function handleCopyUserCredentials(email, senha, nome) {
+        var text = [
+            '🏛️ *IDEB na Prática — SEMED Gonçalves Dias - MA*',
+            'Olá ' + (nome || '') + ', segue seu acesso institucional:',
+            '',
+            '👤 *Usuário:* ' + email,
+            '🔑 *Senha Inicial:* ' + senha,
+            '🌐 *Acesse em:* ' + (typeof window !== 'undefined' ? window.location.origin : 'https://idebnapratica.goncalvesdias.ma.gov.br')
+        ].join('\n');
+
         var nav = (typeof window !== 'undefined' && window.navigator) ? window.navigator : (typeof navigator !== 'undefined' ? navigator : ((typeof global !== 'undefined' && global.navigator) ? global.navigator : null));
         if (nav && nav.clipboard && typeof nav.clipboard.writeText === 'function') {
             nav.clipboard.writeText(text).then(function() {
-                if (typeof global.showToast === 'function') global.showToast('Credenciais copiadas com sucesso!', 'check-circle');
+                if (typeof global.showToast === 'function') global.showToast('Credenciais formatadas copiadas para a área de transferência!', 'check-circle');
             }).catch(function() {
                 fallbackCopyText(text);
             });

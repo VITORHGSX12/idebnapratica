@@ -8704,5 +8704,115 @@ body.dark-mode .metrics-grid .metric-card:hover {
     box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.35);
 }
 
+/* =========================================================================
+   LASER LINE VISION TRANSITION EFFECT
+   ========================================================================= */
+#vision-laser-sweep {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 100vw;
+    height: 4px;
+    z-index: 9999999;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, #38bdf8 20%, #818cf8 50%, #c084fc 80%, #38bdf8 100%);
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.9), 0 0 30px rgba(129, 140, 248, 0.7), 0 2px 8px rgba(192, 132, 252, 0.8);
+    opacity: 0;
+}
+
+#vision-laser-sweep.animating {
+    opacity: 1;
+    animation: laserScanAcross 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes laserScanAcross {
+    0% {
+        left: -100%;
+        opacity: 0.2;
+        transform: scaleY(1);
+    }
+    45% {
+        left: 0%;
+        opacity: 1;
+        transform: scaleY(1.4);
+    }
+    100% {
+        left: 100%;
+        opacity: 0;
+        transform: scaleY(1);
+    }
+}
+
+.vision-transitioning-content {
+    filter: blur(1.5px) saturate(1.1);
+    opacity: 0.88;
+    transform: scale(0.997);
+    transition: filter 0.22s ease, opacity 0.22s ease, transform 0.22s ease;
+}
+
+/* =========================================================================
+   TOOLTIPS PEDAGÓGICOS E TERMÔMETRO DE METAS (IDEB & VAAR)
+   ========================================================================= */
+.pedagogical-tooltip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: rgba(47, 111, 237, 0.15);
+    color: var(--color-brand-primary);
+    font-size: 0.65rem;
+    font-weight: 800;
+    cursor: help;
+    margin-left: 5px;
+    vertical-align: middle;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.pedagogical-tooltip:hover {
+    background: var(--color-brand-primary);
+    color: #ffffff;
+    transform: scale(1.1);
+}
+
+.pedagogical-tooltip:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #0B2545;
+    color: #F4F6F9;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    line-height: 1.4;
+    white-space: normal;
+    width: 230px;
+    z-index: 99999;
+    box-shadow: 0 10px 25px -5px rgba(11, 37, 69, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    pointer-events: none;
+    text-align: left;
+}
+
+.pedagogical-tooltip:hover::before {
+    content: '';
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px 6px 0 6px;
+    border-style: solid;
+    border-color: #0B2545 transparent transparent transparent;
+    z-index: 99999;
+    pointer-events: none;
+}
+
+
+
 
 

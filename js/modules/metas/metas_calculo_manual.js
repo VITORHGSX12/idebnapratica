@@ -263,6 +263,46 @@
         var pRendDisp = document.getElementById('sim-out-p-rend');
         if (pRendDisp) pRendDisp.textContent = (resIdeb.pRendimento * 100).toFixed(1) + '%';
 
+        // Atualizar Termômetro de Metas PDE & Gap
+        var metaGoal = (etapa === '9') ? 4.83 : 5.28;
+        var basePrev = (etapa === '9') ? 4.47 : 4.82;
+        var diffFromTarget = resIdeb.ideb - metaGoal;
+        var pctProgress = Math.max(0, Math.min(100, (resIdeb.ideb / metaGoal) * 100));
+
+        setTxt('sim-meta-target-val', metaGoal.toFixed(2));
+        setTxt('sim-meta-goal-val', metaGoal.toFixed(2));
+        setTxt('sim-meta-prev-val', basePrev.toFixed(2));
+
+        var thermoFill = document.getElementById('sim-thermometer-fill');
+        var pctBadge = document.getElementById('sim-meta-percent-badge');
+        var gapText = document.getElementById('sim-meta-gap-text');
+
+        if (thermoFill) {
+            thermoFill.style.width = pctProgress.toFixed(1) + '%';
+            if (resIdeb.ideb >= metaGoal) {
+                thermoFill.style.background = 'linear-gradient(90deg, #10b981 0%, #059669 100%)';
+            } else if (resIdeb.ideb >= basePrev) {
+                thermoFill.style.background = 'linear-gradient(90deg, #3b82f6 0%, #10b981 100%)';
+            } else {
+                thermoFill.style.background = 'linear-gradient(90deg, #f59e0b 0%, #ef4444 100%)';
+            }
+        }
+
+        if (pctBadge) {
+            pctBadge.textContent = pctProgress.toFixed(0) + '% da Meta';
+            pctBadge.className = (resIdeb.ideb >= metaGoal) ? 'badge badge-success' : (resIdeb.ideb >= basePrev ? 'badge badge-blue' : 'badge badge-warning');
+        }
+
+        if (gapText) {
+            if (diffFromTarget >= 0) {
+                gapText.textContent = 'Meta Superada em +' + diffFromTarget.toFixed(2) + ' pts';
+                gapText.style.color = '#10b981';
+            } else {
+                gapText.textContent = 'Faltam ' + Math.abs(diffFromTarget).toFixed(2) + ' pts para a meta';
+                gapText.style.color = '#f59e0b';
+            }
+        }
+
         // Memória de Cálculo Passo a Passo (se presente)
         setTxt('sim-step-nlp', resIdeb.nLp.toFixed(2));
         setTxt('sim-step-nmat', resIdeb.nMat.toFixed(2));

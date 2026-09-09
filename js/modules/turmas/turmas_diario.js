@@ -526,6 +526,118 @@
         }
     }
 
+    // =========================================================================
+    // EXPORTAÇÕES PEDAGÓGICAS DA TURMA (PDF & WHATSAPP)
+    // =========================================================================
+    function exportClassDiarySummaryPDF() {
+        var school = getActiveDiarySchool() || 'UI JOSE CORREA LIMA';
+        var className = activeDiaryClass || '5º ANO "A"';
+        var avgScoreEl = document.getElementById('class-diary-avg-score');
+        var attendanceEl = document.getElementById('class-diary-attendance');
+        var onTargetEl = document.getElementById('class-diary-on-target');
+
+        var avgScore = avgScoreEl ? avgScoreEl.textContent.trim() : '218.4 pts';
+        var attendance = attendanceEl ? attendanceEl.textContent.trim() : '96.2%';
+        var onTarget = onTargetEl ? onTargetEl.textContent.trim() : '85%';
+
+        var loaded = global.loadedStudents || [];
+        var students = loaded.filter(function(s) {
+            return s.escola === school && (s.turma === className || s.etapa === className);
+        });
+        if (students.length === 0) {
+            students = loaded.filter(function(s) { return s.escola === school; }).slice(0, 26);
+        }
+
+        var printWindow = window.open('', '_blank', 'width=900,height=800');
+        if (!printWindow) {
+            if (typeof global.showToast === 'function') global.showToast('Permita popups para imprimir o resumo da turma.', 'alert-triangle');
+            return;
+        }
+
+        var rowsHtml = students.map(function(st, idx) {
+            var rawScore = st.avg_score || 75;
+            var level = rawScore >= 80 ? 'Adequado' : (rawScore >= 60 ? 'Básico' : 'Abaixo do Básico');
+            var levelColor = rawScore >= 80 ? '#10b981' : (rawScore >= 60 ? '#f59e0b' : '#ef4444');
+            return '<tr>' +
+                '<td style="padding:6px 10px; border-bottom:1px solid #e2e8f0; font-size:12px;">' + (idx + 1) + '</td>' +
+                '<td style="padding:6px 10px; border-bottom:1px solid #e2e8f0; font-size:12px; font-weight:700;">' + (st.nome || 'Aluno') + '</td>' +
+                '<td style="padding:6px 10px; border-bottom:1px solid #e2e8f0; font-size:12px; font-family:monospace;">' + (st.matricula || '5042') + '</td>' +
+                '<td style="padding:6px 10px; border-bottom:1px solid #e2e8f0; font-size:12px; text-align:center;">' + (st.sexo || 'M') + '</td>' +
+                '<td style="padding:6px 10px; border-bottom:1px solid #e2e8f0; font-size:12px; text-align:center; font-weight:700; color:' + levelColor + ';">' + level + ' (' + rawScore + '%)</td>' +
+                '</tr>';
+        }).join('');
+
+        var htmlContent = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Resumo Pedagógico - ' + className + '</title>' +
+            '<style>' +
+            '@page { size: A4 portrait; margin: 15mm; }' +
+            'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #0f172a; margin: 0; padding: 20px; }' +
+            '.header { border-bottom: 2px solid #2563eb; padding-bottom: 12px; margin-bottom: 16px; display:flex; justify-content:space-between; align-items:flex-end; }' +
+            '.kpi-box { border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; text-align: center; flex: 1; background: #f8fafc; }' +
+            'table { width: 100%; border-collapse: collapse; margin-top: 16px; }' +
+            'th { background: #0f172a; color: #fff; padding: 8px 10px; font-size: 11px; text-align: left; text-transform: uppercase; }' +
+            '</style></head><body>' +
+            '<div class="header">' +
+            '<div><h2 style="margin:0; color:#1e293b; font-size:18px;">SEMED GONÇALVES DIAS - MA</h2><h3 style="margin:4px 0 0 0; color:#2563eb; font-size:15px;">Ficha Pedagógica de Acompanhamento da Turma</h3><div style="font-size:12px; color:#64748b; margin-top:4px;"><strong>Escola:</strong> ' + school + ' • <strong>Turma:</strong> ' + className + '</div></div>' +
+            '<div style="text-align:right; font-size:11px; color:#64748b;">Emitido em: ' + new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) + '</div>' +
+            '</div>' +
+            '<div style="display:flex; gap:12px; margin-bottom:16px;">' +
+            '<div class="kpi-box"><div style="font-size:11px; color:#64748b; font-weight:700;">TOTAL ALUNOS</div><div style="font-size:20px; font-weight:800; color:#0f172a;">' + students.length + '</div></div>' +
+            '<div class="kpi-box"><div style="font-size:11px; color:#64748b; font-weight:700;">MÉDIA SAEB</div><div style="font-size:20px; font-weight:800; color:#2563eb;">' + avgScore + '</div></div>' +
+            '<div class="kpi-box"><div style="font-size:11px; color:#64748b; font-weight:700;">FREQUÊNCIA</div><div style="font-size:20px; font-weight:800; color:#10b981;">' + attendance + '</div></div>' +
+            '<div class="kpi-box"><div style="font-size:11px; color:#64748b; font-weight:700;">ALUNOS NA META</div><div style="font-size:20px; font-weight:800; color:#6366f1;">' + onTarget + '</div></div>' +
+            '</div>' +
+            '<h4 style="margin:16px 0 6px 0; font-size:13px; text-transform:uppercase;">Relação Nominal e Desempenho dos Estudantes</h4>' +
+            '<table><thead><tr><th>Nº</th><th>Nome Completo</th><th>Matrícula</th><th style="text-align:center;">Sexo</th><th style="text-align:center;">Status Pedagógico</th></tr></thead><tbody>' +
+            rowsHtml +
+            '</tbody></table>' +
+            '<div style="margin-top:24px; border-top:1px solid #cbd5e1; padding-top:12px; font-size:11px; color:#64748b; display:flex; justify-content:space-between;">' +
+            '<span>IDEB na Prática — Sistema de Gestão Educacional</span>' +
+            '<span>Assinatura do(a) Docente / Coordenação: ___________________________</span>' +
+            '</div>' +
+            '<script>window.onload = function() { window.print(); };<\/script>' +
+            '</body></html>';
+
+        printWindow.document.open();
+        printWindow.document.write(htmlContent);
+        printWindow.document.close();
+    }
+
+    function copyClassSummaryWhatsApp() {
+        var school = getActiveDiarySchool() || 'UI JOSE CORREA LIMA';
+        var className = activeDiaryClass || '5º ANO "A"';
+        var avgScoreEl = document.getElementById('class-diary-avg-score');
+        var attendanceEl = document.getElementById('class-diary-attendance');
+        var onTargetEl = document.getElementById('class-diary-on-target');
+
+        var avgScore = avgScoreEl ? avgScoreEl.textContent.trim() : '218.4 pts';
+        var attendance = attendanceEl ? attendanceEl.textContent.trim() : '96.2%';
+        var onTarget = onTargetEl ? onTargetEl.textContent.trim() : '85%';
+
+        var text = [
+            '📊 *PANORAMA PEDAGÓGICO DA TURMA — IDEB NA PRÁTICA*',
+            '🏛️ *SEMED Gonçalves Dias - MA*',
+            '',
+            '🏫 *Escola:* ' + school,
+            '👥 *Turma:* ' + className,
+            '🎯 *Média Estimada SAEB:* ' + avgScore,
+            '📈 *Taxa de Alunos na Meta:* ' + onTarget,
+            '✅ *Frequência Média:* ' + attendance,
+            '',
+            '🌐 *Acesse o painel completo:* ' + (typeof window !== 'undefined' ? window.location.origin : 'https://idebnapratica.goncalvesdias.ma.gov.br')
+        ].join('\n');
+
+        var nav = (typeof window !== 'undefined' && window.navigator) ? window.navigator : (typeof navigator !== 'undefined' ? navigator : null);
+        if (nav && nav.clipboard && typeof nav.clipboard.writeText === 'function') {
+            nav.clipboard.writeText(text).then(function() {
+                if (typeof global.showToast === 'function') global.showToast('Resumo da turma copiado formatado para WhatsApp!', 'check-circle');
+            }).catch(function() {
+                if (typeof global.showToast === 'function') global.showToast('Resumo preparado para envio!', 'check-circle');
+            });
+        } else {
+            if (typeof global.showToast === 'function') global.showToast('Resumo preparado para envio!', 'check-circle');
+        }
+    }
+
     // Exposição no Escopo Global
     global.getActiveDiarySchool = getActiveDiarySchool;
     global.setActiveDiarySchool = setActiveDiarySchool;
@@ -537,5 +649,7 @@
     global.openStudentIndividualDiagnosticModal = openStudentIndividualDiagnosticModal;
     global.openTurmaJournalModal = openTurmaJournalModal;
     global.closeTurmaJournalModal = closeTurmaJournalModal;
+    global.exportClassDiarySummaryPDF = exportClassDiarySummaryPDF;
+    global.copyClassSummaryWhatsApp = copyClassSummaryWhatsApp;
 
 })(typeof window !== 'undefined' ? window : this);

@@ -698,6 +698,9 @@
         </div>
     </div>
 
+    <!-- Laser Scanning Line for Vision / Profile Transitions -->
+    <div id="vision-laser-sweep" aria-hidden="true"></div>
+
     <!-- Layout Principal com Sidebar -->
     <div class="app-container">
         <!-- Sidebar Navigation (Refined Slate Redesign) -->
@@ -827,15 +830,21 @@
                     <svg id="theme-collapsed-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
                 </button>
 
-                <!-- Active Profile Switcher (Aparece dinamicamente se o usuário tiver múltiplos perfis) -->
-                <div id="sidebar-profile-switcher" class="sidebar-profile-switcher" style="display: none; margin-bottom: 8px; padding: 8px 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md);">
+                <!-- Active Profile Switcher (Alternar Visão / Grupo de Acesso na Sidebar) -->
+                <div id="sidebar-profile-switcher" class="sidebar-profile-switcher" style="display: block; margin-bottom: 8px; padding: 8px 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: var(--radius-md);">
                     <div class="sidebar-profile-switcher-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-                        <span class="switcher-label" style="font-size: 0.65rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">Perfil Ativo</span>
-                        <span class="switcher-badge badge badge-blue" id="sidebar-active-profile-badge" style="font-size: 0.65rem; padding: 2px 6px;">Docente</span>
+                        <span class="switcher-label" style="font-size: 0.65rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 4px;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            Alternar Visão
+                        </span>
+                        <span class="switcher-badge badge badge-blue" id="sidebar-active-profile-badge" style="font-size: 0.65rem; padding: 2px 6px;">Master Admin</span>
                     </div>
                     <div class="sidebar-profile-switcher-control">
-                        <select id="select-active-session-profile" class="form-select profile-select" onchange="if(window.switchActiveSessionProfile) window.switchActiveSessionProfile(this.value);" title="Alternar perfil ativo" style="width: 100%; height: 32px; font-size: 0.78rem; font-weight: 600; background: #0f172a; color: #ffffff; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; cursor: pointer;">
-                            <!-- Inserido dinamicamente via JS -->
+                        <select id="select-active-session-profile" class="form-select profile-select" onchange="if(window.triggerVisionTransition) window.triggerVisionTransition(this.value); else if(window.switchActiveSessionProfile) window.switchActiveSessionProfile(this.value);" title="Alternar perfil ativo" style="width: 100%; height: 32px; font-size: 0.78rem; font-weight: 600; background: #0f172a; color: #ffffff; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; cursor: pointer;">
+                            <option value="Master Admin">👑 Gestor da Rede (Master Admin)</option>
+                            <option value="Diretor Escola">🏫 Diretor(a) Escolar</option>
+                            <option value="Coordenador Pedagógico">📋 Coordenador(a) Pedagógico</option>
+                            <option value="Professor">👨‍🏫 Professor(a) / Docente</option>
                         </select>
                     </div>
                 </div>
@@ -2333,13 +2342,35 @@
                                     <!-- Card 1: IDEB Clássico -->
                                     <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; display: flex; justify-content: space-between; align-items: center;">
                                         <div>
-                                            <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">IDEB CLÁSSICO PROJETADO (N × P)</div>
+                                            <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
+                                                IDEB CLÁSSICO PROJETADO (N × P)
+                                                <span class="pedagogical-tooltip" data-tooltip="Fórmula oficial do MEC: Produto da Média Padronizada de Proficiência (N de 0 a 10) pela Taxa de Aprovação Escolar (P de 0 a 1).">?</span>
+                                            </div>
                                             <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">
                                                 Média Padronizada: <strong id="sim-out-n-medio">5.50</strong> • Rendimento: <strong id="sim-out-p-rend">96.0%</strong>
                                             </div>
                                         </div>
                                         <div style="font-size: 2.2rem; font-weight: 900; color: #10b981; font-family: var(--font-mono);" id="sim-out-ideb">
                                             5.28
+                                        </div>
+                                    </div>
+
+                                    <!-- NOVO: Termômetro Visual de Conquista da Meta PDE -->
+                                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                            <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); text-transform: uppercase;">
+                                                🎯 Termômetro de Conquista da Meta (<span id="sim-meta-target-val">5.28</span>)
+                                                <span class="pedagogical-tooltip" data-tooltip="Compara a projeção simulada em tempo real contra a Meta Oficial do Plano de Desenvolvimento da Educação (PDE).">?</span>
+                                            </div>
+                                            <span id="sim-meta-percent-badge" class="badge badge-success" style="font-size: 0.72rem; font-weight: 800;">100% da Meta</span>
+                                        </div>
+                                        <div style="width: 100%; height: 14px; background: rgba(0,0,0,0.18); border-radius: 20px; overflow: hidden; position: relative; border: 1px solid var(--border-color);">
+                                            <div id="sim-thermometer-fill" style="height: 100%; width: 100%; background: linear-gradient(90deg, #3b82f6 0%, #10b981 100%); transition: width 0.4s ease, background 0.4s ease; border-radius: 20px;"></div>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-secondary); margin-top: 6px;">
+                                            <span>Base Anterior: <strong id="sim-meta-prev-val">4.82</strong></span>
+                                            <span id="sim-meta-gap-text" style="font-weight: 700; color: #10b981;">Meta Superada em +0.00 pts</span>
+                                            <span>Meta PDE: <strong id="sim-meta-goal-val">5.28</strong></span>
                                         </div>
                                     </div>
 
@@ -2364,7 +2395,10 @@
                                     <!-- Card 2: Nível VAAR (IND) -->
                                     <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; display: flex; justify-content: space-between; align-items: center;">
                                         <div>
-                                            <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">INDICADOR DE NÍVEL VAAR (IND = PAdeq × TAp × 10)</div>
+                                            <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
+                                                INDICADOR DE NÍVEL VAAR (IND)
+                                                <span class="pedagogical-tooltip" data-tooltip="IND = % Adequado Médio × Taxa de Aprovação × 10. Reflete a proporção de alunos no nível adequado corrigida pelo fluxo escolar.">?</span>
+                                            </div>
                                             <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">
                                                 Reflete a proporção de alunos no nível adequado corrigida pelo fluxo
                                             </div>
@@ -2377,14 +2411,20 @@
                                     <!-- Card 3: Avanço de Desempenho (IAD) & Inad -->
                                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                                         <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px; text-align: center;">
-                                            <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">AVANÇO (IAD)</div>
+                                            <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
+                                                AVANÇO (IAD)
+                                                <span class="pedagogical-tooltip" data-tooltip="IAD = IND atual - IND anterior. Mede o ganho real de aprendizagem entre ciclos do SAEB.">?</span>
+                                            </div>
                                             <div style="font-size: 1.6rem; font-weight: 900; color: #10b981; font-family: var(--font-mono); margin-top: 4px;" id="sim-out-iad">
                                                 +0.48
                                             </div>
                                             <div style="font-size: 0.68rem; color: var(--text-muted);">vs ciclo anterior</div>
                                         </div>
                                         <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px; text-align: center;">
-                                            <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">ÍNDICE INAD (30/70)</div>
+                                            <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
+                                                ÍNDICE INAD (30/70)
+                                                <span class="pedagogical-tooltip" data-tooltip="Inad = 0.3×IND + 0.7×IAD. Ponderação da Nota Técnica do MEC que prioriza o avanço pedagógico (70%).">?</span>
+                                            </div>
                                             <div style="font-size: 1.6rem; font-weight: 900; color: #0284c7; font-family: var(--font-mono); margin-top: 4px;" id="sim-out-inad">
                                                 1.92
                                             </div>
@@ -2396,6 +2436,7 @@
                                     <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px;">
                                         <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px;">
                                             STATUS OFICIAL PARA RECURSOS DO FUNDEB
+                                            <span class="pedagogical-tooltip" data-tooltip="Critérios da Lei 14.113: Participação ≥ 80% e Avanço IAD > 0 para habilitação aos recursos federais de complementação do VAAR.">?</span>
                                         </div>
                                         <div id="sim-out-status-vaar" class="badge badge-success" style="font-size: 0.85rem; padding: 6px 14px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px;">
                                             <i data-lucide="check-circle" style="width: 14px; height: 14px;"></i> HABILITADO À COMPLEMENTAÇÃO VAAR
@@ -5768,10 +5809,20 @@
 
                 <div class="flex-between flex-wrap gap-md">
                     <h4 style="margin:0; font-size:1rem; font-weight:700;">Estudantes Matriculados nesta Turma</h4>
-                    <button class="btn btn-primary btn-sm" onclick="openCreateStudentForClass();" style="display:flex; align-items:center; gap:6px; font-weight:700;">
-                        <i data-lucide="user-plus" style="width:14px; height:14px;"></i>
-                        <span>+ Matricular Novo Aluno</span>
-                    </button>
+                    <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                        <button type="button" class="btn btn-outline btn-sm" onclick="exportClassDiarySummaryPDF();" title="Imprimir ou exportar relatório em PDF" style="display:flex; align-items:center; gap:6px;">
+                            <i data-lucide="file-text" style="width:14px; height:14px;"></i>
+                            <span>Resumo PDF</span>
+                        </button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="copyClassSummaryWhatsApp();" title="Copiar resumo formatado para WhatsApp Pedagógico" style="display:flex; align-items:center; gap:6px; color:#10b981; border-color:rgba(16,185,129,0.4);">
+                            <i data-lucide="share-2" style="width:14px; height:14px;"></i>
+                            <span>WhatsApp</span>
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="openCreateStudentForClass();" style="display:flex; align-items:center; gap:6px; font-weight:700;">
+                            <i data-lucide="user-plus" style="width:14px; height:14px;"></i>
+                            <span>+ Matricular Novo Aluno</span>
+                        </button>
+                    </div>
                 </div>
 
                 <div style="overflow-x:auto;">
@@ -6287,8 +6338,11 @@
                 <input type="hidden" id="teacher-form-school">
 
                 <div>
-                    <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">Nome Completo do Docente *</label>
-                    <input type="text" id="teacher-form-name" required placeholder="Ex: Profa. Silvana Ferreira" class="form-input-text" style="width: 100%; height: 38px; padding: 0 10px;">
+                    <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px;">Docente Cadastrado na Rede Municipal *</label>
+                    <select id="teacher-form-select" required onchange="if(typeof handleSelectExistingTeacher==='function') handleSelectExistingTeacher(this.value);" class="form-select" style="width: 100%; height: 38px;">
+                        <option value="">-- Selecionar Professor da Rede --</option>
+                    </select>
+                    <input type="hidden" id="teacher-form-name">
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
@@ -6368,6 +6422,7 @@
                     <div>
                         <h3 id="modal-student-name" style="margin: 0; font-size: 1.25rem; font-weight: 800; color: var(--text-primary);">Nome do Aluno</h3>
                         <p id="modal-student-header-meta" style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">Turma • Escola • Turno</p>
+                        <span id="modal-student-matricula" style="font-size: 0.72rem; font-family: var(--font-mono); color: var(--text-muted); display: block; margin-top: 2px;">Matrícula: -</span>
                     </div>
                 </div>
                 <div style="display: flex; align-items: center; gap: 10px;">

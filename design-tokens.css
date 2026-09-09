@@ -131,12 +131,21 @@
     --radius-full: 9999px;
 
     /* ---------------------------------------------------------------------
-       10. SOMBRAS MODERNAS
+       10. SOMBRAS MODERNAS E ELEVAÇÃO
        --------------------------------------------------------------------- */
     --shadow-subtle: 0 1px 2px rgba(15, 26, 43, 0.04);
+    --shadow-sm:     0 1px 3px rgba(15, 26, 43, 0.08), 0 1px 2px rgba(15, 26, 43, 0.04);
+    --shadow-md:     0 4px 12px rgba(15, 26, 43, 0.08), 0 2px 4px rgba(15, 26, 43, 0.04);
+    --shadow-lg:     0 12px 28px -4px rgba(15, 26, 43, 0.12), 0 8px 10px -5px rgba(15, 26, 43, 0.06);
+    --shadow-xl:     0 20px 40px -10px rgba(11, 37, 69, 0.35);
     --shadow-card:   0 4px 16px rgba(15, 26, 43, 0.04), 0 1px 3px rgba(15, 26, 43, 0.03);
     --shadow-dropdown: 0 10px 25px -5px rgba(15, 26, 43, 0.15), 0 4px 6px -2px rgba(15, 26, 43, 0.05);
     --shadow-modal:  0 20px 40px -10px rgba(11, 37, 69, 0.35);
+
+    --color-surface: var(--color-surface-card);
+    --bg-hover:      rgba(15, 26, 43, 0.04);
+    --radius-xl:     20px;
+    --font-heading:  var(--font-display);
 
     /* ---------------------------------------------------------------------
        11. TRANSIÇÕES CONTROLADAS
@@ -243,6 +252,13 @@ body.dark-mode {
     --color-neutral-card:       var(--color-surface-card);
     --color-neutral-subtle:     var(--color-surface-subtle);
     --color-neutral-border:     var(--color-border-subtle);
+
+    --shadow-sm:     0 1px 3px rgba(0, 0, 0, 0.35);
+    --shadow-md:     0 4px 12px rgba(0, 0, 0, 0.45);
+    --shadow-lg:     0 12px 28px rgba(0, 0, 0, 0.55);
+    --shadow-xl:     0 20px 40px rgba(0, 0, 0, 0.70);
+    --color-surface: var(--color-surface-card);
+    --bg-hover:      rgba(255, 255, 255, 0.06);
 }
 
 /* =========================================================================

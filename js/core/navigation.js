@@ -548,6 +548,25 @@
     }
 
     /**
+     * Controle do Bottom Sheet Mobile de Mais Funcionalidades
+     */
+    function openMobileMoreSheet() {
+        var sheet = document.getElementById('mobile-more-sheet');
+        if (sheet) {
+            sheet.classList.remove('hidden');
+            sheet.style.display = 'flex';
+        }
+    }
+
+    function closeMobileMoreSheet() {
+        var sheet = document.getElementById('mobile-more-sheet');
+        if (sheet) {
+            sheet.classList.add('hidden');
+            sheet.style.display = 'none';
+        }
+    }
+
+    /**
      * Vincula listeners de navegação
      */
     function initNavigationEventListeners() {
@@ -557,6 +576,38 @@
                 e.preventDefault();
                 var targetTab = targetItem.getAttribute('data-target');
                 switchTab(targetTab);
+                closeMobileMoreSheet();
+            }
+        });
+
+        var btnMobileMore = document.getElementById('btn-mobile-more');
+        if (btnMobileMore) {
+            btnMobileMore.addEventListener('click', function(e) {
+                e.preventDefault();
+                openMobileMoreSheet();
+            });
+        }
+
+        var btnCloseMobileSheet = document.getElementById('btn-close-mobile-sheet');
+        if (btnCloseMobileSheet) {
+            btnCloseMobileSheet.addEventListener('click', function(e) {
+                e.preventDefault();
+                closeMobileMoreSheet();
+            });
+        }
+
+        var mobileMoreSheet = document.getElementById('mobile-more-sheet');
+        if (mobileMoreSheet) {
+            mobileMoreSheet.addEventListener('click', function(e) {
+                if (e.target === mobileMoreSheet) {
+                    closeMobileMoreSheet();
+                }
+            });
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeMobileMoreSheet();
             }
         });
     }
@@ -579,6 +630,9 @@
     global.filterSidebarMenuItems = filterSidebarMenuItems;
     global.toggleMobileSidebar = toggleMobileSidebar;
     global.closeMobileSidebar = closeMobileSidebar;
+    global.openMobileMoreSheet = openMobileMoreSheet;
+    global.closeMobileMoreSheet = closeMobileMoreSheet;
     global.handleGlobalBackNavigation = handleGlobalBackNavigation;
 
 })(typeof window !== 'undefined' ? window : this);
+

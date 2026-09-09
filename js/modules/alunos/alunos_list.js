@@ -500,12 +500,100 @@
             });
         }
 
+        var activeModalStudent = null;
+
         if (btnPrintStudentRecord) {
             btnPrintStudentRecord.addEventListener('click', function() {
-                if (typeof global.showToast === 'function') global.showToast('Preparando impressão da ficha do aluno...', 'printer');
-                setTimeout(function() {
+                var name = (document.getElementById('modal-student-name') && document.getElementById('modal-student-name').textContent) || 'Estudante';
+                var matricula = (document.getElementById('modal-student-matricula') && document.getElementById('modal-student-matricula').textContent) || '-';
+                var prof = (document.getElementById('modal-student-proficiency-badge') && document.getElementById('modal-student-proficiency-badge').textContent) || 'Adequado';
+                var cpf = (document.getElementById('modal-student-cpf') && document.getElementById('modal-student-cpf').textContent) || '-';
+                var sexo = (document.getElementById('modal-student-sexo') && document.getElementById('modal-student-sexo').textContent) || '-';
+                var nasc = (document.getElementById('modal-student-nascimento') && document.getElementById('modal-student-nascimento').textContent) || '-';
+                var cor = (document.getElementById('modal-student-cor') && document.getElementById('modal-student-cor').textContent) || '-';
+                var escola = (document.getElementById('modal-student-escola') && document.getElementById('modal-student-escola').textContent) || 'Rede Municipal';
+                var etapa = (document.getElementById('modal-student-etapa') && document.getElementById('modal-student-etapa').textContent) || '-';
+                var turmaTurno = (document.getElementById('modal-student-turma-turno') && document.getElementById('modal-student-turma-turno').textContent) || '-';
+                var mae = (document.getElementById('modal-student-mae') && document.getElementById('modal-student-mae').textContent) || '-';
+                var pai = (document.getElementById('modal-student-pai') && document.getElementById('modal-student-pai').textContent) || '-';
+                var endereco = (document.getElementById('modal-student-endereco') && document.getElementById('modal-student-endereco').textContent) || '-';
+                var score = (document.getElementById('modal-student-score') && document.getElementById('modal-student-score').textContent) || '-';
+                var scoreLp = (document.getElementById('modal-student-score-lp') && document.getElementById('modal-student-score-lp').textContent) || '-';
+                var scoreMat = (document.getElementById('modal-student-score-mat') && document.getElementById('modal-student-score-mat').textContent) || '-';
+                var freq = (document.getElementById('modal-student-freq') && document.getElementById('modal-student-freq').textContent) || '98%';
+                var nee = (document.getElementById('modal-student-nee') && document.getElementById('modal-student-nee').textContent) || 'Regular / Sem NEE';
+
+                var printWindow = window.open('', '_blank', 'width=880,height=960');
+                if (!printWindow) {
                     window.print();
-                }, 300);
+                    return;
+                }
+
+                var htmlDoc = [
+                    '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Ficha Individual - ' + name + '</title>',
+                    '<style>',
+                    '@page { size: A4 portrait; margin: 15mm; }',
+                    'body { font-family: "Segoe UI", Arial, sans-serif; color: #0f172a; margin: 0; padding: 20px; font-size: 13px; line-height: 1.4; }',
+                    '.header { border-bottom: 2px solid #2563eb; padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }',
+                    '.section-title { background: #f1f5f9; padding: 6px 10px; font-weight: 700; font-size: 11px; text-transform: uppercase; color: #334155; margin: 14px 0 8px 0; border-left: 4px solid #2563eb; }',
+                    '.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; margin-bottom: 8px; }',
+                    '.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px 16px; margin-bottom: 8px; }',
+                    '.field-label { font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: 600; display: block; }',
+                    '.field-value { font-size: 12px; font-weight: 700; color: #0f172a; }',
+                    '.kpi-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; text-align: center; }',
+                    '.kpi-val { font-size: 18px; font-weight: 800; color: #2563eb; }',
+                    '.signatures { margin-top: 40px; display: flex; justify-content: space-between; gap: 20px; }',
+                    '.sig-line { border-top: 1px solid #94a3b8; text-align: center; padding-top: 6px; font-size: 11px; width: 45%; color: #475569; }',
+                    '@media print { body { padding: 0; } }',
+                    '</style></head><body>',
+                    '<div class="header">',
+                    '    <div>',
+                    '        <h2 style="margin:0; font-size:16px; color:#0f172a;">PREFEITURA MUNICIPAL DE GONÇALVES DIAS - MA</h2>',
+                    '        <h3 style="margin:3px 0 0 0; font-size:13px; color:#2563eb;">SECRETARIA MUNICIPAL DE EDUCAÇÃO — SEMED</h3>',
+                    '        <p style="margin:2px 0 0 0; font-size:11px; color:#64748b;">Dossiê / Ficha Pedagógica Individual do Estudante • IDEB na Prática</p>',
+                    '    </div>',
+                    '    <div style="text-align:right; font-size:11px; color:#64748b;">',
+                    '        <strong>Emissão:</strong> ' + new Date().toLocaleDateString('pt-BR') + '<br>',
+                    '        <span style="font-family:monospace;">' + matricula + '</span>',
+                    '    </div>',
+                    '</div>',
+                    '<div class="section-title">1. Identificação do Estudante</div>',
+                    '<div class="grid-3">',
+                    '    <div><span class="field-label">Nome Completo</span><div class="field-value">' + name + '</div></div>',
+                    '    <div><span class="field-label">CPF</span><div class="field-value">' + cpf + '</div></div>',
+                    '    <div><span class="field-label">Sexo / Cor</span><div class="field-value">' + sexo + ' • ' + cor + '</div></div>',
+                    '    <div><span class="field-label">Data de Nascimento</span><div class="field-value">' + nasc + '</div></div>',
+                    '    <div><span class="field-label">Nome da Mãe</span><div class="field-value">' + mae + '</div></div>',
+                    '    <div><span class="field-label">Nome do Pai</span><div class="field-value">' + pai + '</div></div>',
+                    '</div>',
+                    '<div class="section-title">2. Vínculo Escolar & Turma</div>',
+                    '<div class="grid-3">',
+                    '    <div><span class="field-label">Unidade Escolar</span><div class="field-value">' + escola + '</div></div>',
+                    '    <div><span class="field-label">Etapa / Série</span><div class="field-value">' + etapa + '</div></div>',
+                    '    <div><span class="field-label">Turma & Turno</span><div class="field-value">' + turmaTurno + '</div></div>',
+                    '    <div><span class="field-label">Acessibilidade / NEE</span><div class="field-value">' + nee + '</div></div>',
+                    '    <div style="grid-column: span 2;"><span class="field-label">Endereço Residencial</span><div class="field-value">' + endereco + '</div></div>',
+                    '</div>',
+                    '<div class="section-title">3. Indicadores de Desempenho SAEB & Frequência</div>',
+                    '<div style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 8px;">',
+                    '    <div class="kpi-card"><span class="field-label">Status Pedagógico</span><div class="kpi-val" style="font-size:14px; color:#10b981;">' + prof + '</div></div>',
+                    '    <div class="kpi-card"><span class="field-label">Média SAEB</span><div class="kpi-val">' + score + '</div></div>',
+                    '    <div class="kpi-card"><span class="field-label">L. Portuguesa / Mat.</span><div class="kpi-val" style="font-size:13px;">' + scoreLp + ' / ' + scoreMat + '</div></div>',
+                    '    <div class="kpi-card"><span class="field-label">Frequência Escolar</span><div class="kpi-val" style="color:#059669;">' + freq + '</div></div>',
+                    '</div>',
+                    '<div class="signatures">',
+                    '    <div class="sig-line">Professor(a) Regente / Responsável</div>',
+                    '    <div class="sig-line">Direção Escolar / Coordenação SEMED</div>',
+                    '</div>',
+                    '<script>window.onload = function() { window.print(); };<\/script>',
+                    '</body></html>'
+                ].join('\n');
+
+                printWindow.document.open();
+                printWindow.document.write(htmlDoc);
+                printWindow.document.close();
+
+                if (typeof global.showToast === 'function') global.showToast('Ficha individual gerada com sucesso!', 'printer');
             });
         }
 

@@ -201,6 +201,19 @@
             turma: 'Gestão da Unidade Escolar',
             telefone: '(99) 98199-0011',
             status: 'Ativo'
+        },
+        {
+            id: 'USR-016',
+            nome: 'Profª. Patrícia Mendes (AEE & Inclusão)',
+            cpf: '567.432.109-66',
+            email: 'aee.correa@goncalvesdias.ma.gov.br',
+            senha: 'Gondias@2026',
+            tipo: 'AEE / Especialista',
+            role: 'AEE / Especialista',
+            escola: 'UI JOSE CORREA LIMA',
+            turma: 'Sala de Recursos Multifuncionais',
+            telefone: '(99) 98199-2233',
+            status: 'Ativo'
         }
     ];
 
