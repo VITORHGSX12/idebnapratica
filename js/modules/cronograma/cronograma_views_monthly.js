@@ -2,8 +2,8 @@
  * ============================================================================
  * GESTÃO EDUCACIONAL SAAS — MÓDULO CRONOGRAMA (VISÃO MENSAL & DRAWER)
  * Arquivo: js/modules/cronograma/cronograma_views_monthly.js
- * Descrição: Renderização do calendário mensal com drag & drop, drawer lateral
- *            e empty state amigável.
+ * Descrição: Renderização do calendário mensal com drag & drop, drawer lateral,
+ *            filtros de status integrados e alternância de status 1-clique.
  * ============================================================================
  */
 
@@ -16,26 +16,38 @@
         const grid = document.getElementById('calendar-monthly-cells-grid');
         const accordion = document.getElementById('calendar-monthly-accordion-mobile');
         const statsEl = document.getElementById('monthly-stats-summary');
+        const filteredCountBadge = document.getElementById('schedule-filtered-count-badge');
         if (!grid) return;
 
         const currentTurma = document.getElementById('cal-filter-turma-context')?.value || 'UI JOSE CORREA LIMA — 2º Ano A';
         const allLessons = typeof window.getScheduleLessonsDb === 'function' ? window.getScheduleLessonsDb() : [];
         const subjectFilter = document.getElementById('cal-filter-subject-v2')?.value || 'all';
-
-        const turmaLessons = allLessons.filter(l => {
-            if (l.turmaContext !== currentTurma) return false;
-            if (subjectFilter !== 'all' && l.disciplina !== subjectFilter) return false;
-            return true;
-        });
+        const statusFilter = typeof window.getScheduleStatusFilter === 'function' ? window.getScheduleStatusFilter() : 'all';
 
         const todayStr = typeof window.getScheduleReferenceToday === 'function' 
             ? window.getScheduleReferenceToday() 
             : new Date().toISOString().split('T')[0];
 
+        // Todas as aulas da turma para estatísticas gerais
+        const allTurmaLessons = allLessons.filter(l => {
+            if (l.turmaContext !== currentTurma) return false;
+            if (subjectFilter !== 'all' && l.disciplina !== subjectFilter) return false;
+            return true;
+        });
+
+        // Aulas filtradas por status para exibição no calendário
+        const turmaLessons = allTurmaLessons.filter(l => {
+            if (statusFilter === 'all') return true;
+            const computed = typeof window.getLessonComputedStatus === 'function'
+                ? window.getLessonComputedStatus(l, todayStr)
+                : (l.status === 'trabalhada' ? 'trabalhada' : (l.date < todayStr ? 'atrasada' : 'planejada'));
+            return computed === statusFilter;
+        });
+
         // Cálculo via Fonte Única da Verdade
         const progress = typeof window.calculateScheduleProgress === 'function'
-            ? window.calculateScheduleProgress(turmaLessons, todayStr)
-            : { total: turmaLessons.length, trabalhadas: 0, atrasadas: 0, pct: 0 };
+            ? window.calculateScheduleProgress(allTurmaLessons, todayStr)
+            : { total: allTurmaLessons.length, trabalhadas: 0, atrasadas: 0, pct: 0 };
 
         if (statsEl) {
             statsEl.innerHTML = `
@@ -44,11 +56,27 @@
             `;
         }
 
+        if (filteredCountBadge) {
+            if (statusFilter === 'all') {
+                filteredCountBadge.textContent = `Mostrando todas as ${allTurmaLessons.length} aulas do mês`;
+            } else if (statusFilter === 'atrasada') {
+                filteredCountBadge.innerHTML = `<span style="color:#ef4444;">Filtrado: ${turmaLessons.length} aula(s) em atraso / reposição</span>`;
+            } else if (statusFilter === 'trabalhada') {
+                filteredCountBadge.innerHTML = `<span style="color:#10b981;">Filtrado: ${turmaLessons.length} aula(s) trabalhadas</span>`;
+            } else {
+                filteredCountBadge.innerHTML = `<span style="color:#f59e0b;">Filtrado: ${turmaLessons.length} aula(s) planejadas</span>`;
+            }
+        }
+
+        if (typeof window.renderCurricularCoverageBar === 'function') {
+            window.renderCurricularCoverageBar(currentTurma);
+        }
+
         grid.innerHTML = '';
         if (accordion) accordion.innerHTML = '';
 
         // Empty state caso não existam aulas planejadas
-        if (turmaLessons.length === 0) {
+        if (allTurmaLessons.length === 0) {
             const emptyContainer = document.createElement('div');
             emptyContainer.className = 'calendar-empty-state';
             emptyContainer.style.gridColumn = '1 / -1';
@@ -72,6 +100,7 @@
                 </button>
             `;
             grid.appendChild(emptyContainer);
+            if (typeof window.safeCreateIcons === 'function') window.safeCreateIcons(grid);
             return;
         }
 
@@ -126,7 +155,7 @@
             if (dayLessons.length > 0) {
                 const expandBtn = document.createElement('button');
                 expandBtn.type = 'button';
-                expandBtn.title = `Ver ${dayLessons.length} aulas do dia ${dayNumStr}/08`;
+                expandBtn.title = `Ver ${dayLessons.length} aula(s) do dia ${dayNumStr}/08`;
                 expandBtn.style.background = 'rgba(99,102,241,0.1)';
                 expandBtn.style.border = 'none';
                 expandBtn.style.color = '#6366f1';
@@ -135,7 +164,7 @@
                 expandBtn.style.borderRadius = '4px';
                 expandBtn.style.padding = '1px 5px';
                 expandBtn.style.cursor = 'pointer';
-                expandBtn.textContent = `${dayLessons.length} aulas`;
+                expandBtn.textContent = `${dayLessons.length} aula(s)`;
                 expandBtn.onclick = (e) => { e.stopPropagation(); openDayExpandedDrawer(dateIso); };
                 headerDiv.appendChild(expandBtn);
             }
@@ -172,7 +201,7 @@
                         <span>${les.habilidadeCode || les.disciplina}</span>
                     </div>
                     <button type="button" onclick="event.stopPropagation(); toggleLessonWorkStatus('${les.id}');" 
-                            style="background: none; border: none; cursor: pointer; padding: 0 2px; display:inline-flex; align-items:center;" title="Alternar Trabalhada/Planejada">
+                            style="background: none; border: none; cursor: pointer; padding: 0 2px; display:inline-flex; align-items:center;" title="Alternar Trabalhada/Planejada (1-Clique)">
                         <span style="width:8px; height:8px; border-radius:50%; background:${dotColor}; display:inline-block;"></span>
                     </button>
                 `;
@@ -194,6 +223,8 @@
 
             grid.appendChild(cell);
         }
+
+        if (typeof window.safeCreateIcons === 'function') window.safeCreateIcons(grid);
     }
 
     function openDayExpandedDrawer(dateIso) {
@@ -219,11 +250,8 @@
 
         if (dayLessons.length === 0) {
             list.innerHTML = `
-                <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
-                    <div style="width: 44px; height: 44px; border-radius: var(--radius-pill); background: var(--bg-tertiary); color: var(--text-muted); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px auto;">
-                        <i data-lucide="calendar" style="width: 22px; height: 22px;"></i>
-                    </div>
-                    <p style="font-size: 0.85rem; margin: 0;">Nenhuma aula agendada para esta turma neste dia.</p>
+                <div style="padding: 30px; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+                    Nenhuma aula cadastrada para esta data.
                 </div>
             `;
         } else {
@@ -233,44 +261,37 @@
                     : (les.status === 'trabalhada' ? 'trabalhada' : (les.date < todayStr ? 'atrasada' : 'planejada'));
 
                 const isAtrasada = computedStatus === 'atrasada';
+                const statusBadge = computedStatus === 'trabalhada' 
+                    ? '<span class="badge badge-success">Trabalhada</span>' 
+                    : (isAtrasada ? '<span class="badge badge-danger">Em Atraso</span>' : '<span class="badge badge-warning">Planejada</span>');
+
                 const card = document.createElement('div');
-                card.style.background = 'var(--bg-primary)';
-                card.style.border = isAtrasada ? '1.5px solid #ef4444' : '1px solid var(--border-color)';
+                card.style.background = 'var(--bg-secondary)';
+                card.style.border = '1px solid var(--border-color)';
                 card.style.borderRadius = 'var(--radius-md)';
                 card.style.padding = '14px';
-                card.style.display = 'flex';
-                card.style.flexDirection = 'column';
-                card.style.gap = '8px';
-
-                const safeCode = typeof window.escapeHtml === 'function' ? window.escapeHtml(les.habilidadeCode) : les.habilidadeCode;
-                const safeDisc = typeof window.escapeHtml === 'function' ? window.escapeHtml(les.disciplina) : les.disciplina;
-                const safeTime = typeof window.escapeHtml === 'function' ? window.escapeHtml(les.time || 'Horário Padrão') : (les.time || 'Horário Padrão');
-                const safeDesc = typeof window.escapeHtml === 'function' ? window.escapeHtml(les.habilidadeDesc) : les.habilidadeDesc;
-                const safeMethod = les.methodology ? (typeof window.escapeHtml === 'function' ? window.escapeHtml(les.methodology) : les.methodology) : '';
-                const safeCriadoPor = typeof window.escapeHtml === 'function' ? window.escapeHtml(les.criadoPor || 'Docente Regente') : (les.criadoPor || 'Docente Regente');
-
+                card.style.marginBottom = '10px';
                 card.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-weight: 800; font-size: 0.88rem; color: #6366f1;">${safeCode}</span>
-                        <span class="badge ${computedStatus === 'trabalhada' ? 'badge-success' : (isAtrasada ? 'badge-danger' : 'badge-warning')}">
-                            ${isAtrasada ? 'Atrasada / Pendente' : (computedStatus === 'trabalhada' ? 'Trabalhada' : 'Planejada')}
-                        </span>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                        <div>
+                            <span class="badge badge-primary" style="font-size: 0.7rem; font-weight: 700;">${les.disciplina}</span>
+                            <span style="font-size: 0.72rem; color: var(--text-muted); margin-left: 6px;">${les.time || '07:30 - 08:20'}</span>
+                        </div>
+                        ${statusBadge}
                     </div>
-                    <div style="font-weight: 700; font-size: 0.85rem; color: var(--text-primary);">${safeDisc} • ${safeTime}</div>
-                    <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0; line-height: 1.4;">${safeDesc}</p>
-                    ${safeMethod ? `<div style="font-size: 0.72rem; color: var(--text-muted); background: var(--bg-tertiary); padding: 6px 8px; border-radius: 4px;"><strong>Metodologia:</strong> ${safeMethod}</div>` : ''}
-                    <div style="font-size: 0.7rem; color: var(--text-muted);">Responsável: ${safeCriadoPor}</div>
-                    
-                    <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 6px; border-top: 1px solid var(--border-color); padding-top: 8px;">
-                        <button type="button" onclick="toggleLessonWorkStatus('${les.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem; font-weight: 700; color: ${les.status === 'trabalhada' ? '#f59e0b' : '#10b981'}; border-color: ${les.status === 'trabalhada' ? '#f59e0b' : '#10b981'};">
-                            ${les.status === 'trabalhada' ? 'Marcar como Planejada' : 'Concluir / Trabalhada'}
+                    <div style="font-size: 0.88rem; font-weight: 800; color: var(--text-primary); margin-bottom: 4px;">
+                        ${les.habilidadeCode ? `<span style="color:#6366f1;">[${les.habilidadeCode}]</span> ` : ''}${les.habilidadeDesc || les.title || 'Conteúdo Programático'}
+                    </div>
+                    ${les.metodologia ? `<p style="font-size: 0.78rem; color: var(--text-secondary); margin: 4px 0 8px 0; line-height: 1.4;">${les.metodologia}</p>` : ''}
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px; margin-top: 8px;">
+                        <button type="button" onclick="toggleLessonWorkStatus('${les.id}');" class="btn btn-outline btn-xs" style="font-size: 0.72rem; display: inline-flex; align-items: center; gap: 4px;">
+                            <i data-lucide="${computedStatus === 'trabalhada' ? 'rotate-ccw' : 'check'}" style="width:12px;height:12px;"></i>
+                            <span>${computedStatus === 'trabalhada' ? 'Marcar Pendente' : 'Marcar Concluída'}</span>
                         </button>
-                        <button type="button" onclick="if(window.openDuplicateLessonModal) window.openDuplicateLessonModal('${les.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem;" title="Duplicar para outra turma">
-                            Duplicar
-                        </button>
-                        <button type="button" onclick="if(window.handleDeleteLessonWithTrash) window.handleDeleteLessonWithTrash('${les.id}');" class="btn btn-outline btn-sm" style="font-size: 0.72rem; color: #ef4444; border-color: #fca5a5;" title="Excluir aula">
-                            Excluir
-                        </button>
+                        <div style="display: flex; gap: 6px;">
+                            <button type="button" onclick="if(window.openNewSchedulePlanModal) window.openNewSchedulePlanModal(null, null, '${les.id}');" class="btn btn-outline btn-xs" style="font-size: 0.72rem;">Editar</button>
+                            <button type="button" onclick="if(window.handleDeleteLessonWithTrash) window.handleDeleteLessonWithTrash('${les.id}');" class="btn btn-outline btn-xs" style="font-size: 0.72rem; color: #ef4444; border-color: rgba(239,68,68,0.4);">Excluir</button>
+                        </div>
                     </div>
                 `;
                 list.appendChild(card);
@@ -280,18 +301,22 @@
         if (addBtn) {
             addBtn.onclick = () => {
                 closeDayExpandedDrawer();
-                if (typeof window.openNewSchedulePlanModal === 'function') {
-                    window.openNewSchedulePlanModal(dateIso);
-                }
+                if (window.openNewSchedulePlanModal) window.openNewSchedulePlanModal(dateIso);
             };
         }
 
-        overlay.style.display = 'block';
+        overlay.classList.remove('hidden');
+        overlay.style.display = 'flex';
+        if (typeof window.safeCreateIcons === 'function') window.safeCreateIcons(overlay);
     }
 
     function closeDayExpandedDrawer() {
         const overlay = document.getElementById('drawer-day-expanded-overlay');
-        if (overlay) overlay.style.display = 'none';
+        if (overlay) {
+            overlay.classList.add('hidden');
+            overlay.style.display = 'none';
+        }
+        activeExpandedDate = null;
     }
 
     function handleLessonDropToDate(lessonId, targetDateIso) {
@@ -299,16 +324,17 @@
         const lesson = allLessons.find(l => l.id === lessonId);
         if (!lesson) return;
 
-        const oldDate = lesson.date;
+        const prevDate = lesson.date;
         lesson.date = targetDateIso;
+
         if (typeof window.saveScheduleLessonsDb === 'function') {
             window.saveScheduleLessonsDb(allLessons);
         }
-        if (typeof window.renderActiveScheduleView === 'function') {
-            window.renderActiveScheduleView();
-        }
+
+        renderScheduleMonthlyCalendar();
         if (typeof window.showToast === 'function') {
-            window.showToast(`Aula reagendada de ${oldDate.split('-').reverse().join('/')} para ${targetDateIso.split('-').reverse().join('/')}!`, 'success');
+            const formatted = targetDateIso.split('-').reverse().join('/');
+            window.showToast(`Aula reagendada para ${formatted} com sucesso!`, 'calendar');
         }
     }
 
@@ -334,7 +360,7 @@
         }
 
         if (typeof window.showToast === 'function') {
-            window.showToast(`Status alterado para "${lesson.status.toUpperCase()}"${isNowTrabalhada ? ' (Confirmada)' : ''}!`, isNowTrabalhada ? 'success' : 'info');
+            window.showToast(`Status da aula alterado para "${isNowTrabalhada ? 'CONCLUÍDA / TRABALHADA' : 'PLANEJADA'}"!`, isNowTrabalhada ? 'check-circle' : 'info');
         }
     }
 

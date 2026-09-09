@@ -3354,24 +3354,63 @@
                                     <i data-lucide="chevron-right" style="width: 18px; height: 18px;"></i>
                                 </button>
 
-                                <button type="button" onclick="handlePrintScheduleReport(); return false;" class="btn btn-outline" style="height: 36px; font-weight: 600; margin-left: 6px;" title="Imprimir Planejamento">
-                                    <i data-lucide="printer" style="width: 15px; height: 15px;"></i> Imprimir
+                                <button type="button" onclick="handlePrintScheduleReport(); return false;" class="btn btn-outline" style="height: 36px; font-weight: 600; margin-left: 6px; display:inline-flex; align-items:center; gap:6px;" title="Imprimir Plano de Aulas Semanal Oficial (PDF)">
+                                    <i data-lucide="file-text" style="width: 15px; height: 15px;"></i> Resumo PDF
+                                </button>
+
+                                <button type="button" onclick="handleCopyScheduleWhatsApp(); return false;" class="btn btn-outline" style="height: 36px; font-weight: 600; color: #10b981; border-color: rgba(16,185,129,0.4); display:inline-flex; align-items:center; gap:6px;" title="Copiar Resumo da Semana formatado para WhatsApp">
+                                    <i data-lucide="share-2" style="width: 15px; height: 15px;"></i> WhatsApp
                                 </button>
                             </div>
                         </div>
 
                         <!-- Card de Contexto Ativo & Responsabilidade Pedagógica -->
-                        <div style="padding: 10px 24px; background: var(--color-surface-subtle); border-bottom: 1px solid var(--color-border-subtle); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; font-size: var(--text-sm);">
+                        <div style="padding: 12px 24px; background: var(--color-surface-subtle); border-bottom: 1px solid var(--color-border-subtle); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: var(--text-sm);">
                             <div style="display: flex; align-items: center; gap: 8px;">
                                 <span style="font-weight: 700; color: var(--color-text-muted); font-size: var(--text-xs); text-transform: uppercase;">Turma Exibida:</span>
                                 <strong id="schedule-active-context-label" style="color: var(--color-brand-primary);">UI JOSE CORREA LIMA • 2º Ano A</strong>
                                 <span id="schedule-active-teacher-label" style="color: var(--color-text-secondary);">• Responsável: Profa. Silvana Ferreira</span>
                             </div>
+                            
+                            <!-- Barra / Termômetro de Cobertura Curricular BNCC / SAEB -->
+                            <div id="schedule-curricular-coverage-container" style="display:flex; align-items:center; gap:12px; background:var(--bg-tertiary); padding:6px 14px; border-radius:var(--radius-pill); border:1px solid var(--border-color);">
+                                <div style="font-size:0.75rem; font-weight:700; color:var(--text-secondary); display:flex; align-items:center; gap:6px;">
+                                    <i data-lucide="award" style="width:14px;height:14px;color:#6366f1;"></i>
+                                    <span>Cobertura BNCC:</span>
+                                </div>
+                                <div style="width:100px; height:8px; background:rgba(255,255,255,0.1); border-radius:4px; overflow:hidden;">
+                                    <div id="schedule-coverage-progress-bar" style="width:72%; height:100%; background:linear-gradient(90deg, #6366f1 0%, #10b981 100%); transition:width 0.4s ease;"></div>
+                                </div>
+                                <strong id="schedule-coverage-pct-label" style="font-size:0.78rem; color:#10b981; font-weight:800;">72%</strong>
+                            </div>
+
                             <div style="display: flex; gap: 12px; align-items: center;">
                                 <button type="button" onclick="openDetailedProgressModal(); return false;" class="btn btn-outline" style="font-size: var(--text-xs); padding: 4px 10px; height: 28px;">
                                     <i data-lucide="bar-chart-2" style="width: 13px; height: 13px;"></i>
-                                    <span>Progresso Detalhado por Disciplina & BNCC</span>
+                                    <span>Auditoria BNCC Completa</span>
                                 </button>
+                            </div>
+                        </div>
+
+                        <!-- Barra de Filtros Rápidos por Status (Chips) -->
+                        <div style="padding: 10px 24px; background: var(--bg-secondary); border-bottom: 1px solid var(--color-border-subtle); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                                <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-right:4px;">Filtrar Aulas:</span>
+                                <button type="button" onclick="setScheduleStatusFilter('all');" id="chip-status-all" class="btn btn-sm btn-primary schedule-status-chip" style="font-size:0.75rem; padding:3px 10px; border-radius:16px;">
+                                    Todas as Aulas
+                                </button>
+                                <button type="button" onclick="setScheduleStatusFilter('atrasada');" id="chip-status-atrasada" class="btn btn-sm btn-outline schedule-status-chip" style="font-size:0.75rem; padding:3px 10px; border-radius:16px; color:#ef4444; border-color:rgba(239,68,68,0.4);">
+                                    <i data-lucide="alert-triangle" style="width:12px;height:12px;display:inline-block;vertical-align:middle;margin-right:2px;"></i> Em Atraso / Reposição
+                                </button>
+                                <button type="button" onclick="setScheduleStatusFilter('trabalhada');" id="chip-status-trabalhada" class="btn btn-sm btn-outline schedule-status-chip" style="font-size:0.75rem; padding:3px 10px; border-radius:16px; color:#10b981; border-color:rgba(16,185,129,0.4);">
+                                    <i data-lucide="check-circle" style="width:12px;height:12px;display:inline-block;vertical-align:middle;margin-right:2px;"></i> Trabalhadas
+                                </button>
+                                <button type="button" onclick="setScheduleStatusFilter('planejada');" id="chip-status-planejada" class="btn btn-sm btn-outline schedule-status-chip" style="font-size:0.75rem; padding:3px 10px; border-radius:16px; color:#f59e0b; border-color:rgba(245,158,11,0.4);">
+                                    <i data-lucide="clock" style="width:12px;height:12px;display:inline-block;vertical-align:middle;margin-right:2px;"></i> Planejadas
+                                </button>
+                            </div>
+                            <div id="schedule-filtered-count-badge" style="font-size:0.75rem; font-weight:700; color:var(--text-secondary);">
+                                Mostrando todas as aulas do mês
                             </div>
                         </div>
 

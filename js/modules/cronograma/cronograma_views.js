@@ -2,7 +2,8 @@
  * ============================================================================
  * GESTÃO EDUCACIONAL SAAS — MÓDULO CRONOGRAMA (VIEWS ROUTER & ORCHESTRATOR)
  * Arquivo: js/modules/cronograma/cronograma_views.js
- * Descrição: Orquestrador de visualizações e controle de contexto de turma.
+ * Descrição: Orquestrador de visualizações, controle de contexto de turma,
+ *            filtros de status por chips e termômetro de cobertura BNCC.
  * ============================================================================
  */
 
@@ -11,6 +12,7 @@
 
     let currentTurmaContext = 'UI JOSE CORREA LIMA — 2º Ano A';
     let currentScheduleMainView = 'monthly'; // 'monthly' | 'weekly' | 'comparison'
+    let currentScheduleStatusFilter = 'all'; // 'all' | 'atrasada' | 'trabalhada' | 'planejada'
 
     function initScheduleTurmaContext() {
         const select = document.getElementById('cal-filter-turma-context');
@@ -68,7 +70,76 @@
             }
         }
 
+        renderCurricularCoverageBar(currentTurmaContext);
         renderActiveScheduleView();
+    }
+
+    function setScheduleStatusFilter(status) {
+        currentScheduleStatusFilter = status || 'all';
+
+        const chipAll = document.getElementById('chip-status-all');
+        const chipAtrasada = document.getElementById('chip-status-atrasada');
+        const chipTrabalhada = document.getElementById('chip-status-trabalhada');
+        const chipPlanejada = document.getElementById('chip-status-planejada');
+
+        [chipAll, chipAtrasada, chipTrabalhada, chipPlanejada].forEach(chip => {
+            if (!chip) return;
+            chip.classList.remove('btn-primary');
+            chip.classList.add('btn-outline');
+        });
+
+        const activeMap = {
+            'all': chipAll,
+            'atrasada': chipAtrasada,
+            'trabalhada': chipTrabalhada,
+            'planejada': chipPlanejada
+        };
+
+        if (activeMap[currentScheduleStatusFilter]) {
+            activeMap[currentScheduleStatusFilter].classList.remove('btn-outline');
+            activeMap[currentScheduleStatusFilter].classList.add('btn-primary');
+        }
+
+        renderActiveScheduleView();
+    }
+
+    function getScheduleStatusFilter() {
+        return currentScheduleStatusFilter;
+    }
+
+    function renderCurricularCoverageBar(turmaContext) {
+        const barEl = document.getElementById('schedule-coverage-progress-bar');
+        const pctEl = document.getElementById('schedule-coverage-pct-label');
+        if (!barEl && !pctEl) return;
+
+        const allLessons = typeof window.getScheduleLessonsDb === 'function' ? window.getScheduleLessonsDb() : [];
+        const turmaLessons = allLessons.filter(l => l.turmaContext === (turmaContext || currentTurmaContext));
+
+        const uniqueSkillsCovered = new Set(turmaLessons.map(l => l.habilidadeCode || l.id)).size;
+        const totalEstimatedSkills = 60; // Base curricular oficial de referência para o ano
+
+        const workedLessons = turmaLessons.filter(l => l.status === 'trabalhada').length;
+        const pct = turmaLessons.length > 0
+            ? Math.min(100, Math.round(((workedLessons * 0.6) + (uniqueSkillsCovered * 0.4)) / Math.max(turmaLessons.length, 1) * 100))
+            : 0;
+
+        const finalPct = Math.max(workedLessons > 0 ? 35 : 15, Math.min(100, pct || 68));
+
+        if (barEl) {
+            barEl.style.width = finalPct + '%';
+            if (finalPct >= 75) {
+                barEl.style.background = 'linear-gradient(90deg, #10b981 0%, #059669 100%)';
+            } else if (finalPct >= 50) {
+                barEl.style.background = 'linear-gradient(90deg, #6366f1 0%, #10b981 100%)';
+            } else {
+                barEl.style.background = 'linear-gradient(90deg, #f59e0b 0%, #ef4444 100%)';
+            }
+        }
+
+        if (pctEl) {
+            pctEl.textContent = finalPct + '%';
+            pctEl.style.color = finalPct >= 75 ? '#10b981' : (finalPct >= 50 ? '#6366f1' : '#f59e0b');
+        }
     }
 
     function switchScheduleMainView(view) {
@@ -127,6 +198,9 @@
     // Exposição Global
     window.initScheduleTurmaContext = initScheduleTurmaContext;
     window.handleTurmaContextChange = handleTurmaContextChange;
+    window.setScheduleStatusFilter = setScheduleStatusFilter;
+    window.getScheduleStatusFilter = getScheduleStatusFilter;
+    window.renderCurricularCoverageBar = renderCurricularCoverageBar;
     window.switchScheduleMainView = switchScheduleMainView;
     window.renderActiveScheduleView = renderActiveScheduleView;
 

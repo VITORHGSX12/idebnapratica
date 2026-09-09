@@ -47,6 +47,8 @@
             '10:15 - 11:05'
         ];
 
+        const statusFilter = typeof window.getScheduleStatusFilter === 'function' ? window.getScheduleStatusFilter() : 'all';
+
         timeSlots.forEach(slot => {
             html += `
                 <div style="display: grid; grid-template-columns: 100px repeat(5, 1fr); border-bottom: 1px solid var(--border-color); min-height: 85px;">
@@ -54,7 +56,14 @@
                         ${slot}
                     </div>
                     ${daysOfWeek.map(d => {
-                        const slotLessons = turmaLessons.filter(l => l.date === d.dateIso && l.time === slot);
+                        const slotLessons = turmaLessons.filter(l => {
+                            if (l.date !== d.dateIso || l.time !== slot) return false;
+                            if (statusFilter === 'all') return true;
+                            const computed = typeof window.getLessonComputedStatus === 'function'
+                                ? window.getLessonComputedStatus(l, todayStr)
+                                : (l.status === 'trabalhada' ? 'trabalhada' : (l.date < todayStr ? 'atrasada' : 'planejada'));
+                            return computed === statusFilter;
+                        });
                         return `
                             <div class="weekly-slot-cell" style="padding: 6px; border-right: 1px solid var(--border-color); background: var(--bg-primary); display: flex; flex-direction: column; gap: 4px; position: relative; min-height: 80px;"
                                  ondragover="event.preventDefault(); this.style.background='rgba(99,102,241,0.1)';"
