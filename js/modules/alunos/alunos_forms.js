@@ -190,131 +190,223 @@
             });
         }
 
-        if (closeCreateStudentBtn) {
-            closeCreateStudentBtn.addEventListener('click', function() {
-                if (createStudentModal) createStudentModal.classList.add('hidden');
-            });
-        }
-        if (createStudentModal) {
-            createStudentModal.addEventListener('click', function(e) {
-                if (e.target === createStudentModal) createStudentModal.classList.add('hidden');
-            });
-        }
+    // =========================================================================
+    // VALIDAÇÃO E MÁSCARA DE CPF
+    // =========================================================================
+    function validateCPF(cpf) {
+        if (!cpf) return true; // Campo opcional no cadastro
+        var clean = String(cpf).replace(/\D/g, '');
+        if (clean.length === 0) return true;
+        if (clean.length !== 11) return false;
+        if (/^(\d)\1{10}$/.test(clean)) return false;
 
-        if (createStudentForm) {
-            createStudentForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                var safeGet = global.safeGetProp || function(id, prop) { var el = document.getElementById(id); return el ? el[prop] : ''; };
-                var name = safeGet('new-student-name', 'value').trim().toUpperCase();
-                var cpf = safeGet('new-student-cpf', 'value').trim();
-                var birth = safeGet('new-student-birth', 'value');
-                var sexo = safeGet('new-student-sexo', 'value');
-                var color = safeGet('new-student-color', 'value');
-                var nee = safeGet('new-student-nee', 'value').trim();
-                var mae = safeGet('new-student-mae', 'value').trim().toUpperCase();
-                var pai = safeGet('new-student-pai', 'value').trim().toUpperCase();
-                var address = safeGet('new-student-address', 'value').trim().toUpperCase();
-                var cep = safeGet('new-student-cep', 'value').trim();
-                var matricula = safeGet('new-student-matricula', 'value').trim();
-                var school = safeGet('new-student-school', 'value');
-                var selectedClassId = safeGet('new-student-class', 'value');
-                var start = safeGet('new-student-start', 'value');
+        var sum = 0;
+        for (var i = 0; i < 9; i++) {
+            sum += parseInt(clean.charAt(i), 10) * (10 - i);
+        }
+        var rest = 11 - (sum % 11);
+        var dig1 = (rest === 10 || rest === 11) ? 0 : rest;
+        if (dig1 !== parseInt(clean.charAt(9), 10)) return false;
 
-                if (!name || !matricula || !school || !selectedClassId) {
-                    if (typeof global.showToast === 'function') global.showToast('Preencha todos os campos e selecione uma turma.', 'alert-triangle');
+        sum = 0;
+        for (var j = 0; j < 10; j++) {
+            sum += parseInt(clean.charAt(j), 10) * (11 - j);
+        }
+        rest = 11 - (sum % 11);
+        var dig2 = (rest === 10 || rest === 11) ? 0 : rest;
+        return dig2 === parseInt(clean.charAt(10), 10);
+    }
+
+    function formatCPFMask(value) {
+        if (!value) return '';
+        var clean = String(value).replace(/\D/g, '').slice(0, 11);
+        if (clean.length <= 3) return clean;
+        if (clean.length <= 6) return clean.slice(0, 3) + '.' + clean.slice(3);
+        if (clean.length <= 9) return clean.slice(0, 3) + '.' + clean.slice(3, 6) + '.' + clean.slice(6);
+        return clean.slice(0, 3) + '.' + clean.slice(3, 6) + '.' + clean.slice(6, 9) + '-' + clean.slice(9, 11);
+    }
+
+    // Modal de Cadastro de Estudante
+    var studentCpfInput = document.getElementById('new-student-cpf');
+    if (studentCpfInput) {
+        studentCpfInput.setAttribute('maxlength', '14');
+        studentCpfInput.addEventListener('input', function(e) {
+            var formatted = formatCPFMask(e.target.value);
+            if (e.target.value !== formatted) {
+                e.target.value = formatted;
+            }
+        });
+    }
+
+    if (closeCreateStudentBtn) {
+        closeCreateStudentBtn.addEventListener('click', function() {
+            if (createStudentModal) createStudentModal.classList.add('hidden');
+        });
+    }
+    if (createStudentModal) {
+        createStudentModal.addEventListener('click', function(e) {
+            if (e.target === createStudentModal) createStudentModal.classList.add('hidden');
+        });
+    }
+
+    if (createStudentForm) {
+        createStudentForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            var safeGet = global.safeGetProp || function(id, prop) { var el = document.getElementById(id); return el ? el[prop] : ''; };
+            var name = safeGet('new-student-name', 'value').trim().toUpperCase();
+            var cpf = safeGet('new-student-cpf', 'value').trim();
+            var birth = safeGet('new-student-birth', 'value');
+            var sexo = safeGet('new-student-sexo', 'value');
+            var color = safeGet('new-student-color', 'value');
+            var nee = safeGet('new-student-nee', 'value').trim();
+            var mae = safeGet('new-student-mae', 'value').trim().toUpperCase();
+            var pai = safeGet('new-student-pai', 'value').trim().toUpperCase();
+            var address = safeGet('new-student-address', 'value').trim().toUpperCase();
+            var cep = safeGet('new-student-cep', 'value').trim();
+            var matricula = safeGet('new-student-matricula', 'value').trim();
+            var school = safeGet('new-student-school', 'value');
+            var selectedClassId = safeGet('new-student-class', 'value');
+            var start = safeGet('new-student-start', 'value');
+
+            // Validação de campos obrigatórios
+            if (!name || !matricula || !school || !selectedClassId) {
+                if (typeof global.showToast === 'function') global.showToast('Preencha todos os campos obrigatórios e selecione uma turma.', 'alert-triangle');
+                return;
+            }
+
+            // Validação de CPF com Módulo 11 (Bug 3)
+            var cleanCpf = cpf.replace(/\D/g, '');
+            if (cleanCpf.length > 0) {
+                if (!validateCPF(cleanCpf)) {
+                    if (typeof global.showToast === 'function') {
+                        global.showToast('CPF inválido. Verifique os dígitos digitados.', 'alert-triangle');
+                    }
+                    if (studentCpfInput) studentCpfInput.focus();
                     return;
                 }
+                cpf = formatCPFMask(cleanCpf);
+            }
 
-                var dbTur = global.dbTurmas || [];
-                var dbAln = global.dbAlunos || [];
-                var loaded = global.loadedStudents || [];
+            var dbTur = global.dbTurmas || [];
+            var dbAln = global.dbAlunos || [];
+            var loaded = global.loadedStudents || [];
 
-                var classObj = dbTur.find(function(t) { return t.id === selectedClassId; });
-                if (!classObj) return;
+            var classObj = dbTur.find(function(t) { return t.id === selectedClassId; });
+            if (!classObj) {
+                if (typeof global.showToast === 'function') global.showToast('Turma selecionada não encontrada.', 'alert-triangle');
+                return;
+            }
 
-                var formatDate = function(dateStr) {
-                    if (!dateStr) return '';
-                    var parts = dateStr.split('-');
-                    return `${parts[2]}/${parts[1]}/${parts[0]}`;
-                };
+            var formatDate = function(dateStr) {
+                if (!dateStr) return '';
+                var parts = dateStr.split('-');
+                return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : dateStr;
+            };
 
-                var newStudent = {
-                    matricula: matricula,
-                    nome: name,
-                    nascimento: formatDate(birth),
-                    sexo: sexo,
-                    cor: color,
-                    mae: mae,
-                    pai: pai,
-                    endereco: address,
-                    cep: cep,
-                    nee: nee,
-                    escola: school,
-                    etapa: classObj.serie,
-                    turma_id: classObj.id,
-                    data_matricula: formatDate(start),
-                    cpf: cpf,
-                    avg_score: 75
-                };
+            var newStudent = {
+                matricula: matricula,
+                nome: name,
+                nascimento: formatDate(birth),
+                sexo: sexo,
+                cor: color,
+                mae: mae,
+                pai: pai,
+                endereco: address,
+                cep: cep,
+                nee: nee,
+                escola: school,
+                etapa: classObj.serie,
+                turma_id: classObj.id,
+                data_matricula: formatDate(start),
+                cpf: cpf,
+                avg_score: 75
+            };
 
-                var submitBtn = createStudentForm.querySelector('button[type="submit"]');
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.textContent = 'Salvando Estudante...';
-                }
+            var submitBtn = createStudentForm.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Salvando Estudante...';
+            }
 
-                try {
-                    loaded.push(newStudent);
-
-                    dbAln.push({
-                        id: `aln_${dbAln.length + 1}_${Date.now()}`,
-                        turma_id: classObj.id,
-                        nome: name,
-                        matricula: matricula,
-                        nee: nee,
-                        avg_score: 75
-                    });
-                    
-                    if (typeof global.recalculateNetworkStats === 'function') global.recalculateNetworkStats();
-                    
-                    var metricStud = document.getElementById('metric-students-eval');
-                    if (metricStud) metricStud.textContent = `${loaded.length.toLocaleString('pt-BR')} alunos avaliados`;
-                    
-                    var badgeCount = document.getElementById('badge-count-students');
-                    if (badgeCount) badgeCount.textContent = loaded.length.toLocaleString('pt-BR');
-                    
-                    var schools = Array.from(new Set(loaded.map(function(s) { return s.escola; }))).sort();
-                    if (typeof global.initAlunosTab === 'function') global.initAlunosTab(schools);
-                    if (typeof global.populateSchoolPanelSelector === 'function') global.populateSchoolPanelSelector(schools);
-                    
-                    if (typeof global.initStudentSearch === 'function') global.initStudentSearch();
-                    if (typeof global.renderRiskGoalsTable === 'function') global.renderRiskGoalsTable();
-                    if (typeof global.renderHeatmapGrid === 'function') global.renderHeatmapGrid();
-                    if (typeof global.saveDatabaseState === 'function') global.saveDatabaseState();
-
-                    if (typeof global.showToast === 'function') global.showToast(`Aluno ${name} cadastrado com sucesso!`, 'check-circle');
-                    createStudentForm.reset();
-                    if (createStudentModal) createStudentModal.classList.add('hidden');
-                } catch(err) {
-                    console.error('[Student Registration Error]', err);
-                    if (typeof global.showToast === 'function') global.showToast('Erro ao salvar aluno.', 'x');
-                } finally {
-                    if (submitBtn) {
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Cadastrar Aluno';
+            try {
+                // Tenta sincronizar com a nuvem via API se houver token
+                var token = sessionStorage.getItem('authToken');
+                if (token && token !== 'preview_token') {
+                    try {
+                        var apiRes = await fetch('/api/students', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + token
+                            },
+                            body: JSON.stringify(newStudent)
+                        });
+                        if (!apiRes.ok && apiRes.status !== 401 && apiRes.status !== 403) {
+                            var errData = await apiRes.json().catch(function() { return {}; });
+                            if (errData && errData.error) {
+                                if (typeof global.showToast === 'function') global.showToast(errData.error, 'alert-triangle');
+                                return;
+                            }
+                        }
+                    } catch(netErr) {
+                        console.warn('[Sync API Warning] Offline ou modo local:', netErr);
                     }
                 }
-            });
-        }
-    }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initAlunosForms);
-    } else {
-        initAlunosForms();
-    }
+                // Atualiza estado em memória
+                loaded.push(newStudent);
 
-    // Exposição Global
-    global.initAlunosForms = initAlunosForms;
+                dbAln.push({
+                    id: `aln_${dbAln.length + 1}_${Date.now()}`,
+                    turma_id: classObj.id,
+                    nome: name,
+                    matricula: matricula,
+                    nee: nee,
+                    avg_score: 75
+                });
+                
+                if (typeof global.recalculateNetworkStats === 'function') global.recalculateNetworkStats();
+                
+                var metricStud = document.getElementById('metric-students-eval');
+                if (metricStud) metricStud.textContent = `${loaded.length.toLocaleString('pt-BR')} alunos avaliados`;
+                
+                var badgeCount = document.getElementById('badge-count-students');
+                if (badgeCount) badgeCount.textContent = loaded.length.toLocaleString('pt-BR');
+                
+                var schools = Array.from(new Set(loaded.map(function(s) { return s.escola; }))).sort();
+                if (typeof global.initAlunosTab === 'function') global.initAlunosTab(schools);
+                if (typeof global.populateSchoolPanelSelector === 'function') global.populateSchoolPanelSelector(schools);
+                
+                if (typeof global.initStudentSearch === 'function') global.initStudentSearch();
+                if (typeof global.renderRiskGoalsTable === 'function') global.renderRiskGoalsTable();
+                if (typeof global.renderHeatmapGrid === 'function') global.renderHeatmapGrid();
+                if (typeof global.saveDatabaseState === 'function') global.saveDatabaseState();
+
+                if (typeof global.showToast === 'function') global.showToast(`Aluno ${name} cadastrado com sucesso!`, 'check-circle');
+                createStudentForm.reset();
+                if (createStudentModal) createStudentModal.classList.add('hidden');
+            } catch(err) {
+                console.error('[Student Registration Error]', err);
+                if (typeof global.showToast === 'function') global.showToast('Erro ao salvar aluno.', 'x');
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Cadastrar Aluno';
+                }
+            }
+        });
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAlunosForms);
+} else {
+    initAlunosForms();
+}
+
+// Exposição Global
+global.initAlunosForms = initAlunosForms;
+global.validateCPF = validateCPF;
+global.formatCPFMask = formatCPFMask;
 
 })(typeof window !== 'undefined' ? window : this);

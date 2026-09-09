@@ -21,15 +21,17 @@
 
     function handleExportBoletimSaeb() {
         var respostasDb = typeof global.getRespostasState === 'function' ? global.getRespostasState() : {};
-        if (Object.keys(respostasDb).length === 0) {
+        var hasLoadedData = (global.loadedStudents && global.loadedStudents.length > 0) || (global.dbAlunos && global.dbAlunos.length > 0);
+
+        if (Object.keys(respostasDb).length === 0 && !hasLoadedData) {
             if (typeof global.showToast === 'function') {
-                global.showToast('Não é possível emitir Boletim SAEB sem dados reais de simulados lançados.', 'alert-triangle');
+                global.showToast('Não é possível emitir Boletim SAEB sem dados de turmas e alunos cadastrados.', 'alert-triangle');
             }
             return;
         }
 
         if (typeof global.showToast === 'function') {
-            global.showToast('Preparando Boletim SAEB para impressão / PDF...', 'printer');
+            global.showToast('Preparando Boletim SAEB para exportação / PDF...', 'printer');
         }
 
         setTimeout(function () {

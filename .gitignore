@@ -17,3 +17,5 @@ backups/
 .temp_edge_*/
 .temp_audit_*/
 .temp_*/
+uploads/avatars/*
+!uploads/avatars/.gitkeep

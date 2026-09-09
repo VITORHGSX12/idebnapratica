@@ -470,9 +470,16 @@
     }
 
     /**
-     * Alternador da barra lateral para dispositivos móveis (drawer)
+     * Alternador da barra lateral inteligente (desktop colapso / mobile drawer)
      */
     function toggleMobileSidebar(forceState) {
+        if (typeof window !== 'undefined' && window.innerWidth > 1024) {
+            if (typeof toggleSidebarCollapse === 'function') {
+                toggleSidebarCollapse();
+                return;
+            }
+        }
+
         var appContainer = document.querySelector('.app-container') || document.body;
         var backdrop = document.getElementById('mobile-sidebar-backdrop');
         var isOpen = appContainer.classList.contains('mobile-sidebar-open') || document.body.classList.contains('mobile-sidebar-open');

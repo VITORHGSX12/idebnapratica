@@ -418,19 +418,21 @@
     }
 
     /**
-     * Dispara a impressão do Laudo Completo
+     * Dispara a impressão do Laudo Completo / Exportação em PDF
      */
     function handlePrintDiagnosticoReport() {
         var respostasDb = typeof global.getRespostasState === 'function' ? global.getRespostasState() : {};
-        if (Object.keys(respostasDb).length === 0) {
+        var hasLoadedData = (global.loadedStudents && global.loadedStudents.length > 0) || (global.dbAlunos && global.dbAlunos.length > 0);
+
+        if (Object.keys(respostasDb).length === 0 && !hasLoadedData) {
             if (typeof global.showToast === 'function') {
-                global.showToast('Não é possível exportar laudo oficial sem dados reais lançados.', 'alert-triangle');
+                global.showToast('Nenhum dado pedagógico consolidado encontrado para emitir o laudo.', 'alert-triangle');
             }
             return;
         }
 
         if (typeof global.showToast === 'function') {
-            global.showToast('Preparando laudo diagnóstico baseado em dados reais...', 'printer');
+            global.showToast('Preparando laudo diagnóstico oficial para exportação / impressão...', 'printer');
         }
         setTimeout(function() {
             window.print();
