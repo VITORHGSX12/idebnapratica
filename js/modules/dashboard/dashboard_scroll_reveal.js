@@ -48,25 +48,51 @@
             #dashboard .progress-ring-fill { transition: stroke-dashoffset 1.1s cubic-bezier(0.16, 1, 0.3, 1); }
             #dashboard .metric-card, #dashboard .dashboard-row .card, #dashboard #dashboard-pde-progress-container,
             #dashboard .dashboard-welcome-banner, #dashboard .pedagogy-action-card, #dashboard .highlight-item, #dashboard .priority-desc-card {
-                transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.28s ease !important;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                backface-visibility: hidden;
+                transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.28s ease, filter 0.28s ease, opacity 0.28s ease !important;
                 cursor: pointer;
             }
-            #dashboard .metric-card:hover, #dashboard .dashboard-row .card:hover, #dashboard #dashboard-pde-progress-container:hover {
-                transform: translateY(-6px) scale(1.008) !important;
-                box-shadow: 0 18px 36px -4px rgba(10, 25, 49, 0.18), 0 0 0 1.5px rgba(99, 102, 241, 0.35) !important;
-                z-index: 10; position: relative;
+            #dashboard .metric-card:hover, #dashboard .dashboard-row .card:hover, #dashboard #dashboard-pde-progress-container:hover,
+            #dashboard .pedagogy-action-card:hover, #dashboard .highlight-item:hover, #dashboard .priority-desc-card:hover {
+                transform: translateY(-5px) !important;
+                box-shadow: 0 20px 40px -6px rgba(10, 25, 49, 0.20), 0 0 0 1.5px rgba(99, 102, 241, 0.45) !important;
+                border-color: rgba(99, 102, 241, 0.6) !important;
+                filter: none !important;
+                opacity: 1 !important;
+                z-index: 25; position: relative;
             }
             #dashboard .dashboard-welcome-banner:hover {
-                transform: translateY(-4px) !important;
+                transform: translateY(-3px) !important;
                 box-shadow: 0 16px 36px -4px rgba(10, 25, 49, 0.24), 0 0 0 1.5px rgba(255, 255, 255, 0.3) !important;
+                filter: none !important;
+                opacity: 1 !important;
             }
-            #dashboard .escala-cards-deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 14px; perspective: 1200px; position: relative; padding: 16px 6px; }
+            /* Desfoque do fundo / outros cards no dashboard quando um está em foco */
+            #dashboard #dashboard-metric-cards-container:hover > .metric-card:not(:hover),
+            #dashboard .dashboard-row.grid-2:hover > .card:not(:hover),
+            #dashboard .dashboard-row.grid-3:hover > .card:not(:hover),
+            #dashboard .dashboard-row.grid-4:hover > .card:not(:hover),
+            #dashboard .metrics-grid:hover > .metric-card:not(:hover) {
+                opacity: 0.55;
+                filter: blur(1.5px) grayscale(20%);
+                transform: translateY(0) !important;
+            }
+            #dashboard .escala-cards-deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 14px; position: relative; padding: 16px 6px; }
             #dashboard .escala-card {
-                transition: transform 0.36s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.36s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.36s ease, border-color 0.36s ease !important;
-                transform-origin: center 85%; will-change: transform, box-shadow, opacity; position: relative; z-index: 1; cursor: pointer; user-select: none;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                backface-visibility: hidden;
+                transition: transform 0.36s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.36s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.36s ease, border-color 0.36s ease, filter 0.36s ease !important;
+                transform-origin: center 85%; will-change: transform, box-shadow, opacity, filter; position: relative; z-index: 1; cursor: pointer; user-select: none;
+            }
+            #dashboard .escala-cards-deck:hover > .escala-card:not(:hover):not(.card-selected) {
+                opacity: 0.55;
+                filter: blur(1.5px) grayscale(20%);
             }
             #dashboard .escala-card.card-selected {
-                transform: translateY(-16px) scale(1.08) rotate(0deg) !important; z-index: 35 !important; opacity: 1 !important;
+                transform: translateY(-12px) !important; z-index: 35 !important; opacity: 1 !important; filter: none !important;
                 box-shadow: 0 24px 50px -8px rgba(10, 25, 49, 0.32), 0 0 0 2px var(--card-color, #2563eb) !important;
             }
             #dashboard .escala-card.card-shuffled-left {
