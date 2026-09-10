@@ -319,9 +319,15 @@
 
                 if (!global.rawQuestions) global.rawQuestions = [];
                 global.rawQuestions.unshift(newQ);
+                if (typeof global.saveQuestionsToStorage === 'function') {
+                    global.saveQuestionsToStorage(global.rawQuestions);
+                }
 
                 if (typeof global.renderQuestions === 'function') {
                     global.renderQuestions();
+                }
+                if (typeof global.updateQuestionsKpis === 'function') {
+                    global.updateQuestionsKpis();
                 }
 
                 btnGenAiQ.disabled = false;
@@ -355,7 +361,11 @@
                             var idx = global.rawQuestions.findIndex(function(item) { return item.id === newQ.id; });
                             if (idx !== -1) {
                                 global.rawQuestions[idx] = data.question;
+                                if (typeof global.saveQuestionsToStorage === 'function') {
+                                    global.saveQuestionsToStorage(global.rawQuestions);
+                                }
                                 if (typeof global.renderQuestions === 'function') global.renderQuestions();
+                                if (typeof global.updateQuestionsKpis === 'function') global.updateQuestionsKpis();
                             }
                         }
                     }).catch(function() {});

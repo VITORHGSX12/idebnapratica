@@ -7,15 +7,12 @@
 (function(global) {
     'use strict';
 
-    var rawQuestions = global.rawQuestions || [
+    var STORAGE_KEY_QUESTIONS = 'gd_custom_questions_db';
+    var STORAGE_KEY_DELETED_QUESTIONS = 'gd_deleted_questions_ids';
+
+    var INITIAL_QUESTIONS_DATA = [
         {
-            id: 'Q_01',
-            matriz: 'SAEB',
-            codigo_bncc: 'D03 (LP - 5º Ano)',
-            disciplina: 'Língua Portuguesa',
-            etapa: '5º Ano',
-            dificuldade: 'Médio',
-            nivel_cognitivo: 'Analisar',
+            id: 'Q_01', matriz: 'SAEB', codigo_bncc: 'D03 (LP - 5º Ano)', disciplina: 'Língua Portuguesa', etapa: '5º Ano', dificuldade: 'Médio', nivel_cognitivo: 'Analisar',
             enunciado: 'Leia o texto a seguir:\n\n"O sol começava a desmaiar no horizonte de Gonçalves Dias, pintando os palmeirais de um dourado suave. Dona Francisca apressou o passo na vereda, sentindo o frescor da tarde anunciar o fim da colheita."\n\nNo trecho "O sol começava a <u>desmaiar</u> no horizonte", a palavra sublinhada foi empregada com o sentido de:',
             opcoes: [
                 { letra: 'A', texto: 'Perder a consciência por cansaço físico.', correta: false },
@@ -26,13 +23,7 @@
             explicacao: "GABARITO: B. A expressão 'desmaiar no horizonte' é uma metáfora poética que expressa o pôr do sol gradativo."
         },
         {
-            id: 'Q_02',
-            matriz: 'SAEB',
-            codigo_bncc: 'D13 (MAT - 5º Ano)',
-            disciplina: 'Matemática',
-            etapa: '5º Ano',
-            dificuldade: 'Fácil',
-            nivel_cognitivo: 'Aplicar',
+            id: 'Q_02', matriz: 'SAEB', codigo_bncc: 'D13 (MAT - 5º Ano)', disciplina: 'Matemática', etapa: '5º Ano', dificuldade: 'Fácil', nivel_cognitivo: 'Aplicar',
             enunciado: 'Na feira do produtor rural de Gonçalves Dias, Seu Raimundo colheu 1.450 espigas de milho pela manhã e 980 espigas à tarde. Ao final do dia, ele conseguiu vender 1.830 espigas.\n\nQuantas espigas de milho restaram com Seu Raimundo?',
             opcoes: [
                 { letra: 'A', texto: '500 espigas', correta: false },
@@ -43,13 +34,7 @@
             explicacao: 'GABARITO: B. Total colhido: 1.450 + 980 = 2.430 espigas. Restante após as vendas: 2.430 - 1.830 = 600 espigas.'
         },
         {
-            id: 'Q_03',
-            matriz: 'SEAMA',
-            codigo_bncc: 'D28 (MAT - 9º Ano)',
-            disciplina: 'Matemática',
-            etapa: '9º Ano',
-            dificuldade: 'Médio',
-            nivel_cognitivo: 'Analisar',
+            id: 'Q_03', matriz: 'SEAMA', codigo_bncc: 'D28 (MAT - 9º Ano)', disciplina: 'Matemática', etapa: '9º Ano', dificuldade: 'Médio', nivel_cognitivo: 'Analisar',
             enunciado: 'A tabela abaixo registra o número de livros lidos pelos estudantes de uma turma durante o 1º bimestre:\n\n• 1 a 2 livros: 12 alunos\n• 3 a 4 livros: 18 alunos\n• 5 ou mais livros: 10 alunos\n\nQual é o percentual de estudantes que leram 3 ou mais livros nessa turma?',
             opcoes: [
                 { letra: 'A', texto: '30%', correta: false },
@@ -60,13 +45,7 @@
             explicacao: 'GABARITO: C. Total de alunos na turma = 12 + 18 + 10 = 40 alunos. Alunos que leram 3 ou mais livros = 18 + 10 = 28 alunos. Percentual = (28 / 40) × 100 = 70%.'
         },
         {
-            id: 'Q_04',
-            matriz: 'BNCC',
-            codigo_bncc: 'D01 (LP - 2º Ano)',
-            disciplina: 'Língua Portuguesa',
-            etapa: '2º Ano',
-            dificuldade: 'Fácil',
-            nivel_cognitivo: 'Localizar',
+            id: 'Q_04', matriz: 'BNCC', codigo_bncc: 'D01 (LP - 2º Ano)', disciplina: 'Língua Portuguesa', etapa: '2º Ano', dificuldade: 'Fácil', nivel_cognitivo: 'Localizar',
             enunciado: 'Leia o texto abaixo:\n\n"A escola municipal preparou uma festa para celebrar a chegada da primavera. As crianças levaram flores e desenhos coloridos para enfeitar a entrada."\n\nDe acordo com o texto, as crianças levaram flores para:',
             opcoes: [
                 { letra: 'A', texto: 'Vender para os visitantes da feira.', correta: false },
@@ -77,13 +56,7 @@
             explicacao: 'GABARITO: B. A informação está explícita no texto: "para enfeitar a entrada".'
         },
         {
-            id: 'Q_05',
-            matriz: 'SAEB',
-            codigo_bncc: 'D19 (MAT - 9º Ano)',
-            disciplina: 'Matemática',
-            etapa: '9º Ano',
-            dificuldade: 'Difícil',
-            nivel_cognitivo: 'Resolver',
+            id: 'Q_05', matriz: 'SAEB', codigo_bncc: 'D19 (MAT - 9º Ano)', disciplina: 'Matemática', etapa: '9º Ano', dificuldade: 'Difícil', nivel_cognitivo: 'Resolver',
             enunciado: 'O dobro da idade de Luísa somado com 15 anos é igual a 45 anos.\n\nQual é a idade atual de Luísa?',
             opcoes: [
                 { letra: 'A', texto: '12 anos', correta: false },
@@ -94,7 +67,60 @@
             explicacao: 'GABARITO: B. Equação: 2x + 15 = 45 => 2x = 30 => x = 15 anos.'
         }
     ];
+
+    function getDeletedQuestionsIds() {
+        try {
+            var raw = localStorage.getItem(STORAGE_KEY_DELETED_QUESTIONS);
+            if (raw) return JSON.parse(raw);
+        } catch(e) {}
+        return [];
+    }
+
+    function saveDeletedQuestionId(id) {
+        if (!id) return;
+        try {
+            var list = getDeletedQuestionsIds();
+            var strId = id.toString();
+            if (!list.includes(strId)) {
+                list.push(strId);
+                localStorage.setItem(STORAGE_KEY_DELETED_QUESTIONS, JSON.stringify(list));
+            }
+        } catch(e) {}
+    }
+
+    function saveQuestionsToStorage(questions) {
+        try {
+            localStorage.setItem(STORAGE_KEY_QUESTIONS, JSON.stringify(questions || []));
+        } catch(e) {}
+    }
+
+    function loadInitialQuestions() {
+        var deletedIds = getDeletedQuestionsIds();
+        var loaded = [];
+        try {
+            var raw = localStorage.getItem(STORAGE_KEY_QUESTIONS);
+            if (raw) {
+                var parsed = JSON.parse(raw);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    loaded = parsed;
+                }
+            }
+        } catch(e) {}
+
+        if (loaded.length === 0) {
+            loaded = INITIAL_QUESTIONS_DATA.slice();
+        }
+
+        // Remove permanentemente qualquer questão cujo ID esteja na lista de excluídos
+        return loaded.filter(function(q) {
+            return q && q.id && !deletedIds.includes(q.id.toString());
+        });
+    }
+
+    var rawQuestions = loadInitialQuestions();
     global.rawQuestions = rawQuestions;
+    global.saveQuestionsToStorage = saveQuestionsToStorage;
+    global.getDeletedQuestionsIds = getDeletedQuestionsIds;
 
     /**
      * Atualiza os KPIs do topo do Banco de Questões e o badge da sidebar
@@ -204,58 +230,26 @@
 
             var optionsHtml = (q.opcoes || []).map(function(opt) {
                 var isCorreta = !!opt.correta;
-                return [
-                    '<div class="question-option ' + (isCorreta ? 'is-correct-answer' : '') + '" data-correct="' + isCorreta + '" data-letra="' + opt.letra + '" style="display: flex; align-items: flex-start; gap: 10px; padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-tertiary); font-size: 0.84rem; cursor: pointer; transition: all 0.15s ease;">',
-                    '    <strong class="option-letter" style="min-width: 22px; font-weight: 700; color: #6366f1;">' + opt.letra + ')</strong>',
-                    '    <span class="option-text" style="color: var(--text-primary); flex: 1;">' + opt.texto + '</span>',
-                    '</div>'
-                ].join('\n');
-            }).join('\n');
+                return '<div class="question-option ' + (isCorreta ? 'is-correct-answer' : '') + '" data-correct="' + isCorreta + '" data-letra="' + opt.letra + '" style="display: flex; align-items: flex-start; gap: 10px; padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-tertiary); font-size: 0.84rem; cursor: pointer; transition: all 0.15s ease;"><strong class="option-letter" style="min-width: 22px; font-weight: 700; color: #6366f1;">' + opt.letra + ')</strong><span class="option-text" style="color: var(--text-primary); flex: 1;">' + opt.texto + '</span></div>';
+            }).join('');
 
             card.innerHTML = [
                 '<div class="question-header flex-between flex-wrap gap-sm" style="margin-bottom: 12px; display:flex; justify-content:space-between; align-items:center;">',
                 '    <div class="question-badges" style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">',
-                '        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.75rem; font-weight:700; color:#6366f1; background:rgba(99,102,241,0.1); padding:2px 8px; border-radius:4px; border:1px solid rgba(99,102,241,0.3);">',
-                '            <input type="checkbox" class="select-q-item-check" data-id="' + q.id + '" style="cursor:pointer; accent-color:#6366f1;" checked />',
-                '            <span>Selecionar Item</span>',
-                '        </label>',
+                '        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.75rem; font-weight:700; color:#6366f1; background:rgba(99,102,241,0.1); padding:2px 8px; border-radius:4px; border:1px solid rgba(99,102,241,0.3);"><input type="checkbox" class="select-q-item-check" data-id="' + q.id + '" style="cursor:pointer; accent-color:#6366f1;" checked /> <span>Selecionar Item</span></label>',
                 '        <span class="badge badge-purple" style="font-weight:700; background:#6366f1; color:#fff;">' + (q.codigo_bncc || 'BNCC') + '</span>',
-                '        <span class="badge badge-info">' + q.disciplina + '</span>',
-                '        <span class="badge badge-outline">' + (q.etapa || '5º Ano') + '</span>',
-                '        <span class="badge badge-outline">' + (q.matriz || 'SAEB') + '</span>',
-                '        <span class="badge ' + badgeDiffClass + '">' + q.dificuldade + '</span>',
+                '        <span class="badge badge-info">' + q.disciplina + '</span><span class="badge badge-outline">' + (q.etapa || '5º Ano') + '</span><span class="badge badge-outline">' + (q.matriz || 'SAEB') + '</span><span class="badge ' + badgeDiffClass + '">' + q.dificuldade + '</span>',
                 '    </div>',
                 '    <div class="question-actions" style="display:flex; gap:6px; align-items:center;">',
-                '        <button type="button" class="btn btn-outline btn-sm btn-reveal-q-expl" data-id="' + q.id + '" style="font-size:0.75rem; padding:3px 8px; display:flex; align-items:center; gap:4px;" title="Ver Gabarito Pedagógico">',
-                '            <i data-lucide="eye" style="width:13px; height:13px;"></i> Ver Gabarito',
-                '        </button>',
-                '        <button type="button" class="btn btn-outline btn-sm btn-edit-question" data-id="' + q.id + '" style="font-size:0.75rem; padding:3px 8px; display:flex; align-items:center; gap:4px; color:#6366f1; border-color:rgba(99,102,241,0.3);" title="Editar Item">',
-                '            <i data-lucide="edit-3" style="width:13px; height:13px;"></i> Editar',
-                '        </button>',
-                '        <button type="button" class="btn btn-outline btn-sm btn-duplicate-question" data-id="' + q.id + '" style="font-size:0.75rem; padding:3px 8px; display:flex; align-items:center; gap:4px;" title="Duplicar Item">',
-                '            <i data-lucide="copy" style="width:13px; height:13px;"></i>',
-                '        </button>',
-                '        <button type="button" class="btn btn-outline btn-sm btn-delete-question" data-id="' + q.id + '" style="color:#ef4444; border-color:rgba(239,68,68,0.3); padding:3px 8px;" title="Excluir do Banco">',
-                '            <i data-lucide="trash-2" style="width:13px; height:13px;"></i>',
-                '        </button>',
+                '        <button type="button" class="btn btn-outline btn-sm btn-reveal-q-expl" data-id="' + q.id + '" style="font-size:0.75rem; padding:3px 8px; display:flex; align-items:center; gap:4px;" title="Ver Gabarito Pedagógico"><i data-lucide="eye" style="width:13px; height:13px;"></i> Ver Gabarito</button>',
+                '        <button type="button" class="btn btn-outline btn-sm btn-edit-question" data-id="' + q.id + '" style="font-size:0.75rem; padding:3px 8px; display:flex; align-items:center; gap:4px; color:#6366f1; border-color:rgba(99,102,241,0.3);" title="Editar Item"><i data-lucide="edit-3" style="width:13px; height:13px;"></i> Editar</button>',
+                '        <button type="button" class="btn btn-outline btn-sm btn-duplicate-question" data-id="' + q.id + '" style="font-size:0.75rem; padding:3px 8px; display:flex; align-items:center; gap:4px;" title="Duplicar Item"><i data-lucide="copy" style="width:13px; height:13px;"></i></button>',
+                '        <button type="button" class="btn btn-outline btn-sm btn-delete-question" data-id="' + q.id + '" style="color:#ef4444; border-color:rgba(239,68,68,0.3); padding:3px 8px;" title="Excluir do Banco"><i data-lucide="trash-2" style="width:13px; height:13px;"></i></button>',
                 '    </div>',
                 '</div>',
-                '<div class="question-body" style="font-size: 0.88rem; color: var(--text-primary); line-height: 1.55; margin-bottom: 14px;">',
-                '    <strong style="color: #6366f1; margin-right: 4px;">Item ' + (idx + 1) + '.</strong>',
-                '    ' + cleanEnunciado,
-                '</div>',
-                '<div class="question-options-list" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">',
-                optionsHtml,
-                '</div>',
-                '<div class="question-explanation hidden" id="expl-' + q.id + '" style="padding: 12px 16px; background: rgba(99, 102, 241, 0.06); border-left: 4px solid #6366f1; border-radius: var(--radius-sm); margin-top: 10px; display:none;">',
-                '    <strong style="font-size: 0.82rem; color: #6366f1; display: flex; align-items: center; gap: 6px;">',
-                '        <i data-lucide="check-circle" style="width: 14px; height: 14px;"></i>',
-                '        Gabarito Comentado & Análise Pedagógica:',
-                '    </strong>',
-                '    <p style="margin: 4px 0 0 0; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.45;">',
-                '        ' + (q.explicacao || 'Sem justificativa cadastrada.'),
-                '    </p>',
-                '</div>'
+                '<div class="question-body" style="font-size: 0.88rem; color: var(--text-primary); line-height: 1.55; margin-bottom: 14px;"><strong style="color: #6366f1; margin-right: 4px;">Item ' + (idx + 1) + '.</strong> ' + cleanEnunciado + '</div>',
+                '<div class="question-options-list" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">' + optionsHtml + '</div>',
+                '<div class="question-explanation hidden" id="expl-' + q.id + '" style="padding: 12px 16px; background: rgba(99, 102, 241, 0.06); border-left: 4px solid #6366f1; border-radius: var(--radius-sm); margin-top: 10px; display:none;"><strong style="font-size: 0.82rem; color: #6366f1; display: flex; align-items: center; gap: 6px;"><i data-lucide="check-circle" style="width: 14px; height: 14px;"></i> Gabarito Comentado & Análise Pedagógica:</strong><p style="margin: 4px 0 0 0; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.45;">' + (q.explicacao || 'Sem justificativa cadastrada.') + '</p></div>'
             ].join('\n');
 
             questionsContainer.appendChild(card);
@@ -325,7 +319,7 @@
      * Abre o modal de edição e preenche todos os campos com os dados do item
      */
     function handleOpenEditQuestionModal(qId) {
-        var q = (global.rawQuestions || []).find(function(item) { return item.id === qId; });
+        var q = (global.rawQuestions || []).find(function(item) { return item && item.id && item.id.toString() === (qId || '').toString(); });
         if (!q) return;
 
         var modal = document.getElementById('edit-question-modal');
@@ -383,7 +377,7 @@
         var qId = idEl ? idEl.value : null;
         if (!qId) return;
 
-        var q = (global.rawQuestions || []).find(function(item) { return item.id === qId; });
+        var q = (global.rawQuestions || []).find(function(item) { return item && item.id && item.id.toString() === (qId || '').toString(); });
         if (!q) return;
 
         var matrixEl = document.getElementById('edit-q-matrix');
@@ -417,6 +411,8 @@
         ];
 
         renderQuestions();
+        saveQuestionsToStorage(global.rawQuestions);
+        updateQuestionsKpis();
 
         // Persistência no PostgreSQL
         try {
@@ -442,7 +438,7 @@
      * Duplica uma questão para criar uma variação paralela (Item A/B)
      */
     function handleDuplicateQuestion(qId) {
-        var q = (global.rawQuestions || []).find(function(item) { return item.id === qId; });
+        var q = (global.rawQuestions || []).find(function(item) { return item && item.id && item.id.toString() === (qId || '').toString(); });
         if (!q) return;
 
         var duplicated = JSON.parse(JSON.stringify(q));
@@ -450,7 +446,9 @@
         duplicated.codigo_bncc = (duplicated.codigo_bncc || 'D01') + ' (Variação)';
 
         global.rawQuestions.unshift(duplicated);
+        saveQuestionsToStorage(global.rawQuestions);
         renderQuestions();
+        updateQuestionsKpis();
 
         try {
             fetch('/api/questoes', {
@@ -466,7 +464,7 @@
     }
 
     /**
-     * Sincroniza o acervo de questões com o PostgreSQL
+     * Sincroniza o acervo de questões com o PostgreSQL respeitando exclusões
      */
     async function fetchQuestionsFromApi() {
         try {
@@ -474,8 +472,16 @@
             if (res.ok) {
                 var data = await res.json();
                 if (data && data.success && Array.isArray(data.questions) && data.questions.length > 0) {
-                    global.rawQuestions = data.questions;
-                    renderQuestions();
+                    var deletedIds = getDeletedQuestionsIds();
+                    var filtered = data.questions.filter(function(q) {
+                        return q && q.id && !deletedIds.includes(q.id.toString());
+                    });
+                    if (filtered.length > 0) {
+                        global.rawQuestions = filtered;
+                        saveQuestionsToStorage(global.rawQuestions);
+                        renderQuestions();
+                        updateQuestionsKpis();
+                    }
                 }
             }
         } catch (err) {
@@ -483,16 +489,23 @@
         }
     }
 
-    // Exclusão de questão com confirmação e persistência no PostgreSQL
+    // Exclusão permanente de questão com tombstone de exclusão e persistência
     function handleDeleteQuestion(id) {
-        global.rawQuestions = (global.rawQuestions || []).filter(function(q) { return q.id !== id; });
+        if (!id) return;
+        saveDeletedQuestionId(id);
+        var strId = id.toString();
+        global.rawQuestions = (global.rawQuestions || []).filter(function(q) {
+            return q && q.id && q.id.toString() !== strId;
+        });
+        saveQuestionsToStorage(global.rawQuestions);
         renderQuestions();
+        updateQuestionsKpis();
 
         try {
             fetch('/api/questoes/' + id, { method: 'DELETE' }).catch(function() {});
         } catch (e) {}
 
-        if (typeof global.showToast === 'function') global.showToast('Questão removida do banco!', 'trash-2');
+        if (typeof global.showToast === 'function') global.showToast('Questão removida do banco permanentemente!', 'trash-2');
     }
 
     /**
@@ -555,22 +568,10 @@
         var btnCancelEditQ = document.getElementById('btn-cancel-edit-q');
         var btnSaveEditQ = document.getElementById('btn-save-edited-q');
         var modalEditQ = document.getElementById('edit-question-modal');
-
-        if (btnCloseEditQ && modalEditQ) {
-            btnCloseEditQ.onclick = function() {
-                modalEditQ.classList.add('hidden');
-                modalEditQ.style.display = 'none';
-            };
-        }
-        if (btnCancelEditQ && modalEditQ) {
-            btnCancelEditQ.onclick = function() {
-                modalEditQ.classList.add('hidden');
-                modalEditQ.style.display = 'none';
-            };
-        }
-        if (btnSaveEditQ) {
-            btnSaveEditQ.onclick = handleSaveEditQuestion;
-        }
+        var hideEditModal = function() { if (modalEditQ) { modalEditQ.classList.add('hidden'); modalEditQ.style.display = 'none'; } };
+        if (btnCloseEditQ) btnCloseEditQ.onclick = hideEditModal;
+        if (btnCancelEditQ) btnCancelEditQ.onclick = hideEditModal;
+        if (btnSaveEditQ) btnSaveEditQ.onclick = handleSaveEditQuestion;
 
         // Modal de Criação Manual
         var btnOpenManual = document.getElementById('btn-trigger-manual-q-modal');
@@ -579,17 +580,10 @@
         var modalManual = document.getElementById('modal-create-manual-question');
 
         if (btnOpenManual && modalManual) {
-            btnOpenManual.onclick = function() {
-                modalManual.classList.remove('hidden');
-                modalManual.style.display = 'flex';
-            };
+            btnOpenManual.onclick = function() { modalManual.classList.remove('hidden'); modalManual.style.display = 'flex'; };
         }
-
         if (btnCloseManual && modalManual) {
-            btnCloseManual.onclick = function() {
-                modalManual.classList.add('hidden');
-                modalManual.style.display = 'none';
-            };
+            btnCloseManual.onclick = function() { modalManual.classList.add('hidden'); modalManual.style.display = 'none'; };
         }
 
         if (btnSaveManual && modalManual) {
@@ -642,7 +636,9 @@
                 };
 
                 global.rawQuestions.unshift(newQ);
+                saveQuestionsToStorage(global.rawQuestions);
                 renderQuestions();
+                updateQuestionsKpis();
 
                 // Persistência no PostgreSQL
                 try {

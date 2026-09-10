@@ -435,6 +435,10 @@
                     var count = loadedFileQuestionsBatch.length;
                     loadedFileQuestionsBatch = [];
 
+                    if (typeof global.saveQuestionsToStorage === 'function') {
+                        global.saveQuestionsToStorage(global.rawQuestions);
+                    }
+
                     // Persistência em lote no PostgreSQL
                     try {
                         fetch('/api/questoes/batch', {
@@ -449,6 +453,7 @@
                         modalImportQ.style.display = 'none';
                     }
                     if (typeof global.renderQuestions === 'function') global.renderQuestions();
+                    if (typeof global.updateQuestionsKpis === 'function') global.updateQuestionsKpis();
                     if (typeof global.showToast === 'function') global.showToast(count + ' questões importadas e salvas com sucesso!', 'check');
                 } else {
                     if (typeof global.showToast === 'function') global.showToast('Selecione um arquivo válido para importar.', 'alert-triangle');
