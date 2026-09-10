@@ -8760,17 +8760,190 @@ body.dark-mode .metrics-grid .metric-card:hover {
     color: #a5b4fc;
     border-color: rgba(99, 102, 241, 0.4);
 }
-.sidebar-profile-switcher {
-    transition: all 0.2s ease-in-out;
+/* =========================================================================
+   SIDEBAR VISION SWITCHER — COMPACT POPOVER DROPDOWN
+   ========================================================================= */
+.sidebar-profile-switcher-wrapper {
+    position: relative;
+    margin-bottom: 8px;
+    z-index: 100;
 }
-.sidebar-profile-switcher:hover {
-    border-color: rgba(255, 255, 255, 0.25) !important;
-    background: rgba(255, 255, 255, 0.08) !important;
+
+.sidebar-vision-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-md, 8px);
+    color: #ffffff;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
 }
-.sidebar-profile-switcher select.profile-select:focus {
+
+.sidebar-vision-btn:hover {
+    background: rgba(255, 255, 255, 0.09);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.sidebar-vision-btn:focus-visible {
     outline: none;
-    border-color: #38bdf8 !important;
+    border-color: #38bdf8;
     box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.35);
+}
+
+.vision-btn-icon {
+    font-size: 1.15rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+}
+
+.vision-btn-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.vision-btn-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #f8fafc;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+}
+
+.vision-btn-scope {
+    font-size: 0.65rem;
+    color: #94a3b8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.15;
+}
+
+.vision-btn-chevron {
+    color: #94a3b8;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.sidebar-vision-btn[aria-expanded="true"] .vision-btn-chevron {
+    transform: rotate(180deg);
+    color: #38bdf8;
+}
+
+/* Dropdown Menu Popover */
+.vision-dropdown-menu {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    min-width: 240px;
+    background: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-md, 10px);
+    box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.55), 0 4px 10px -2px rgba(0, 0, 0, 0.35);
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 1000;
+    animation: visionDropdownFadeIn 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vision-dropdown-menu.hidden {
+    display: none !important;
+}
+
+@keyframes visionDropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.vision-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #e2e8f0;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s ease;
+    width: 100%;
+    user-select: none;
+}
+
+.vision-dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+}
+
+.vision-dropdown-item.active {
+    background: rgba(99, 102, 241, 0.18);
+    border-color: rgba(99, 102, 241, 0.35);
+    color: #ffffff;
+}
+
+.vision-item-icon {
+    font-size: 1.2rem;
+    line-height: 1;
+    min-width: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vision-item-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.vision-item-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: inherit;
+    line-height: 1.2;
+}
+
+.vision-item-scope {
+    font-size: 0.65rem;
+    color: #94a3b8;
+    line-height: 1.15;
+}
+
+.vision-dropdown-item.active .vision-item-scope {
+    color: #cbd5e1;
+}
+
+.vision-item-check {
+    color: #38bdf8;
+    font-weight: 800;
+    font-size: 0.9rem;
+    margin-left: 4px;
+    flex-shrink: 0;
 }
 
 /* =========================================================================

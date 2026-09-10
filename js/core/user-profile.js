@@ -116,83 +116,116 @@
     }
 
     /**
-     * Renderiza dinamicamente o seletor de perfil ativo na sidebar
+     * Renderiza dinamicamente o botão de visão ativa na sidebar e o dropdown compacto
      */
     function renderSidebarProfileSwitcher() {
         if (typeof document === 'undefined') return;
-        var switcherEl = document.getElementById('sidebar-profile-switcher');
-        var selectEl = document.getElementById('select-active-session-profile');
-        var badgeEl = document.getElementById('sidebar-active-profile-badge');
-        if (!switcherEl || !selectEl) return;
+        var activeRole = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('userRole')) ||
+                         (typeof localStorage !== 'undefined' && localStorage.getItem('userRole')) || 'Master Admin';
+
+        var currentVision = AVAILABLE_SYSTEM_VISIONS.find(function(v) {
+            var isCoordOrDirector = (v.role === 'Diretor Escola' && (activeRole.toLowerCase().includes('diretor') || activeRole.toLowerCase().includes('coordenador')));
+            return isCoordOrDirector || v.role.toLowerCase() === activeRole.toLowerCase() || activeRole.toLowerCase().includes(v.role.toLowerCase());
+        }) || AVAILABLE_SYSTEM_VISIONS[0];
+
+        // Atualiza botão da visão atual na sidebar
+        var iconEl = document.getElementById('sidebar-vision-current-icon');
+        var titleEl = document.getElementById('sidebar-vision-current-title');
+        var scopeEl = document.getElementById('sidebar-vision-current-scope');
+
+        if (iconEl) iconEl.textContent = currentVision.icon;
+        if (titleEl) titleEl.textContent = currentVision.title;
+        if (scopeEl) scopeEl.textContent = currentVision.scope;
+
+        renderVisionDropdownMenu();
+    }
+
+    /**
+     * Renderiza os itens compactos do dropdown popover
+     */
+    function renderVisionDropdownMenu() {
+        var menuEl = document.getElementById('vision-dropdown-menu');
+        if (!menuEl) return;
 
         var activeRole = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('userRole')) ||
                          (typeof localStorage !== 'undefined' && localStorage.getItem('userRole')) || 'Master Admin';
 
-        // Garante visibilidade do seletor na sidebar
-        switcherEl.style.display = 'block';
-
-        if (badgeEl) {
-            var shortRole = activeRole.replace(/\(a\)/g, '').replace('Escolar', '').replace('Pedagógico', '').replace('Regente', '').trim();
-            if (shortRole.toLowerCase().includes('coordenador') || shortRole.toLowerCase().includes('diretor')) {
-                shortRole = 'Direção & Coordenação';
-            }
-            badgeEl.textContent = shortRole;
-        }
-
-        selectEl.innerHTML = AVAILABLE_SYSTEM_VISIONS.map(function(v) {
+        menuEl.innerHTML = AVAILABLE_SYSTEM_VISIONS.map(function(v) {
             var isCoordOrDirector = (v.role === 'Diretor Escola' && (activeRole.toLowerCase().includes('diretor') || activeRole.toLowerCase().includes('coordenador')));
-            var isSelected = (v.role.toLowerCase() === activeRole.toLowerCase() || isCoordOrDirector || activeRole.toLowerCase().includes(v.role.toLowerCase())) ? 'selected' : '';
-            return '<option value="' + v.role + '" ' + isSelected + '>' + v.icon + ' ' + v.title + '</option>';
+            var isActive = (v.role.toLowerCase() === activeRole.toLowerCase() || isCoordOrDirector || activeRole.toLowerCase().includes(v.role.toLowerCase()));
+
+            return '<button type="button" class="vision-dropdown-item ' + (isActive ? 'active' : '') + '" onclick="selectVisionRole(\'' + v.role + '\');" role="menuitem">' +
+                '<span class="vision-item-icon">' + v.icon + '</span>' +
+                '<span class="vision-item-info">' +
+                    '<span class="vision-item-title">' + v.title + '</span>' +
+                    '<span class="vision-item-scope">' + v.scope + '</span>' +
+                '</span>' +
+                (isActive ? '<span class="vision-item-check" title="Visão em uso">✓</span>' : '') +
+            '</button>';
         }).join('');
     }
 
     /**
-     * Abre o modal de alternância de visão de acesso
+     * Alterna a abertura / fechamento do dropdown popover compacto
      */
-    function openVisionSwitcherModal() {
-        var modal = document.getElementById('modal-vision-switcher');
-        var container = document.getElementById('vision-switcher-cards-container');
-        if (!modal) return;
-
-        var currentRole = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('userRole')) ||
-                          (typeof localStorage !== 'undefined' && localStorage.getItem('userRole')) || 'Master Admin';
-
-        if (container) {
-            container.innerHTML = AVAILABLE_SYSTEM_VISIONS.map(function(v) {
-                var isCoordOrDirector = (v.role === 'Diretor Escola' && (currentRole.toLowerCase().includes('diretor') || currentRole.toLowerCase().includes('coordenador')));
-                var isActive = (v.role.toLowerCase() === currentRole.toLowerCase() || isCoordOrDirector || currentRole.toLowerCase().includes(v.role.toLowerCase()));
-                return '<div class="vision-role-card ' + (isActive ? 'active' : '') + '" onclick="triggerVisionTransition(\'' + v.role + '\')">' +
-                    '<div class="vision-card-header">' +
-                        '<div class="vision-icon-box">' + v.icon + '</div>' +
-                        '<span class="badge ' + v.badgeClass + '" style="font-size: 0.7rem; font-weight: 700;">' + (isActive ? 'VISÃO ATIVA' : v.scope) + '</span>' +
-                    '</div>' +
-                    '<div class="vision-title">' + v.title + '</div>' +
-                    '<div class="vision-desc">' + v.desc + '</div>' +
-                    '<div class="vision-footer">' +
-                        '<span>Escopo: <strong>' + v.scope + '</strong></span>' +
-                        '<span style="color: ' + (isActive ? '#2563eb' : 'var(--text-secondary)') + '; font-weight: 700;">' + (isActive ? '✓ Em uso' : 'Alternar →') + '</span>' +
-                    '</div>' +
-                '</div>';
-            }).join('');
+    function toggleVisionDropdown(event) {
+        if (event && typeof event.stopPropagation === 'function') {
+            event.stopPropagation();
         }
+        var menuEl = document.getElementById('vision-dropdown-menu');
+        var btnEl = document.getElementById('btn-toggle-vision-dropdown');
+        if (!menuEl) return;
 
-        modal.style.display = 'flex';
-        modal.classList.remove('hidden');
-
-        if (window.lucide && typeof lucide.createIcons === 'function') {
-            try { lucide.createIcons(); } catch(e) {}
+        var isHidden = menuEl.classList.contains('hidden');
+        if (isHidden) {
+            renderVisionDropdownMenu();
+            menuEl.classList.remove('hidden');
+            if (btnEl) btnEl.setAttribute('aria-expanded', 'true');
+        } else {
+            closeVisionDropdown();
         }
     }
 
     /**
-     * Fecha o modal de alternância de visão de acesso
+     * Fecha o dropdown popover compacto
      */
-    function closeVisionSwitcherModal() {
-        var modal = document.getElementById('modal-vision-switcher');
-        if (modal) {
-            modal.style.display = 'none';
-            modal.classList.add('hidden');
+    function closeVisionDropdown() {
+        var menuEl = document.getElementById('vision-dropdown-menu');
+        var btnEl = document.getElementById('btn-toggle-vision-dropdown');
+        if (menuEl) {
+            menuEl.classList.add('hidden');
         }
+        if (btnEl) {
+            btnEl.setAttribute('aria-expanded', 'false');
+        }
+    }
+
+    /**
+     * Seleciona um papel de visão diretamente do menu popover compacto
+     */
+    function selectVisionRole(newRole) {
+        closeVisionDropdown();
+        triggerVisionTransition(newRole);
+    }
+
+    // Aliases para compatibilidade retroativa
+    function openVisionSwitcherModal() { toggleVisionDropdown(); }
+    function closeVisionSwitcherModal() { closeVisionDropdown(); }
+
+    // Fechamento automático ao clicar fora ou pressionar ESC
+    if (typeof document !== 'undefined') {
+        document.addEventListener('click', function(e) {
+            var wrapper = document.getElementById('sidebar-profile-switcher-wrapper');
+            var collapsedBtn = document.getElementById('sidebar-vision-collapsed-btn');
+            if (wrapper && !wrapper.contains(e.target) && (!collapsedBtn || !collapsedBtn.contains(e.target))) {
+                closeVisionDropdown();
+            }
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' || e.keyCode === 27) {
+                closeVisionDropdown();
+            }
+        });
     }
 
     /**
@@ -202,7 +235,7 @@
     async function triggerVisionTransition(newRole) {
         if (!newRole) return;
 
-        closeVisionSwitcherModal();
+        closeVisionDropdown();
 
         var sweepEl = document.getElementById('vision-laser-sweep');
         var appEl = document.querySelector('.main-content') || document.querySelector('.app-container');
@@ -762,8 +795,22 @@
     global.renderSidebarProfileSwitcher = renderSidebarProfileSwitcher;
     global.switchActiveSessionProfile = switchActiveSessionProfile;
     global.AVAILABLE_SYSTEM_VISIONS = AVAILABLE_SYSTEM_VISIONS;
+    global.toggleVisionDropdown = toggleVisionDropdown;
+    global.closeVisionDropdown = closeVisionDropdown;
+    global.selectVisionRole = selectVisionRole;
+    global.renderVisionDropdownMenu = renderVisionDropdownMenu;
     global.openVisionSwitcherModal = openVisionSwitcherModal;
     global.closeVisionSwitcherModal = closeVisionSwitcherModal;
     global.triggerVisionTransition = triggerVisionTransition;
+
+    if (typeof window !== 'undefined') {
+        window.toggleVisionDropdown = toggleVisionDropdown;
+        window.closeVisionDropdown = closeVisionDropdown;
+        window.selectVisionRole = selectVisionRole;
+        window.renderVisionDropdownMenu = renderVisionDropdownMenu;
+        window.openVisionSwitcherModal = openVisionSwitcherModal;
+        window.closeVisionSwitcherModal = closeVisionSwitcherModal;
+        window.triggerVisionTransition = triggerVisionTransition;
+    }
 
 })(typeof window !== 'undefined' ? window : this);

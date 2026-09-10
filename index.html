@@ -832,26 +832,29 @@
                     <button type="button" class="sidebar-theme-collapsed-btn" id="sidebar-theme-collapsed-btn" onclick="if(typeof toggleThemeMode==='function') toggleThemeMode();" title="Alternar Tema" data-tooltip="Alternar Tema">
                         <svg id="theme-collapsed-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
                     </button>
-                    <button type="button" class="sidebar-vision-collapsed-btn" id="sidebar-vision-collapsed-btn" onclick="if(window.openVisionSwitcherModal) window.openVisionSwitcherModal();" title="Alternar Visão de Acesso" data-tooltip="Alternar Visão">
+                    <button type="button" class="sidebar-vision-collapsed-btn" id="sidebar-vision-collapsed-btn" onclick="if(window.toggleVisionDropdown) window.toggleVisionDropdown(event);" title="Alternar Visão de Acesso" data-tooltip="Alternar Visão">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                     </button>
                 </div>
 
-                <!-- Active Profile Switcher (Alternar Visão / Grupo de Acesso na Sidebar) -->
-                <div id="sidebar-profile-switcher" class="sidebar-profile-switcher" style="display: block; margin-bottom: 8px; padding: 8px 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: var(--radius-md);">
-                    <div class="sidebar-profile-switcher-header" onclick="if(window.openVisionSwitcherModal) window.openVisionSwitcherModal();" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; cursor: pointer;" title="Clique para abrir painel de alternância de visão">
-                        <span class="switcher-label" style="font-size: 0.65rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 4px;">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                            Alternar Visão
-                        </span>
-                        <span class="switcher-badge badge badge-blue" id="sidebar-active-profile-badge" style="font-size: 0.65rem; padding: 2px 6px;">Master Admin</span>
-                    <div class="sidebar-profile-switcher-control">
-                        <select id="select-active-session-profile" class="form-select profile-select" onchange="if(window.triggerVisionTransition) window.triggerVisionTransition(this.value); else if(window.switchActiveSessionProfile) window.switchActiveSessionProfile(this.value);" title="Alternar perfil ativo" style="width: 100%; height: 32px; font-size: 0.78rem; font-weight: 600; background: #0f172a; color: #ffffff; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; cursor: pointer;">
-                            <option value="Master Admin">👑 Gestor da Rede (Master Admin)</option>
-                            <option value="Diretor Escola">🏫 Direção &amp; Coordenação Escolar</option>
-                            <option value="Professor">👨‍🏫 Professor(a) Regente</option>
-                        </select>
+                <!-- Active Profile Switcher (Alternar Visão / Dropdown Popover Compacto na Sidebar) -->
+                <div id="sidebar-profile-switcher-wrapper" class="sidebar-profile-switcher-wrapper">
+                    <button type="button" id="btn-toggle-vision-dropdown" class="sidebar-vision-btn" onclick="if(window.toggleVisionDropdown) window.toggleVisionDropdown(event);" title="Alternar Visão de Acesso" aria-haspopup="true" aria-expanded="false">
+                        <div class="vision-btn-icon" id="sidebar-vision-current-icon">👑</div>
+                        <div class="vision-btn-content">
+                            <span class="vision-btn-title" id="sidebar-vision-current-title">Gestor da Rede</span>
+                            <span class="vision-btn-scope" id="sidebar-vision-current-scope">Rede Municipal SEMED</span>
+                        </div>
+                        <svg class="vision-btn-chevron" id="sidebar-vision-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+
+                    <!-- Popover Dropdown Menu Ancorado -->
+                    <div id="vision-dropdown-menu" class="vision-dropdown-menu hidden" role="menu">
+                        <!-- Gerado dinamicamente via renderVisionDropdown() -->
                     </div>
+                </div>
 
                 <!-- User Navigation Card (Direct Profile Action) -->
                 <button type="button" class="user-profile-nav-card" id="user-menu-btn" onclick="if(typeof openUserProfileModal==='function') openUserProfileModal();" title="Ver e Editar Meu Perfil" data-tooltip="Meu Perfil">
@@ -7239,49 +7242,7 @@
         </div>
     </div>
 
-    <!-- =========================================================================
-         MODAL ALTERNAR VISÃO DE ACESSO (SWITCH PROFILE / ROLE VIEWS)
-         ========================================================================= -->
-    <div id="modal-vision-switcher" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(6px); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
-        <div class="modal-card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 680px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35); overflow: hidden; animation: modalFadeIn 0.2s ease-out;">
-            <!-- Header do Modal -->
-            <div style="padding: 20px 24px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(139, 92, 246, 0.05) 100%);">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(37, 99, 235, 0.15); color: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 1.35rem;">
-                        🔄
-                    </div>
-                    <div>
-                        <h3 style="margin: 0; font-size: 1.18rem; font-weight: 800; color: var(--text-primary);">Alternar Visão de Acesso</h3>
-                        <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">Selecione o papel operacional para simular os módulos e permissões da plataforma.</p>
-                    </div>
-                </div>
-                <button type="button" onclick="closeVisionSwitcherModal();" class="btn-icon" style="background: none; border: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer; padding: 4px;" title="Fechar">
-                    ✕
-                </button>
-            </div>
 
-            <!-- Corpo do Modal -->
-            <div style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
-                <div id="vision-switcher-cards-container" class="vision-switcher-grid">
-                    <!-- Cards de Visão gerados dinamicamente via JS -->
-                </div>
-                
-                <div style="padding: 10px 14px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: var(--radius-sm); display: flex; align-items: center; gap: 10px;">
-                    <span style="font-size: 1.1rem;">💡</span>
-                    <span style="font-size: 0.75rem; color: var(--text-secondary); line-height: 1.4;">
-                        A alternância de visão atualiza instantaneamente a sidebar, o banner do dashboard, as permissões de edição e as restrições por escola ou turma sem desconectar sua sessão.
-                    </span>
-                </div>
-
-                <!-- Footer do Modal -->
-                <div style="display: flex; justify-content: flex-end; align-items: center; gap: 12px; margin-top: 6px; padding-top: 16px; border-top: 1px solid var(--border-color);">
-                    <button type="button" onclick="closeVisionSwitcherModal();" class="btn btn-outline" style="padding: 0 20px; height: 38px; font-weight: 600; font-size: var(--text-sm);">
-                        Fechar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- =========================================================================
          MODAIS INSTITUCIONAIS: GESTÃO DE ESCOLA, TURMAS, PROFESSORES E ALUNOS
