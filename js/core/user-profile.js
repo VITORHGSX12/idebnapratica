@@ -66,6 +66,49 @@
         renderDashboardWelcomeBanner();
     }
 
+    var AVAILABLE_SYSTEM_VISIONS = [
+        {
+            role: 'Master Admin',
+            title: 'Gestor da Rede (Master Admin)',
+            desc: 'Visão executiva da SEMED. Acesso irrestrito a todas as escolas, turmas, matrizes e painel administrativo.',
+            icon: '👑',
+            badgeClass: 'badge-blue',
+            scope: 'Rede Municipal SEMED',
+            escola: '',
+            turma: ''
+        },
+        {
+            role: 'Diretor Escola',
+            title: 'Diretor(a) Escolar',
+            desc: 'Gestão da Unidade Escolar UI José Corrêa Lima. Acompanhamento de metas do PDE e indicadores.',
+            icon: '🏫',
+            badgeClass: 'badge-purple',
+            scope: 'UI José Corrêa Lima',
+            escola: 'UI JOSE CORREA LIMA',
+            turma: ''
+        },
+        {
+            role: 'Coordenador Pedagógico',
+            title: 'Coordenador(a) Pedagógico',
+            desc: 'Planejamento curricular 40 semanas, matrizes de habilidades SAEB/BNCC e apoio a docentes.',
+            icon: '📋',
+            badgeClass: 'badge-emerald',
+            scope: 'Coordenação Pedagógica',
+            escola: 'UI JOSE CORREA LIMA',
+            turma: ''
+        },
+        {
+            role: 'Professor',
+            title: 'Professor(a) Regente',
+            desc: 'Diário de classe, planejamento semanal, banco de questões e lançamento de notas da turma.',
+            icon: '👨‍🏫',
+            badgeClass: 'badge-amber',
+            scope: '2º Ano A - Matutino',
+            escola: 'UI JOSE CORREA LIMA',
+            turma: '2º Ano A'
+        }
+    ];
+
     /**
      * Retorna todos os perfis vinculados ao usuário na sessão
      * @returns {Array<string>}
@@ -79,13 +122,11 @@
                 if (Array.isArray(parsed) && parsed.length > 0) return parsed;
             }
         } catch(e) {}
-        var active = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('userRole')) ||
-                     (typeof localStorage !== 'undefined' && localStorage.getItem('userRole')) || 'Master Admin';
-        return [active];
+        return ['Master Admin', 'Diretor Escola', 'Coordenador Pedagógico', 'Professor'];
     }
 
     /**
-     * Renderiza dinamicamente o seletor de perfil ativo na sidebar quando houver 2+ perfis
+     * Renderiza dinamicamente o seletor de perfil ativo na sidebar
      */
     function renderSidebarProfileSwitcher() {
         if (typeof document === 'undefined') return;
@@ -94,28 +135,117 @@
         var badgeEl = document.getElementById('sidebar-active-profile-badge');
         if (!switcherEl || !selectEl) return;
 
-        var perfis = getUserPerfis();
         var activeRole = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('userRole')) ||
-                         (typeof localStorage !== 'undefined' && localStorage.getItem('userRole')) || perfis[0];
+                         (typeof localStorage !== 'undefined' && localStorage.getItem('userRole')) || 'Master Admin';
 
-        // Se o usuário tiver apenas 1 grupo, oculta o seletor (comportamento atual permanece)
-        if (!perfis || perfis.length <= 1) {
-            switcherEl.style.display = 'none';
-            return;
-        }
-
-        // Se o usuário tiver 2+ grupos, exibe o seletor para alternância em tempo real
+        // Garante visibilidade do seletor na sidebar
         switcherEl.style.display = 'block';
 
         if (badgeEl) {
-            var shortRole = activeRole.replace(/\(a\)/g, '').replace('Escolar', '').replace('Pedagógico', '').trim();
+            var shortRole = activeRole.replace(/\(a\)/g, '').replace('Escolar', '').replace('Pedagógico', '').replace('Regente', '').trim();
             badgeEl.textContent = shortRole;
         }
 
-        selectEl.innerHTML = perfis.map(function(r) {
-            var isSelected = (r.toLowerCase() === activeRole.toLowerCase()) ? 'selected' : '';
-            return '<option value="' + r + '" ' + isSelected + '>' + r + '</option>';
+        selectEl.innerHTML = AVAILABLE_SYSTEM_VISIONS.map(function(v) {
+            var isSelected = (v.role.toLowerCase() === activeRole.toLowerCase() || activeRole.toLowerCase().includes(v.role.toLowerCase())) ? 'selected' : '';
+            return '<option value="' + v.role + '" ' + isSelected + '>' + v.icon + ' ' + v.title + '</option>';
         }).join('');
+    }
+
+    /**
+     * Abre o modal de alternância de visão de acesso
+     */
+    function openVisionSwitcherModal() {
+        var modal = document.getElementById('modal-vision-switcher');
+        var container = document.getElementById('vision-switcher-cards-container');
+        if (!modal) return;
+
+        var currentRole = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('userRole')) ||
+                          (typeof localStorage !== 'undefined' && localStorage.getItem('userRole')) || 'Master Admin';
+
+        if (container) {
+            container.innerHTML = AVAILABLE_SYSTEM_VISIONS.map(function(v) {
+                var isActive = (v.role.toLowerCase() === currentRole.toLowerCase() || currentRole.toLowerCase().includes(v.role.toLowerCase()));
+                return '<div class="vision-role-card ' + (isActive ? 'active' : '') + '" onclick="triggerVisionTransition(\'' + v.role + '\')">' +
+                    '<div class="vision-card-header">' +
+                        '<div class="vision-icon-box">' + v.icon + '</div>' +
+                        '<span class="badge ' + v.badgeClass + '" style="font-size: 0.7rem; font-weight: 700;">' + (isActive ? 'VISÃO ATIVA' : v.scope) + '</span>' +
+                    '</div>' +
+                    '<div class="vision-title">' + v.title + '</div>' +
+                    '<div class="vision-desc">' + v.desc + '</div>' +
+                    '<div class="vision-footer">' +
+                        '<span>Escopo: <strong>' + v.scope + '</strong></span>' +
+                        '<span style="color: ' + (isActive ? '#2563eb' : 'var(--text-secondary)') + '; font-weight: 700;">' + (isActive ? '✓ Em uso' : 'Alternar →') + '</span>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        modal.style.display = 'flex';
+        modal.classList.remove('hidden');
+
+        if (window.lucide && typeof lucide.createIcons === 'function') {
+            try { lucide.createIcons(); } catch(e) {}
+        }
+    }
+
+    /**
+     * Fecha o modal de alternância de visão de acesso
+     */
+    function closeVisionSwitcherModal() {
+        var modal = document.getElementById('modal-vision-switcher');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+        }
+    }
+
+    /**
+     * Dispara a transição futurista / laser ao alternar a visão do usuário
+     * @param {string} newRole 
+     */
+    async function triggerVisionTransition(newRole) {
+        if (!newRole) return;
+
+        closeVisionSwitcherModal();
+
+        var sweepEl = document.getElementById('vision-laser-sweep');
+        var appEl = document.querySelector('.main-content') || document.querySelector('.app-container');
+        
+        if (sweepEl) {
+            sweepEl.classList.remove('animating');
+            void sweepEl.offsetWidth; // trigger reflow
+            sweepEl.classList.add('animating');
+        }
+        if (appEl) {
+            appEl.classList.add('vision-transitioning-content');
+        }
+
+        var targetVision = AVAILABLE_SYSTEM_VISIONS.find(function(v) {
+            return v.role.toLowerCase() === newRole.toLowerCase() || v.title.toLowerCase().includes(newRole.toLowerCase());
+        });
+
+        if (targetVision) {
+            if (targetVision.escola !== undefined) {
+                sessionStorage.setItem('userEscola', targetVision.escola);
+                localStorage.setItem('userEscola', targetVision.escola);
+            }
+            if (targetVision.turma !== undefined) {
+                sessionStorage.setItem('userTurma', targetVision.turma);
+                localStorage.setItem('userTurma', targetVision.turma);
+            }
+        }
+
+        await switchActiveSessionProfile(newRole);
+
+        setTimeout(function() {
+            if (appEl) {
+                appEl.classList.remove('vision-transitioning-content');
+            }
+            if (sweepEl) {
+                sweepEl.classList.remove('animating');
+            }
+        }, 650);
     }
 
     /**
@@ -636,5 +766,9 @@
     global.getUserPerfis = getUserPerfis;
     global.renderSidebarProfileSwitcher = renderSidebarProfileSwitcher;
     global.switchActiveSessionProfile = switchActiveSessionProfile;
+    global.AVAILABLE_SYSTEM_VISIONS = AVAILABLE_SYSTEM_VISIONS;
+    global.openVisionSwitcherModal = openVisionSwitcherModal;
+    global.closeVisionSwitcherModal = closeVisionSwitcherModal;
+    global.triggerVisionTransition = triggerVisionTransition;
 
 })(typeof window !== 'undefined' ? window : this);

@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" href="assets/brand/ideb_symbol_app_icon.svg">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="design-tokens.css?v=20260830_v2">
-    <link rel="stylesheet" href="styles.css?v=855803dda1_mtthjqrt">
+    <link rel="stylesheet" href="styles.css?v=20260910_vision_v3">
     <link rel="stylesheet" href="login-premium.css?v=20260830_v2">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -427,6 +427,8 @@
 
 </head>
 <body>
+    <!-- Linha Laser de Transição ao Alternar Visão -->
+    <div id="vision-laser-sweep"></div>
     <!-- Login Screen Split-Screen (Design Institucional Education2025 & Tipografia Bold) -->
     <div id="login-screen" class="login-screen login-screen-organic">
         <div class="login-split-container-organic">
@@ -826,13 +828,18 @@
                         <span>Escuro</span>
                     </button>
                 </div>
-                <button type="button" class="sidebar-theme-collapsed-btn" id="sidebar-theme-collapsed-btn" onclick="if(typeof toggleThemeMode==='function') toggleThemeMode();" title="Alternar Tema" data-tooltip="Alternar Tema">
-                    <svg id="theme-collapsed-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-                </button>
+                <div style="display: flex; gap: 6px; justify-content: center;">
+                    <button type="button" class="sidebar-theme-collapsed-btn" id="sidebar-theme-collapsed-btn" onclick="if(typeof toggleThemeMode==='function') toggleThemeMode();" title="Alternar Tema" data-tooltip="Alternar Tema">
+                        <svg id="theme-collapsed-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                    </button>
+                    <button type="button" class="sidebar-vision-collapsed-btn" id="sidebar-vision-collapsed-btn" onclick="if(window.openVisionSwitcherModal) window.openVisionSwitcherModal();" title="Alternar Visão de Acesso" data-tooltip="Alternar Visão">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </button>
+                </div>
 
                 <!-- Active Profile Switcher (Alternar Visão / Grupo de Acesso na Sidebar) -->
                 <div id="sidebar-profile-switcher" class="sidebar-profile-switcher" style="display: block; margin-bottom: 8px; padding: 8px 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: var(--radius-md);">
-                    <div class="sidebar-profile-switcher-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                    <div class="sidebar-profile-switcher-header" onclick="if(window.openVisionSwitcherModal) window.openVisionSwitcherModal();" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; cursor: pointer;" title="Clique para abrir painel de alternância de visão">
                         <span class="switcher-label" style="font-size: 0.65rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 4px;">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                             Alternar Visão
@@ -7236,6 +7243,50 @@
     </div>
 
     <!-- =========================================================================
+         MODAL ALTERNAR VISÃO DE ACESSO (SWITCH PROFILE / ROLE VIEWS)
+         ========================================================================= -->
+    <div id="modal-vision-switcher" class="modal-overlay hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(6px); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
+        <div class="modal-card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 680px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35); overflow: hidden; animation: modalFadeIn 0.2s ease-out;">
+            <!-- Header do Modal -->
+            <div style="padding: 20px 24px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(139, 92, 246, 0.05) 100%);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(37, 99, 235, 0.15); color: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 1.35rem;">
+                        🔄
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.18rem; font-weight: 800; color: var(--text-primary);">Alternar Visão de Acesso</h3>
+                        <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">Selecione o papel operacional para simular os módulos e permissões da plataforma.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeVisionSwitcherModal();" class="btn-icon" style="background: none; border: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer; padding: 4px;" title="Fechar">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Corpo do Modal -->
+            <div style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+                <div id="vision-switcher-cards-container" class="vision-switcher-grid">
+                    <!-- Cards de Visão gerados dinamicamente via JS -->
+                </div>
+                
+                <div style="padding: 10px 14px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: var(--radius-sm); display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 1.1rem;">💡</span>
+                    <span style="font-size: 0.75rem; color: var(--text-secondary); line-height: 1.4;">
+                        A alternância de visão atualiza instantaneamente a sidebar, o banner do dashboard, as permissões de edição e as restrições por escola ou turma sem desconectar sua sessão.
+                    </span>
+                </div>
+
+                <!-- Footer do Modal -->
+                <div style="display: flex; justify-content: flex-end; align-items: center; gap: 12px; margin-top: 6px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+                    <button type="button" onclick="closeVisionSwitcherModal();" class="btn btn-outline" style="padding: 0 20px; height: 38px; font-weight: 600; font-size: var(--text-sm);">
+                        Fechar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================================
          MODAIS INSTITUCIONAIS: GESTÃO DE ESCOLA, TURMAS, PROFESSORES E ALUNOS
          ========================================================================= -->
 
@@ -7537,7 +7588,7 @@
     <script src="js/core/uppercase_lock.js?v=ab1a21e667_mtthjqrt"></script>
     <script src="js/core/theme-toast.js?v=c181c006e0_mtthjqrt"></script>
     <script src="js/core/chart-theme.js?v=c8e29467a8_mtthjqrt"></script>
-    <script src="js/core/user-profile.js?v=f7991d5c6a_mtthjqrt"></script>
+    <script src="js/core/user-profile.js?v=20260910_vision_v3"></script>
     <script src="js/data/official_users_directory.js?v=24a756e04c_mtthjqrt"></script>
     <script src="js/core/login-animation.js?v=414e14bbcd_mtthjqrt"></script>
     <script src="js/core/auth/auth_password.js?v=53356702d7_mtthjqrt"></script>

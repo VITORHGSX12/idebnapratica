@@ -543,7 +543,8 @@ body.dark-mode {
     box-shadow: 0 2px 8px rgba(47, 111, 237, 0.35) !important;
 }
 
-.sidebar-theme-collapsed-btn {
+.sidebar-theme-collapsed-btn,
+.sidebar-vision-collapsed-btn {
     display: none;
     width: 36px;
     height: 36px;
@@ -556,6 +557,13 @@ body.dark-mode {
     cursor: pointer;
     margin: 0 auto;
     transition: all 150ms ease;
+}
+
+.sidebar-theme-collapsed-btn:hover,
+.sidebar-vision-collapsed-btn:hover {
+    background: rgba(255, 255, 255, 0.20);
+    border-color: rgba(255, 255, 255, 0.35);
+    transform: scale(1.05);
 }
 
 /* User Profile Navigation Card */
@@ -4107,11 +4115,13 @@ body.collapsed-sidebar .sidebar-footer {
     justify-content: center !important;
 }
 
-body.collapsed-sidebar .sidebar-theme-segmented {
+body.collapsed-sidebar .sidebar-theme-segmented,
+body.collapsed-sidebar .sidebar-profile-switcher {
     display: none !important;
 }
 
-body.collapsed-sidebar .sidebar-theme-collapsed-btn {
+body.collapsed-sidebar .sidebar-theme-collapsed-btn,
+body.collapsed-sidebar .sidebar-vision-collapsed-btn {
     display: flex !important;
     width: 44px !important;
     height: 44px !important;
@@ -8870,6 +8880,86 @@ body.dark-mode .metrics-grid .metric-card:hover {
     z-index: 99999;
     pointer-events: none;
 }
+
+/* =========================================================================
+   VISION SWITCHER MODAL & CARDS
+   ========================================================================= */
+.vision-switcher-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+}
+
+.vision-role-card {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1.5px solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+    text-align: left;
+}
+
+.vision-role-card:hover {
+    border-color: #38bdf8 !important;
+    background: rgba(56, 189, 248, 0.08) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(56, 189, 248, 0.25);
+}
+
+.vision-role-card.active {
+    border-color: #2563eb !important;
+    background: rgba(37, 99, 235, 0.12) !important;
+    box-shadow: 0 0 0 1.5px #2563eb, 0 10px 25px -5px rgba(37, 99, 235, 0.3);
+}
+
+.vision-role-card .vision-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.vision-role-card .vision-icon-box {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.vision-role-card .vision-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.vision-role-card .vision-desc {
+    font-size: 0.76rem;
+    color: var(--text-secondary);
+    line-height: 1.35;
+    margin-bottom: 12px;
+    flex-grow: 1;
+}
+
+.vision-role-card .vision-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
 
 
 

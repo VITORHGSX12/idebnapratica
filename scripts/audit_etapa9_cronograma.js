@@ -218,6 +218,16 @@ const mockWindow = {
     console: console,
     showToast: function(msg) {},
     safeCreateIcons: function() {},
+    open: function() {
+        return {
+            document: {
+                open: function() {},
+                write: function(content) { mockWindow.printCalled = true; },
+                close: function() {}
+            },
+            print: function() { mockWindow.printCalled = true; }
+        };
+    },
     print: function() { this.printCalled = true; },
     printCalled: false
 };
@@ -299,7 +309,7 @@ async function runAudit() {
     // ----------------------------------------------------------------------------
     try {
         const hasHeaderSection = checkHtmlContains('id="cronograma-habilidades"') &&
-                                 checkHtmlContains('Cronograma e Planejamento Escolar');
+                                 (checkHtmlContains('Cronograma & Planejamento Escolar') || checkHtmlContains('Cronograma e Planejamento Escolar'));
         assert(hasHeaderSection, 'HTML deve conter a seção #cronograma-habilidades com título');
 
         assert(domElements['trash-count-badge'], 'Badge de contagem da lixeira deve existir');
