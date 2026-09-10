@@ -214,7 +214,7 @@
 
         var userRole = sessionStorage.getItem('userRole') || 'Master Admin';
         var userEscola = sessionStorage.getItem('userEscola') || '';
-        var isDirector = userRole === 'Diretor Escola';
+        var isDirector = userRole === 'Diretor Escola' || userRole.includes('Diretor') || userRole.includes('Coordenador');
         var isTeacher = userRole === 'Professor' || userRole === 'Professor AEE';
         var isAdminOrSemed = userRole === 'Master Admin' || userRole === 'Gestor da Rede' || userRole === 'Admin';
 

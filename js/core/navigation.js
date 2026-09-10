@@ -360,13 +360,13 @@
                 </div>
             `;
         } 
-        // 2. VISÃO DO DIRETOR ESCOLAR
-        else if (userRole === 'Diretor Escola') {
+        // 2. VISÃO DO DIRETOR E COORDENADOR ESCOLAR (UNIFICADA)
+        else if (userRole === 'Diretor Escola' || userRole.includes('Diretor') || userRole.includes('Coordenador')) {
             if (activeNetworkLabel) activeNetworkLabel.textContent = '🏫 ' + userEscola + ' (INEP 21128723)';
             if (userProfileName) userProfileName.textContent = 'Profa. Antonia Silva';
-            if (userProfileRole) userProfileRole.textContent = 'Visão de Direção • ' + userEscola;
+            if (userProfileRole) userProfileRole.textContent = 'Direção & Coordenação • ' + userEscola;
             if (userProfileAvatar) {
-                userProfileAvatar.textContent = 'DE';
+                userProfileAvatar.textContent = 'DC';
                 userProfileAvatar.style.backgroundColor = '#059669';
             }
 

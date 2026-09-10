@@ -845,16 +845,13 @@
                             Alternar Visão
                         </span>
                         <span class="switcher-badge badge badge-blue" id="sidebar-active-profile-badge" style="font-size: 0.65rem; padding: 2px 6px;">Master Admin</span>
-                    </div>
                     <div class="sidebar-profile-switcher-control">
                         <select id="select-active-session-profile" class="form-select profile-select" onchange="if(window.triggerVisionTransition) window.triggerVisionTransition(this.value); else if(window.switchActiveSessionProfile) window.switchActiveSessionProfile(this.value);" title="Alternar perfil ativo" style="width: 100%; height: 32px; font-size: 0.78rem; font-weight: 600; background: #0f172a; color: #ffffff; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; cursor: pointer;">
                             <option value="Master Admin">👑 Gestor da Rede (Master Admin)</option>
-                            <option value="Diretor Escola">🏫 Diretor(a) Escolar</option>
-                            <option value="Coordenador Pedagógico">📋 Coordenador(a) Pedagógico</option>
-                            <option value="Professor">👨‍🏫 Professor(a) / Docente</option>
+                            <option value="Diretor Escola">🏫 Direção &amp; Coordenação Escolar</option>
+                            <option value="Professor">👨‍🏫 Professor(a) Regente</option>
                         </select>
                     </div>
-                </div>
 
                 <!-- User Navigation Card (Direct Profile Action) -->
                 <button type="button" class="user-profile-nav-card" id="user-menu-btn" onclick="if(typeof openUserProfileModal==='function') openUserProfileModal();" title="Ver e Editar Meu Perfil" data-tooltip="Meu Perfil">

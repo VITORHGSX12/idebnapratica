@@ -394,7 +394,7 @@
         var schoolClasses = typeof global.getOfficialClassesState === 'function' ? global.getOfficialClassesState().filter(function(c) { return matchSchool(c.escola, schoolName); }) : [];
 
         var userRole = sessionStorage.getItem('userRole') || 'Master Admin';
-        var canViewSensitive = userRole === 'Master Admin' || userRole === 'Gestor da Rede' || userRole === 'Diretor Escola' || userRole === 'Admin';
+        var canViewSensitive = userRole === 'Master Admin' || userRole === 'Gestor da Rede' || userRole === 'Diretor Escola' || userRole.includes('Diretor') || userRole.includes('Coordenador') || userRole === 'Admin';
 
         var hasTargetClass = Boolean(targetClassName && targetClassName !== 'all');
         var activeClassStudents = hasTargetClass ? schoolStudents.filter(function(st) {
@@ -485,7 +485,7 @@
         var selectedClass = filterSelect ? filterSelect.value : 'all';
 
         var userRole = sessionStorage.getItem('userRole') || 'Master Admin';
-        var canViewSensitive = userRole === 'Master Admin' || userRole === 'Gestor da Rede' || userRole === 'Diretor Escola' || userRole === 'Admin';
+        var canViewSensitive = userRole === 'Master Admin' || userRole === 'Gestor da Rede' || userRole === 'Diretor Escola' || userRole.includes('Diretor') || userRole.includes('Coordenador') || userRole === 'Admin';
 
         var filtered = schoolStudents.filter(function(st) {
             var matchQuery = (st.nome || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(query) ||

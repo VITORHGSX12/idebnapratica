@@ -79,21 +79,11 @@
         },
         {
             role: 'Diretor Escola',
-            title: 'Diretor(a) Escolar',
-            desc: 'Gestão da Unidade Escolar UI José Corrêa Lima. Acompanhamento de metas do PDE e indicadores.',
+            title: 'Direção & Coordenação Escolar',
+            desc: 'Gestão integrada da Unidade Escolar UI José Corrêa Lima. Acompanhamento de metas do PDE, matrizes pedagógicas, simulados e turmas.',
             icon: '🏫',
             badgeClass: 'badge-purple',
             scope: 'UI José Corrêa Lima',
-            escola: 'UI JOSE CORREA LIMA',
-            turma: ''
-        },
-        {
-            role: 'Coordenador Pedagógico',
-            title: 'Coordenador(a) Pedagógico',
-            desc: 'Planejamento curricular 40 semanas, matrizes de habilidades SAEB/BNCC e apoio a docentes.',
-            icon: '📋',
-            badgeClass: 'badge-emerald',
-            scope: 'Coordenação Pedagógica',
             escola: 'UI JOSE CORREA LIMA',
             turma: ''
         },
@@ -122,7 +112,7 @@
                 if (Array.isArray(parsed) && parsed.length > 0) return parsed;
             }
         } catch(e) {}
-        return ['Master Admin', 'Diretor Escola', 'Coordenador Pedagógico', 'Professor'];
+        return ['Master Admin', 'Diretor Escola', 'Professor'];
     }
 
     /**
@@ -143,11 +133,15 @@
 
         if (badgeEl) {
             var shortRole = activeRole.replace(/\(a\)/g, '').replace('Escolar', '').replace('Pedagógico', '').replace('Regente', '').trim();
+            if (shortRole.toLowerCase().includes('coordenador') || shortRole.toLowerCase().includes('diretor')) {
+                shortRole = 'Direção & Coordenação';
+            }
             badgeEl.textContent = shortRole;
         }
 
         selectEl.innerHTML = AVAILABLE_SYSTEM_VISIONS.map(function(v) {
-            var isSelected = (v.role.toLowerCase() === activeRole.toLowerCase() || activeRole.toLowerCase().includes(v.role.toLowerCase())) ? 'selected' : '';
+            var isCoordOrDirector = (v.role === 'Diretor Escola' && (activeRole.toLowerCase().includes('diretor') || activeRole.toLowerCase().includes('coordenador')));
+            var isSelected = (v.role.toLowerCase() === activeRole.toLowerCase() || isCoordOrDirector || activeRole.toLowerCase().includes(v.role.toLowerCase())) ? 'selected' : '';
             return '<option value="' + v.role + '" ' + isSelected + '>' + v.icon + ' ' + v.title + '</option>';
         }).join('');
     }
@@ -165,7 +159,8 @@
 
         if (container) {
             container.innerHTML = AVAILABLE_SYSTEM_VISIONS.map(function(v) {
-                var isActive = (v.role.toLowerCase() === currentRole.toLowerCase() || currentRole.toLowerCase().includes(v.role.toLowerCase()));
+                var isCoordOrDirector = (v.role === 'Diretor Escola' && (currentRole.toLowerCase().includes('diretor') || currentRole.toLowerCase().includes('coordenador')));
+                var isActive = (v.role.toLowerCase() === currentRole.toLowerCase() || isCoordOrDirector || currentRole.toLowerCase().includes(v.role.toLowerCase()));
                 return '<div class="vision-role-card ' + (isActive ? 'active' : '') + '" onclick="triggerVisionTransition(\'' + v.role + '\')">' +
                     '<div class="vision-card-header">' +
                         '<div class="vision-icon-box">' + v.icon + '</div>' +

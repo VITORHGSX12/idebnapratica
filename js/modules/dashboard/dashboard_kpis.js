@@ -27,7 +27,7 @@
         if (!container) return;
 
         var userRole = sessionStorage.getItem('userRole') || 'Master Admin';
-        var isDirector = userRole === 'Diretor Escola';
+        var isDirector = userRole === 'Diretor Escola' || userRole.includes('Diretor') || userRole.includes('Coordenador');
         var isTeacher = userRole === 'Professor' || userRole === 'Professor AEE';
 
         // Checagem rigorosa: existem respostas ou notas de simulados já lançadas?
