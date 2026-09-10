@@ -161,13 +161,72 @@
     }
 
     /**
-     * Listener para eventos online/offline do navegador
+     * Listener para eventos online/offline e propagação reativa de RBAC / Troca de Visão
      */
     function initSyncListeners() {
         if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
             window.addEventListener('online', function() {
                 console.log('[Sync Engine] Conexão restabelecida. Processando fila pendente...');
                 processSyncQueue();
+            });
+
+            // Propagação instantânea de dados centralizados quando a visão ativa é alternada
+            window.addEventListener('activeProfileChanged', function(e) {
+                var newRole = (e && e.detail && e.detail.role) || 'Master Admin';
+                console.log('[Sync Engine] Propagando dados administrativos para nova visão ativa:', newRole);
+
+                // 1. Cronograma e Planejamento Escolar
+                if (typeof window.initScheduleTurmaContext === 'function') {
+                    window.initScheduleTurmaContext();
+                }
+                if (typeof window.renderActiveScheduleView === 'function') {
+                    window.renderActiveScheduleView();
+                }
+
+                // 2. Avaliações, Simulados & Espelho de Notas
+                if (typeof window.renderEventosTable === 'function') {
+                    window.renderEventosTable();
+                }
+                if (typeof window.initEspelhoSelectors === 'function') {
+                    window.initEspelhoSelectors();
+                }
+
+                // 3. Banco de Questões
+                if (typeof window.renderQuestionsList === 'function') {
+                    window.renderQuestionsList();
+                }
+
+                // 4. Escolas & Turmas
+                if (typeof window.renderDbSchools === 'function') {
+                    window.renderDbSchools();
+                }
+                if (typeof window.initTurmasWorkspace === 'function') {
+                    window.initTurmasWorkspace();
+                }
+
+                // 5. Alunos & Ficha Diagnóstica
+                if (typeof window.renderDbStudents === 'function') {
+                    window.renderDbStudents();
+                }
+                if (typeof window.renderSaebDistribution === 'function') {
+                    window.renderSaebDistribution();
+                }
+                if (typeof window.renderStudentSaebDiagnosticSheet === 'function') {
+                    window.renderStudentSaebDiagnosticSheet();
+                }
+
+                // 6. Metas & PDE
+                if (typeof window.populateIdebGoalsTable === 'function') {
+                    window.populateIdebGoalsTable();
+                }
+
+                // 7. Dashboard KPIs & Gráficos
+                if (typeof window.renderDashboardKPIs === 'function') {
+                    window.renderDashboardKPIs();
+                }
+                if (typeof window.renderDashboardCharts === 'function') {
+                    window.renderDashboardCharts();
+                }
             });
 
             // Tenta processar fila a cada 30 segundos se houver pendências

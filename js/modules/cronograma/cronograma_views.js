@@ -14,6 +14,35 @@
     let currentScheduleMainView = 'monthly'; // 'monthly' | 'weekly' | 'comparison'
     let currentScheduleStatusFilter = 'all'; // 'all' | 'atrasada' | 'trabalhada' | 'planejada'
 
+    const MASTER_TURMAS_LIST = [
+        'UI JOSE CORREA LIMA — 2º Ano A',
+        'UI JOSE CORREA LIMA — 2º Ano B',
+        'UI JOSE CORREA LIMA — 5º Ano A',
+        'UI JOSE CORREA LIMA — 9º Ano A',
+        'UNIDADE INTEGRADA JOSE GONCALVES DIAS — 5º Ano A',
+        'UNIDADE INTEGRADA JOSE GONCALVES DIAS — 9º Ano A',
+        'U I BASILIO ALVES — 5º Ano A',
+        'UE ANITA FURTADO — 2º Ano A',
+        'UI EMILIO MURAD — 5º Ano A'
+    ];
+
+    function getDynamicTurmasList() {
+        var list = MASTER_TURMAS_LIST.slice();
+        try {
+            var raw = localStorage.getItem('school_network_turmas_db') || localStorage.getItem('gd_custom_turmas');
+            if (raw) {
+                var parsed = JSON.parse(raw);
+                if (Array.isArray(parsed)) {
+                    parsed.forEach(function(c) {
+                        var label = (c.escola || c.schoolName || '') + ' — ' + (c.nome || c.name || '');
+                        if (label.length > 5 && !list.includes(label)) list.push(label);
+                    });
+                }
+            }
+        } catch(e) {}
+        return list;
+    }
+
     function initScheduleTurmaContext() {
         const select = document.getElementById('cal-filter-turma-context');
         if (!select) return;
@@ -24,6 +53,8 @@
         const isTeacher = userRole.includes('professor');
         const isDirector = userRole.includes('diretor');
 
+        const allTurmas = getDynamicTurmasList();
+
         if (isTeacher && userEscola && userTurma && userTurma !== 'Todas as Turmas') {
             const contextStr = `${userEscola} — ${userTurma}`;
             select.innerHTML = `<option value="${contextStr}" selected>${contextStr}</option>`;
@@ -31,20 +62,21 @@
             currentTurmaContext = contextStr;
         } else if (isDirector && userEscola) {
             select.disabled = false;
-            const allOptions = Array.from(select.options);
-            const filteredOptions = allOptions.filter(opt => {
-                const text = opt.text.toLowerCase();
-                const u = userEscola.toLowerCase();
-                return text.includes(u) || u.includes(text);
-            });
-            if (filteredOptions.length > 0) {
-                select.innerHTML = '';
-                filteredOptions.forEach(opt => select.appendChild(opt));
-                select.selectedIndex = 0;
-                currentTurmaContext = select.value;
+            const filtered = allTurmas.filter(t => t.toLowerCase().includes(userEscola.toLowerCase()));
+            const listToUse = filtered.length > 0 ? filtered : allTurmas;
+            select.innerHTML = listToUse.map(t => `<option value="${t}">${t}</option>`).join('');
+            if (!listToUse.includes(currentTurmaContext)) {
+                currentTurmaContext = listToUse[0];
             }
+            select.value = currentTurmaContext;
         } else {
+            // Admin / Coordenador Geral / SEMED: Visão de todas as escolas e turmas da rede
             select.disabled = false;
+            select.innerHTML = allTurmas.map(t => `<option value="${t}">${t}</option>`).join('');
+            if (!allTurmas.includes(currentTurmaContext)) {
+                currentTurmaContext = allTurmas[0];
+            }
+            select.value = currentTurmaContext;
         }
 
         handleTurmaContextChange();
