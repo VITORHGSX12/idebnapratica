@@ -3967,6 +3967,53 @@
                         </div>
                     </div>
 
+                    <!-- Linha de Indicadores e KPIs do Banco de Questões -->
+                    <div class="metrics-grid margin-bottom-md" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 20px;">
+                        <div class="metric-card" style="padding: 16px 18px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <span class="metric-label" style="font-size: 0.72rem; font-weight: 700; color: var(--text-secondary);">ACERVO TOTAL</span>
+                                <div class="metric-icon-bubble" style="background: rgba(99, 102, 241, 0.1); color: #6366f1; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                    <i data-lucide="layers" style="width: 16px; height: 16px;"></i>
+                                </div>
+                            </div>
+                            <div class="metric-value" id="kpi-questoes-total" style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary); margin: 6px 0 2px;">0</div>
+                            <span class="metric-sub" style="font-size: 0.72rem; color: var(--text-muted);">Itens ativos no banco</span>
+                        </div>
+
+                        <div class="metric-card" style="padding: 16px 18px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <span class="metric-label" style="font-size: 0.72rem; font-weight: 700; color: var(--text-secondary);">LÍNGUA PORTUGUESA</span>
+                                <div class="metric-icon-bubble" style="background: rgba(16, 185, 129, 0.1); color: #10b981; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                    <i data-lucide="book-open" style="width: 16px; height: 16px;"></i>
+                                </div>
+                            </div>
+                            <div class="metric-value" id="kpi-questoes-lp" style="font-size: 1.6rem; font-weight: 800; color: #10b981; margin: 6px 0 2px;">0</div>
+                            <span class="metric-sub" id="kpi-questoes-lp-pct" style="font-size: 0.72rem; color: var(--text-muted);">Leitura & Compreensão</span>
+                        </div>
+
+                        <div class="metric-card" style="padding: 16px 18px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <span class="metric-label" style="font-size: 0.72rem; font-weight: 700; color: var(--text-secondary);">MATEMÁTICA</span>
+                                <div class="metric-icon-bubble" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                    <i data-lucide="calculator" style="width: 16px; height: 16px;"></i>
+                                </div>
+                            </div>
+                            <div class="metric-value" id="kpi-questoes-mat" style="font-size: 1.6rem; font-weight: 800; color: #3b82f6; margin: 6px 0 2px;">0</div>
+                            <span class="metric-sub" id="kpi-questoes-mat-pct" style="font-size: 0.72rem; color: var(--text-muted);">Números & Geometria</span>
+                        </div>
+
+                        <div class="metric-card" style="padding: 16px 18px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <span class="metric-label" style="font-size: 0.72rem; font-weight: 700; color: var(--text-secondary);">COBERTURA BNCC/SAEB</span>
+                                <div class="metric-icon-bubble" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                    <i data-lucide="award" style="width: 16px; height: 16px;"></i>
+                                </div>
+                            </div>
+                            <div class="metric-value" id="kpi-questoes-cobertura" style="font-size: 1.6rem; font-weight: 800; color: #f59e0b; margin: 6px 0 2px;">0%</div>
+                            <span class="metric-sub" id="kpi-questoes-descritores-count" style="font-size: 0.72rem; color: var(--text-muted);">Descritores mapeados</span>
+                        </div>
+                    </div>
+
                     <div class="questions-layout" style="display: grid; grid-template-columns: 340px 1fr; gap: 20px;">
                         <!-- Coluna Lateral: Gerador IA + Filtros + Importação -->
                         <div class="questions-sidebar-col" style="display: flex; flex-direction: column; gap: 16px;">
