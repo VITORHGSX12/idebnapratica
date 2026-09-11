@@ -441,9 +441,14 @@
 
                     // Persistência em lote no PostgreSQL
                     try {
+                        var token = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('authToken')) ||
+                                    (typeof localStorage !== 'undefined' && localStorage.getItem('authToken')) || '';
+                        var headers = { 'Content-Type': 'application/json' };
+                        if (token) headers['Authorization'] = 'Bearer ' + token;
+
                         fetch('/api/questoes/batch', {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: headers,
                             body: JSON.stringify({ questions: batchToSave })
                         }).catch(function() {});
                     } catch(e) {}

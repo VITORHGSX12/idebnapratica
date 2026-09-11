@@ -414,96 +414,117 @@
         saveQuestionsToStorage(global.rawQuestions);
         updateQuestionsKpis();
 
-        // Persistência no PostgreSQL
-        try {
-            fetch('/api/questoes', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(q)
-            }).catch(function() {});
-        } catch(e) {}
-
-        var modal = document.getElementById('edit-question-modal');
-        if (modal) {
-            modal.classList.add('hidden');
-            modal.style.display = 'none';
-        }
-
-        if (typeof global.showToast === 'function') {
-            global.showToast('Questão atualizada com sucesso!', 'check');
-        }
+    function getAuthToken() {
+        return (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('authToken')) ||
+               (typeof localStorage !== 'undefined' && localStorage.getItem('authToken')) || '';
     }
 
-    /**
-     * Duplica uma questão para criar uma variação paralela (Item A/B)
-     */
-    function handleDuplicateQuestion(qId) {
-        var q = (global.rawQuestions || []).find(function(item) { return item && item.id && item.id.toString() === (qId || '').toString(); });
-        if (!q) return;
+    // Persistência no PostgreSQL
+    try {
+        var token = getAuthToken();
+        var headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = 'Bearer ' + token;
 
-        var duplicated = JSON.parse(JSON.stringify(q));
-        duplicated.id = 'Q_' + Date.now();
-        duplicated.codigo_bncc = (duplicated.codigo_bncc || 'D01') + ' (Variação)';
+        fetch('/api/questoes', {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(q)
+        }).catch(function() {});
+    } catch(e) {}
 
-        global.rawQuestions.unshift(duplicated);
-        saveQuestionsToStorage(global.rawQuestions);
-        renderQuestions();
-        updateQuestionsKpis();
-
-        try {
-            fetch('/api/questoes', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(duplicated)
-            }).catch(function() {});
-        } catch(e) {}
-
-        if (typeof global.showToast === 'function') {
-            global.showToast('Variação do item criada com sucesso!', 'copy');
-        }
+    var modal = document.getElementById('edit-question-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
     }
 
-    /**
-     * Sincroniza o acervo de questões com o PostgreSQL respeitando exclusões
-     */
-    async function fetchQuestionsFromApi() {
-        try {
-            var res = await fetch('/api/questoes');
-            if (res.ok) {
-                var data = await res.json();
-                if (data && data.success && Array.isArray(data.questions) && data.questions.length > 0) {
-                    var deletedIds = getDeletedQuestionsIds();
-                    var filtered = data.questions.filter(function(q) {
-                        return q && q.id && !deletedIds.includes(q.id.toString());
-                    });
-                    if (filtered.length > 0) {
-                        global.rawQuestions = filtered;
-                        saveQuestionsToStorage(global.rawQuestions);
-                        renderQuestions();
-                        updateQuestionsKpis();
-                    }
+    if (typeof global.showToast === 'function') {
+        global.showToast('Questão atualizada com sucesso!', 'check');
+    }
+}
+
+/**
+ * Duplica uma questão para criar uma variação paralela (Item A/B)
+ */
+function handleDuplicateQuestion(qId) {
+    var q = (global.rawQuestions || []).find(function(item) { return item && item.id && item.id.toString() === (qId || '').toString(); });
+    if (!q) return;
+
+    var duplicated = JSON.parse(JSON.stringify(q));
+    duplicated.id = 'Q_' + Date.now();
+    duplicated.codigo_bncc = (duplicated.codigo_bncc || 'D01') + ' (Variação)';
+
+    global.rawQuestions.unshift(duplicated);
+    saveQuestionsToStorage(global.rawQuestions);
+    renderQuestions();
+    updateQuestionsKpis();
+
+    try {
+        var token = getAuthToken();
+        var headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = 'Bearer ' + token;
+
+        fetch('/api/questoes', {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(duplicated)
+        }).catch(function() {});
+    } catch(e) {}
+
+    if (typeof global.showToast === 'function') {
+        global.showToast('Variação do item criada com sucesso!', 'copy');
+    }
+}
+
+/**
+ * Sincroniza o acervo de questões com o PostgreSQL respeitando exclusões
+ */
+async function fetchQuestionsFromApi() {
+    try {
+        var token = getAuthToken();
+        var headers = {};
+        if (token) headers['Authorization'] = 'Bearer ' + token;
+
+        var res = await fetch('/api/questoes', { headers: headers });
+        if (res.ok) {
+            var data = await res.json();
+            if (data && data.success && Array.isArray(data.questions) && data.questions.length > 0) {
+                var deletedIds = getDeletedQuestionsIds();
+                var filtered = data.questions.filter(function(q) {
+                    return q && q.id && !deletedIds.includes(q.id.toString());
+                });
+                if (filtered.length > 0) {
+                    global.rawQuestions = filtered;
+                    saveQuestionsToStorage(global.rawQuestions);
+                    renderQuestions();
+                    updateQuestionsKpis();
                 }
             }
-        } catch (err) {
-            console.warn('[Questoes API Fallback]');
         }
+    } catch (err) {
+        console.warn('[Questoes API Fallback]');
     }
+}
 
-    // Exclusão permanente de questão com tombstone de exclusão e persistência
-    function handleDeleteQuestion(id) {
-        if (!id) return;
-        saveDeletedQuestionId(id);
-        var strId = id.toString();
-        global.rawQuestions = (global.rawQuestions || []).filter(function(q) {
-            return q && q.id && q.id.toString() !== strId;
-        });
-        saveQuestionsToStorage(global.rawQuestions);
-        renderQuestions();
-        updateQuestionsKpis();
+// Exclusão permanente de questão com tombstone de exclusão e persistência
+function handleDeleteQuestion(id) {
+    if (!id) return;
+    saveDeletedQuestionId(id);
+    var strId = id.toString();
+    global.rawQuestions = (global.rawQuestions || []).filter(function(q) {
+        return q && q.id && q.id.toString() !== strId;
+    });
+    saveQuestionsToStorage(global.rawQuestions);
+    renderQuestions();
+    updateQuestionsKpis();
 
-        try {
-            fetch('/api/questoes/' + id, { method: 'DELETE' }).catch(function() {});
-        } catch (e) {}
+    try {
+        var token = getAuthToken();
+        var headers = {};
+        if (token) headers['Authorization'] = 'Bearer ' + token;
+
+        fetch('/api/questoes/' + id, { method: 'DELETE', headers: headers }).catch(function() {});
+    } catch (e) {}
 
         if (typeof global.showToast === 'function') global.showToast('Questão removida do banco permanentemente!', 'trash-2');
     }
@@ -642,9 +663,13 @@
 
                 // Persistência no PostgreSQL
                 try {
+                    var token = getAuthToken();
+                    var headers = { 'Content-Type': 'application/json' };
+                    if (token) headers['Authorization'] = 'Bearer ' + token;
+
                     fetch('/api/questoes', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: headers,
                         body: JSON.stringify(newQ)
                     }).catch(function() {});
                 } catch(e) {}

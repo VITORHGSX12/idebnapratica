@@ -9,6 +9,10 @@ const fs = require('fs');
 const path = require('path');
 const db = require('../db');
 const geminiQuestionService = require('../services/ai/geminiQuestionService');
+const { authMiddleware, authorize } = require('../middleware/auth');
+
+// Aplica autenticação obrigatória em todas as rotas do módulo de questões e IA
+router.use(authMiddleware);
 
 // Fallback em memória caso o banco esteja inacessível
 let memoryQuestoes = [
@@ -143,7 +147,7 @@ router.get('/questoes', async (req, res) => {
 });
 
 // POST /api/questoes - Cadastro / Upsert de questão única
-router.post('/questoes', async (req, res) => {
+router.post('/questoes', authorize('Master Admin', 'Gestor da Rede', 'Coordenador'), async (req, res) => {
     try {
         const q = req.body || {};
         const id = q.id || `q_${Date.now()}_${Math.floor(Math.random()*1000)}`;
@@ -208,7 +212,7 @@ router.post('/questoes', async (req, res) => {
 });
 
 // POST /api/questoes/batch - Importação de questões em lote
-router.post('/questoes/batch', async (req, res) => {
+router.post('/questoes/batch', authorize('Master Admin', 'Gestor da Rede', 'Coordenador'), async (req, res) => {
     try {
         const { questions = [] } = req.body || {};
         if (!Array.isArray(questions) || questions.length === 0) {
@@ -279,7 +283,7 @@ router.post('/questoes/batch', async (req, res) => {
 });
 
 // DELETE /api/questoes/:id - Exclusão de questão
-router.delete('/questoes/:id', async (req, res) => {
+router.delete('/questoes/:id', authorize('Master Admin', 'Gestor da Rede'), async (req, res) => {
     try {
         const { id } = req.params;
         if (!db.useLocalFallback) {
@@ -297,7 +301,7 @@ router.delete('/questoes/:id', async (req, res) => {
 // -----------------------------------------------------------------------------
 
 // POST /api/ia/gerar-questao - Geração de questão BNCC/SAEB via Gemini IA
-router.post('/ia/gerar-questao', async (req, res) => {
+router.post('/ia/gerar-questao', authorize('Master Admin', 'Gestor da Rede', 'Coordenador', 'Professor'), async (req, res) => {
     try {
         const {
             stage = '5º Ano',
@@ -380,7 +384,7 @@ router.post('/ia/gerar-questao', async (req, res) => {
 });
 
 // POST /api/ia/embeddings/migrar - Migração em lote de vetores semânticos
-router.post('/ia/embeddings/migrar', async (req, res) => {
+router.post('/ia/embeddings/migrar', authorize('Master Admin'), async (req, res) => {
     try {
         const { apiKey = process.env.GEMINI_API_KEY } = req.body || {};
         let count = 0;
