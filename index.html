@@ -34,11 +34,6 @@
         }
         (function() {
             try {
-                if (window.location.search.includes('preview=sidebar')) {
-                    sessionStorage.setItem('authToken', 'preview_token');
-                    sessionStorage.setItem('userRole', 'Master Admin');
-                    sessionStorage.setItem('userName', 'Administrador TI / DPO');
-                }
                 if (window.location.search.includes('mode=light')) {
                     document.documentElement.classList.remove('dark-mode');
                     localStorage.setItem('theme_mode', 'light');

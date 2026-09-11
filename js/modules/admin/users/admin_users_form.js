@@ -367,8 +367,14 @@
 
         try {
             var token = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('authToken')) ||
-                        (typeof localStorage !== 'undefined' && localStorage.getItem('authToken')) ||
-                        'preview_token';
+                        (typeof localStorage !== 'undefined' && localStorage.getItem('authToken'));
+            if (!token) {
+                console.warn('[Auth Warning] Sessão ausente ao cadastrar usuário.');
+                if (typeof global.showToast === 'function') {
+                    global.showToast('Sessão expirada. Por favor, faça login novamente.', 'warning');
+                }
+                return;
+            }
             if (typeof fetch === 'function') {
                 var endpoint = editingUserId ? ('/api/users/' + editingUserId) : '/api/users';
                 var method = editingUserId ? 'PUT' : 'POST';
@@ -377,6 +383,16 @@
                     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
                     body: JSON.stringify(newUserObj)
                 });
+                if (apiRes.status === 401 || apiRes.status === 403) {
+                    if (typeof global.showToast === 'function') {
+                        global.showToast('Sessão expirada. Redirecionando para login...', 'warning');
+                    }
+                    setTimeout(function() {
+                        if (typeof global.logoutUser === 'function') global.logoutUser();
+                        else if (typeof window !== 'undefined') window.location.reload();
+                    }, 1500);
+                    return;
+                }
                 if (!apiRes.ok) {
                     var apiErr = await apiRes.json().catch(function() { return {}; });
                     console.warn('[Sync API Server Warning]', apiErr.error || apiRes.statusText);
