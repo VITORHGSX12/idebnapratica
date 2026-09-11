@@ -136,14 +136,9 @@ async function seedDatabase() {
         const alnCountRes = await client.query('SELECT count(*) as total FROM alunos');
         const currentAlnCount = parseInt(alnCountRes.rows[0].total) || 0;
 
-        // Se tiver contagem diferente de 9 escolas ou 0 alunos, faz a carga oficial completa
-        if (currentEscCount !== 9 || currentAlnCount === 0) {
-            console.log('Seeding official 9 schools of SAEB, 32 classes and 526 students...');
-            try {
-                await client.query('DELETE FROM alunos;');
-                await client.query('DELETE FROM turmas;');
-                await client.query('DELETE FROM escolas;');
-            } catch(e) {}
+        // Inserir apenas se as tabelas estiverem completamente vazias (NUNCA deleta dados existentes)
+        if (currentEscCount === 0 && currentAlnCount === 0) {
+            console.log('Tabelas vazias detectadas. Executando carga inicial segura de escolas, turmas e alunos...');
 
             const seedPath = path.join(__dirname, 'js', 'data', 'official_students_seed.js');
             if (fs.existsSync(seedPath)) {
@@ -160,17 +155,16 @@ async function seedDatabase() {
                     const schoolMap = {};
                     for (const sc of schools) {
                         const res = await client.query(`
-                            INSERT INTO escolas (tenant_id, nome, codigo_inep, endereco)
-                            VALUES ($1, $2, $3, $4)
-                            ON CONFLICT (codigo_inep) DO UPDATE SET nome = EXCLUDED.nome
+                            INSERT INTO escolas (tenant_id, nome, codigo_inep, endereco, zona)
+                            VALUES ($1, $2, $3, $4, $5)
+                            ON CONFLICT (codigo_inep) DO NOTHING
                             RETURNING id, nome;
-                        `, [defaultTenantId, sc.name, sc.inep, sc.zone]);
-                        schoolMap[sc.name] = res.rows[0].id;
-                        try {
-                            await client.query(`UPDATE escolas SET zona = $1 WHERE id = $2;`, [sc.zone, res.rows[0].id]);
-                        } catch(e) {}
+                        `, [defaultTenantId, sc.name, sc.inep, sc.zone, sc.zone]);
+                        if (res.rows && res.rows.length > 0) {
+                            schoolMap[sc.name] = res.rows[0].id;
+                        }
                     }
-                    console.log(`Successfully seeded ${schools.length} official schools.`);
+                    console.log(`Successfully seeded ${Object.keys(schoolMap).length} official schools.`);
 
                     // Inserir Turmas
                     try {
@@ -179,18 +173,18 @@ async function seedDatabase() {
 
                     const classMap = {};
                     for (const cl of classes) {
+                        const schoolId = schoolMap[cl.escola] || null;
                         const res = await client.query(`
-                            INSERT INTO turmas (nome)
-                            VALUES ($1)
+                            INSERT INTO turmas (nome, serie, turno, ano_letivo, escola_id)
+                            VALUES ($1, $2, $3, $4, $5)
+                            ON CONFLICT DO NOTHING
                             RETURNING id, nome;
-                        `, [cl.nome]);
-                        classMap[cl.nome] = res.rows[0].id;
-                        try {
-                            const schoolId = schoolMap[cl.escola] || null;
-                            await client.query(`UPDATE turmas SET escola_id = $1, serie = $2, turno = $3, ano_letivo = $4 WHERE id = $5;`, [schoolId, cl.serie, cl.turno, 2026, res.rows[0].id]);
-                        } catch(e) {}
+                        `, [cl.nome, cl.serie, cl.turno, 2026, schoolId]);
+                        if (res.rows && res.rows.length > 0) {
+                            classMap[cl.nome] = res.rows[0].id;
+                        }
                     }
-                    console.log(`Successfully seeded ${classes.length} official classes.`);
+                    console.log(`Successfully seeded ${Object.keys(classMap).length} official classes.`);
 
                     // Inserir Estudantes
                     try {
