@@ -85,6 +85,23 @@ router.post(['/usuarios/:id/avatar', '/users/:id/avatar'], authMiddleware, (req,
                 } catch(e) {
                     console.error('[DB Avatar Update Error]:', e.message);
                 }
+            } else {
+                try {
+                    if (fs.existsSync(db.LOCAL_DB_FILE)) {
+                        let fileState = JSON.parse(fs.readFileSync(db.LOCAL_DB_FILE, 'utf8'));
+                        Object.keys(fileState).forEach(org => {
+                            if (fileState[org] && Array.isArray(fileState[org].dbUsuarios)) {
+                                fileState[org].dbUsuarios.forEach(u => {
+                                    if (u.id === id || (u.email && u.email.toLowerCase() === id.toLowerCase())) {
+                                        u.avatar_url = avatarRelativePath;
+                                        u.avatarPhoto = avatarRelativePath;
+                                    }
+                                });
+                            }
+                        });
+                        fs.writeFileSync(db.LOCAL_DB_FILE, JSON.stringify(fileState, null, 2));
+                    }
+                } catch(e) {}
             }
 
             const users = getUsers();
@@ -92,6 +109,14 @@ router.post(['/usuarios/:id/avatar', '/users/:id/avatar'], authMiddleware, (req,
             if (userIdx >= 0) {
                 users[userIdx].avatar_url = avatarRelativePath;
                 users[userIdx].avatarPhoto = avatarRelativePath;
+                saveUsers(users);
+            } else {
+                users.push({
+                    id: id,
+                    email: id,
+                    avatar_url: avatarRelativePath,
+                    avatarPhoto: avatarRelativePath
+                });
                 saveUsers(users);
             }
 
@@ -112,11 +137,11 @@ router.post(['/usuarios/:id/avatar', '/users/:id/avatar'], authMiddleware, (req,
 router.delete(['/usuarios/:id/avatar', '/users/:id/avatar'], authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
-        const requesterId = req.user && (req.user.id || req.user.email);
-        const requesterRole = (req.user && req.user.role) || '';
-        const isAdmin = requesterRole.toLowerCase().includes('admin') || requesterRole.toLowerCase().includes('master');
+        const reqUserId = req.user && (req.user.id || req.user.email);
+        const reqUserRole = req.user && req.user.role;
+        const isAdmin = reqUserRole === 'Master Admin' || reqUserRole === 'Gestor da Rede';
 
-        if (requesterId !== id && !isAdmin) {
+        if (id !== reqUserId && req.user.email !== id && !isAdmin) {
             return res.status(403).json({ error: 'Você não tem permissão para remover o avatar de outro usuário.' });
         }
 
@@ -130,6 +155,23 @@ router.delete(['/usuarios/:id/avatar', '/users/:id/avatar'], authMiddleware, asy
             } catch(e) {
                 console.error('[DB Avatar Delete Error]:', e.message);
             }
+        } else {
+            try {
+                if (fs.existsSync(db.LOCAL_DB_FILE)) {
+                    let fileState = JSON.parse(fs.readFileSync(db.LOCAL_DB_FILE, 'utf8'));
+                    Object.keys(fileState).forEach(org => {
+                        if (fileState[org] && Array.isArray(fileState[org].dbUsuarios)) {
+                            fileState[org].dbUsuarios.forEach(u => {
+                                if (u.id === id || (u.email && u.email.toLowerCase() === id.toLowerCase())) {
+                                    u.avatar_url = null;
+                                    u.avatarPhoto = null;
+                                }
+                            });
+                        }
+                    });
+                    fs.writeFileSync(db.LOCAL_DB_FILE, JSON.stringify(fileState, null, 2));
+                }
+            } catch(e) {}
         }
 
         const users = getUsers();

@@ -201,12 +201,13 @@ async function runTests() {
 
     } finally {
         if (server) {
-            server.close();
+            server.close(() => {
+                process.exit(failed > 0 ? 1 : 0);
+            });
+            setTimeout(() => process.exit(failed > 0 ? 1 : 0), 500).unref();
+        } else {
+            process.exit(failed > 0 ? 1 : 0);
         }
-    }
-
-    if (failed > 0) {
-        process.exit(1);
     }
 }
 

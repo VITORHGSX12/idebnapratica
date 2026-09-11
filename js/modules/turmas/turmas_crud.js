@@ -526,18 +526,18 @@
 
         filteredClasses.forEach(function(clsName) {
             var gradeNum = '5';
-            var stageDesc = 'Etapa: FUNDAMENTAL MENOR (1º AO 5º ANO) ➔ 5º ANO';
+            var stageDesc = 'Etapa: FUNDAMENTAL MENOR (1º AO 5º ANO) • 5º ANO';
             var shift = clsName.toLowerCase().includes('vespertino') ? 'VESPERTINO' : 'Matutino';
 
             if (clsName.includes('2')) {
                 gradeNum = '2';
-                stageDesc = 'Etapa: ALFABETIZAÇÃO & FLUÊNCIA (SEAMA) ➔ 2º ANO';
+                stageDesc = 'Etapa: ALFABETIZAÇÃO & FLUÊNCIA (SEAMA) • 2º ANO';
             } else if (clsName.includes('6')) {
                 gradeNum = '6';
-                stageDesc = 'Etapa: FUNDAMENTAL MAIOR (6º AO 9º ANO) ➔ 6º ANO';
+                stageDesc = 'Etapa: FUNDAMENTAL MAIOR (6º AO 9º ANO) • 6º ANO';
             } else if (clsName.includes('9')) {
                 gradeNum = '9';
-                stageDesc = 'Etapa: FUNDAMENTAL MAIOR (6º AO 9º ANO) ➔ 9º ANO';
+                stageDesc = 'Etapa: FUNDAMENTAL MAIOR (6º AO 9º ANO) • 9º ANO';
             }
 
             var tr = document.createElement('tr');

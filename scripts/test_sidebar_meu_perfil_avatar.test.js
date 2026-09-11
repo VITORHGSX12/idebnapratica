@@ -198,7 +198,9 @@ async function runTests() {
         });
 
     } finally {
-        server.close();
+        if (server && server.listening) {
+            server.close();
+        }
     }
 
     console.log(`\n📊 Resumo da Bateria:`);

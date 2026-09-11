@@ -404,15 +404,43 @@ router.put('/students/:id', authMiddleware, authorize('Master Admin', 'Gestor da
         if (db.useLocalFallback) {
             const raw = fs.readFileSync(db.LOCAL_DB_FILE, 'utf8');
             const fileState = JSON.parse(raw);
-            const state = fileState[orgId] || fileState['semed_goncalves_dias'] || fileState['gd'] || fileState['goncalves-dias'] || {};
-            const index = (state.dbAlunos || []).findIndex(a => a.id === id || a.matricula === id);
-            if (index === -1) {
+            let targetList = null;
+            let targetIdx = -1;
+
+            if (fileState[orgId] && Array.isArray(fileState[orgId].dbAlunos)) {
+                targetIdx = fileState[orgId].dbAlunos.findIndex(a => a.id === id || a.matricula === id);
+                if (targetIdx !== -1) targetList = fileState[orgId].dbAlunos;
+            }
+            if (targetIdx === -1 && Array.isArray(fileState.alunos)) {
+                targetIdx = fileState.alunos.findIndex(a => a.id === id || a.matricula === id);
+                if (targetIdx !== -1) targetList = fileState.alunos;
+            }
+            if (targetIdx === -1) {
+                Object.keys(fileState).forEach(k => {
+                    if (fileState[k] && Array.isArray(fileState[k].dbAlunos) && targetIdx === -1) {
+                        const idx = fileState[k].dbAlunos.findIndex(a => a.id === id || a.matricula === id);
+                        if (idx !== -1) {
+                            targetIdx = idx;
+                            targetList = fileState[k].dbAlunos;
+                        }
+                    }
+                });
+            }
+
+            if (targetIdx === -1 || !targetList) {
                 return res.status(404).json({ error: 'Registro não encontrado' });
             }
-            state.dbAlunos[index] = { ...state.dbAlunos[index], ...normalizedBody };
-            fileState[orgId] = state;
+
+            const cleanUpdate = { ...normalizedBody };
+            delete cleanUpdate.id;
+            delete cleanUpdate.matricula;
+
+            targetList[targetIdx] = {
+                ...targetList[targetIdx],
+                ...cleanUpdate
+            };
             fs.writeFileSync(db.LOCAL_DB_FILE, JSON.stringify(fileState, null, 2));
-            return res.json({ success: true, student: state.dbAlunos[index] });
+            return res.json({ success: true, student: targetList[targetIdx] });
         }
 
         let isOwned = false;

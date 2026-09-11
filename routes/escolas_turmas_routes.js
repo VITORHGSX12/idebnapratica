@@ -186,8 +186,33 @@ router.post('/classes', authMiddleware, async (req, res) => {
         const { nome, serie, etapa, turno, escola, escola_id } = normalized;
         if (!nome) return res.status(400).json({ error: 'Nome da turma é obrigatório.' });
 
-        let targetEscolaId = escola_id;
+        const cleanSerie = serie || etapa || '5º ANO';
+        const cleanTurno = turno || 'MATUTINO';
         let escolaNome = escola || 'REDE MUNICIPAL';
+        let targetEscolaId = escola_id;
+
+        if (db.useLocalFallback) {
+            const newId = `turma_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`;
+            const createdClass = {
+                id: newId,
+                nome: nome.trim(),
+                serie: cleanSerie,
+                turno: cleanTurno,
+                escola_id: targetEscolaId || 'esc_1',
+                escola: escolaNome,
+                alunosCount: 0
+            };
+            try {
+                if (fs.existsSync(db.LOCAL_DB_FILE)) {
+                    let fileState = JSON.parse(fs.readFileSync(db.LOCAL_DB_FILE, 'utf8'));
+                    if (!fileState.turmas) fileState.turmas = [];
+                    fileState.turmas.push(createdClass);
+                    fs.writeFileSync(db.LOCAL_DB_FILE, JSON.stringify(fileState, null, 2));
+                }
+            } catch(e) {}
+            return res.status(201).json({ success: true, class: createdClass });
+        }
+
         let tenantDbId = req.tenant?.id || req.user?.tenant_id;
 
         if (targetEscolaId) {
@@ -221,9 +246,6 @@ router.post('/classes', authMiddleware, async (req, res) => {
             const tRes = await db.query("SELECT id FROM tenants LIMIT 1");
             tenantDbId = tRes.rows[0]?.id;
         }
-
-        const cleanSerie = serie || etapa || '5º ANO';
-        const cleanTurno = turno || 'MATUTINO';
 
         const insertRes = await db.query(`
             INSERT INTO turmas (tenant_id, escola_id, nome, serie, turno, ano_letivo)

@@ -840,7 +840,7 @@
                 <!-- Active Profile Switcher (Alternar Visão / Dropdown Popover Compacto na Sidebar) -->
                 <div id="sidebar-profile-switcher-wrapper" class="sidebar-profile-switcher-wrapper">
                     <button type="button" id="btn-toggle-vision-dropdown" class="sidebar-vision-btn" onclick="if(window.toggleVisionDropdown) window.toggleVisionDropdown(event);" title="Alternar Visão de Acesso" aria-haspopup="true" aria-expanded="false">
-                        <div class="vision-btn-icon" id="sidebar-vision-current-icon">👑</div>
+                        <div class="vision-btn-icon" id="sidebar-vision-current-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
                         <div class="vision-btn-content">
                             <span class="vision-btn-title" id="sidebar-vision-current-title">Gestor da Rede</span>
                             <span class="vision-btn-scope" id="sidebar-vision-current-scope">Rede Municipal SEMED</span>
@@ -1202,7 +1202,7 @@
                                     <div>
                                         <div style="display: inline-flex; align-items: center; gap: 6px; margin-bottom: 4px;">
                                             <span class="badge" style="background: rgba(74, 127, 167, 0.15); color: var(--color-text-primary); border: 1px solid #B3CFE5; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px;">
-                                                📊 RESULTADOS GERAIS DE SIMULADOS
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:middle;margin-right:6px;"><path d="M18 20V10M12 20V4M6 20v-6"/></svg> RESULTADOS GERAIS DE SIMULADOS
                                             </span>
                                             <span id="simulados-network-avg-badge" class="badge" style="background: #ECFDF5; color: #065F46; border: 1px solid #6EE7B7; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px;">
                                                 Média da Rede: 228.4 pts
@@ -1245,7 +1245,7 @@
 
                                 <!-- Estado Vazio Elegante (Caso ainda não haja simulados concluídos) -->
                                 <div id="simulados-empty-state-banner" style="display: none; background: var(--bg-primary); border: 1px dashed var(--border-color); border-radius: var(--radius-md); padding: 42px 24px; text-align: center; margin-top: 15px;">
-                                    <div style="font-size: 2.2rem; margin-bottom: 8px;">📊</div>
+                                    <div style="font-size: 2.2rem; margin-bottom: 8px;"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--color-brand-primary, #6366f1);"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div>
                                     <h4 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0 0 6px 0;">Ainda não há simulados concluídos para consolidar nesta etapa</h4>
                                     <p style="font-size: 0.88rem; color: var(--text-secondary); max-width: 520px; margin: 0 auto 18px auto; line-height: 1.5;">
                                         Os dados analíticos e gráficos da rede serão gerados automaticamente conforme os simulados forem aplicados e tiverem seus status marcados como <strong>ENCERRADO</strong>.
@@ -1898,7 +1898,7 @@
                                             <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2019)" data-year="2019">2019</button>
                                             <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2021)" data-year="2021">2021</button>
                                             <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2023)" data-year="2023">2023</button>
-                                            <button class="ideb-year-pill-btn active" onclick="switchGlobalIdebYear(2025)" data-year="2025">2025 ★</button>
+                                            <button class="ideb-year-pill-btn active" onclick="switchGlobalIdebYear(2025)" data-year="2025">2025 (Oficial)</button>
                                         </div>
                                     </div>
                                 </div>
@@ -1941,7 +1941,7 @@
                             <div class="ideb-control-bar">
                                 <div>
                                     <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">
-                                        🏫 Ranking Geral de Escolas do Maranhão
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:middle;margin-right:6px;"><path d="M3 21h18M5 21V7l8-4v18M13 3l6 3v15M9 9h1M9 13h1M9 17h1M17 9h1M17 13h1M17 17h1"/></svg> Ranking Geral de Escolas do Maranhão
                                     </h3>
                                     <p class="text-sm text-muted" style="margin: 2px 0 0 0;" id="ranking-escolas-subtitle">
                                         Classificação oficial das unidades escolares por desempenho no IDEB com série histórica completa.
@@ -1964,7 +1964,7 @@
                                             <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2019)" data-year="2019">2019</button>
                                             <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2021)" data-year="2021">2021</button>
                                             <button class="ideb-year-pill-btn" onclick="switchGlobalIdebYear(2023)" data-year="2023">2023</button>
-                                            <button class="ideb-year-pill-btn active" onclick="switchGlobalIdebYear(2025)" data-year="2025">2025 ★</button>
+                                            <button class="ideb-year-pill-btn active" onclick="switchGlobalIdebYear(2025)" data-year="2025">2025 (Oficial)</button>
                                         </div>
                                     </div>
                                 </div>
@@ -1975,7 +1975,7 @@
                                 <div style="display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 12px;">
                                     <div style="display: flex; align-items: center; gap: 10px; flex-grow: 1;">
                                         <span style="font-size: 0.84rem; font-weight: 800; color: var(--text-primary); white-space: nowrap;">
-                                            📍 Filtrar por Município:
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Filtrar por Município:
                                         </span>
                                         <select id="ranking-escolas-city-select" onchange="filterSchoolRankingTable()" class="form-select" style="height: 38px; min-width: 240px; max-width: 380px; font-size: 0.85rem; font-weight: 700; color: #4A7FA7; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
                                             <option value="all">Todos os Municípios do Maranhão</option>
@@ -2092,7 +2092,7 @@
                                         <div style="font-family: var(--font-mono); font-size: 0.74rem; background: var(--bg-secondary); padding: 8px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); color: var(--text-primary); line-height: 1.6;">
                                             <div><strong>5º Ano (Iniciais):</strong> N_lp = (Prof_LP - 100) / 25 &nbsp;|&nbsp; N_mat = (Prof_MAT - 100) / 25</div>
                                             <div><strong>9º Ano (Finais):</strong> N_lp = (Prof_LP - 140) / 27.5 &nbsp;|&nbsp; N_mat = (Prof_MAT - 150) / 27.5</div>
-                                            <div style="color: #6366f1; font-weight: 700; margin-top: 4px;">➔ Nota Geral: N = (N_lp + N_mat) / 2</div>
+                                            <div style="color: #6366f1; font-weight: 700; margin-top: 4px;">&rarr; Nota Geral: N = (N_lp + N_mat) / 2</div>
                                         </div>
                                     </div>
 
@@ -2113,7 +2113,7 @@
                                             <i data-lucide="info" style="width: 14px; height: 14px;"></i> Exemplo Prático Completo (5º Ano):
                                         </div>
                                         <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0; line-height: 1.45;">
-                                            Rede com Proficiência SAEB LP = <strong>205,0</strong> ($N_{LP} = 4,20$) e MAT = <strong>215,0</strong> ($N_{MAT} = 4,60$) ➔ $N = 4,40$. Com aprovação média de 96% ($P = 0,96$), o IDEB final é: <strong>4,40 × 0,96 = 4,22</strong>.
+                                            Rede com Proficiência SAEB LP = <strong>205,0</strong> ($N_{LP} = 4,20$) e MAT = <strong>215,0</strong> ($N_{MAT} = 4,60$) &rarr; $N = 4,40$. Com aprovação média de 96% ($P = 0,96$), o IDEB final é: <strong>4,40 × 0,96 = 4,22</strong>.
                                         </p>
                                     </div>
                                 </div>
@@ -2366,7 +2366,7 @@
                                     <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px;">
                                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                             <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); text-transform: uppercase;">
-                                                🎯 Termômetro de Conquista da Meta (<span id="sim-meta-target-val">5.28</span>)
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:middle;margin-right:6px;"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Termômetro de Conquista da Meta (<span id="sim-meta-target-val">5.28</span>)
                                                 <span class="pedagogical-tooltip" data-tooltip="Compara a projeção simulada em tempo real contra a Meta Oficial do Plano de Desenvolvimento da Educação (PDE).">?</span>
                                             </div>
                                             <span id="sim-meta-percent-badge" class="badge badge-success" style="font-size: 0.72rem; font-weight: 800;">100% da Meta</span>
@@ -2390,7 +2390,7 @@
                                             <span>N_lp: <strong id="sim-step-nlp">4.20</strong></span>
                                             <span>•</span>
                                             <span>N_mat: <strong id="sim-step-nmat">4.60</strong></span>
-                                            <span>➔</span>
+                                            <span>&rarr;</span>
                                             <span>N_médio: <strong id="sim-step-nmedio">4.40</strong></span>
                                             <span>×</span>
                                             <span>P: <strong id="sim-step-p">96.0%</strong></span>
@@ -2742,7 +2742,7 @@
                                         </div>
                                         <h3 style="font-size: 1.1rem; font-weight: 700; color: #b91c1c; margin: 0;">Excluir Avaliação</h3>
                                     </div>
-                                    <button type="button" onclick="fecharModalExcluirEvento()" style="background: none; border: none; cursor: pointer; color: var(--color-text-muted); font-size: 1.3rem;">✕</button>
+                                    <button type="button" onclick="fecharModalExcluirEvento()" style="background: none; border: none; cursor: pointer; color: var(--color-text-muted); font-size: 1.3rem;" aria-label="Fechar">&times;</button>
                                 </div>
                                 <div style="padding: 24px;">
                                     <p style="font-size: 0.9rem; color: var(--color-text-primary); margin: 0 0 12px 0;">Tem certeza que deseja excluir permanentemente o evento avaliativo:</p>
@@ -3530,7 +3530,7 @@
                                 <h3 id="drawer-day-title" style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">Aulas do Dia: 03/08/2026</h3>
                                 <p id="drawer-day-subtitle" style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">UI JOSE CORREA LIMA • 2º Ano A</p>
                             </div>
-                            <button type="button" onclick="closeDayExpandedDrawer();" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">✕</button>
+                            <button type="button" onclick="closeDayExpandedDrawer();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);" aria-label="Fechar">&times;</button>
                         </div>
                         <div id="drawer-day-lessons-list" style="padding: 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 12px;">
                             <!-- Injetado dinamicamente -->
@@ -3549,7 +3549,7 @@
                                 <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">Detalhamento de Progresso e Lacunas Curriculares</h3>
                                 <p id="modal-progress-turma-label" style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">UI JOSE CORREA LIMA • 2º Ano A</p>
                             </div>
-                            <button type="button" onclick="closeDetailedProgressModal();" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">✕</button>
+                            <button type="button" onclick="closeDetailedProgressModal();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);" aria-label="Fechar">&times;</button>
                         </div>
                         <div id="modal-detailed-progress-body" style="padding: 24px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 16px;">
                             <!-- Injetado dinamicamente -->
@@ -3565,7 +3565,7 @@
                     <div class="modal-container card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 480px; padding: 0; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
                         <div style="padding: 18px 24px; border-bottom: 1px solid var(--border-color); background: var(--bg-primary); display: flex; justify-content: space-between; align-items: center;">
                             <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 6px;"><i data-lucide="copy" style="width: 18px; height: 18px;"></i> Duplicar Plano de Aula</h3>
-                            <button type="button" onclick="closeDuplicateLessonModal();" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">✕</button>
+                            <button type="button" onclick="closeDuplicateLessonModal();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);" aria-label="Fechar">&times;</button>
                         </div>
                         <div style="padding: 24px; display: flex; flex-direction: column; gap: 14px;">
                             <input type="hidden" id="duplicate-source-lesson-id">
@@ -3597,7 +3597,7 @@
                                 <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 6px;"><i data-lucide="trash-2" style="width: 18px; height: 18px;"></i> Lixeira de Rotinas Excluídas</h3>
                                 <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">Itens excluídos são preservados por até 30 dias para recuperação</p>
                             </div>
-                            <button type="button" onclick="closeScheduleTrashModal();" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">✕</button>
+                            <button type="button" onclick="closeScheduleTrashModal();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);" aria-label="Fechar">&times;</button>
                         </div>
                         <div id="schedule-trash-items-list" style="padding: 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 10px;">
                             <!-- Injetado dinamicamente -->
@@ -4793,27 +4793,27 @@
                                     <div id="new-user-roles-container" class="multi-role-checklist" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:8px; background:var(--bg-tertiary); padding:10px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
                                         <label class="role-checkbox-card" style="display:flex; align-items:center; gap:8px; padding:6px 10px; background:var(--bg-secondary); border-radius:6px; border:1px solid var(--border-color); cursor:pointer; font-size:0.8rem; font-weight:600; color:var(--text-primary);">
                                             <input type="checkbox" name="user-roles" value="Professor(a)" checked onchange="if(window.handleUserRoleChange) window.handleUserRoleChange();">
-                                            <span>👨‍🏫 Professor(a)</span>
+                                            <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Professor(a)</span>
                                         </label>
                                         <label class="role-checkbox-card" style="display:flex; align-items:center; gap:8px; padding:6px 10px; background:var(--bg-secondary); border-radius:6px; border:1px solid var(--border-color); cursor:pointer; font-size:0.8rem; font-weight:600; color:var(--text-primary);">
                                             <input type="checkbox" name="user-roles" value="Coordenador(a)" onchange="if(window.handleUserRoleChange) window.handleUserRoleChange();">
-                                            <span>📋 Coordenador(a)</span>
+                                            <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg> Coordenador(a)</span>
                                         </label>
                                         <label class="role-checkbox-card" style="display:flex; align-items:center; gap:8px; padding:6px 10px; background:var(--bg-secondary); border-radius:6px; border:1px solid var(--border-color); cursor:pointer; font-size:0.8rem; font-weight:600; color:var(--text-primary);">
                                             <input type="checkbox" name="user-roles" value="Diretor(a) Escolar" onchange="if(window.handleUserRoleChange) window.handleUserRoleChange();">
-                                            <span>🏫 Diretor(a) Escolar</span>
+                                            <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M3 21h18M5 21V7l8-4v18M13 3l6 3v15M9 9h1M9 13h1M9 17h1M17 9h1M17 13h1M17 17h1"/></svg> Diretor(a) Escolar</span>
                                         </label>
                                         <label class="role-checkbox-card" style="display:flex; align-items:center; gap:8px; padding:6px 10px; background:var(--bg-secondary); border-radius:6px; border:1px solid var(--border-color); cursor:pointer; font-size:0.8rem; font-weight:600; color:var(--text-primary);">
                                             <input type="checkbox" name="user-roles" value="Gestor SEMED" onchange="if(window.handleUserRoleChange) window.handleUserRoleChange();">
-                                            <span>🏛️ Gestor SEMED</span>
+                                            <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M4 22h16M2 9h20M12 2l10 7H2l10-7zM6 13v6M10 13v6M14 13v6M18 13v6"/></svg> Gestor SEMED</span>
                                         </label>
                                         <label class="role-checkbox-card" style="display:flex; align-items:center; gap:8px; padding:6px 10px; background:var(--bg-secondary); border-radius:6px; border:1px solid var(--border-color); cursor:pointer; font-size:0.8rem; font-weight:600; color:var(--text-primary);">
                                             <input type="checkbox" name="user-roles" value="Master Admin" onchange="if(window.handleUserRoleChange) window.handleUserRoleChange();">
-                                            <span>⚙️ Master Admin</span>
+                                            <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:middle;margin-right:4px;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Master Admin</span>
                                         </label>
                                         <label class="role-checkbox-card" style="display:flex; align-items:center; gap:8px; padding:6px 10px; background:var(--bg-secondary); border-radius:6px; border:1px solid var(--border-color); cursor:pointer; font-size:0.8rem; font-weight:600; color:var(--text-primary);">
                                             <input type="checkbox" name="user-roles" value="Professor AEE" onchange="if(window.handleUserRoleChange) window.handleUserRoleChange();">
-                                            <span>🌟 Professor AEE</span>
+                                            <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> Professor AEE</span>
                                         </label>
                                     </div>
                                     <input type="hidden" id="new-user-role" value="Professor(a)">
@@ -6366,7 +6366,7 @@
         <div class="modal-container card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 500px; padding: 0; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
             <div style="padding: 18px 24px; border-bottom: 1px solid var(--border-color); background: var(--bg-primary); display: flex; justify-content: space-between; align-items: center;">
                 <h3 id="modal-turma-title" style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">+ Cadastrar Nova Turma</h3>
-                <button type="button" onclick="closeModalTurma();" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">✕</button>
+                <button type="button" onclick="closeModalTurma();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);" aria-label="Fechar">&times;</button>
             </div>
             <form id="form-turma" onsubmit="handleSaveTurma(event);" style="padding: 24px; display: flex; flex-direction: column; gap: 14px;">
                 <input type="hidden" id="turma-form-id">
@@ -6424,7 +6424,7 @@
         <div class="modal-container card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 520px; padding: 0; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
             <div style="padding: 18px 24px; border-bottom: 1px solid var(--border-color); background: var(--bg-primary); display: flex; justify-content: space-between; align-items: center;">
                 <h3 id="modal-teacher-title" style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">+ Vincular Professor à Escola</h3>
-                <button type="button" onclick="closeModalTeacher();" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">✕</button>
+                <button type="button" onclick="closeModalTeacher();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);" aria-label="Fechar">&times;</button>
             </div>
             <form id="form-teacher" onsubmit="handleSaveTeacher(event);" style="padding: 24px; display: flex; flex-direction: column; gap: 14px;">
                 <input type="hidden" id="teacher-form-id">
@@ -6486,7 +6486,7 @@
                     <h3 id="modal-class-students-title" style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">Alunos da Turma: 5º Ano A</h3>
                     <p id="modal-class-students-subtitle" style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">UI JOSE CORREA LIMA • Vincule ou desvincule estudantes</p>
                 </div>
-                <button type="button" onclick="closeModalManageClassStudents();" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">✕</button>
+                <button type="button" onclick="closeModalManageClassStudents();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);" aria-label="Fechar">&times;</button>
             </div>
             
             <div style="padding: 14px 24px; border-bottom: 1px solid var(--border-color); background: var(--bg-tertiary);">
@@ -6612,7 +6612,7 @@
                                 <h5 id="student-simulado-detail-title" style="margin: 0; font-size: 0.88rem; font-weight: 800; color: #4A7FA7;">Detalhes do Simulado</h5>
                                 <span id="student-simulado-detail-meta" style="font-size: 0.75rem; color: var(--text-secondary);">Gabarito, acertos e descritores associados</span>
                             </div>
-                            <button type="button" onclick="document.getElementById('student-simulado-detail-section').style.display='none';" class="btn btn-outline btn-xs" style="padding: 2px 8px; font-size: 0.72rem;">✕ Fechar Detalhe</button>
+                            <button type="button" onclick="document.getElementById('student-simulado-detail-section').style.display='none';" class="btn btn-outline btn-xs" style="padding: 2px 8px; font-size: 0.72rem;">&times; Fechar Detalhe</button>
                         </div>
                         <div id="student-simulado-detail-content"></div>
                     </div>
@@ -6621,7 +6621,7 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
                         <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
                             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
-                                <h5 style="margin: 0; font-size: 0.78rem; font-weight: 800; color: #10b981;">✓ Habilidades Consolidadas (&ge; 75%)</h5>
+                                <h5 style="margin: 0; font-size: 0.78rem; font-weight: 800; color: #10b981;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:4px;"><polyline points="20 6 9 17 4 12"/></svg> Habilidades Consolidadas (&ge; 75%)</h5>
                                 <span id="student-consolidated-count-badge" class="badge badge-success" style="font-size: 0.65rem; padding: 2px 6px;">0</span>
                             </div>
                             <ul id="student-consolidated-skills-list" style="margin: 0; padding-left: 18px; font-size: 0.78rem; line-height: 1.5;"></ul>
@@ -6667,7 +6667,7 @@
                         <p id="modal-student-meta" style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">Matrícula: 20261001 • UI JOSE CORREA LIMA • 2º Ano A</p>
                     </div>
                 </div>
-                <button type="button" onclick="closeStudentProgressModal();" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">✕</button>
+                <button type="button" onclick="closeStudentProgressModal();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);" aria-label="Fechar">&times;</button>
             </div>
 
             <!-- Body -->
@@ -6731,7 +6731,7 @@
                                 <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary);"><i data-lucide="calendar" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 6px; color: var(--color-brand-primary);"></i> Registrar Planejamento Pedagógico</h3>
                                 <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">Ação docente para a turma toda ou intervenção individual de aluno</p>
                             </div>
-                            <button type="button" onclick="TurmasPlanejamento.closeCreatePlanModal();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);">✕</button>
+                            <button type="button" onclick="TurmasPlanejamento.closeCreatePlanModal();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);" aria-label="Fechar">&times;</button>
                         </div>
                         <form id="form-create-planejamento" onsubmit="TurmasPlanejamento.handlePlanFormSubmit(event);" style="padding: 20px 24px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 14px;">
                             <input type="hidden" id="plan-form-turma-id">
@@ -6789,7 +6789,7 @@
                                 <h3 id="modal-journal-turma-title" style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">Diário da Turma</h3>
                                 <p id="modal-journal-turma-subtitle" style="margin: 2px 0 0 0; font-size: 0.8rem; color: var(--text-secondary);">Lista de estudantes vinculados e acompanhamento de desempenho por simulados</p>
                             </div>
-                            <button type="button" onclick="closeTurmaJournalModal();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);">✕</button>
+                            <button type="button" onclick="closeTurmaJournalModal();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);" aria-label="Fechar">&times;</button>
                         </div>
                         <div id="modal-journal-students-table-container" style="padding: 20px; overflow-y: auto; flex: 1;">
                             <!-- Injetado dinamicamente -->
@@ -6809,7 +6809,7 @@
                                 <h3 id="modal-prof-calc-name" style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">Cálculo de Nível de Proficiência</h3>
                                 <p id="modal-prof-calc-meta" style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">Diagnóstico baseado no acerto e erro de questões por descritor</p>
                             </div>
-                            <button type="button" onclick="closeStudentProficiencyCalcModal();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);">✕</button>
+                            <button type="button" onclick="closeStudentProficiencyCalcModal();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);" aria-label="Fechar">&times;</button>
                         </div>
                         <div id="modal-prof-calc-body" style="padding: 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 14px;">
                             <!-- Injetado dinamicamente -->
@@ -6857,7 +6857,7 @@
                                 <h3 id="modal-edit-school-title" style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">Editar Dados da Escola</h3>
                                 <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">Atualize informações cadastrais, localização, equipe gestora e situação operacional</p>
                             </div>
-                            <button type="button" onclick="closeEditSchoolModal();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);">✕</button>
+                            <button type="button" onclick="closeEditSchoolModal();" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);" aria-label="Fechar">&times;</button>
                         </div>
 
                         <!-- Formulário do Modal com Validação Inline -->
@@ -7157,16 +7157,16 @@
             <!-- Header do Modal -->
             <div style="padding: 20px 24px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, rgba(74, 127, 167,  0.08) 0%, rgba(139, 92, 246, 0.04) 100%);">
                 <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(74, 127, 167,  0.15); color: #4A7FA7; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
-                        👤
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(74, 127, 167,  0.15); color: #4A7FA7; display: flex; align-items: center; justify-content: center;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     </div>
                     <div>
                         <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">Meu Perfil</h3>
                         <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-secondary);">Informações cadastrais e vínculos de acesso no sistema.</p>
                     </div>
                 </div>
-                <button type="button" onclick="closeUserProfileModal();" class="btn-icon" style="background: none; border: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer; padding: 4px;" title="Fechar">
-                    ✕
+                <button type="button" onclick="closeUserProfileModal();" class="btn-icon" style="background: none; border: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer; padding: 4px;" title="Fechar" aria-label="Fechar">
+                    &times;
                 </button>
             </div>
 

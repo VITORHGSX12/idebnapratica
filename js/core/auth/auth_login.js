@@ -70,7 +70,7 @@
                         escola: loginData.user.escola || 'Rede Municipal Oficial',
                         turma: loginData.user.turma || 'Todas as Turmas',
                         mustChangePassword: !!loginData.user.mustChangePassword,
-                        avatar: loginData.user.role === 'Professor' ? '👨‍🏫' : (loginData.user.role === 'Master Admin' ? '👨‍💻' : '🧑‍💼')
+                        avatar: ''
                     };
                 }
 
@@ -124,7 +124,7 @@
                                     subRole: (p.tipo || p.role) + ' • ' + (p.escola || 'Rede Municipal'),
                                     escola: p.escola || 'Rede Municipal Oficial',
                                     turma: p.turma || 'Todas as Turmas',
-                                    avatar: (p.role || '').includes('Professor') ? '👨‍🏫' : '🧑‍💼'
+                                    avatar: ''
                                 });
                             }
                         });
@@ -142,7 +142,7 @@
                     escola: found.escola || 'Rede Municipal Oficial',
                     turma: found.turma || 'Todas as Turmas',
                     mustChangePassword: false,
-                    avatar: found.avatar || '🧑‍💼'
+                    avatar: found.avatar || ''
                 };
             } else {
                 var connErr = 'Credenciais não reconhecidas ou erro de conexão.';
@@ -222,7 +222,7 @@
         var assignedTurma = authenticatedUser.turma || 'Todas as Turmas';
         var profileName = authenticatedUser.nome || 'Usuário SEMED';
         var profileRole = authenticatedUser.subRole || detectedRole;
-        var profileAvatar = authenticatedUser.avatar || '🧑‍💼';
+        var profileAvatar = authenticatedUser.avatar || '';
 
         // Salvar Perfil Isolado do Usuário Atual
         var userProfileData = {

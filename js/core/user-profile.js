@@ -7,7 +7,7 @@
     'use strict';
 
     var STORAGE_KEY_USER_PROFILE = 'gd_current_user_profile';
-    var selectedProfileIcon = '🧑‍💼';
+    var selectedProfileIcon = '';
 
     /**
      * Obtém o perfil atual do usuário logado com fallbacks inteligentes por e-mail
@@ -24,20 +24,20 @@
         var userEmail = (typeof localStorage !== 'undefined' ? localStorage.getItem('userEmail') : null) || 'semed@goncalvesdias.ma.gov.br';
         var defaultName = 'Gestor da Rede';
         var defaultRole = 'Gestor(a) da Rede';
-        var defaultAvatar = '🧑‍💼';
+        var defaultAvatar = '';
 
         if (userEmail.includes('prof')) {
             defaultName = 'Prof. Carlos Eduardo';
             defaultRole = 'Professor(a)';
-            defaultAvatar = '👨‍🏫';
+            defaultAvatar = '';
         } else if (userEmail.includes('diretor')) {
             defaultName = 'Profa. Antonia Silva';
             defaultRole = 'Diretor(a) Escolar';
-            defaultAvatar = '👩‍💼';
+            defaultAvatar = '';
         } else if (userEmail.includes('admin')) {
             defaultName = 'Administrador do Sistema';
             defaultRole = 'Administrador(a) do Sistema';
-            defaultAvatar = '👨‍💻';
+            defaultAvatar = '';
         }
 
         return {
@@ -71,7 +71,7 @@
             role: 'Master Admin',
             title: 'Gestor da Rede (Master Admin)',
             desc: 'Visão executiva da SEMED. Acesso irrestrito a todas as escolas, turmas, matrizes e painel administrativo.',
-            icon: '👑',
+            icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>',
             badgeClass: 'badge-blue',
             scope: 'Rede Municipal SEMED',
             escola: '',
@@ -81,7 +81,7 @@
             role: 'Diretor Escola',
             title: 'Direção & Coordenação Escolar',
             desc: 'Gestão integrada da Unidade Escolar UI José Corrêa Lima. Acompanhamento de metas do PDE, matrizes pedagógicas, simulados e turmas.',
-            icon: '🏫',
+            icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M13 3l6 3v15M9 9h1M9 13h1M9 17h1M17 9h1M17 13h1M17 17h1"/></svg>',
             badgeClass: 'badge-purple',
             scope: 'UI José Corrêa Lima',
             escola: 'UI JOSE CORREA LIMA',
@@ -91,7 +91,7 @@
             role: 'Professor',
             title: 'Professor(a) Regente',
             desc: 'Diário de classe, planejamento semanal, banco de questões e lançamento de notas da turma.',
-            icon: '👨‍🏫',
+            icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
             badgeClass: 'badge-amber',
             scope: '2º Ano A - Matutino',
             escola: 'UI JOSE CORREA LIMA',
@@ -133,7 +133,7 @@
         var titleEl = document.getElementById('sidebar-vision-current-title');
         var scopeEl = document.getElementById('sidebar-vision-current-scope');
 
-        if (iconEl) iconEl.textContent = currentVision.icon;
+        if (iconEl) iconEl.innerHTML = currentVision.icon;
         if (titleEl) titleEl.textContent = currentVision.title;
         if (scopeEl) scopeEl.textContent = currentVision.scope;
 
@@ -160,7 +160,7 @@
                     '<span class="vision-item-title">' + v.title + '</span>' +
                     '<span class="vision-item-scope">' + v.scope + '</span>' +
                 '</span>' +
-                (isActive ? '<span class="vision-item-check" title="Visão em uso">✓</span>' : '') +
+                (isActive ? '<span class="vision-item-check" title="Visão em uso"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>' : '') +
             '</button>';
         }).join('');
     }
@@ -366,7 +366,7 @@
             if (profile.avatarPhoto) {
                 headerAvatar.innerHTML = '<img src="' + profile.avatarPhoto + '" alt="' + profile.name + '" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">';
             } else {
-                headerAvatar.innerHTML = profile.avatarIcon || '🧑‍💼';
+                headerAvatar.innerHTML = profile.avatarIcon || '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
             }
         }
 
@@ -471,7 +471,7 @@
                         </div>
                         <div>
                             <h2 class="welcome-user-title">
-                                <span>${greeting}, <span id="welcome-user-display-name">${cleanName}</span> 👋</span>
+                                <span>${greeting}, <span id="welcome-user-display-name">${cleanName}</span></span>
                             </h2>
                             <p class="welcome-user-description">Acompanhe o desempenho da rede em tempo real</p>
                             <p class="welcome-user-subtitle">

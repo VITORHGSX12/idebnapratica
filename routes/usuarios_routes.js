@@ -65,6 +65,37 @@ async function fetchAllUsersFromDb() {
     }
     
     if (usersList.length === 0) {
+        try {
+            if (fs.existsSync(db.LOCAL_DB_FILE)) {
+                let fileState = JSON.parse(fs.readFileSync(db.LOCAL_DB_FILE, 'utf8'));
+                let foundUsers = [];
+                Object.keys(fileState).forEach(org => {
+                    if (fileState[org] && Array.isArray(fileState[org].dbUsuarios)) {
+                        foundUsers.push(...fileState[org].dbUsuarios);
+                    }
+                });
+                if (foundUsers.length > 0) {
+                    usersList = foundUsers.map(r => ({
+                        id: r.id,
+                        nome: r.nome,
+                        email: r.email,
+                        role: r.role || r.tipo || 'Professor',
+                        tipo: r.tipo || r.role || 'Professor',
+                        escola: r.escola,
+                        turma: r.turma,
+                        telefone: r.telefone,
+                        cpf: r.cpf,
+                        status: r.status || 'Ativo',
+                        avatar_url: r.avatar_url || r.avatarPhoto || null,
+                        avatarPhoto: r.avatar_url || r.avatarPhoto || null,
+                        mustChangePassword: r.must_change_password
+                    }));
+                }
+            }
+        } catch(e) {}
+    }
+    
+    if (usersList.length === 0) {
         usersList = getUsers();
     }
 

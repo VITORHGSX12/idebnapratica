@@ -51,6 +51,37 @@ async function runTests() {
         }
     }
 
+    function makeRequest(method, path, body = null, headers = {}) {
+        return new Promise((resolve, reject) => {
+            const url = new URL(path, baseUrl);
+            const reqHeaders = { ...headers };
+            let reqBody = null;
+            if (body) {
+                reqBody = JSON.stringify(body);
+                reqHeaders['Content-Type'] = 'application/json';
+                reqHeaders['Content-Length'] = Buffer.byteLength(reqBody);
+            }
+            const req = http.request({
+                hostname: url.hostname,
+                port: url.port,
+                path: url.pathname + url.search,
+                method,
+                headers: reqHeaders
+            }, (res) => {
+                let data = '';
+                res.on('data', chunk => data += chunk);
+                res.on('end', () => {
+                    let parsed;
+                    try { parsed = JSON.parse(data); } catch(e) { parsed = data; }
+                    resolve({ status: res.statusCode, body: parsed });
+                });
+            });
+            req.on('error', reject);
+            if (reqBody) req.write(reqBody);
+            req.end();
+        });
+    }
+
     try {
         const adminUser = {
             id: 'usr_admin_upper_01',
@@ -119,22 +150,16 @@ async function runTests() {
                 perfis: ['professor(a)']
             };
 
-            const res = await fetch(`${baseUrl}/api/usuarios`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${adminToken}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
+            const res = await makeRequest('POST', '/api/usuarios', payload, {
+                'Authorization': `Bearer ${adminToken}`
             });
 
-            const data = await res.json();
-            assert(res.status === 200 || res.status === 201, `Status ${res.status}: ${JSON.stringify(data)}`);
-            assert(data.success, 'Deve retornar success: true');
-            assert.strictEqual(data.user.nome, 'PROFESSOR ROBERTO FREIRE');
-            assert.strictEqual(data.user.email, dynamicEmail.toLowerCase());
-            assert.strictEqual(data.user.escola, 'UNIDADE INTEGRADA DOM PEDRO');
-            assert.strictEqual(data.user.cargo, 'DOCENTE DE MATEMÁTICA');
+            assert(res.status === 200 || res.status === 201, `Status ${res.status}: ${JSON.stringify(res.body)}`);
+            assert(res.body.success, 'Deve retornar success: true');
+            assert.strictEqual(res.body.user.nome, 'PROFESSOR ROBERTO FREIRE');
+            assert.strictEqual(res.body.user.email, dynamicEmail.toLowerCase());
+            assert.strictEqual(res.body.user.escola, 'UNIDADE INTEGRADA DOM PEDRO');
+            assert.strictEqual(res.body.user.cargo, 'DOCENTE DE MATEMÁTICA');
         });
 
         // 5. Teste de Endpoint: POST /api/students com dados em minúsculas
@@ -145,20 +170,14 @@ async function runTests() {
                 turma: '5º ano matutino a'
             };
 
-            const res = await fetch(`${baseUrl}/api/students`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${adminToken}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(studentPayload)
+            const res = await makeRequest('POST', '/api/students', studentPayload, {
+                'Authorization': `Bearer ${adminToken}`
             });
 
-            const data = await res.json();
             assert(res.status === 200 || res.status === 201, `Status ${res.status}`);
-            assert(data.success, 'Deve retornar success: true');
-            assert.strictEqual(data.student.nome, 'LUCAS HENRIQUE OLIVEIRA');
-            assert.strictEqual(data.student.turma, '5º ANO MATUTINO A');
+            assert(res.body.success, 'Deve retornar success: true');
+            assert.strictEqual(res.body.student.nome, 'LUCAS HENRIQUE OLIVEIRA');
+            assert.strictEqual(res.body.student.turma, '5º ANO MATUTINO A');
         });
 
         // 6. Teste de Endpoint: PUT /api/students/:id com atualização em minúsculas
@@ -168,21 +187,15 @@ async function runTests() {
                 mae: 'claudia ferreira oliveira'
             };
 
-            const res = await fetch(`${baseUrl}/api/students/987654`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${adminToken}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(updatePayload)
+            const res = await makeRequest('PUT', '/api/students/987654', updatePayload, {
+                'Authorization': `Bearer ${adminToken}`
             });
 
-            const data = await res.json();
             assert.strictEqual(res.status, 200);
-            assert(data.success, 'Deve retornar success: true');
-            if (data.student) {
-                assert.strictEqual(data.student.nome, 'LUCAS HENRIQUE OLIVEIRA DOS SANTOS');
-                assert.strictEqual(data.student.mae, 'CLAUDIA FERREIRA OLIVEIRA');
+            assert(res.body.success, 'Deve retornar success: true');
+            if (res.body.student) {
+                assert.strictEqual(res.body.student.nome, 'LUCAS HENRIQUE OLIVEIRA DOS SANTOS');
+                assert.strictEqual(res.body.student.mae, 'CLAUDIA FERREIRA OLIVEIRA');
             }
         });
 
@@ -195,25 +208,21 @@ async function runTests() {
                 escola: 'escola municipal gonçalves dias'
             };
 
-            const res = await fetch(`${baseUrl}/api/classes`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${adminToken}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(classPayload)
+            const res = await makeRequest('POST', '/api/classes', classPayload, {
+                'Authorization': `Bearer ${adminToken}`
             });
 
-            const data = await res.json();
             assert(res.status === 200 || res.status === 201, `Status ${res.status}`);
-            assert(data.success, 'Deve retornar success: true');
-            assert.strictEqual(data.class.nome, 'TURMA 9º ANO VESPERTINO C');
-            assert.strictEqual(data.class.serie, '9º ANO');
-            assert.strictEqual(data.class.turno, 'VESPERTINO');
+            assert(res.body.success, 'Deve retornar success: true');
+            assert.strictEqual(res.body.class.nome, 'TURMA 9º ANO VESPERTINO C');
+            assert.strictEqual(res.body.class.serie, '9º ANO');
+            assert.strictEqual(res.body.class.turno, 'VESPERTINO');
         });
 
     } finally {
-        server.close();
+        if (server && server.listening) {
+            server.close();
+        }
     }
 
     console.log(`\n📊 Resumo da Bateria:`);

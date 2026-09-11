@@ -17,7 +17,7 @@
             subRole: 'Gestão Executiva SEMED',
             escola: 'Rede Municipal Oficial',
             turma: 'Todas as Turmas',
-            avatar: '🧑‍💼'
+            avatar: ''
         },
         {
             email: 'admin@goncalvesdias.ma.gov.br',
@@ -26,7 +26,7 @@
             subRole: 'Administrador(a) do Sistema & TI',
             escola: 'Administração TI / DPO',
             turma: 'Todas as Redes',
-            avatar: '👨‍💻'
+            avatar: ''
         },
         {
             email: 'diretor@goncalvesdias.ma.gov.br',
@@ -35,7 +35,7 @@
             subRole: 'Diretora Escolar • UI JOSE CORREA LIMA',
             escola: 'UI JOSE CORREA LIMA',
             turma: 'Todas as Turmas',
-            avatar: '👩‍💼'
+            avatar: ''
         },
         {
             email: 'diretor.correa@goncalvesdias.ma.gov.br',
@@ -44,7 +44,7 @@
             subRole: 'Direção Escolar • UI JOSE CORREA LIMA',
             escola: 'UI JOSE CORREA LIMA',
             turma: 'Todas as Turmas',
-            avatar: '👩‍💼'
+            avatar: ''
         },
         {
             email: 'diretor.benta@goncalvesdias.ma.gov.br',
@@ -53,7 +53,7 @@
             subRole: 'Direção Escolar • UNIDADE ESCOLAR BENTA VILANOVA',
             escola: 'UNIDADE ESCOLAR BENTA VILANOVA',
             turma: 'Todas as Turmas',
-            avatar: '👩‍💼'
+            avatar: ''
         },
         {
             email: 'diretor.veloso@goncalvesdias.ma.gov.br',
@@ -62,7 +62,7 @@
             subRole: 'Direção Escolar • UI RAIMUNDO VELOSO BARROS',
             escola: 'UI RAIMUNDO VELOSO BARROS',
             turma: 'Todas as Turmas',
-            avatar: '👩‍💼'
+            avatar: ''
         },
         {
             email: 'diretor.afonso@goncalvesdias.ma.gov.br',
@@ -71,7 +71,7 @@
             subRole: 'Direção Escolar • UNIDADE INTEGRADA AFONSO PENA',
             escola: 'UNIDADE INTEGRADA AFONSO PENA',
             turma: 'Todas as Turmas',
-            avatar: '👩‍💼'
+            avatar: ''
         },
         {
             email: 'diretor.diogo@goncalvesdias.ma.gov.br',
@@ -80,7 +80,7 @@
             subRole: 'Direção Escolar • UI GOV DIOGO NOGUEIRA',
             escola: 'UI GOV DIOGO NOGUEIRA',
             turma: 'Todas as Turmas',
-            avatar: '👩‍💼'
+            avatar: ''
         },
         {
             email: 'diretor.deocleciano@goncalvesdias.ma.gov.br',
@@ -89,7 +89,7 @@
             subRole: 'Direção Escolar • UI DEOCLECIANO FERREIRA BRAGA',
             escola: 'UI DEOCLECIANO FERREIRA BRAGA',
             turma: 'Todas as Turmas',
-            avatar: '👩‍💼'
+            avatar: ''
         },
         {
             email: 'diretor.nonato@goncalvesdias.ma.gov.br',
@@ -98,7 +98,7 @@
             subRole: 'Direção Escolar • UI NONATO ARAUJO',
             escola: 'UI NONATO ARAUJO',
             turma: 'Todas as Turmas',
-            avatar: '👩‍💼'
+            avatar: ''
         },
         {
             email: 'diretor.saovicente@goncalvesdias.ma.gov.br',
@@ -107,7 +107,7 @@
             subRole: 'Direção Escolar • EM SAO VICENTE DE PAULA',
             escola: 'EM SAO VICENTE DE PAULA',
             turma: 'Todas as Turmas',
-            avatar: '👩‍💼'
+            avatar: ''
         },
         {
             email: 'diretor.santoantonio@goncalvesdias.ma.gov.br',
@@ -116,7 +116,7 @@
             subRole: 'Direção Escolar • EM SANTO ANTONIO',
             escola: 'EM SANTO ANTONIO',
             turma: 'Todas as Turmas',
-            avatar: '👩‍💼'
+            avatar: ''
         },
         {
             email: 'professor@goncalvesdias.ma.gov.br',
@@ -125,7 +125,7 @@
             subRole: 'Professor(a) • 5º Ano A',
             escola: 'UI JOSE CORREA LIMA',
             turma: '5º Ano A',
-            avatar: '👨‍🏫'
+            avatar: ''
         },
         {
             email: 'prof.2ano@goncalvesdias.ma.gov.br',
@@ -134,7 +134,7 @@
             subRole: 'Professor(a) • 2º Ano Alfabetização',
             escola: 'UI JOSE CORREA LIMA',
             turma: '2º Ano A',
-            avatar: '👩‍🏫'
+            avatar: ''
         },
         {
             email: 'prof.5ano@goncalvesdias.ma.gov.br',
@@ -143,7 +143,7 @@
             subRole: 'Professor(a) • 5º Ano Fundamental I',
             escola: 'UI JOSE CORREA LIMA',
             turma: '5º Ano A',
-            avatar: '👨‍🏫'
+            avatar: ''
         },
         {
             email: 'prof.9ano@goncalvesdias.ma.gov.br',
@@ -152,7 +152,7 @@
             subRole: 'Professor(a) • 9º Ano Fundamental II',
             escola: 'UI JOSE CORREA LIMA',
             turma: '9º Ano A',
-            avatar: '👩‍🏫'
+            avatar: ''
         }
     ];
 
