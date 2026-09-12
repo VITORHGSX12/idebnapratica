@@ -258,6 +258,11 @@ router.post(['/login', '/auth/login'], async (req, res) => {
         // Se a senha for inválida, verifica e aplica o rate limit
         if (!isValid) {
             const rateCheck = await checkRateLimit(cleanEmail);
+            if (rateCheck.blocked) {
+                return res.status(429).json({
+                    error: `Muitas tentativas incorretas. Conta bloqueada temporariamente. Tente novamente em ${rateCheck.remainingMinutes} minuto(s).`
+                });
+            }
             await recordFailedAttempt(cleanEmail, clientIp);
             const remaining = Math.max(0, (rateCheck.remainingAttempts !== undefined ? rateCheck.remainingAttempts : MAX_FAILED_ATTEMPTS) - 1);
             return res.status(401).json({ 
