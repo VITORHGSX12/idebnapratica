@@ -286,9 +286,9 @@ router.post('/students', authMiddleware, async (req, res) => {
             fs.writeFileSync(db.LOCAL_DB_FILE, JSON.stringify(fileState, null, 2));
         } else {
             await db.queryWithTenant(tenantDbId, `
-                INSERT INTO alunos (tenant_id, nome, matricula, turma_id, cpf, nascimento)
-                VALUES ($1, $2, $3, $4, $5, $6)
-                ON CONFLICT (matricula) DO UPDATE SET 
+                INSERT INTO alunos (tenant_id, nome, matricula, codigo_matricula, turma_id, cpf, nascimento)
+                VALUES ($1, $2, $3, $3, $4, $5, $6)
+                ON CONFLICT (codigo_matricula) DO UPDATE SET 
                     nome = EXCLUDED.nome,
                     turma_id = COALESCE(EXCLUDED.turma_id, alunos.turma_id),
                     cpf = COALESCE(EXCLUDED.cpf, alunos.cpf),

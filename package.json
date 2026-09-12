@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "build": "node cache-buster.js",
-    "test": "node scripts/test_multi_perfil_rbac.test.js && node scripts/test_turma_professor_planejamento.test.js && node scripts/test_sidebar_meu_perfil_avatar.test.js && node scripts/test_uppercase_lock.test.js && node scripts/test_bug_fixes.test.js",
+    "test": "node scripts/test_multi_perfil_rbac.test.js && node scripts/test_turma_professor_planejamento.test.js && node scripts/test_sidebar_meu_perfil_avatar.test.js && node scripts/test_uppercase_lock.test.js && node scripts/test_bug_fixes.test.js && node scripts/test_rate_limit_postgres.test.js",
     "start": "node cache-buster.js && node server.js",
     "dev": "node cache-buster.js && npx -y http-server -p 8080",
     "import-data": "node scripts/import_inep_csv.js",

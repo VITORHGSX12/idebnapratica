@@ -4,11 +4,15 @@
  * ============================================================================
  */
 
+require('dotenv').config();
+
 const assert = require('assert');
 const http = require('http');
 
-// Define a conexão explícita com o Neon para teste real
-process.env.DATABASE_URL = 'postgresql://neondb_owner:npg_sp5yfHhul9No@ep-aged-night-acpgstc9-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require';
+if (!process.env.DATABASE_URL) {
+    console.error('❌ ERRO: DATABASE_URL não definida no ambiente (.env).');
+    process.exit(1);
+}
 
 const app = require('../server');
 const db = require('../db');
