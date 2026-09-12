@@ -91,9 +91,10 @@ async function runMigration() {
     const connectionString = process.env.DATABASE_URL;
     console.log('🔌 Conectando ao PostgreSQL em:', connectionString.replace(/:[^:@]+@/, ':****@'));
 
+    const isLocal = connectionString.includes('localhost') || connectionString.includes('127.0.0.1');
     const pool = new Pool({
         connectionString,
-        ssl: connectionString.includes('localhost') || connectionString.includes('127.0.0.1') ? false : { rejectUnauthorized: false }
+        ssl: isLocal ? false : { rejectUnauthorized: true }
     });
 
     const client = await pool.connect();

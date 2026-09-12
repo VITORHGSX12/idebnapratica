@@ -40,7 +40,7 @@ async function runCloudSeed() {
     console.log('🔗 Conectando ao PostgreSQL em nuvem...');
     const pool = new Pool({
         connectionString: dbUrl,
-        ssl: dbUrl.includes('localhost') ? false : { rejectUnauthorized: false }
+        ssl: dbUrl.includes('localhost') || dbUrl.includes('127.0.0.1') ? false : { rejectUnauthorized: true }
     });
 
     let client;

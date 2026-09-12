@@ -4,9 +4,12 @@ const path = require('path');
 const { execSync } = require('child_process');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
+const connStr = process.env.DATABASE_URL || '';
+const isLocal = connStr.includes('localhost') || connStr.includes('127.0.0.1');
+
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
+    connectionString: connStr,
+    ssl: isLocal ? false : { rejectUnauthorized: true }
 });
 
 async function runBackup() {

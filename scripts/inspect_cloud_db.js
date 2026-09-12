@@ -15,7 +15,7 @@ async function inspectDb() {
 
     const pool = new Pool({
         connectionString,
-        ssl: isInternalOrLocal ? false : { rejectUnauthorized: false }
+        ssl: isInternalOrLocal ? false : { rejectUnauthorized: true }
     });
 
     try {

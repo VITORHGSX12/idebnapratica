@@ -28,7 +28,7 @@ async function runSeed() {
     const isLocal = connStr.includes('localhost') || connStr.includes('127.0.0.1');
     const pool = new Pool({
         connectionString: connStr,
-        ssl: isLocal ? false : { rejectUnauthorized: false }
+        ssl: isLocal ? false : { rejectUnauthorized: true }
     });
 
     const client = await pool.connect();
