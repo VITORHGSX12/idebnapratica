@@ -245,6 +245,8 @@ router.post(['/login', '/auth/login'], async (req, res) => {
         }
 
         const cleanEmail = email.trim().toLowerCase();
+        const clientIp = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || req.ip || 'desconhecido';
+
         // 1. Busca estrita do usuário cadastrado
         const user = await findUserByEmail(cleanEmail);
         

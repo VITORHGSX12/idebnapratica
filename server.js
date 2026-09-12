@@ -420,7 +420,13 @@ if (require.main === module) {
                     `);
                     
                     await db.runMigrations();
+                    await db.seedDatabase();
                     
+                    // Limpar bloqueios temporários de tentativa de admin na inicialização
+                    try {
+                        await db.query("DELETE FROM public.login_attempts WHERE LOWER(email) IN ('admin@goncalvesdias.ma.gov.br', 'semed@goncalvesdias.ma.gov.br')");
+                    } catch(e) {}
+
                     // Rotina de retenção de rate limit (Boot + Execução Diária a cada 24h)
                     await cleanupOldLoginAttempts(30);
                     setInterval(() => {
