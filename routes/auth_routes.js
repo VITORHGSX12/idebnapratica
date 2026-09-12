@@ -57,7 +57,7 @@ function saveUsers(users) {
     }
 }
 
-// Rate Limiting (Máximo de 5 falhas a cada 15 minutos por e-mail)
+// Rate Limiting Seguro (PostgreSQL persistente com fallback em memória)
 const loginFailedAttempts = new Map();
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
 const MAX_FAILED_ATTEMPTS = 5;
@@ -70,6 +70,86 @@ setInterval(() => {
         }
     }
 }, RATE_LIMIT_WINDOW_MS);
+
+async function checkRateLimit(cleanEmail) {
+    if (!db.useLocalFallback) {
+        try {
+            const queryRes = await db.query(`
+                SELECT 
+                    COUNT(*)::int as failed_count,
+                    MIN(attempted_at) as first_attempt
+                FROM public.login_attempts
+                WHERE LOWER(TRIM(email)) = $1
+                  AND success = FALSE
+                  AND attempted_at >= NOW() - INTERVAL '15 minutes'
+            `, [cleanEmail]);
+
+            const failedCount = queryRes.rows[0]?.failed_count || 0;
+            const firstAttempt = queryRes.rows[0]?.first_attempt;
+
+            if (failedCount >= MAX_FAILED_ATTEMPTS && firstAttempt) {
+                const elapsedMs = Date.now() - new Date(firstAttempt).getTime();
+                const remainingMinutes = Math.max(1, Math.ceil((RATE_LIMIT_WINDOW_MS - elapsedMs) / 60000));
+                return {
+                    blocked: true,
+                    remainingMinutes
+                };
+            }
+            return { blocked: false, remainingAttempts: Math.max(0, MAX_FAILED_ATTEMPTS - failedCount) };
+        } catch (e) {
+            console.warn('[RateLimit DB Warning - Fallback to Memory]:', e.message);
+        }
+    }
+
+    // Fallback em memória (para testes e contingência)
+    const now = Date.now();
+    const record = loginFailedAttempts.get(cleanEmail);
+    if (record) {
+        if (now - record.firstAttempt > RATE_LIMIT_WINDOW_MS) {
+            loginFailedAttempts.delete(cleanEmail);
+        } else if (record.count >= MAX_FAILED_ATTEMPTS) {
+            const remainingMinutes = Math.ceil((RATE_LIMIT_WINDOW_MS - (now - record.firstAttempt)) / 60000);
+            return { blocked: true, remainingMinutes };
+        }
+    }
+    const currentCount = record ? record.count : 0;
+    return { blocked: false, remainingAttempts: Math.max(0, MAX_FAILED_ATTEMPTS - currentCount) };
+}
+
+async function recordFailedAttempt(cleanEmail, clientIp) {
+    if (!db.useLocalFallback) {
+        try {
+            await db.query(`
+                INSERT INTO public.login_attempts (email, ip_address, success, attempted_at)
+                VALUES ($1, $2, FALSE, CURRENT_TIMESTAMP)
+            `, [cleanEmail, clientIp || null]);
+        } catch (e) {
+            console.warn('[RateLimit Record Failed Warning]:', e.message);
+        }
+    }
+    const now = Date.now();
+    const currentRecord = loginFailedAttempts.get(cleanEmail) || { count: 0, firstAttempt: now };
+    currentRecord.count += 1;
+    loginFailedAttempts.set(cleanEmail, currentRecord);
+}
+
+async function recordSuccessfulLogin(cleanEmail, clientIp) {
+    if (!db.useLocalFallback) {
+        try {
+            await db.query(`
+                INSERT INTO public.login_attempts (email, ip_address, success, attempted_at)
+                VALUES ($1, $2, TRUE, CURRENT_TIMESTAMP)
+            `, [cleanEmail, clientIp || null]);
+            await db.query(`
+                DELETE FROM public.login_attempts
+                WHERE LOWER(TRIM(email)) = $1 AND success = FALSE
+            `, [cleanEmail]);
+        } catch (e) {
+            console.warn('[RateLimit Record Success Warning]:', e.message);
+        }
+    }
+    loginFailedAttempts.delete(cleanEmail);
+}
 
 // Helper para carregar e sincronizar usuários do Banco / JSON
 async function findUserByEmail(cleanEmail) {
@@ -144,19 +224,14 @@ router.post(['/login', '/auth/login'], async (req, res) => {
         }
 
         const cleanEmail = email.trim().toLowerCase();
-        const now = Date.now();
+        const clientIp = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || req.ip || 'desconhecido';
 
-        // 1. Verificação de Rate Limit
-        const attemptRecord = loginFailedAttempts.get(cleanEmail);
-        if (attemptRecord) {
-            if (now - attemptRecord.firstAttempt > RATE_LIMIT_WINDOW_MS) {
-                loginFailedAttempts.delete(cleanEmail);
-            } else if (attemptRecord.count >= MAX_FAILED_ATTEMPTS) {
-                const remainingMinutes = Math.ceil((RATE_LIMIT_WINDOW_MS - (now - attemptRecord.firstAttempt)) / 60000);
-                return res.status(429).json({
-                    error: `Muitas tentativas incorretas. Conta bloqueada temporariamente. Tente novamente em ${remainingMinutes} minuto(s).`
-                });
-            }
+        // 1. Verificação de Rate Limit Persistente
+        const rateCheck = await checkRateLimit(cleanEmail);
+        if (rateCheck.blocked) {
+            return res.status(429).json({
+                error: `Muitas tentativas incorretas. Conta bloqueada temporariamente. Tente novamente em ${rateCheck.remainingMinutes} minuto(s).`
+            });
         }
 
         // 2. Busca estrita do usuário cadastrado
@@ -168,20 +243,17 @@ router.post(['/login', '/auth/login'], async (req, res) => {
         }
 
         if (!isValid) {
-            const currentRecord = loginFailedAttempts.get(cleanEmail) || { count: 0, firstAttempt: now };
-            currentRecord.count += 1;
-            loginFailedAttempts.set(cleanEmail, currentRecord);
-
-            const remainingAttempts = Math.max(0, MAX_FAILED_ATTEMPTS - currentRecord.count);
+            await recordFailedAttempt(cleanEmail, clientIp);
+            const remaining = Math.max(0, (rateCheck.remainingAttempts !== undefined ? rateCheck.remainingAttempts : MAX_FAILED_ATTEMPTS) - 1);
             return res.status(401).json({ 
-                error: remainingAttempts > 0 
-                    ? `Credenciais inválidas. E-mail ou senha incorreta. (${remainingAttempts} tentativa(s) restante(s))`
+                error: remaining > 0 
+                    ? `Credenciais inválidas. E-mail ou senha incorreta. (${remaining} tentativa(s) restante(s))`
                     : 'Muitas tentativas incorretas. Conta bloqueada temporariamente por 15 minutos.'
             });
         }
 
         // 3. Sucesso na autenticação
-        loginFailedAttempts.delete(cleanEmail);
+        await recordSuccessfulLogin(cleanEmail, clientIp);
 
         const mustChange = !!user.mustChangePassword;
 
