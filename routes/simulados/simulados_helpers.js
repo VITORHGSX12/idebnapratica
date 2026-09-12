@@ -144,6 +144,143 @@ function resolveDescriptorInfo(code, discHint) {
     };
 }
 
+/**
+ * Recalcula em cascata todas as respostas já salvas para um evento avaliativo
+ * quando o gabarito ou matriz de habilidades é corrigido.
+ * @param {string} eventoId 
+ * @param {Array<string>} novoGabaritoGeral 
+ * @param {Array<string>} [novasHabilidadesGerais]
+ * @returns {Promise<{ totalRecalculados: number, recalculadoEm: string }>}
+ */
+async function recalcularRespostasEvento(eventoId, novoGabaritoGeral, novasHabilidadesGerais = null) {
+    if (!eventoId) return { totalRecalculados: 0, recalculadoEm: null };
+
+    const db = require('../../db');
+    const nowIso = new Date().toISOString();
+    let totalRecalculados = 0;
+
+    const gabArrGeral = Array.isArray(novoGabaritoGeral) ? novoGabaritoGeral : [];
+
+    // 1. Atualizar banco relacional (PostgreSQL Neon)
+    if (!db.useLocalFallback) {
+        try {
+            // Obter turmas com gabaritos específicos se houver
+            const turmasConfigRes = await db.query(
+                'SELECT turma_id, modo_gabarito, gabarito_json, habilidades_json FROM eventos_simulados_turmas WHERE evento_id = $1',
+                [eventoId]
+            );
+            const turmasConfigMap = {};
+            if (turmasConfigRes && turmasConfigRes.rows) {
+                turmasConfigRes.rows.forEach(t => {
+                    turmasConfigMap[t.turma_id] = t;
+                });
+            }
+
+            // Buscar todas as respostas vinculadas a este evento
+            const respostasRes = await db.query(
+                'SELECT id, turma_id, respostas_json, status_presenca FROM respostas_simulado WHERE evento_id = $1',
+                [eventoId]
+            );
+
+            if (respostasRes && respostasRes.rows && respostasRes.rows.length > 0) {
+                for (const row of respostasRes.rows) {
+                    const turmaConfig = turmasConfigMap[row.turma_id];
+                    let gabaritoParaAluno = gabArrGeral;
+                    let habParaAluno = novasHabilidadesGerais;
+
+                    if (turmaConfig && turmaConfig.modo_gabarito === 'ESPECIFICO' && Array.isArray(turmaConfig.gabarito_json) && turmaConfig.gabarito_json.length > 0) {
+                        gabaritoParaAluno = turmaConfig.gabarito_json;
+                        habParaAluno = turmaConfig.habilidades_json || habParaAluno;
+                    }
+
+                    const calc = calcularResultadoAluno(row.respostas_json, gabaritoParaAluno, row.status_presenca);
+
+                    let habSql = '';
+                    const params = [
+                        JSON.stringify(gabaritoParaAluno),
+                        calc.totalAcertos,
+                        calc.percentualAcertos,
+                        calc.situacao,
+                        row.id
+                    ];
+
+                    if (Array.isArray(habParaAluno) && habParaAluno.length > 0) {
+                        habSql = ', habilidades_json = $6';
+                        params.push(JSON.stringify(habParaAluno));
+                    }
+
+                    await db.query(`
+                        UPDATE respostas_simulado 
+                        SET 
+                            gabarito_json = $1,
+                            total_acertos = $2,
+                            percentual_acertos = $3,
+                            situacao = $4,
+                            recalculado_em = NOW(),
+                            gabarito_alterado_em = NOW(),
+                            atualizado_em = NOW()
+                            ${habSql}
+                        WHERE id = $5
+                    `, params);
+
+                    totalRecalculados++;
+                }
+            }
+
+            // Atualizar timestamp no próprio evento
+            await db.query(
+                'UPDATE eventos_simulados SET recalculado_em = NOW(), gabarito_alterado_em = NOW(), atualizado_em = NOW() WHERE id = $1',
+                [eventoId]
+            );
+        } catch (dbErr) {
+            console.error('[RecalculoGabarito DB Error]', dbErr);
+        }
+    }
+
+    // 2. Atualizar cache em memória (memoryRespostasSimulados)
+    if (typeof memoryRespostasSimulados === 'object' && memoryRespostasSimulados !== null) {
+        Object.keys(memoryRespostasSimulados).forEach(key => {
+            if (key.startsWith(eventoId + '_') || key === eventoId) {
+                const simulado = memoryRespostasSimulados[key];
+                if (simulado && Array.isArray(simulado.respostasAlunos)) {
+                    simulado.respostasAlunos.forEach(aluno => {
+                        const calc = calcularResultadoAluno(aluno.respostas, gabArrGeral, aluno.statusPresenca);
+                        aluno.gabarito = gabArrGeral;
+                        if (Array.isArray(novasHabilidadesGerais) && novasHabilidadesGerais.length > 0) {
+                            aluno.habilidades = novasHabilidadesGerais;
+                        }
+                        aluno.totalAcertos = calc.totalAcertos;
+                        aluno.percentualAcertos = calc.percentualAcertos;
+                        aluno.situacao = calc.situacao;
+                        aluno.recalculadoEm = nowIso;
+                        aluno.gabaritoAlteradoEm = nowIso;
+                    });
+                    simulado.recalculadoEm = nowIso;
+                    simulado.gabaritoAlteradoEm = nowIso;
+                    simulado.atualizadoEm = nowIso;
+                    if (db.useLocalFallback) totalRecalculados += simulado.respostasAlunos.length;
+                }
+            }
+        });
+    }
+
+    // Atualizar no evento em memória
+    if (Array.isArray(memoryEventosSimulados)) {
+        const evMem = memoryEventosSimulados.find(e => e.id === eventoId);
+        if (evMem) {
+            evMem.gabaritoGeralJson = JSON.stringify(gabArrGeral);
+            evMem.recalculadoEm = nowIso;
+            evMem.gabaritoAlteradoEm = nowIso;
+            evMem.atualizadoEm = nowIso;
+        }
+    }
+
+    return {
+        totalRecalculados,
+        recalculadoEm: nowIso
+    };
+}
+
 module.exports = {
     JWT_SECRET,
     memoryEventosSimulados,
@@ -151,5 +288,6 @@ module.exports = {
     validateSchoolAccess,
     calcularResultadoAluno,
     INEP_DESCRITORES_MAP,
-    resolveDescriptorInfo
+    resolveDescriptorInfo,
+    recalcularRespostasEvento
 };

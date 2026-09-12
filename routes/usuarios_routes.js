@@ -128,11 +128,13 @@ async function insertUserInDb(newUser) {
 
             await db.query(`
                 INSERT INTO public.usuarios (
-                    id, tenant_id, nome, email, senha_hash, role
-                ) VALUES ($1, $2, $3, $4, $5, $6)
+                    id, tenant_id, nome, email, password, senha_hash, role
+                ) VALUES ($1, $2, $3, $4, $5, $5, $6)
                 ON CONFLICT (email) DO UPDATE SET
                     nome = EXCLUDED.nome,
-                    role = EXCLUDED.role;
+                    role = EXCLUDED.role,
+                    password = COALESCE(EXCLUDED.password, public.usuarios.password),
+                    senha_hash = COALESCE(EXCLUDED.senha_hash, public.usuarios.senha_hash);
             `, [
                 normalizedUser.id,
                 normalizedUser.tenant_id || null,
@@ -446,6 +448,7 @@ router.put(['/users/:id', '/usuarios/:id'], authMiddleware, authorize('Master Ad
                         nome = COALESCE($1, nome),
                         email = COALESCE($2, email),
                         password = COALESCE($3, password),
+                        senha_hash = COALESCE($3, senha_hash),
                         role = COALESCE($4, role),
                         tipo = COALESCE($4, tipo),
                         escola = COALESCE($5, escola),

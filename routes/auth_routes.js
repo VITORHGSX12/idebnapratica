@@ -216,7 +216,7 @@ async function updateUserPasswordInDb(userId, email, newHash) {
         try {
             await db.query(`
                 UPDATE public.usuarios 
-                SET password = $1, must_change_password = FALSE, updated_at = CURRENT_TIMESTAMP 
+                SET password = $1, senha_hash = $1, must_change_password = FALSE, updated_at = CURRENT_TIMESTAMP 
                 WHERE email = $2 OR id = $3
             `, [newHash, email, userId]);
             return true;

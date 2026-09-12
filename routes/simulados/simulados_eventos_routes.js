@@ -5,7 +5,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../../db');
-const { memoryEventosSimulados, memoryRespostasSimulados } = require('./simulados_helpers');
+const { memoryEventosSimulados, memoryRespostasSimulados, recalcularRespostasEvento } = require('./simulados_helpers');
 
 router.get('/eventos-simulado', async (req, res) => {
     try {
@@ -18,7 +18,10 @@ router.get('/eventos-simulado', async (req, res) => {
                     status, passo_ativo as "passoAtivo", qtd_questoes as "qtdQuestoes",
                     gabarito_geral_json as "gabaritoGeralJson",
                     etapas_alvo as "etapasAlvo",
-                    turmas, criado_em as "criadoEm", atualizado_em as "atualizadoEm"
+                    turmas,
+                    gabarito_alterado_em as "gabaritoAlteradoEm",
+                    recalculado_em as "recalculadoEm",
+                    criado_em as "criadoEm", atualizado_em as "atualizadoEm"
                 FROM eventos_simulados
                 ORDER BY criado_em DESC
             `);
@@ -56,13 +59,25 @@ router.post('/eventos-simulado', async (req, res) => {
         const etapasAlvo = body.etapasAlvo || ['5º Ano'];
         const turmas = body.turmas || [];
 
+        let recalculou = false;
+        let totalRecalculados = 0;
+        let recalculadoEm = null;
+
         if (!db.useLocalFallback) {
+            // Verificar se o evento já existia e se o gabarito mudou
+            const existingEvRes = await db.query('SELECT gabarito_geral_json FROM eventos_simulados WHERE id = $1', [id]);
+            const isExisting = existingEvRes && existingEvRes.rows && existingEvRes.rows.length > 0;
+            const oldGabStr = isExisting ? JSON.stringify(existingEvRes.rows[0].gabarito_geral_json || []) : null;
+            const newGabStr = JSON.stringify(gabaritoGeralJson || []);
+            const gabaritoMudou = isExisting && oldGabStr !== newGabStr;
+
             await db.query(`
                 INSERT INTO eventos_simulados (
                     id, titulo, data_realizacao, disciplina,
                     portugues_inicio, portugues_fim, matematica_inicio, matematica_fim,
-                    status, passo_ativo, qtd_questoes, gabarito_geral_json, etapas_alvo, turmas, atualizado_em
-                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, NOW())
+                    status, passo_ativo, qtd_questoes, gabarito_geral_json, etapas_alvo, turmas,
+                    gabarito_alterado_em, atualizado_em
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, CASE WHEN $15::boolean THEN NOW() ELSE NULL END, NOW())
                 ON CONFLICT (id) DO UPDATE SET
                     titulo = EXCLUDED.titulo,
                     data_realizacao = EXCLUDED.data_realizacao,
@@ -77,12 +92,14 @@ router.post('/eventos-simulado', async (req, res) => {
                     gabarito_geral_json = EXCLUDED.gabarito_geral_json,
                     etapas_alvo = EXCLUDED.etapas_alvo,
                     turmas = EXCLUDED.turmas,
+                    gabarito_alterado_em = CASE WHEN $15::boolean THEN NOW() ELSE eventos_simulados.gabarito_alterado_em END,
                     atualizado_em = NOW()
             `, [
                 id, titulo, dataRealizacao, disciplina,
                 portuguesInicio, portuguesFim, matematicaInicio, matematicaFim,
                 status, passoAtivo, qtdQuestoes, JSON.stringify(gabaritoGeralJson),
-                JSON.stringify(etapasAlvo), JSON.stringify(turmas)
+                JSON.stringify(etapasAlvo), JSON.stringify(turmas),
+                gabaritoMudou
             ]);
 
             // Se turmas informadas, persistir na tabela relacional de turmas
@@ -106,6 +123,22 @@ router.post('/eventos-simulado', async (req, res) => {
                     ]);
                 }
             }
+
+            // Disparar recálculo em cascata de todas as respostas já submetidas
+            if (isExisting && (gabaritoMudou || body.forcarRecalculo === true)) {
+                const recRes = await recalcularRespostasEvento(id, gabaritoGeralJson);
+                recalculou = true;
+                totalRecalculados = recRes.totalRecalculados;
+                recalculadoEm = recRes.recalculadoEm;
+            }
+        } else {
+            // Em modo fallback local
+            if (Array.isArray(gabaritoGeralJson) && gabaritoGeralJson.length > 0) {
+                const recRes = await recalcularRespostasEvento(id, gabaritoGeralJson);
+                recalculou = true;
+                totalRecalculados = recRes.totalRecalculados;
+                recalculadoEm = recRes.recalculadoEm;
+            }
         }
 
         const eventoObj = {
@@ -114,6 +147,7 @@ router.post('/eventos-simulado', async (req, res) => {
             status, passoAtivo, qtdQuestoes,
             gabaritoGeralJson: JSON.stringify(gabaritoGeralJson),
             etapasAlvo, turmas,
+            recalculadoEm,
             criadoEm: new Date().toISOString()
         };
 
@@ -121,9 +155,49 @@ router.post('/eventos-simulado', async (req, res) => {
         if (idx !== -1) memoryEventosSimulados[idx] = eventoObj;
         else memoryEventosSimulados.push(eventoObj);
 
-        res.status(201).json({ success: true, evento: eventoObj });
+        res.status(201).json({ 
+            success: true, 
+            evento: eventoObj,
+            recalculo: {
+                executado: recalculou,
+                totalAlunosRecalculados: totalRecalculados,
+                recalculadoEm: recalculadoEm
+            }
+        });
     } catch (err) {
         console.error('[POST /eventos-simulado Error]', err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// Endpoint explícito para forçar recálculo em massa de um evento
+router.post('/eventos-simulado/:id/recalcular', async (req, res) => {
+    try {
+        const { id } = req.params;
+        let gabaritoGeral = [];
+
+        if (!db.useLocalFallback) {
+            const evRes = await db.query('SELECT gabarito_geral_json FROM eventos_simulados WHERE id = $1', [id]);
+            if (!evRes || !evRes.rows || evRes.rows.length === 0) {
+                return res.status(404).json({ success: false, error: 'Evento não encontrado.' });
+            }
+            gabaritoGeral = evRes.rows[0].gabarito_geral_json || [];
+        } else {
+            const ev = memoryEventosSimulados.find(e => e.id === id);
+            if (!ev) return res.status(404).json({ success: false, error: 'Evento não encontrado.' });
+            try { gabaritoGeral = JSON.parse(ev.gabaritoGeralJson || '[]'); } catch(e) { gabaritoGeral = []; }
+        }
+
+        const recRes = await recalcularRespostasEvento(id, gabaritoGeral);
+        res.json({
+            success: true,
+            eventoId: id,
+            totalAlunosRecalculados: recRes.totalRecalculados,
+            recalculadoEm: recRes.recalculadoEm,
+            message: `Recálculo concluído com sucesso para ${recRes.totalRecalculados} registro(s) de respostas.`
+        });
+    } catch (err) {
+        console.error('[POST /eventos-simulado/:id/recalcular Error]', err);
         res.status(500).json({ success: false, error: err.message });
     }
 });

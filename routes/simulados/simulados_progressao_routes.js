@@ -44,6 +44,9 @@ router.get(['/alunos/:alunoId/progressao', '/api/alunos/:alunoId/progressao'], a
                     r.total_acertos as "totalAcertos",
                     r.percentual_acertos as "percentualAcertos",
                     r.situacao,
+                    r.recalculado_em as "recalculadoEm",
+                    r.gabarito_alterado_em as "gabaritoAlteradoEm",
+                    e.recalculado_em as "eventoRecalculadoEm",
                     r.atualizado_em as "atualizadoEm"
                 FROM respostas_simulado r
                 JOIN eventos_simulados e ON r.evento_id = e.id
@@ -191,7 +194,9 @@ router.get(['/alunos/:alunoId/progressao', '/api/alunos/:alunoId/progressao'], a
                 mat: { acertos: matAcertos, total: matTotal, percentual: pctMat, escoreSaeb: scoreMatEstimado },
                 escoreSaebGeral: scoreTotalEstimado,
                 questoesDetalhe: questoesDetalhe,
-                descritoresSimulado: descritoresSimulado
+                descritoresSimulado: descritoresSimulado,
+                recalculadoEm: row.recalculadoEm || row.eventoRecalculadoEm || null,
+                gabaritoAlteradoEm: row.gabaritoAlteradoEm || null
             });
         });
 
