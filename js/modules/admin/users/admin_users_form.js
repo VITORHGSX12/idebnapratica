@@ -25,12 +25,43 @@
     }
 
     function generateSecureInitialPassword() {
-        var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
-        var rand = '';
-        for (var i = 0; i < 4; i++) {
-            rand += chars.charAt(Math.floor(Math.random() * chars.length));
+        var uppers = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+        var lowers = 'abcdefghijkmnpqrstuvwxyz';
+        var digits = '23456789';
+        var symbols = '@#$%&*!?';
+        var allChars = uppers + lowers + digits + symbols;
+
+        function getRandomIndex(max) {
+            if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+                var arr = new Uint32Array(1);
+                crypto.getRandomValues(arr);
+                return arr[0] % max;
+            }
+            return Math.floor(Math.random() * max);
         }
-        return 'Edu@' + rand + '26';
+
+        // Garante ao menos 1 maiúscula, 1 minúscula, 1 número e 1 símbolo
+        var password = [
+            uppers.charAt(getRandomIndex(uppers.length)),
+            lowers.charAt(getRandomIndex(lowers.length)),
+            digits.charAt(getRandomIndex(digits.length)),
+            symbols.charAt(getRandomIndex(symbols.length))
+        ];
+
+        // Completa até 12 caracteres com caracteres variados
+        while (password.length < 12) {
+            password.push(allChars.charAt(getRandomIndex(allChars.length)));
+        }
+
+        // Embaralha o array (Fisher-Yates)
+        for (var i = password.length - 1; i > 0; i--) {
+            var j = getRandomIndex(i + 1);
+            var temp = password[i];
+            password[i] = password[j];
+            password[j] = temp;
+        }
+
+        return password.join('');
     }
 
     function generateAutoCredentials() {
@@ -423,6 +454,7 @@
 
     var AdminUsersForm = {
         ESCOLAS_TURMAS_MAP: ESCOLAS_TURMAS_MAP,
+        generateSecureInitialPassword: generateSecureInitialPassword,
         generateAutoCredentials: generateAutoCredentials,
         getSelectedUserRoles: getSelectedUserRoles,
         setSelectedUserRoles: setSelectedUserRoles,
@@ -434,6 +466,7 @@
     };
 
     global.AdminUsersForm = AdminUsersForm;
+    global.generateSecureInitialPassword = generateSecureInitialPassword;
     global.generateAutoCredentials = generateAutoCredentials;
     global.getSelectedUserRoles = getSelectedUserRoles;
     global.setSelectedUserRoles = setSelectedUserRoles;
