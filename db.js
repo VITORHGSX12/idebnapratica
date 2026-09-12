@@ -16,7 +16,7 @@ if (connectionString) {
 
         pool = new Pool({
             connectionString,
-            ssl: isLocal ? false : { rejectUnauthorized: true }
+            ssl: isLocal ? false : { rejectUnauthorized: false }
         });
         pool.on('error', (err) => {
             console.error('[PG Pool Error]', err ? err.message : err);
