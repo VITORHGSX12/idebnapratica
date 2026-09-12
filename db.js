@@ -220,11 +220,45 @@ async function seedDatabase() {
             }
         }
 
-        // 3. Seed Users from users.json if table is empty or missing users
+        // 3. Seed Users and ensure Master Admin / SEMED accounts are synchronized
+        const defaultAdminHash = '$2a$12$8G5jc3SIKrPkUWUT7ulMj.CqPvoOnhGDGkvgejw01IOGyt0YM5DYW'; // Gondias@2026
+
+        // Garantir conta Master Admin
+        await client.query(`
+            INSERT INTO public.usuarios (
+                id, tenant_id, nome, email, password, senha_hash, role, tipo, status, must_change_password, atualizado_em
+            ) VALUES (
+                'usr_admin', $1, 'ADMINISTRADOR MASTER', 'admin@goncalvesdias.ma.gov.br',
+                $2, $2, 'Master Admin', 'Master Admin', 'Ativo', FALSE, NOW()
+            )
+            ON CONFLICT (email) DO UPDATE SET
+                password = EXCLUDED.password,
+                senha_hash = EXCLUDED.senha_hash,
+                must_change_password = FALSE,
+                status = 'Ativo',
+                atualizado_em = NOW();
+        `, [defaultTenantId, defaultAdminHash]);
+
+        // Garantir conta SEMED
+        await client.query(`
+            INSERT INTO public.usuarios (
+                id, tenant_id, nome, email, password, senha_hash, role, tipo, status, must_change_password, atualizado_em
+            ) VALUES (
+                'usr_semed', $1, 'GESTOR DA REDE SEMED', 'semed@goncalvesdias.ma.gov.br',
+                $2, $2, 'Gestor da Rede', 'Gestor da Rede', 'Ativo', FALSE, NOW()
+            )
+            ON CONFLICT (email) DO UPDATE SET
+                password = EXCLUDED.password,
+                senha_hash = EXCLUDED.senha_hash,
+                must_change_password = FALSE,
+                status = 'Ativo',
+                atualizado_em = NOW();
+        `, [defaultTenantId, defaultAdminHash]);
+
         const usersCountRes = await client.query('SELECT count(*) as total FROM public.usuarios');
         const currentUsersCount = parseInt(usersCountRes.rows[0].total) || 0;
 
-        if (currentUsersCount === 0) {
+        if (currentUsersCount <= 2) {
             const usersPath = path.join(__dirname, 'users.json');
             if (fs.existsSync(usersPath)) {
                 console.log('Seeding official registered users from users.json...');
@@ -232,10 +266,11 @@ async function seedDatabase() {
                 for (const u of usersData) {
                     await client.query(`
                         INSERT INTO public.usuarios (
-                            id, tenant_id, nome, email, password, role, tipo, escola, turma, telefone, cpf, status, must_change_password
-                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+                            id, tenant_id, nome, email, password, senha_hash, role, tipo, escola, turma, telefone, cpf, status, must_change_password
+                        ) VALUES ($1, $2, $3, $4, $5, $5, $6, $7, $8, $9, $10, $11, $12, $13)
                         ON CONFLICT (email) DO UPDATE SET
                             password = EXCLUDED.password,
+                            senha_hash = EXCLUDED.senha_hash,
                             role = EXCLUDED.role,
                             must_change_password = EXCLUDED.must_change_password;
                     `, [
@@ -251,7 +286,7 @@ async function seedDatabase() {
                         u.telefone || null,
                         u.cpf || null,
                         u.status || 'Ativo',
-                        u.mustChangePassword !== undefined ? !!u.mustChangePassword : true
+                        u.mustChangePassword !== undefined ? !!u.mustChangePassword : false
                     ]);
                 }
                 console.log(`Successfully seeded ${usersData.length} users into public.usuarios.`);

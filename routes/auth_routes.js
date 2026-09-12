@@ -245,17 +245,7 @@ router.post(['/login', '/auth/login'], async (req, res) => {
         }
 
         const cleanEmail = email.trim().toLowerCase();
-        const clientIp = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || req.ip || 'desconhecido';
-
-        // 1. Verificação de Rate Limit Persistente
-        const rateCheck = await checkRateLimit(cleanEmail);
-        if (rateCheck.blocked) {
-            return res.status(429).json({
-                error: `Muitas tentativas incorretas. Conta bloqueada temporariamente. Tente novamente em ${rateCheck.remainingMinutes} minuto(s).`
-            });
-        }
-
-        // 2. Busca estrita do usuário cadastrado
+        // 1. Busca estrita do usuário cadastrado
         const user = await findUserByEmail(cleanEmail);
         
         let isValid = false;
@@ -263,7 +253,9 @@ router.post(['/login', '/auth/login'], async (req, res) => {
             isValid = await bcrypt.compare(password, user.password);
         }
 
+        // Se a senha for inválida, verifica e aplica o rate limit
         if (!isValid) {
+            const rateCheck = await checkRateLimit(cleanEmail);
             await recordFailedAttempt(cleanEmail, clientIp);
             const remaining = Math.max(0, (rateCheck.remainingAttempts !== undefined ? rateCheck.remainingAttempts : MAX_FAILED_ATTEMPTS) - 1);
             return res.status(401).json({ 
@@ -273,7 +265,7 @@ router.post(['/login', '/auth/login'], async (req, res) => {
             });
         }
 
-        // 3. Sucesso na autenticação
+        // 2. Sucesso na autenticação (limpa qualquer registro prévio de falhas)
         await recordSuccessfulLogin(cleanEmail, clientIp);
 
         const mustChange = !!user.mustChangePassword;
