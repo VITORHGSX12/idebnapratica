@@ -230,6 +230,8 @@ router.get(['/simulados/dashboard/rede', '/api/simulados/dashboard/rede'], async
                 });
             }
 
+            const totalMatriculadosEtapa = descRes && descRes.rows ? descRes.rows.length : 0;
+
             descritoresCriticos = Object.values(descritoresMap).map(d => {
                 const perc = d.totalAvaliados > 0 ? Number(((d.totalAcertos / d.totalAvaliados) * 100).toFixed(1)) : 0.0;
                 let status = 'ADEQUADO';
@@ -242,12 +244,25 @@ router.get(['/simulados/dashboard/rede', '/api/simulados/dashboard/rede'], async
                     statusClass = 'badge-orange';
                 }
 
+                const taxaCobertura = totalMatriculadosEtapa > 0 
+                    ? Number(((d.totalAvaliados / totalMatriculadosEtapa) * 100).toFixed(1)) 
+                    : 100.0;
+                const amostraReduzida = totalMatriculadosEtapa > 0 && (taxaCobertura < 60.0 || d.totalAvaliados < 10);
+                const grauConfiabilidade = (!amostraReduzida && taxaCobertura >= 80.0) 
+                    ? 'ALTA' 
+                    : (!amostraReduzida ? 'MEDIA' : 'BAIXA_AMOSTRA');
+
                 return {
                     codigo: d.codigo,
                     etapa: d.etapa,
                     componente: d.componente,
                     acertoPercentual: perc,
                     totalAvaliados: d.totalAvaliados,
+                    totalMatriculados: totalMatriculadosEtapa,
+                    taxaCoberturaAmostral: taxaCobertura,
+                    amostraReduzida: amostraReduzida,
+                    grauConfiabilidade: grauConfiabilidade,
+                    alertaAmostra: amostraReduzida ? `Amostra Reduzida (${taxaCobertura}% de cobertura)` : null,
                     status: status,
                     statusClass: statusClass
                 };

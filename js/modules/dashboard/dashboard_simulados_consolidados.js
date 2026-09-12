@@ -130,16 +130,33 @@
             var badgeColor = d.acertoPercentual < 50 ? '#991B1B' : (d.acertoPercentual < 70 ? '#92400E' : '#065F46');
             var barColor = d.acertoPercentual < 50 ? '#EF4444' : (d.acertoPercentual < 70 ? '#F59E0B' : '#10B981');
 
+            var sampleBadge = d.amostraReduzida ? `
+                <div style="margin-top: 6px; padding: 3px 6px; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 4px; display: flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; color: #DC2626;" title="Amostra com baixa cobertura amostral (< 60% de participação). Interpretar taxa de acerto com cautela pedagógica.">
+                    <span>⚠️ Amostra Reduzida</span>
+                    <span style="font-weight: 500; color: var(--text-muted); font-size: 9px;">(${d.taxaCoberturaAmostral || 0}%)</span>
+                </div>
+            ` : '';
+
+            var totalAvaliadosText = d.totalAvaliados 
+                ? (d.totalMatriculados ? `${d.totalAvaliados} de ${d.totalMatriculados} avaliados` : `${d.totalAvaliados} avaliados`) 
+                : 'Amostra preliminar';
+
             return `
                 <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between;">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
-                        <div>
-                            <strong style="font-size: 13px; color: var(--text-primary);">${d.codigo}</strong>
-                            <span style="font-size: 10px; color: var(--text-secondary); display: block;">${d.componente}</span>
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+                            <div>
+                                <strong style="font-size: 13px; color: var(--text-primary);">${d.codigo}</strong>
+                                <span style="font-size: 10px; color: var(--text-secondary); display: block;">${d.componente}</span>
+                            </div>
+                            <span style="background: ${badgeBg}; color: ${badgeColor}; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">
+                                ${d.status}
+                            </span>
                         </div>
-                        <span style="background: ${badgeBg}; color: ${badgeColor}; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">
-                            ${d.status}
-                        </span>
+                        <div style="font-size: 10px; color: var(--text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 4px;">
+                            <span style="display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: ${d.amostraReduzida ? '#DC2626' : '#10B981'};"></span>
+                            <span>${totalAvaliadosText}</span>
+                        </div>
                     </div>
                     <div>
                         <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px;">
@@ -149,6 +166,7 @@
                         <div style="width: 100%; height: 6px; background: rgba(0,0,0,0.08); border-radius: 9999px; overflow: hidden;">
                             <div style="width: ${d.acertoPercentual}%; height: 100%; background: ${barColor}; border-radius: 9999px;"></div>
                         </div>
+                        ${sampleBadge}
                     </div>
                 </div>
             `;

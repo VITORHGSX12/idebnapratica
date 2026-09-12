@@ -75,6 +75,11 @@ router.get(['/alunos/:alunoId/progressao', '/api/alunos/:alunoId/progressao'], a
                 habilidadesEmAtencao: [],
                 habilidadesEmDefasagem: [],
                 amostrasPreliminares: [],
+                criteriosDiagnostico: {
+                    limiarDefasagemPct: 60.0,
+                    limiarConsolidadoPct: 75.0,
+                    minimoQuestoesAmostra: 3
+                },
                 mensagem: 'Nenhum simulado ou avaliação lançado para este estudante até o momento.'
             });
         }
@@ -204,10 +209,12 @@ router.get(['/alunos/:alunoId/progressao', '/api/alunos/:alunoId/progressao'], a
             const pct = d.totalQuestoes > 0 ? Number(((d.acertos / d.totalQuestoes) * 100).toFixed(1)) : 0;
             let classificacao = 'CONSOLIDADO';
             let confiabilidade = 'ALTA';
+            let alertaAmostra = null;
 
-            if (d.totalQuestoes < 2) {
+            if (d.totalQuestoes < 3) {
                 classificacao = 'PRELIMINAR';
                 confiabilidade = 'BAIXA_AMOSTRA';
+                alertaAmostra = `Amostra preliminar (${d.totalQuestoes} item/itens avaliado(s)). Recomenda-se aplicar mais itens avaliativos antes de concluir intervenção definitiva.`;
             } else if (pct < 60.0) {
                 classificacao = 'DEFASAGEM';
             } else if (pct < 75.0) {
@@ -226,6 +233,7 @@ router.get(['/alunos/:alunoId/progressao', '/api/alunos/:alunoId/progressao'], a
                 percentualConsolidado: pct,
                 classificacao: classificacao,
                 confiabilidade: confiabilidade,
+                alertaAmostra: alertaAmostra,
                 recomendacaoPedagogica: d.recomendacao
             };
         });
@@ -248,7 +256,7 @@ router.get(['/alunos/:alunoId/progressao', '/api/alunos/:alunoId/progressao'], a
             criteriosDiagnostico: {
                 limiarDefasagemPct: 60.0,
                 limiarConsolidadoPct: 75.0,
-                minimoQuestoesAmostra: 2
+                minimoQuestoesAmostra: 3
             }
         });
     } catch (err) {
@@ -299,6 +307,9 @@ router.get('/escolas/:escolaId/diagnostico-descritores', async (req, res) => {
                 success: true,
                 escolaId: escolaId,
                 totalAlunosAvaliados: 0,
+                totalMatriculadosEscola: 0,
+                taxaCoberturaGeralEscola: 0,
+                amostraGeralReduzida: true,
                 descritoresPrioritarios: [],
                 mensagem: 'Nenhum simulado com respostas lançadas para estudantes desta escola até o momento.'
             });
@@ -361,6 +372,24 @@ router.get('/escolas/:escolaId/diagnostico-descritores', async (req, res) => {
         });
 
         const totalAlunos = distinctAlunos.size;
+        let totalMatriculadosEscola = totalAlunos;
+        if (!db.useLocalFallback) {
+            try {
+                const matRes = await db.query(
+                    `SELECT COUNT(*)::int as total FROM public.alunos 
+                     WHERE escola_id::text = $1 OR escola_id IN (SELECT id FROM escolas WHERE id::text = $1 OR codigo_inep::text = $1)`,
+                    [escolaId.toString().trim()]
+                );
+                if (matRes.rows[0]?.total > 0) {
+                    totalMatriculadosEscola = matRes.rows[0].total;
+                }
+            } catch(e) {}
+        }
+
+        const taxaCoberturaGeralEscola = totalMatriculadosEscola > 0 
+            ? Number(((totalAlunos / totalMatriculadosEscola) * 100).toFixed(1)) 
+            : 100.0;
+
         const descritoresPrioritarios = Object.values(descritoresEscola)
             .map(d => {
                 const taxa = d.totalAlunosAvaliados > 0 ? Number(((d.alunosEmDefasagem / d.totalAlunosAvaliados) * 100).toFixed(1)) : 0;
@@ -368,12 +397,22 @@ router.get('/escolas/:escolaId/diagnostico-descritores', async (req, res) => {
                 if (taxa >= 40.0) prioridade = 'ALTA';
                 else if (taxa >= 25.0) prioridade = 'MEDIA';
 
+                const taxaCoberturaDesc = totalMatriculadosEscola > 0 
+                    ? Number(((d.totalAlunosAvaliados / totalMatriculadosEscola) * 100).toFixed(1)) 
+                    : 100.0;
+                const amostraReduzida = totalMatriculadosEscola > 0 && (taxaCoberturaDesc < 60.0 || d.totalAlunosAvaliados < 10);
+
                 return {
                     codigo: d.codigo,
                     descricao: d.descricao,
                     disciplina: d.disciplina,
                     topico: d.topico,
                     totalAlunosAvaliados: d.totalAlunosAvaliados,
+                    totalMatriculadosEscola: totalMatriculadosEscola,
+                    taxaCoberturaAmostral: taxaCoberturaDesc,
+                    amostraReduzida: amostraReduzida,
+                    grauConfiabilidade: !amostraReduzida && taxaCoberturaDesc >= 80.0 ? 'ALTA' : (!amostraReduzida ? 'MEDIA' : 'BAIXA_AMOSTRA'),
+                    alertaAmostra: amostraReduzida ? `Amostra Reduzida (${taxaCoberturaDesc}% de cobertura)` : null,
                     alunosEmDefasagem: d.alunosEmDefasagem,
                     taxaDefasagemPct: taxa,
                     prioridadePDE: prioridade,
@@ -386,6 +425,9 @@ router.get('/escolas/:escolaId/diagnostico-descritores', async (req, res) => {
             success: true,
             escolaId: escolaId,
             totalAlunosAvaliados: totalAlunos,
+            totalMatriculadosEscola: totalMatriculadosEscola,
+            taxaCoberturaGeralEscola: taxaCoberturaGeralEscola,
+            amostraGeralReduzida: taxaCoberturaGeralEscola < 60.0,
             descritoresPrioritarios: descritoresPrioritarios
         });
     } catch (err) {
