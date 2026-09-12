@@ -10,7 +10,8 @@
     "dev": "node cache-buster.js && npx -y http-server -p 8080",
     "import-data": "node scripts/import_inep_csv.js",
     "seed-cloud": "node scripts/seed_postgres_cloud.js",
-    "seed:safe": "node scripts/seed_if_empty.js"
+    "seed:safe": "node scripts/seed_if_empty.js",
+    "cleanup:ratelimit": "node scripts/cleanup_login_attempts.js"
   },
   "keywords": [],
   "author": "",

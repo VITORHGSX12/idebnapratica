@@ -1,0 +1,29 @@
+name: Production Uptime Health Check
+
+on:
+  schedule:
+    # Executa a cada 30 minutos
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    name: Check API Health & Uptime
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Production Health Check Endpoint
+        run: |
+          echo "Verificando disponibilidade do backend em https://idebnapratica-omega.vercel.app/api/health..."
+          RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" https://idebnapratica-omega.vercel.app/api/health)
+          STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS" | cut -d':' -f2)
+          BODY=$(echo "$RESPONSE" | grep -v "HTTP_STATUS")
+          
+          echo "Status retornado: $STATUS"
+          echo "Corpo da resposta: $BODY"
+          
+          if [ "$STATUS" -ne 200 ]; then
+            echo "❌ ERRO: Backend fora do ar ou com status HTTP $STATUS!"
+            exit 1
+          fi
+          
+          echo "✅ Backend operacional e respondendo HTTP 200 OK."

@@ -151,6 +151,27 @@ async function recordSuccessfulLogin(cleanEmail, clientIp) {
     loginFailedAttempts.delete(cleanEmail);
 }
 
+/**
+ * Rotina periódica de expurgo e retenção de registros antigos de login_attempts (Default: 30 dias)
+ */
+async function cleanupOldLoginAttempts(retentionDays = 30) {
+    if (db.useLocalFallback) return 0;
+    try {
+        const res = await db.query(
+            `DELETE FROM public.login_attempts WHERE attempted_at < NOW() - ($1 || ' days')::INTERVAL`,
+            [retentionDays]
+        );
+        const deletedCount = res.rowCount || 0;
+        if (deletedCount > 0) {
+            console.log(`[RateLimit Cleanup] Excluídos ${deletedCount} registros de login com mais de ${retentionDays} dias.`);
+        }
+        return deletedCount;
+    } catch (e) {
+        console.warn('[RateLimit Cleanup Warning]:', e.message);
+        return 0;
+    }
+}
+
 // Helper para carregar e sincronizar usuários do Banco / JSON
 async function findUserByEmail(cleanEmail) {
     const normalized = (cleanEmail || '').toLowerCase().trim();
@@ -435,5 +456,6 @@ module.exports = {
     authRouter: router,
     getUsers,
     saveUsers,
-    findUserByEmail
+    findUserByEmail,
+    cleanupOldLoginAttempts
 };

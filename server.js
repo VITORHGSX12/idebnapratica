@@ -16,7 +16,7 @@ const bcrypt = require('bcryptjs');
 const db = require('./db');
 const { resolveTenant, validateTenantAccessDB, isBypassLoginAllowed } = require('./middleware_tenant_subdominio');
 const { JWT_SECRET, authMiddleware, authorize, ownershipCheck } = require('./middleware/auth');
-const { authRouter, getUsers, saveUsers, findUserByEmail } = require('./routes/auth_routes');
+const { authRouter, getUsers, saveUsers, findUserByEmail, cleanupOldLoginAttempts } = require('./routes/auth_routes');
 const escolasTurmasRouter = require('./routes/escolas_turmas_routes');
 const { alunosRouter, maskCPF, maskName, maskAddress, maskNee, applyMaskingToState, encryptText, decryptText, encryptSensitiveDataInState } = require('./routes/alunos_routes');
 const simuladosRouter = require('./routes/simulados_routes');
@@ -39,6 +39,18 @@ app.use((req, res, next) => {
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Health Check Público e Rápido para Monitoramento de Uptime (UptimeRobot, Better Stack, Cron)
+app.get(['/health', '/api/health'], (req, res) => {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.status(200).json({
+        status: 'UP',
+        service: 'idebnapratica-backend',
+        timestamp: new Date().toISOString(),
+        database: db.useLocalFallback ? 'local-fallback' : 'connected'
+    });
+});
+
 app.use(resolveTenant);
 app.use('/api', authRouter);
 app.use('/api', escolasTurmasRouter);
@@ -48,16 +60,6 @@ app.use('/api', bibliotecaRouter);
 app.use('/api', usuariosRouter);
 app.use('/api', avatarRouter);
 app.use('/api', iaQuestoesRouter);
-
-// Health Check
-app.get('/api/health', (req, res) => {
-    res.json({
-        status: 'OK',
-        databaseMode: db.useLocalFallback ? 'local-json' : 'postgres',
-        tenant: req.tenant || null,
-        timestamp: new Date()
-    });
-});
 
 // Endpoint de Diagnóstico e Métricas do Banco de Dados
 app.get('/api/db/stats', async (req, res) => {
@@ -418,6 +420,12 @@ if (require.main === module) {
                     `);
                     
                     await db.runMigrations();
+                    
+                    // Rotina de retenção de rate limit (Boot + Execução Diária a cada 24h)
+                    await cleanupOldLoginAttempts(30);
+                    setInterval(() => {
+                        cleanupOldLoginAttempts(30).catch(e => console.warn('[RateLimit Interval Cleanup Error]', e.message));
+                    }, 24 * 60 * 60 * 1000);
                 } catch (err) {
                     console.error('[DB Init Warning]', err.message);
                 }
