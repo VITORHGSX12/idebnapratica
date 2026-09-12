@@ -152,6 +152,7 @@
     color: var(--text-on-light-primary);
     outline: none;
     background-color: #F8FAFC;
+    text-transform: none !important;
     transition: border-color var(--duration-micro) var(--ease-soft), box-shadow var(--duration-micro) var(--ease-soft), background-color var(--duration-micro) var(--ease-soft);
     box-sizing: border-box;
 }

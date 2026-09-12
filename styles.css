@@ -2980,15 +2980,28 @@ tr:last-child td {
 }
 
 /* Regra visual de Caixa Alta em Formulários (Camada Visual) */
-input[type="text"]:not([type="email"]):not([type="password"]):not([type="url"]):not(.no-uppercase),
-textarea:not(.no-uppercase) {
+input[type="text"]:not([type="email"]):not([type="password"]):not([type="url"]):not([data-no-uppercase="true"]):not([data-nouppercase="true"]):not([id*="pass" i]):not([id*="password" i]):not([id*="senha" i]):not([name*="pass" i]):not([name*="password" i]):not([name*="senha" i]):not([autocomplete*="password" i]):not([autocomplete*="email" i]):not(.no-uppercase):not(.login-input-field),
+textarea:not(.no-uppercase):not([data-no-uppercase="true"]) {
     text-transform: uppercase;
 }
 
 input[type="email"],
 input[type="password"],
 input[type="url"],
-.no-uppercase {
+input[data-no-uppercase="true"],
+input[data-nouppercase="true"],
+input[id*="pass" i],
+input[id*="password" i],
+input[id*="senha" i],
+input[name*="pass" i],
+input[name*="password" i],
+input[name*="senha" i],
+input[autocomplete*="password" i],
+input[autocomplete*="email" i],
+input[id*="email" i],
+input[name*="email" i],
+.no-uppercase,
+.login-input-field {
     text-transform: none !important;
 }
 
