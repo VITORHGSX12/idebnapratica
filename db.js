@@ -224,36 +224,28 @@ async function seedDatabase() {
         const defaultAdminHash = '$2a$12$8G5jc3SIKrPkUWUT7ulMj.CqPvoOnhGDGkvgejw01IOGyt0YM5DYW'; // Gondias@2026
 
         // Garantir conta Master Admin
-        await client.query(`
-            INSERT INTO public.usuarios (
-                id, tenant_id, nome, email, password, senha_hash, role, tipo, status, must_change_password, atualizado_em
-            ) VALUES (
-                'usr_admin', $1, 'ADMINISTRADOR MASTER', 'admin@goncalvesdias.ma.gov.br',
-                $2, $2, 'Master Admin', 'Master Admin', 'Ativo', FALSE, NOW()
-            )
-            ON CONFLICT (email) DO UPDATE SET
-                password = EXCLUDED.password,
-                senha_hash = EXCLUDED.senha_hash,
-                must_change_password = FALSE,
-                status = 'Ativo',
-                atualizado_em = NOW();
-        `, [defaultTenantId, defaultAdminHash]);
+        try {
+            const checkAdmin = await client.query("SELECT id FROM public.usuarios WHERE LOWER(email) = 'admin@goncalvesdias.ma.gov.br'");
+            if (checkAdmin.rows && checkAdmin.rows.length > 0) {
+                await client.query("UPDATE public.usuarios SET password = $1, senha_hash = $1, must_change_password = FALSE, status = 'Ativo', atualizado_em = NOW() WHERE LOWER(email) = 'admin@goncalvesdias.ma.gov.br'", [defaultAdminHash]);
+            } else {
+                await client.query("INSERT INTO public.usuarios (id, tenant_id, nome, email, password, senha_hash, role, tipo, status, must_change_password, atualizado_em) VALUES ('usr_admin', $1, 'ADMINISTRADOR MASTER', 'admin@goncalvesdias.ma.gov.br', $2, $2, 'Master Admin', 'Master Admin', 'Ativo', FALSE, NOW())", [defaultTenantId, defaultAdminHash]);
+            }
+        } catch(e) {
+            console.warn('[Seed Admin Warning]', e.message);
+        }
 
         // Garantir conta SEMED
-        await client.query(`
-            INSERT INTO public.usuarios (
-                id, tenant_id, nome, email, password, senha_hash, role, tipo, status, must_change_password, atualizado_em
-            ) VALUES (
-                'usr_semed', $1, 'GESTOR DA REDE SEMED', 'semed@goncalvesdias.ma.gov.br',
-                $2, $2, 'Gestor da Rede', 'Gestor da Rede', 'Ativo', FALSE, NOW()
-            )
-            ON CONFLICT (email) DO UPDATE SET
-                password = EXCLUDED.password,
-                senha_hash = EXCLUDED.senha_hash,
-                must_change_password = FALSE,
-                status = 'Ativo',
-                atualizado_em = NOW();
-        `, [defaultTenantId, defaultAdminHash]);
+        try {
+            const checkSemed = await client.query("SELECT id FROM public.usuarios WHERE LOWER(email) = 'semed@goncalvesdias.ma.gov.br'");
+            if (checkSemed.rows && checkSemed.rows.length > 0) {
+                await client.query("UPDATE public.usuarios SET password = $1, senha_hash = $1, must_change_password = FALSE, status = 'Ativo', atualizado_em = NOW() WHERE LOWER(email) = 'semed@goncalvesdias.ma.gov.br'", [defaultAdminHash]);
+            } else {
+                await client.query("INSERT INTO public.usuarios (id, tenant_id, nome, email, password, senha_hash, role, tipo, status, must_change_password, atualizado_em) VALUES ('usr_semed', $1, 'GESTOR DA REDE SEMED', 'semed@goncalvesdias.ma.gov.br', $2, $2, 'Gestor da Rede', 'Gestor da Rede', 'Ativo', FALSE, NOW())", [defaultTenantId, defaultAdminHash]);
+            }
+        } catch(e) {
+            console.warn('[Seed Semed Warning]', e.message);
+        }
 
         const usersCountRes = await client.query('SELECT count(*) as total FROM public.usuarios');
         const currentUsersCount = parseInt(usersCountRes.rows[0].total) || 0;

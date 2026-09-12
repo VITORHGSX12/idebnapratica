@@ -184,7 +184,8 @@ async function findUserByEmail(cleanEmail) {
                     id: row.id,
                     nome: row.nome,
                     email: row.email,
-                    password: row.password || row.senha_hash,
+                    password: row.password,
+                    senha_hash: row.senha_hash,
                     role: row.role,
                     tipo: row.tipo || row.role,
                     escola: row.escola,
@@ -192,7 +193,7 @@ async function findUserByEmail(cleanEmail) {
                     telefone: row.telefone,
                     cpf: row.cpf,
                     status: row.status || 'Ativo',
-                    mustChangePassword: row.must_change_password !== undefined ? row.must_change_password : true,
+                    mustChangePassword: row.must_change_password !== undefined ? row.must_change_password : false,
                     tenant_id: row.tenant_id
                 };
             }
@@ -205,7 +206,8 @@ async function findUserByEmail(cleanEmail) {
     if (local) {
         return {
             ...local,
-            password: local.password || local.senha_hash
+            password: local.password || local.senha_hash,
+            senha_hash: local.senha_hash || local.password
         };
     }
     return null;
@@ -228,6 +230,7 @@ async function updateUserPasswordInDb(userId, email, newHash) {
     const u = users.find(x => x.email.toLowerCase() === email.toLowerCase() || x.id === userId);
     if (u) {
         u.password = newHash;
+        u.senha_hash = newHash;
         u.mustChangePassword = false;
         u.updated_at = new Date().toISOString();
         saveUsers(users);
@@ -251,8 +254,13 @@ router.post(['/login', '/auth/login'], async (req, res) => {
         const user = await findUserByEmail(cleanEmail);
         
         let isValid = false;
-        if (user && user.password && (user.password.startsWith('$2b$') || user.password.startsWith('$2a$'))) {
-            isValid = await bcrypt.compare(password, user.password);
+        if (user) {
+            if (user.password && (user.password.startsWith('$2b$') || user.password.startsWith('$2a$'))) {
+                isValid = await bcrypt.compare(password, user.password);
+            }
+            if (!isValid && user.senha_hash && (user.senha_hash.startsWith('$2b$') || user.senha_hash.startsWith('$2a$'))) {
+                isValid = await bcrypt.compare(password, user.senha_hash);
+            }
         }
 
         // Se a senha for inválida, verifica e aplica o rate limit
