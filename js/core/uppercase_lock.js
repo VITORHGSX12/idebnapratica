@@ -8,14 +8,26 @@
 (function(global) {
     'use strict';
 
-    // Lista de tipos de input ou IDs/names que NUNCA devem ser transformados em maiúsculas
+    // Lista de tipos de input que NUNCA devem ser transformados em maiúsculas
     var EXCLUDED_TYPES = ['password', 'email', 'file', 'hidden', 'checkbox', 'radio', 'date', 'datetime-local', 'time', 'number', 'color', 'range'];
     
-    var EXCLUDED_NAMES_OR_IDS = [
-        'email', 'user-email', 'usuario-email', 'login-email', 'student-email',
-        'password', 'senha', 'user-password', 'login-password', 'confirm-password',
-        'token', 'jwt', 'auth-token', 'avatar', 'avatar-file', 'url', 'avatar_url'
+    // Lista de substrings seguras para isenção
+    var EXCLUDED_SAFE_SUBSTRINGS = [
+        'password', 'senha', 'email', 'token', 'jwt', 'api-key', 'apikey',
+        'auth-token', 'avatar', 'avatar_url', 'avatar-file', 'force-change'
     ];
+
+    // Regex com limites de palavra/hífen/underscore para evitar falsos positivos (ex: "keyword", "passageiro", "compasso")
+    var EXCLUDED_BOUNDED_REGEX = /(?:^|[-_])(password|senha|pwd|pass|current-pass|new-pass|confirm-pass|user-pass|email|api-key|apikey|jwt|token|secret)(?:[-_]|$)/i;
+
+    function isExcludedIdentifier(str) {
+        if (!str || typeof str !== 'string') return false;
+        var s = str.toLowerCase();
+        for (var i = 0; i < EXCLUDED_SAFE_SUBSTRINGS.length; i++) {
+            if (s.indexOf(EXCLUDED_SAFE_SUBSTRINGS[i]) !== -1) return true;
+        }
+        return EXCLUDED_BOUNDED_REGEX.test(s);
+    }
 
     /**
      * Verifica se um elemento de input deve ser bloqueado para caixa alta
@@ -27,20 +39,32 @@
         var tag = el.tagName.toLowerCase();
         if (tag !== 'input' && tag !== 'textarea') return false;
 
+        // 1. Checagem direta de tipo (propriedade e atributo DOM)
         var type = (el.type || 'text').toLowerCase();
         if (EXCLUDED_TYPES.indexOf(type) !== -1) return false;
 
-        var id = (el.id || '').toLowerCase();
-        var name = (el.name || '').toLowerCase();
+        var rawTypeAttr = (typeof el.getAttribute === 'function' ? (el.getAttribute('type') || '') : '').toLowerCase();
+        if (rawTypeAttr === 'password' || rawTypeAttr === 'email') return false;
+
+        // 2. Checagem de autocomplete (ex: current-password, new-password, email)
+        var autocomplete = (typeof el.getAttribute === 'function' ? (el.getAttribute('autocomplete') || '') : '').toLowerCase();
+        if (autocomplete.indexOf('password') !== -1 || autocomplete.indexOf('email') !== -1) return false;
+
+        // 3. Checagem de data attribute explícito (ex: data-no-uppercase="true")
         var dataset = el.dataset || {};
-
         if (dataset.noUppercase === 'true' || dataset.nouppercase === 'true') return false;
+        if (typeof el.getAttribute === 'function') {
+            var dataNoUpper = (el.getAttribute('data-no-uppercase') || el.getAttribute('data-nouppercase') || '').toLowerCase();
+            if (dataNoUpper === 'true') return false;
+        }
 
-        for (var i = 0; i < EXCLUDED_NAMES_OR_IDS.length; i++) {
-            var excluded = EXCLUDED_NAMES_OR_IDS[i];
-            if (id.indexOf(excluded) !== -1 || name.indexOf(excluded) !== -1) {
-                return false;
-            }
+        // 4. Checagem por ID, name ou className delimitado
+        var id = el.id || '';
+        var name = el.name || '';
+        var className = el.className || '';
+
+        if (isExcludedIdentifier(id) || isExcludedIdentifier(name) || isExcludedIdentifier(className)) {
+            return false;
         }
 
         return true;

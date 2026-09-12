@@ -507,7 +507,7 @@
                         <div class="login-input-group-styled login-cascade-item login-cascade-delay-4">
                             <label for="login-password" class="login-field-label">Senha</label>
                             <div class="field login-input-group">
-                                <input type="password" id="login-password" class="login-input-field" placeholder="Digite sua senha" required autocomplete="current-password" value="" oninput="if(window.clearLoginErrorAlert) window.clearLoginErrorAlert();" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); if(window.executeSystemLogin) window.executeSystemLogin(); }">
+                                <input type="password" id="login-password" class="login-input-field" placeholder="Digite sua senha" required autocomplete="current-password" data-no-uppercase="true" value="" oninput="if(window.clearLoginErrorAlert) window.clearLoginErrorAlert();" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); if(window.executeSystemLogin) window.executeSystemLogin(); }">
                                 <button type="button" id="btn-toggle-login-password" class="eye login-password-toggle" title="Mostrar/ocultar senha">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
                                 </button>
@@ -662,17 +662,17 @@
 
                 <div style="margin-bottom: 12px;">
                     <label style="font-size: 0.75rem; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Senha Atual / Temporária *</label>
-                    <input type="password" id="force-change-current-pass" required placeholder="Digite a senha temporária utilizada no login" style="width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.85rem; outline: none;">
+                    <input type="password" id="force-change-current-pass" required data-no-uppercase="true" autocomplete="current-password" placeholder="Digite a senha temporária utilizada no login" style="width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.85rem; outline: none;">
                 </div>
 
                 <div style="margin-bottom: 12px;">
                     <label style="font-size: 0.75rem; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Nova Senha Definitiva *</label>
-                    <input type="password" id="force-change-new-pass" required placeholder="Mínimo 10 caracteres (maiúscula, minúscula, número)" style="width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.85rem; outline: none;">
+                    <input type="password" id="force-change-new-pass" required data-no-uppercase="true" autocomplete="new-password" placeholder="Mínimo 10 caracteres (maiúscula, minúscula, número)" style="width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.85rem; outline: none;">
                 </div>
 
                 <div style="margin-bottom: 14px;">
                     <label style="font-size: 0.75rem; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Confirmar Nova Senha *</label>
-                    <input type="password" id="force-change-confirm-pass" required placeholder="Repita a nova senha exatamente igual" style="width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.85rem; outline: none;">
+                    <input type="password" id="force-change-confirm-pass" required data-no-uppercase="true" autocomplete="new-password" placeholder="Repita a nova senha exatamente igual" style="width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.85rem; outline: none;">
                 </div>
 
                 <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; margin-bottom: 18px;">
@@ -4849,7 +4849,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="new-user-password" style="font-size:0.75rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Senha Inicial de Acesso</label>
-                                        <input type="text" id="new-user-password" class="form-input-text" required value="Gondias@2026" style="width:100%; height:36px; font-size:0.8rem; font-family:var(--font-mono);">
+                                        <input type="text" id="new-user-password" class="form-input-text" required data-no-uppercase="true" autocomplete="new-password" placeholder="Senha inicial gerada automaticamente" value="" style="width:100%; height:36px; font-size:0.8rem; font-family:var(--font-mono);">
                                     </div>
                                 </div>
 
@@ -5465,7 +5465,7 @@
                 </p>
                 <div class="form-group">
                     <label style="font-size:0.75rem; font-weight:600; color:var(--text-secondary);">Sua Senha de Acesso *</label>
-                    <input type="password" id="reset-password-confirm" class="form-input-text" placeholder="Digite sua senha de acesso" style="width:100%;" required>
+                    <input type="password" id="reset-password-confirm" class="form-input-text" data-no-uppercase="true" autocomplete="current-password" placeholder="Digite sua senha de acesso" style="width:100%;" required>
                 </div>
                 <div class="form-group">
                     <label style="font-size:0.75rem; font-weight:600; color:var(--text-secondary);">Nome da Rede / Município *</label>

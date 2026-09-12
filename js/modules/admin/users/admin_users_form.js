@@ -24,6 +24,15 @@
         return global.AdminUsersValidation || {};
     }
 
+    function generateSecureInitialPassword() {
+        var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+        var rand = '';
+        for (var i = 0; i < 4; i++) {
+            rand += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return 'Edu@' + rand + '26';
+    }
+
     function generateAutoCredentials() {
         if (typeof document === 'undefined') return;
         var nameInput = document.getElementById('new-user-name');
@@ -38,7 +47,9 @@
         if (!emailInput.value || emailInput.value.includes('@goncalvesdias.ma.gov')) {
             emailInput.value = login + '@goncalvesdias.ma.gov.br';
         }
-        if (!passInput.value) passInput.value = 'Gondias@2026';
+        if (!passInput.value) {
+            passInput.value = generateSecureInitialPassword();
+        }
     }
 
     /**
@@ -195,6 +206,7 @@
             if (titleEl) titleEl.textContent = 'Cadastrar Novo Usuário';
             setSelectedUserRoles(['Professor(a)']);
             if (schoolSelect) schoolSelect.value = 'UI JOSE CORREA LIMA';
+            if (passInput) passInput.value = generateSecureInitialPassword();
             handleUserRoleChange();
             if (nameInput) {
                 nameInput.oninput = function() {
