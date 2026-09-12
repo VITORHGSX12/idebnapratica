@@ -5,6 +5,12 @@ on:
     # Executa a cada 30 minutos
     - cron: '*/30 * * * *'
   workflow_dispatch:
+    inputs:
+      simulate_failure:
+        description: 'Simular falha para testar alertas por e-mail'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   health-check:
@@ -13,6 +19,12 @@ jobs:
     steps:
       - name: Ping Production Health Check Endpoint
         run: |
+          if [ "${{ inputs.simulate_failure }}" = "true" ]; then
+            echo "⚠️ [TESTE DE ALERTA] Simulando falha intencional de backend para validar disparo de notificação por e-mail..."
+            echo "❌ ERRO SIMULADO: Backend indisponível (HTTP 500)"
+            exit 1
+          fi
+
           echo "Verificando disponibilidade do backend em https://idebnapratica-omega.vercel.app/api/health..."
           RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" https://idebnapratica-omega.vercel.app/api/health)
           STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS" | cut -d':' -f2)
