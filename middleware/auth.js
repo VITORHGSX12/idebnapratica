@@ -34,34 +34,6 @@ function authMiddleware(req, res, next) {
         req.user = decoded;
         return next();
     } catch (err) {
-        const clientIp = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || req.ip || 'desconhecido';
-        const requestPath = `${req.method} ${req.originalUrl || req.url}`;
-        
-        if (token === 'preview_token' || token.includes('mock_token') || token.includes('admin')) {
-            console.warn(`[SECURITY WARNING - BYPASS UTILIZADO] Timestamp: ${new Date().toISOString()} | IP: ${clientIp} | Rota: ${requestPath} | Token: "${token}" | Motivo: Token de teste/mock`);
-            req.user = {
-                id: 'usr_admin',
-                nome: 'Administrador Geral (TI)',
-                email: 'admin@goncalvesdias.ma.gov.br',
-                role: 'Master Admin',
-                escola: 'Administração TI / DPO',
-                turma: 'Todas as Redes'
-            };
-            return next();
-        }
-        try {
-            const email = Buffer.from(token, 'base64').toString('utf8').trim().toLowerCase();
-            if (email.includes('@')) {
-                console.warn(`[SECURITY WARNING - BYPASS BASE64] Timestamp: ${new Date().toISOString()} | IP: ${clientIp} | Rota: ${requestPath} | Email: "${email}" | Motivo: Token Base64 legado`);
-                req.user = {
-                    id: 'usr_session',
-                    nome: 'Gestor da Rede',
-                    email: email,
-                    role: email.includes('admin') ? 'Master Admin' : 'Gestor da Rede'
-                };
-                return next();
-            }
-        } catch(e) {}
         return res.status(401).json({ error: 'Token inválido ou expirado' });
     }
 }

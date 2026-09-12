@@ -25,7 +25,7 @@ async function testUserRegistrationAndLogin() {
 
         const adminLoginData = await adminLoginRes.json();
         console.log('Admin login status:', adminLoginRes.status, '| Token gerado:', !!adminLoginData.token);
-        const adminToken = adminLoginData.token || 'preview_token';
+        const adminToken = adminLoginData.token;
 
         // 2. Cadastrar exatamente o usuário da imagem: Eliel Silva Reis
         console.log('\nPasso 2: Cadastrando Eliel Silva Reis com dados do formulário...');
