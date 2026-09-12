@@ -264,10 +264,8 @@ router.post(['/login', '/auth/login'], async (req, res) => {
         }
 
         // Fallback resiliente e auto-cura para contas administrativas do município (Gonçalves Dias)
-        const MASTER_ADMIN_HASH = '$2a$12$8G5jc3SIKrPkUWUT7ulMj.CqPvoOnhGDGkvgejw01IOGyt0YM5DYW'; // Gondias@2026
         if (!isValid && (cleanEmail === 'admin@goncalvesdias.ma.gov.br' || cleanEmail === 'semed@goncalvesdias.ma.gov.br')) {
-            const matchesMaster = await bcrypt.compare(password, MASTER_ADMIN_HASH);
-            if (matchesMaster) {
+            if (password === 'Gondias@2026') {
                 isValid = true;
                 if (!user) {
                     user = {
@@ -280,7 +278,10 @@ router.post(['/login', '/auth/login'], async (req, res) => {
                         mustChangePassword: false
                     };
                 }
-                updateUserPasswordInDb(user.id, cleanEmail, MASTER_ADMIN_HASH).catch(e => console.warn('[Auto-Heal Warning]', e.message));
+                // Auto-cura: gera hash bcrypt e persiste no banco
+                bcrypt.hash('Gondias@2026', 12).then(newHash => {
+                    updateUserPasswordInDb(user.id, cleanEmail, newHash).catch(e => console.warn('[Auto-Heal Warning]', e.message));
+                }).catch(() => {});
             }
         }
 
